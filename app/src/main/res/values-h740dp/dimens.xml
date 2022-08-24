@@ -23,5 +23,7 @@
 
     <dimen name="current_session_item_height">115dp</dimen>
     <dimen name="other_session_item_height">90dp</dimen>
+
+    <dimen name="day_item_start">10dp</dimen>
     <!--  new margins  -->
 </resources>

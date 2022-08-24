@@ -224,6 +224,20 @@ fun <T> Observable<T>.withProgressBarLoadingDialog(baseView: BaseContract.Loadin
         .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
 }
 
+fun <T> Observable<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
+    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
+    var isFirstHidden = false
+    return this.doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnNext {
+            if (!isFirstHidden) {
+                isFirstHidden = true
+                hideCustomProgressBarLoading(baseView, loadingDisposable)
+            }
+        }
+        .doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+}
+
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
         .delay(300, TimeUnit.MILLISECONDS, Schedulers.io())

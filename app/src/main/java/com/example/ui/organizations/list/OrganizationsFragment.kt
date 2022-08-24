@@ -21,8 +21,7 @@ import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), OrganizationsContract.View,
-    SimpleTitleToolbar {
+class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), OrganizationsContract.View{
 
     @InjectPresenter
     lateinit var presenter: OrganizationsPresenter
@@ -54,12 +53,10 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.organizations))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationsFragment.adapter
                 onScrolled { dx, dy ->
-                    presenter.changeAppBarElevation(dy)
                 }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }

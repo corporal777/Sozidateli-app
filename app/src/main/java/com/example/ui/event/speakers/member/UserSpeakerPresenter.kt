@@ -15,6 +15,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import java.lang.Math.abs
 import javax.inject.Inject
@@ -83,7 +84,7 @@ class UserSpeakerPresenter
         if (speaker.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(speaker?.id))
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
                         onReceiveError(it)
@@ -112,9 +113,9 @@ class UserSpeakerPresenter
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple({
-                    viewState.showRequestErrorMessage()
+                    onReceiveError(it)
                 }) {
                     Log.e("ADDED TO FAVORITE", it.user.toString())
                     mUser.binds?.userFavorite = EventUserFavorite(it.id, it.user)
@@ -124,9 +125,9 @@ class UserSpeakerPresenter
         else
             compositeDisposable += eventRepository.deleteFromFavorite(mUser.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple({
-                    viewState.showRequestErrorMessage()
+                    onReceiveError(it)
                 }) {
                     Log.e("DELETED FROM FAVORITE", mUser.binds?.userFavorite?.id.toString())
                     mUser.binds?.userFavorite = null
@@ -181,13 +182,12 @@ class UserSpeakerPresenter
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
+                    onReceiveError(it)
                 },
                 onComplete = {
-                    Log.e("ID", subEvent.binds?.userCalendar?.id.toString())
                     viewState.updateSubEvent(subEvent)
                 })
 

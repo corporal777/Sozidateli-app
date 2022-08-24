@@ -19,10 +19,13 @@ class CalendarHorizontalListItem(
 
     private val items = days.map { day ->
         DayItem(day, onDaySelect)
-    }
+    } as ArrayList
 
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
+    }
     init {
-        adapter = GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
+        adapter = groupAdapter
         backgroundColor = Color.WHITE
 
     }
@@ -53,7 +56,6 @@ class CalendarHorizontalListItem(
         var isDay = false
         items.find { it.day == day }?.let {
             isDay = true
-
         }
 //        val position = items.indexOfFirst { it.day == day }
 //

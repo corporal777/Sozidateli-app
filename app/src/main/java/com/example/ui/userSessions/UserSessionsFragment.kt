@@ -83,29 +83,23 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     }
 
 
-    override fun setCurrentSession(session: UserSessionModel?) {
-        if (session == null) {
-            currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
-        } else
-            currentSessionSection.update(
-                listOf(
-                    CurrentSessionItem(
-                        session,
-                        { presenter.killAllSessionsClick() },
-                        { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
-                    )
+    override fun setCurrentSession(session: UserSessionModel) {
+        currentSessionSection.update(
+            listOf(
+                CurrentSessionItem(
+                    session,
+                    { presenter.killAllSessionsClick() },
+                    { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
                 )
             )
+        )
     }
 
     override fun setOtherSessions(sessions: List<UserSessionModel?>) {
         otherSessionsSection.update(
             sessions.map {
                 OtherSessionItem(it) { s ->
-                    showSessionDialog(
-                        { presenter.killUsersDeviceSessionClick(s.sessionId) },
-                        s
-                    )
+                    showSessionDialog({ presenter.killUsersDeviceSessionClick(s.sessionId) }, s)
                 }
             }
         )

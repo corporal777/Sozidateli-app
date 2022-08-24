@@ -45,26 +45,22 @@ class UserSessionsPresenter
     private fun getUserSessionsData() {
         compositeDisposable += userRepository.getAllUsersSessions(deviceId)
             .doOnSuccess {
-                allOtherSessions.addAll(it)
-                if (it.size > 3) {
+                allOtherSessions.addAll(it.userSessions)
+                if (it.userSessions.size > 3) {
                     for (i in 0 until 3) {
-                        shortAllOtherSessions.add(it[i])
+                        shortAllOtherSessions.add(it.userSessions[i])
                     }
                 }
             }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple { _ ->
-                compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(deviceId)
-                    .performOnBackgroundOutOnMain()
-                    .subscribeSimple { currentSessions ->
-                        viewState.setCurrentSession(currentSessions.userSessions.last())
-                        if (allOtherSessions.size > 3) {
-                            viewState.showSessionsActionButton(actionType)
-                            viewState.setOtherSessions(shortAllOtherSessions)
-                        }else {
-                            viewState.setOtherSessions(allOtherSessions)
-                        }
-                    }
+            .subscribeSimple {
+                viewState.setCurrentSession(it.currentSession)
+                if (allOtherSessions.size > 3) {
+                    viewState.showSessionsActionButton(actionType)
+                    viewState.setOtherSessions(shortAllOtherSessions)
+                }else {
+                    viewState.setOtherSessions(allOtherSessions)
+                }
             }
     }
 
@@ -73,10 +69,9 @@ class UserSessionsPresenter
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.hideSessionsActionButton()
-                viewState.setOtherSessions(it)
+                viewState.setOtherSessions(it.userSessions)
             }
     }
 
@@ -85,10 +80,9 @@ class UserSessionsPresenter
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                viewState.setOtherSessions(it)
-                if (it.size <= 3){
+                viewState.setOtherSessions(it.userSessions)
+                if (it.userSessions.size <= 3){
                     viewState.hideSessionsActionButton()
                 }
             }

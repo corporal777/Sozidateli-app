@@ -61,7 +61,7 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
 
     private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
-            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_'
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_' || it == '+'
         }
     })
 

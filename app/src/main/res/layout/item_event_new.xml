@@ -4,127 +4,131 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_event"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_event"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/event_item_height_new"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="10dp"
+        android:foreground="@drawable/custom_text_background_selectable"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itemContainer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/event_item_height_new"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="15dp"
-            android:foreground="@drawable/custom_text_background_selectable"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="10dp">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/itemContainer"
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLogo"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_test"
+                android:transitionName="logo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivLogo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_test"
-                    android:transitionName="logo"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEventAction"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/btn_background_white"
+                android:letterSpacing="-0.02"
+                android:minHeight="@dimen/action_button_height"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:textColor="@color/event_item_action_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/background_gradient"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvEventState"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/btn_background_white"
+                android:backgroundTint="#74B12A"
+                android:gravity="center"
+                android:letterSpacing="-0.02"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLocation"
+                tools:text="Участие одобрено" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="15dp"
+                android:letterSpacing="0.01"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="21sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Конференция лидеров проектов победителей конкурсов" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                tools:text="29.02.2022 – 30.04.2022" />
 
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnEventAction"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:letterSpacing="-0.02"
-                    android:textSize="16sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/btn_background_white"
-                    android:minHeight="@dimen/action_button_height"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp"
-                    android:textAllCaps="false"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:textColor="@color/event_item_action_text" />
+            <TextView
+                android:id="@+id/tvLocation"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                tools:ignore="MissingPrefix"
+                tools:text="Краснодарский край, г. Сочи" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:background="@drawable/background_gradient"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvEventState"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/btn_background_white"
-                    android:backgroundTint="#74B12A"
-                    android:gravity="center"
-                    android:letterSpacing="-0.02"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    tools:text="Участие одобрено"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvLocation" />
-
-                <TextView
-                    android:id="@+id/tvTitle"
-                    fontPath="fonts/sf_pro_display_bold.ttf"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="15dp"
-                    android:letterSpacing="0.01"
-                    android:maxLines="2"
-                    tools:text="Конференция лидеров проектов победителей конкурсов"
-                    android:textColor="@color/white"
-                    android:textSize="21sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvDate"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvTitle"
-                    tools:text="29.02.2022 – 30.04.2022" />
-
-
-                <TextView
-                    android:id="@+id/tvLocation"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvDate"
-                    tools:ignore="MissingPrefix"
-                    tools:text="Краснодарский край, г. Сочи" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </layout>
 

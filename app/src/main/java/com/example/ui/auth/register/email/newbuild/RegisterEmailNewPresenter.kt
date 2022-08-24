@@ -21,19 +21,21 @@ import io.reactivex.rxkotlin.subscribeBy
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class RegisterEmailNewPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val authRepository: AuthRepository,
-        private val phoneNumberUtil: PhoneNumberUtil,
-        private val context: Context,
-        private val userRepository: UserRepository,
-        snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager, appData), RegisterEmailNewContract.Presenter {
+    private val appData: AppData,
+    private val authRepository: AuthRepository,
+    private val phoneNumberUtil: PhoneNumberUtil,
+    private val context: Context,
+    private val userRepository: UserRepository,
+    snAuthManager: SnAuthManager
+) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager, appData),
+    RegisterEmailNewContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null
@@ -48,15 +50,17 @@ class RegisterEmailNewPresenter
     private var isAgree: Boolean = false
     private var isPasswordValid: Boolean = false
     var loginType = "email"
+    var deviceId = ""
+    var deviceModel = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userPhoneConfirmedSubject
-                .performOnBackgroundOutOnMain()
-                .subscribeBy {
-                    phoneVerified = it
-                    //viewState.updatePhoneConfirmationStatus(it)
-                }
+            .performOnBackgroundOutOnMain()
+            .subscribeBy {
+                phoneVerified = it
+                //viewState.updatePhoneConfirmationStatus(it)
+            }
     }
 
     override fun attachView(view: RegisterEmailNewContract.View?) {
@@ -66,16 +70,16 @@ class RegisterEmailNewPresenter
 
     private fun initData() {
         viewState.setData(
-                email,
-                firstName,
-                lastName,
-                if (noMiddleNameChecked) null else middleName,
-                noMiddleNameChecked,
-                password,
-                passwordConfirm,
-                phone,
-                phoneVerified,
-                isAgree
+            email,
+            firstName,
+            lastName,
+            if (noMiddleNameChecked) null else middleName,
+            noMiddleNameChecked,
+            password,
+            passwordConfirm,
+            phone,
+            phoneVerified,
+            isAgree
         )
         if (!phoneVerified)
             viewState.phoneConfirmEnabled(phone.isValidPhoneNumber(phoneNumberUtil))
@@ -87,21 +91,21 @@ class RegisterEmailNewPresenter
     }
 
     override fun onClickRegister(
-            email: String?,
-            firstName: String?,
-            lastName: String?,
-            password: String?,
-            //passwordConfirm: String?,
-            isAgree: Boolean
+        email: String?,
+        firstName: String?,
+        lastName: String?,
+        password: String?,
+        //passwordConfirm: String?,
+        isAgree: Boolean
     ) {
         if (isDataValid(firstName, lastName, email, password, /*passwordConfirm,*/ isAgree)) {
             checkPhoneEmailIsUnique(
-                    email!!,
-                    firstName!!,
-                    lastName!!,
-                    password!!,
-                    if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
-                    phone
+                email!!,
+                firstName!!,
+                lastName!!,
+                password!!,
+                if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
+                phone
             )
             /*register(
                     email!!,
@@ -125,23 +129,76 @@ class RegisterEmailNewPresenter
         }
     }
 
-    override fun checkPhoneEmailIsUnique(email: String, firstName: String, lastName: String, password: String, middleName: String?, phone: String?) {
+    override fun checkPhoneEmailIsUnique(
+        email: String,
+        firstName: String,
+        lastName: String,
+        password: String,
+        middleName: String?,
+        phone: String?
+    ) {
+        viewState.showAlertLoadingDialog()
         when (loginType) {
             "email" -> {
                 compositeDisposable += userRepository.checkEmailPhone(email, null)
-                        .withCheckInternetConnectivity()
-                        .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
-                        .subscribe({ register(email, firstName, lastName, password, middleName, phone) },
-                                { viewState.showEmailNotUnique(email, firstName, lastName, password, middleName, phone) })
+                    .withCheckInternetConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        register(
+                            email,
+                            firstName,
+                            lastName,
+                            password,
+                            middleName,
+                            phone
+                        )
+                    },
+                        {
+                            viewState.apply {
+                                hideAlertLoadingDialog()
+                                showEmailNotUnique(
+                                    email,
+                                    firstName,
+                                    lastName,
+                                    password,
+                                    middleName,
+                                    phone
+                                )
+                            }
+
+                        })
             }
             "phone" -> {
-                compositeDisposable += userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
-                        .withCheckInternetConnectivity()
-                        .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
-                        .subscribe({ register(email, firstName, lastName, password, middleName, phone) },
-                                { viewState.showPhoneNotUnique(email, firstName, lastName, password, middleName, email) })
+                compositeDisposable += userRepository.checkEmailPhone(
+                    null,
+                    validatePhoneBeforeSend(email)
+                )
+                    .withCheckInternetConnectivity()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({
+                        register(
+                            email,
+                            firstName,
+                            lastName,
+                            password,
+                            middleName,
+                            phone
+                        )
+                    },
+                        {
+                            viewState.apply {
+                                hideAlertLoadingDialog()
+                                showPhoneNotUnique(
+                                    email,
+                                    firstName,
+                                    lastName,
+                                    password,
+                                    middleName,
+                                    email
+                                )
+                            }
+
+                        })
             }
         }
     }
@@ -239,28 +296,32 @@ class RegisterEmailNewPresenter
     }
 
     private fun performDataChange() {
-        viewState.enableRegisterBtn(isDataValid(
+        viewState.enableRegisterBtn(
+            isDataValid(
                 firstName,
                 lastName,
                 email,
                 password,
-                //passwordConfirm,
                 isAgree
-        ))
+            )
+        ) //passwordConfirm, isAgree))
     }
 
     private fun isDataValid(
-            firstName: String?,
-            lastName: String?,
-            email: String?,
-            password: String?,
-            //passwordConfirm: String?,
-            isAgree: Boolean
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        password: String?,
+        //passwordConfirm: String?,
+        isAgree: Boolean
     ): Boolean {
         val firstNameValid = !firstName.isNullOrBlank()
         val lastNameValid = !lastName.isNullOrBlank()
         val passwordValid = password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
-        val emailValid = if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(email?: "")
+        val emailValid =
+            if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(
+                email ?: ""
+            )
         val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
         return firstNameValid
                 && lastNameValid
@@ -273,12 +334,12 @@ class RegisterEmailNewPresenter
     }
 
     override fun register(
-            email: String,
-            firstName: String,
-            lastName: String,
-            password: String,
-            middleName: String?,
-            phone: String?
+        email: String,
+        firstName: String,
+        lastName: String,
+        password: String,
+        middleName: String?,
+        phone: String?
     ) {
         val midName = if (middleName.isNullOrEmpty())
             null
@@ -295,41 +356,79 @@ class RegisterEmailNewPresenter
                 phoneNumber = if (email.isNullOrEmpty())
                     null
                 else
-                    arrayListOf(FieldDetails(value = validatePhoneBeforeSend(email)/*email.replace(" ", "")*/, type = PHONE_PERSONAL, isVisible = true))
+                    arrayListOf(
+                        FieldDetails(
+                            value = validatePhoneBeforeSend(email)/*email.replace(" ", "")*/,
+                            type = PHONE_PERSONAL,
+                            isVisible = true
+                        )
+                    )
             }
         }
 
-        compositeDisposable += authRepository.register(RegisterBody(password = password,
+        compositeDisposable += authRepository.register(
+            RegisterBody(
+                password = password,
                 name = firstName, lastName = lastName, middleName = midName,
-                email = em, phone = phoneNumber))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
+                email = em, phone = phoneNumber,
+                deviceId = deviceId, deviceModel = deviceModel
+            )
+        )
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    viewState.hideAlertLoadingDialog()
+                    it.printStackTrace()
+                },
+                onComplete = {
                     when (loginType) {
                         "email" -> {
-                            authRepository.registerEmailResend(email)
-                                    .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
-                                    .subscribe({
+                            compositeDisposable += authRepository.registerEmailResend(email)
+                                .performOnBackgroundOutOnMain()
+                                .subscribeSimple(
+                                    onError = {
+                                        viewState.apply {
+                                            hideAlertLoadingDialog()
+                                            showRequestErrorMessage()
+                                        }
+                                        it.printStackTrace()
+                                    },
+                                    onComplete = {
+                                        viewState.hideAlertLoadingDialog()
                                         viewState.showEmailConfirmation(email, password)
-                                    }, { it.printStackTrace() })
+                                    })
                         }
                         "phone" -> {
-                            compositeDisposable += authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
-                                    .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
-                                    .subscribe({
-                                        viewState.showFinishRegister(firstName,
+                            compositeDisposable += authRepository.registerPhoneResend(
+                                "personal",
+                                validatePhoneBeforeSend(email)
+                            )
+                                .performOnBackgroundOutOnMain()
+                                .subscribeSimple(
+                                    onError = {
+                                        viewState.apply {
+                                            hideAlertLoadingDialog()
+                                            showRequestErrorMessage()
+                                        }
+                                        it.printStackTrace()
+                                    },
+                                    onComplete = {
+                                        viewState.apply {
+                                            hideAlertLoadingDialog()
+                                            showFinishRegister(
+                                                firstName,
                                                 lastName, middleName,
-                                                phoneNumber?.get(0)?.value, em?.value?: "", "code",
+                                                phoneNumber?.get(0)?.value, em?.value ?: "", "code",
                                                 false, middleName == USER_DATA_EMPTY,
-                                                true)
+                                                true
+                                            )
+                                        }
 
-                                    }, { it.printStackTrace() })
+                                    })
                         }
                     }
-                }
+                })
+
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {

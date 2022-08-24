@@ -18,10 +18,11 @@ import javax.inject.Inject
 @InjectViewState
 class RegisterEmailPresenter
 @Inject constructor(
-        private val authRepository: AuthRepository,
-        snAuthManager: SnAuthManager,
-        appData: AppData
-) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager, appData), RegisterEmailContract.Presenter {
+    private val authRepository: AuthRepository,
+    snAuthManager: SnAuthManager,
+    appData: AppData
+) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager, appData),
+    RegisterEmailContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null
@@ -48,7 +49,14 @@ class RegisterEmailPresenter
         viewState.showUserAgreement()
     }
 
-    override fun onClickRegister(email: String?, firstName: String?, lastName: String?, password: String?, passwordConfirm: String?, isAgree: Boolean) {
+    override fun onClickRegister(
+        email: String?,
+        firstName: String?,
+        lastName: String?,
+        password: String?,
+        passwordConfirm: String?,
+        isAgree: Boolean
+    ) {
         if (isDataValid(firstName, lastName, email, password, passwordConfirm, isAgree)) {
             register(email!!, firstName!!, lastName!!, password!!)
         } else {
@@ -101,10 +109,26 @@ class RegisterEmailPresenter
     }
 
     private fun performDataChange() {
-        viewState.enableRegisterBtn(isDataValid(firstName, lastName, email, password, passwordConfirm, isAgree))
+        viewState.enableRegisterBtn(
+            isDataValid(
+                firstName,
+                lastName,
+                email,
+                password,
+                passwordConfirm,
+                isAgree
+            )
+        )
     }
 
-    private fun isDataValid(firstName: String?, lastName: String?, email: String?, password: String?, passwordConfirm: String?, isAgree: Boolean): Boolean {
+    private fun isDataValid(
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        password: String?,
+        passwordConfirm: String?,
+        isAgree: Boolean
+    ): Boolean {
         return !firstName.isNullOrBlank()
                 && !lastName.isNullOrBlank()
                 && email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
@@ -114,15 +138,22 @@ class RegisterEmailPresenter
     }
 
     private fun register(email: String, firstName: String, lastName: String, password: String) {
-        compositeDisposable += authRepository.register(RegisterBody(password = password,
-                name = firstName, lastName = lastName,
-                email = FieldDetails(value = email, isVisible = true)))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    viewState.showEmailConfirmation(email, password)
-                }
+        compositeDisposable += authRepository.register(
+            RegisterBody(
+                password = password,
+                name = firstName,
+                lastName = lastName,
+                email = FieldDetails(value = email, isVisible = true),
+                deviceModel = "",
+                deviceId = ""
+            )
+        )
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                viewState.showEmailConfirmation(email, password)
+            }
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {

@@ -65,56 +65,60 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tvSpeakersName"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:letterSpacing="0.02"
-            android:textColor="@color/vk_black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Екатерина Кисеева" />
-
-        <TextView
-            android:id="@+id/tvSpeakersLocation"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="15dp"
-            android:letterSpacing="0.02"
-            android:textColor="@color/input_text_color_disabled_new"
-            android:textSize="13sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
-            tools:text="Москва" />
-
-        <TextView
-            android:id="@+id/tvSpeakersPosition"
-            fontPath="fonts/sf_pro_display_regular.OTF"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
-            android:ellipsize="end"
-            android:letterSpacing="0.02"
-            android:textColor="@color/input_text_color_disabled_new"
-            android:textSize="13sp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation"
-            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021) Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvSpeakersName"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="0.5dp"
+                android:maxLines="2"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp"
+                tools:text="Екатерина Кисеева" />
 
 
+            <TextView
+                android:id="@+id/tvSpeakersLocation"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:letterSpacing="0.02"
+                android:lineSpacingExtra="0.5dp"
+                android:maxLines="2"
+                android:textColor="@color/input_text_color_disabled_new"
+                android:textSize="13sp"
+                tools:text="Москва" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:breakStrategy="simple"
+                android:id="@+id/tvSpeakersPosition"
+                fontPath="fonts/sf_pro_display_regular.OTF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="0.5dp"
+                android:letterSpacing="0.02"
+                android:textColor="@color/input_text_color_disabled_new"
+                android:textSize="13sp"
+                tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021) Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

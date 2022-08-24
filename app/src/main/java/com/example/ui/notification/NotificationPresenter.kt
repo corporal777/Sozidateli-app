@@ -17,7 +17,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -34,30 +36,39 @@ class NotificationPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(notification)
         viewState.setAppBarElevation(0f)
-        if (!notification.wasRead && notification.type != Notification.Type.RATE) {
-            compositeDisposable += userRepository.markAsRead(notification.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    notification.wasRead = true
-                }
-        }
-
-        compositeDisposable += appData.notificationReadSubject
+        compositeDisposable += userRepository.getNotificationDetail(notification.id.toString(), true)
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                val id = it.first
-                val state = it.second
-                if (id == notification.id) {
-                    notification.apply {
-                        wasRead = true
-                        acceptState = state
-                    }
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showRequestErrorMessage()
+                },
+                onSuccess = {
+                    notification = Notification.fromRemoteNotification(it)
                     viewState.setData(notification)
+                    if (!notification.wasRead && notification.type != Notification.Type.RATE) {
+                        compositeDisposable += userRepository.markAsRead(notification.id.toString())
+                            .subscribeSimple {
+                                notification.wasRead = true
+                            }
+                    }
+                    compositeDisposable += appData.notificationReadSubject
+                        .performOnBackgroundOutOnMain()
+                        .subscribeSimple {
+                            val id = it.first
+                            val state = it.second
+                            if (id == notification.id) {
+                                notification.apply {
+                                    wasRead = true
+                                    acceptState = state
+                                }
+                                viewState.setData(notification)
+                            }
+                        }
                 }
-            }
+            )
     }
 
     override fun attachView(view: NotificationContract.View?) {
@@ -77,7 +88,6 @@ class NotificationPresenter
     override fun onNotificationAcceptClick() {
         compositeDisposable += userRepository.checkUserProfile()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
             .subscribe({
                 val fields = it.fields?.filter { f -> f.filled == false }
                 if (fields?.isEmpty() == true) {
@@ -93,7 +103,7 @@ class NotificationPresenter
                             notification.entity?.id ?: 0
                         )
                     }
-                    viewState.showSuccessAccepted()
+                    //viewState.showSuccessAccepted()
                 } else {
                     val errors = mutableListOf<String>()
                     fields?.forEach { f -> errors.add("-" + f.name) }
@@ -125,11 +135,12 @@ class NotificationPresenter
 ////            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
 ////            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
         }
-        viewState.showSuccessCanceled()
+        //viewState.showSuccessCanceled()
     }
 
     private fun approveOrgMember(id: Int) {
-        updateNotificationInvite(
+        //updateNotificationInvite(
+        acceptNotificationInvite(
             userRepository.approveOrgMember(
                 id.toString(),
                 ApproveBody(appData.getId())
@@ -138,16 +149,19 @@ class NotificationPresenter
     }
 
     private fun approvePgrf(id: Int) {
-        updateNotificationInvite(userRepository.approvePgrf(id.toString()), id)
+        //updateNotificationInvite(userRepository.approvePgrf(id.toString()), id)
+        acceptNotificationInvite(userRepository.approvePgrf(id.toString()), id)
     }
 
     private fun approveAssistance(id: Int) {
-        updateNotificationInvite(userRepository.approveAssistance(id.toString()), id)
+        acceptNotificationInvite(userRepository.approveAssistance(id.toString()), id)
+        //updateNotificationInvite(userRepository.approveAssistance(id.toString()), id)
     }
 
 
     private fun declineOrgMember(id: Int) {
-        updateNotificationInvite(
+        //updateNotificationInvite(
+        cancelNotificationInvite(
             userRepository.declineOrgMember(
                 id.toString(),
                 DeclineBody(appData.getId())
@@ -156,16 +170,18 @@ class NotificationPresenter
     }
 
     private fun declinePgrf(id: Int) {
-        updateNotificationInvite(userRepository.declinePgrf(id.toString()), id)
+        //updateNotificationInvite(userRepository.declinePgrf(id.toString()), id)
+        cancelNotificationInvite(userRepository.declinePgrf(id.toString()), id)
     }
 
     private fun declineAssistance(id: Int) {
-        Log.e("ID", id.toString())
-        updateNotificationInvite(userRepository.declineAssistance(id.toString()), id)
+        cancelNotificationInvite(userRepository.declineAssistance(id.toString()), id)
+        //updateNotificationInvite(userRepository.declineAssistance(id.toString()), id)
     }
 
     private fun cancelEvMember(id: Int) {
-        updateNotificationInvite(
+       // updateNotificationInvite(
+        cancelNotificationInvite(
             userRepository.cancelEvMember(
                 id.toString(),
                 CancelBody(appData.getId())
@@ -185,7 +201,37 @@ class NotificationPresenter
     private fun updateNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple { notificationManager.cancel(notificationId) }
+    }
+
+    private fun acceptNotificationInvite(request: Completable, notificationId: Int) {
+        compositeDisposable += request
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showRequestErrorMessage()
+                },
+                onComplete = {
+                    viewState.showSuccessAccepted()
+                    notificationManager.cancel(notificationId)
+                })
+    }
+
+    private fun cancelNotificationInvite(request: Completable, notificationId: Int) {
+        compositeDisposable += request
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showRequestErrorMessage()
+                },
+                onComplete = {
+                    viewState.showSuccessCanceled()
+                    notificationManager.cancel(notificationId)
+                })
     }
 }

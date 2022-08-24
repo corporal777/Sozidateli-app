@@ -314,7 +314,7 @@ data class UserState(
     @SerializedName("nameEdited")
     val nameEdited: Boolean? = null,
     @SerializedName("isHidden")
-    var isHidden: Boolean? = null,
+    var isHidden: String? = null,
     @SerializedName("isBlocked")
     val isBlocked: Int? = null,
     @SerializedName("isSuspend")

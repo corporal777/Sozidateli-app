@@ -27,10 +27,14 @@ import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.my.items.NoEventItem
 import com.example.ui.event.my.items.SearchEventItem
 import com.example.ui.event.my.items.TagsItem
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.IS_EXPANDED
+import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
@@ -47,6 +51,7 @@ import onScrolled
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEventsContractNew.View {
 
@@ -76,9 +81,9 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
 
     private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(headerSection)
-            add(searchSection)
-            add(tagsSection)
+            //add(headerSection)
+            //add(searchSection)
+            //add(tagsSection)
             add(eventsSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
@@ -108,46 +113,50 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            eventsList.apply {
-                adapter = groupAdapter
-                onScrolled { _, dy ->
-                    presenter.changeAppBarElevation(dy)
-                }
+            eventsList.adapter = groupAdapter
+            btnDeclined.setOnCheckedChangeListener { _, isChecked ->
+                presenter.setEventStateFilter(isChecked, MyEventsFilter.DECLINED)
             }
-            btnGoToMyTimeTable.setOnClickListener {
-                showMyScheduleEvents()
+            btnApproved.setOnCheckedChangeListener { _, isChecked ->
+                presenter.setEventStateFilter(isChecked, MyEventsFilter.APPROVED)
+            }
+            btnPending.setOnCheckedChangeListener { _, isChecked ->
+                presenter.setEventStateFilter(isChecked, MyEventsFilter.PENDING)
+            }
+            mBinding.apply {
+                etSearch.apply {
+                    SearchInput(this).apply {
+                        setOnTextChange { presenter.onSearchTextChange(it) }
+                        setOnTextChangeDone {
+                            presenter.onSearchTextSubmit(it)
+                            hideKeyboard()
+                        }
+                    }
+                    onTextChanged { btnClear.isVisible = !it.isNullOrEmpty() }
+                    btnClear.apply {
+                        btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                        setOnClickListener { etSearch.text = null }
+                    }
+                    btnFilter.setOnClickListener { presenter.onShowFiltersClick() }
+                    onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                        clSearch.setBackgroundResource(
+                            if (hasFocus) R.drawable.background_search_field_rounded_focused
+                            else R.drawable.background_search_field_rounded_normal
+                        )
+                    }
+                }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
+        initCollapseLabel()
     }
 
     override fun setData(data: List<EventNew?>) {
         eventsSection.update(data.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventGroupNew(
-                it,
-                onEventClickListener,
-            )
+            else EventGroupNew(it, onEventClickListener)
         })
         mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-
-    override fun setTagsBlock(listTags: List<Tag>) {
-        tagsSection.update(listOf(TagsItem(listTags) {
-            presenter.setEventStateFilter(it)
-        }))
-    }
-
-    override fun setSearchBlock() {
-        searchSection.update(listOf(SearchEventItem({
-            presenter.onSearchTextChange(it)
-        }, {
-            presenter.onSearchTextSubmit(it)
-            hideKeyboard()
-        }, {
-            presenter.onShowFiltersClick()
-        })))
     }
 
     override fun showFilters() {
@@ -183,14 +192,20 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
 
     override fun showEmptyListPlaceholder() {
         eventsSection.update(
-            listOf(
-                NoEventItem(
-                    getString(R.string.empty_list_placeholder_message),
-                    getString(R.string.no_event_with_params_title)
-                )
-            )
+            emptyList()
+//            listOf(
+//                NoScheduleEventItem(
+//                    getString(R.string.empty_list_placeholder_message),
+//                    getString(R.string.no_event_with_params_title)
+//                )
+//            )
         )
+        mBinding.noDataPlaceholder.isVisible = true
         mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun hideEmptyListPlaceholder() {
+        mBinding.noDataPlaceholder.isVisible = false
     }
 
     override fun showAboutEvent(event: String) {
@@ -208,13 +223,20 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     }
 
     private fun showMyScheduleEvents() {
-        findNavController().navigate(
-            R.id.my_schedule_events_fragment
-        )
+        findNavController().navigate(R.id.my_schedule_events_fragment)
     }
 
     override fun setActionButton(event: EventNew?) {
         eventsSection.findGroupBy<EventGroupNew> { true }?.updateButtonState(event)
+    }
+
+    override fun setShowMyScheduleButton(canShow: Boolean) {
+        mBinding.toolbar.apply {
+            isVisible = canShow
+            mBinding.btnGoToMyTimeTable.setOnClickListener {
+                showMyScheduleEvents()
+            }
+        }
     }
 
 
@@ -387,14 +409,61 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
         }
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mBinding.appBarLayout.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
+    private fun initCollapseLabel() {
+        mBinding.appBarLayout.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
+                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+            })
+    }
+
+
+    private fun updateViews(offset: Float) {
+
+        when {
+            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+        }.apply {
+            when {
+                cashCollapseState != null && cashCollapseState != this -> {
+                    when (first) {
+                        TO_EXPANDED -> {
+                            IS_EXPANDED = true
+                            mBinding.apply {
+                                tvLabelLarge.apply {
+                                    visibility = View.VISIBLE
+                                    alpha = 0F
+                                    animate().setDuration(500).alpha(1.0f)
+                                }
+                            }
+                        }
+                        TO_COLLAPSED -> {
+                            IS_EXPANDED = false
+                            mBinding.apply {
+                                tvLabelLarge.apply {
+                                    alpha = 1F
+                                    animate().setDuration(500).alpha(0.0f)
+                                    visibility = View.GONE
+                                }
+                            }
+
+                        }
+                    }
+                    cashCollapseState = Pair(first, SWITCHED)
+                }
+                else -> {
+                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
+                }
             }
         }
+    }
+
+    companion object {
+        const val SWITCH_BOUND = 0.3f
+        const val TO_EXPANDED = 0
+        const val TO_COLLAPSED = 1
+        const val WAIT_FOR_SWITCH = 0
+        const val SWITCHED = 1
+        private var cashCollapseState: Pair<Int, Int>? = null
     }
 
 

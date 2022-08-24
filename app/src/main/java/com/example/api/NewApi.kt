@@ -32,7 +32,11 @@ interface NewApi {
     fun registerEmailResend(@Path("id") id: Int, @Query("email") email: String): Completable
 
     @GET("v1/user/{id}/phone/confirm/send")
-    fun registerPhoneResend(@Path("id") id: Int, @Query("type") type: String, @Query("phone") email: String): Completable
+    fun registerPhoneResend(
+        @Path("id") id: Int,
+        @Query("type") type: String,
+        @Query("phone") email: String
+    ): Completable
 
     @POST("v1/user/{id}/phone/confirm")
     fun confirmPhone(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<NewAuthResponse>
@@ -54,7 +58,10 @@ interface NewApi {
     fun getAllUsersSessions(): Maybe<UserSessions>
 
     @GET("v1/user/get-device-sessions")
-    fun getAllUsersSessionsFromCurrentDevice(@Query("deviceId") deviceId: String): Maybe<UserSessions>
+    fun getAllUsersSessionsFromCurrentDevice(
+        @Query("deviceId") deviceId: String,
+        @Query("binds") binds: String
+    ): Maybe<UserSessions>
 
     @PATCH("v1/user/kill-sessions")
     fun killAllUsersOtherSessions(): Completable
@@ -91,19 +98,28 @@ interface NewApi {
 
     @Multipart
     @PATCH("v1/user-recommendation-file/{id}")
-    fun changeRecommendedFile(@Path("id") fileId : Int, @Part body: List<MultipartBody.Part?>): Single<ImageModel>
+    fun changeRecommendedFile(
+        @Path("id") fileId: Int,
+        @Part body: List<MultipartBody.Part?>
+    ): Single<ImageModel>
 
     @DELETE("v1/user-recommendation-file/{id}")
-    fun deleteRecommendedFile(@Path("id") fileId : Int): Completable
+    fun deleteRecommendedFile(@Path("id") fileId: Int): Completable
 
     @GET("v1/user/{id}/password/check")
-    fun checkIfPasswordValid(@Path("id") id : Int, @Query("password") password: String): Completable
+    fun checkIfPasswordValid(@Path("id") id: Int, @Query("password") password: String): Completable
 
     @PATCH("v1/user-work-experience/user/{id}")
-    fun updateWorkExperience(@Path("id") id : Int, @Body body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
+    fun updateWorkExperience(
+        @Path("id") id: Int,
+        @Body body: WorkExperienceServerModel
+    ): Single<WorkExperienceServerModel>
 
     @GET("v1/interest")
-    fun getInterestsList(@Query("limit") limit: Int, @Query("id") ids: List<Int>?): Maybe<InterestsModel>
+    fun getInterestsList(
+        @Query("limit") limit: Int,
+        @Query("id") ids: List<Int>?
+    ): Maybe<InterestsModel>
 
     @GET("v1/education-level")
     fun getEducationLevel(): Single<EducationLevelModel>
@@ -115,25 +131,35 @@ interface NewApi {
     fun getAcademicDegrees(): Single<EducationLevelModel>
 
     @PATCH("v1/user-education/user/{id}")
-    fun updateUserEducation(@Path("id") id : Int, @Body body: EducationBodyModel): Single<EducationBodyModel>
+    fun updateUserEducation(
+        @Path("id") id: Int,
+        @Body body: EducationBodyModel
+    ): Single<EducationBodyModel>
 
     @PATCH("v1/user-academic-degree/user/{id}")
-    fun updateUserAcademicDegree(@Path("id") id : Int, @Body body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
+    fun updateUserAcademicDegree(
+        @Path("id") id: Int,
+        @Body body: AcademicDegreeBodyModel
+    ): Single<AcademicDegreeBodyModel>
 
     //+
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
     //+
+    @GET("v1/event/sorted")
+    fun getSortedEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+
+    //+
     @GET("v1/user-calendar/events")
     fun getUserCalendarEvents(@Query("binds") binds: String): Maybe<ApiNewResponse<List<EventNew>>>
 
     //+
-    @GET ("v1/event/event-list")
+    @GET("v1/event/event-list")
     fun getOrganizationEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
     //+
-    @GET ("v1/event/event-list")
+    @GET("v1/event/event-list")
     fun getOrganizationEventsListWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
 
     @GET("v1/event")
@@ -145,7 +171,10 @@ interface NewApi {
 
     //+
     @GET("v1/organization/{id}")
-    fun getOrganizationDetails(@Path("id") organizationId : String, @Query("binds") binds: String?): Single<OrganizationNew>
+    fun getOrganizationDetails(
+        @Path("id") organizationId: String,
+        @Query("binds") binds: String?
+    ): Single<OrganizationNew>
 
     //+
     @GET("v1/event-format")
@@ -153,39 +182,47 @@ interface NewApi {
 
     //+
     @GET("v1/user/{id}/profile-state")
-    fun checkUserProfile(@Path("id") organizationId : String): Maybe<UserProfileFieldsModel>
+    fun checkUserProfile(@Path("id") organizationId: String): Maybe<UserProfileFieldsModel>
 
     @GET("v1/user/{id}/profile-state")
-    fun checkUserProfileSingle(@Path("id") organizationId : String): Single<UserProfileFieldsModel>
+    fun checkUserProfileSingle(@Path("id") organizationId: String): Single<UserProfileFieldsModel>
 
     //+
     @GET("v1/event/{id}")
-    fun getEventDetails(@Path("id") eventId : String, @Query("binds") binds: String): Maybe<EventNew>
+    fun getEventDetails(@Path("id") eventId: String, @Query("binds") binds: String): Maybe<EventNew>
 
     //+
     @GET("v1/event-member/{id}")
-    fun getEventMember(@Path("id") memberId : String, @Query("binds") binds: String): Maybe<MemberModel>
+    fun getEventMember(
+        @Path("id") memberId: String,
+        @Query("binds") binds: String
+    ): Maybe<MemberModel>
 
     //+
     @GET("v1/event/{id}")
-    fun getEventDetailsNew(@Path("id") eventId : String, @Query("binds") binds: String): Single<EventNew>
+    fun getEventDetailsNew(
+        @Path("id") eventId: String,
+        @Query("binds") binds: String
+    ): Single<EventNew>
 
     //+
     @POST("v1/event-subscriptions")
-    fun createEventSubscription(@Body body: EventSubscriptionRequest) : Completable
+    fun createEventSubscription(@Body body: EventSubscriptionRequest): Completable
 
     @DELETE("v1/event-subscriptions/{id}")
-    fun deleteEventSubscription(@Path("id") eventId : Int) : Completable
+    fun deleteEventSubscription(@Path("id") eventId: Int): Completable
 
     //+
     @FormUrlEncoded
     @POST("v1/event-mailing")
-    fun mailToEvent(@Field("message") message: String, @Field("event") event: String,
-                    @Field("isPush") isPush: Boolean, @Field("isInApp") isInApp: Boolean): Completable
+    fun mailToEvent(
+        @Field("message") message: String, @Field("event") event: String,
+        @Field("isPush") isPush: Boolean, @Field("isInApp") isInApp: Boolean
+    ): Completable
 
     //+
     @GET("v1/event-page/{id}")
-    fun getPageDetails(@Path("id") pageId : String): Single<PageModel>
+    fun getPageDetails(@Path("id") pageId: String): Single<PageModel>
 
     //+
     @GET("v1/event-member")
@@ -193,7 +230,10 @@ interface NewApi {
 
     //+
     @GET("v1/event-partner/{id}")
-    fun getPartnerDetails(@Path("id") partnerId : String, @Query("binds") binds: String): Single<PartnerModel>
+    fun getPartnerDetails(
+        @Path("id") partnerId: String,
+        @Query("binds") binds: String
+    ): Single<PartnerModel>
 
     //+
     @POST("v1/user-favorites")
@@ -201,10 +241,13 @@ interface NewApi {
 
     //+
     @DELETE("v1/user-favorites/{id}")
-    fun deleteFromFavorite(@Path("id") id : String): Completable
+    fun deleteFromFavorite(@Path("id") id: String): Completable
 
     @GET("v1/address/search")
-    fun searchAddress(@Query("query") query: String?, @Query("limit") limit: Int): Single<SearchAddressModel>
+    fun searchAddress(
+        @Query("query") query: String?,
+        @Query("limit") limit: Int
+    ): Single<SearchAddressModel>
 
     //+
     @GET("v1/user-notification")
@@ -220,7 +263,7 @@ interface NewApi {
     fun recoverPassword(@Body body: RecoverPasswordBody): Single<NewAuthResponse>
 
     @GET("v1/user/{id}/password/check")
-    fun checkPassword(@Path("id") id : Int, @Query("password") password: String): Completable
+    fun checkPassword(@Path("id") id: Int, @Query("password") password: String): Completable
 
     @GET("v1/user-favorites")
     fun getFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<FavoriteModel>>>
@@ -241,10 +284,10 @@ interface NewApi {
     fun getUsers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UserDetail>?>>
 
     @PATCH("v1/user/{id}/unblock")
-    fun unblockUser(@Path("id") id : Int): Completable
+    fun unblockUser(@Path("id") id: Int): Completable
 
     @PATCH("v1/user/{id}/block")
-    fun blockUser(@Path("id") id : Int): Completable
+    fun blockUser(@Path("id") id: Int): Completable
 
     @GET("v1/event-form")
     fun getEventForm(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel>>>
@@ -256,10 +299,10 @@ interface NewApi {
     fun eventRegister(@Body body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
 
     @POST("v1/event-user-registration/{id}/register")
-    fun registerToEvent(@Path("id") id : Int, @Body body: RegisterToEventBody): Completable
+    fun registerToEvent(@Path("id") id: Int, @Body body: RegisterToEventBody): Completable
 
     @PATCH("v1/event-user-registration/{id}/cancel")
-    fun cancelRegisterToEvent(@Path("id") id : Int): Completable
+    fun cancelRegisterToEvent(@Path("id") id: Int): Completable
 
     @POST("v1/user-calendar")
     fun addEventToCalendar(@Body body: EventCalendarBody): Completable
@@ -268,23 +311,37 @@ interface NewApi {
     fun addEventToCalendarWithResult(@Body body: EventCalendarBody): Single<EventCalendarItem>
 
     @DELETE("v1/user-calendar/{user}/all")
-    fun deleteAllCalendarEvents(@Path("user") id : Int, @Query("entityType") entityType: String): Completable
+    fun deleteAllCalendarEvents(
+        @Path("user") id: Int,
+        @Query("entityType") entityType: String
+    ): Completable
 
     @DELETE("v1/user-calendar/{id}")
     fun deleteCalendarEvent(@Path("id") id: String): Completable
 
     @GET("v1/user-calendar")
-    fun getUserCalendarEvent(@Query("user") userId: Int, @Query("entityType") entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>>
+    fun getUserCalendarEvent(
+        @Query("user") userId: Int,
+        @Query("entityType") entityType: String
+    ): Maybe<ApiNewResponse<List<EventCalendarItem>>>
 
     @GET("v1/event-activity")
-    fun getEventActivities(@Query("event") eventId: Int, @Query("binds") binds: String,
-                           @Query("sortField") sortField: String?, @Query("sortType") sortType: String?): Maybe<ApiNewResponse<List<EventActivityModel>>>
+    fun getEventActivities(
+        @Query("event") eventId: Int, @Query("binds") binds: String,
+        @Query("sortField") sortField: String?, @Query("sortType") sortType: String?
+    ): Maybe<ApiNewResponse<List<EventActivityModel>>>
 
     @GET("v1/event-activity/{id}")
-    fun getEventActivity(@Path("id") activityId: String, @Query("binds") binds: String): Single<EventActivityModel>
+    fun getEventActivity(
+        @Path("id") activityId: String,
+        @Query("binds") binds: String
+    ): Single<EventActivityModel>
 
     @GET("v1/user-notification/{id}")
-    fun getNotificationDetail(@Path("id") notificationId: String, @Query("loadModel") loadModel: Boolean): Single<NotificationModel>
+    fun getNotificationDetail(
+        @Path("id") notificationId: String,
+        @Query("loadModel") loadModel: Boolean
+    ): Single<NotificationModel>
 
     @PATCH("v1/user-notification/{id}/acknowledge")
     fun markAsRead(@Path("id") notificationId: String): Completable

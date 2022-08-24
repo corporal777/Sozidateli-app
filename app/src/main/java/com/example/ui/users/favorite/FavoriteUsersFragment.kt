@@ -56,7 +56,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
                         it.id,
-                        it.fullName,
+                        it.nameLastName,
                         it.address?.city,
                         it.image?.uri,
                         { presenter.onUserClick(it) },
@@ -82,5 +82,5 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
-    override fun layout() = R.layout.fragment_event_speakers
+    override fun layout() = R.layout.layout_list
 }

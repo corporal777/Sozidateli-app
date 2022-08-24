@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -75,14 +76,24 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                         }
                     }
             }
+
+            ivInfoName.setOnClickListener {
+                showDisabledMainInputInfo(requireContext())
+            }
+            ivInfoLastName.setOnClickListener {
+                showDisabledMainInputInfo(requireContext())
+            }
+            ivInfoMiddleName.setOnClickListener {
+                showDisabledMainInputInfo(requireContext())
+            }
             tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
 
             btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
 
             ivPrivacyProfile.setOnClickListener {
-                if (mUser.state?.isHidden == true){
+                if (mUser.state?.isHidden.toBoolean()) {
                     presenter.onChangePrivacyConfirm(false)
-                }else {
+                } else {
                     presenter.onChangePrivacyConfirm(true)
                 }
 
@@ -90,16 +101,16 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
             ivBlockProject.setOnClickListener {
                 showBlockingInfoDialog(
-                    mUser.blockedNotifications?.projects?:false,
+                    mUser.blockedNotifications?.projects ?: false,
                     getString(R.string.block_notification_project_title),
                     getString(R.string.block_notification_project_message)
-                ){
+                ) {
                     presenter.onBlockProjectNotificationsClick(it)
                 }
             }
             ivBlockEvent.setOnClickListener {
                 showBlockingInfoDialog(
-                    mUser.blockedNotifications?.event?:false,
+                    mUser.blockedNotifications?.event ?: false,
                     getString(R.string.block_notification_event_title),
                     getString(R.string.block_notification_event_message)
                 ) { state ->
@@ -108,7 +119,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             }
             ivBlockOrg.setOnClickListener {
                 showBlockingInfoDialog(
-                    mUser.blockedNotifications?.organizations?:false,
+                    mUser.blockedNotifications?.organizations ?: false,
                     getString(R.string.block_notification_org_title),
                     getString(R.string.block_notification_org_message)
                 ) { state ->
@@ -165,13 +176,33 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
         user ?: return
         mUser = user
         mBinding.apply {
-//            tilSurname.initNameInput(user.lastName)
-//            tilName.initNameInput(user.name)
-//            tilMiddleName.initNameInput(user.getMiddleName())
-//            scNoMiddleName.apply {
-//                isChecked = user.middleName?.absent ?: false
-//                isEnabled = false
+            tvUserName.text = user.name
+            tvUserLastName.text = user.lastName
+//            clMiddleName.apply {
+//                isVisible != user.getMiddleName().isNullOrEmpty()
 //            }
+            tvUserMiddleName.text = user.getMiddleName()
+            //tilSurname.initNameInput(user.lastName)
+            //tilName.initNameInput(user.name)
+            //tilMiddleName.initNameInput(user.getMiddleName())
+            //tvPhoneMobile.isVisible = phone != null
+            //tvPhoneMobileTitle.isVisible = phone != null
+            //btnPhoneEdit.isVisible = phone != null
+            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
+
+            //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
+            //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
+            //if (user.blockedNotifications?.organizations == true){
+            //    ivBlockOrg.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.main_brown_color_new)
+            //}else {
+            //    ivBlockOrg.imageTintList = null
+            //}
+
+            //scBlockNoteProjects.isChecked = user.blockedNotifications?.projects ?: false
+            ivNoMiddleName.apply {
+                setImage(user.middleName?.absent ?: false)
+                isEnabled = false
+            }
 
             isConfirmed = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed == true
 
@@ -179,24 +210,12 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
                     requireContext()
                 )
-            //tvPhoneMobile.isVisible = phone != null
-            //tvPhoneMobileTitle.isVisible = phone != null
-            //btnPhoneEdit.isVisible = phone != null
+
             tvPhoneMobile.text = phone
 
             tvEmail.text = user.email?.onConfirmation ?: user.email?.value
-            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
 
-            //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
-            //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
-//            if (user.blockedNotifications?.organizations == true){
-//                ivBlockOrg.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.main_brown_color_new)
-//            }else {
-//                ivBlockOrg.imageTintList = null
-//            }
-
-            //scBlockNoteProjects.isChecked = user.blockedNotifications?.projects ?: false
-            ivPrivacyProfile.setImage(user.state?.isHidden ?: false)
+            ivPrivacyProfile.setImage(user.state?.isHidden.toBoolean())
             ivBlockEvent.setImage(user.blockedNotifications?.event ?: false)
             ivBlockProject.setImage(user.blockedNotifications?.projects ?: false)
             ivBlockOrg.setImage(user.blockedNotifications?.organizations ?: false)

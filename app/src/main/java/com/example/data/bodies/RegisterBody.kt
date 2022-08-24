@@ -25,7 +25,9 @@ data class RegisterBody(
         val interests: List<Int>? = null,
         val notes: String? = null,
         @SerializedName("educationLevel")
-        val educationLevel: Int? = null
+        val educationLevel: Int? = null,
+        val deviceId : String,
+        val deviceModel : String,
 ) {
         fun toMap(): Map<String, Any> {
                 val res: MutableMap<String, Any> = mutableMapOf()

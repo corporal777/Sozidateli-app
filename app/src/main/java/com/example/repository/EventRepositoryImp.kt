@@ -267,6 +267,19 @@ class EventRepositoryImp
                 PaginationResponse(it.totalCount, it.data ?: arrayListOf())
             }
 
+    override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
+        newApi.getSortedEventsList(map)
+            .map {
+                val eventFormats = appData.getEventFormats()
+                if (!eventFormats.isNullOrEmpty()) {
+                    it.data?.forEach { ev ->
+                        ev?.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                    }
+                }
+                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
+            }
+
     override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
         return newApi.getOrganizationEventsList(map)
             .map {
@@ -385,7 +398,7 @@ class EventRepositoryImp
             }
 
     override fun getUserCalendarEvents(): Maybe<List<EventNew>?> =
-        newApi.getUserCalendarEvents("activity.userCalendar,activity.auditorium").map {
+        newApi.getUserCalendarEvents("activity.userCalendar,activity.auditorium,activity.member").map {
             it.data
         }
 

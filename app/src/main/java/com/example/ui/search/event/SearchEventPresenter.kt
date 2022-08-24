@@ -51,6 +51,7 @@ class SearchEventPresenter
             put(EventNew.EVENT_OFFSET, offset)
             put(EventNew.EVENT_SORT_TYPE, "desc")
             put(EventNew.EVENT_STATUS, "registration,running,registrationFinished,approved")
+            put(EventNew.EVENT_PUBLIC, "true")
             put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")

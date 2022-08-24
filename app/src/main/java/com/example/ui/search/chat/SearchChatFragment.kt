@@ -119,9 +119,9 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
                     )
                 }
             }
-//            ivBack.setOnClickListener {
-//                findNavController().navigateUp()
-//            }
+            ivBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
 

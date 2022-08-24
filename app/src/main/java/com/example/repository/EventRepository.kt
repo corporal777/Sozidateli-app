@@ -52,6 +52,7 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
     fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>

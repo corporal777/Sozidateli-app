@@ -19,34 +19,31 @@ class AccountItem(
     var canShow: Boolean,
     val session: UserSessionModel,
     val currentAccountId: String,
-    val user: UserDetail,
-    val onMenuClick: (user: UserDetail) -> Unit,
-    val onAccountClick: (user: UserDetail) -> Unit
+    val onMenuClick: (session: UserSessionModel) -> Unit,
+    val onAccountClick: (session: UserSessionModel) -> Unit
 ) : BindableItem<ItemAccountChangeBinding>(session.sessionId.toLong()) {
 
-    val isCurrentUser = currentAccountId == user.id.toString()
+    val isCurrentUser = currentAccountId == session.binds.user.id.toString()
     override fun bind(viewBinding: ItemAccountChangeBinding, position: Int) {
         viewBinding.apply {
-            ivAvatar.setCircleImage(user.image.uri, R.drawable.avatar_placeholder)
-            tvName.text = user.nameLastName
-            if (user.email != null && !user.email?.value.isNullOrEmpty()) {
-                tvEmail.text = user.email?.value
+            ivAvatar.setCircleImage(session.binds.user.image.uri, R.drawable.avatar_placeholder)
+            tvName.text = session.binds.user.nameLastName
+            if (session.binds.user.email != null && !session.binds.user.email?.value.isNullOrEmpty()) {
+                tvEmail.text = session.binds.user.email?.value
             } else {
-                tvEmail.text = user.phone?.get(0)?.value
+                tvEmail.text = session.binds.user.phone?.get(0)?.value
             }
 
             if (isCurrentUser && session.isLogged) {
-                if (session.isLogged){
-                    cardAccountStatus.isVisible = true
-                }
+                cardAccountStatus.isVisible = true
             }
 
             decorMenuButton(canShow, ivMenu)
             ivMenu.setOnClickListener {
-                onMenuClick(user)
+                onMenuClick(session)
             }
             clAccount.setOnClickListener {
-                onAccountClick.invoke(user)
+                onAccountClick.invoke(session)
             }
         }
     }

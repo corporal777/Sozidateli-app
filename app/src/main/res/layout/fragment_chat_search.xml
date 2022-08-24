@@ -46,16 +46,16 @@
 
 
                     <TextView
+                        fontPath="fonts/sf_pro_text_semibold.ttf"
+                        android:letterSpacing="-0.02"
+                        android:textSize="17sp"
                         android:id="@+id/tv_label_small"
-                        fontPath="fonts/sf_pro_display_bold.ttf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:gravity="center"
-                        android:letterSpacing="0.01"
                         android:text="@string/contact_search_title"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingPrefix" />

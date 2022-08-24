@@ -16,8 +16,10 @@ import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class SubEventPresenter @Inject constructor(
@@ -30,10 +32,12 @@ class SubEventPresenter @Inject constructor(
     lateinit var eventId: String
 
     private var firstLoading = true
+    private var mDy = 0
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         getSubEventData()
     }
 
@@ -69,6 +73,16 @@ class SubEventPresenter @Inject constructor(
                     viewState.setSpeakers(speakersList)
                 })
 
+    }
+
+    override fun attachView(view: SubEventContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(abs(mDy / 10f))
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun onSpeakerClick(speaker: MemberModel) {
@@ -171,11 +185,14 @@ class SubEventPresenter @Inject constructor(
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
-            //.withLoadingDialog(viewState)
-            .subscribeSimple {
-                viewState.updateSubEvent(subEvent)
-            }
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onComplete = {
+                    viewState.updateSubEvent(subEvent)
+                })
     }
 
     private fun catchSubEventError(t: Throwable) {

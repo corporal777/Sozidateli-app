@@ -9,17 +9,21 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
+import com.example.databinding.FragmentInviteListBinding
 import com.example.extensions.dp
+import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
-import kotlinx.android.synthetic.main.layout_list.*
+import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class InviteListFragment : BaseFragment(), InviteListContract.View {
+class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteListContract.View {
 
     @InjectPresenter
     lateinit var presenter: InviteListPresenter
@@ -30,8 +34,11 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
     @ProvidePresenter
     fun providePresenter(): InviteListPresenter = presenterProvider.get()
 
+    private val invitesSection by lazy { Section() }
+
     private val adapter by lazy {
-        PaginationListGroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>().apply {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            add(invitesSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     presenter.onItemTake(position)
@@ -42,34 +49,41 @@ class InviteListFragment : BaseFragment(), InviteListContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = this@InviteListFragment.adapter
-            updatePadding(top = 24.dp)
-        }
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = this@InviteListFragment.adapter
+                //updatePadding(top = 24.dp)
+            }
 
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        }
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
-        if (chats.isEmpty()) adapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
-        else adapter.update(chats.mapIndexed { index, chat ->
-            if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-            else {
-                val chatsCount = chats.size
-                UserChatItem(
-                        chat,
-                        { presenter.onChatClick(it) },
-                        withDivider = index != chatsCount - 1
-                )
-            }
-        })
+        if (chats.isEmpty()) invitesSection.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message))))
+        else invitesSection.apply {
+            update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list_chat_requests)))
+                .plus(
+                    chats.mapIndexed { index, chat ->
+                        if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+                        else {
+                            val chatsCount = chats.size
+                            UserChatItem(
+                                chat,
+                                { presenter.onChatClick(it) },
+                                withDivider = index != chatsCount - 1
+                            )
+                        }
+                    }
+                ))
+        }
 
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun openChat(chatId: Int, userName: String) {
         findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
     }
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_invite_list
 }

@@ -28,28 +28,17 @@ class SubEventSpeakerItem(
                 setImage(avatar, error = R.drawable.empty_speaker_avatar)
             }
             tvSpeakersName.text = name
-//            tvSpeakersLocation.apply {
-//                if (!location.isNullOrEmpty()) {
-//                    isVisible = true
-//                    tvSpeakersPosition.maxLines = 6
-//                } else isVisible = false
-//                text = location
-//            }
-//            val fullDescription = description
-//            if (!fullDescription.isNullOrEmpty()) {
-//                if (fullDescription.length > 140) {
-//                    val shortDescription = StringBuilder(
-//                        fullDescription.substring(0, 139).replace("\n", " ")
-//                    ).append("...")
-//                        .toString()
-//                    tvSpeakersPosition.text = shortDescription
-//
-//                } else {
-//                    tvSpeakersPosition.text = fullDescription
-//                }
-//            }
-
-            tvSpeakersPosition.text = location
+            tvSpeakersLocation.apply {
+                if (!location.isNullOrEmpty()) {
+                    isVisible = true
+                    text = location
+                    tvSpeakersPosition.maxLines = 6
+                } else {
+                    isVisible = false
+                    tvSpeakersPosition.maxLines = 7
+                }
+            }
+            tvSpeakersPosition.text = description
 
             root.setOnClickListener {
                 onSpeakerClick.invoke()

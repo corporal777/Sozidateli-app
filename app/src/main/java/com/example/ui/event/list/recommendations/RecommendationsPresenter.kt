@@ -10,6 +10,7 @@ import com.example.data.models.EventNew.Companion.EVENT_BINDS
 import com.example.data.models.EventNew.Companion.EVENT_HIDDEN
 import com.example.data.models.EventNew.Companion.EVENT_LIMIT
 import com.example.data.models.EventNew.Companion.EVENT_OFFSET
+import com.example.data.models.EventNew.Companion.EVENT_PUBLIC
 import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.models.EventNewModel
@@ -109,8 +110,10 @@ class RecommendationsPresenter
         Log.e("EventsList", "limit: $limit ,offset: $offset")
         return eventRepository.getEventsList(mapOf(EVENT_LIMIT to limit, EVENT_OFFSET to offset, /*EVENT_SORT_TYPE to "desc",*/
             //EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"/*,
-            EVENT_BINDS to "organization,user-registration,current-user-registration,eventRegistrationState"/*,
-                EVENT_STATUS to "approved,registration,running"*/, EVENT_HIDDEN to false, EVENT_STATUS to "registration,running,registrationFinished,approved"))
+            EVENT_BINDS to "organization,user-registration,current-user-registration,eventRegistrationState",
+            EVENT_PUBLIC to "true",
+            /*,EVENT_STATUS to "approved,registration,running"*/
+            EVENT_HIDDEN to false, EVENT_STATUS to "approved,registration,running,registrationFinished"))
     }
 
 
@@ -125,7 +128,6 @@ class RecommendationsPresenter
             .andThen(eventRepository.getEventDetails(event))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 paginationList.invalidate()
             }

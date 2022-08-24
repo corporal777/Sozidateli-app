@@ -54,7 +54,7 @@ class CalendarBottomSheet(
             addDecorator(EventDecorator(getColor(context, R.color.main_brown_color_new), eventDays))
             addDecorator(SelectedDayDecorator(date))
             setOnDateChangedListener { widget, date, selected ->
-                Toast.makeText(context, date.date.toString(), Toast.LENGTH_SHORT).show()
+
                 val cal = Calendar.getInstance()
                 cal.set(Calendar.YEAR, date.year)
                 cal.set(Calendar.MONTH, date.month - 1)

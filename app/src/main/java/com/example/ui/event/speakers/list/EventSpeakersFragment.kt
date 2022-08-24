@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentEventSpeakersBinding
+
 import com.example.holders.PlaceholderItem
 import com.example.holders.SpeakerGroup
 import com.example.holders.redesign.ScreenHeaderItem
@@ -33,7 +34,6 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
     @Inject
     lateinit var presenterProvider: Provider<EventSpeakersPresenter>
 
-    private var mDy = 0
 
     private val headerSection by lazy {
         Section().apply {
@@ -100,17 +100,13 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
         )
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//        if (mBinding.speakersList != null) {
-//            mDy += mBinding.speakersList.scrollY
-//        }
-//    }
-
     private fun updateViews(offset: Float) {
         mBinding.apply {
             when {
-                offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+                offset < SWITCH_BOUND -> Pair(
+                    TO_EXPANDED,
+                    cashCollapseState?.second ?: WAIT_FOR_SWITCH
+                )
                 else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
             }.apply {
                 when {

@@ -1,38 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeToRefresh"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <com.example.ui.views.CustomSwipeRefreshLayout
+            android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:descendantFocusability="beforeDescendants"
-            android:paddingTop="40dp"
-            android:paddingBottom="60dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_chat" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabNewChat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_chat"
-        android:layout_marginBottom="50dp"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        app:layout_anchor="@id/recyclerView"
-        app:layout_anchorGravity="end|bottom|right"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:tint="@color/colorPrimary"
-        app:useCompatPadding="true" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chat_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:descendantFocusability="beforeDescendants"
+                android:paddingTop="40dp"
+                android:paddingBottom="60dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_chat" />
+        </com.example.ui.views.CustomSwipeRefreshLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/ic_chat"
+            app:backgroundTint="@color/colorAccent"
+            app:fabSize="normal"
+            app:layout_anchor="@id/chat_list"
+            app:layout_anchorGravity="end|bottom|right"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+            app:tint="@color/colorPrimary"
+            app:useCompatPadding="true" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -90,6 +90,12 @@ interface RegisterEmailNewContract {
                                 password: String,
                                 middleName: String?,
                                 phone: String?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAlertLoadingDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideAlertLoadingDialog()
     }
 
     interface Presenter : BaseAuthContract.Presenter {

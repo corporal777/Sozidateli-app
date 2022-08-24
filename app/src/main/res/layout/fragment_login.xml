@@ -52,7 +52,7 @@
                 android:gravity="center_horizontal"
                 android:letterSpacing="-0.02"
                 android:lineSpacingExtra="2dp"
-                android:text="@string/auth_action_login"
+                android:text="@string/auth_label_login"
                 android:textColor="@color/auth_title_text"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/llInput"
@@ -151,19 +151,15 @@
             <!--            app:layout_goneMarginBottom="24dp" />-->
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnBrownStyle"
                 android:id="@+id/ibLogin"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/custom_btn_brown_selectable"
-                android:letterSpacing="-0.02"
                 android:minHeight="@dimen/auth_button_min_height"
-                android:text="@string/auth_action_login"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:text="@string/auth_label_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword" />

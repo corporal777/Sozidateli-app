@@ -128,7 +128,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is StoriesFragment) {
                     doEdgeWindow()
                 }
-
+                if (f is ChatFragment){
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
             }
 
             override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
@@ -139,6 +141,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is StoriesFragment) {
                     cancelWindowTransparency()
                     presenter.onStoriesComplete()
+                }
+                if (f is ChatFragment){
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 }
             }
 

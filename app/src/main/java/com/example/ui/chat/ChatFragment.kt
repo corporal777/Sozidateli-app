@@ -17,6 +17,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.updatePadding
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -51,6 +52,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
+import onFocusChanged
 import setCircleImage
 import setOnClickListener
 import java.lang.StringBuilder
@@ -132,13 +134,8 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                 addOnScrollListener(PaginationScrollListener(10,
                     {
                         if (adapter?.itemCount != 0) {
-                            val id = if (chatAdapter.getItem(
-                                    (adapter?.itemCount ?: 1) - 2
-                                ) is ChatUnreadLabelItem
-                            ) {
-                                (chatAdapter.getItem(
-                                    (adapter?.itemCount ?: 1) - 3
-                                ) as ChatMessageItem).message.message._id.toInt()
+                            val id = if (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) is ChatUnreadLabelItem) {
+                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 3) as ChatMessageItem).message.message._id.toInt()
                             } else {
                                 (chatAdapter.getItem(
                                     (adapter?.itemCount ?: 1) - 2
@@ -163,11 +160,13 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                 doOnNextLayout { startPostponedEnterTransition() }
             }
 
-            etMessage.addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable {
-                presenter.onMessageInput(
-                    it.toString()
-                )
-            })
+            etMessage.apply {
+                addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable {
+                    presenter.onMessageInput(
+                        it.toString()
+                    )
+                })
+            }
         }
 
         mBinding.tvUserName.setOnClickListener {

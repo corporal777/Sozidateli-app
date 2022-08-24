@@ -31,8 +31,8 @@ interface MyScheduleEventsContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSearchContent()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContent(data: List<MyScheduleEventsData?>)
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun setContent(data: List<MyScheduleEventsData>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(eventId: String)
@@ -62,7 +62,13 @@ interface MyScheduleEventsContract {
         fun showErrorMessage(eventId: String, message: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateCalendarDays()
+        fun showLoadingAlertDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideLoadingAlertDialog()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun showEmptyListPlaceholder()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -70,11 +76,8 @@ interface MyScheduleEventsContract {
         fun onSearchTextSubmit(text: String)
         fun onDaySelected(day: EventScheduleCalendarDay)
         fun onShowEventClick(eventId: String)
-        fun findNearestEventDay(day: EventScheduleCalendarDay)
         fun onSubEventClick(eventId: String, subEvent: EventActivityModel)
         fun onAddSubEventToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveSubEventFromScheduleClick(subEvent: EventActivityModel)
-        fun onRemoveCalendarDays(data: Map<String, List<EventActivityModel>>)
-
     }
 }

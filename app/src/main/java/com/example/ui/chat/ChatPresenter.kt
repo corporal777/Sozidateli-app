@@ -3,6 +3,7 @@ package com.example.ui.chat
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Handler
 import android.util.Log
 import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
@@ -11,10 +12,8 @@ import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.isSameDay
-import com.example.extensions.parseToLong
+import com.example.extensions.*
+import com.example.holders.CalendarHorizontalListItem
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
@@ -149,25 +148,35 @@ class ChatPresenter
 
     private var canScroll = 0
     private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
-        messagesSize = it.totalCount?: 0
-        val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.MessageType.IMAGE else Message.MessageType.TEXT,
+        val chatList = arrayListOf<ChatMessage>()
+        var lastUnreadIndex = 0
+        compositeDisposable += Completable.fromAction {
+            messagesSize = it.totalCount?: 0
+            val result = it.data.map { m -> Message(m.id.toString(), if (m.file != null) Message.MessageType.IMAGE else Message.MessageType.TEXT,
                 m.chat.toString(), if (m.file != null) m.file.uri ?: "" else m.message
-                ?: "", m.createdBy.toString(),
+                    ?: "", m.createdBy.toString(),
                 m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0, 0, null,
                 m.acknowledge?.firstOrNull { a -> a.user == appData.getId() }?.state ?: false, null) }
-        allMessages.addAll(result)
-        if (canScroll < 2) {
-            canScroll += 1
-            isMessagesInitialLoad = false
-        }
-        filterByDate()
-        val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
-        val chatMessages = createChatMessages(allMessages.toMutableList())
+            allMessages.addAll(result)
+            if (canScroll < 2) {
+                canScroll += 1
+                isMessagesInitialLoad = false
+            }
+            filterByDate()
+            lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
+            val chatMessages = createChatMessages(allMessages.toMutableList())
                 .addDates()
                 .addUnreadMessagesItem(lastUnreadIndex)
-        viewState.updateMessages(chatMessages)
-        scrollOnChatMessagesUpdate(lastUnreadIndex)
-        isMessagesInitialLoad = true
+            chatList.addAll(chatMessages)
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.updateMessages(chatList)
+                scrollOnChatMessagesUpdate(lastUnreadIndex)
+                isMessagesInitialLoad = true
+            }
+
+
     }
 
     private fun subscribeToChatEvents() {

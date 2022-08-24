@@ -26,6 +26,7 @@ import com.example.ui.views.GetMaxStateDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import kotlinx.android.synthetic.main.fragment_notification.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onScrolled
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
@@ -33,7 +34,8 @@ import javax.inject.Provider
 class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
     NotificationContract.View, SimpleTitleToolbar {
 
-    var isCanceled = false
+    private var isCanceled = false
+    private var isAccepted = false
 
     @InjectPresenter
     lateinit var presenter: NotificationPresenter
@@ -53,16 +55,19 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         true
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setToolbarTitle(getString(R.string.notification_label))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.notification_label))
-        mBinding.nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+        mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
             presenter.changeAppBarElevation(scrollY - oldScrollY)
-        })
+        }
     }
 
     override fun setData(notification: Notification) {
-        Log.e("NOTE", notification.toString())
         mBinding.apply {
             tvDate.apply {
                 val parsedDate = notification.date.parseAndFormat(
@@ -104,72 +109,70 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
             }
         }
 
+        //        //var canAccept = false
+        //var canChangeAccept = false
 
         val titleRes: Int
         var actionTextRes: Int? = null
         var canRate = false
-        var isAccepted = false
-
-
-        //        //var canAccept = false
-        //var canChangeAccept = false
 
         when (notification.type) {
-            Notification.Type.SIMPLE -> {
-                titleRes = R.string.notifications_simple_title
-                mBinding.apply {
-                    btnAccept.isVisible = false
-                    btnCancel.isVisible = false
-                }
-            }
+            Notification.Type.SIMPLE -> titleRes = R.string.notifications_simple_title
             Notification.Type.ACCEPTABLE -> {
                 titleRes = R.string.notifications_acceptable_title
                 when (notification.acceptState) {
                     //when (InviteDetail.getInviteState(invite)) {
                     Notification.AcceptState.DISABLED -> {
-                        tvActionText.isVisible = true
+                        mBinding.tvActionText.isVisible = true
                         actionTextRes = R.string.notifications_state_disabled
-                        mBinding.btnAccept.isVisible = false
-                        mBinding.btnCancel.isVisible = false
                     }
                     Notification.AcceptState.ACCEPTED -> {
-                        btnAccept.enableOrDisableButton(false)
-                        btnCancel.enableOrDisableButton(true)
-                        /*btnAccept.isEnabled = false
-                        btnCancel.isEnabled = true*/
                         isAccepted = true
-
-                        //canChangeAccept = true
-                        //actionTextRes = R.string.notifications_state_accepted
-                        btnAccept.text = getString(R.string.notifications_state_accepted)
+                        mBinding.apply {
+                            btnAccept.apply {
+                                isVisible = true
+                                isEnabled = false
+                                text = getString(R.string.notifications_state_accepted)
+                            }
+                            btnCancel.apply {
+                                isVisible = true
+                                isEnabled = true
+                            }
+                        }
                     }
                     Notification.AcceptState.CANCELED -> {
-                        btnAccept.enableOrDisableButton(true)
-                        btnCancel.enableOrDisableButton(false)
                         isCanceled = true
-                        /*btnAccept.isEnabled = true
-                        btnAccept.setBackgroundResource(R.drawable.background_corners)
-                        btnCancel.isEnabled = false
-                        btnCancel.setBackgroundResource(R.drawable.background_corners_disabled)*/
-                        //canChangeAccept = true
-                        //actionTextRes = R.string.notifications_state_cancelled
-                        btnCancel.text = getString(R.string.notifications_state_cancelled)
-
+                        mBinding.apply {
+                            btnAccept.apply {
+                                isVisible = true
+                                isEnabled = true
+                            }
+                            btnCancel.apply {
+                                isVisible = true
+                                isEnabled = false
+                                text = getString(R.string.notifications_state_cancelled)
+                            }
+                        }
                     }
                     else -> {
-                        tvActionText.isVisible = false
+                        mBinding.apply {
+                            tvActionText.isVisible = false
+                            btnAccept.apply {
+                                isVisible = true
+                                isEnabled = true
+                            }
+                            btnCancel.apply {
+                                isVisible = true
+                                isEnabled = true
+                            }
+                        }
 
-                        btnAccept.enableOrDisableButton(true)
-                        btnCancel.enableOrDisableButton(true)
-                        /*btnAccept.isEnabled = true
-                        btnCancel.isEnabled = true*/
-                        //canAccept = true
                     }
                 }
             }
             Notification.Type.RATE -> {
                 titleRes = R.string.notifications_rate_title
-                canRate = !notification.wasRead
+                mBinding.btnRate.isVisible = !notification.wasRead
             }
         }
 
@@ -202,29 +205,17 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
             text = actionTextRes?.let { getString(it) }
         }
 
-        mBinding.btnRate.apply {
-            isVisible = canRate
-            setOnClickListener { presenter.onNotificationRateClick() }
+        mBinding.btnRate.setOnClickListener { presenter.onNotificationRateClick() }
+
+        mBinding.btnAccept.setOnClickListener {
+            presenter.onNotificationAcceptClick()
         }
 
-        mBinding.btnAccept.apply {
-            setOnClickListener {
-                isAccepted = true
-                presenter.onNotificationAcceptClick()
-            }
-
-//            //isVisible = canAccept
-        }
-
-        mBinding.btnCancel.apply {
-            //isVisible = canAccept
-            setOnClickListener {
-                if (isAccepted)
-                    showCancelInfo()
-                else {
-                    presenter.onNotificationCancelClick()
-                    isCanceled = true
-                }
+        mBinding.btnCancel.setOnClickListener {
+            if (isAccepted)
+                showCancelInfo()
+            else {
+                presenter.onNotificationCancelClick()
             }
         }
 
@@ -232,16 +223,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
             isVisible = canChangeAccept
             setOnClickListener { presenter.onNotificationChangeDecisionClick() }
         }*/
-    }
-
-
-
-    private fun AppCompatButton.enableOrDisableButton(enabled: Boolean) {
-        isEnabled = enabled
-        if (enabled)
-            setBackgroundResource(R.drawable.background_corners)
-        else
-            setBackgroundResource(R.drawable.background_corners_disabled)
     }
 
     private fun showCancelInfo() {
@@ -262,26 +243,36 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
 //            errors
 //        ).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
 
-        mBinding.btnAccept.enableOrDisableButton(true)
+        mBinding.btnAccept.isEnabled = true
         GetMaxStateDialog(requireContext())
             .setSelectCallback { findNavController().navigate(R.id.userStateFragment) }
     }
 
     override fun showSuccessAccepted() {
+        isAccepted = true
         mBinding.apply {
-            btnAccept.enableOrDisableButton(false)
-            btnCancel.enableOrDisableButton(true)
-            btnAccept.text = getString(R.string.notifications_state_accepted)
-            btnCancel.text = getString(R.string.notifications_cancel)
+            btnAccept.apply {
+                text = getString(R.string.notifications_state_accepted)
+                isEnabled = false
+            }
+            btnCancel.apply {
+                isEnabled = true
+                text = getString(R.string.notifications_cancel)
+            }
         }
     }
 
     override fun showSuccessCanceled() {
+        isCanceled = true
         mBinding.apply {
-            btnCancel.enableOrDisableButton(false)
-            btnAccept.enableOrDisableButton(true)
-            btnCancel.text = getString(R.string.notifications_state_cancelled)
-            btnAccept.text = getString(R.string.notifications_accept)
+            btnAccept.apply {
+                text = getString(R.string.notifications_accept)
+                isEnabled = true
+            }
+            btnCancel.apply {
+                text = getString(R.string.notifications_state_cancelled)
+                isEnabled = false
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.read.settings
 
 import android.app.NotificationManager
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
@@ -23,6 +24,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.BehaviorSubject
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import java.lang.Math.abs
@@ -251,8 +253,8 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
     override fun onChangePrivacyConfirm(hidden: Boolean) {
-        updateUser(mapOf(USER_STATE to UserState(isHidden = hidden))) {
-            it.state?.isHidden = hidden
+        updateUser(mapOf(USER_STATE to UserState(isHidden = hidden.toString()))) {
+            it.state?.isHidden = hidden.toString()
         }
     }
 
@@ -320,7 +322,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     private fun updateUser(data: Map<String, Any?>, onComplete: (UserDetail) -> Unit) {
         compositeDisposable += userRepository.updateProfile(appData.getId(), data)
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -328,6 +330,7 @@ class UserProfileSettingsPresenter @Inject constructor(
                 },
                 onSuccess = {
                     user.apply {
+                        Log.e("HIDDEN", it.state?.isHidden.toString())
                         phone = it.phone
                         /*it.user_status?.let { status -> user_status = status }
                         it.user_status_detail?.let { details -> user_status_detail = details }*/

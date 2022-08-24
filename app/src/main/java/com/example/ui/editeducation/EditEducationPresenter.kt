@@ -12,14 +12,15 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import ru.ok.android.sdk.LOG_TAG
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class EditEducationPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val userRepository: UserRepository
+    private val appData: AppData,
+    private val userRepository: UserRepository
 ) : BasePresenter<EditEducationContract.View>(appData), EditEducationContract.Presenter {
 
     private var mDy = 0
@@ -28,16 +29,16 @@ class EditEducationPresenter
         super.onFirstViewAttach()
         viewState.setAppBarElevation(0f)
         compositeDisposable += appData.userNewChangeSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val user = it.value ?: throw RuntimeException("Edit null user")
-                    viewState.apply {
-                        setEducationData(user)
-                    }
-                }, {
-                    it.printStackTrace()
-                    viewState.navigateUp()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val user = it.value ?: throw RuntimeException("Edit null user")
+                viewState.apply {
+                    setEducationData(user)
+                }
+            }, {
+                it.printStackTrace()
+                viewState.navigateUp()
+            })
     }
 
     override fun attachView(view: EditEducationContract.View?) {
@@ -50,20 +51,25 @@ class EditEducationPresenter
         viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
-    override fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?) {
-        educationsList?.forEach {
-            Log.e("EDU", it.toString())
-        }
+    override fun onSaveEducationClick(
+        educationLevel: ToggleIntModel?,
+        educationsList: List<EducationModel>?,
+        degree: List<AcademicDegreeModel>?
+    ) {
 
-        compositeDisposable += userRepository.updateUserEducationScreen(educationLevel, educationsList, degree)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.navigateUp()
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                })
+        compositeDisposable += userRepository.updateUserEducationScreen(
+            educationLevel,
+            educationsList,
+            degree
+        )
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribe({
+                viewState.navigateUp()
+            }, {
+                it.printStackTrace()
+                viewState.showUpdateError(it.message)
+            })
     }
 
     fun getBaseUserState() = appData.hasBaseState

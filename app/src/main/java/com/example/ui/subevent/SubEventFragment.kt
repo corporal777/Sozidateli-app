@@ -20,20 +20,20 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventContract.View {
-
+class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventContract.View,
+    SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: SubEventPresenter
-
-    private var mDy: Int = 0
 
     @Inject
     lateinit var presenterProvider: Provider<SubEventPresenter>
@@ -49,45 +49,31 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
     private val infoSection = Section()
     private val speakersSection by lazy {
         Section().apply {
-            setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)).apply {
-
-            })
+            setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)))
             setHideWhenEmpty(true)
         }
+    }
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            //add(headerSection)
+            add(infoSection)
+            add(speakersSection)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setToolbarTitle(getString(R.string.event))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var mDy = 0
-        val mO = 1.0f
-
         mBinding.apply {
             contentList.apply {
-                adapter = GroupAdapter<GroupieViewHolder>().apply {
-                    //add(headerSection)
-                    add(infoSection)
-                    add(speakersSection)
+                adapter = groupAdapter
+                onScrolled { _, dy ->
+                    presenter.changeAppBarElevation(dy)
                 }
-                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        mDy += dy
-                        val mAlpha = abs(mDy / 100f)
-                        val mAlphaBig = -abs(mDy / 100f)
-                        val mElevation = abs(mDy / 10f)
-                        appBarLayout.apply {
-                            elevation = if (mElevation <= 10f) {
-                                mElevation
-                            } else {
-                                10f
-                            }
-                        }
-                    }
-                })
-            }
-
-            ivBack.setOnClickListener {
-                findNavController().navigateUp()
             }
         }
     }
@@ -124,13 +110,6 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         val idLong = subEvent?.id?.toLong()
         infoSection.findItemBy<SubeventInfoItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//        if (mBinding.contentList!= null) {
-//            mDy += mBinding.contentList.scrollY
-//        }
-//    }
 
     override fun showEventErrorMessageDialog(withResult: Boolean, id: String, message: String) {
         MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {

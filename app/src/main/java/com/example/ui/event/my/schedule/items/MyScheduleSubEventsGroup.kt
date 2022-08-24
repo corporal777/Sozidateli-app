@@ -2,6 +2,8 @@ package com.example.ui.event.my.schedule.items
 
 import android.util.Log
 import com.example.data.models.EventActivityModel
+import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.event.about.redesign.items.EventDetailActivitiesBlock
@@ -56,8 +58,7 @@ class MyScheduleSubEventsGroup(
                                         it,
                                         emptyList(),
                                         onSubEventClickListener,
-                                        true
-                                    )
+                                        true)
                                 )
                             }
                         }
@@ -88,9 +89,23 @@ class MyScheduleSubEventsGroup(
         return data.eventId
     }
 
-    fun getFirstItemDate() : String? {
+    fun getFirstItemDate(): String? {
         return (mHeaderItem.getItem(0) as EventActivityDateItem).date
 
+    }
+
+    fun removeSubEventItem(id: String) {
+        val idLong = id.toLong()
+        val group = mDataItem.findGroupBy<SubEventGroup> { x -> x.isHasEvent(idLong) }
+        if (group != null) {
+            group.removeSubEventItem(id)
+        }
+    }
+    
+
+    fun hasSubEventItem(id: Long) : Boolean {
+        val group = mDataItem.findItemBy<EventActivityItem>{ x -> x.id == id }
+        return group != null
     }
 
     override fun getGroupCount() = 2

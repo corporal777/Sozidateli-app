@@ -38,9 +38,12 @@
     <string name="user_favorites_empty_list_description">Пока Вы не добавили ни одного пользователя. \nДобавьте пользователей в избранное, чтобы иметь быстрый доступ к важным для Вас людям</string>
 
     <string name="event_status_approved">Участие одобрено</string>
+    <string name="event_status_approved_new">Участие подтверждено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
+    <string name="event_status_wait_confirmation_short">На рассмотрении</string>
     <string name="event_status_finished">Мероприятие завершено</string>
     <string name="event_status_decline">Заявка отклонена</string>
+    <string name="event_status_decline_new">Участие не подтверждено</string>
     <string name="event_status_cancelled">Мероприятие отменено</string>
     <string name="event_action_show_event">Перейти в мероприятие</string>
     <string name="event_action_write_to_organisation">Написать организатору</string>
@@ -60,7 +63,6 @@
     <string name="email_or_phone">E-mail или телефон</string>
     <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
-    <string name="auth_action_login">Войти</string>
     <string name="auth_login_with_email">с помощью Вашей электронной почты или телефона</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
@@ -870,7 +872,7 @@
     <string name="how_to_go">Как добраться</string>
     <string name="timetable">Расписание</string>
     <string name="scheme_of_building">Схема комплекса</string>
-    <string name="search_input_activity_hint">Название, описание или спикера</string>
+    <string name="search_input_activity_hint">Название, описание или спикер</string>
     <string name="search_input_event_hint">Название или описание мероприятия</string>
     <string name="search_text_only"> Поиск</string>
     <string name="schedule_tags_title_new">Теги</string>
@@ -894,7 +896,7 @@
     <string name="ip_address_label">IP-адрес</string>
     <string name="geoposition_label">Геопозиция</string>
     <string name="kill_session_label">Завершить сеанс</string>
-    <string name="this_day_doesnt_have_event">По выбранному дню нет событий.</string>
+    <string name="this_day_doesnt_have_event">В этот день нет доступных событий.</string>
     <string name="current_session_label">Текущий сеанс</string>
     <string name="active_sessions_label">Активные сеансы</string>
     <string name="confidence_label">Конфиденциальность</string>
@@ -917,6 +919,7 @@
     <string name="remove_from_list">Удалить из списка</string>
     <string name="enter_to_another_account">Войти в другой аккаунт</string>
     <string name="browser_label">Браузер</string>
+    <string name="no_sub_events_in_schedule">Событий в расписании нет</string>
 
 
     <string-array name="custom_months">

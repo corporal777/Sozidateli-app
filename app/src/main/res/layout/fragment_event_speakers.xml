@@ -17,7 +17,7 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="110dp"
                 app:contentScrim="@color/white"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -46,16 +46,17 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <TextView
-                            android:visibility="invisible"
+                            android:layout_marginTop="5dp"
                             android:id="@+id/tv_label_small"
-                            fontPath="fonts/sf_pro_display_bold.ttf"
+                            fontPath="fonts/sf_pro_text_semibold.ttf"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:letterSpacing="0.01"
+                            android:letterSpacing="-0.02"
                             android:text="@string/speakers"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp"
+                            android:textSize="17sp"
+                            android:visibility="invisible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +81,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                        android:layout_marginBottom="10dp"
                         android:letterSpacing="0.01"
                         android:text="@string/speakers"
                         android:textColor="@android:color/black"
@@ -88,27 +90,28 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingPrefix" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipe_to_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:paddingHorizontal="5dp"
                 android:id="@+id/speakers_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:paddingHorizontal="5dp"
                 android:paddingBottom="30dp"
                 app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.example.ui.views.CustomSwipeRefreshLayout>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -71,6 +71,7 @@ data class EventNew(
         const val EVENT_CATEGORY = "topicCategory"
         const val EVENT_STATUS = "status"
         const val EVENT_HIDDEN = "stateIsHidden"
+        const val EVENT_PUBLIC = "isPublic"
         const val EVENT_CODE = "code"
         const val EVENT_USER_ID = "userRegistration.user"
         const val EVENT_USER_STATUS = "userRegistration.status"
@@ -437,7 +438,8 @@ data class EventActivityBinds(
     var userCalendar: EventCalendarItem? = null,
     @SerializedName("userFavorite")
     var userFavorite: /*List<*/EventUserFavorite/*>*/? = null,
-    var auditorium: EventAuditoriumModel? = null
+    var auditorium: EventAuditoriumModel? = null,
+    val users : List<UserDetail>? = null
 ) : Parcelable
 
 @Parcelize

@@ -35,6 +35,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import onTextChanged
 import java.io.File
+import java.lang.StringBuilder
 import java.util.*
 
 fun String.firstLetterToUppercase(): String {
@@ -207,7 +208,7 @@ fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
     return Color.argb(alpha, red, green, blue)
 }
 
-fun getMonthName(calendar : Calendar): String {
+fun getMonthName(calendar: Calendar): String {
     var month = ""
     val monthNames = arrayOf(
         "Январь",
@@ -225,9 +226,9 @@ fun getMonthName(calendar : Calendar): String {
     )
     val cal = System.currentTimeMillis()
 
-    month = if (getCurrentYear() == calendar.get(Calendar.YEAR)){
+    month = if (getCurrentYear() == calendar.get(Calendar.YEAR)) {
         monthNames[calendar.get(Calendar.MONTH)]
-    }else {
+    } else {
         monthNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
     }
     return month
@@ -284,9 +285,25 @@ fun removeFirstAndLastSpaces(str: String?): String {
     return value?.replace(reg, "") ?: ""
 }
 
-fun removeAllSpaces(str: String?): String {
-    return str?.replace("\\s".toRegex(), "") ?: ""
+fun removeAllDoubleSpaces(str: String): String {
+    val newStr = str.trim().replace("[\\s]+".toRegex(), " ")
+    val sb = StringBuilder(newStr)
+    val currentChar = ' '
+    var counter = 0
+    sb.forEach {
+        if (it == currentChar) counter++
+    }
+    run loop@{
+        sb.forEachIndexed { index, c ->
+            if (currentChar == c && counter > 1) {
+                sb.deleteCharAt(index)
+                return@loop
+            }
+        }
+    }
+    return sb.toString()
 }
+
 
 fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.YEAR)
 fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)

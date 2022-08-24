@@ -7,6 +7,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -30,25 +31,17 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
     @Inject
     lateinit var presenterProvider: Provider<ChatListTabsPresenter>
 
-    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState{
+    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState {
         override fun onScrollUp(value: Int) {
             showView(clTabs)
-            Log.e("VALUE", value.toString())
         }
 
         override fun onScrollDown(value: Int) {
             hideView(clTabs)
         }
 
-        override fun onScrollOffsetValue(value: Int) {
-            val mElevation = abs(value / 10f)
-            app_bar_layout.apply {
-                elevation = if (mElevation <= 10f) {
-                    mElevation
-                } else {
-                    10f
-                }
-            }
+        override fun onScrollOffsetValue(value: Float) {
+            app_bar_layout.elevation = value
         }
     }
 
@@ -68,22 +61,25 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
 
     private val fragments by lazy {
         listOf(
-                ChatListFragment(onScrollStateChangeListener),
-                InviteListFragment()
+            ChatListFragment(onScrollStateChangeListener),
+            InviteListFragment()
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager.apply {
-            adapter = object : FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            adapter = object :
+                FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
                 override fun getItem(position: Int) = fragments[position]
                 override fun getCount() = fragments.size
             }
             addOnPageChangeListener(pageChangeListener)
             //setOnTouchListener(TranslateAnimationUtil(requireContext(), clTabs))
         }
-
+        iv_back.setOnClickListener {
+            findNavController().navigateUp()
+        }
         btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
         btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
     }
@@ -136,7 +132,7 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
         }
     }
 
-    private fun showView(animationView : View) {
+    private fun showView(animationView: View) {
         if (animationView == null || animationView.getVisibility() == View.VISIBLE) {
             return
         }

@@ -1,6 +1,7 @@
 package com.example.ui.editeducation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -267,9 +268,7 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
             }
             btnEdit.setOnClickListener {
                 val currentList = adapter.currentList.toMutableList()
-                val acDegreeSpinner =
-                    adapter.currentList.filter { it.type == EditEducationModel.EDUCATION_LEVEL }
-                        .toMutableList()
+                val acDegreeSpinner = adapter.currentList.filter { it.type == EditEducationModel.EDUCATION_LEVEL }.toMutableList()
                 val acDegreeList =
                     adapter.currentList.filter { it.type == EditEducationModel.HIGHT_LEVEL_ITEM }
                         .toMutableList()
@@ -303,7 +302,9 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
                     }
                 } else {
                     currentList.forEach {
-                        if (!it.isDataValid) it.showErrors = true
+                        if (!it.isDataValid) {
+                            it.showErrors = true
+                        }
                     }
                     adapter.submitList(currentList)
                     adapter.notifyDataSetChanged()

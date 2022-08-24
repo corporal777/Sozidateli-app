@@ -36,7 +36,7 @@ interface OrganizationsContract {
         fun changeSubscription(organization: OrganizationNew/*Organization*/)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onOrganizationClick(organization: OrganizationNew/*Organization*/)
         fun onRemoveFromFavoriteClick(organization: OrganizationNew/*Organization*/)
         fun onRefreshRequest()

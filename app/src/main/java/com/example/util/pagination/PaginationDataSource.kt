@@ -2,6 +2,7 @@ package com.example.util.pagination
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.paging.PositionalDataSource
 import io.reactivex.Maybe
 import kotlin.math.min
@@ -41,6 +42,7 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         }
         var data = getDataFromResult(result)
         val totalCount = result.totalCount
+        result.data
 
         if (totalCount == null) {
             callback.onResult(data, startPosition)
@@ -53,7 +55,15 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
             if (totalCount == 0) dataPosition = 0
 
             lastTotalCount = totalCount
-            callback.onResult(data, dataPosition, totalCount)
+            //callback.onResult(data, dataPosition, totalCount)
+            try {
+                callback.onResult(data, dataPosition, totalCount)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                if (e.message == "List size + position too large, last item in list beyond totalCount."){
+                    callback.onResult(data, dataPosition, data.size)
+                }
+            }
         }
     }
 

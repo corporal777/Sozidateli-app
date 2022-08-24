@@ -88,7 +88,7 @@
                         android:id="@+id/et_last_name"
                         style="@style/Profile.Edit.Input.SingleLine"
                         android:hint="@string/auth_input_last_name_hint"
-                        android:inputType="textCapWords" />
+                        android:inputType="textCapSentences" />
                 </com.example.ui.views.CustomTextInputLayout>
 
                 <com.example.ui.views.CustomTextInputLayout
@@ -107,7 +107,7 @@
                         android:id="@+id/et_first_name"
                         style="@style/Profile.Edit.Input.SingleLine"
                         android:hint="@string/auth_input_first_name_hint"
-                        android:inputType="textCapWords" />
+                         />
                 </com.example.ui.views.CustomTextInputLayout>
 
                 <com.example.ui.views.CustomTextInputLayout
@@ -259,19 +259,16 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/BtnBrownStyle"
+                android:layout_marginTop="10dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:id="@+id/ib_register"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginVertical="20dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:background="@drawable/custom_btn_brown_selectable"
-                android:letterSpacing="-0.02"
                 android:text="@string/auth_action_register"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_input"

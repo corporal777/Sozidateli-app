@@ -18,12 +18,6 @@ interface MyEventsContractNew {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setTagsBlock(listTags : List<Tag>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSearchBlock()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(data: List<EventNew?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -32,6 +26,9 @@ interface MyEventsContractNew {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder()
 
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        fun hideEmptyListPlaceholder()
+
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
 
@@ -39,17 +36,18 @@ interface MyEventsContractNew {
         fun showEventRequest(event: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setActionButton(
-            event: EventNew?
-        )
+        fun setActionButton(event: EventNew?)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setShowMyScheduleButton(canShow: Boolean)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback{
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)
         fun onShowFiltersClick()
         fun onRefreshRequest()
-        fun setEventStateFilter(filter: MyEventsFilter)
+        fun setEventStateFilter(isChecked : Boolean, filter: MyEventsFilter)
         fun updateData()
 
         fun onActionRegister(event: String)

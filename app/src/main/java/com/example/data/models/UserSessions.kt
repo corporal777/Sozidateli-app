@@ -3,6 +3,8 @@ package com.example.data.models
 import com.google.gson.annotations.SerializedName
 
 data class UserSessions(
+    @SerializedName("currentSession")
+    val currentSession : UserSessionModel,
     @SerializedName("sessions")
     val userSessions: List<UserSessionModel>
 )
@@ -33,5 +35,13 @@ data class UserSessionModel(
     @SerializedName("location")
     val location: String,
     @SerializedName("isLogged")
-    var isLogged: Boolean
+    var isLogged: Boolean,
+    @SerializedName("binds")
+    val binds: UserSessionBinds
+
+)
+
+data class UserSessionBinds(
+    @SerializedName("user")
+    val user: UserDetail
 )

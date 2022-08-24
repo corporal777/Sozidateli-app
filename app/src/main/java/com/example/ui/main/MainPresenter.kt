@@ -144,7 +144,7 @@ class MainPresenter
 
         compositeDisposable += Completable.merge(listOf(loadUser, checkUserLocation(), inApp))
             .andThen(Completable.defer { checkInternetConnected() })
-            .andThen(subscribeToNotifications())
+            //.andThen(subscribeToNotifications())
             .doOnComplete { connectToSocket(appData.getId()) }
             .andThen(Completable.defer { checkShowGreetings() })
             .andThen(Maybe.defer { checkUserEvent() })
@@ -624,11 +624,10 @@ class MainPresenter
                 chatHelper.isConnectingToSocket = connected
                 if (connected) {
                     EventBus.getDefault().post(OnSocketConnectEvent())
-
                     if (chatCompositeDisposable.size() == 1) {
-                        //subscribeChatNewMessage()
-                        subscribeChatUnreadCount()
                         subscribeChatNewMessage()
+                        subscribeToNotifications()
+                        subscribeChatUnreadCount()
                         subscribeChatRequestsCount()
                         emitValueUpdates()
                     }
@@ -657,7 +656,7 @@ class MainPresenter
 
     private fun subscribeToNotifications(): Completable {
         return Completable.fromAction {
-            userRepository.getNotificationNotReadedSize(
+            compositeDisposable += userRepository.getNotificationNotReadedSize(
                 mapOf(
                     NotificationModel.NOTIFICATION_LIMIT to 1,
                     NotificationModel.NOTIFICATION_USER to appData.getId(),
@@ -704,9 +703,10 @@ class MainPresenter
     }
 
     private fun subscribeChatNewMessage() {
+        //chatCompositeDisposable += socket.subscribeToChatUpdate()
         chatCompositeDisposable += socket.subscribeNewChatMessage()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
+            .subscribe({
                 it.data.forEach { message ->
                     chatHelper.showNotificationIfCan(
                         message.chat.toString(),
@@ -717,9 +717,11 @@ class MainPresenter
                         message.sender?.avatar
                     )
                 }
-
                 Log.e("NEW MESSAGE", it.data.toString())
-            }
+            }, {
+                it.printStackTrace()
+            })
+
 //        chatCompositeDisposable += haChat.subscribeToNewMessage()
 //                .performOnBackgroundOutOnMain()
 //                .subscribe({

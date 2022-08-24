@@ -5,22 +5,23 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
+import com.example.databinding.FragmentChatListBinding
 import com.example.holders.*
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_chat_list.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragment(), ChatListContract.View {
+class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
+    BaseFragmentNew<FragmentChatListBinding>(), ChatListContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListPresenter
@@ -35,9 +36,13 @@ class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragm
 
     private val favoritesSection by lazy {
         Section().apply {
-            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)).apply {
-                withTopMargin = true
-            })
+            setHeader(
+                ListSectionNameItem(
+                    -200L,
+                    getString(R.string.search_contact_section_favorites)
+                ).apply {
+                    withTopMargin = true
+                })
             setHideWhenEmpty(true)
         }
     }
@@ -58,26 +63,29 @@ class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var mDy = 0
-        recyclerView.apply {
-            adapter = this@ChatListFragment.adapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener(){
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
+        mBinding.apply {
+            chatList.apply {
+                adapter = this@ChatListFragment.adapter
+                onScrolled { _, dy ->
                     mDy += dy
-                    onScrollState.onScrollOffsetValue(mDy)
-                    if (dy <= 0){
+                    if (this.computeVerticalScrollOffset() <= 10) {
+                        onScrollState.onScrollOffsetValue(this.computeVerticalScrollOffset().toFloat())
+                    } else {
+                        onScrollState.onScrollOffsetValue(10f)
+                    }
+                    if (dy <= 0) {
                         onScrollState.onScrollUp(dy)
-                    }else {
+                    } else {
                         onScrollState.onScrollDown(dy)
                     }
                 }
-            })
-        }
+            }
 
-        fabNewChat.apply {
-            setOnClickListener { presenter.onFabAddChatClick() }
+            fabNewChat.apply {
+                setOnClickListener { presenter.onFabAddChatClick() }
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
 
@@ -88,25 +96,26 @@ class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragm
             chatSection.apply {
                 val chatsCount = chats.size
                 update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list)))
-                        .plus(chats.mapIndexed { index, chat ->
-                            if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-                            else UserChatItem(
-                                    chat,
-                                    { presenter.onChatClick(it) },
-                                    { presenter.onChatOnScreen(chat.id) },
-                                    { presenter.onChatGoneFromScreen(chat.id) },
-                                    index != chatsCount - 1
-                            )
-                        }))
+                    .plus(chats.mapIndexed { index, chat ->
+                        if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+                        else UserChatItem(
+                            chat,
+                            { presenter.onChatClick(it) },
+                            { presenter.onChatOnScreen(chat.id) },
+                            { presenter.onChatGoneFromScreen(chat.id) },
+                            index != chatsCount - 1
+                        )
+                    })
+                )
             }
         }
 
         favoritesSection.update(favorites.map {
             UserItem(it.id, it.fullName, null, it.image.uri, {
-                presenter.onUserClick(it.id, it.fullName, it.binds?.chatRoomWithMe)
+                presenter.onUserClick(it.id, it.nameLastName, it.binds?.chatRoomWithMe)
             })
         })
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {
@@ -127,15 +136,18 @@ class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragm
     }
 
     override fun scrollToTopPosition() {
-        recyclerView.scrollToPosition(0)
+        mBinding.chatList.scrollToPosition(0)
     }
 
     private fun isChatScrolledToTop(): Boolean {
-        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
+        return (mBinding.chatList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
     override fun openChat(chatId: Int, userName: String) {
-        findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
+        findNavController().navigate(
+            R.id.chat_fragment,
+            bundleOf("label" to userName, "chatId" to chatId.toString())
+        )
     }
 
     override fun openSearch() {
@@ -144,9 +156,9 @@ class ChatListFragment(val onScrollState : OnChatListScrollingState) : BaseFragm
 
     override fun layout() = R.layout.fragment_chat_list
 
-    interface OnChatListScrollingState{
-        fun onScrollUp(value : Int)
-        fun onScrollDown(value : Int)
-        fun onScrollOffsetValue(value: Int)
+    interface OnChatListScrollingState {
+        fun onScrollUp(value: Int)
+        fun onScrollDown(value: Int)
+        fun onScrollOffsetValue(value: Float)
     }
 }

@@ -20,11 +20,12 @@ import com.example.databinding.FragmentRegisterEmailNewBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.util.AuthValidateUtil
-import com.example.util.removeFirstAndLastSpaces
+import com.example.ui.views.dialogs_new.CustomProgressDialog
+import com.example.util.*
 import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onFocusChanged
 import onTextChanged
+import java.lang.StringBuilder
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Provider
@@ -34,6 +35,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     RegisterEmailNewContract.View {
 
     override fun layout() = R.layout.fragment_register_email_new
+    private lateinit var mProgressDialog: CustomProgressDialog
 
     private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
@@ -56,8 +58,15 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     @ProvidePresenter
     fun providePresenter(): RegisterEmailNewPresenter = presenterProvider.get()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        presenter.deviceId = getDeviceId(requireContext())
+        presenter.deviceModel = getDeviceName()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mProgressDialog = CustomProgressDialog(requireContext())
         mBinding.apply {
             ivClose.setOnClickListener { presenter.onClickClose() }
 
@@ -148,11 +157,14 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 presenter.onClickAgree(it)
             }
             ibRegister.setOnClickListener {
+                val name = removeAllDoubleSpaces(etFirstName.text.toString())
+                val lastName = removeAllDoubleSpaces(etLastName.text.toString())
+
                 /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {*/
                 presenter.onClickRegister(
                     etEmail.text?.toString(),
-                    etFirstName.text?.toString(),
-                    etLastName.text?.toString(),
+                    name,
+                    lastName,
                     password.etPassword.text?.toString(),//etPassword.text?.toString(),
                     //etPasswordConfirm.text?.toString(),
                     password.cbAgree.isChecked
@@ -177,6 +189,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         )
             .setSelectCallback {
                 if (!it) {
+                    showAlertLoadingDialog()
                     presenter.register(email, firstName, lastName, password, middleName, phone)
                 } else {
                     //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
@@ -200,6 +213,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         )
             .setSelectCallback {
                 if (!it) {
+                    showAlertLoadingDialog()
                     presenter.register(email, firstName, lastName, password, middleName, phone)
                 } else {
                     //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
@@ -357,5 +371,14 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         } catch (e: Throwable) {
             Toast.makeText(requireContext(), R.string.error_title, Toast.LENGTH_LONG).show()
         }
+    }
+
+
+    override fun showAlertLoadingDialog() {
+        mProgressDialog.showDialog()
+    }
+
+    override fun hideAlertLoadingDialog() {
+        mProgressDialog.hideDialog()
     }
 }

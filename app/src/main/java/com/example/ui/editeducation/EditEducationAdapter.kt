@@ -1,5 +1,6 @@
 package com.example.ui.editeducation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ import initDropDownView
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
 import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class EditEducationAdapter(
     private val addHigthLevelClick: () -> Unit,
@@ -104,7 +106,8 @@ class EditEducationAdapter(
             }
             HIGHT_LEVEL_ITEM -> {
                 val holderHightL = holder as ViewHolder<ItemHightEducationBinding>
-                setupDegreeDropDown(holderHightL.binding.tvDegreesLevel,
+                setupDegreeDropDown(
+                    holderHightL.binding.tvDegreesLevel,
                     holderHightL.binding.tilDegreesLevel,
                     getItem(holder.adapterPosition).availableDegrees ?: emptyList(),
                     getItem(holder.adapterPosition).availableDegrees?.find { it.id == getItem(holder.adapterPosition).academicDegrees?.degree }?.name
@@ -112,15 +115,25 @@ class EditEducationAdapter(
                     //mDegreesLevel = it?.name
                     getItem(holder.adapterPosition).academicDegrees?.degree = it?.id
                 }
-                setupDegreeDropDown(holderHightL.binding.tvSciencesLevel,
+
+                val sciencesList = getItem(holder.adapterPosition).availableSciences as ArrayList
+                if (!sciencesList.isNullOrEmpty()) {
+                    sciencesList.add(0, EducationLevelNew(777, "Не выбрано", 777))
+                }
+
+                setupDegreeDropDown(
+                    holderHightL.binding.tvSciencesLevel,
                     holderHightL.binding.tilSciencesLevel,
-                    getItem(holder.adapterPosition).availableSciences ?: emptyList(),
+                    //getItem(holder.adapterPosition).availableSciences ?: emptyList(),
+                    sciencesList,
                     getItem(holder.adapterPosition).availableSciences?.find {
                         it.id == getItem(holder.adapterPosition).academicDegrees?.speciality
-                    }?.name
+                    }?.name ?: sciencesList[0].name
                 ) {
-                    //mSciencesLevel = it?.name
-                    getItem(holder.adapterPosition).academicDegrees?.speciality = it?.id
+
+                    if (it?.id == 777 && it.name == "Не выбрано" && it.order == 777) {
+                        getItem(holder.adapterPosition).academicDegrees?.speciality = null
+                    } else getItem(holder.adapterPosition).academicDegrees?.speciality = it?.id
                 }
 
                 holderHightL.binding.btnRemove.setOnClickListener {
@@ -285,12 +298,16 @@ class EditEducationAdapter(
                 else
                     resources.getString(R.string.profile_educate_institution_empty_error)
             }
-//            if (!isSpecialityValid(item.education?.speciality)) holder.tilSpeciality.apply {
-//                error = if ((item.education?.speciality?.length?: 0) < 4 && (item.education?.speciality?.length?: 0) > 0)
-//                    resources.getString(R.string.five_letters_error)
-//                else
-//                    resources.getString(R.string.enter_specialty)
-//            }
+
+            val model = this.currentList[0]
+            if (model.selectedDegree?.contains("классов") == false) {
+                if (!isSpecialityValid(item.education?.speciality)) holder.tilSpeciality.apply {
+                    error = if ((item.education?.speciality?.length ?: 0) < 4 && (item.education?.speciality?.length ?: 0) > 0)
+                        resources.getString(R.string.five_letters_error)
+                    else
+                        resources.getString(R.string.enter_specialty)
+                }
+            }
         }
     }
 
@@ -310,9 +327,13 @@ class EditEducationAdapter(
         if (!isOrganizationValid(item.education?.organization)) {
             isValid = false
         }
-//        if (!isSpecialityValid(item.education?.speciality)) {
-//            isValid = false
-//        }
+
+        val model = this.currentList[0]
+        if (model.selectedDegree?.contains("классов") == false) {
+            if (!isSpecialityValid(item.education?.speciality)) {
+                isValid = false
+            }
+        }
         item.isDataValid = isValid
         validateEnableButton()
     }

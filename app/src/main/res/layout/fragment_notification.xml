@@ -27,7 +27,6 @@
                     style="@style/Notification.Title"
                     fontPath="fonts/Roboto-Medium.ttf"
                     android:lineSpacingExtra="@dimen/lines_space"
-                    android:text="@string/notifications_simple_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -95,7 +94,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                    tools:visibility="gone" />
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAccept"
@@ -110,7 +109,7 @@
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                    tools:visibility="gone" />
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnCancel"
@@ -124,7 +123,7 @@
                     app:layout_constraintStart_toEndOf="@+id/btnAccept"
                     app:layout_constraintTop_toTopOf="@+id/btnAccept"
                     app:layout_constraintVertical_bias="0.0"
-                    tools:visibility="gone" />
+                    android:visibility="gone" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

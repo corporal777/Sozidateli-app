@@ -37,8 +37,16 @@ data class Notification(
     companion object {
         fun fromRemoteNotification(remoteNotification: /*RemoteNotification*/NotificationModel): Notification {
             val state = when (remoteNotification.entity?.type) {
-                "invitePgfr" -> if (remoteNotification.entity.model?.state != null) (remoteNotification.entity.model?.state as String) else null
-                //"invitePgfr" -> if (remoteNotification.entity.model?.state != null) (remoteNotification.entity.model?.state as String) else null
+                "invitePgfr" -> {
+                    if (remoteNotification.entity.model?.state != null){
+                        remoteNotification.entity.model.state as String
+                    } else null
+                }
+                "inviteAssistance" -> {
+                    if (remoteNotification.entity.model?.state != null){
+                        remoteNotification.entity.model.state as String
+                    } else null
+                }
                 "organizationMember" -> (remoteNotification.entity.model?.status as String)
                 else -> null
             }

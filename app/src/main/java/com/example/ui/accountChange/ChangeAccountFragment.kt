@@ -77,29 +77,26 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         }
     }
 
-    override fun setAccounts(canShow: Boolean, users: Map<UserSessionModel, UserDetail>) {
+    override fun setAccounts(canShow: Boolean, sessions: List<UserSessionModel>) {
         accountsSection.update(
-            users.map { x ->
-                AccountItem(canShow, x.key, presenter.getUserId(), x.value, {
-                    showChangeDialog(x.key, x.value)
+            sessions.map { x ->
+                AccountItem(canShow, x, presenter.getUserId(), {
+                    showAccountActionDialog(x)
                 }, {
-                    presenter.switchAccount(x.key, it)
+                    presenter.switchAccount(it)
                 })
             }
         )
 
     }
 
-    override fun setUnLoggedAccounts(canShow: Boolean, users: Map<UserSessionModel, UserDetail>) {
+    override fun setUnLoggedAccounts(canShow: Boolean, sessions: List<UserSessionModel>) {
         unLoggedAccountsSection.update(
-            users.map { m ->
-                AccountItem(canShow, m.key, presenter.getUserId(), m.value, {
-                    showKillDialog(
-                        m.key,
-                        m.value
-                    )
+            sessions.map { m ->
+                AccountItem(canShow, m, presenter.getUserId(), {
+                    showAccountActionDialog(it)
                 }, {
-                    presenter.loginToAccountClick(it)
+                    presenter.loginToAccountClick(it.binds.user)
                 })
             }
         )
@@ -110,11 +107,6 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
             presenter.authToAccountClick()
         }))
     }
-
-    override fun removeLoggedAccount(id: Int) {}
-    override fun removeUnLoggedAccount(id: Int) {}
-    override fun updateAccounts(state: Boolean) {}
-    override fun addUnLoggedAccount(state: Boolean, session: UserSessionModel, user: UserDetail) {}
 
     override fun showMessage(message: String) {
         showToast(message)
@@ -130,23 +122,15 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         )
     }
 
-    private fun showChangeDialog(session: UserSessionModel, user: UserDetail) {
-        val dialog = ChangeAccountBottomDialog(session, user)
+    private fun showAccountActionDialog(session: UserSessionModel) {
+        val dialog = ChangeAccountBottomDialog(session)
         dialog.show(requireActivity().supportFragmentManager, "dialog")
         dialog.setLogoutCallback { s ->
-            presenter.logoutFromAccount(s.first, s.second)
+            presenter.logoutFromAccount(s)
         }
         dialog.setLogoutAndKillCallback { s ->
             presenter.logoutFromAccountAndKill(s)
         }
-    }
-
-    private fun showKillDialog(session: UserSessionModel, user: UserDetail) {
-        val dialog = KillAccountBottomDialog(
-            session,
-            user
-        )
-        dialog.show(requireActivity().supportFragmentManager, "dialog")
         dialog.setKillCallback { s ->
             presenter.killSession(s)
         }

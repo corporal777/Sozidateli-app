@@ -1,6 +1,9 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.widget.Button
@@ -37,6 +40,9 @@ class CtpDialog(val context: Context) {
             alertDialog.dismiss()
         }
         alertDialog = builder.create()
+        val back = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(back, 30)
+        alertDialog.window?.setBackgroundDrawable(inset)
         alertDialog.show()
     }
 

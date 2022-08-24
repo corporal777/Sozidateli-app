@@ -20,7 +20,7 @@ interface UserSessionsContract {
         fun setOtherSessions(sessions: List<UserSessionModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setCurrentSession(session: UserSessionModel?)
+        fun setCurrentSession(session: UserSessionModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSessionsLoadingPlaceholder()

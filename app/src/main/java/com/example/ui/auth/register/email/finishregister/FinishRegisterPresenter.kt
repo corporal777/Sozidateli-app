@@ -27,6 +27,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -137,10 +138,11 @@ class FinishRegisterPresenter
         )
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-
+                    viewState.showRequestErrorMessage()
+                    it.printStackTrace()
                 },
                 onComplete = {
                     compositeDisposable += userRepository.getUserShortData()
@@ -230,7 +232,6 @@ class FinishRegisterPresenter
     }
 
     override fun onHandleAuthLink() {
-
         when (loginType) {
             "phone" -> {
                 compositeDisposable += authRepository.confirmPhone(
@@ -241,69 +242,84 @@ class FinishRegisterPresenter
                     )
                 )
                     .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        userRepository.updateUserProfile(appData.getId(),
-                            mutableMapOf<String, Any>().apply {
-                                put(
-                                    USER_PHONE,
-                                    arrayListOf(
-                                        FieldDetails(
-                                            value = phone?.replace(" ", ""),
-                                            type = PHONE_PERSONAL,
-                                            isVisible = true,
-                                            isConfirmed = true
+                    .subscribeSimple(
+                        onError = {
+                            it.printStackTrace()
+                            viewState.codeError()
+                        },
+                        onComplete = {
+                            userRepository.updateUserProfile(appData.getId(),
+                                mutableMapOf<String, Any>().apply {
+                                    put(
+                                        USER_PHONE,
+                                        arrayListOf(
+                                            FieldDetails(
+                                                value = phone?.replace(" ", ""),
+                                                type = PHONE_PERSONAL,
+                                                isVisible = true,
+                                                isConfirmed = true
+                                            )
                                         )
                                     )
-                                )
-                                if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
-                                if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
-                                if (defMiddleName != middleName) put(
-                                    USER_MIDDLE_NAME,
-                                    FieldDetails(value = middleName, absent = noMiddleNameChecked)
-                                )
-                                put(USER_REGISTRATION_FINISH, true)
-                            }
-                            /*mapOf(USER_NAME to firstName,
-                            USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                            USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
-                        )
-                            .performOnBackgroundOutOnMain()
-                            .withLoadingDialog(viewState)
-                            .subscribe({ viewState.openHome() }, { })
-                            .call(compositeDisposable)
-                    }, {
-                        viewState.codeError()
-                    })
+                                    if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
+                                    if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
+                                    if (defMiddleName != middleName) put(
+                                        USER_MIDDLE_NAME,
+                                        FieldDetails(
+                                            value = middleName,
+                                            absent = noMiddleNameChecked
+                                        )
+                                    )
+                                    put(USER_REGISTRATION_FINISH, true)
+                                }
+                                /*mapOf(USER_NAME to firstName,
+                                USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
+                                USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
+                            )
+                                .performOnBackgroundOutOnMain()
+                                .withCustomProgressBarLoadingDialog(viewState)
+                                .subscribeSimple(
+                                    onError = {
+                                        it.printStackTrace()
+                                    },
+                                    onSuccess = {
+                                        viewState.openHome()
+                                    })
+                                .call(compositeDisposable)
+
+                        })
             }
             "email" -> {
-                userRepository.confirmEmailCode(
-                    appData.getId(),
-                    EmailCodeBody(code = code, email = email ?: "")
-                )
+                userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email ?: ""))
                     .performOnBackgroundOutOnMain()
-                    .subscribe({
-
-                        userRepository.updateUserProfile(appData.getId(),
-                            mutableMapOf<String, Any>().apply {
-                                put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
-                                if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
-                                if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
-                                if (defMiddleName != middleName) put(
-                                    USER_MIDDLE_NAME,
-                                    FieldDetails(value = middleName, absent = noMiddleNameChecked)
-                                )
-                                put(USER_REGISTRATION_FINISH, true)
-                            }
-                            /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
-                             USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
-                        )
-                            .performOnBackgroundOutOnMain()
-                            .withLoadingDialog(viewState)
-                            .subscribe({ viewState.openHome() }, { })
-                            .call(compositeDisposable)
-                    }, {
-                        viewState.codeError()
-                    })
+                    .subscribeSimple(
+                        onError = {
+                            it.printStackTrace()
+                            viewState.codeError()
+                        },
+                        onSuccess = {
+                            userRepository.updateUserProfile(appData.getId(),
+                                mutableMapOf<String, Any>().apply {
+                                    put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
+                                    if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
+                                    if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
+                                    if (defMiddleName != middleName) put(
+                                        USER_MIDDLE_NAME,
+                                        FieldDetails(
+                                            value = middleName,
+                                            absent = noMiddleNameChecked
+                                        )
+                                    )
+                                    put(USER_REGISTRATION_FINISH, true)
+                                }
+                                /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
+                                 USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
+                            )
+                                .performOnBackgroundOutOnMain()
+                                .withCustomProgressBarLoadingDialog(viewState)
+                                .subscribe({ viewState.openHome() }, { })
+                                .call(compositeDisposable)
+                        })
             }
         }
     }

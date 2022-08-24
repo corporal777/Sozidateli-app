@@ -82,7 +82,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         mBinding.apply {
             listSpeakersContent.apply {
                 this.adapter = groupAdapter
-                onScrolled { dx, dy ->
+                onScrolled { _, dy ->
                     presenter.changeAppBarElevation(dy)
                 }
             }

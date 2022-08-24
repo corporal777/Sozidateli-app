@@ -113,7 +113,7 @@ class EventItemNew(
                     when (userRegistration) {
                         Event.Status.APPROVED -> {
                             mTextBackground = R.color.event_status_approved_background
-                            mTextRes = R.string.event_status_approved
+                            mTextRes = R.string.event_status_approved_new
                         }
                         Event.Status.PENDING -> {
                             mTextBackground = R.color.event_status_wait_confirmation_background
@@ -121,7 +121,7 @@ class EventItemNew(
                         }
                         Event.Status.DECLINED -> {
                             mTextBackground = R.color.event_status_declined_background
-                            mTextRes = R.string.event_status_decline
+                            mTextRes = R.string.event_status_decline_new
                         }
                         Event.Status.REGISTRATION_FINISHED -> {
                             mTextBackground = R.color.event_status_wait_confirmation_background

@@ -89,8 +89,6 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         style="@style/Profile.Edit.Input.SingleLine"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
                         android:hint="@string/auth_input_first_name_hint"
                         android:inputType="textCapWords" />
                 </com.example.ui.views.CustomTextInputLayout>
@@ -110,8 +108,6 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
                         style="@style/Profile.Edit.Input.SingleLine"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
                         android:hint="@string/auth_input_last_name_hint"
                         android:inputType="textCapWords" />
                 </com.example.ui.views.CustomTextInputLayout>
@@ -125,13 +121,12 @@
                     android:layout_marginTop="3dp"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
                     app:endIconMode="custom"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:errorIconDrawable="@null">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etMiddleName"
                         style="@style/Profile.Edit.Input.SingleLine"
-                        android:layout_marginTop="8dp"
                         android:hint="@string/auth_input_middle_name_hint"
                         android:inputType="textCapWords" />
 
@@ -140,44 +135,10 @@
                         style="@style/Profile.Edit.Switch"
                         android:layout_marginBottom="6dp"
                         android:text="@string/profile_edit_user_no_middle_name" />
+
                 </com.example.ui.views.CustomTextInputLayout>
 
-                <!--<LinearLayout
-                    android:id="@+id/phone_layout"
-                    style="@style/Profile.Edit.InputContainer"
-                    android:layout_marginTop="0dp"
-                    android:visibility="gone">
 
-                    <com.example.ui.views.PhoneView
-                        android:id="@+id/etMobilePhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnPhoneConfirm"
-                        style="@style/Profile.Edit.Button"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginBottom="14dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:text="@string/profile_edit_confirm_password"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvPhoneConfirmed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginBottom="14dp"
-                        android:gravity="center_vertical"
-                        android:minHeight="38dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:text="@string/profile_edit_phone_confirmed"
-                        android:textColor="@color/profile_status_complete"
-                        android:visibility="gone" />
-                </LinearLayout>-->
 
                 <com.example.ui.views.CustomTextInputLayout
                     android:id="@+id/tilEmail"
@@ -243,7 +204,6 @@
                         android:id="@+id/tvTimer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_horizontal_default"
                         android:gravity="start"
                         android:lineSpacingExtra="2dp"
                         android:textColor="@color/auth_title_text"
