@@ -654,28 +654,25 @@ class MainPresenter
                 })*/
     }
 
-    private fun subscribeToNotifications(): Completable {
-        return Completable.fromAction {
-            compositeDisposable += userRepository.getNotificationNotReadedSize(
-                mapOf(
-                    NotificationModel.NOTIFICATION_LIMIT to 1,
-                    NotificationModel.NOTIFICATION_USER to appData.getId(),
-                    NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-                )
-            ).performOnBackgroundOutOnMain()
-                .subscribe({
-                    appData.notificationsCount = it
-                    chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({ nCount ->
-                            appData.notificationsCount = nCount
-                        }, {})
-                }, {
-                    it.printStackTrace()
-                    appData.notificationsCount = 0
-                })
-        }
-
+    private fun subscribeToNotifications() {
+        compositeDisposable += userRepository.getNotificationNotReadedSize(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 1,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )
+        ).performOnBackgroundOutOnMain()
+            .subscribe({
+                appData.notificationsCount = it
+                chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
+                    .performOnBackgroundOutOnMain()
+                    .subscribe({ nCount ->
+                        appData.notificationsCount = nCount
+                    }, {})
+            }, {
+                it.printStackTrace()
+                appData.notificationsCount = 0
+            })
         /*return userRepository.getFcmToken()
                 .flatMapCompletable { userRepository.notificationsRegister(it.token) }
                 .doOnComplete { appData.isSubscribedToPush = true }

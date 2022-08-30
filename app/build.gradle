@@ -82,6 +82,7 @@ android {
             if (signingConfigs.hasProperty("release")) signingConfig signingConfigs.release
 
             buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
+            buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
 
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
@@ -92,6 +93,7 @@ android {
         beta {
             initWith(debug)
             buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
+            buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
 
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
@@ -102,6 +104,7 @@ android {
         "new" {
             initWith(debug)
             buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
+            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
 
             buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""

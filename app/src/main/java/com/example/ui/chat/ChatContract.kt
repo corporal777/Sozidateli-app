@@ -77,6 +77,12 @@ interface ChatContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEvent(event: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showProgressLoadingDisplay()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideProgressLoadingDisplay()
     }
 
     interface Presenter : BaseContract.Presenter {

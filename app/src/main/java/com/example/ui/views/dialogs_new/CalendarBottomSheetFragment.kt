@@ -1,12 +1,10 @@
 package com.example.ui.views.dialogs_new
 
 import android.app.Dialog
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.example.R
 import com.example.databinding.BottomSheetCalendarBinding
@@ -14,7 +12,6 @@ import com.example.extensions.dp
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.custom_calendar_item.*
 
 class CalendarBottomSheetFragment : BottomSheetDialogFragment() {
 

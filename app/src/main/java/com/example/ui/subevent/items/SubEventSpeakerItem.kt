@@ -1,6 +1,6 @@
 package com.example.ui.subevent.items
 
-import android.view.ViewGroup
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
@@ -10,45 +10,56 @@ import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
 class SubEventSpeakerItem(
-    private val id: Int,
     private val name: String,
-    private val location: String,
-    private val description: String?,
+    private val orgPosition: String,
+    private val description: String,
     private val avatar: String?,
     val status: String,
     val isRegistered: Boolean,
     private val onSpeakerClick: () -> Unit
 ) : BindableItem<ItemSubEventSpeakerBinding>() {
 
+    private var speakerName = name
+    private var speakerPosition = StringBuilder(orgPosition.replace("\n", " ")).toString()
+    private var speakerDescription = StringBuilder(description.replace("\n", " ")).toString()
+
+//    private var speakerDescription =
+//        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
     override fun bind(viewBinding: ItemSubEventSpeakerBinding, position: Int) {
         viewBinding.apply {
 
-            ivSpeakerImage.apply {
-                setImage(avatar, error = R.drawable.empty_speaker_avatar)
+            ivSpeakerImage.setImage(avatar, error = R.drawable.empty_speaker_avatar)
+            tvSpeakersName.text = speakerName
+            if (speakerPosition.isNullOrEmpty()) {
+                tvSpeakersPosition.isVisible = false
+            } else {
+                tvSpeakersPosition.isVisible = true
+                tvSpeakersPosition.text = speakerPosition
             }
-            tvSpeakersName.text = name
-            tvSpeakersLocation.apply {
-                if (!location.isNullOrEmpty()) {
-                    isVisible = true
-                    text = location
-                    tvSpeakersPosition.maxLines = 6
-                } else {
-                    isVisible = false
-                    tvSpeakersPosition.maxLines = 7
+
+            if (!speakerName.isNullOrEmpty()){
+                var linesCount = 10
+                tvSpeakersName.setOnLayoutListener { n ->
+                    if (n.lineCount > 0) {
+                        linesCount -= n.lineCount
+                        tvSpeakersDescription.apply {
+                            maxLines = linesCount
+                            text = speakerDescription
+                        }
+                    }
                 }
             }
-            tvSpeakersPosition.text = description
 
             root.setOnClickListener {
                 onSpeakerClick.invoke()
             }
 
-            decorSpeakerStatus(status, ivSpeakerStatus, btnShowSpeakerStatus)
+            decorSpeakerStatus(status, ivSpeakerStatus)
         }
     }
 
-    private fun decorSpeakerStatus(status: String, imageView: ImageView, btn: ViewGroup) {
+    private fun decorSpeakerStatus(status: String, imageView: ImageView) {
         var mIcon = 0
         var mText = ""
         var visibility = false
@@ -77,10 +88,10 @@ class SubEventSpeakerItem(
         }
 
         imageView.setImageResource(mIcon)
-        btn.apply {
+        imageView.apply {
             isVisible = visibility
             setOnClickListener {
-                MessageDialogWithBrownButton(btn.context, mText)
+                MessageDialogWithBrownButton(context, mText)
             }
         }
 

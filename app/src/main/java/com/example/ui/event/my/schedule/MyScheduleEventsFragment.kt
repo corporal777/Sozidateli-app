@@ -431,21 +431,11 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                     when (first) {
                         TO_EXPANDED -> {
                             mBinding.apply {
-//                                tvLabelLarge.apply {
-//                                    visibility = View.VISIBLE
-//                                    alpha = 0F
-//                                    animate().setDuration(500).alpha(1.0f)
-//                                }
                             }
 
                         }
                         TO_COLLAPSED -> {
                             mBinding.apply {
-//                                tvLabelLarge.apply {
-//                                    visibility = View.GONE
-//                                    alpha = 0F
-//                                    animate().setDuration(500).alpha(1.0f)
-//                                }
                             }
                         }
                     }

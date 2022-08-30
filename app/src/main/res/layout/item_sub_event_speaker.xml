@@ -11,114 +11,110 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/image_container"
             android:layout_width="140dp"
-            android:layout_height="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:minHeight="180dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/itemContainer"
+            <ImageView
+                android:id="@+id/ivSpeakerImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_broken_image" />
 
-                <ImageView
-                    android:id="@+id/ivSpeakerImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_test" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/footer_speaker_gradient"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:background="@drawable/footer_speaker_gradient"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+            <ImageView
+                android:id="@+id/iv_speaker_status"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|right"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/btn_speaker_status_circle"
+                android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                android:padding="6dp"
+                android:src="@drawable/ic_speaker_status_pending" />
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_show_speaker_status"
-                    android:layout_width="35dp"
-                    android:layout_height="34dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/btn_speaker_status_circle"
-                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/iv_speaker_status"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_speaker_status_pending"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <LinearLayout
+
+        <com.example.ui.views.dialogs_new.LayoutTextView
+            android:id="@+id/tvSpeakersName"
+            fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="15dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="0.5sp"
+            android:textColor="@color/vk_black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/tvSpeakersPosition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tvSpeakersName"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:letterSpacing="0.02"
-                android:lineSpacingExtra="0.5dp"
-                android:maxLines="2"
-                android:textColor="@color/vk_black"
-                android:textSize="16sp"
-                tools:text="Екатерина Кисеева" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Lorem ipsum dolor sit amet," />
 
 
-            <TextView
-                android:id="@+id/tvSpeakersLocation"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:letterSpacing="0.02"
-                android:lineSpacingExtra="0.5dp"
-                android:maxLines="2"
-                android:textColor="@color/input_text_color_disabled_new"
-                android:textSize="13sp"
-                tools:text="Москва" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSpeakersPosition"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:letterSpacing="0.02"
+            android:maxLines="7"
+            android:lineSpacingExtra="0.5sp"
+            android:textColor="@color/input_text_color_disabled_new"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toTopOf="@id/tvSpeakersDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/image_container"
+            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
+            tools:text="Lorem ipsum dolor sit amet," />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:breakStrategy="simple"
-                android:id="@+id/tvSpeakersPosition"
-                fontPath="fonts/sf_pro_display_regular.OTF"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:lineSpacingExtra="0.5dp"
-                android:letterSpacing="0.02"
-                android:textColor="@color/input_text_color_disabled_new"
-                android:textSize="13sp"
-                tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021) Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
 
-        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSpeakersDescription"
+            fontPath="fonts/sf_pro_display_regular.OTF"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="0.5sp"
+            android:textColor="@color/input_text_color_disabled_new"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/image_container"
+            app:layout_constraintTop_toBottomOf="@id/tvSpeakersPosition"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.95" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

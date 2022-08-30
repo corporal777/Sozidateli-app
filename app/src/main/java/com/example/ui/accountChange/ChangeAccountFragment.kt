@@ -153,7 +153,7 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
 
     override fun hideProgressLoading() {
         mBinding.progressContainer.apply {
-            isVisible = false
+            visibility = View.INVISIBLE
             removeAllViews()
         }
     }

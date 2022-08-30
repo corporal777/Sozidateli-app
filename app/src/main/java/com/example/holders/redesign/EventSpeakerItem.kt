@@ -22,21 +22,19 @@ class EventSpeakerItem(
     override fun bind(viewBinding: ItemSpeakerNewBinding, position: Int) {
         viewBinding.apply {
 
-            ivSpeakerImage.apply {
-                setImage(image, error = R.drawable.empty_speaker_avatar)
-            }
+            ivSpeakerImage.setImage(image, error = R.drawable.empty_speaker_avatar)
             tvSpeakersName.text = name
 
             root.setOnClickListener {
                 onItemClick(id)
             }
 
-            decorSpeakerStatus(status, ivSpeakerStatus, btnShowSpeakerStatus)
+            decorSpeakerStatus(status, ivSpeakerStatus)
         }
     }
 
 
-    private fun decorSpeakerStatus(status: String, imageView: ImageView, btn: ViewGroup) {
+    private fun decorSpeakerStatus(status: String, imageView: ImageView) {
         var mIcon = 0
         var mText = ""
         var visibility = false
@@ -64,14 +62,13 @@ class EventSpeakerItem(
             mText = "Спикер еще не зарегистрирован в «Созидателях»"
         }
 
-        imageView.setImageResource(mIcon)
-        btn.apply {
+        imageView.apply {
             isVisible = visibility
+            setImageResource(mIcon)
             setOnClickListener {
-                MessageDialogWithBrownButton(btn.context, mText)
+                MessageDialogWithBrownButton(context, mText)
             }
         }
-
     }
 
 

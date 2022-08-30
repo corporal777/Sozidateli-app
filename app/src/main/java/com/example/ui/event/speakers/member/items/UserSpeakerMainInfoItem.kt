@@ -48,11 +48,11 @@ class UserSpeakerMainInfoItem(
                 }
             }
 
-            decorSpeakerStatus(status, ivSpeakerStatus, btnShowSpeakerStatus)
+            decorSpeakerStatus(status, ivSpeakerStatus)
         }
     }
 
-    private fun decorSpeakerStatus(status: String, imageView: ImageView, btn: ViewGroup) {
+    private fun decorSpeakerStatus(status: String, imageView: ImageView) {
         var mIcon = 0
         var mText = ""
         var visibility = false
@@ -80,14 +80,13 @@ class UserSpeakerMainInfoItem(
             mText = "Спикер еще не зарегистрирован в «Созидателях»"
         }
 
-        imageView.setImageResource(mIcon)
-        btn.apply {
+        imageView.apply {
             isVisible = visibility
+            setImageResource(mIcon)
             setOnClickListener {
-                MessageDialogWithBrownButton(btn.context, mText)
+                MessageDialogWithBrownButton(context, mText)
             }
         }
-
     }
 
     override fun getLayout(): Int = R.layout.item_user_speaker_main_info

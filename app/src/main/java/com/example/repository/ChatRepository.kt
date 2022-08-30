@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.ui.chat.body.MessageBodyNew
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -53,6 +54,8 @@ interface ChatRepository {
     fun getChatInvitesCount(): Single<ChatInvitesCount>
 
     fun sendChatMessage(body: RequestBody): Single<MessageModel>
+
+    fun sendChatMessageNew(body: MessageBodyNew): Single<MessageModel>
 
     fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>>
 

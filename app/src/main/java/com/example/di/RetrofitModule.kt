@@ -1,6 +1,7 @@
 package com.example.di
 
 import android.content.Context
+import android.util.Log
 import com.example.BuildConfig
 import com.example.api.Api
 import com.example.api.AuthInterceptor
@@ -128,6 +129,7 @@ class RetrofitModule {
             val logInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
                 override fun log(message: String) {
                     Timber.tag("API_T").d(message)
+                    Log.e("REQUEST INFO", message)
                 }
             })
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY

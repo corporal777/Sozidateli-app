@@ -13,10 +13,9 @@ open class SpeakerGroup(
 
 
     private val subEventSpeakerItem = SubEventSpeakerItem(
-        speaker.binds?.user?.id ?: 0,
         speaker.binds?.user?.nameLastName ?: "",
         speaker.organizationAndPosition ?: "",
-        speaker.description,
+        speaker.description?:"",
         speaker.binds?.user?.image?.uri,
         speaker.status ?: "",
         speaker.binds?.user?.state?.isRegistered ?: false

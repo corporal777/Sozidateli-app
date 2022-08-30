@@ -1,6 +1,7 @@
 package com.example.data.socket
 
 import android.util.Log
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.*
 import com.google.gson.Gson
@@ -48,7 +49,8 @@ class SocketIOManagerImpl
 
     override fun connect(): Flowable<SocketConnectionState> {
         try {
-            mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
+            //mSocket = IO.socket(URI.create("https://alfa-socket-data-provider.sozidateli.ru/"), IO.Options().apply {
+            mSocket = IO.socket(URI.create(BuildConfig.SOCKET_URL), IO.Options().apply {
                 query = ParseQS.encode(hashMapOf("token" to "Token ${appData.token}"))
                 transports = arrayOf(WebSocket.NAME, Polling.NAME)
                 callFactory = okHttpClient

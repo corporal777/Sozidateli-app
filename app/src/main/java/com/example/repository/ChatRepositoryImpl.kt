@@ -8,6 +8,7 @@ import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.ui.chat.body.MessageBodyNew
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -106,8 +107,13 @@ class ChatRepositoryImpl
                 ChatInvitesCount(it.totalCount?: 0)
             }
 
-    override fun sendChatMessage(body: RequestBody): Single<MessageModel> =
-            newApi.sendChatMessage(body)
+    override fun sendChatMessage(body: RequestBody): Single<MessageModel> {
+        return newApi.sendChatMessage(body)
+    }
+
+    override fun sendChatMessageNew(body: MessageBodyNew): Single<MessageModel> {
+        return newApi.sendChatMessageNew(body)
+    }
 
     override fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>> =
             newApi.getChatMessages(map)

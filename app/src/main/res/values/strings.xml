@@ -920,6 +920,7 @@
     <string name="enter_to_another_account">Войти в другой аккаунт</string>
     <string name="browser_label">Браузер</string>
     <string name="no_sub_events_in_schedule">Событий в расписании нет</string>
+    <string name="no_data_found">Нет результатов</string>
 
 
     <string-array name="custom_months">

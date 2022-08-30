@@ -61,7 +61,7 @@ class ChangeAccountPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
+                    onReceiveError(it)
                     viewState.hideProgressLoading()
                 },
                 onSuccess = { s ->

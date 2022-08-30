@@ -20,53 +20,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/itemContainer"
+            <ImageView
+                android:id="@+id/ivSpeakerImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_test" />
 
-                <ImageView
-                    android:id="@+id/ivSpeakerImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_test" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/footer_speaker_gradient"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:background="@drawable/footer_speaker_gradient"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+            <ImageView
+                android:id="@+id/iv_speaker_status"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="top|right"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/btn_speaker_status_circle"
+                android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                android:padding="6dp"
+                android:src="@drawable/ic_speaker_status_pending" />
 
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_show_speaker_status"
-                    android:layout_width="35dp"
-                    android:foreground="@drawable/custom_toolbar_btn_background_selectable"
-                    android:layout_height="34dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/btn_speaker_status_circle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/iv_speaker_status"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_speaker_status_pending"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
         <TextView
-            app:layout_constraintBottom_toTopOf="@id/tvSpeakersLocation"
             android:id="@+id/tvSpeakersName"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="0dp"
@@ -75,12 +57,13 @@
             android:layout_marginTop="15dp"
             android:gravity="center"
             android:letterSpacing="0.02"
-            tools:text="Екатерина Кисеева"
             android:textColor="@color/vk_black"
             android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/tvSpeakersLocation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_container" />
+            app:layout_constraintTop_toBottomOf="@id/image_container"
+            tools:text="Екатерина Кисеева" />
 
         <TextView
             android:id="@+id/tvSpeakersLocation"
@@ -91,13 +74,13 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:letterSpacing="0.02"
-            tools:text="Москва"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/tvSpeakersPosition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName" />
+            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
+            tools:text="Москва" />
 
         <TextView
             android:id="@+id/tvSpeakersPosition"
@@ -109,16 +92,15 @@
             android:layout_marginBottom="15dp"
             android:gravity="center"
             android:letterSpacing="0.02"
-            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/btnWriteMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation" />
+            app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation"
+            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:visibility="visible"
             android:id="@+id/btnWriteMessage"
             fontPath="fonts/sf_pro_text_bold.ttf"
             android:layout_width="match_parent"
@@ -134,6 +116,7 @@
             android:textAllCaps="false"
             android:textColor="#BE9B72"
             android:textSize="15sp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

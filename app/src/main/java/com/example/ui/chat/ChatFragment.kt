@@ -3,21 +3,18 @@ package com.example.ui.chat
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.ImageSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.updatePadding
+import androidx.core.view.isVisible
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -33,14 +30,17 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.Message.MessageType
 import com.example.databinding.FragmentChatBinding
 import com.example.extensions.dp
+import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.chat.items.ChatUnreadLabelGroup
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.my.schedule.items.EmptyItem
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.views.toolbar.ToolbarButton
+import com.example.ui.views.CustomProgressView
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.SimpleTextWatcher
@@ -49,13 +49,10 @@ import com.example.util.pagination.PaginationScrollListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_chat.*
-import kotlinx.android.synthetic.main.layout_chat_action_confirmation.view.*
-import kotlinx.android.synthetic.main.layout_chat_action_text.view.*
-import onFocusChanged
+import kotlinx.android.synthetic.main.layout_chat_action_confirmation.*
+import kotlinx.android.synthetic.main.layout_chat_action_text.*
+
 import setCircleImage
-import setOnClickListener
-import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -134,8 +131,13 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                 addOnScrollListener(PaginationScrollListener(10,
                     {
                         if (adapter?.itemCount != 0) {
-                            val id = if (chatAdapter.getItem((adapter?.itemCount ?: 1) - 2) is ChatUnreadLabelItem) {
-                                (chatAdapter.getItem((adapter?.itemCount ?: 1) - 3) as ChatMessageItem).message.message._id.toInt()
+                            val id = if (chatAdapter.getItem(
+                                    (adapter?.itemCount ?: 1) - 2
+                                ) is ChatUnreadLabelItem
+                            ) {
+                                (chatAdapter.getItem(
+                                    (adapter?.itemCount ?: 1) - 3
+                                ) as ChatMessageItem).message.message._id.toInt()
                             } else {
                                 (chatAdapter.getItem(
                                     (adapter?.itemCount ?: 1) - 2
@@ -150,6 +152,8 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                             presenter.onLoadPreviousMessagesRequest((chatAdapter.getItem(0) as ChatMessageItem).message.message._id.toInt())
                         }
                         //presenter.onLoadNextMessagesRequest()
+                    }, { scroll ->
+                        Log.e("SCROLL", scroll.toString())
                     }
                 ))
                 addOnScrollListener(PositionOffsetScrollListener { position, offset ->
@@ -177,7 +181,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         }
     }
 
-    override fun clearMessageInput() = etMessage.text.clear()
+    override fun clearMessageInput() = mBinding.etMessage.text.clear()
 
     override fun showChatInput(animate: Boolean) {
         if (animate) {
@@ -188,11 +192,11 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                     }
                 })
             }
-            TransitionManager.beginDelayedTransition(root, transition)
+            TransitionManager.beginDelayedTransition(mBinding.root, transition)
         }
 
-        inputContainer.visibility = View.VISIBLE
-        actionContainer.visibility = View.GONE
+        mBinding.inputContainer.visibility = View.VISIBLE
+        mBinding.actionContainer.visibility = View.GONE
     }
 
     override fun showYouBanUser() {
@@ -248,14 +252,14 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         animate: Boolean,
         viewApply: View.() -> Unit
     ) {
-        actionContainer.removeAllViews()
-        layoutInflater.inflate(layout, actionContainer).apply(viewApply)
+        mBinding.actionContainer.removeAllViews()
+        layoutInflater.inflate(layout, mBinding.actionContainer).apply(viewApply)
 
         if (animate) {
-            TransitionManager.beginDelayedTransition(root, Slide(Gravity.BOTTOM))
+            TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.BOTTOM))
         }
-        actionContainer.visibility = View.VISIBLE
-        inputContainer.visibility = View.GONE
+        mBinding.actionContainer.visibility = View.VISIBLE
+        mBinding.inputContainer.visibility = View.GONE
     }
 
     override fun showChatBlockConfirmation() {
@@ -267,7 +271,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
     }
 
     override fun focusOnInput(showKeyboard: Boolean) {
-        etMessage.apply {
+        mBinding.etMessage.apply {
             post {
                 showSoftInputOnFocus = showKeyboard
                 requestFocus()
@@ -278,17 +282,23 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
     }
 
     override fun showSendGroup() {
-        if (sendGroup.visibility == View.VISIBLE && attachGroup.visibility == View.GONE) return
-        TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
-        sendGroup.visibility = View.VISIBLE
-        attachGroup.visibility = View.GONE
+        if (mBinding.sendGroup.visibility == View.VISIBLE && mBinding.attachGroup.visibility == View.GONE) return
+        TransitionManager.beginDelayedTransition(
+            mBinding.inputContainer,
+            getInputActionTransition()
+        )
+        mBinding.sendGroup.visibility = View.VISIBLE
+        mBinding.attachGroup.visibility = View.GONE
     }
 
     override fun showAttachGroup() {
-        if (attachGroup.visibility == View.VISIBLE && sendGroup.visibility == View.GONE) return
-        TransitionManager.beginDelayedTransition(inputContainer, getInputActionTransition())
-        attachGroup.visibility = View.VISIBLE
-        sendGroup.visibility = View.GONE
+        if (mBinding.attachGroup.visibility == View.VISIBLE && mBinding.sendGroup.visibility == View.GONE) return
+        TransitionManager.beginDelayedTransition(
+            mBinding.inputContainer,
+            getInputActionTransition()
+        )
+        mBinding.attachGroup.visibility = View.VISIBLE
+        mBinding.sendGroup.visibility = View.GONE
     }
 
     private fun getInputActionTransition(): Transition {
@@ -314,7 +324,9 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                         onBindListener = { presenter.onChatMessageOnScreen(message.message) }
                     }
                 }
-                is ChatMessage.NewMessages -> ChatUnreadLabelItem(it.count)
+                is ChatMessage.NewMessages -> {
+                    ChatUnreadLabelItem(it.count)
+                }
                 is ChatMessage.Date -> ChatDateItem(it.date)
                 is ChatMessage.Accept -> ChatAcceptItem {
                     it.message.let { message ->
@@ -354,19 +366,22 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
     override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)
 
     override fun scrollToMessagesUnreadItem(position: Int) {
-        val height = rvChat.height
+        val height = mBinding.rvChat.height
         scrollToPositionWithOffset(position, height - height / 4)
     }
 
-    private fun scrollToPosition(position: Int, smooth: Boolean) {
-        if (position < 0) return
-        if (smooth) rvChat?.smoothScrollToPosition(position)
-        else rvChat?.layoutManager?.scrollToPosition(position)
+    private fun scrollToPosition(pos: Int, smooth: Boolean) {
+        if (pos < 0) return
+        if (smooth) mBinding.rvChat?.smoothScrollToPosition(pos)
+        else mBinding.rvChat?.layoutManager?.scrollToPosition(pos)
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         bottomScroller.isEnabled = false
-        (rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, offset)
+        (mBinding.rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+            position,
+            offset
+        )
         bottomScroller.isEnabled = true
     }
 
@@ -375,9 +390,11 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
     }
 
     private fun isChatScrolledToBottom(): Boolean {
-        return (rvChat.layoutManager as LinearLayoutManager).let {
+        return (mBinding.rvChat.layoutManager as LinearLayoutManager).let {
             if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
-            else it.findLastCompletelyVisibleItemPosition() == rvChat.adapter?.itemCount?.minus(1)
+            else it.findLastCompletelyVisibleItemPosition() == mBinding.rvChat.adapter?.itemCount?.minus(
+                1
+            )
         }
     }
 
@@ -402,63 +419,43 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         )
     }
 
+    override fun showProgressLoadingDisplay() {
+        val mProgressView = CustomProgressView(requireContext())
+        mProgressView.setSize(35.dp)
+        mProgressView.setProgressColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.main_brown_color_new
+            )
+        )
+        mBinding.loadingContainer.isVisible = true
+        mBinding.progressViewContainer.addView(mProgressView, 0)
+    }
+
+    override fun hideProgressLoadingDisplay() {
+        mBinding.loadingContainer.isVisible = false
+        mBinding.progressViewContainer.removeAllViews()
+    }
+
     override fun setUserAvatar(url: String) {
         mBinding.ivAvatar.apply {
             setCircleImage(url)
             isEnabled = false
             isClickable = false
         }
-//        toolbarContentActionBar.removeAllRightViews()
-//        ToolbarButton(requireContext()).apply {
-//            setCircleImage(url)
-//            isEnabled = false
-//            isClickable = false
-//            toolbarContentActionBar.addRightView(this)
-//        }
     }
 
     override fun setTitle(title: String) {
-//        toolbarContentActionBar.apply {
-//            getTitleView { setTitle(ellipsizeTitle(this, title)) }
-//        }
         mBinding.tvUserName.text = title
-    }
-
-    private fun ellipsizeTitle(titleView: TextView, title: CharSequence): CharSequence {
-        return titleView.let {
-            val titleSpannable = SpannableStringBuilder(title).apply {
-                if (imageSpan != null) append("  ").setSpan(
-                    imageSpan,
-                    length - 1,
-                    length,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-            TextUtils.ellipsize(
-                titleSpannable,
-                it.paint,
-                (it.width - it.paddingRight - it.paddingLeft).toFloat(),
-                TextUtils.TruncateAt.END
-            )
-        }
     }
 
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
         super.setupToolbarContent(toolbarContentActionBar)
-//        this.toolbarContentActionBar = toolbarContentActionBar
-//        toolbarContentActionBar.apply {
-//            setOnToolbarClickListener { presenter.onUserClick() }
-//        }
     }
 
     override fun hideKeyboard() {
-        super.hideKeyboard(etMessage)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        //toolbarContentActionBar.apply { setOnToolbarClickListener(null) }
+        super.hideKeyboard(mBinding.etMessage)
     }
 
     override fun layout() = R.layout.fragment_chat

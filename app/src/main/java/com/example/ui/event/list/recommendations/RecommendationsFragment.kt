@@ -2,6 +2,7 @@ package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,6 +16,7 @@ import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.IS_EXPANDED
@@ -104,6 +106,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun setData(events: List<EventNew?>) {
+        mBinding.noDataPlaceholder.isVisible = false
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroupNew(
@@ -115,7 +118,9 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        dataGroup.clear()
+        mBinding.noDataPlaceholder.isVisible = true
+        //dataGroup.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message))))
         mBinding.swipeToRefresh.isRefreshing = false
     }
 

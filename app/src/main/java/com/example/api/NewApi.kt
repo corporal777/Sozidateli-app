@@ -3,6 +3,7 @@ package com.example.api
 import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
+import com.example.ui.chat.body.MessageBodyNew
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -408,6 +409,10 @@ interface NewApi {
 
     @POST("v1/chat-message")
     fun sendChatMessage(@Body body: RequestBody): Single<MessageModel>
+
+    //+
+    @POST("v1/chat-message")
+    fun sendChatMessageNew(@Body body: MessageBodyNew): Single<MessageModel>
 
     @GET("v1/chat-message")
     fun getChatMessages(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>>
