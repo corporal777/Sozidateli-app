@@ -41,10 +41,6 @@ class QrScannerToAuthWebFragment : BaseFragment(), QrScannerToAuthWebContract.Vi
         ivClose.setOnClickListener {
             findNavController().navigateUp()
         }
-        tvAuthWebSite.setOnClickListener {
-
-        }
-
     }
 
 

@@ -17,12 +17,6 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
             prefs.edit().putString(SELECTED_EVENT, value).commit()
         }
 
-    override var userToken: String?
-        get() = prefs.getString(USER_TOKEN, null)
-        @SuppressLint("ApplySharedPref")
-        set(value) {
-            prefs.edit().putString(USER_TOKEN, value).commit()
-        }
 
     override var isFCMTokenSent: Boolean
         get() = prefs.getBoolean(FCM_TOKEN_SENT, false)
@@ -46,10 +40,33 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
             prefs.edit().putBoolean(STORIES, value).commit()
         }
 
+    override var userToken: String?
+        get() = prefs.getString(USER_TOKEN, null)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putString(USER_TOKEN, value).commit()
+        }
+
+    override var uniqueDeviceId: String?
+        get() = prefs.getString(USER_DEVICE_ID, null)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putString(USER_DEVICE_ID, value).commit()
+        }
+
+    override var attemptsOfChangePassword: Int
+        get() = prefs.getInt(USER_ATTEMPTS, 0)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putInt(USER_ATTEMPTS, value).commit()
+        }
+
 
     companion object {
         const val SELECTED_EVENT = "selected_event"
         const val USER_TOKEN = "user_token"
+        const val USER_DEVICE_ID = "user_device"
+        const val USER_ATTEMPTS = "user_attempts"
         const val FCM_TOKEN_SENT = "fcm_token_sent"
         const val USER_ID = "user_id"
         const val STORIES = "stories"

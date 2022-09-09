@@ -29,12 +29,15 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class EventRegistrationPresenter
@@ -56,6 +59,13 @@ class EventRegistrationPresenter
     private var takeFileMaybe: MaybeSubject<Uri>? = null
     private var formId: Int? = null
     private var approvingMode: String? = null
+    lateinit var cleanResult: EventRegisterData
+    private var mDy = 0
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy += value
+        viewState.setAppBarElevation(abs(mDy / 10f))
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -107,68 +117,106 @@ class EventRegistrationPresenter
                                 val fieldsList = mapFields(form?.fields)
                                 formId = form?.id
 
-
                                 compositeDisposable += eventRepository.getEventFormResult(
                                     mutableMapOf<String, Any>().apply {
                                         put(EVENT_FORM_RESULT_FORM_ID, formId ?: 0)
                                         put(EVENT_FORM_RESULT_USER_ID, appData.getId())
                                     }
-                                ).withCheckInternetConnectivity()
+                                )
+                                    .withCheckInternetConnectivity()
                                     .performOnBackgroundOutOnMain()
                                     .withLoadingDialog(viewState)
                                     .subscribeSimple { fieldsResult ->
-                                        val fieldsResultList = mapFieldsResult(
+                                        //set clean data
+                                        var fieldsResultList = mapFieldsResult(
                                             fieldsResult.data.firstOrNull { it.form == formId }?.fields,
                                             fieldsList
                                         )
-
-                                        val fieldsDataApi = createFieldsData(
+                                        var fieldsDataApi = createFieldsData(
                                             fieldsList, /*registration.fields*/
                                             fieldsResultList
                                         )
-
-                                        val result = EventRegisterData(
+                                        cleanResult = EventRegisterData(
                                             eventData, null, null,
                                             listOf(EventGroup("", "")),
                                             fieldsDataApi ?: emptyList()
                                         )
 
-                                        viewState.apply {
-                                            val hasForm =
-                                                result.groups.isNotEmpty() || result.fieldsData.isNotEmpty()
-                                            hasGroup = result.groupField != null
-                                            selectedGroup = result.selectedGroup
-                                            fieldsData = result.fieldsData
-                                            invalidFieldsData =
-                                                fieldsData.filter { field -> !field.isValid() }
-                                                    .toMutableSet()
-                                            setFields(
-                                                result.event,
-                                                result.groupField,
-                                                result.selectedGroup,
-                                                result.groups,
-                                                result.fieldsData,
-                                                hasForm
-                                            )
-
-                                            if (hasForm) {
-                                                checkDataValid()
-                                            } else {
-                                                val agreement = result.event.userAgreement
-                                                if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ agreement.isNullOrEmpty()) {
-                                                    viewState.showEventRegisterConfirmation()
-                                                } else {
-                                                    viewState.showAgreementRegisterDialog(agreement)
-                                                }
+                                        compositeDisposable += eventRepository.getEventFormResultDraft(
+                                            formId ?: 0,
+                                            mutableMapOf<String, Any>().apply {
+                                                put(EVENT_FORM_RESULT_FORM_ID, formId ?: 0)
+                                                put(EVENT_FORM_RESULT_USER_ID, appData.getId())
                                             }
-                                        }
+                                        )
+                                            .performOnBackgroundOutOnMain()
+                                            .withLoadingDialog(viewState)
+                                            .subscribeSimple(
+                                                onError = {
+                                                    it.printStackTrace()
+                                                    initEventFormResultData(cleanResult)
+                                                },
+                                                onSuccess = { draft ->
+                                                    if (draft.fields.isNullOrEmpty()) {
+                                                        initEventFormResultData(cleanResult)
+                                                    } else {
+                                                        fieldsResultList = mapFieldsResult(
+                                                            draft.fields,
+                                                            fieldsList
+                                                        )
+                                                        fieldsDataApi = createFieldsData(
+                                                            fieldsList, /*registration.fields*/
+                                                            fieldsResultList
+                                                        )
+                                                        val draftResult = EventRegisterData(
+                                                            eventData, null, null,
+                                                            listOf(EventGroup("", "")),
+                                                            fieldsDataApi ?: emptyList()
+                                                        )
+                                                        viewState.showLoadSavedFormResultDraftDialog(
+                                                            draftResult
+                                                        )
+                                                    }
+                                                })
                                     }
+
                             }
                         }
                 } else {
                     registerToEvent()
                 }
             }
+    }
+
+
+    override fun initEventFormResultData(result: EventRegisterData) {
+        val hasForm =
+            result.groups.isNotEmpty() || result.fieldsData.isNotEmpty()
+        hasGroup = result.groupField != null
+        selectedGroup = result.selectedGroup
+        fieldsData = result.fieldsData
+        invalidFieldsData =
+            fieldsData.filter { field -> !field.isValid() }
+                .toMutableSet()
+
+        viewState.setFields(
+            result.event,
+            result.groupField,
+            result.selectedGroup,
+            result.groups,
+            result.fieldsData,
+            hasForm
+        )
+        if (hasForm) {
+            checkDataValid()
+        } else {
+            val agreement = result.event.userAgreement
+            if (agreement.isNullOrEmpty()) {
+                viewState.showEventRegisterConfirmation()
+            } else {
+                viewState.showAgreementRegisterDialog(agreement)
+            }
+        }
     }
 
     private fun registerToEvent() {
@@ -280,7 +328,155 @@ class EventRegistrationPresenter
     }
 
     override fun onRegisterClick() {
-        compositeDisposable += Single.fromCallable {
+        compositeDisposable += getRequestBody(false)
+            .flatMap { /*eventRepository.eventRegister(eventId, it)*/
+                eventRepository.eventRegisterNew(it)
+            }
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    val group = selectedGroup
+                    val fieldsData = fieldsData
+                    if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    registerToEvent()
+                    //viewState.showSuccessRegister(approvingMode)
+                })
+    }
+
+    override fun onBackClick() {
+        if (fieldsData.filter { f -> f.value != null }.isNullOrEmpty()) {
+            viewState.navigateUp()
+        } else {
+            viewState.showSaveFormResultDraftDialog()
+        }
+    }
+
+    override fun saveEventFormResultDraft() {
+        compositeDisposable += getRequestBody(true)
+            .flatMap { body -> eventRepository.saveEventFormResultDraft(body) }
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.navigateUp() }
+            )
+    }
+
+    override fun onSuccessCancel() {
+        viewState.navigateUp()
+    }
+
+    override fun onSuccessGoToList() {
+        viewState.showEventLists()
+    }
+
+    override fun onSuccessGoToEvent() {
+        /*compositeDisposable += eventRepository.setDefaultEvent(eventId)
+                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+                .andThen(eventData.load(eventId))
+                .withCheckInternetConnectivity()
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple { viewState.showEvent() }*/
+
+        compositeDisposable += eventRepository.addEventToCalendar(
+            EventCalendarBody(
+                appData.getId(),
+                EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, eventId.toInt())
+            )
+        )
+            .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
+            .andThen(eventData.load(eventId))
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple { viewState.showEvent() }
+    }
+
+
+    override fun onRegisterCancelClick() {
+        viewState.navigateUp()
+    }
+
+    override fun onSelectedGroupChange(groupId: String?) {
+        selectedGroup = groupId
+        checkDataValid()
+    }
+
+    private fun checkDataValid() {
+        viewState.enableActionButton((!hasGroup || selectedGroup != null) && invalidFieldsData.isEmpty())
+    }
+
+    override fun onPersonalDataFileClick(url: String) {
+        viewState.openUrl(url)
+    }
+
+    override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) {
+        takeFileMaybe?.onComplete()
+        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .flatMapMaybe {
+                if (it) {
+                    viewState.openFileSelector()
+                    MaybeSubject.create<Uri>().apply { takeFileMaybe = this }
+                } else Maybe.error<Uri>(PermissionNotGrantedException())
+            }
+            .subscribeSimple(
+                onError = {
+                    if (it is PermissionNotGrantedException) {
+                        viewState.showToast(R.string.event_register_file_no_permission)
+                    } else {
+                        it.printStackTrace()
+                    }
+                }, onNext = { path ->
+                    val nameAndExtension = (path.fileName(contentResolver)
+                        ?: path.toString()).getFileNameAndExtension()
+
+                    val fileName = nameAndExtension.first
+                    val fileExtension = nameAndExtension.second
+
+                    val availableExtensions = field.field.values ?: emptyList()
+                    val contains = availableExtensions.isEmpty() || availableExtensions.find {
+                        val availableExtension = it.toLowerCase(Locale.getDefault())
+                        availableExtension == fileExtension || fileExtension == "jpg" && availableExtension == "jpeg"
+                    } != null
+
+                    if (contains) {
+                        field.value = EventFile(path, fileName, fileExtension)
+                        viewState.updateFileField(field.field.id)
+                    } else {
+                        viewState.showWrongFileExtensions(availableExtensions)
+                    }
+                })
+    }
+
+    override fun onFileSelected(path: Uri) {
+        takeFileMaybe?.onSuccess(path)
+    }
+
+    override fun onFileSelectionCancel() {
+        takeFileMaybe?.onComplete()
+    }
+
+    override fun onReceiveApiError(apiError: ApiError) {
+        super.onReceiveApiError(apiError)
+        val toast = when {
+            apiError.errors.contains(API_ERROR_ALREADY_APPROVED) -> R.string.event_register_already_approved_error
+            apiError.errors.contains(API_ERROR_REGISTRATION_CLOSED) -> R.string.event_register_closed_error
+            else -> R.string.event_register_form_request_error
+        }
+
+        viewState.showToast(toast)
+    }
+
+
+    private fun getRequestBody(isDraft: Boolean): Single<RequestBody> {
+        return Single.fromCallable {
             val group = selectedGroup
             val fieldsData = fieldsData
             if (group == null && fieldsData.isEmpty()) return@fromCallable "".toRequestBody()
@@ -382,136 +578,14 @@ class EventRegistrationPresenter
                             }
                         }
                     }
-
+                    addFormDataPart("isDraft", isDraft.toString())
                     if (!added) {
                         return@fromCallable "".toRequestBody()
                     }
                 }
                 .build()
         }
-            .flatMap { /*eventRepository.eventRegister(eventId, it)*/eventRepository.eventRegisterNew(
-                it
-            )
-            }
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    val group = selectedGroup
-                    val fieldsData = fieldsData
-                    if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    registerToEvent()
-                    //viewState.showSuccessRegister(approvingMode)
-                })
-    }
 
-    override fun onSuccessCancel() {
-        viewState.navigateUp()
-    }
-
-    override fun onSuccessGoToList() {
-        viewState.showEventLists()
-    }
-
-    override fun onSuccessGoToEvent() {
-        /*compositeDisposable += eventRepository.setDefaultEvent(eventId)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(eventId))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.showEvent() }*/
-
-        compositeDisposable += eventRepository.addEventToCalendar(
-            EventCalendarBody(
-                appData.getId(),
-                EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, eventId.toInt())
-            )
-        )
-            .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-            .andThen(eventData.load(eventId))
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribeSimple { viewState.showEvent() }
-    }
-
-    override fun onRegisterCancelClick() {
-        viewState.navigateUp()
-    }
-
-    override fun onSelectedGroupChange(groupId: String?) {
-        selectedGroup = groupId
-        checkDataValid()
-    }
-
-    private fun checkDataValid() {
-        viewState.enableActionButton((!hasGroup || selectedGroup != null) && invalidFieldsData.isEmpty())
-    }
-
-    override fun onPersonalDataFileClick(url: String) {
-        viewState.openUrl(url)
-    }
-
-    override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) {
-        takeFileMaybe?.onComplete()
-        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .flatMapMaybe {
-                if (it) {
-                    viewState.openFileSelector()
-                    MaybeSubject.create<Uri>().apply { takeFileMaybe = this }
-                } else Maybe.error<Uri>(PermissionNotGrantedException())
-            }
-            .subscribeSimple(
-                onError = {
-                    if (it is PermissionNotGrantedException) {
-                        viewState.showToast(R.string.event_register_file_no_permission)
-                    } else {
-                        it.printStackTrace()
-                    }
-                }, onNext = { path ->
-                    val nameAndExtension = (path.fileName(contentResolver)
-                        ?: path.toString()).getFileNameAndExtension()
-
-                    val fileName = nameAndExtension.first
-                    val fileExtension = nameAndExtension.second
-
-                    val availableExtensions = field.field.values ?: emptyList()
-                    val contains = availableExtensions.isEmpty() || availableExtensions.find {
-                        val availableExtension = it.toLowerCase(Locale.getDefault())
-                        availableExtension == fileExtension || fileExtension == "jpg" && availableExtension == "jpeg"
-                    } != null
-
-                    if (contains) {
-                        field.value = EventFile(path, fileName, fileExtension)
-                        viewState.updateFileField(field.field.id)
-                    } else {
-                        viewState.showWrongFileExtensions(availableExtensions)
-                    }
-                })
-    }
-
-    override fun onFileSelected(path: Uri) {
-        takeFileMaybe?.onSuccess(path)
-    }
-
-    override fun onFileSelectionCancel() {
-        takeFileMaybe?.onComplete()
-    }
-
-    override fun onReceiveApiError(apiError: ApiError) {
-        super.onReceiveApiError(apiError)
-        val toast = when {
-            apiError.errors.contains(API_ERROR_ALREADY_APPROVED) -> R.string.event_register_already_approved_error
-            apiError.errors.contains(API_ERROR_REGISTRATION_CLOSED) -> R.string.event_register_closed_error
-            else -> R.string.event_register_form_request_error
-        }
-
-        viewState.showToast(toast)
     }
 
     companion object {

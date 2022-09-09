@@ -365,6 +365,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23854980468749992" />
         <entry key="app/src/main/res/layout/activity_main_new.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/bottom_sheet_calendar.xml" value="0.26489512125651044" />
+        <entry key="app/src/main/res/layout/bottom_sheet_change_password.xml" value="0.2270297377856809" />
         <entry key="app/src/main/res/layout/bottom_sheet_session.xml" value="0.2746983846028645" />
         <entry key="app/src/main/res/layout/calendar_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/custom_calendar_day.xml" value="0.3098958333333333" />
@@ -386,11 +387,14 @@
         <entry key="app/src/main/res/layout/dialog_event_registration_agreement_form.xml" value="0.27471516927083334" />
         <entry key="app/src/main/res/layout/dialog_event_registration_agreement_no_form.xml" value="0.23293813069661456" />
         <entry key="app/src/main/res/layout/dialog_event_registration_profile_fields.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/dialog_event_registration_request.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/dialog_fill_profile.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dialog_finish_register.xml" value="0.3252873738606771" />
         <entry key="app/src/main/res/layout/dialog_get_max_state.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dialog_info.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dialog_message_with_gray_button.xml" value="0.32427673339843754" />
+        <entry key="app/src/main/res/layout/dialog_no_work.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/dialog_password_recovery.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/dialog_rounded_corners.xml" value="0.30885416666666665" />
         <entry key="app/src/main/res/layout/dialog_speaker_status_info.xml" value="0.2923055013020833" />
         <entry key="app/src/main/res/layout/dialog_title_message.xml" value="0.3098958333333333" />
@@ -399,10 +403,11 @@
         <entry key="app/src/main/res/layout/fragment_about.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_about_event.xml" value="0.21954803466796874" />
         <entry key="app/src/main/res/layout/fragment_about_event_new.xml" value="0.1905263440362338" />
-        <entry key="app/src/main/res/layout/fragment_activitys.xml" value="0.24951782226562502" />
+        <entry key="app/src/main/res/layout/fragment_activitys.xml" value="0.15277099609375" />
         <entry key="app/src/main/res/layout/fragment_auth_web.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_auth_website.xml" value="0.31231903076171874" />
         <entry key="app/src/main/res/layout/fragment_authorization.xml" value="0.2791127522786458" />
+        <entry key="app/src/main/res/layout/fragment_base_state_interests.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/fragment_change_account.xml" value="0.1043665568033854" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.2022725423177083" />
         <entry key="app/src/main/res/layout/fragment_chat_list.xml" value="0.1427708943684896" />
@@ -411,21 +416,24 @@
         <entry key="app/src/main/res/layout/fragment_confirm_password.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_confirm_phone.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_edit_degree.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_edit_education_fragment.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_edit_work_fragment.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_edit_education_fragment.xml" value="0.20215504964192704" />
+        <entry key="app/src/main/res/layout/fragment_edit_work_fragment.xml" value="0.20655263264973955" />
         <entry key="app/src/main/res/layout/fragment_enter_code.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_event_contacts.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_event_schedule.xml" value="0.2175925925925926" />
         <entry key="app/src/main/res/layout/fragment_event_speakers.xml" value="0.15598042805989581" />
         <entry key="app/src/main/res/layout/fragment_event_tabs.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_finish_register.xml" value="0.22057818951119532" />
+        <entry key="app/src/main/res/layout/fragment_finish_register.xml" value="0.19015045166015626" />
         <entry key="app/src/main/res/layout/fragment_invite_list.xml" value="0.20033783783783785" />
         <entry key="app/src/main/res/layout/fragment_invite_register.xml" value="0.2361111111111111" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.264348461009838" />
+        <entry key="app/src/main/res/layout/fragment_main_info.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.22093353271484378" />
         <entry key="app/src/main/res/layout/fragment_map_new.xml" value="0.2307393391927083" />
         <entry key="app/src/main/res/layout/fragment_map_tabs.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_max_state_education.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/fragment_max_state_work.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/fragment_my_events.xml" value="0.18135528564453127" />
         <entry key="app/src/main/res/layout/fragment_my_schedule_events.xml" value="0.17695770263671867" />
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.31553192138671876" />
@@ -434,22 +442,22 @@
         <entry key="app/src/main/res/layout/fragment_partner.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.2674754666685229" />
         <entry key="app/src/main/res/layout/fragment_qr_scanner.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_recommendations.xml" value="0.2559984479631696" />
-        <entry key="app/src/main/res/layout/fragment_recovery_password.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_recommendations.xml" value="0.12187216622488835" />
+        <entry key="app/src/main/res/layout/fragment_recovery_password.xml" value="0.24832967122395833" />
         <entry key="app/src/main/res/layout/fragment_register_email.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_register_email_new.xml" value="0.19101003011067696" />
-        <entry key="app/src/main/res/layout/fragment_request.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_request.xml" value="0.2131490071614583" />
         <entry key="app/src/main/res/layout/fragment_search_tabs.xml" value="0.2822179903735761" />
         <entry key="app/src/main/res/layout/fragment_splash.xml" value="0.18679707845052093" />
         <entry key="app/src/main/res/layout/fragment_stories.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_subevent.xml" value="0.25193290078178954" />
         <entry key="app/src/main/res/layout/fragment_tags.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_user.xml" value="0.2655434539699256" />
-        <entry key="app/src/main/res/layout/fragment_user_edit.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_user_edit.xml" value="0.19335988362630208" />
         <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.15817921956380204" />
-        <entry key="app/src/main/res/layout/fragment_user_profile_contacts.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_user_profile_contacts.xml" value="0.18456471761067705" />
         <entry key="app/src/main/res/layout/fragment_user_profile_interests.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_user_profile_main_data.xml" value="0.42409791766472593" />
+        <entry key="app/src/main/res/layout/fragment_user_profile_main_data.xml" value="0.1690381032116009" />
         <entry key="app/src/main/res/layout/fragment_user_profile_settings.xml" value="0.2187347412109375" />
         <entry key="app/src/main/res/layout/fragment_user_sessions.xml" value="0.2099085489908854" />
         <entry key="app/src/main/res/layout/fragment_user_speaker.xml" value="0.2915061020269627" />
@@ -463,6 +471,7 @@
         <entry key="app/src/main/res/layout/item_calendar_list_pager.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_calendar_month_day.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_calendar_week_day.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/item_chat_message_text.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_chat_unread_label.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_current_session.xml" value="0.17137196858723955" />
         <entry key="app/src/main/res/layout/item_day.xml" value="0.1757695515950521" />
@@ -476,7 +485,7 @@
         <entry key="app/src/main/res/layout/item_event_data_list.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_detail_action_block.xml" value="0.2874969482421875" />
         <entry key="app/src/main/res/layout/item_event_detail_activities_block.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/item_event_detail_image_block.xml" value="0.2175465901692708" />
+        <entry key="app/src/main/res/layout/item_event_detail_image_block.xml" value="0.271689497716895" />
         <entry key="app/src/main/res/layout/item_event_detail_information_block.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_detail_label_block.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_detail_main_block.xml" value="0.165" />
@@ -515,10 +524,15 @@
         <entry key="app/src/main/res/layout/item_partners_title.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_profile_button_edit_new.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_profile_data_current_user.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/item_profile_data_edit_education_level.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/item_profile_data_edit_no_work_new.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_profile_data_education.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_profile_data_education_level.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_profile_data_user.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_recommendations_header.xml" value="0.24072265625000003" />
+        <entry key="app/src/main/res/layout/item_register_event_header.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/item_register_event_input.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/item_register_event_selector.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/item_screen_header_label.xml" value="0.12800598144531244" />
         <entry key="app/src/main/res/layout/item_screen_label.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_search_activity.xml" value="0.23988155683277554" />
@@ -557,6 +571,7 @@
         <entry key="app/src/main/res/layout/layout_list_search.xml" value="0.19015045166015626" />
         <entry key="app/src/main/res/layout/layout_no_internet.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/view_password.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/view_password_new.xml" value="0.1827475058065878" />
         <entry key="app/src/main/res/layout/view_toolbar_content.xml" value="0.2637379964192708" />
         <entry key="app/src/main/res/menu/main_bottom_nav_menu.xml" value="0.3098958333333333" />
       </map>

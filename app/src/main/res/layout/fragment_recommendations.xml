@@ -101,7 +101,9 @@
                     android:longClickable="false"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TouchTargetSizeCheck"
+                    tools:layout_editor_absoluteX="10dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -168,6 +170,21 @@
                 android:textSize="17sp"
                 tools:ignore="MissingPrefix" />
         </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/ic_arrow_top"
+            app:backgroundTint="@color/colorAccent"
+            app:fabSize="normal"
+            android:visibility="gone"
+            app:layout_anchor="@id/events_list"
+            app:layout_anchorGravity="end|bottom|right"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+            app:tint="@color/colorPrimary"
+            app:useCompatPadding="true"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

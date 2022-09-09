@@ -67,8 +67,6 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
         if (tags == null || tags.isEmpty()) tagsSection.update(emptyList())
         else tagsSection.update(listOf(TagsHorizontalListItem(tags, {
             presenter.onTagSelectedListChange()
-        }, {
-            presenter.onShowAllTagsClick()
         })))
     }
 

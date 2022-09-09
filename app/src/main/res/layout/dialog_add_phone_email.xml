@@ -73,7 +73,7 @@
             android:lineSpacingExtra="2dp"
             android:textColor="@color/auth_title_text"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnResend"
+            app:layout_constraintBottom_toTopOf="@+id/tvCode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

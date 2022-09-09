@@ -10,13 +10,14 @@ import com.example.ui.base.BaseContract
 interface AboutEventContractNew {
     interface View : BaseContract.View {
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        //@StateStrategyType(AddToEndSingleStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEventData(
             eventData: EventNew?,
             pages: List<PageModel>?,
             members: List<MemberModel>?,
             partners: List<PartnerModel>?,
-            tags: List<Tag>,
+            tags: List<Tag>
         )
 
         @StateStrategyType(AddToEndSingleStrategy::class)

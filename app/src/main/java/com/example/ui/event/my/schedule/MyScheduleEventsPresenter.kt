@@ -7,35 +7,26 @@ import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
-import com.example.data.models.Event
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleCalendarDay
-import com.example.di.Connectivity
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.repository.EventRepository
-import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.my.schedule.items.MyScheduleEventsData
-import com.example.ui.event.my.schedule.items.MyScheduleSubEventsGroup
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.util.getDaysFromDateToDate
 import com.example.util.getMonthName
 import com.google.gson.Gson
 import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 @InjectViewState
@@ -56,7 +47,6 @@ class MyScheduleEventsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showProgressBarLoadingDialog()
         getEventsList()
     }
 
@@ -223,7 +213,6 @@ class MyScheduleEventsPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    setSearchContent()
                     setContent(listReadyEvents)
                     if (canScrollContent) {
                         scrollContent(nearDay)

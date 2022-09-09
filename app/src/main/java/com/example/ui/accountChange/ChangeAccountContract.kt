@@ -26,12 +26,6 @@ interface ChangeAccountContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showLoginFragment(login : String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showProgressLoading()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideProgressLoading()
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {

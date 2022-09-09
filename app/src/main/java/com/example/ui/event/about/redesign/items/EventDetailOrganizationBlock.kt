@@ -1,16 +1,19 @@
 package com.example.ui.event.about.redesign.items
 
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
+import parseColor
 
 class EventDetailOrganizationBlock(
     private val eventData: EventNew?,
     private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
-    private val onOrganizationClick : (id : String) -> Unit
+    private val onOrganizationClick: (id: String) -> Unit
 ) : BindableItem<ItemEventDetailOrganizationBlockBinding>() {
 
 
@@ -20,15 +23,31 @@ class EventDetailOrganizationBlock(
     private var isFavorite: Boolean = eventData?.binds?.organization?.binds?.userFavorite != null
 
 
-    private val organizationLogo = eventData?.binds?.organization?.logo?.uri
-        ?: "https://www.laplandiya.org/uploads/pages/1545/img/news-20171130-1512033017-ysxmq6.jpg"
-
+    private val organizationLogo = eventData?.binds?.organization?.logo?.uri ?: ""
+    private val backgroundColor = eventData?.binds?.organization?.backgroundColor?.value
 
     override fun bind(viewBinding: ItemEventDetailOrganizationBlockBinding, position: Int) {
         viewBinding.apply {
 
             tvOrganizationLabel.text = organizationName
-            ivOrganizationLogo.setImage(organizationLogo)
+
+            if (organizationLogo.isNullOrEmpty()) {
+                tvOrganizationNameNoImage.apply {
+                    isVisible = true
+                    text = organizationName
+                }
+                ivOrganizationLogo.apply {
+                    setBackgroundColor(
+                        backgroundColor.parseColor() ?: ResourcesCompat.getColor(
+                            resources,
+                            R.color.event_item_no_image_background,
+                            null
+                        )
+                    )
+                }
+            }else {
+                ivOrganizationLogo.setImage(organizationLogo)
+            }
 
             btnActionFavorite.apply {
                 setAction(getAction())

@@ -1,6 +1,7 @@
 package com.example.ui.editwork
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -67,7 +68,8 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
             btnEdit.setOnClickListener {
                 val currentList = adapter.currentList.toMutableList()
                 val onlyWorks = currentList.filter { it.type == WORK_ITEM }
-                if (onlyWorks[onlyWorks.size - 1].isDataValid) {
+
+                if (!onlyWorks.isNullOrEmpty() && onlyWorks[onlyWorks.size - 1].isDataValid) {
                     showEditWarning(
                         presenter.getBaseUserState(),
                         presenter.getMaxUserState(), false, false
@@ -94,9 +96,14 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
                         presenter.onSaveWorkClick(result)
                     }
                 } else {
-                    currentList[currentList.size - 2].showErrors = true
-                    adapter.submitList(currentList)
-                    adapter.notifyItemChanged(currentList.size - 2)
+                    if (adapter.isHas) {
+                        val result = WorkExperienceServerModel(true, null)
+                        presenter.onSaveWorkClick(result)
+                    } else {
+                        currentList[currentList.size - 2].showErrors = true
+                        adapter.submitList(currentList)
+                        adapter.notifyItemChanged(currentList.size - 2)
+                    }
                 }
             }
         }
@@ -183,21 +190,31 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
                 .setSelectCallback { isDelete ->
                     if (isDelete)
                         updateListHasWork(hasWork, holder)
-                    else updateListHasWork(!hasWork, holder)
+                    //else updateListHasWork(!hasWork, holder)
                 }
         } else updateListHasWork(hasWork, holder)
     }
 
     private fun updateListHasWork(hasWork: Boolean, holder: ItemProfileDataEditNoWorkNewBinding) {
         val currentList = adapter.currentList.toMutableList()
+        val onlyWorks = adapter.currentList.toMutableList().filter { it.type == WORK_ITEM }
         currentList.forEach {
             it.hasWork = hasWork
         }
         adapter.submitList(currentList)
-        adapter.notifyItemRangeChanged(1, currentList.size - 1)
-        holder.scNoExperience.isChecked = hasWork
+        if (!onlyWorks.isNullOrEmpty()) {
+            adapter.notifyItemRangeChanged(1, currentList.size - 1)
+            holder.scNoExperience.isChecked = hasWork
+        } else {
+            if (!hasWork) {
+                adapter.notifyDataSetChanged()
+                addMoreWork()
+            }
+            holder.scNoExperience.isChecked = hasWork
+        }
+//        adapter.notifyItemRangeChanged(1, currentList.size - 1)
+//        holder.scNoExperience.isChecked = hasWork
     }
-
 
 
     override fun setWorkData(user: UserDetail) {

@@ -13,8 +13,7 @@ import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
 
 class TagsHorizontalListItem(
     private val tags: List<Tag>,
-    private val onSelectedChange: () -> Unit,
-    private val onShowAllClick: () -> Unit
+    private val onSelectedChange: () -> Unit
 ) : Item() {
 
     @SuppressLint("ResourceAsColor", "ResourceType")

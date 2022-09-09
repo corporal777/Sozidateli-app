@@ -43,6 +43,7 @@ import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onScrolled
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
@@ -81,13 +82,11 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
         super.onViewCreated(view, savedInstanceState)
         setToolbarTitle(getString(R.string.profile_work_organization))
         mBinding.apply {
-            scrollContainer.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            scrollContainer.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
                 presenter.onScrollPositionChange(scrollY)
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
-            })
-
+            }
             llContent.isVisible = false
-
             btnAction.apply {
                 setOnClickListener {
                     when (action) {

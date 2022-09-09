@@ -2,6 +2,7 @@ package com.example.ui.event.about.redesign.items
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.widget.Button
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -12,11 +13,16 @@ import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
-import com.example.extensions.*
+import com.example.extensions.dateFormatterShortDayFullMothShortYear
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.parseAndFormat
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
+import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
 import java.util.*
+
 
 class EventDetailActionBlock(
     var eventData: EventNew?,
@@ -54,7 +60,7 @@ class EventDetailActionBlock(
                 mCanShowDate = !limitDate.isNullOrEmpty()
                 mDate = "Заявки принимаются по $limitDate"
             }
-        }else {
+        } else {
             mCanShowDate = !limitDate.isNullOrEmpty()
             mDate = "Заявки принимаются по $limitDate"
         }
@@ -69,7 +75,13 @@ class EventDetailActionBlock(
                     tvRequestsDate.text = mDate
                 }
             }
-            tvDescription.text = eventData?.description
+            //tvDescription.text = eventData?.description
+
+            markWon(viewBinding.root.context).setMarkdown(
+                tvDescription,
+                eventData?.description ?: ""
+            );
+
             if (!mFormat.name.isNullOrEmpty()) {
                 formatLn.isVisible = true
                 tvFormat.text = mFormat.name

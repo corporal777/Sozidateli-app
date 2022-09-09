@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.ChatMessage
+import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
 
@@ -17,7 +18,8 @@ class ChatMessageTextItem(
         super.bind(viewHolder, position)
         viewHolder.apply {
             tvChatMessage.apply {
-                text = message.message.message
+                markWon(context).setMarkdown(this, message.message.message)
+                //text = message.message.message
                 setTextColor(ContextCompat.getColor(context, if (message.isMyMessage) R.color.chat_message_text_outgoing
                 else R.color.chat_message_text_incoming))
             }

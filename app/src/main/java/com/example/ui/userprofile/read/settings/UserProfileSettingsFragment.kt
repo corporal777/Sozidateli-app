@@ -4,12 +4,10 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.util.Linkify
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -20,10 +18,15 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileSettingsBinding
-import com.example.extensions.*
+import com.example.extensions.parsePhone
+import com.example.extensions.showChangeEmailCompleteDialog
+import com.example.extensions.showChangeEmailDialog
+import com.example.extensions.showNewChangeEmailDialog
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.ChangePasswordBottomSheetFragment
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
@@ -44,6 +47,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     private var isConfirmed = false
 
     private lateinit var mUser: UserDetail
+    private var changePasswordDialog: ChangePasswordBottomSheetFragment? = null
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -178,18 +182,9 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
         mBinding.apply {
             tvUserName.text = user.name
             tvUserLastName.text = user.lastName
-//            clMiddleName.apply {
-//                isVisible != user.getMiddleName().isNullOrEmpty()
-//            }
             tvUserMiddleName.text = user.getMiddleName()
-            //tilSurname.initNameInput(user.lastName)
-            //tilName.initNameInput(user.name)
-            //tilMiddleName.initNameInput(user.getMiddleName())
-            //tvPhoneMobile.isVisible = phone != null
-            //tvPhoneMobileTitle.isVisible = phone != null
-            //btnPhoneEdit.isVisible = phone != null
-            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
 
+            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
             //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
             //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
             //if (user.blockedNotifications?.organizations == true){
@@ -319,26 +314,54 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    //override fun showChangePassword() = showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
-    var newPassDialog: ChangePasswordDialog? = null
+    //var newPassDialog: ChangePasswordDialog? = null
 
     override fun showChangePassword() {
-        newPassDialog = ChangePasswordDialog(requireActivity())
-            .setSelectCallback {
-                presenter.checkPasswordValid(it.oldPassword, it.newPassword)
-            }
+        changePasswordDialog = ChangePasswordBottomSheetFragment()
+        changePasswordDialog?.show(requireActivity().supportFragmentManager, "change_password_dialog")
+        changePasswordDialog?.setOnNextActionCallback { password ->
+            presenter.checkPasswordValid(password)
+        }
+        changePasswordDialog?.setOnRecoveryPasswordActionCallback {
+            changePasswordDialog = null
+            showRecoveryPassword("")
+        }
     }
 
-    override fun showOldPasswordError() {
-        newPassDialog?.showInvalidCurrentPassword()
+    override fun showOldPasswordError(attempts: Int) {
+        changePasswordDialog?.setPasswordIsNotCorrect(attempts)
     }
 
-    override fun hideNewPasswordDialog() {
-        newPassDialog?.closeDialog()
-        newPassDialog = null
+
+    override fun showNewPasswordTypingContent() {
+        changePasswordDialog?.setPasswordIsCorrect()
+        changePasswordDialog?.setOnSavePasswordActionCallback { password ->
+            presenter.onChangePasswordClickConfirm(password)
+        }
     }
 
-    override fun showPasswordChangeComplete() = showPasswordChangeCompleteDialog()
+
+    override fun showLoginAgainDialog() {
+        MessageDialogWithBrownButton(
+            requireContext(),
+            "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново.",
+            false
+        ).setSelectCallback {
+            presenter.logoutFromAccount()
+            changePasswordDialog?.dismiss()
+            changePasswordDialog = null
+        }
+    }
+
+    override fun showRecoveryPassword(email: String) {
+        findNavController().navigate(UserProfileSettingsFragmentDirections.userProfileSettingsToRecoveryAction(email))
+    }
+
+
+    override fun showPasswordChangeComplete() {
+        showToast(getString(R.string.profile_password_change_complete))
+        changePasswordDialog = null
+    }
 
     override fun showChangePrivacy() {
         BottomDialog(requireContext()).apply {
@@ -402,3 +425,4 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
     }
 }
+

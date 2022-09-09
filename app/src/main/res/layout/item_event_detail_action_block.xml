@@ -46,7 +46,8 @@
             tools:text="Заявки принимаются до 7 июля" />
 
 
-        <TextView
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDescription"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="0dp"

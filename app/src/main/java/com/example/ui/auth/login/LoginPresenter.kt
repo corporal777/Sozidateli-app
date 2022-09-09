@@ -47,7 +47,7 @@ class LoginPresenter
     var login = ""
     var password = ""
     var loginType = "email"
-    var deviceId = ""
+    var deviceId = appData.deviceId
     var deviceModel = ""
     var appVersion = getAppVersion()
     var appCode = getAppVersionCode()
@@ -80,14 +80,13 @@ class LoginPresenter
 
     override fun onClickLogin(login: String, password: String, invite: Int) {
         viewState.showCustomProgressDialog()
-        Log.e("PPP", appVersion)
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
         if (invite != -1) {
             compositeDisposable += authRepository.authEmailOrPhoneWithResult(
                 AuthBody(
                     LoginModel(loginType, validatedLogin),
                     LoginModel("common", password),
-                    deviceId,
+                    deviceId?:"",
                     deviceModel,
                     appCode,
                     appVersion
@@ -130,7 +129,7 @@ class LoginPresenter
                 AuthBody(
                     LoginModel(loginType, validatedLogin),
                     LoginModel("common", password),
-                    deviceId,
+                    deviceId?:"",
                     deviceModel,
                     appCode,
                     appVersion

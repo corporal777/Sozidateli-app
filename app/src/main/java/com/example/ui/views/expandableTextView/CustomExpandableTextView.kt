@@ -8,13 +8,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Build
-import android.text.DynamicLayout
+import android.text.*
 import android.text.Layout.Alignment.ALIGN_NORMAL
 import android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.StaticLayout
-import android.text.TextUtils
 import android.text.TextUtils.TruncateAt.END
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
@@ -28,6 +24,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
+import com.example.util.markWon
 import kotlin.math.abs
 
 @SuppressLint("ViewConstructor")
@@ -278,11 +275,23 @@ class CustomExpandableTextView @JvmOverloads constructor(
         textWidth: Int = measuredWidth - compoundPaddingStart - compoundPaddingEnd,
     ) {
         if (textWidth <= 0) return
-        val collapsedStaticLayout = getStaticLayout(limitedMaxLines, originalText, textWidth)
+        val collapsedStaticLayout = getStaticLayout(limitedMaxLines,
+            originalText, textWidth)
         if (ctaChanged)
             expandActionStaticLayout = getStaticLayout(1, expandActionSpannable, textWidth)
         collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
-        text = if (collapsed) collapsedDisplayedText else originalText
+        if (collapsed){
+            markWon(context).setMarkdown(
+                this,
+                collapsedDisplayedText.toString()
+            )
+        }else {
+            markWon(context).setMarkdown(
+                this,
+                originalText
+            )
+        }
+        //text = if (collapsed) markWon()collapsedDisplayedText else originalText
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

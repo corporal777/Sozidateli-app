@@ -6,27 +6,27 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.PasswordBody
-import com.example.data.models.*
-import com.example.data.models.UserDetail.Companion.USER_EMAIL
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.data.models.UserDetail.Companion.USER_STATE
+import com.example.data.models.UserState
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
-import com.example.ui.userprofile.phoneconfirm.PhoneConfirmPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.phoneToServer
-import com.facebook.share.model.ShareMessengerURLActionButton
-import io.reactivex.Observable
+import com.google.gson.Gson
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withLoadingDialog
-import withProgressBarLoadingDialog
 import java.lang.Math.abs
 import javax.inject.Inject
 
@@ -65,46 +65,62 @@ class UserProfileSettingsPresenter @Inject constructor(
         viewState.showChangePassword()
     }
 
-    override fun onChangePasswordClickConfirm(
-        oldPassword: String,
-        newPassword: String,
-        newPasswordConfirm: String
-    ) {
-        compositeDisposable += userRepository.changePassword(
-            appData.getId(),
-            PasswordBody(password = newPassword)
-        )
+    override fun onChangePasswordClickConfirm(newPassword: String) {
+        compositeDisposable += userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
+                    onReceiveError(it)
                 },
                 onComplete = {
                     viewState.showPasswordChangeComplete()
                 })
     }
 
-    override fun checkPasswordValid(password: String, newPassword: String) {
+    override fun checkPasswordValid(password: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
             .performOnBackgroundOutOnMain()
-            //.withLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    viewState.showOldPasswordError()
+                    catchPasswordError(it)
+                    appData.attemptsOfChangePassword = appData.attemptsOfChangePassword - 1
+                    if (appData.attemptsOfChangePassword <= 0) {
+                        viewState.apply {
+                            showOldPasswordError(0)
+                            showLoginAgainDialog()
+                        }
+                    } else {
+                        val newAttempts = appData.attemptsOfChangePassword
+                        viewState.showOldPasswordError(newAttempts)
+                    }
                 },
                 onComplete = {
-                    viewState.hideNewPasswordDialog()
-                    onChangePasswordClickConfirm(password, newPassword, newPassword)
+                    viewState.showNewPasswordTypingContent()
                 }
             )
-        /*.subscribe({
-            viewState.hideNewPasswordDialog()
-            onChangePasswordClickConfirm(password, newPassword, newPassword)
-        }, {
-            viewState.showOldPasswordError()
-        })*/
+    }
+
+    override fun logoutFromAccount() {
+        compositeDisposable += userRepository.logout(appData.getId())
+            .withDelay(500)
+            .doOnComplete {
+                appData.isSubscribedToPush = false
+                socket.disconnectFromSocket()
+                appData.logout()
+                notificationManager.cancelAll()
+            }
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeBy(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showRequestErrorMessage()
+                },
+                onComplete = {
+
+                }
+            )
     }
 
     override fun onChangeEmailClick() {
@@ -308,7 +324,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     override fun onDeleteProfileConfirm() {
         compositeDisposable += userRepository.deleteProfile(appData.getId())
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onComplete = {
                     appData.isSubscribedToPush = false
@@ -337,5 +353,32 @@ class UserProfileSettingsPresenter @Inject constructor(
                     }
                     appData.updateUserNew(onComplete)
                 })
+    }
+
+
+    private fun catchPasswordError(t: Throwable) {
+        if (t is HttpException) {
+            try {
+                val error = Gson().fromJson(
+                    t.response()?.errorBody()?.string(),
+                    NewErrors::class.java
+                )
+                when (t.code()) {
+                    404 -> {
+                        Log.e("PASSWORD", error.errors[0].message ?: "")
+                        when (error.errors[0].message) {
+                            "User was not found" -> {
+                            }
+                            else -> {
+                                //onReceiveError(t)
+                            }
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+
+            }
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.example.ui.event.activities
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.annotation.RequiresApi
@@ -12,7 +11,6 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -28,13 +26,10 @@ import com.example.holders.NoDataItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
-import com.example.ui.search.SearchInterface
 import com.example.ui.subevent.SubEventFragmentArgs
-import com.google.android.material.appbar.AppBarLayout
+import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -42,10 +37,10 @@ import kotlinx.android.synthetic.main.fragment_activitys.*
 import kotlinx.android.synthetic.main.fragment_map_new.*
 import onScrollStateChanged
 import onScrolled
+import onTextChanged
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.collections.ArrayList
 
 
 class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), ActivitiesContract.View {
@@ -80,7 +75,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            add(searchSection)
             add(tagsSection)
             add(eventsSection)
         }
@@ -139,30 +133,19 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             recyclerView.apply {
                 adapter = groupAdapter
                 val mLayoutManager = this.layoutManager as LinearLayoutManager
-                onScrolled { _, dy ->
-                    mDy += dy
+                onScrolled { _, _ ->
                     val lastItem = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     try {
-                        if (mDy <= 0) {
-                            val item = calendarSection.getItem(0) as CalendarHorizontalListItem
-                            changeDay(item.getFirstItem())
-                            calendarPager.setCurrentItem(0, true)
-                        } else {
+                        if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
                             val now =
                                 createCalendarDay(defaultServerDateFormatter.parse(item?.date).time)
                             changeDayWhenScrollDown(now)
-
                             if (!mCanChangeDay) {
-                                if (!recyclerView.canScrollVertically(1)) {
-                                    changeDay(presenter.getLastDay())
-                                } else
-                                    changeDay(now)
+                                changeDay(now)
                             }
                         }
-                    } catch (e: Exception) {
-
-                    }
+                    } catch (e: Exception) { }
                 }
                 onScrollStateChanged { _, newState ->
                     mCanChangeDay =
@@ -176,8 +159,35 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             ivBack.setOnClickListener {
                 findNavController().navigateUp()
             }
+            etSearch.apply {
+                SearchInput(this).apply {
+                    setOnTextChange {
+                        presenter.onSearchTextChange(it)
+                    }
+                    setOnTextChangeDone {
+                        presenter.onSearchTextSubmit(it)
+                        hideKeyboard()
+
+                    }
+                }
+
+                onTextChanged {
+                    btnClear.isVisible = !it.isNullOrEmpty()
+                }
+                btnClear.apply {
+                    btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                    setOnClickListener { etSearch.text = null }
+                }
+
+                onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                    clSearch.setBackgroundResource(
+                        if (hasFocus) R.drawable.background_search_field_rounded_focused
+                        else R.drawable.background_search_field_rounded_normal
+                    )
+                }
+            }
+
         }
-        initCollapseLabel()
     }
 
 
@@ -192,48 +202,21 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun setTags(tags: List<Tag>?) {
-        searchSection.update(listOf(SearchActivityItem({ //presenter.onSearchTextChange(it)
-        }, {
-            presenter.onSearchTextSubmit(it)
-            hideKeyboard()
-        })))
-
-        if (tags == null || tags.isEmpty()) tagsSection.update(emptyList())
-        else {
-            tagsSection.update(listOf(TagsHorizontalListItem(tags, {
+        if (!tags.isNullOrEmpty()) {
+            tagsSection.update(listOf(TagsHorizontalListItem(tags) {
                 presenter.onTagSelectedListChange()
-            }, {
-                presenter.onShowAllTagsClick()
-            })))
+            }))
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun setDays(days: List<EventScheduleCalendarDay>?) {
-        val listDays = arrayListOf<EventScheduleCalendarDay>()
-        var mCount = 0
-        var mCountSize = 0
-        days?.map { day ->
-            mCount += 1
-            mCountSize += 1
-            listDays.add(day)
-            if (mCount == 7) {
-                mCount = 0
-                calendarSection.add(CalendarHorizontalListItem(listDays) {
-                    presenter.onDaySelected(it)
-                })
-                listDays.clear()
-            } else {
-                if (mCountSize == days.size) {
-                    calendarSection.add(CalendarHorizontalListItem(listDays) {
-                        presenter.onDaySelected(it)
-                    })
-                }
-            }
+    override fun setDays(days: List<List<EventScheduleCalendarDay>>) {
+        days.map {
+            calendarSection.add(CalendarHorizontalListItem(it) { day ->
+                presenter.onDaySelected(day)
+            })
         }
+        mBinding.clSearch.isVisible = true
     }
 
     override fun selectDay(
@@ -289,7 +272,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
     override fun setSubEvents(
         canShow: Boolean,
-        day: EventScheduleCalendarDay,
         subEvents: Map<String, List<EventActivityModel>>,
         selectedTags: List<Tag>
     ) {
@@ -305,66 +287,31 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                 )
             }
         )
-        eventsSection.add(SubEventItemEmpty())
-        scrollContent(day)
     }
 
 
     override fun scrollContent(day: EventScheduleCalendarDay) {
-
         val date = defaultServerDateFormatter.format(day.millis)
         val group =
             groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
         if (group != null) {
             val position = groupAdapter.getAdapterPosition(group)
-            val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
             mSmoothScroller.targetPosition = position
             mLayoutManager.startSmoothScroll(mSmoothScroller)
         }
     }
 
 
-    override fun updateSubEventsNew(
-        canShow: Boolean,
-        subEvents: Map<String, List<EventActivityModel>>,
-        selectedTags: List<Tag>
-    ) {
-        subEvents.map {
-            val group = eventsSection.findGroupBy<SubEventsWithDateItem> { x -> x.date == it.key }
-            if (group != null) {
-                val position = eventsSection.getPosition(group)
-                eventsSection.remove(group)
-                eventsSection.add(
-                    position,
-                    SubEventsWithDateItem(
-                        presenter.eventId,
-                        canShow,
-                        it.key,
-                        it.value,
-                        selectedTags,
-                        onSubEventClickListener
-                    )
-                )
-            }
-        }
-
-    }
-
     override fun showEmptyEventPlaceholder() {
-        showPlaceholder(getString(R.string.schedule_empty_event_placeholder), null)
-    }
-
-
-    private fun showPlaceholder(title: String, description: String?) {
         eventsSection.update(
             listOf(
                 NoDataItem(
-                    title = title,
-                    description = description
+                    "Нет результатов",
+                    "По заданным параметрам нет подходящих событий"
                 )
             )
         )
-
     }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
@@ -376,71 +323,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         val idLong = subEvent.id?.toLong()
         eventsSection.findItemBy<EventActivityItem> { it -> it.id == idLong }
             ?.notifyChanged(subEvent)
-    }
-
-    override fun showDataFormCacheMessage(cacheDate: String) {
-    }
-
-    private fun initCollapseLabel() {
-        mBinding.activitiesAppBar.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-                mAppBarScrollValue = Math.abs(i / appBarLayout.totalScrollRange.toFloat())
-                updateViews(Math.abs(i / appBarLayout.totalScrollRange.toFloat()))
-            })
-    }
-
-    private fun updateViews(offset: Float) {
-
-        when {
-            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-        }.apply {
-            when {
-                cashCollapseState != null && cashCollapseState != this -> {
-                    when (first) {
-                        TO_EXPANDED -> {
-                            mBinding.tvLabelLarge.apply {
-                                visibility = View.VISIBLE
-                                alpha = 0F
-                                animate().setDuration(500).alpha(1.0f)
-                            }
-                        }
-                        TO_COLLAPSED -> {
-                            mBinding.tvLabelLarge.apply {
-                                visibility = View.GONE
-                                alpha = 0F
-                                animate().setDuration(500).alpha(1.0f)
-                            }
-                        }
-                    }
-                    cashCollapseState = Pair(first, SWITCHED)
-                }
-                else -> {
-                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
-                }
-            }
-        }
-    }
-
-    private var cashCollapseState: Pair<Int, Int>? = null
-
-    companion object {
-        const val SWITCH_BOUND = 0.3f
-        const val TO_EXPANDED = 0
-        const val TO_COLLAPSED = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putFloat("value", mAppBarScrollValue)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        val value = savedInstanceState?.getFloat("value")
-        updateViews(value ?: 0f)
     }
 
 
@@ -463,10 +345,4 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             }
         }
     }
-
-
-    override fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int) {
-    }
-
-
 }

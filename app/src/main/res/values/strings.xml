@@ -650,6 +650,7 @@
     <string name="event_rating_documents">Документы</string>
 
     <string name="password_confirm_hint">Пароль</string>
+    <string name="current_password_label">Текущий пароль</string>
     <string name="password_confirm_next">Далее</string>
     <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
 
@@ -921,6 +922,8 @@
     <string name="browser_label">Браузер</string>
     <string name="no_sub_events_in_schedule">Событий в расписании нет</string>
     <string name="no_data_found">Нет результатов</string>
+    <string name="new_password_label">Новый пароль</string>
+    <string name="password_repeat_label">Повторите пароль</string>
 
 
     <string-array name="custom_months">

@@ -21,6 +21,7 @@ import com.example.extensions.formatToIntervalNew
 import com.example.ui.views.TagChipNew
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.util.markWon
 import com.example.util.weak
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item

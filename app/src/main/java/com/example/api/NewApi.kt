@@ -296,8 +296,15 @@ interface NewApi {
     @GET("v1/event-form-result")
     fun getEventFormResult(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
 
+    @GET("v1/event-form-result/{id}/draft")
+    fun getEventFormResultDraft(@Path("id") id: Int, @QueryMap map: Map<String, Any>): Maybe<EventFormResultDraftModel>
+
     @POST("v1/event-form-result")
     fun eventRegister(@Body body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
+
+    //+
+    @POST("v1/event-form-result")
+    fun sendEventFormResultForRegister(@Body body: RequestBody): Single<EventFormResultModel>
 
     @POST("v1/event-user-registration/{id}/register")
     fun registerToEvent(@Path("id") id: Int, @Body body: RegisterToEventBody): Completable

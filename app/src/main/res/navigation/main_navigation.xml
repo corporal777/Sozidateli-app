@@ -799,6 +799,10 @@
         <action
             android:id="@+id/to_edit"
             app:destination="@+id/user_edit_fragment" />
+
+        <action
+            android:id="@+id/user_profile_settings_to_recovery_action"
+            app:destination="@id/recovery_password_fragment" />
     </fragment>
 
     <fragment

@@ -19,6 +19,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -107,7 +108,7 @@ class MainInfoPresenter
 
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribe({
                 appData.getUserNew().apply {
                     phone = it.phone

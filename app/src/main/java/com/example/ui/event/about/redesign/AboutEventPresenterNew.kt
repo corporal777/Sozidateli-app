@@ -63,11 +63,8 @@ class AboutEventPresenterNew
     }
 
 
-    @SuppressLint("LogNotTimber")
     private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
-        Log.e("EVENT ID", eventId)
-        Log.e("TOKEN", appData.token!!)
         var pair = Pair<Boolean, Map<String, List<EventActivityModel>>>(false, emptyMap())
         compositeDisposable += userEventData.getSortedSpeakersFromLocalDb(eventId)
             .doOnSuccess {

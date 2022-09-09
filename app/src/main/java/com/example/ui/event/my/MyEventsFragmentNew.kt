@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -191,21 +192,19 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     }
 
     override fun showEmptyListPlaceholder() {
-        eventsSection.update(
-            emptyList()
-//            listOf(
-//                NoScheduleEventItem(
-//                    getString(R.string.empty_list_placeholder_message),
-//                    getString(R.string.no_event_with_params_title)
-//                )
-//            )
-        )
-        mBinding.noDataPlaceholder.isVisible = true
+//        eventsSection.update(
+//            listOf(NoDataItem(
+//                "Нет результатов",
+//                "По заданным параметрам нет подходящих событий"
+//            ))
+//        )
+        eventsSection.update(emptyList())
+        mBinding.noDataPlaceholder.isInvisible = false
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun hideEmptyListPlaceholder() {
-        mBinding.noDataPlaceholder.isVisible = false
+        mBinding.noDataPlaceholder.isInvisible = true
     }
 
     override fun showAboutEvent(event: String) {

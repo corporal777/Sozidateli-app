@@ -198,9 +198,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         }
     }
 
-    override fun setSearchContent() {
-    }
-
     override fun setContent(data: List<MyScheduleEventsData>) {
         eventsSection.update(
             data.map {

@@ -11,7 +11,6 @@ import android.text.Spanned
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -21,23 +20,12 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentFinishRegisterBinding
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog.Companion.CODE_SIZE
+import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.util.*
 import com.example.util.Utils.timerFormatter
-import kotlinx.android.synthetic.main.fragment_finish_register.*
-import kotlinx.android.synthetic.main.fragment_finish_register.btnResend
-import kotlinx.android.synthetic.main.fragment_finish_register.etEmail
-import kotlinx.android.synthetic.main.fragment_finish_register.etFirstName
-import kotlinx.android.synthetic.main.fragment_finish_register.etLastName
-import kotlinx.android.synthetic.main.fragment_finish_register.etMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.ibRegister
-import kotlinx.android.synthetic.main.fragment_finish_register.ivClose
-import kotlinx.android.synthetic.main.fragment_finish_register.scNoMiddleName
-import kotlinx.android.synthetic.main.fragment_finish_register.tvTimer
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onFocusChanged
 import onTextChanged
 import javax.inject.Inject
@@ -48,6 +36,7 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     private var isNoMiddleName = false
     private var loginType = "email"
     private var nameEditable: Boolean? = false
+    private lateinit var mProgressDialog: CustomProgressDialog
 
     private val timerMessage by lazy {
         getString(R.string.auth_register_confirm_email_timer_two)
@@ -93,9 +82,9 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                 presenter.getData()
             } else presenter.startTimer()
-            presenter.deviceId = getDeviceId(requireContext())
             presenter.deviceModel = getDeviceName()
         }
+        mProgressDialog = CustomProgressDialog(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -231,7 +220,7 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     }
 
     override fun codeError() {
-        tilCode.error = resources.getString(R.string.auth_error_code)
+        mBinding.tilCode.error = resources.getString(R.string.auth_error_code)
     }
 
     override fun openHome() {
@@ -239,49 +228,43 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
         findNavController().navigate(FinishRegisterFragmentDirections.registerToMail(true))
     }
 
-    override fun onDestroyView() {
-        //tvAgree.text.toSpannable().clearSpans()
-        super.onDestroyView()
-    }
-
     override fun codeSuccess() {
         Toast.makeText(requireContext(), "Код был отправлен повторно", Toast.LENGTH_SHORT).show()
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
-        etMiddleName.isEnabled = enable
+        mBinding.etMiddleName.isEnabled = enable
         if (!enable) {
-            etMiddleName.setText("")
+            mBinding.etMiddleName.setText("")
             presenter.onChangeMiddleNameText("")
         }
     }
 
     override fun setData(email: String?, firstName: String?, middleName: String?, lastName: String?, phone: String?, isAgree: Boolean, phoneVerified: Boolean) {
-        when (loginType) {
-            "phone" -> {
-                etEmail.setText(phone)
+        mBinding.apply {
+            when (loginType) {
+                "phone" -> {
+                    etEmail.setText(phone)
+                }
+                "email" -> {
+                    etEmail.setText(email)
+                }
             }
-            "email" -> {
-                etEmail.setText(email)
+            etFirstName.setText(firstName)
+            etFirstName.isEnabled = !(nameEditable?: false)
+            etLastName.setText(lastName)
+            etLastName.isEnabled = !(nameEditable?: false)
+            if (middleName == "-") {
+                etMiddleName.isEnabled = false
+                scNoMiddleName.isChecked = true
+            } else {
+                etMiddleName.setText(middleName)
+                scNoMiddleName.isChecked = false
             }
+            etMiddleName.isEnabled = !(nameEditable?: false)
+            scNoMiddleName.isEnabled = !(nameEditable?: false)
+            updatePhoneConfirmationStatus(phoneVerified)
         }
-        etFirstName.setText(firstName)
-        etFirstName.isEnabled = !(nameEditable?: false)
-        etLastName.setText(lastName)
-        etLastName.isEnabled = !(nameEditable?: false)
-        if (middleName == "-") {
-            etMiddleName.isEnabled = false
-            scNoMiddleName.isChecked = true
-        } else {
-            etMiddleName.setText(middleName)
-            scNoMiddleName.isChecked = false
-        }
-        etMiddleName.isEnabled = !(nameEditable?: false)
-        scNoMiddleName.isEnabled = !(nameEditable?: false)
-        //etMobilePhone.setText(phone)
-        //etMobilePhone.setPhone(phone?: "")
-        //cbAgree.isChecked = isAgree
-        updatePhoneConfirmationStatus(phoneVerified)
     }
 
     override fun unblockTokenListener() {
@@ -307,7 +290,7 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        ibRegister.apply { isEnabled = isEnable }
+        mBinding.ibRegister.apply { isEnabled = isEnable }
     }
 
     override fun showSnRegistration(snUser: SnUser) { 
@@ -326,12 +309,20 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     override fun setTimeLeft(seconds: Int) {
         //val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
         val quantity = timerFormatter(seconds, requireContext())
-        tvTimer.text = String.format(timerMessage, quantity)
+        mBinding.tvTimer.text = String.format(timerMessage, quantity)
     }
 
     override fun setCanResend(canResend: Boolean) {
-        btnResend.isEnabled = canResend
-        tvTimer.isVisible = !canResend
+        mBinding.btnResend.isEnabled = canResend
+        mBinding.tvTimer.isVisible = !canResend
+    }
+
+    override fun showAlertLoadingDialog() {
+        mProgressDialog.showDialog()
+    }
+
+    override fun hideAlertLoadingDialog() {
+        mProgressDialog.hideDialog()
     }
 
     override fun showWrongPhoneError(show: Boolean) {

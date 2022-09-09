@@ -40,6 +40,7 @@ import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import onScrolled
 import setOnClickListener
 import java.lang.StringBuilder
 import javax.inject.Inject
@@ -117,14 +118,11 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             layoutManager = LinearLayoutManager(requireContext())
             adapter = groupAdapter
 
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    mDy += dy
-                    updateView(mDy)
-                }
-            })
+            onScrolled { _, dy ->
+                mDy += dy
+                updateView(mDy)
+            }
         }
-
 
         mBinding.swipeToRefresh.setProgressViewOffset(
             true,
@@ -185,7 +183,6 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
             { mPresenter.onOrganizationClick(it) }).apply {
             this@AboutEventFragmentNew.organizationItem = this
         }
-
 
         groupAdapter.update(listOf(
             EventDetailImageBlock(eventData),

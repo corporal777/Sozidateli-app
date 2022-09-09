@@ -5,6 +5,16 @@
 
 
     <!--  new margins  -->
+
+    <dimen name="margin_ten">10dp</dimen>
+    <dimen name="margin_fifteen">15dp</dimen>
+    <dimen name="margin_twenty">20dp</dimen>
+    <dimen name="margin_thirty">30dp</dimen>
+    <dimen name="margin_forty">40dp</dimen>
+    <dimen name="margin_fifty">50dp</dimen>
+    <dimen name="margin_sixty">60dp</dimen>
+    <dimen name="margin_seventy">70dp</dimen>
+
     <dimen name="padding_text_view_calendar">4dp</dimen>
     <dimen name="event_added_to_favorite_dialog_size">180dp</dimen>
     <dimen name="event_added_to_favorite_dialog_icon_size">55dp</dimen>
@@ -20,6 +30,8 @@
     <dimen name="swipe_distance_end_margin">40dp</dimen>
 
     <dimen name="event_item_height_new">300dp</dimen>
+    <dimen name="event_image_height_new">310dp</dimen>
+    <dimen name="event_image_shadow_height_new">160dp</dimen>
 
     <dimen name="current_session_item_height">100dp</dimen>
     <dimen name="other_session_item_height">80dp</dimen>
@@ -132,14 +144,7 @@
     <dimen name="background_corners_seven">7dp</dimen>
     <dimen name="background_corners_eight">8dp</dimen>
 
-    <dimen name="margin_ten">10dp</dimen>
-    <dimen name="margin_fifteen">15dp</dimen>
-    <dimen name="margin_twenty">20dp</dimen>
-    <dimen name="margin_thirty">30dp</dimen>
-    <dimen name="margin_forty">40dp</dimen>
-    <dimen name="margin_fifty">50dp</dimen>
-    <dimen name="margin_sixty">60dp</dimen>
-    <dimen name="margin_seventy">70dp</dimen>
+
 
     <dimen name="default_blur_dialog_title_size">10sp</dimen>
     <dimen name="default_blur_dialog_corner_radius">15dp</dimen>

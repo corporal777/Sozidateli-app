@@ -9,7 +9,7 @@ import com.xwray.groupie.Section
 class EventDetailPartnersBlock(
     private val title: String,
     private val list: List<PartnerModel>?,
-    private val onPartnerClick: (id : Int) -> Unit
+    private val onPartnerClick: (id: Int) -> Unit
 ) : NestedGroup() {
 
     private val headerItem = EventDetailBlocksLabelItem(title)
@@ -21,11 +21,11 @@ class EventDetailPartnersBlock(
             list.forEach {
                 partnersItemsSection.add(
                     EventPartnerItem(
-                        it.id?: 0,
+                        it.id ?: 0,
                         it.name,
                         it.description,
-                        it.logo?.uri
-                    ) {id ->
+                        it.logo?.uri ?: it.image?.uri
+                    ) { id ->
                         onPartnerClick(id)
                     }
                 )

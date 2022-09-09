@@ -4,7 +4,9 @@
 
     <application>
 
-        <activity android:name="com.example.ui.main.MainActivity">
+        <activity
+            android:name="com.example.ui.main.MainActivity"
+            android:exported="true">
 
             <intent-filter
                 android:autoVerify="true"

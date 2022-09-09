@@ -3,7 +3,10 @@ package com.example.ui.auth.register.email.finishregister
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.*
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.ConfirmCodeBody
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.LoginModel
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail.Companion.USER_EMAIL
@@ -28,7 +31,6 @@ import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -57,7 +59,7 @@ class FinishRegisterPresenter
     private var noMiddleNameChecked = false
     private var phoneCode: String? = null
     var loginType = "email"
-    var deviceId = ""
+    var deviceId = appData.deviceId
     var deviceModel = ""
     var appVersion = getAppVersion()
     var appCode = getAppVersionCode()
@@ -130,7 +132,7 @@ class FinishRegisterPresenter
             AuthBody(
                 LoginModel(loginType, login ?: ""),
                 LoginModel("temporary", code),
-                deviceId,
+                deviceId?:"",
                 deviceModel,
                 appCode,
                 appVersion
@@ -147,6 +149,7 @@ class FinishRegisterPresenter
                 onComplete = {
                     compositeDisposable += userRepository.getUserShortData()
                         .performOnBackgroundOutOnMain()
+                        .withCustomProgressBarLoadingDialog(viewState)
                         .subscribe({
                             firstName = it.name
                             defFirstName = it.name
@@ -154,12 +157,17 @@ class FinishRegisterPresenter
                             defLastName = it.lastName
                             middleName = it.getMiddleName()
                             defMiddleName = if (middleName.isNullOrEmpty()) "" else middleName
-                            viewState.setData(
-                                it.email?.value, it.name, it.middleName?.value,
-                                it.lastName, it.phone?.get(0)?.value, isAgree, false
-                            )
-                            viewState.unblockTokenListener()
-                        }, { })
+                            viewState.apply {
+                                setData(
+                                    it.email?.value, it.name, it.middleName?.value,
+                                    it.lastName, it.phone?.get(0)?.value, isAgree, false
+                                )
+                                unblockTokenListener()
+                            }
+
+                        }, {
+                            onReceiveError(it)
+                        })
                 }
             )
     }
@@ -242,9 +250,10 @@ class FinishRegisterPresenter
                     )
                 )
                     .performOnBackgroundOutOnMain()
+                    .withCustomProgressBarLoadingDialog(viewState)
                     .subscribeSimple(
                         onError = {
-                            it.printStackTrace()
+                            onReceiveError(it)
                             viewState.codeError()
                         },
                         onComplete = {
@@ -280,7 +289,7 @@ class FinishRegisterPresenter
                                 .withCustomProgressBarLoadingDialog(viewState)
                                 .subscribeSimple(
                                     onError = {
-                                        it.printStackTrace()
+                                        onReceiveError(it)
                                     },
                                     onSuccess = {
                                         viewState.openHome()
@@ -290,11 +299,15 @@ class FinishRegisterPresenter
                         })
             }
             "email" -> {
-                userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email ?: ""))
+                userRepository.confirmEmailCode(
+                    appData.getId(),
+                    EmailCodeBody(code = code, email = email ?: "")
+                )
                     .performOnBackgroundOutOnMain()
+                    .withCustomProgressBarLoadingDialog(viewState)
                     .subscribeSimple(
                         onError = {
-                            it.printStackTrace()
+                            onReceiveError(it)
                             viewState.codeError()
                         },
                         onSuccess = {
@@ -317,7 +330,11 @@ class FinishRegisterPresenter
                             )
                                 .performOnBackgroundOutOnMain()
                                 .withCustomProgressBarLoadingDialog(viewState)
-                                .subscribe({ viewState.openHome() }, { })
+                                .subscribe({
+                                    viewState.openHome()
+                                }, {
+                                    onReceiveError(it)
+                                })
                                 .call(compositeDisposable)
                         })
             }

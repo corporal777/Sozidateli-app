@@ -1,6 +1,5 @@
 package com.example.data
 
-import android.util.Log
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
@@ -9,8 +8,26 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 class AppData(
-        private val appPrefs: AppPrefs
+    private val appPrefs: AppPrefs
 ) {
+
+    var deviceId : String? = appPrefs.uniqueDeviceId
+        set(value) {
+            if (field.isNullOrEmpty()){
+                field = value
+                appPrefs.uniqueDeviceId = value
+            }
+        }
+
+
+    var attemptsOfChangePassword : Int = appPrefs.attemptsOfChangePassword
+        set(value) {
+            if (field <= 3){
+                field = value
+                appPrefs.attemptsOfChangePassword = value
+            }
+        }
+
 
     var token: String? = appPrefs.userToken
         set(value) {
@@ -118,7 +135,7 @@ class AppData(
 
     fun updatePhone(phone: String) {
         this.newUser?.phone?.forEach {
-            if (it.type == PHONE_PERSONAL){
+            if (it.type == PHONE_PERSONAL) {
                 it.value = phone
                 it.isConfirmed = true
             }
@@ -129,8 +146,8 @@ class AppData(
     fun checkUserState(data: List<UserProfileFields>?) {
         val base = data?.filter { it.requiredFor?.contains("basic") == true }
         val max = data?.filter { it.requiredFor?.contains("maximum") == true }
-        hasBaseState = (base?.filter { it.filled == false }?.size?: 0) == 0
-        hasMaxState = (max?.filter { it.filled == false }?.size?: 0) == 0
+        hasBaseState = (base?.filter { it.filled == false }?.size ?: 0) == 0
+        hasMaxState = (max?.filter { it.filled == false }?.size ?: 0) == 0
     }
 
     fun setUserShortNew(user: UserDetail) {
@@ -178,10 +195,10 @@ class AppData(
     }
 
     fun getUserNew(): UserDetail = newUser
-            ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+        ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
     fun getUser(): User = user
-            ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+        ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
     fun updateUser(update: User.() -> Unit) {
         userChangeSubject.onNext(getUser().apply(update).asOptional())
@@ -192,17 +209,18 @@ class AppData(
     }
 
     fun login(token: String) {
+        this.attemptsOfChangePassword = 3
         isLoggedOut = false
         this.token = token
     }
 
     fun saveId(id: Int?) {
-        if (id!= null)
+        if (id != null)
             appPrefs.userId = id
     }
 
     fun getId(): Int {
-        return appPrefs.userId?: 0
+        return appPrefs.userId ?: 0
     }
 
     fun logout() {

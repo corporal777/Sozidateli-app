@@ -107,7 +107,7 @@
                         android:id="@+id/et_first_name"
                         style="@style/Profile.Edit.Input.SingleLine"
                         android:hint="@string/auth_input_first_name_hint"
-                         />
+                        android:inputType="textCapSentences"/>
                 </com.example.ui.views.CustomTextInputLayout>
 
                 <com.example.ui.views.CustomTextInputLayout

@@ -2,6 +2,7 @@ package com.example.holders.redesign
 
 import com.example.R
 import com.example.databinding.ItemPartnerBinding
+import com.example.util.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
@@ -18,16 +19,11 @@ class EventPartnerItem(
         viewBinding.apply {
 
             tvPartnerName.text = name ?: ""
-//            if (!title.isNullOrEmpty()){
-//                if (title.length > 83){
-//                    tvPartnerTitle.text = StringBuilder(title.substring(0,60)).append("...")
-//                }
-//                else tvPartnerTitle.text = title
-//            }else {
-//                tvPartnerTitle.text = ""
-//            }
-
-            tvPartnerTitle.text = title
+            markWon(viewBinding.root.context).setMarkdown(
+                tvPartnerTitle,
+                title ?: ""
+            )
+            //tvPartnerTitle.text = title
             ivPartnerImage.setImage(image)
 
             root.setOnClickListener {

@@ -16,7 +16,7 @@ interface ActivitiesContract {
         fun setTags(tags: List<Tag>?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setDays(days: List<EventScheduleCalendarDay>?)
+        fun setDays(days: List<List<EventScheduleCalendarDay>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun selectDay(day: EventScheduleCalendarDay)
@@ -25,7 +25,7 @@ interface ActivitiesContract {
         fun scrollToDay(day: EventScheduleCalendarDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(canShow : Boolean, day : EventScheduleCalendarDay, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
+        fun setSubEvents(canShow : Boolean, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollContent(day: EventScheduleCalendarDay)
@@ -33,20 +33,11 @@ interface ActivitiesContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "currentDay")
-        fun showCurrentDay(day: EventScheduleCalendarDay, daysSize: Int)
-
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "dataFromCache")
-        fun showDataFormCacheMessage(cacheDate: String)
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEvent(subEvent: EventActivityModel)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSubEventsNew(canShow : Boolean,subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setSchemeButton(scheme: List<String>?)
@@ -59,8 +50,6 @@ interface ActivitiesContract {
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
-
-        fun onShowAllTagsClick()
 
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)

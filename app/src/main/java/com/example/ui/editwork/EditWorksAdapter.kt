@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.example.R
 import com.example.databinding.ItemProfileButtonEditNewBinding
 import com.example.databinding.ItemProfileDataEditNoWorkNewBinding
@@ -20,30 +20,37 @@ import com.example.ui.editwork.EditWorksModel.Companion.WORK_ITEM
 import com.example.ui.state.ViewHolder
 import com.example.util.*
 import initAsMonthYearPicker
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import java.util.*
 
 class EditWorksAdapter(
-        private val noWorkListener:(hasWork: Boolean, holder: ItemProfileDataEditNoWorkNewBinding) -> Unit,
-        private val onRemoveClickListener: (position: Int) -> Unit,
-        private val addMoreClick: () -> Unit,
-        private val isDataValid: () -> Unit
+    private val noWorkListener: (hasWork: Boolean, holder: ItemProfileDataEditNoWorkNewBinding) -> Unit,
+    private val onRemoveClickListener: (position: Int) -> Unit,
+    private val addMoreClick: () -> Unit,
+    private val isDataValid: () -> Unit
 ) : ListAdapter<EditWorksModel, ViewHolder<*>>(EditWorksDiffCallback()) {
+
+    var isHas = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
         return when (viewType) {
             HAS_WORK -> ViewHolder(
-                    ItemProfileDataEditNoWorkNewBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemProfileDataEditNoWorkNewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             ADD_WORK -> ViewHolder(
-                    ItemProfileButtonEditNewBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemProfileButtonEditNewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
             else -> ViewHolder(
-                    ItemProfileDataEditWorkNewBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent, false))
+                ItemProfileDataEditWorkNewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+            )
         }
     }
 
@@ -53,6 +60,7 @@ class EditWorksAdapter(
                 val holderHas = holder as ViewHolder<ItemProfileDataEditNoWorkNewBinding>
                 holderHas.binding.scNoExperience.initSwitch(getItem(holder.adapterPosition).hasWork) {
                     getItem(holder.adapterPosition).hasWork = it
+                    isHas = getItem(holder.adapterPosition).hasWork
                     noWorkListener(it, holderHas.binding)
                 }
                 holderHas.binding.executePendingBindings()
@@ -67,59 +75,96 @@ class EditWorksAdapter(
             }
             WORK_ITEM -> {
                 val holderItem = holder as ViewHolder<ItemProfileDataEditWorkNewBinding>
-                val birthday = getItem(holder.adapterPosition).birthday?.parseToDate(defaultServerDateFormatter)
+                val birthday =
+                    getItem(holder.adapterPosition).birthday?.parseToDate(defaultServerDateFormatter)
                 val now = Date()
 
                 isEnabledItems(holderItem.binding, getItem(holder.adapterPosition).hasWork)
                 holderItem.binding.apply {
-                    val startDate = getItem(holder.adapterPosition).works?.begin?.parseToDate(defaultServerDateFormatter)
+                    val startDate = getItem(holder.adapterPosition).works?.begin?.parseToDate(
+                        defaultServerDateFormatter
+                    )
                     etStart.setText(startDate?.let { formatDateYear(it).capitalize() })
-                    tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
+                    tilStart.initAsMonthYearPicker(
+                        startDate,
+                        minDate = birthday,
+                        maxDate = now
+                    ) { year, month, day ->
                         tilStart.error = null
-                        getItem(holder.adapterPosition).works?.begin = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                        getItem(holder.adapterPosition).works?.begin =
+                            formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                         isDateValid(holderItem.binding, getItem(holder.adapterPosition))
                         //validateEnableButton()
-                        isDataValidd(getItem(holder.adapterPosition), !getItem(holder.adapterPosition).isNotFinishedSelected)
+                        isDataValidd(
+                            getItem(holder.adapterPosition),
+                            !getItem(holder.adapterPosition).isNotFinishedSelected
+                        )
                         profileDateFormat(year, month, day)
                     }
 
-                    val finishDate = getItem(holder.adapterPosition).works?.end?.parseToDate(defaultServerDateFormatter)
+                    val finishDate = getItem(holder.adapterPosition).works?.end?.parseToDate(
+                        defaultServerDateFormatter
+                    )
                     etFinish.setText(finishDate?.let { formatDateYear(it).capitalize() })
-                    tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
+                    tilFinish.initAsMonthYearPicker(
+                        finishDate,
+                        minDate = birthday,
+                        maxDate = now
+                    ) { year, month, day ->
                         tilFinish.error = null
-                        getItem(holder.adapterPosition).works?.end = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
+                        getItem(holder.adapterPosition).works?.end =
+                            formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                         isDateValid(holderItem.binding, getItem(holder.adapterPosition))
                         //validateEnableButton()
-                        isDataValidd(getItem(holder.adapterPosition), !getItem(holder.adapterPosition).isNotFinishedSelected)
+                        isDataValidd(
+                            getItem(holder.adapterPosition),
+                            !getItem(holder.adapterPosition).isNotFinishedSelected
+                        )
                         profileDateFormat(year, month, day)
                     }
 
-                    setFinishEnabled(this, !getItem(holder.adapterPosition).isNotFinishedSelected/*getItem(holder.adapterPosition).works?.end != null*/)
-                    scFinish.initSwitch(/*getItem(holder.adapterPosition).works?.end == null*/getItem(holder.adapterPosition).isNotFinishedSelected) {
+                    setFinishEnabled(
+                        this,
+                        !getItem(holder.adapterPosition).isNotFinishedSelected/*getItem(holder.adapterPosition).works?.end != null*/
+                    )
+                    scFinish.initSwitch(/*getItem(holder.adapterPosition).works?.end == null*/
+                        getItem(holder.adapterPosition).isNotFinishedSelected
+                    ) {
                         tilFinish.error = null
                         getItem(holder.adapterPosition).works?.end = null
                         getItem(holder.adapterPosition).isNotFinishedSelected = it
                         etFinish.text = null
                         setFinishEnabled(this, !it)
                         //validateEnableButton()
-                        isDataValidd(getItem(holder.adapterPosition), !getItem(holder.adapterPosition).isNotFinishedSelected)
+                        isDataValidd(
+                            getItem(holder.adapterPosition),
+                            !getItem(holder.adapterPosition).isNotFinishedSelected
+                        )
                     }
                     etProject.initInput(getItem(holder.adapterPosition).works?.organization) {
                         tilProject.error = null
                         getItem(holder.adapterPosition).works?.organization = it.toString()
                         //validateEnableButton()
-                        isDataValidd(getItem(holder.adapterPosition), !getItem(holder.adapterPosition).isNotFinishedSelected)
+                        isDataValidd(
+                            getItem(holder.adapterPosition),
+                            !getItem(holder.adapterPosition).isNotFinishedSelected
+                        )
                     }
                     etPosition.initInput(getItem(holder.adapterPosition).works?.position) {
                         tilPosition.error = null
                         getItem(holder.adapterPosition).works?.position = it.toString()
                         //validateEnableButton()
-                        isDataValidd(getItem(holder.adapterPosition), !getItem(holder.adapterPosition).isNotFinishedSelected)
+                        isDataValidd(
+                            getItem(holder.adapterPosition),
+                            !getItem(holder.adapterPosition).isNotFinishedSelected
+                        )
                     }
 
                     scWork.apply {
                         isVisible = getItem(holder.adapterPosition).showInProfileButton
-                        initSwitch(getItem(holder.adapterPosition).works?.showInProfile?: false) { getItem(holder.adapterPosition).works?.showInProfile = it }
+                        initSwitch(
+                            getItem(holder.adapterPosition).works?.showInProfile ?: false
+                        ) { getItem(holder.adapterPosition).works?.showInProfile = it }
                     }
 
                     btnRemove.setOnClickListener { onRemoveClickListener(holder.adapterPosition) }
@@ -129,14 +174,24 @@ class EditWorksAdapter(
                     else
                         btnRemove.visibility = View.GONE
 
-                    showErrors(getItem(holder.adapterPosition).showErrors, holderItem.binding, getItem(holder.adapterPosition), getItem(holder.adapterPosition).isNotFinishedSelected)
+                    showErrors(
+                        getItem(holder.adapterPosition).showErrors,
+                        holderItem.binding,
+                        getItem(holder.adapterPosition),
+                        getItem(holder.adapterPosition).isNotFinishedSelected
+                    )
                 }
                 holderItem.binding.executePendingBindings()
             }
         }
     }
 
-    private fun showErrors(isShow: Boolean, holder: ItemProfileDataEditWorkNewBinding, item: EditWorksModel, isNotFinished: Boolean) {
+    private fun showErrors(
+        isShow: Boolean,
+        holder: ItemProfileDataEditWorkNewBinding,
+        item: EditWorksModel,
+        isNotFinished: Boolean
+    ) {
         if (isShow) {
             holder.apply {
                 if (!isStartValid(item.works?.begin)) tilStart.apply {
@@ -174,18 +229,23 @@ class EditWorksAdapter(
                 /*if (!isFinishValid(item.works?.begin, item.works?.end, isNotFinished)) tilFinish.apply {
                     error = resources.getString(R.string.profile_work_finish_error)
                 }*/
-                if ((item.works?.organization?.length?: 0) < 9) tilProject.apply {
-                    error = if ((item.works?.organization?.length ?: 0) < 9 && (item.works?.organization?.length
-                                    ?: 0) > 0)
+                if ((item.works?.organization?.length ?: 0) < 9) tilProject.apply {
+                    error = if ((item.works?.organization?.length
+                            ?: 0) < 9 && (item.works?.organization?.length
+                            ?: 0) > 0
+                    )
                         resources.getString(R.string.ten_letters_error)
                     else
                         resources.getString(R.string.enter_organization)
                 }
-                if ((item.works?.position?.length?: 0) < 4) tilPosition.apply {
-                    error = if ((item.works?.position?.length ?: 0) < 4 && (item.works?.position?.length ?: 0) > 0)
-                        resources.getString(R.string.five_letters_error)
-                    else
-                        resources.getString(R.string.enter_position)
+                if ((item.works?.position?.length ?: 0) < 4) tilPosition.apply {
+                    error =
+                        if ((item.works?.position?.length ?: 0) < 4 && (item.works?.position?.length
+                                ?: 0) > 0
+                        )
+                            resources.getString(R.string.five_letters_error)
+                        else
+                            resources.getString(R.string.enter_position)
                 }
             }
             item.showErrors = false
@@ -198,15 +258,15 @@ class EditWorksAdapter(
 
     private fun isDataValidd(item: EditWorksModel, isNotFinished: Boolean) {
         var isValid = true
-        if((item.works?.organization?.length?: 0) < 9) {
+        if ((item.works?.organization?.length ?: 0) < 9) {
             isValid = false
         }
 
-        if((item.works?.position?.length?: 0) < 4) {
+        if ((item.works?.position?.length ?: 0) < 4) {
             isValid = false
         }
 
-        if(item.works?.begin == null/*isStartValid(item.works?.begin)*/) {
+        if (item.works?.begin == null/*isStartValid(item.works?.begin)*/) {
             isValid = false
         }
 
@@ -214,8 +274,9 @@ class EditWorksAdapter(
         if (/*item.works?.end == null*/isNotFinished) {
             val start = item.works?.begin
             val finish = item.works?.end
-            if (start == null || finish == null) { isValid = false }
-            else {
+            if (start == null || finish == null) {
+                isValid = false
+            } else {
                 val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
                 val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
                 if (finishDate == null || startDate == null) isValid = false
@@ -245,7 +306,9 @@ class EditWorksAdapter(
                 val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
                 val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
                 if (finishDate == null || startDate == null) false
-                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(startDate)
+                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(
+                    startDate
+                )
             }
         }
     }
@@ -259,8 +322,9 @@ class EditWorksAdapter(
 
     private fun isDateValid(viewHolder: ItemProfileDataEditWorkNewBinding, item: EditWorksModel) {
         if (!item.works?.begin.isNullOrBlank() && !item.works?.end.isNullOrBlank()) {
-            if (validateEndDate(item.works?.begin?: "", item.works?.end?: "")) {
-                viewHolder.tilFinish.error = viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
+            if (validateEndDate(item.works?.begin ?: "", item.works?.end ?: "")) {
+                viewHolder.tilFinish.error =
+                    viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
             } else {
                 viewHolder.tilFinish.error = null
             }
@@ -283,11 +347,11 @@ class EditWorksAdapter(
     }
 }
 
-class EditWorksDiffCallback: DiffUtil.ItemCallback<EditWorksModel>() {
+class EditWorksDiffCallback : DiffUtil.ItemCallback<EditWorksModel>() {
 
     override fun areItemsTheSame(oldItem: EditWorksModel, newItem: EditWorksModel): Boolean =
-            oldItem.id == newItem.id
+        oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: EditWorksModel, newItem: EditWorksModel): Boolean =
-            oldItem == newItem
+        oldItem == newItem
 }

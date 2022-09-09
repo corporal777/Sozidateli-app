@@ -13,9 +13,7 @@ import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userSessions.items.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
-import com.example.util.getDeviceId
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -37,10 +35,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     fun providePresenter(): UserSessionsPresenter = presenterProvider.get().apply {
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presenter.deviceId = getDeviceId(requireContext())
-    }
 
     private val currentSessionSection by lazy {
         Section().apply {
@@ -89,7 +83,9 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
                 CurrentSessionItem(
                     session,
                     { presenter.killAllSessionsClick() },
-                    { s -> showSessionDialog({ presenter.killAllSessionsClick() }, s) }
+                    { s ->
+                        showSessionDialog(true, { presenter.killAllSessionsClick() }, s)
+                    }
                 )
             )
         )
@@ -99,7 +95,11 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         otherSessionsSection.update(
             sessions.map {
                 OtherSessionItem(it) { s ->
-                    showSessionDialog({ presenter.killUsersDeviceSessionClick(s.sessionId) }, s)
+                    showSessionDialog(
+                        false,
+                        { presenter.killUsersDeviceSessionClick(s.sessionId) },
+                        s
+                    )
                 }
             }
         )
@@ -135,8 +135,12 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         sessionsHistorySection.findItemBy<SessionsHistoryActionItem> { true }?.notifyChanged(action)
     }
 
-    private fun showSessionDialog(actionClick: () -> Unit, session: UserSessionModel) {
-        SessionBottomSheet(actionClick, requireContext(), session)
+    private fun showSessionDialog(
+        isCurrent: Boolean,
+        actionClick: () -> Unit,
+        session: UserSessionModel
+    ) {
+        SessionBottomSheet(isCurrent, actionClick, requireContext(), session)
     }
 
     private fun showSessionInfoDialog() {

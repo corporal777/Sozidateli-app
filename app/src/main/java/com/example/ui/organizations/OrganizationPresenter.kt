@@ -17,7 +17,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -68,7 +70,7 @@ class OrganizationPresenter
                     .toSingle()
             }
             .let {
-                if (withLoadingPlaceholder) it.withLoadingDialog(viewState)
+                if (withLoadingPlaceholder) it.withProgressBarLoadingDialog(viewState)
                 else it
             }
             .subscribe({ org ->
@@ -183,7 +185,7 @@ class OrganizationPresenter
             )
         )
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                 viewState.setSubscribed(true)
@@ -193,7 +195,7 @@ class OrganizationPresenter
     override fun onUnsubscribeClick() {
         compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 organization.binds?.userFavorite = null
                 viewState.setSubscribed(false)
@@ -213,7 +215,7 @@ class OrganizationPresenter
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(user?.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     user?.binds?.userFavorite = null
                     viewState.updateUser(user)
@@ -226,7 +228,7 @@ class OrganizationPresenter
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.updateUser(user)
@@ -270,7 +272,7 @@ class OrganizationPresenter
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
             .andThen(eventRepository.getEventDetails(event))
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple { loadData(false) }
         /*compositeDisposable += eventRepository.eventRegisterCancel(event)
                 .performOnBackgroundOutOnMain()

@@ -28,9 +28,6 @@ interface MyScheduleEventsContract {
             lastDate : CalendarDay?
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSearchContent()
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setContent(data: List<MyScheduleEventsData>)
 

@@ -13,10 +13,7 @@ import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EventGroup
-import com.example.data.models.EventRegisterField
-import com.example.data.models.EventRegisterFieldData
-import com.example.data.models.EventRegistration
+import com.example.data.models.*
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
@@ -28,19 +25,19 @@ import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_request.*
+import onScrolled
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
-    EventRegistrationContract.View, SimpleTitleToolbar {
+    EventRegistrationContract.View {
 
 
     @InjectPresenter
@@ -71,8 +68,15 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.request_label))
-        recyclerView.apply { adapter = this@EventRegistrationFragment.adapter }
+        mBinding.recyclerView.apply {
+            adapter = this@EventRegistrationFragment.adapter
+            onScrolled { _, dy ->
+                presenter.changeAppBarElevation(dy)
+            }
+        }
+        mBinding.ivBack.setOnClickListener {
+            presenter.onBackClick()
+        }
     }
 
     override fun setFields(
@@ -216,6 +220,40 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     }
 
+    override fun showSaveFormResultDraftDialog() {
+        EventRegistrationRequestDialog(
+            requireContext(),
+            "Анкета",
+            "Вы можете сохранить черновик анкеты и вернуться к ее заполнению позже.",
+            "Сохранить",
+            "Закрыть",
+            true
+        ).setSelectCallback { state ->
+            if (state) {
+                presenter.saveEventFormResultDraft()
+            } else {
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    override fun showLoadSavedFormResultDraftDialog(result: EventRegisterData) {
+        EventRegistrationRequestDialog(
+            requireContext(),
+            "Анкета",
+            "У вас есть черновик анкеты. Хотите продолжить заполнение?",
+            "Продолжить",
+            "Начать заново",
+            false
+        ).setSelectCallback { state ->
+            if (state) {
+                presenter.initEventFormResultData(result)
+            } else {
+                presenter.initEventFormResultData(presenter.cleanResult)
+            }
+        }
+    }
+
     override fun showSuccessRegister(moderation: String?) {
         val canGoToEvent: Boolean
         val maybeApproved: Boolean
@@ -329,6 +367,10 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }
     }
 
+    override fun dispatchOnBackPressed() {
+        presenter.onBackClick()
+    }
+
     override fun showEventLists() {
         if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
             findNavController().navigate(R.id.recommendations_fragment, null, navOptions {
@@ -344,6 +386,16 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
                 .setPopUpTo(R.id.recommendations_fragment, true)
                 .build()
             navigate(R.id.event_tabs_fragment, null, opts)
+        }
+    }
+
+    override fun setAppBarElevation(value: Float) {
+        mBinding.appBar.apply {
+            elevation = if (value <= 10f) {
+                value
+            } else {
+                10f
+            }
         }
     }
 

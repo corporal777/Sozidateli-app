@@ -33,24 +33,16 @@ class SubEventsWithDateItem(
         add(mDateItem)
         if (!listEvents.isNullOrEmpty()) {
             listEvents.map { data ->
-                if (data.mNoEvent) {
-                    if (listEvents.size < 2) {
-                        mDataItem.add(NoSubEventItem(mNoParamTitle))
-                    }
-                } else {
-                    mDataItem.add(
-                        EventActivityItem(
-                            eventId,
-                            data,
-                            selectedTags,
-                            clickListener,
-                            canShow ?: false
-                        )
+                mDataItem.add(
+                    EventActivityItem(
+                        eventId,
+                        data,
+                        selectedTags,
+                        clickListener,
+                        canShow ?: false
                     )
-                }
+                )
             }
-        } else {
-            mDataItem.add(NoSubEventItem(mNoSubEvent))
         }
         add(mDataItem)
     }

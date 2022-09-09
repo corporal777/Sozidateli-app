@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
@@ -52,6 +53,7 @@ import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
+import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
@@ -115,6 +117,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is AboutEventFragmentNew) {
                     cancelWindowTransparency()
                 }
+                if (f is MyScheduleEventsFragment){
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
             }
 
             override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
@@ -128,8 +133,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 if (f is StoriesFragment) {
                     doEdgeWindow()
                 }
-                if (f is ChatFragment){
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment){
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 }
             }
 
@@ -142,8 +147,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     cancelWindowTransparency()
                     presenter.onStoriesComplete()
                 }
-                if (f is ChatFragment){
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+                if (f is MyEventsFragmentNew){
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 }
             }
 
@@ -234,7 +239,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 navContr.navigateUp()
             } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                 finish()
-            } else {
+            } else if (fr is EventRegistrationFragment){
+                fr.dispatchOnBackPressed()
+            }
+            else {
                 if (mCanGoBack)
                     navContr.navigateUp()
             }
@@ -599,7 +607,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
 
     override fun showRecommendations() {
-        window.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.main_background)))
         if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment) {
             findNavController().navigate(
                 R.id.recommendations_fragment, null, NavOptions.Builder()

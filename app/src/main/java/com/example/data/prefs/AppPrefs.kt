@@ -6,4 +6,6 @@ interface AppPrefs {
     var isFCMTokenSent: Boolean
     var userId: Int
     var isStoriesShown: Boolean
+    var uniqueDeviceId: String?
+    var attemptsOfChangePassword: Int
 }

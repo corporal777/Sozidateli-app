@@ -7,6 +7,7 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.ItemUserSpeakerMainInfoBinding
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.util.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
@@ -40,7 +41,12 @@ class UserSpeakerMainInfoItem(
                 text = location
             }
 
-            tvSpeakersPosition.text = description ?: "No description"
+
+            tvSpeakersPosition.apply {
+                isVisible = !description.isNullOrEmpty()
+                markWon(context)
+                    .setMarkdown(this, description?:"")
+            }
 
             btnWriteMessage.setOnClickListener {
                 if (speaker != null) {

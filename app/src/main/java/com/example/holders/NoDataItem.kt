@@ -8,7 +8,8 @@ import kotlinx.android.synthetic.main.item_no_data.*
 
 class NoDataItem(
         private val title: String,
-        private val description: String? = null
+        private val description: String? = null,
+        private val padding : Int = 0
 ) : Item(-1000) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {

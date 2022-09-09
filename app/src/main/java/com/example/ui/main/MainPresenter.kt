@@ -80,8 +80,8 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        appData.deviceId = UUID.randomUUID().toString()
         if (!appData.isStoriesShown) {
-            //viewState.setStartDestinationRecommendationsFragment()
             viewState.showStories()
         } else {
             onStoriesComplete()
@@ -102,6 +102,7 @@ class MainPresenter
             }, {
                 viewState.showBadgeChat(false)
             })
+
 
     }
 

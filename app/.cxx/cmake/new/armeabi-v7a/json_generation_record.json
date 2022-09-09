@@ -1,0 +1,32 @@
+[
+  {
+    "level": "INFO",
+    "message": "Start JSON generation. Platform version: 21 min SDK version: armeabi-v7a",
+    "file": "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "tag": "new|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "Trying to locate CMake in local SDK repository.",
+    "file": "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "tag": "new|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "- CMake found in SDK at \u0027/Users/test/Library/Android/sdk/cmake/3.18.1\u0027 had version \u00273.18.1\u0027",
+    "file": "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "tag": "new|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON \u0027/Users/test/Documents/Projects/fond-android/app/.cxx/cmake/new/armeabi-v7a/android_gradle_build.json\u0027 was up-to-date",
+    "file": "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "tag": "new|armeabi-v7a"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON generation completed without problems",
+    "file": "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "tag": "new|armeabi-v7a"
+  }
+]

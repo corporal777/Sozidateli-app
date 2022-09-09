@@ -27,6 +27,12 @@ interface EventRegistrationContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showAgreementRegisterDialog(url: String)
 
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        fun showSaveFormResultDraftDialog()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        fun showLoadSavedFormResultDraftDialog(result : EventRegisterData)
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableActionButton(enable: Boolean)
 
@@ -50,9 +56,12 @@ interface EventRegistrationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEvent()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun dispatchOnBackPressed()
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onPersonalDataFileClick(url: String)
         fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
         fun onFileSelected(path: Uri)
@@ -65,5 +74,9 @@ interface EventRegistrationContract {
         fun onSuccessCancel()
         fun onSuccessGoToList()
         fun onSuccessGoToEvent()
+        fun onBackClick()
+
+        fun saveEventFormResultDraft()
+        fun initEventFormResultData(result : EventRegisterData)
     }
 }

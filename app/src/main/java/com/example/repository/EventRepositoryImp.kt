@@ -398,9 +398,10 @@ class EventRepositoryImp
             }
 
     override fun getUserCalendarEvents(): Maybe<List<EventNew>?> =
-        newApi.getUserCalendarEvents("activity.userCalendar,activity.auditorium,activity.member").map {
-            it.data
-        }
+        newApi.getUserCalendarEvents("activity.userCalendar,activity.auditorium,activity.member")
+            .map {
+                it.data
+            }
 
     override fun getPartnerDetails(partnerId: String): Single<PartnerModel> =
         newApi.getPartnerDetails(partnerId, "event")
@@ -438,6 +439,17 @@ class EventRepositoryImp
 
     override fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>> =
         newApi.getEventFormResult(map)
+
+    //+
+    override fun getEventFormResultDraft(
+        id: Int,
+        map: Map<String, Any>
+    ): Maybe<EventFormResultDraftModel> {
+        return newApi.getEventFormResultDraft(id, map)
+    }
+
+    override fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel> =
+        newApi.sendEventFormResultForRegister(body)
 
     override fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>> =
         newApi.eventRegister(body)

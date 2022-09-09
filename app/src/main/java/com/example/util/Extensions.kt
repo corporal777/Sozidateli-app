@@ -9,21 +9,20 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.text.TextUtils
+import android.util.Log
 import android.util.Patterns
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.annotation.ColorInt
-import androidx.core.view.*
-import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -33,10 +32,15 @@ import com.example.R
 import com.example.extensions.calendar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import io.noties.markwon.Markwon
+import io.noties.markwon.SoftBreakAddsNewLinePlugin
+import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
 import java.io.File
-import java.lang.StringBuilder
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.util.*
+
 
 fun String.firstLetterToUppercase(): String {
     return if (this.isNotBlank())
@@ -234,13 +238,16 @@ fun getMonthName(calendar: Calendar): String {
     return month
 }
 
-@SuppressLint("HardwareIds")
-fun getDeviceId(context: Context): String {
-    return Settings.Secure.getString(
-        context.contentResolver,
-        Settings.Secure.ANDROID_ID
-    )
-}
+//@SuppressLint("HardwareIds")
+//fun getDeviceId(context: Context): String {
+//    val deviceId = Settings.Secure.getString(
+//        context.contentResolver,
+//        Settings.Secure.ANDROID_ID
+//    )
+//    val md = MessageDigest.getInstance("MD5")
+//    val encryptedId = BigInteger(1, md.digest(deviceId.toByteArray())).toString(16).padStart(32, '0')
+//    return encryptedId
+//}
 
 fun getDeviceName(): String {
     val manufacturer: String = Build.MANUFACTURER
@@ -302,6 +309,12 @@ fun removeAllDoubleSpaces(str: String): String {
         }
     }
     return sb.toString()
+}
+
+fun markWon(context: Context) : Markwon{
+    return Markwon.builder(context)
+        .usePlugins(listOf(SoftBreakAddsNewLinePlugin.create(), LinkifyPlugin.create()))
+        .build();
 }
 
 

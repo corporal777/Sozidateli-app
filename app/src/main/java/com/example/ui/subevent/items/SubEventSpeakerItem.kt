@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemSubEventSpeakerBinding
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.util.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
@@ -45,7 +46,8 @@ class SubEventSpeakerItem(
                         linesCount -= n.lineCount
                         tvSpeakersDescription.apply {
                             maxLines = linesCount
-                            text = speakerDescription
+                            markWon(context).setMarkdown(this, speakerDescription)
+                            //text = speakerDescription
                         }
                     }
                 }

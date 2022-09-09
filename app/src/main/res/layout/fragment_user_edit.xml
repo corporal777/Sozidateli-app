@@ -22,10 +22,15 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
-        style="@style/ActionButton"
+        style="@style/BtnBrownStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:minHeight="@dimen/auth_button_min_height"
         android:layout_marginBottom="24dp"
         android:text="@string/user_profile_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

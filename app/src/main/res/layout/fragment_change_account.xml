@@ -16,18 +16,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/progress_container"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_star_btn_background"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

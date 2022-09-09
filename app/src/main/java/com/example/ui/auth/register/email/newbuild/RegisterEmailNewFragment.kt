@@ -60,7 +60,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter.deviceId = getDeviceId(requireContext())
         presenter.deviceModel = getDeviceName()
     }
 

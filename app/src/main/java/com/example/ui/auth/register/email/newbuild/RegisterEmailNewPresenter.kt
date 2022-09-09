@@ -21,8 +21,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -50,7 +48,7 @@ class RegisterEmailNewPresenter
     private var isAgree: Boolean = false
     private var isPasswordValid: Boolean = false
     var loginType = "email"
-    var deviceId = ""
+    var deviceId = appData.deviceId
     var deviceModel = ""
 
     override fun onFirstViewAttach() {
@@ -371,7 +369,7 @@ class RegisterEmailNewPresenter
                 password = password,
                 name = firstName, lastName = lastName, middleName = midName,
                 email = em, phone = phoneNumber,
-                deviceId = deviceId, deviceModel = deviceModel
+                deviceId = deviceId ?: "", deviceModel = deviceModel
             )
         )
             .performOnBackgroundOutOnMain()

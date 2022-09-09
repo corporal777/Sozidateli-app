@@ -14,8 +14,6 @@ import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
-import com.example.ui.views.dialogs_new.CustomProgressDialog
-import com.example.util.getDeviceId
 import com.example.util.getDeviceName
 import onTextChanged
 import javax.inject.Inject
@@ -39,7 +37,6 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
             isRegister = isRegistered
             invite = inviteId
             (requireActivity() as MainActivity).invite = inviteId
-            deviceId = getDeviceId(requireContext())
             deviceModel = getDeviceName()
             login = email ?: ""
         }

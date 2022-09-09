@@ -2,6 +2,7 @@ package com.example.holders.registerEvent
 
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_register_event_header.*
@@ -38,7 +39,8 @@ open class RegisterEventHeaderItem(
 
             tvFormDescription.apply {
                 isVisible = !formDescription.isNullOrBlank()
-                text = formDescription
+                markWon(context).setMarkdown(this, formDescription?:"")
+                //text = formDescription
             }
 
             llFormTitleContainer.isVisible = tvFormLabel.isVisible || tvFormDescription.isVisible

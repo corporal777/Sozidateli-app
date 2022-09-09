@@ -288,18 +288,13 @@
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnBrownStyle"
                 android:id="@+id/ibRegister"
-                fontPath="fonts/sf_pro_text_bold.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                android:background="@drawable/custom_btn_brown_selectable"
-                android:letterSpacing="-0.02"
                 android:text="@string/auth_action_register"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
                 android:enabled="false"
                 android:minHeight="@dimen/auth_button_min_height"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -310,20 +305,14 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnCancelStyle"
                 android:id="@+id/ibCancel"
-                fontPath="fonts/sf_pro_text_bold.ttf"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/auth_button_min_height"
                 android:layout_marginVertical="8dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                android:background="@drawable/custom_btn_cancel_selectable"
-                android:letterSpacing="-0.02"
-                android:stateListAnimator="@null"
                 android:text="@string/revoke"
-                android:textAllCaps="false"
-                android:textColor="@color/button_cancel_text"
-                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

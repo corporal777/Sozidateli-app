@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <androidx.appcompat.widget.AppCompatImageButton
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/content_description_close"
@@ -22,23 +23,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        fontPath="fonts/sf_pro_text_semibold.ttf"
+        android:letterSpacing="-0.02"
+        android:textSize="17sp"
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/profile_work_experience"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
         android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/ivClose"
-        app:layout_constraintEnd_toStartOf="@+id/ivClose"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ivClose" />
+        app:layout_constraintTop_toTopOf="@+id/ivClose"
+        tools:ignore="MissingPrefix" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="7dp"
         android:descendantFocusability="beforeDescendants"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -51,8 +56,13 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
-        style="@style/ActionButton"
-        android:layout_marginBottom="24dp"
+        style="@style/BtnBrownStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginVertical="10dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:minHeight="@dimen/auth_button_min_height"
         android:text="@string/auth_action_continue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

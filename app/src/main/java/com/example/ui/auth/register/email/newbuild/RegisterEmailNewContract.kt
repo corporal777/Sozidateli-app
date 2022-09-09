@@ -91,10 +91,10 @@ interface RegisterEmailNewContract {
                                 middleName: String?,
                                 phone: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showAlertLoadingDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideAlertLoadingDialog()
     }
 

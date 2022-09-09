@@ -1,22 +1,22 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
-import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.IS_EXPANDED
@@ -94,6 +94,9 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.etSearch.setOnClickListener {
             presenter.onSearchClick()
         }
+        mBinding.fabUp.setOnClickListener {
+            smoothScrollToFirstItem()
+        }
     }
 
 
@@ -129,6 +132,34 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
             position,
             offset
         )
+    }
+
+
+    private fun smoothScrollToFirstItem() {
+        val height = mBinding.eventsList.height
+        val mSmoothScroller by lazy {
+            object : LinearSmoothScroller(requireContext()) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_END
+                }
+
+                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
+                    // return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(500f)
+                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
+                }
+
+                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(140f)
+                }
+
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return 10f / displayMetrics.densityDpi
+                }
+            }
+        }
+        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        mSmoothScroller.targetPosition = 0
+        mLayoutManager.startSmoothScroll(mSmoothScroller)
     }
 
     override fun showAboutEvent(event: String) {
@@ -211,5 +242,10 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun layout(): Int = R.layout.fragment_recommendations
+
+    fun dp2px(dpValue: Float): Int {
+        val scale: Float = requireContext().resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
 
 }

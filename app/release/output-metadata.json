@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "ru.houseofapps.sozidateli",
+  "variantName": "processReleaseResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 56,
+      "versionName": "1.0.28",
+      "outputFile": "sozidateli-release-1.0.28(56).apk"
+    }
+  ]
+}

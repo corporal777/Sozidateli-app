@@ -2,25 +2,15 @@ package com.example.ui.accountChange
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
-import com.example.extensions.dp
-import com.example.extensions.findGroupBy
-import com.example.extensions.forEachGroups
-import com.example.holders.CalendarHorizontalListItem
 import com.example.ui.accountChange.items.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.CustomProgressView
-import com.example.ui.accountChange.items.ChangeAccountBottomDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
-import com.example.util.getDeviceId
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -39,7 +29,7 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
 
     @ProvidePresenter
     fun providePresenter(): ChangeAccountPresenter = presenterProvider.get().apply {
-        mDeviceId = getDeviceId(requireContext())
+
     }
 
     private val logoSection by lazy {
@@ -134,33 +124,6 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         dialog.setKillCallback { s ->
             presenter.killSession(s)
         }
-    }
-
-    override fun showProgressLoading() {
-        val progressBar = CustomProgressView(requireContext())
-        progressBar.setSize(35.dp)
-        progressBar.setProgressColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.main_brown_color_new
-            )
-        )
-        mBinding.progressContainer.apply {
-            isVisible = true
-            addView(progressBar, 0)
-        }
-    }
-
-    override fun hideProgressLoading() {
-        mBinding.progressContainer.apply {
-            visibility = View.INVISIBLE
-            removeAllViews()
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        hideProgressLoading()
     }
 
     override fun layout(): Int = R.layout.fragment_change_account

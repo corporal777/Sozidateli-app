@@ -11,7 +11,11 @@ import androidx.appcompat.widget.AppCompatButton
 import com.example.R
 import com.example.databinding.DialogMessageWithGrayButtonBinding
 
-class MessageDialogWithBrownButton(val context: Context, val message: String) {
+class MessageDialogWithBrownButton(
+    val context: Context,
+    val message: String,
+    val isCancelable : Boolean = true
+    ) {
 
     private val mBinding = DialogMessageWithGrayButtonBinding.inflate(LayoutInflater.from(context))
 
@@ -22,7 +26,7 @@ class MessageDialogWithBrownButton(val context: Context, val message: String) {
 
     init {
         mBuilder.setView(mBinding.root)
-        mBuilder.setCancelable(true)
+        mBuilder.setCancelable(isCancelable)
 
         mBinding.tvMessage.apply {
             text = message

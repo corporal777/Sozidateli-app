@@ -12,20 +12,20 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="1"
         android:textColor="@color/no_data_item_title_color"
-        android:textSize="26sp"
+        android:textSize="25sp"
         tools:ignore="MissingPrefix"
         tools:text="@string/empty_list_placeholder_message" />
 
     <TextView
         android:id="@+id/tvDescription"
-        fontPath="fonts/Roboto-Regular.ttf"
+        fontPath="fonts/sf_pro_display_semibold.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

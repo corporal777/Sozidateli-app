@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.read.settings
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.userprofile.base.BaseUserProfileContract
@@ -57,22 +58,24 @@ interface UserProfileSettingsContract {
         fun showPhoneNotUnique(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showOldPasswordError()
+        fun showOldPasswordError(attempts : Int)
 
         @StateStrategyType(SkipStrategy::class)
-        fun hideNewPasswordDialog()
+        fun showNewPasswordTypingContent()
+
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showLoginAgainDialog()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showRecoveryPassword(email: String)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
         fun onChangePhoneClick()
 
         fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(
-            oldPassword: String,
-            newPassword: String,
-            newPasswordConfirm: String
-        )
-
+        fun onChangePasswordClickConfirm(newPassword: String)
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String, isFirst: Boolean)
         fun onDeleteEmail()
@@ -96,6 +99,7 @@ interface UserProfileSettingsContract {
         fun onChangeNotConfirmedPhone(phone: String)
         fun onPasswordInputComplete(password: String, phone: String)
         fun confirmCode(phone: String, code: String)
-        fun checkPasswordValid(password: String, newPassword: String)
+        fun checkPasswordValid(password: String)
+        fun logoutFromAccount()
     }
 }

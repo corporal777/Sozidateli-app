@@ -77,6 +77,10 @@ interface EventRepository {
     //fun loadEventRegistrationDataNew(eventId: String): Single<EventRegisterData>
     fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel/*EventRegisterField*/>>>
     fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
+    //+
+    fun getEventFormResultDraft(id : Int, map: Map<String, Any>): Maybe<EventFormResultDraftModel>
+    fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel>
+
     fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
     fun registerToEvent(eventId : Int): Completable
     fun cancelRegisterToEvent(eventId : Int): Completable

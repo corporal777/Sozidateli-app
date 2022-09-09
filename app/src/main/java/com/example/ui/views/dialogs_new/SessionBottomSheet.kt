@@ -1,27 +1,15 @@
 package com.example.ui.views.dialogs_new
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.BottomSheetCalendarBinding
 import com.example.databinding.BottomSheetSessionBinding
-import com.example.extensions.calendar
-import com.example.extensions.dp
-import com.example.ui.views.calendarView.CalendarDay
-import com.example.ui.views.calendarView.DayViewDecorator
-import com.example.ui.views.calendarView.DayViewFacade
-import com.example.ui.views.calendarView.spans.DotSpan
-import com.example.util.getDeviceId
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import setOnClickListener
-import java.util.*
 
 class SessionBottomSheet(
+    val isCurrentSession: Boolean,
     val onActionClick: () -> Unit,
     val context: Context,
     val session: UserSessionModel
@@ -89,7 +77,7 @@ class SessionBottomSheet(
             tvLocation.text = deviceLocation
 
             decorDeviceIcon(ivDeviceIcon, session)
-            if (getDeviceId(context) == session.deviceId) {
+            if (isCurrentSession) {
                 tvActionKill.text = context.getString(R.string.kill_all_other_sessions)
             } else {
                 tvActionKill.text = context.getString(R.string.kill_session_label)

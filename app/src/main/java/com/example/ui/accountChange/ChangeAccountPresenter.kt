@@ -14,6 +14,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -26,7 +27,7 @@ class ChangeAccountPresenter
     private val notificationManager: NotificationManager
 ) : BasePresenter<ChangeAccountContract.View>(appData), ChangeAccountContract.Presenter {
 
-    var mDeviceId = ""
+    var mDeviceId = appData.deviceId?:""
     private var mDy = 0
     private val loggedSessions = arrayListOf<UserSessionModel>()
     private val unLoggedSessions = arrayListOf<UserSessionModel>()
@@ -49,7 +50,6 @@ class ChangeAccountPresenter
         super.onFirstViewAttach()
         currentUserId = appData.getId().toString()
         viewState.setAppBarElevation(0f)
-        viewState.showProgressLoading()
         loadData()
     }
 
@@ -59,14 +59,13 @@ class ChangeAccountPresenter
                 transformData(it.userSessions)
             }
             .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
-                    viewState.hideProgressLoading()
                 },
                 onSuccess = { s ->
                     viewState.apply {
-                        hideProgressLoading()
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
                         setLoginToAnotherAccountButton()

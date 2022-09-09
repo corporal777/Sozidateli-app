@@ -60,6 +60,12 @@ interface FinishRegisterContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setCanResend(canResend: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAlertLoadingDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideAlertLoadingDialog()
     }
 
     interface Presenter : BaseAuthContract.Presenter {

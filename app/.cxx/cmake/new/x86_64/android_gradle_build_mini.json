@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/test/Documents/Projects/fond-android/app/src/main/cpp/CMakeLists.txt",
+    "/Users/test/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/test/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/test/Library/Android/sdk/cmake/3.18.1/bin/ninja -C \"/Users/test/Documents/Projects/fond-android/app/.cxx/cmake/new/x86_64\" clean"
+  ],
+  "buildTargetsCommand": "/Users/test/Library/Android/sdk/cmake/3.18.1/bin/ninja  -C \"/Users/test/Documents/Projects/fond-android/app/.cxx/cmake/new/x86_64\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "sozidateli-Debug-x86_64": {
+      "artifactName": "sozidateli",
+      "buildCommand": "/Users/test/Library/Android/sdk/cmake/3.18.1/bin/ninja -C \"/Users/test/Documents/Projects/fond-android/app/.cxx/cmake/new/x86_64\" sozidateli",
+      "abi": "x86_64",
+      "output": "/Users/test/Documents/Projects/fond-android/app/build/intermediates/cmake/new/obj/x86_64/libsozidateli.so",
+      "runtimeFiles": []
+    }
+  }
+}

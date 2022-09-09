@@ -25,7 +25,7 @@ class UserSessionsPresenter
     private val authRepository: AuthRepository
 ) : BasePresenter<UserSessionsContract.View>(appData), UserSessionsContract.Presenter {
 
-    var deviceId = ""
+    var deviceId = appData.deviceId?:""
     private val allOtherSessions = arrayListOf<UserSessionModel>()
     private val shortAllOtherSessions = arrayListOf<UserSessionModel>()
     private var actionType = SessionsAction.HIDDEN

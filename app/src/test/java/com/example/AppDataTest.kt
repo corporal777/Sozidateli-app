@@ -14,6 +14,8 @@ class AppDataTest {
             override var isFCMTokenSent: Boolean = false
             override var userId: Int = -1
             override var isStoriesShown: Boolean = false
+            override var uniqueDeviceId: String? = ""
+            override var attemptsOfChangePassword: Int = 0
         })
     }
 
