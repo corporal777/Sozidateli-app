@@ -57,7 +57,7 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_work_experience))
+        setToolbarTitleAndIcon(getString(R.string.profile_work_experience))
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditWorksFragment.adapter

@@ -95,7 +95,7 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.notifications_label))
+        setToolbarTitleAndIcon(getString(R.string.notifications_label))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@NotificationsFragment.adapter
@@ -109,9 +109,7 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     }
 
     override fun setData(notifications: List<Notification?>) {
-        Log.e("NOTE", notifications[0].toString())
         adapter.update(notifications.map {
-
             if (it == null) {
                 PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
             }

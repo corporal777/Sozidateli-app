@@ -5,12 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
@@ -112,43 +110,30 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navFragmentsLifecycleCallback =
         object : FragmentManager.FragmentLifecycleCallbacks() {
 
-            override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
-                super.onFragmentPaused(fm, f)
-                if (f is AboutEventFragmentNew) {
-                    cancelWindowTransparency()
-                }
-                if (f is MyScheduleEventsFragment){
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-                }
-            }
-
-            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-                super.onFragmentStarted(fm, f)
-                if (f is AboutEventFragmentNew) {
-                    setWindowTransparency()
-                }
-                if (f is SplashFragment) {
-                    hideToolbar()
-                }
-                if (f is StoriesFragment) {
-                    doEdgeWindow()
-                }
-                if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment){
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-                }
-            }
-
-            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentDestroyed(fm, f)
-                if (f is AboutEventFragmentNew) {
+            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+                super.onFragmentStopped(fm, f)
+                if (f is AboutEventFragmentNew|| f is EventRegistrationFragment) {
                     cancelWindowTransparency()
                 }
                 if (f is StoriesFragment) {
                     cancelWindowTransparency()
                     presenter.onStoriesComplete()
                 }
-                if (f is MyEventsFragmentNew){
+                if (f is MyEventsFragmentNew) {
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+            }
+
+            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                super.onFragmentStarted(fm, f)
+                if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
+                    setWindowTransparency()
+                }
+                if (f is StoriesFragment) {
+                    doEdgeWindow()
+                }
+                if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 }
             }
 
@@ -239,10 +224,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 navContr.navigateUp()
             } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                 finish()
-            } else if (fr is EventRegistrationFragment){
+            } else if (fr is EventRegistrationFragment) {
                 fr.dispatchOnBackPressed()
-            }
-            else {
+            } else {
                 if (mCanGoBack)
                     navContr.navigateUp()
             }
@@ -573,11 +557,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build()
     )
 
-    override fun showLogin() = findNavController().navigate(
-        R.id.authorization_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build()
-    )
+    override fun showLogin() {
+        val navContr = findNavController(R.id.navHostFragment)
+        if (navContr.currentDestination?.id != R.id.authorization_fragment) {
+            findNavController().navigate(
+                R.id.authorization_fragment, null, NavOptions.Builder()
+                    .setPopUpTo(R.id.main_navigation, true)
+                    .build()
+            )
+        }
+    }
 
     override fun showFinishRegister(
         name: String,
@@ -875,6 +864,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
     }
 
+    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
+        mBinding.toolbarLabel.text = title
+        if (icon == null){
+            mBinding.ivAction.isVisible = false
+        }else {
+            mBinding.ivAction.apply {
+                isVisible = true
+                setImageDrawable(icon)
+                setOnClickListener {
+                    action?.invoke()
+                }
+            }
+        }
+    }
+
     override fun setAppBarElevation(value: Float) {
         mBinding.appBar.apply {
             elevation = if (value <= 10f) {
@@ -885,9 +889,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun setToolbarTitle(title: String) {
-        mBinding.toolbarLabel.text = title
-    }
+
 
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
@@ -1013,7 +1015,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mCanGoBack = true
     }
 
-    override fun disableBackClickListener(){
+    override fun disableBackClickListener() {
         mCanGoBack = false
     }
 

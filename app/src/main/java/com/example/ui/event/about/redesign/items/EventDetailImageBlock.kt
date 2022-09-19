@@ -20,7 +20,7 @@ class EventDetailImageBlock(
         eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to)
             ?: ""
 
-    @SuppressLint("CheckResult")
+
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
         viewBinding.apply {
 

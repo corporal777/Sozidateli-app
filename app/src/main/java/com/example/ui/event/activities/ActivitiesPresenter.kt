@@ -95,36 +95,31 @@ class ActivitiesPresenter
                 defaultServerDateFormatter.parse(it.date).time
             })
 
+            tags = userEvent.activity.groups.plus(userEvent.activity.tags)
+            if (tagsNew != null) {
+                tags.forEach {
+                    val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
+                    if (nt != null) {
+                        it.isSelected = nt.isSelected
+                    } else {
+                        it.isSelected = it.isSelected
+                    }
+                }
+            }
+
             collectDatesToWeeks(dates)
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { list ->
                 viewState.setDays(list)
-                compositeDisposable += Completable.fromAction {
-                    tags = userEvent.activity.groups.plus(userEvent.activity.tags)
-                    if (tagsNew != null) {
-                        tags.forEach {
-                            val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
-                            if (nt != null) {
-                                it.isSelected = nt.isSelected
-                            } else {
-                                it.isSelected = it.isSelected
-                            }
-                        }
+                viewState.apply {
+                    setTags(tags)
+                    currentDay?.let { day ->
+                        selectDay(day)
+                        scrollToDay(day)
                     }
-                }.performOnBackgroundOutOnMain()
-                    .subscribeSimple {
-                        viewState.apply {
-                            setTags(tags)
-                            currentDay?.let { day ->
-                                selectDay(day)
-                                scrollToDay(day)
-                            }
-                        }
-                        invalidateDay()
-                    }
-
-
+                }
+                invalidateDay()
             }
 
     }

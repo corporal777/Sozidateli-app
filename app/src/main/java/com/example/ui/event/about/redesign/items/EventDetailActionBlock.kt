@@ -2,7 +2,6 @@ package com.example.ui.event.about.redesign.items
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.widget.Button
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -133,7 +132,7 @@ class EventDetailActionBlock(
                     when (actions?.get(0)) {
                         "register" -> {
                             mTextSize = 17f
-                            btnBackground = R.drawable.custom_btn_white_selectable
+                            btnBackground = R.drawable.custom_btn_white_ghost_selectable
                             btnText = R.string.event_action_participate
                             clickAction = {
                                 eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
@@ -150,7 +149,7 @@ class EventDetailActionBlock(
                         }
                         "withdraw" -> {
                             mTextSize = 17f
-                            btnBackground = R.drawable.custom_btn_white_selectable
+                            btnBackground = R.drawable.custom_btn_white_ghost_selectable
                             btnText = R.string.event_action_cancel_request
                             clickAction = {
                                 eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
@@ -165,7 +164,7 @@ class EventDetailActionBlock(
                     when (actions?.get(0)) {
                         "subscribe" -> {
                             mTextSize = 16f
-                            btnBackground = R.drawable.custom_btn_white_selectable
+                            btnBackground = R.drawable.custom_btn_white_ghost_selectable
                             if (eventNew.binds?.isUserSubscribed == true) {
                                 btnText = R.string.event_action_unsubscribe_request
                                 clickAction = {

@@ -62,7 +62,7 @@ class EventRatingPresenter
                     val eventData = EventRegistration(id = event.id.toString(), organization = null,
                             code = "", organizationId = event.binds?.organization?.id?.toString(),
                             name = event.name ?: "", description = event.description
-                            ?: "", logo = null,
+                            ?: "", logo = null, image = "",
                             conferenceStart = event.holdingDate?.from, conferenceFinish = event.holdingDate?.to, registrationStart = null,
                             registrationFinish = null, status = null, userAgreement = event.userAgreement?.uri, registrationName = null,
                             userRegistration = event.status?.value

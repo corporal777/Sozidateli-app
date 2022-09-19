@@ -7,11 +7,20 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAction"
-        style="@style/Profile.Edit.ActionButton"
+        style="@style/BtnBrownStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="@drawable/background_action_button_selector"
+        android:paddingStart="20dp"
+        android:minHeight="35dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
         android:textColor="@color/text_color_action_button"
+        android:drawablePadding="10dp"
         tools:drawableStart="@drawable/ic_add_sn"
         tools:text="action" />
 </LinearLayout>

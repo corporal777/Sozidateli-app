@@ -63,7 +63,7 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setToolbarTitle(getString(R.string.event))
+        setToolbarTitleAndIcon(getString(R.string.event))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -2,10 +2,12 @@ package com.example.ui.userSessions
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
@@ -14,6 +16,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userSessions.items.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -22,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
-    UserSessionsContract.View {
+    UserSessionsContract.View, SimpleTitleToolbar {
 
 
     @InjectPresenter
@@ -61,18 +64,13 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUserLink()
         mBinding.rvSessions.apply {
             startPostponedEnterTransition()
             adapter = groupAdapter
             onScrolled { _, dy ->
                 presenter.changeAppBarElevation(dy)
             }
-        }
-        mBinding.ivInfo.setOnClickListener {
-            showSessionInfoDialog()
-        }
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
         }
     }
 
@@ -117,15 +115,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         }))
     }
 
-    override fun showSessionBottomSheetDialog(session: UserSessionModel) {
-//        SessionBottomSheet(actionClick, requireContext(), session).onKillDeviceSession {
-//            if (getDeviceId(requireContext()) == it.deviceId) {
-//                presenter.killAllSessionsClick()
-//            } else {
-//                presenter.killUsersDeviceSessionClick(it.sessionId)
-//            }
-//        }
-    }
 
     override fun hideSessionsActionButton() {
         sessionsHistorySection.clear()
@@ -148,13 +137,11 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         MessageDialogWithBrownButton(requireContext(), message)
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mBinding.appBarLayout.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
-            }
+    private fun setUserLink() {
+        val userId = getString(R.string.sessions_label)
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
+        setToolbarTitleAndIcon(userId, actionIcon) {
+            showSessionInfoDialog()
         }
     }
 

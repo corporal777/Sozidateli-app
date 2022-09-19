@@ -2,18 +2,10 @@ package com.example.ui.profile
 
 import android.content.Intent
 import android.content.Intent.*
-import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
@@ -28,9 +20,8 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_profile.*
-import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -60,27 +51,20 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_label))
         mBinding.apply {
-            profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
             })
-
             ivAvatar.apply {
                 clipToOutline = true
             }
-
-
-            tvStates.setOnClickListener {
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-            }
-            tvBanned.setOnClickListener { presenter.onBannedClick() }
+            //tvBanned.setOnClickListener { presenter.onBannedClick() }
             tvSettings.setOnClickListener { presenter.onSettingsClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
             tvRate.setOnClickListener { presenter.onRateClick() }
             tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
             tvLogout.setOnClickListener { presenter.onLogoutClick() }
-            tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
+            //tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
             tvSessions.setOnClickListener {
                 presenter.onSessionsClick()
             }
@@ -88,9 +72,8 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
                 presenter.onChangeAccountClick()
             }
 
-            tvEditProfile.setOnClickListener { presenter.onProfileClick() }
+            btnEditProfile.setOnClickListener { presenter.onProfileClick() }
             tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
-            tvEvents.setOnClickListener { presenter.onEventsClick() }
         }
 
 
@@ -100,11 +83,12 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
 
     override fun setUser(user: UserDetail) {
+        setUserLink(user)
         val avatar = user.image?.uri
         Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar)
-            .placeholder(R.drawable.avatar_placeholder_rectangle).into(ivAvatar)
-        tvName.text = user.fullName
-        tvIdTitle.text = getString(R.string.user_id, user.id.toString())
+            .placeholder(R.drawable.avatar_placeholder_rectangle).into(mBinding.ivAvatar)
+        mBinding.tvName.text = user.nameLastName
+
         if (isShowPopup && !::dialog.isInitialized) {
             dialog = AddPhoneEmailDialog(
                 requireActivity(),
@@ -124,27 +108,41 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
-        val text = SpannableString(
-            getString(
-                R.string.state, if (!hasBase && !hasMax) getString(R.string.state_empty)
-                else if (hasBase && !hasMax) getString(R.string.state_base) else getString(R.string.state_max)
-            )
-        )
-        text.setSpan(StyleSpan(Typeface.BOLD), 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        text.setSpan(
-            ForegroundColorSpan(
-                if (!hasBase && !hasMax) Color.RED
-                else if (hasBase && !hasMax) ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
-                )
-                else ContextCompat.getColor(
-                    requireContext(),
-                    R.color.event_item_action_background_show_event
-                )
-            ), 8, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        state_title.text = text
+        val newState = if (!hasBase && !hasMax) {
+            getString(R.string.state).firstLetterToUppercase() + " " + getString(R.string.state_empty)
+        }else if (hasBase && !hasMax) {
+            getString(R.string.state_base).firstLetterToUppercase() +  " " + getString(R.string.state)
+        }else {
+            getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
+        }
+        mBinding.stateTitle.apply {
+            text = newState
+            setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
+            }
+        }
+    }
+
+    private fun setUserLink(user: UserDetail) {
+        val userId = getString(R.string.user_id, user.id.toString())
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
+        setToolbarTitleAndIcon(userId, actionIcon) {
+            showToast("Open bottom sheet for link")
+        }
+    }
+
+    override fun setChangeOrAddNewAccount(size: Int) {
+        if (size <= 1){
+            mBinding.apply {
+                tvChangeAccount.text = getString(R.string.add_account_label)
+                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit, 0, 0, 0);
+            }
+        }else {
+            mBinding.apply {
+                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit, 0, 0, 0);
+                tvChangeAccount.text = getString(R.string.change_account_label)
+            }
+        }
     }
 
     override fun showEmailNotUnique(email: String) {

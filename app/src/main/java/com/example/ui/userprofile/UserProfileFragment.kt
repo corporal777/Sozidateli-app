@@ -34,7 +34,7 @@ class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(), UserP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.user_profile_label))
+        setToolbarTitleAndIcon(getString(R.string.user_profile_label))
         mBinding.apply {
             btnEdit.setOnClickListener(presenter::onEditAvatarClick)
             btnMainInfo.setOnClickListener(presenter::onMainDataClick)

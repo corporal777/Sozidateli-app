@@ -2,32 +2,28 @@ package com.example.holders.redesign
 
 import android.graphics.Typeface
 import android.os.Build
-import android.util.Log
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToIntervalNew
 import com.example.ui.views.TagChipNew
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.markWon
 import com.example.util.weak
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_lecture.*
-import kotlinx.android.synthetic.main.item_lecture.tagGroup
-import setOnClickListener
 
 
 class EventActivityItem(
@@ -58,13 +54,12 @@ class EventActivityItem(
         canShowButton = canShow
         val today = System.currentTimeMillis()
         val subEventDate = defaultServerDateTimeFormatter.parse(subEvent.holdingDate?.to).time
-        if (today > subEventDate){
+        if (today > subEventDate) {
             canShowButton = false
         }
-        fullDescription = StringBuilder(subEvent.description?.replace("\n", " ")).toString()
+        fullDescription = StringBuilder(subEvent.description).toString()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvLectureTime.text = mTime
@@ -75,19 +70,24 @@ class EventActivityItem(
                 tvLectureAuditory.text = subEvent.binds?.auditorium?.name
             }
 
+//            val textView = TextView(viewHolder.root.context)
+//            markWon(textView.context).setMarkdown(textView, fullDescription)
+
             var isAdded = false
             if (!isAdded) {
                 isAdded = true
+
                 val expandableTextView =
                     CustomExpandableTextView(viewHolder.root.context, listener, mIsCollapsed)
                 expandableTextView.apply {
-                    originalText = fullDescription
+                    firstText = fullDescription
+                    //originalText = SpannableStringBuilder().append(textView.text)
                     maxLines = 100
                     limitedMaxLines = 5
                     typeface =
                         Typeface.createFromAsset(context.assets, "fonts/sf_pro_display_regular.OTF")
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                    expandAction = context.getString(R.string.yet_btn_text)
+                    expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
                 }
                 desc_container.apply {
                     removeAllViews()

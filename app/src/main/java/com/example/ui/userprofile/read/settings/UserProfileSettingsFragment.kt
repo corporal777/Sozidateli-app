@@ -61,7 +61,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //btnPhoneEdit.setOnClickListener(presenter::onChangePhoneClick)
-        setToolbarTitle(getString(R.string.profile_settings))
+        setToolbarTitleAndIcon(getString(R.string.profile_settings))
         mBinding.apply {
             nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
@@ -242,8 +242,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                     }
             }
         }
-
-
     }
 
     private fun TextInputLayout.initNameInput(text: String?) {

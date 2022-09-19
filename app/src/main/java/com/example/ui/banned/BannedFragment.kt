@@ -45,8 +45,7 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setToolbarTitle(getString(R.string.profile_banned))
+        setToolbarTitleAndIcon(getString(R.string.profile_banned))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@BannedFragment.adapter

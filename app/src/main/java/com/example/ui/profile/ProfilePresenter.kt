@@ -32,6 +32,7 @@ class ProfilePresenter
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     private var mDy = 0
+    private var mDeviceId = appData.deviceId?:""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -58,6 +59,13 @@ class ProfilePresenter
                     viewState.setUser(appData.getUserNew())
                 }, { it.printStackTrace() })
         }
+        compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (!it.userSessions.isNullOrEmpty()){
+                    viewState.setChangeOrAddNewAccount(it.userSessions.filter { x -> x.isLogged }.size)
+                }
+            }
     }
 
     fun changeScrollingOffset(value: Int) {
@@ -75,9 +83,8 @@ class ProfilePresenter
 
     override fun onBannedClick() = viewState.showBanned()
 
-    override fun onSupportClick() {
-        viewState.openSupportEmail(appData.getId().toString())
-    }
+    override fun onSupportClick() = viewState.openSupportEmail(appData.getId().toString())
+
 
     override fun onSessionsClick() = viewState.showSessions()
     override fun onChangeAccountClick() = viewState.showChangeAccount()

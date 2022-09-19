@@ -1,23 +1,14 @@
 package com.example.holders.redesign
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.net.Uri
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -27,12 +18,9 @@ import com.example.databinding.ItemEventNewBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.holders.EventStatusItem
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
-import com.example.util.ClickableSpan
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.*
-import kotlinx.android.synthetic.main.dialog_event_registration_agreement_no_form.view.*
 import parseColor
 import setOnClickListener
 
@@ -51,15 +39,14 @@ class EventItemNew(
     private val organizationEmails = eventData?.binds?.organization?.email
 
     private val userAgreement = eventData?.userAgreement?.uri
-    private val eventRegistrationState: EventRegistrationStateModel? =
+    val eventRegistrationState: EventRegistrationStateModel? =
         eventData?.binds?.eventRegistrationState
-    private val registrationId = eventData?.binds?.currentUserRegistration?.id.toString()
-    private val name: String? = eventData?.name
-    private val address = eventData?.address?.getShortAddress()
+    val registrationId = eventData?.binds?.currentUserRegistration?.id.toString()
+    val name: String? = eventData?.name
+    val address = eventData?.address?.getShortAddress()
     val date: String =
         eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to)
             ?: ""
-
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
@@ -142,66 +129,50 @@ class EventItemNew(
     }
 
     private fun decorActionButton(btnAction: Button) {
-        var btnBackground: Int? = null
-        @StringRes var btnText: Int? = null
-        var clickAction: (() -> Unit)? = null
-        var visibility = true
-
         if (eventRegistrationState != null) {
             val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
                 arrayListOf("") else eventRegistrationState?.availableActions
-            when {
-                eventRegistrationState?.prohibitions?.registrationClosed == false -> {
+            when (eventRegistrationState?.prohibitions?.registrationClosed) {
+                false -> {
                     when (actions?.get(0)) {
                         "register" -> {
-                            btnBackground = R.drawable.custom_btn_white_selectable
-                            btnText = R.string.event_action_participate
-                            clickAction = {
-                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                    if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ userAgreement.isNullOrEmpty()) {
-                                        onEventClickListener.onActionRegister(eventId)
-                                    } else {
-                                        showAgreementRegisterDialog(
-                                            btnAction.context,
-                                            userAgreement
-                                        )
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_participate)
+                                setOnClickListener {
+                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                        if (userAgreement.isNullOrEmpty()) {
+                                            onEventClickListener.onActionRegister(eventId)
+                                        } else {
+                                            showAgreementRegisterDialog(
+                                                btnAction.context,
+                                                userAgreement
+                                            )
+                                        }
                                     }
                                 }
                             }
+
                         }
                         "withdraw" -> {
-                            btnBackground = R.drawable.custom_btn_white_selectable
-                            btnText = R.string.event_action_cancel_request
-                            clickAction = {
-                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                    onEventClickListener.onActionCancel(eventId, registrationId)
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_cancel_request)
+                                setOnClickListener {
+                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                        onEventClickListener.onActionCancel(eventId, registrationId)
+                                    }
                                 }
                             }
+
                         }
-                        else -> visibility = false
+                        else -> btnAction.isVisible = false
                     }
                 }
                 else -> {
-                    visibility = false
-                    // textBackground = R.drawable.btn_action_background_registration_closed
-                    //textRes = R.string.about_event_registration_closed
+                    btnAction.isVisible = false
                 }
             }
-        }
-
-        btnAction.apply {
-            text = btnText?.let { context.getString(it) }
-            setTextColor(Color.BLACK)
-            background = btnBackground?.let { ContextCompat.getDrawable(context, it) }
-
-            if (clickAction != null) {
-                setOnClickListener(clickAction)
-            } else {
-                setOnClickListener(null)
-                isEnabled = false
-            }
-
-            isVisible = visibility
         }
     }
 
@@ -223,9 +194,10 @@ class EventItemNew(
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
         if (this === other) return true
-        if (other !is EventStatusItem) return false
+        if (other !is EventItemNew) return false
         if (eventId != other.eventId) return false
         if (status != other.status) return false
+        if (eventRegistrationState != other.eventRegistrationState) return false
         if (userRegistration != other.userRegistration) return false
         if (backgroundColor != other.backgroundColor) return false
         if (logo != other.logo) return false

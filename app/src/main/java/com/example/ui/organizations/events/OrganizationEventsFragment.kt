@@ -26,6 +26,6 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.organization_events))
+        setToolbarTitleAndIcon(getString(R.string.organization_events))
     }
 }

@@ -89,7 +89,6 @@ class UserSessionsPresenter
     }
 
     override fun showSessionClick(session: UserSessionModel) {
-        viewState.showSessionBottomSheetDialog(session)
     }
 
     override fun showOrHideSessionsHistoryClick(action: SessionsAction) {

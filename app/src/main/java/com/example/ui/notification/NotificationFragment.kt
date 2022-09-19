@@ -57,7 +57,7 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setToolbarTitle(getString(R.string.notification_label))
+        setToolbarTitleAndIcon(getString(R.string.notification_label))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -36,7 +36,7 @@ class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.status_profile_title_set))
+        setToolbarTitleAndIcon(getString(R.string.status_profile_title_set))
         mBinding.apply {
             etPassword.onTextChanged { tilPassword.error = null }
             btnSave.setOnClickListener {

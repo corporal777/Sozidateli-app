@@ -2,6 +2,7 @@ package com.example.ui.base
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,13 +16,11 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
-import androidx.viewbinding.ViewBinding
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
@@ -140,8 +139,8 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
         mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitle(title: String) {
-        mActivity?.setToolbarTitle(title)
+    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
+        mActivity?.setToolbarTitleAndIcon(title, icon, action)
     }
 
     override fun navigateUp() {

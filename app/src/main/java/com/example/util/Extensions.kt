@@ -1,6 +1,5 @@
 package com.example.util
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
@@ -8,10 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.text.TextUtils
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
@@ -20,7 +16,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import coil.load
@@ -32,13 +27,16 @@ import com.example.R
 import com.example.extensions.calendar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
+import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
+import org.commonmark.node.SoftLineBreak
 import java.io.File
-import java.math.BigInteger
-import java.security.MessageDigest
 import java.util.*
 
 
@@ -311,9 +309,16 @@ fun removeAllDoubleSpaces(str: String): String {
     return sb.toString()
 }
 
-fun markWon(context: Context) : Markwon{
+fun markWon(context: Context): Markwon {
     return Markwon.builder(context)
-        .usePlugins(listOf(SoftBreakAddsNewLinePlugin.create(), LinkifyPlugin.create()))
+        .usePlugins(
+            listOf(
+                SoftBreakAddsNewLinePlugin.create(),
+                LinkifyPlugin.create(),
+                HtmlPlugin.create(),
+                MarkwonInlineParserPlugin.create()
+            )
+        )
         .build();
 }
 

@@ -80,7 +80,7 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_work_organization))
+        setToolbarTitleAndIcon(getString(R.string.profile_work_organization))
         mBinding.apply {
             scrollContainer.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
                 presenter.onScrollPositionChange(scrollY)

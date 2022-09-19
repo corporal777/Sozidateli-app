@@ -29,7 +29,7 @@ class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.code_input_label))
+        setToolbarTitleAndIcon(getString(R.string.code_input_label))
         mBinding.apply {
             etCode.apply {
                 setOnKeyListener { _, keyCode, _ ->

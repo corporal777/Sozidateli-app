@@ -6,8 +6,9 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/textInputLayout"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="match_parent"
+        app:boxBackgroundColor="@color/white_smoke_color"
         android:layout_height="wrap_content"
         app:endIconMode="none">
 

@@ -35,7 +35,7 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.qr_scan_label))
+        setToolbarTitleAndIcon(getString(R.string.qr_scan_label))
         codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
             decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
         }

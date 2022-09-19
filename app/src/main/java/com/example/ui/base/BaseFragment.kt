@@ -2,8 +2,8 @@ package com.example.ui.base
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +13,12 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
@@ -136,11 +134,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun setAppBarElevation(value: Float) {
-
+        mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitle(title: String) {
-
+    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
+        mActivity?.setToolbarTitleAndIcon(title, icon, action)
     }
 
     override fun showNoConnectionMessage(show: Boolean) {

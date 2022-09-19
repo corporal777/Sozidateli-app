@@ -70,7 +70,7 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
             tvName.apply {
                 isVisible = partner.name?.isNotEmpty() == true
                 text = partner.name
-                setToolbarTitle(partner.name ?: "")
+                setToolbarTitleAndIcon(partner.name ?: "")
             }
 
             tvDescription.apply {

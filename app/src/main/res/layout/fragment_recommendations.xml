@@ -179,7 +179,6 @@
             android:src="@drawable/ic_arrow_top"
             app:backgroundTint="@color/colorAccent"
             app:fabSize="normal"
-            android:visibility="gone"
             app:layout_anchor="@id/events_list"
             app:layout_anchorGravity="end|bottom|right"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"

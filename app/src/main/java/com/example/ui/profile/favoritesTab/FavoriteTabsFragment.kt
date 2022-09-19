@@ -52,7 +52,7 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(), Favorit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_favorite))
+        setToolbarTitleAndIcon(getString(R.string.profile_favorite))
         mBinding.apply {
             viewPager.run {
                 addOnPageChangeListener(pageChangeListener)

@@ -32,7 +32,7 @@ class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.states))
+        setToolbarTitleAndIcon(getString(R.string.states))
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 presenter.onClickClose()

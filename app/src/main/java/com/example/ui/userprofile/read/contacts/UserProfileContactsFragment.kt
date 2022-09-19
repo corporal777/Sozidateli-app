@@ -36,7 +36,7 @@ class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.user_profile_contacts))
+        setToolbarTitleAndIcon(getString(R.string.user_profile_contacts))
         mBinding.apply {
             nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
                 presenter.changeAppBarElevation(scrollY - oldScrollY)

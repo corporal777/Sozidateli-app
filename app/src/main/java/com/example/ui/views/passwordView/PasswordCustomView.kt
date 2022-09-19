@@ -11,17 +11,14 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.example.R
-import com.example.ui.views.ApiErrorDialog
 import com.example.util.ClickableSpan
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.fragment_register_email.*
 import java.util.regex.Pattern
 
-class PasswordCustomView: FrameLayout {
+class PasswordCustomView : FrameLayout {
 
     private var isShowAgree = false
     private var onClickAgreeHyperlink: () -> Unit = {}
@@ -30,7 +27,11 @@ class PasswordCustomView: FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     val pattern = Pattern.compile("[a-zA-z0-9]*")
     var etPassword: TextInputEditText
@@ -46,7 +47,8 @@ class PasswordCustomView: FrameLayout {
     var cbAgree: AppCompatCheckBox
     var tvNotMatch: TextView
 
-    private var view: View = LayoutInflater.from(context).inflate(R.layout.view_password, this, true)
+    private var view: View =
+        LayoutInflater.from(context).inflate(R.layout.view_password, this, true)
 
     init {
         etPassword = view.findViewById(R.id.etPassword)
@@ -105,13 +107,14 @@ class PasswordCustomView: FrameLayout {
     }
 
     private fun setAgreeText() {
-        val agreementText = SpannableString(context.resources.getString(R.string.auth_agree_user_agreement)).apply {
-            val linkStart = 11
-            val linkEnd = length
-            setSpan(ClickableSpan(drawUnderline = false) {
-                onClickAgreeHyperlink()
-            }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        }
+        val agreementText =
+            SpannableString(context.resources.getString(R.string.auth_agree_user_agreement)).apply {
+                val linkStart = 11
+                val linkEnd = length
+                setSpan(ClickableSpan(drawUnderline = false) {
+                    onClickAgreeHyperlink()
+                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
 
         tvAgree.apply {
             text = agreementText
@@ -132,7 +135,7 @@ class PasswordCustomView: FrameLayout {
         var usedUnacceptableSymbols = false
         var levelCounter = 3
         val errors = mutableListOf<String>()
-        if ((password?.length?: 0) >= PASSWORD_MIN_LENGTH) levelCounter -= 1
+        if ((password?.length ?: 0) >= PASSWORD_MIN_LENGTH) levelCounter -= 1
         else {
             isValid = false
             errors.add(resources.getString(R.string.password_to_small))
@@ -169,7 +172,9 @@ class PasswordCustomView: FrameLayout {
                 third.setBackgroundResource(R.drawable.password_gray)
                 tvResult.text = resources.getString(R.string.password_invalid)
                 tvErrors.text = errors.joinToString(";\n", postfix = ".")
-            } else if (isValid && etPasswordConfirm.text.toString().isEmpty() && (etPassword.text?.length?: 0) < 9) {
+            } else if (isValid && etPasswordConfirm.text.toString()
+                    .isEmpty() && (etPassword.text?.length ?: 0) < 9
+            ) {
                 first.setBackgroundResource(R.drawable.password_yellow)
                 second.setBackgroundResource(R.drawable.password_yellow)
                 third.setBackgroundResource(R.drawable.password_gray)
@@ -208,8 +213,17 @@ class PasswordCustomView: FrameLayout {
             }*/
             hideShowAgree(isValid)
             if (etPasswordConfirm.text.toString().isEmpty()) matchPasswords(true, isValid)
-            else matchPasswords(etPassword.text.toString() == etPasswordConfirm.text.toString(), isValid)
-            onPasswordValid(PasswordModel(isValid && etPasswordConfirm.text.toString().isNotEmpty() && etPassword.text.toString() == etPasswordConfirm.text.toString(), password))
+            else matchPasswords(
+                etPassword.text.toString() == etPasswordConfirm.text.toString(),
+                isValid
+            )
+            onPasswordValid(
+                PasswordModel(
+                    isValid && etPasswordConfirm.text.toString()
+                        .isNotEmpty() && etPassword.text.toString() == etPasswordConfirm.text.toString(),
+                    password
+                )
+            )
         } else {
             first.setBackgroundResource(R.drawable.password_red)
             second.setBackgroundResource(R.drawable.password_gray)
@@ -223,7 +237,11 @@ class PasswordCustomView: FrameLayout {
     }
 
     private fun hideShowAgree(passwordValid: Boolean) {
-        if (isShowAgree) llAgree.isVisible = passwordValid
+        if (isShowAgree) {
+            if (passwordValid){
+                llAgree.isVisible = etPassword.text.toString() == etPasswordConfirm.text.toString()
+            } else llAgree.isVisible = false
+        }
         else llAgree.isVisible = false
     }
 
@@ -256,6 +274,6 @@ class PasswordCustomView: FrameLayout {
 }
 
 data class PasswordModel(
-        val isValid: Boolean,
-        val password: String?
+    val isValid: Boolean,
+    val password: String?
 )

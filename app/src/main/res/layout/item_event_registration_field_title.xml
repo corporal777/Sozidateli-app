@@ -10,11 +10,17 @@
 
     <View
         style="@style/ViewDivider.Horizontal"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textView"
-        style="@style/Profile.Edit.InputTitle"
-        android:textSize="13sp"
+        fontPath="fonts/sf_pro_display.OTF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:letterSpacing="-0.01"
+        android:textColor="@color/vk_black"
+        android:textSize="14sp"
         tools:text="Title" />
 </LinearLayout>

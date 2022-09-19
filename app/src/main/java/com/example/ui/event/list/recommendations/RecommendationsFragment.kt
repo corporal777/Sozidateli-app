@@ -2,11 +2,13 @@ package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -143,23 +145,32 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
                     return SNAP_TO_END
                 }
 
-                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
-                    // return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(500f)
-                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
+                override fun updateActionForInterimTarget(action: Action?) {
+                    action?.jumpTo(1)
                 }
 
-                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
-                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(140f)
+                override fun onStop() {
+                    super.onStop()
+
                 }
+
+//                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
+//                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
+//                }
+
+//                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+//                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(mBinding.eventsList.scaleX)
+//                }
 
                 override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                    return 10f / displayMetrics.densityDpi
+                    return 30f / displayMetrics.densityDpi
                 }
             }
         }
         val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
         mSmoothScroller.targetPosition = 0
         mLayoutManager.startSmoothScroll(mSmoothScroller)
+
     }
 
     override fun showAboutEvent(event: String) {

@@ -258,7 +258,7 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_title_education))
+        setToolbarTitleAndIcon(getString(R.string.profile_title_education))
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditEducationFragment.adapter

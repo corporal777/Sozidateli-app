@@ -236,4 +236,5 @@
     <color name="text_color_weekend">#993C3C43</color>
 
     <color name="colorOverlay">#78ffffff</color>
+    <color name="white_smoke_color">#F6F6F6</color>
 </resources>

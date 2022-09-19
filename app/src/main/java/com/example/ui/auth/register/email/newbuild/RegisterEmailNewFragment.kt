@@ -156,9 +156,9 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 presenter.onClickAgree(it)
             }
             ibRegister.setOnClickListener {
+                hideKeyboard()
                 val name = removeAllDoubleSpaces(etFirstName.text.toString())
                 val lastName = removeAllDoubleSpaces(etLastName.text.toString())
-
                 /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {*/
                 presenter.onClickRegister(
                     etEmail.text?.toString(),

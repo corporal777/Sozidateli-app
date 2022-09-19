@@ -4,27 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_register_event_input" />
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:elevation="0dp">
+            android:background="@null"
+            app:elevation="0dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/about_event_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
+                android:layout_height="85dp"
+                android:background="@null"
                 app:contentInsetStart="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tb_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/tb_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <ImageView
                         android:id="@+id/iv_back"
@@ -34,43 +53,17 @@
                         android:layout_marginBottom="4dp"
                         android:background="@drawable/custom_toolbar_btn_background_selectable"
                         android:padding="10dp"
-                        android:src="@drawable/ic_back_black"
+                        android:src="@drawable/ic_back_white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
 
-                    <TextView
-                        android:id="@+id/toolbar_label"
-                        fontPath="fonts/sf_pro_text_semibold.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center"
-                        android:letterSpacing="-0.02"
-                        android:text="@string/request_label"
-                        android:textColor="@android:color/black"
-                        android:textSize="17sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingPrefix" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
+
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:itemCount="6"
-            tools:listitem="@layout/item_register_event_input" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

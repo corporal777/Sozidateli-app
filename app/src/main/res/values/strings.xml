@@ -371,7 +371,7 @@
     <string name="profile_setting_chat">Настройки чата</string>
     <string name="profile_banned">Заблокированные</string>
     <string name="profile_auth_to_web_site">Войти в личный кабинет на сайте</string>
-    <string name="profile_support">Написать в техническую поддержку</string>
+    <string name="profile_support">Написать разработчикам</string>
     <string name="profile_rate">Оценить приложение</string>
     <string name="profile_logout">Выйти</string>
     <string name="profile_contacts">Контактные данные</string>
@@ -752,13 +752,16 @@
     <string name="profile_fields_title">Вы почти в команде проекта «%s»</string>
     <string name="profile_fields_text">Чтобы принять приглашение, Вам необходимо: \n1. Заполнить все поля профиля: \n%s \n2. Принять приглашение в разделе «Уведомления».</string>
     <string name="password_invalid">Слишком простой пароль. Рекомендуем добавить:</string>
+    <string name="password_invalid_new">Используйте сложный пароль. Он должен содержать:</string>
     <string name="password_valid_but_low">Слишком простой пароль. Рекомендуем добавить больше символов.</string>
     <string name="password_valid">Отлично, это безопасный пароль.</string>
     <string name="password_uppercase_letters">- Заглавные и строчные латинские буквы</string>
     <string name="password_lowercase_letters">- Заглавные буквы</string>
+    <string name="password_lowercase_letters_new">- Заглавные латинские буквы</string>
     <string name="password_letters">- Строчные буквы</string>
     <string name="password_numbers">- Цифры</string>
     <string name="password_to_small">- Больше символов</string>
+    <string name="password_to_small_new">- 8 символов</string>
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальные символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
     <string name="add_phone_dialog_text">Пожалуйста, укажите Ваш актуальный мобильный номер телефона. Вы сможете использовать этот номер для входа в аккаунт и восстановления пароля.\nМы будем использовать этот номер только для обеспечения безопасности вашего аккаунта. Номер не будет виден другим пользователям. При желании Вы сможете выбрать, нужно ли использовать его для других целей.</string>
@@ -771,7 +774,7 @@
     <string name="change_status_title">Повышение статуса</string>
     <string name="change_status_description">Повысьте статус профиля до Базового или Максимального и расширьте свои возможности на портале «Созидатели».</string>
     <string name="change_status_button">Подробнее о статусах</string>
-    <string name="state">Статус: %s</string>
+    <string name="state">статус</string>
     <string name="base_state_text">Статус: Базовый</string>
     <string name="max_state_text">Статус: Максимальный</string>
     <string name="base_state">Хочу базовый</string>
@@ -846,7 +849,7 @@
     <string name="state_empty">не присвоен</string>
     <string name="state_base">базовый</string>
     <string name="state_max">максимальный</string>
-    <string name="user_id">ID: %s</string>
+    <string name="user_id">id%s</string>
     <string name="get_base">Получить «Базовый»</string>
     <string name="get_max">Получить «Максимальный»</string>
     <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового. Подробнее о статусах</string>
@@ -913,6 +916,7 @@
     <string name="block_notification_project_title">Отписаться от рассылки по проектам</string>
     <string name="block_notification_project_message">Вы уверены, что хотите отписаться от рассылки по проектам с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма с приглашением в команду проекта не будут приходить на email аккаунта после отписки от рассылки.</string>
     <string name="change_account_label">Сменить аккаунт</string>
+    <string name="add_account_label">Добавить аккаунт</string>
     <string name="change_account_for_enter">Выберите аккаунт для входа</string>
     <string name="logout_from_account">Выйти из аккаунта</string>
     <string name="logout_end_remove_from_list">Выйти и удалить из списка</string>

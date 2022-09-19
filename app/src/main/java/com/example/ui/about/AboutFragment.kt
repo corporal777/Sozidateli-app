@@ -29,7 +29,7 @@ class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(), AboutContract.Vie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.profile_about_app))
+        setToolbarTitleAndIcon(getString(R.string.profile_about_app))
         mBinding.apply {
             tvAppVersion.text = getString(R.string.about_version).format(BuildConfig.VERSION_NAME)
             tvDeveloperSite.apply {

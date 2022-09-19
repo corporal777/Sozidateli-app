@@ -18,41 +18,55 @@ import android.util.AttributeSet
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
+import com.example.util.ClickableSpan
 import com.example.util.markWon
 import kotlin.math.abs
 
+
 @SuppressLint("ViewConstructor")
-@RequiresApi(Build.VERSION_CODES.M)
 class CustomExpandableTextView @JvmOverloads constructor(
     context: Context,
-    listener : TextStateListener,
+    listener: TextStateListener,
     var collapsed: Boolean,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
-    var mListener : TextStateListener? = null
-    var originalText: String = ""
+    private val click = ClickableSpan(false) {
+        toggle()
+    }
+
+    var mListener: TextStateListener? = null
+    var firstText: String = ""
         set(value) {
+            this.isVisible = false
+            markWon(context).setMarkdown(this, value)
+            originalText = this.text
+        }
+
+    var originalText: CharSequence = ""
+        set(value) {
+            this.isVisible = true
             field = value
             updateCollapsedDisplayedText(collapsed, ctaChanged = false)
+            this.postInvalidate()
         }
-    var expandAction: String = ""
+
+    var expandAction: CharSequence = ""
         set(value) {
             field = value
             val ellipsis = Typography.ellipsis
             val start = ellipsis.toString().length
 
-
             expandActionSpannable = SpannableString("$ellipsis $value")
+            val expandColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
             expandActionSpannable.setSpan(
-                ForegroundColorSpan(expandActionColor),
+                ForegroundColorSpan(expandColor),
                 start,
                 expandActionSpannable.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
@@ -76,6 +90,12 @@ class CustomExpandableTextView @JvmOverloads constructor(
                 expandActionSpannable.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
+
+            expandActionSpannable.setSpan(
+                click, start,
+                expandActionSpannable.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             updateCollapsedDisplayedText(collapsed, ctaChanged = true)
         }
     var limitedMaxLines: Int = 3
@@ -90,23 +110,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
             updateCollapsedDisplayedText(collapsed, ctaChanged = false)
         }
 
-    @ColorInt
-    var expandActionColor: Int = ContextCompat.getColor(context, R.color.main_brown_color_new)
-        set(value) {
-            field = value
-            val colorSpan = ForegroundColorSpan(value)
-            val ellipsis = Typography.ellipsis
-            val start = ellipsis.toString().length
-            expandActionSpannable.setSpan(
-                colorSpan,
-                start,
-                expandActionSpannable.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            updateCollapsedDisplayedText(collapsed, ctaChanged = true)
-        }
-
-//    var collapsed = true
+    //    var collapsed = true
 //        private set
     val expanded get() = !collapsed
 
@@ -119,20 +123,13 @@ class CustomExpandableTextView @JvmOverloads constructor(
     init {
         mListener = listener
         ellipsize = END
-        val a = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView)
-        expandAction = a.getString(R.styleable.ExpandableTextView_expandAction) ?: expandAction
-        expandActionColor =
-            a.getColor(R.styleable.ExpandableTextView_expandActionColor, expandActionColor)
-        originalText = a.getString(R.styleable.ExpandableTextView_originalText) ?: originalText
-        limitedMaxLines = a.getInt(R.styleable.ExpandableTextView_limitedMaxLines, limitedMaxLines)
         check(maxLines == -1 || limitedMaxLines <= maxLines) {
             """
                 maxLines ($maxLines) must be greater than or equal to limitedMaxLines ($limitedMaxLines).
                 maxLines can be -1 if there is no upper limit for lineCount.
             """.trimIndent()
         }
-        a.recycle()
-        setOnClickListener { toggle() }
+        //setOnClickListener { toggle() }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -167,13 +164,8 @@ class CustomExpandableTextView @JvmOverloads constructor(
         super.setEllipsize(END)
     }
 
-    fun toggle() {
-        if (originalText == collapsedDisplayedText) {
-            collapsed = !collapsed
-            return
-        }
+    private fun toggle() {
         val height0 = height
-        text = if (collapsed) originalText else collapsedDisplayedText
         measure(
             MeasureSpec.makeMeasureSpec(width, EXACTLY),
             MeasureSpec.makeMeasureSpec(height, UNSPECIFIED)
@@ -194,12 +186,12 @@ class CustomExpandableTextView @JvmOverloads constructor(
                     override fun onAnimationStart(animation: Animator?) {
                         super.onAnimationStart(animation)
                         collapsed = !collapsed
-                        text = originalText
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
-                        text = if (collapsed) collapsedDisplayedText else originalText
+                        //markWon(context).setMarkdown(this@CustomExpandableTextView, originalText.toString())
+                        text = originalText
                         mListener?.onChangeState(collapsed)
                         val params = layoutParams
                         layoutParams.height = WRAP_CONTENT
@@ -212,7 +204,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
 
     private fun resolveDisplayedText(staticLayout: StaticLayout): CharSequence? {
         val truncatedTextWithoutCta = staticLayout.text
-        if (truncatedTextWithoutCta.toString() != originalText) {
+        if (truncatedTextWithoutCta.toString() != originalText.toString()) {
             val totalTextWidthWithoutCta =
                 (0 until staticLayout.lineCount).sumOf { staticLayout.getLineWidth(it).toInt() }
             val totalTextWidthWithCta =
@@ -228,9 +220,62 @@ class CustomExpandableTextView @JvmOverloads constructor(
             val span = SpannableStringBuilder()
                 .append(textWithoutCta)
                 .replace(defaultEllipsisStart, defaultEllipsisEnd, expandActionStaticLayout!!.text)
+            //.replace(defaultEllipsisStart, defaultEllipsisEnd, "")
             return maybeRemoveEndingCharacters(staticLayout, span)
         } else {
             return originalText
+        }
+    }
+
+
+    private fun updateCollapsedDisplayedText(
+        collapsed: Boolean,
+        ctaChanged: Boolean,
+        textWidth: Int = measuredWidth - compoundPaddingStart - compoundPaddingEnd,
+    ) {
+        if (textWidth <= 0) return
+        val collapsedStaticLayout = getStaticLayout(limitedMaxLines, originalText, textWidth)
+        if (ctaChanged)
+            expandActionStaticLayout = getStaticLayout(1, expandActionSpannable, textWidth)
+        collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
+
+//        if (collapsed) {
+//            markWon(context).setMarkdown(this, collapsedDisplayedText.toString())
+//            this.text = SpannableStringBuilder().append(this.text).append(expandActionSpannable)
+//        } else {
+//            markWon(context).setMarkdown(this, originalText)
+//        }
+        text = if (collapsed) collapsedDisplayedText else originalText
+    }
+
+
+    private fun getStaticLayout(
+        targetMaxLines: Int,
+        text: CharSequence,
+        textWidth: Int
+    ): StaticLayout {
+        val maximumLineWidth = textWidth.coerceAtLeast(0)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StaticLayout.Builder
+                .obtain(text, 0, text.length, paint, maximumLineWidth)
+                .setIncludePad(false)
+                .setEllipsize(END)
+                .setMaxLines(targetMaxLines)
+                .setLineSpacing(lineSpacingExtra, lineSpacingMultiplier)
+                .build()
+        } else {
+            StaticLayout(
+                text,
+                0,
+                text.length,
+                paint, maximumLineWidth,
+                ALIGN_NORMAL,
+                lineSpacingExtra,
+                lineSpacingMultiplier,
+                false,
+                END,
+                textWidth.coerceAtLeast(0)
+            )
         }
     }
 
@@ -268,50 +313,8 @@ class CustomExpandableTextView @JvmOverloads constructor(
         return span
     }
 
-
-    private fun updateCollapsedDisplayedText(
-        collapsed: Boolean,
-        ctaChanged: Boolean,
-        textWidth: Int = measuredWidth - compoundPaddingStart - compoundPaddingEnd,
-    ) {
-        if (textWidth <= 0) return
-        val collapsedStaticLayout = getStaticLayout(limitedMaxLines,
-            originalText, textWidth)
-        if (ctaChanged)
-            expandActionStaticLayout = getStaticLayout(1, expandActionSpannable, textWidth)
-        collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
-        if (collapsed){
-            markWon(context).setMarkdown(
-                this,
-                collapsedDisplayedText.toString()
-            )
-        }else {
-            markWon(context).setMarkdown(
-                this,
-                originalText
-            )
-        }
-        //text = if (collapsed) markWon()collapsedDisplayedText else originalText
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun getStaticLayout(
-        targetMaxLines: Int,
-        text: CharSequence,
-        textWidth: Int
-    ): StaticLayout {
-        val maximumLineWidth = textWidth.coerceAtLeast(0)
-        return StaticLayout.Builder
-            .obtain(text, 0, text.length, paint, maximumLineWidth)
-            .setIncludePad(false)
-            .setEllipsize(END)
-            .setMaxLines(targetMaxLines)
-            .setLineSpacing(lineSpacingExtra, lineSpacingMultiplier)
-            .build()
-    }
-
     interface TextStateListener {
-        fun onChangeState(isCollapsed : Boolean)
+        fun onChangeState(isCollapsed: Boolean)
     }
 
 }

@@ -57,7 +57,7 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle("")
+        setToolbarTitleAndIcon("")
         mBinding.accountsList.apply {
             startPostponedEnterTransition()
             adapter = groupAdapter

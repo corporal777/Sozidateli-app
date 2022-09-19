@@ -51,7 +51,7 @@ class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.user_profile_interests))
+        setToolbarTitleAndIcon(getString(R.string.user_profile_interests))
         mBinding.apply {
             rvInterests.adapter = adapter
             rvInterests.onScrolled { dx, dy ->

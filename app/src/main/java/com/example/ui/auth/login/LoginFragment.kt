@@ -59,6 +59,7 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
 
             btnForgotPassword.setOnClickListener { presenter.onClickRecoverPassword() }
             ibLogin.setOnClickListener {
+                hideKeyboard()
                 if (invite != -1) (requireActivity() as MainActivity).setIgnoreDeeplink(true)
                 presenter.onClickLogin(
                     etLogin.text?.toString() ?: "", etPassword.text?.toString()

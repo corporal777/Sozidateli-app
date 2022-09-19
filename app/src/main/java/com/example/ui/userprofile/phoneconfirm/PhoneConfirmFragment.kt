@@ -40,7 +40,7 @@ class PhoneConfirmFragment : BaseFragmentNew<FragmentConfirmPhoneBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.status_profile_title_set))
+        setToolbarTitleAndIcon(getString(R.string.status_profile_title_set))
         mBinding.apply {
             btnResend.setOnClickListener { presenter.onResendClick() }
             btnSave.setOnClickListener {

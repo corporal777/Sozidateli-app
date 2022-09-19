@@ -43,7 +43,7 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle("")
+        setToolbarTitleAndIcon("")
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationMembersFragment.adapter

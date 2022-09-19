@@ -165,6 +165,7 @@ class PasswordCustomViewNew: FrameLayout {
                 second.setBackgroundResource(R.drawable.password_gray)
                 third.setBackgroundResource(R.drawable.password_gray)
                 tvResult.text = resources.getString(R.string.password_invalid)
+                //tvResult.text = resources.getString(R.string.password_invalid)
                 tvErrors.text = errors.joinToString(";\n", postfix = ".")
             } else if (isValid && etPasswordConfirm.text.toString().isEmpty() && (etPassword.text?.length?: 0) < 9) {
                 first.setBackgroundResource(R.drawable.password_yellow)

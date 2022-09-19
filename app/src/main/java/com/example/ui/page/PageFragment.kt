@@ -62,7 +62,7 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
         content: String?,
         documents: List<FileModel>?
     ) {
-        setToolbarTitle(contentTitle)
+        setToolbarTitleAndIcon(contentTitle)
         mBinding.ivLogo.apply {
             clipToOutline = true
             val visible = !logo.isNullOrEmpty()

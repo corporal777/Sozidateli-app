@@ -107,7 +107,6 @@ class MainPresenter
     }
 
     override fun onStoriesComplete() {
-        appData.isStoriesShown = true
         subscribeToTokenUpdates()
     }
 

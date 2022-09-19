@@ -275,6 +275,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         subEvents: Map<String, List<EventActivityModel>>,
         selectedTags: List<Tag>
     ) {
+        mBinding.calendarPager.isVisible = true
         eventsSection.update(
             subEvents.map {
                 SubEventsWithDateItem(
@@ -304,6 +305,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     override fun showEmptyEventPlaceholder() {
+        mBinding.calendarPager.isVisible = false
         eventsSection.update(
             listOf(
                 NoDataItem(

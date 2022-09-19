@@ -3,13 +3,16 @@ package com.example.ui.event.registration
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -18,11 +21,13 @@ import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPRO
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
 import com.example.databinding.FragmentRequestBinding
-import com.example.extensions.*
+import com.example.extensions.forEachGroups
+import com.example.extensions.setRequired
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.registration.items.RegisterEventHeaderItemNew
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
@@ -35,6 +40,7 @@ import onScrolled
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     EventRegistrationContract.View {
@@ -45,6 +51,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     @Inject
     lateinit var presenterProvider: Provider<EventRegistrationPresenter>
+    private var mDy: Int = 0
 
     @ProvidePresenter
     fun providePresenter(): EventRegistrationPresenter = presenterProvider.get().apply {
@@ -52,7 +59,11 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     }
 
     private val section = Section()
-    private val adapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(section) } }
+    private val adapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            add(section)
+        }
+    }
     private val saveButtonItem by lazy {
         ActionButtonItem(-200L, ACTION_EVENT_REQUEST) {
             presenter.onRegisterClick()
@@ -70,8 +81,16 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         super.onViewCreated(view, savedInstanceState)
         mBinding.recyclerView.apply {
             adapter = this@EventRegistrationFragment.adapter
+            val layoutManager = this.layoutManager as LinearLayoutManager
             onScrolled { _, dy ->
-                presenter.changeAppBarElevation(dy)
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    mDy = 0
+                    updateView(mDy)
+                } else {
+                    mDy += dy
+                    updateView(mDy)
+                }
+
             }
         }
         mBinding.ivBack.setOnClickListener {
@@ -89,21 +108,30 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     ) {
         section.apply {
             setHeader(
-                RegisterEventHeaderItem(
+                RegisterEventHeaderItemNew(
                     -100L,
-                    event.name,
-                    null,
-                    event.conferenceStart?.formatToEventDatesIntervalNew(event.conferenceFinish),
-                    event.conferenceRegistrationFinishDate?.parseAndFormat(
-                        defaultServerDateFormatter,
-                        dateFormatterFullMothFullYear
-                    ),
+                    event.image ?: "",
                     event.registrationHeadline,
-                    event.registrationSubtitle
+                    event.registrationSubtitle,
+                    event.conferenceStart ?: "",
                 )
             )
-
-            if (withConfirm) setFooter(saveButtonItem)
+//                RegisterEventHeaderItem(
+//                    -100L,
+//                    event.name,
+//                    null,
+//                    event.conferenceStart?.formatToEventDatesIntervalNew(event.conferenceFinish),
+//                    event.conferenceRegistrationFinishDate?.parseAndFormat(
+//                        defaultServerDateFormatter,
+//                        dateFormatterFullMothFullYear
+//                    ),
+//                    event.registrationHeadline,
+//                    event.registrationSubtitle
+//                )
+//            )
+            if (withConfirm) {
+                setFooter(saveButtonItem)
+            }
 
             if (groupField != null) {
                 add(
@@ -389,15 +417,66 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mBinding.appBar.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
+    private fun updateView(offset: Int) {
+        mBinding.apply {
+            if (offset == 0) {
+                tbBackground.setBackgroundColor(Color.TRANSPARENT)
+            }
+            if (offset > 0 && offset < 1200) {
+                tbBackground.apply {
+                    tbContent.setBackgroundColor(Color.TRANSPARENT)
+                    setBackgroundColor(Color.BLACK)
+                    val mAlpha = abs(offset / (600).toFloat())
+                    alpha = mAlpha
+                    appBar.apply {
+                        elevation = 0f
+                        background = null
+                        aboutEventToolbar.background = null
+                    }
+                    setWhiteIcons()
+                }
+            }
+            if (offset > 1200) {
+                setBlackIcons()
+                tbBackground.apply {
+                    tbContent.setBackgroundColor(Color.BLACK)
+                    setBackgroundColor(Color.WHITE)
+                    val value = offset - 1200
+                    val mAlpha = abs(value / (500).toFloat())
+                    alpha = mAlpha
+                }
+                appBar.apply {
+                    elevation = 10f
+                    setBackgroundColor(Color.WHITE)
+                    aboutEventToolbar.setBackgroundColor(Color.WHITE)
+                }
+
+            }
+            if (offset < 1340) {
+                setWhiteIcons()
             }
         }
+
     }
+
+    private fun setBlackIcons() {
+        mBinding.apply {
+            ivBack.imageTintList =
+                ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
+            requireActivity().window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
+    }
+
+    private fun setWhiteIcons() {
+        mBinding.apply {
+            requireActivity().window.decorView.systemUiVisibility = 0
+            ivBack.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
+        }
+
+    }
+
 
     override fun layout() = R.layout.fragment_request
 

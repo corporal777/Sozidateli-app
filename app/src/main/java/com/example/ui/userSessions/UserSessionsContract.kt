@@ -33,9 +33,6 @@ interface UserSessionsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideSessionsActionButton()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showSessionBottomSheetDialog(session: UserSessionModel)
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {

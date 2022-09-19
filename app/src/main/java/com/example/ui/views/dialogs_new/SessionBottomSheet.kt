@@ -55,21 +55,18 @@ class SessionBottomSheet(
                     "Устройство не определено"
                 }
             }
-
-
         }
 
         mDialog.setContentView(mBinding.root)
 
-
         mBinding.apply {
             if (deviceName.contains("iOS", true) || deviceName.contains("android", true)) {
-                tvDeviceType.text = context.getString(R.string.app_label)
+                tvDeviceLabel.text = context.getString(R.string.app_label)
             } else {
                 if (session.deviceModel.contains("iphone", true)) {
-                    tvDeviceType.text = context.getString(R.string.app_label)
+                    tvDeviceLabel.text = context.getString(R.string.app_label)
                 } else {
-                    tvDeviceType.text = context.getString(R.string.browser_label)
+                    tvDeviceLabel.text = context.getString(R.string.browser_label)
                 }
             }
             tvDevice.text = deviceName
@@ -77,16 +74,18 @@ class SessionBottomSheet(
             tvLocation.text = deviceLocation
 
             decorDeviceIcon(ivDeviceIcon, session)
-            if (isCurrentSession) {
-                tvActionKill.text = context.getString(R.string.kill_all_other_sessions)
-            } else {
-                tvActionKill.text = context.getString(R.string.kill_session_label)
-            }
 
-            cardAction.setOnClickListener {
-                onActionClick.invoke()
-                //onActionKillDeviceSession(session)
-                mDialog.dismiss()
+            btnAction.apply {
+                text = if (isCurrentSession) {
+                    context.getString(R.string.kill_all_other_sessions)
+                } else {
+                    context.getString(R.string.kill_session_label)
+                }
+                setOnClickListener {
+                    onActionClick.invoke()
+                    //onActionKillDeviceSession(session)
+                    mDialog.dismiss()
+                }
             }
         }
 

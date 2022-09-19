@@ -72,7 +72,7 @@ class EventContactsFragment : BaseFragmentNew<FragmentEventContactsBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.user_profile_contacts))
+        setToolbarTitleAndIcon(getString(R.string.user_profile_contacts))
         mBinding.apply {
             recyclerView.apply {
                 adapter = groupAdapter

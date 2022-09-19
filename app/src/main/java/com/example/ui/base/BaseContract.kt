@@ -1,5 +1,6 @@
 package com.example.ui.base
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
@@ -53,7 +54,7 @@ interface BaseContract {
         fun setAppBarElevation(value : Float)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setToolbarTitle(title : String)
+        fun setToolbarTitleAndIcon(title: String, icon: Drawable? = null, action: (() -> Unit?)? = null)
     }
 
     interface LoadingView {

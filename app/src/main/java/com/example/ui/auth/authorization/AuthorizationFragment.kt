@@ -58,11 +58,7 @@ class AuthorizationFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
     }
 
     override fun showEmailRegistration() {
-        //if (BuildConfig.NEW_PROFILE_EDIT) {
         findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
-        /*} else {
-            findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailFragment())
-        }*/
     }
 
     override fun showSnRegistration(snUser: SnUser) {

@@ -38,7 +38,7 @@ class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle(getString(R.string.user_profile_education))
+        setToolbarTitleAndIcon(getString(R.string.user_profile_education))
         mBinding.apply {
             rvInterests.adapter = adapter
             rvInterests.onScrolled { dx, dy ->

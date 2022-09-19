@@ -12,6 +12,10 @@ interface ProfileContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: UserDetail)
 
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setChangeOrAddNewAccount(size : Int)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showProfile(uid: String)
 

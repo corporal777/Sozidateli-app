@@ -1,59 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/ivBackgroundImage"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/st_1_bg" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivForegroundImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/st_1_fg" />
-
-    <!--<ImageView
-        android:id="@+id/ivTextImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:contentDescription="@null"
-        android:layout_marginBottom="30dp"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/st_1_text" />-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/reverse"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/ivBackgroundImage"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/st_1_bg" />
 
-        <View
-            android:id="@+id/skip"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/ivForegroundImage"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/st_1_fg" />
 
-    <jp.shts.android.storiesprogressview.StoriesProgressView
-        android:id="@+id/stories"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/stories_progress_bar_height"
-        android:layout_gravity="top"
-        android:layout_marginTop="35dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" />
-</FrameLayout>
+        <!--<ImageView
+            android:id="@+id/ivTextImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:layout_marginBottom="30dp"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/st_1_text" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/reverse"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <View
+                android:id="@+id/skip"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <jp.shts.android.storiesprogressview.StoriesProgressView
+            android:id="@+id/stories"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stories_progress_bar_height"
+            android:layout_gravity="top"
+            android:layout_marginTop="35dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
+    </FrameLayout>
+</layout>

@@ -61,7 +61,7 @@ interface EventRegistrationContract {
         fun dispatchOnBackPressed()
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onPersonalDataFileClick(url: String)
         fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
         fun onFileSelected(path: Uri)

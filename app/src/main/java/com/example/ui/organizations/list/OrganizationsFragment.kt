@@ -13,7 +13,6 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

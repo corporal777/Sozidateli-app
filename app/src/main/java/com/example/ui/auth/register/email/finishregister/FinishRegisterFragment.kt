@@ -172,10 +172,12 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 setOnClickListener { presenter.sendCodeAgain() }
             }
             ibCancel.setOnClickListener {
+                hideKeyboard()
                 (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                 presenter.logout()
             }
             ibRegister.setOnClickListener {
+                hideKeyboard()
                 when (loginType) {
                     "phone" -> {
                         if (etCode.text?.length != CODE_SIZE) {
