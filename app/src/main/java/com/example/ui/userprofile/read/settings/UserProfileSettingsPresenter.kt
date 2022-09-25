@@ -83,7 +83,6 @@ class UserProfileSettingsPresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    catchPasswordError(it)
                     appData.attemptsOfChangePassword = appData.attemptsOfChangePassword - 1
                     if (appData.attemptsOfChangePassword <= 0) {
                         viewState.apply {
@@ -96,6 +95,9 @@ class UserProfileSettingsPresenter @Inject constructor(
                     }
                 },
                 onComplete = {
+                    if (appData.attemptsOfChangePassword != 3){
+                        appData.attemptsOfChangePassword = 3
+                    }
                     viewState.showNewPasswordTypingContent()
                 }
             )
@@ -355,30 +357,4 @@ class UserProfileSettingsPresenter @Inject constructor(
                 })
     }
 
-
-    private fun catchPasswordError(t: Throwable) {
-        if (t is HttpException) {
-            try {
-                val error = Gson().fromJson(
-                    t.response()?.errorBody()?.string(),
-                    NewErrors::class.java
-                )
-                when (t.code()) {
-                    404 -> {
-                        Log.e("PASSWORD", error.errors[0].message ?: "")
-                        when (error.errors[0].message) {
-                            "User was not found" -> {
-                            }
-                            else -> {
-                                //onReceiveError(t)
-                            }
-                        }
-                    }
-                }
-
-            } catch (e: Exception) {
-
-            }
-        }
-    }
 }

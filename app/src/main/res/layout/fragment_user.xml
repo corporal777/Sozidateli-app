@@ -44,35 +44,48 @@
 
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/tvLabel"
-                        fontPath="fonts/sf_pro_display_bold.ttf"
+                        fontPath="fonts/sf_pro_text_semibold.ttf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:ellipsize="end"
                         android:gravity="center"
-                        android:letterSpacing="0.01"
+                        android:letterSpacing="-0.02"
                         android:text="@string/profile_current_user_label"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp"
+                        android:textSize="17sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/iv_action"
+                        android:visibility="gone"
+                        android:id="@+id/iv_add_To_favorite"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="5dp"
-                        android:foreground="@drawable/custom_toolbar_btn_background_selectable"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_revert"
+                        android:background="@drawable/custom_toolbar_btn_background_selectable"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_star"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/iv_share" />
 
+                    <ImageView
+                        android:id="@+id/iv_share"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/custom_toolbar_btn_background_selectable"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_share_white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:tint="@color/main_brown_color_new" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>
@@ -89,7 +102,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/content_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
                 android:clipToPadding="false"
                 android:descendantFocusability="beforeDescendants"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

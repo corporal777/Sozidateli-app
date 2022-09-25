@@ -1,16 +1,11 @@
 package com.example.holders.redesign
 
 import android.graphics.Typeface
-import android.os.Build
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.widget.CompoundButton
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventActivityModel
@@ -19,7 +14,6 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToIntervalNew
 import com.example.ui.views.TagChipNew
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
-import com.example.util.markWon
 import com.example.util.weak
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -187,7 +181,7 @@ class EventActivityItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventActivityItem) return false
         if (subEvent != other.subEvent) return false
         if (subEvent.description != other.subEvent.description) return false
@@ -214,6 +208,5 @@ class EventActivityItem(
         fun onSubEventClick(eventId: String, subEvent: EventActivityModel)
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
-        fun onUpdateScheduleState(subEvent: EventActivityModel)
     }
 }

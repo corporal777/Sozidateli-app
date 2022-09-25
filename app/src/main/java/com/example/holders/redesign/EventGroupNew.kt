@@ -6,22 +6,22 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
 class EventGroupNew(
-    data : EventNew?,
+    data : EventNew,
     eventClickListener: EventItemNew.OnEventClickListener,
 ) : NestedGroup() {
-    private val eventStatusItem = EventItemNew(
+    private val eventItem = EventItemNew(
         data,
         eventClickListener,
     )
 
     init {
-        eventStatusItem.registerGroupDataObserver(this)
+        eventItem.registerGroupDataObserver(this)
         //dataItem.registerGroupDataObserver(this)
     }
 
     override fun getGroup(position: Int): Group {
         return when (position) {
-            0 -> eventStatusItem
+            0 -> eventItem
             // 1 -> dataItem
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
         }
@@ -29,14 +29,14 @@ class EventGroupNew(
 
     override fun getPosition(group: Group): Int {
         return when (group) {
-            eventStatusItem -> 0
+            eventItem -> 0
             //dataItem -> 1
             else -> -1
         }
     }
 
     fun updateButtonState(event : EventNew?){
-        eventStatusItem.notifyChanged(event)
+        eventItem.notifyChanged(event)
     }
 
     override fun getGroupCount() = 1

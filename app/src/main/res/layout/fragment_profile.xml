@@ -115,16 +115,16 @@
 
 
                     <TextView
-                        android:textColor="@color/main_brown_color_new"
-                        android:background="@drawable/custom_text_background_selectable"
-                        fontPath="fonts/sf_pro_text_bold.ttf"
                         android:id="@+id/state_title"
+                        fontPath="fonts/sf_pro_text_bold.ttf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginHorizontal="10dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/custom_text_background_selectable"
                         android:paddingHorizontal="4dp"
                         android:text="@string/state"
+                        android:textColor="@color/main_brown_color_new"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
                         app:layout_constraintStart_toEndOf="@id/ivAvatar"
@@ -138,92 +138,92 @@
                     style="@style/BtnGrayWriteStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/margin_ten"
                     android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                    android:layout_marginVertical="@dimen/margin_ten"
+                    android:minHeight="35dp"
                     android:text="@string/profile_edit"
-                    android:textColor="#BE9B72"
-                    android:minHeight="35dp" />
+                    android:textColor="#BE9B72" />
 
-                <View style="@style/ViewDivider.Horizontal"
-                    android:layout_marginTop="15dp"/>
+                <View
+                    style="@style/ViewDivider.Horizontal"
+                    android:layout_marginTop="15dp" />
 
 
                 <TextView
-                    android:paddingHorizontal="20dp"
-                    android:layout_marginTop="15dp"
                     android:id="@+id/tvSettings"
-                    style="@style/Profile.Button"
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="15dp"
                     android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
                     android:text="@string/profile_settings"
                     app:drawableStartCompat="@drawable/ic_profile_settings_edit" />
 
                 <TextView
-                    android:paddingHorizontal="20dp"
-                    app:drawableStartCompat="@drawable/ic_profile_favorite_edit"
                     android:id="@+id/tvFavorite"
-                    android:drawablePadding="20dp"
-                    style="@style/Profile.Button"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/profile_favorite" />
+                    style="@style/Profile.ButtonPages"                    android:layout_marginTop="5dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/profile_favorite"
+                    app:drawableStartCompat="@drawable/ic_profile_favorite_edit" />
 
                 <TextView
-                    android:paddingHorizontal="21dp"
-                    android:drawablePadding="22dp"
-                    app:drawableStartCompat="@drawable/ic_profile_devices_edit"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tvSessions"
-                    style="@style/Profile.Button"
-                    android:text="@string/sessions_label" />
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="5dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/sessions_label"
+                    app:drawableStartCompat="@drawable/ic_profile_devices_edit" />
 
                 <View
-                    android:layout_marginTop="15dp"
-                    style="@style/ViewDivider.Horizontal" />
+                    style="@style/ViewDivider.Horizontal"
+                    android:layout_marginTop="15dp" />
 
                 <TextView
-                    android:layout_marginTop="15dp"
-                    android:paddingHorizontal="20dp"
-                    android:drawablePadding="20dp"
-                    app:drawableStartCompat="@drawable/ic_profile_rate_edit"
                     android:id="@+id/tvRate"
-                    style="@style/Profile.Button"
-                    android:text="@string/profile_rate" />
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="15dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/profile_rate"
+                    app:drawableStartCompat="@drawable/ic_profile_rate_edit" />
 
                 <TextView
-                    android:paddingHorizontal="21dp"
-                    android:drawablePadding="20dp"
-                    app:drawableStartCompat="@drawable/ic_profile_email_edit"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tvSupport"
-                    style="@style/Profile.Button"
-                    android:text="@string/profile_support" />
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="5dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/profile_support"
+                    app:drawableStartCompat="@drawable/ic_profile_email_edit" />
 
                 <TextView
-                    android:paddingHorizontal="21dp"
-                    android:drawablePadding="20dp"
-                    app:drawableStartCompat="@drawable/ic_profile_about_app_edit"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tvAboutApplication"
-                    style="@style/Profile.Button"
-                    android:text="@string/profile_about_app" />
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="5dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/profile_about_app"
+                    app:drawableStartCompat="@drawable/ic_profile_about_app_edit" />
 
                 <TextView
-                    android:paddingHorizontal="21dp"
-                    android:drawablePadding="20dp"
-                    app:drawableStartCompat="@drawable/ic_profile_change_account_edit"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tvChangeAccount"
-                    style="@style/Profile.Button"
-                    android:text="@string/change_account_label" />
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="5dp"
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/change_account_label"
+                    app:drawableStartCompat="@drawable/ic_profile_change_account_edit" />
 
                 <TextView
-                    android:paddingHorizontal="21dp"
-                    android:drawablePadding="19dp"
-                    app:drawableStartCompat="@drawable/ic_profile_log_out_edit"
-                    android:layout_marginTop="5dp"
                     android:id="@+id/tvLogout"
-                    style="@style/Profile.Button"
+                    style="@style/Profile.ButtonPages"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="20dp"
-                    android:text="@string/profile_logout" />
+                    android:drawablePadding="25dp"
+                    android:paddingHorizontal="20dp"
+                    android:text="@string/profile_logout"
+                    app:drawableStartCompat="@drawable/ic_profile_log_out_edit" />
 
 
             </LinearLayout>

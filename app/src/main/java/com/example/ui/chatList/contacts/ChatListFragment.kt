@@ -14,6 +14,7 @@ import com.example.databinding.FragmentChatListBinding
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
@@ -54,7 +55,6 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
                     if (position > 0) presenter.onItemTake(position - 1)
                 }
             })
-
             add(chatSection)
             add(favoritesSection)
         }
@@ -62,12 +62,10 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var mDy = 0
         mBinding.apply {
             chatList.apply {
                 adapter = this@ChatListFragment.adapter
                 onScrolled { _, dy ->
-                    mDy += dy
                     if (this.computeVerticalScrollOffset() <= 10) {
                         onScrollState.onScrollOffsetValue(this.computeVerticalScrollOffset().toFloat())
                     } else {
@@ -152,6 +150,12 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
 
     override fun openSearch() {
         findNavController().navigate(R.id.chat_search_fragment)
+    }
+
+    fun smoothScrollToFirstItem() {
+        mBinding.fabNewChat.show()
+        val mLayoutManager = mBinding.chatList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 
     override fun layout() = R.layout.fragment_chat_list

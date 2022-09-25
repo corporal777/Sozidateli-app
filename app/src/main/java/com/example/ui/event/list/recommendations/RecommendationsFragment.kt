@@ -1,29 +1,35 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
+import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.IS_EXPANDED
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -39,7 +45,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     @Inject
     lateinit var presenterProvider: Provider<RecommendationsPresenter>
 
-    private var eventToShowView: View? = null
     private var cashCollapseState: Pair<Int, Int>? = null
 
     @ProvidePresenter
@@ -72,11 +77,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
 
-        override fun onShowEventClick(view: View, event: String) {
-            eventToShowView = view
-            presenter.onShowEventClick(event)
-        }
-
+        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
@@ -86,32 +87,19 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.apply {
             eventsList.apply {
                 adapter = this@RecommendationsFragment.adapter
-                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-                    presenter.onScrollChange(position, offset)
-                })
+//                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
+//                    presenter.onScrollChange(position, offset)
+//                })
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            etSearch.setOnClickListener {
+                presenter.onSearchClick()
             }
         }
         initCollapseLabel()
-        mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
-        mBinding.etSearch.setOnClickListener {
-            presenter.onSearchClick()
-        }
-        mBinding.fabUp.setOnClickListener {
-            smoothScrollToFirstItem()
-        }
-    }
-
-
-    override fun showSearch() {
-        findNavController().navigate(
-            RecommendationsFragmentDirections.recommendationsFragmentToSearchFragment(
-                null
-            )
-        )
     }
 
     override fun setData(events: List<EventNew?>) {
-        mBinding.noDataPlaceholder.isVisible = false
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventGroupNew(
@@ -122,11 +110,24 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+    override fun updateActionButton(event: EventNew?) {
+        val id = event?.id?.toLong()
+        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
+    }
+
     override fun showEmptyListPlaceholder() {
         dataGroup.clear()
-        mBinding.noDataPlaceholder.isVisible = true
-        //dataGroup.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message))))
+        mBinding.noDataPlaceholder.isInvisible = false
+//        dataGroup.update(listOf(
+//            NoEventItem(
+//                getString(R.string.no_result_found_lable),
+//                getString(R.string.no_event_with_params_title)
+//            )))
         mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun hideEmptyListPlaceholder() {
+        mBinding.noDataPlaceholder.isInvisible = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
@@ -137,46 +138,23 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
 
-    private fun smoothScrollToFirstItem() {
-        val height = mBinding.eventsList.height
-        val mSmoothScroller by lazy {
-            object : LinearSmoothScroller(requireContext()) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
-                }
-
-                override fun updateActionForInterimTarget(action: Action?) {
-                    action?.jumpTo(1)
-                }
-
-                override fun onStop() {
-                    super.onStop()
-
-                }
-
-//                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
-//                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
-//                }
-
-//                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
-//                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(mBinding.eventsList.scaleX)
-//                }
-
-                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                    return 30f / displayMetrics.densityDpi
-                }
-            }
-        }
+    fun smoothScrollToFirstItem() {
         val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
-        mSmoothScroller.targetPosition = 0
-        mLayoutManager.startSmoothScroll(mSmoothScroller)
-
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
+    }
+
+    override fun showSearch() {
+        findNavController().navigate(
+            RecommendationsFragmentDirections.recommendationsFragmentToSearchFragment(
+                null
+            )
         )
     }
 
@@ -253,10 +231,5 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun layout(): Int = R.layout.fragment_recommendations
-
-    fun dp2px(dpValue: Float): Int {
-        val scale: Float = requireContext().resources.displayMetrics.density
-        return (dpValue * scale + 0.5f).toInt()
-    }
 
 }

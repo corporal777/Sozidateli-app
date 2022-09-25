@@ -1,4 +1,4 @@
-package com.example.ui.event.my.items
+package com.example.ui.event.list.recommendations.items
 
 import androidx.core.view.isVisible
 import com.example.R

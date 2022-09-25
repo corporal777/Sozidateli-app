@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import com.example.R
+import com.example.databinding.ItemProfileDataUserBinding
 import com.example.ui.views.UserSubscribeButton
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_user.*
@@ -16,14 +18,12 @@ class ProfileDataUserItem(
         private val name: String,
         private val uid: Int,
         private var subscribeAction: UserSubscribeButton.Action,
-        private var isInFavorite: Boolean,
-        private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
         private val writeMessageClickListener: () -> Unit,
         private val onAvatarClick: (ImageView) -> Unit
-) : Item(id) {
+) : BindableItem<ItemProfileDataUserBinding>(id) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataUserBinding, position: Int) {
+        viewBinding.apply {
             ivAvatar.apply {
                 transitionName = avatarUrl
                 clipToOutline = true
@@ -33,43 +33,32 @@ class ProfileDataUserItem(
                 setOnClickListener { onAvatarClick(this) }
             }
             tvName.text = name
-            tvId.apply { text = resources.getString(R.string.profile_uid, uid) }
-            btnAction.apply {
-                setAction(this, btnChat, subscribeAction)
-                setOnClickListener { actionClickListener(this.action) }
-            }
-
+            tvId.apply { text = resources.getString(R.string.profile_uid_small, uid) }
+            setAction(btnChat, subscribeAction)
             btnChat.setOnClickListener { writeMessageClickListener() }
         }
     }
 
-    override fun bind(holder: GroupieViewHolder, position: Int, payloads: List<Any>) {
-        if (payloads.isEmpty()) super.bind(holder, position, payloads)
-        else holder.apply {
+    override fun bind(
+        viewBinding: ItemProfileDataUserBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
+        else viewBinding.apply {
             (payloads[0] as? UserSubscribeButton.Action)?.let {
                 subscribeAction = it
-                if (it == UserSubscribeButton.Action.FAVORITE) isInFavorite = false
-                else if (it == UserSubscribeButton.Action.UNFAVORITE) isInFavorite = true
-                setAction(btnAction, btnChat, it)
+                setAction(btnChat, it)
             }
         }
     }
 
-    private fun setAction(subscribeButton: UserSubscribeButton, newChatButton: View, action: UserSubscribeButton.Action) {
+
+    private fun setAction(chatButton: View, action: UserSubscribeButton.Action) {
         val isEnabled = action != UserSubscribeButton.Action.UNBLOCK
         val alpha = if (isEnabled) 1f else 0.6f
-        subscribeButton.isEnabled = isEnabled
-        newChatButton.isEnabled = isEnabled
-        subscribeButton.alpha = alpha
-        newChatButton.alpha = alpha
-
-        val finalAction = when {
-            isEnabled -> action
-            isInFavorite -> UserSubscribeButton.Action.UNFAVORITE
-            else -> UserSubscribeButton.Action.FAVORITE
-        }
-
-        subscribeButton.setAction(finalAction)
+        chatButton.isEnabled = isEnabled
+        chatButton.alpha = alpha
     }
 
     override fun getLayout() = R.layout.item_profile_data_user

@@ -11,16 +11,11 @@ class ProfileExpandableTitleItem(
         title: String
 ) : ExpandableTitleItem(title) {
 
-    var hideDividerOnExpand = true
 
     override fun setExpanded(viewHolder: GroupieViewHolder, isUpdate: Boolean) {
         viewHolder.tvTitle.apply {
             val icon = ContextCompat.getDrawable(context, if (isExpanded) R.drawable.ic_arrow_top else R.drawable.ic_arrow_bottom)
             setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
-        }
-
-        viewHolder.divider.apply {
-            isInvisible = hideDividerOnExpand && isExpanded
         }
     }
 

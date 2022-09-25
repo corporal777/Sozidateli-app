@@ -147,25 +147,26 @@ class MainPresenter
             //.andThen(subscribeToNotifications())
             .doOnComplete { connectToSocket(appData.getId()) }
             .andThen(Completable.defer { checkShowGreetings() })
-            .andThen(Maybe.defer { checkUserEvent() })
+            //.andThen(Maybe.defer { checkUserEvent() })
             .performOnBackgroundOutOnMain()
-            .subscribe({ isMustShowEvent ->
+            .subscribe({
                 if (!isEditingPhone) {
                     viewState.apply {
                         hideLoadingDialog()
-                        if (isMustShowEvent) {
-                            showEvent()
+                        if (!isFromQr) {
+                            showRecommendations()
                         } else {
-                            if (!isFromQr) {
-                                showRecommendations()
-                            } else {
-                                if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
-                                    showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
-                                    isFromQr = false
-                                }
+                            if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
+                                showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
+                                isFromQr = false
                             }
-
                         }
+//                        if (isMustShowEvent) {
+//                            showEvent()
+//                        } else {
+//
+//
+//                        }
                         checkIntent()
                         showNextInapp()
                     }

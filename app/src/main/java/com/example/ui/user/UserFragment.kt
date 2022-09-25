@@ -19,20 +19,25 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentUserBinding
+import com.example.extensions.findItemBy
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.showChangePasswordDialog
 import com.example.extensions.showPasswordChangeCompleteDialog
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.user.items.ProfileDataDividerItem
+import com.example.ui.user.items.UserProfileActionsItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
+import com.example.util.firstLetterToUppercase
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -83,6 +88,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
     private val workDataSection = Section()
     private val interestsDataSection = Section()
     private val additionalDataSection = Section()
+    private val actionsDataSection = Section()
 
     private val adapter = GroupAdapter<GroupieViewHolder>().apply {
         add(mainDataSection)
@@ -91,6 +97,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         add(workDataSection)
         add(interestsDataSection)
         add(additionalDataSection)
+        add(actionsDataSection)
     }
 
     private lateinit var toolbarContentActionBar: ToolbarContentActionBar
@@ -116,6 +123,11 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
+        mBinding.ivShare.setOnClickListener {
+            if (!presenter.userId.isNullOrEmpty()) {
+                showShare(presenter.userId)
+            }
+        }
     }
 
     override fun setUser(profileUserData: ProfileUserData) {
@@ -137,6 +149,18 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
         interestsDataSection.update(listOfNotNull(initInterests(interests, editable)))
         additionalDataSection.update(listOfNotNull(initAdditionalInformation(user, editable)))
+
+        if (profileUserData.user.state?.isRegistered == true) {
+            if (editable) {
+                actionsDataSection.update(emptyList())
+            } else actionsDataSection.update(
+                listOf(
+                    ProfileDataDividerItem(),
+                    initActions(profileUserData.user.getUserSubscribeAction())
+                )
+            )
+        }
+
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
@@ -163,20 +187,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
             user.nameLastName,
             user.id,
             user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
-            user.binds?.userFavorite != null,
-            {
-                presenter.apply {
-                    when (it) {
-                        UserSubscribeButton.Action.FAVORITE -> onSubscribeClick()
-                        UserSubscribeButton.Action.UNFAVORITE -> onUnsubscribeClick()
-                        UserSubscribeButton.Action.UNBLOCK -> onUnblockClick()
-                        else -> throw IllegalArgumentException("Wrong action: $it for user")
-                    }
-                }
-            },
-            {
-                presenter.onWriteMessageClick()
-            },
+            { presenter.onWriteMessageClick() },
             { imageView ->
                 val url = user.image?.uri ?: return@ProfileDataUserItem
                 onAvatarClick(imageView, url)
@@ -323,6 +334,23 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         } else null
     }
 
+    private fun initActions(action: UserSubscribeButton.Action?): Group? {
+        return ProfileExpandableTitleGroup(
+            getString(R.string.yet_btn_text).firstLetterToUppercase(),
+            onExpandChange = onItemExpandChange
+        ).apply {
+            add(Section().apply {
+                add(UserProfileActionsItem(getString(R.string.complain_about_user_label)) {
+
+                })
+                add(UserProfileActionsItem(action) {
+                    if (action == UserSubscribeButton.Action.UNBLOCK) presenter.onUnblockClick()
+                    else presenter.onBlockClick()
+                })
+            })
+        }
+    }
+
     private fun initAdditionalInformation(user: /*User*/UserDetail, editable: Boolean): Group? {
         val notes = user.notes
         val files = user.binds?.recommendationFile ?: emptyList()
@@ -366,7 +394,6 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                 getString(R.string.profile_additional_data),
                 onExpandChange = onItemExpandChange
             ).apply {
-                titleItem.hideDividerOnExpand = false
                 addAll(subgroups)
             }
         } else null
@@ -377,34 +404,49 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
 
     override fun showPasswordChangeComplete() = showPasswordChangeCompleteDialog()
 
-    override fun setSubscribeAction(action: UserSubscribeButton.Action?) {
+    override fun setSubscribeBlockAction(action: UserSubscribeButton.Action?) {
         mainDataSection.notifyItemChanged(0, action)
-        mBinding.ivAction.apply {
-            setImageResource(if (action == UserSubscribeButton.Action.UNBLOCK) R.drawable.ic_revert else R.drawable.ic_block)
-            setOnClickListener {
+        val item = actionsDataSection.findItemBy<UserProfileActionsItem> { x -> x.isAction  }
+        if (item != null) {
+            item.notifyChanged(action)
+            item.action = {
                 if (action == UserSubscribeButton.Action.UNBLOCK) presenter.onUnblockClick()
                 else presenter.onBlockClick()
             }
         }
-
-//        toolbarContentActionBar.removeAllRightViews()
-//        toolbarContentActionBar.addRightView(ToolbarButton(requireContext()).apply {
-//            setImageResource(if (action == UserSubscribeButton.Action.UNBLOCK) R.drawable.ic_revert else R.drawable.ic_block)
-//            setOnClickListener {
-//                if (action == UserSubscribeButton.Action.UNBLOCK) presenter.onUnblockClick()
-//                else presenter.onBlockClick()
-//            }
-//        })
     }
 
-    override fun setNoTitle() {
-        //toolbarContentActionBar.title = null
+    override fun setEnableAddToFavoriteButton(enabled: Boolean) {
+        mBinding.ivAddToFavorite.apply {
+            isEnabled = enabled
+            alpha = if (enabled) 1f
+            else 0.6f
+        }
     }
 
-    override fun setProfileTitle() {
-        mBinding.tvLabel.isVisible = true
-        //toolbarContentActionBar.title = getString(R.string.profile_current_user_label)
+    override fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?) {
+        mBinding.apply {
+            ivAddToFavorite.isVisible = true
+            if (action != null) {
+                if (action == UserSubscribeButton.Action.UNFAVORITE) {
+                    ivAddToFavorite.apply {
+                        setImageResource(R.drawable.ic_star_filled)
+                        setOnClickListener {
+                            presenter.onUnsubscribeClick()
+                        }
+                    }
+                } else {
+                    ivAddToFavorite.apply {
+                        setImageResource(R.drawable.ic_star)
+                        setOnClickListener {
+                            presenter.onSubscribeClick()
+                        }
+                    }
+                }
+            }
+        }
     }
+
 
     override fun showUserHiddenDialog() {
         val message = "Данный профиль недоступен"
@@ -417,10 +459,6 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
             setUserAvatar(userAvatar)
         })
-    }
-
-    override fun showStatus() {
-
     }
 
     override fun showOrganization(organization: /*Organization*/OrganizationNew) {
@@ -454,10 +492,17 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         findNavController().navigate(UserFragmentDirections.userToEdit(type))
     }
 
-//    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-//        super.setupToolbarContent(toolbarContentActionBar)
-//        this.toolbarContentActionBar = toolbarContentActionBar
-//    }
+    private fun showShare(userId: String) {
+        val link = BuildConfig.SHARE_URL + "portal/user/" + userId
+        try {
+            val shareApp = Intent(Intent.ACTION_SEND)
+            shareApp.type = "text/plain"
+            shareApp.putExtra(Intent.EXTRA_TEXT, link)
+            startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
+        } catch (e: Exception) {
+            showRequestErrorMessage()
+        }
+    }
 
     override fun layout() = R.layout.fragment_user
 

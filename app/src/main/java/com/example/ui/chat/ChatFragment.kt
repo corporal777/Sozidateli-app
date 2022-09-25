@@ -30,15 +30,11 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.Message.MessageType
 import com.example.databinding.FragmentChatBinding
 import com.example.extensions.dp
-import com.example.extensions.findGroupBy
-import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.chat.items.ChatUnreadLabelGroup
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
-import com.example.ui.event.my.schedule.items.EmptyItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.CustomProgressView
 import com.example.ui.views.toolbar.ToolbarContentActionBar

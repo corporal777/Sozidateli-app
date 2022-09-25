@@ -88,7 +88,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
@@ -100,11 +99,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
             presenter.onRemoveFromScheduleClick(subEvent)
         }
-
-        override fun onUpdateScheduleState(subEvent: EventActivityModel) {
-
-        }
-
     }
 
 

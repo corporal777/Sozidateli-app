@@ -39,6 +39,22 @@ class AboutEventPresenterNew
     private var firstLaunch = true
     private var mTags = arrayListOf<Tag>()
     private lateinit var mUserEvent: UserEvent
+    private var mDy = 0
+
+    override fun changeAppBarBackgroundColorValue(canScrollVertically: Boolean, value: Int) {
+        if (!canScrollVertically){
+            mDy = 0
+            viewState.updateAppBarBackgroundColorValue(mDy)
+        }else {
+            mDy += value
+            viewState.updateAppBarBackgroundColorValue(mDy)
+        }
+    }
+
+    override fun attachView(view: AboutEventContractNew.View?) {
+        super.attachView(view)
+        viewState.updateAppBarBackgroundColorValue(mDy)
+    }
 
 
     override fun onFirstViewAttach() {
@@ -147,7 +163,6 @@ class AboutEventPresenterNew
             compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = null
                     viewState.changeEventSubscription(false)
@@ -164,13 +179,11 @@ class AboutEventPresenterNew
             )
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.apply {
                         changeEventSubscription(true)
                         showEventAddedToFavoriteMessage()
-                        viewState.showProgressBarLoadingDialog()
                     }
                 }
         }

@@ -81,14 +81,14 @@ class NotificationsPresenter
 
     override fun attachView(view: NotificationsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(mDy.toFloat())
         if (firstLaunch) firstLaunch = false
         else pagination.invalidate()
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        mDy = value
+        viewState.setAppBarElevation(mDy.toFloat())
     }
 
     override fun onNotificationUrlClick(url: String) {

@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
@@ -18,6 +19,8 @@ import android.widget.PopupWindow
 import androidx.annotation.ColorInt
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import coil.load
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -25,6 +28,7 @@ import coil.transform.Transformation
 import com.example.BuildConfig
 import com.example.R
 import com.example.extensions.calendar
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -327,6 +331,37 @@ fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.Y
 fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)
 fun getCurrentDay(): Int = System.currentTimeMillis().calendar().get(Calendar.DAY_OF_MONTH)
 
+fun LinearLayoutManager.smoothScrollToFirstItem(context: Context, appBar : AppBarLayout?, jumpToPosition : Int){
+    val mSmoothScroller by lazy {
+        object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_END
+            }
 
+            override fun updateActionForInterimTarget(action: Action?) {
+                action?.jumpTo(jumpToPosition)
+            }
+
+            override fun onStop() {
+                super.onStop()
+                appBar?.setExpanded(true)
+            }
+
+//                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
+//                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
+//                }
+//
+//                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+//                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(mBinding.eventsList.scaleX)
+//                }
+
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return 20f / displayMetrics.densityDpi
+            }
+        }
+    }
+    mSmoothScroller.targetPosition = 0
+    this.startSmoothScroll(mSmoothScroller)
+}
 
 

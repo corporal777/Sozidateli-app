@@ -2,7 +2,6 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.core.view.isVisible
@@ -15,21 +14,15 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
-import com.example.data.models.UserDetail
-import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
-import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.activities.items.SearchActivityItem
-import com.example.ui.event.my.items.NoEventItem
 import com.example.ui.event.my.schedule.items.MyScheduleEventsData
 import com.example.ui.event.my.schedule.items.MyScheduleSubEventsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
@@ -41,7 +34,6 @@ import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.SearchInput
 import com.example.util.getMonthName
-import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -72,21 +64,14 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     fun providePresenter(): MyScheduleEventsPresenter = presenterProvider.get()
 
     private val mSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
             mPresenter.onSubEventClick(eventId, subEvent)
-        }
 
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) {
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
             mPresenter.onAddSubEventToScheduleClick(subEvent)
-        }
 
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
             mPresenter.onRemoveSubEventFromScheduleClick(subEvent)
-        }
-
-        override fun onUpdateScheduleState(subEvent: EventActivityModel) {
-        }
-
     }
 
     private val searchSection = Section()
@@ -278,10 +263,10 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
             val message = getString(R.string.this_day_doesnt_have_event)
             showMessageDialog(message)
         } else {
-            val position = groupAdapter.getAdapterPosition(group)
             val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
-            mSmoothScroller.targetPosition = position
-            mLayoutManager.startSmoothScroll(mSmoothScroller)
+            val position = groupAdapter.getAdapterPosition(group)
+            val smoothScroller = getSmoothScroller(position)
+            mLayoutManager.startSmoothScroll(smoothScroller)
         }
     }
 
@@ -332,9 +317,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                 showLoadingAlertDialog()
                 mPresenter.getEventsList()
                 //removeBannedOrCancelledEvent(result)
-                showToast(result)
-            } else {
-                showToast("NULL EVENT ID")
             }
         }
     }
@@ -455,14 +437,20 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         const val SWITCHED = 1
     }
 
-    private val mSmoothScroller by lazy {
-        object : LinearSmoothScroller(requireContext()) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
+    private fun getSmoothScroller(jumPosition : Int) : LinearSmoothScroller {
+        val scroller by lazy {
+            object : LinearSmoothScroller(requireContext()) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+                override fun updateActionForInterimTarget(action: Action?) {
+                    action?.jumpTo(jumPosition)
+                }
             }
         }
+        scroller.targetPosition = jumPosition
+        return scroller
     }
-
 
     override fun layout(): Int = R.layout.fragment_my_schedule_events
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -18,6 +19,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -31,6 +33,8 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
 
     @InjectPresenter
     lateinit var presenter: NotificationsPresenter
+
+    private var mDy: Int = 0
 
     @Inject
     lateinit var presenterProvider: Provider<NotificationsPresenter>
@@ -93,14 +97,22 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setToolbarTitleAndIcon(getString(R.string.notifications_label))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.notifications_label))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@NotificationsFragment.adapter
                 onScrolled { dx, dy ->
-                    presenter.changeAppBarElevation(dy)
+                    if (this.computeVerticalScrollOffset() <= 10) {
+                        presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+                    } else {
+                        presenter.changeAppBarElevation(10)
+                    }
                 }
             }
 
@@ -179,6 +191,11 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
                 eventId
             )
         )
+    }
+
+    fun smoothScrollToFirstItem() {
+        val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(),null, 3)
     }
 
 

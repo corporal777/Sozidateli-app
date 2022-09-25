@@ -2,28 +2,26 @@ package com.example.ui.event.about.redesign
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
-import android.view.*
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentAboutEventNewBinding
-import com.example.extensions.*
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityItem
-import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
@@ -32,33 +30,29 @@ import com.example.ui.organizations.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
-
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import onScrolled
 import setOnClickListener
-import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 
-class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
-    BackgroundImageFragment {
+class AboutEventFragmentNew() : BaseFragment(),
+    AboutEventContractNew.View {
 
-    private var mLightStatus = false
-    private var mDy: Int = 0
     private var mEventId = ""
-    private var _binding: FragmentAboutEventNewBinding? = null
-    private val mBinding get() = _binding!!
 
     override fun layout() = R.layout.fragment_about_event_new
 
     private val subEventsBlock = Section()
+    private var _binding: FragmentAboutEventNewBinding? = null
+    private val mBinding get() = _binding!!
 
     @InjectPresenter
     lateinit var mPresenter: AboutEventPresenterNew
@@ -95,47 +89,41 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
 
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
             mPresenter.onRemoveFromScheduleClick(subEvent)
-
-        override fun onUpdateScheduleState(subEvent: EventActivityModel) {}
     }
 
     private var actionItem: EventDetailActionBlock? = null
     private var organizationItem: EventDetailOrganizationBlock? = null
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentAboutEventNewBinding.inflate(inflater, container, false)
-        return mBinding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentAboutEventNewBinding.bind(view)
         mBinding.eventContentList.apply {
-            layoutManager = LinearLayoutManager(requireContext())
             adapter = groupAdapter
-
+            setItemViewCacheSize(10)
+            recycledViewPool.setMaxRecycledViews(0, 10)
+            val layoutManager = this.layoutManager as LinearLayoutManager
             onScrolled { _, dy ->
-                mDy += dy
-                updateView(mDy)
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    mPresenter.changeAppBarBackgroundColorValue(false, 0)
+                } else {
+                    mPresenter.changeAppBarBackgroundColorValue(true, dy)
+                }
             }
         }
-
-        mBinding.swipeToRefresh.setProgressViewOffset(
-            true,
-            resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
-            resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
-        )
 
         mBinding.ivShare.setOnClickListener(mPresenter::onShareClick)
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
-        mBinding.swipeToRefresh.setOnRefreshListener {
-            mPresenter.onRefreshRequest()
+        mBinding.swipeToRefresh.apply {
+            setProgressViewOffset(
+                true,
+                resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
+                resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
+            )
+            setOnRefreshListener {
+                mPresenter.onRefreshRequest()
+            }
         }
     }
 
@@ -345,12 +333,13 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                 ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
             ivBack.imageTintList =
                 ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
-            btnAddToCalendar.setTextColor(Color.BLACK)
-            btnAddToCalendar.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.custom_btn_add_to_calendar_background_black
-            )
-            mLightStatus = true
+            btnAddToCalendar.apply {
+                setTextColor(Color.BLACK)
+                background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.custom_btn_add_to_calendar_background_black
+                )
+            }
             requireActivity().window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
@@ -359,13 +348,14 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
 
     private fun setWhiteIcons() {
         mBinding.apply {
-            mLightStatus = false
             requireActivity().window.decorView.systemUiVisibility = 0
-            btnAddToCalendar.setTextColor(Color.WHITE)
-            btnAddToCalendar.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.custom_btn_add_to_calendar_background
-            )
+            btnAddToCalendar.apply {
+                setTextColor(Color.WHITE)
+                background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.custom_btn_add_to_calendar_background
+                )
+            }
             ivAddToFavorite.imageTintList =
                 ContextCompat.getColorStateList(requireContext(), R.color.white)
             ivShare.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
@@ -417,17 +407,18 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
 
     }
 
-    private fun updateView(offset: Int) {
-        Log.e("OFFSET", offset.toString())
+    override fun updateAppBarBackgroundColorValue(value: Int) {
+        Log.e("OFFSET", value.toString())
         mBinding.apply {
-            if (offset == 0) {
+            if (value == 0) {
                 tbBackground.setBackgroundColor(Color.TRANSPARENT)
+                setWhiteIcons()
             }
-            if (offset > 0 && offset < 1700) {
+            if (value > 0 && value < 1600) {
                 tbBackground.apply {
                     tbContent.setBackgroundColor(Color.TRANSPARENT)
                     setBackgroundColor(Color.BLACK)
-                    val mAlpha = Math.abs(offset / (1000).toFloat())
+                    val mAlpha = abs(value / (600).toFloat())
                     alpha = mAlpha
                     aboutEventAppBar.apply {
                         elevation = 0f
@@ -437,12 +428,12 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                     //setWhiteIcons()
                 }
             }
-            if (offset > 1600) {
+            if (value > 1750) {
                 tbBackground.apply {
                     tbContent.setBackgroundColor(Color.BLACK)
                     setBackgroundColor(Color.WHITE)
-                    val value = offset - 1600
-                    val mAlpha = Math.abs(value / (1000).toFloat())
+                    val value = value - 1750
+                    val mAlpha = abs(value / (500).toFloat())
                     alpha = mAlpha
                 }
                 aboutEventAppBar.apply {
@@ -452,11 +443,15 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
                 }
                 setBlackIcons()
             }
-            if (offset < 2060) {
+            if (value < 1750) {
                 setWhiteIcons()
             }
         }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
@@ -464,15 +459,4 @@ class AboutEventFragmentNew() : BaseFragment(), AboutEventContractNew.View,
         const val ABOUT_FROM_OTHER = 2
     }
 
-    override val isLightStatus: Boolean
-        get() = mLightStatus
-
-    override fun getFragmentBackgroundDrawable(): Drawable? {
-        return null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

@@ -374,7 +374,7 @@ class EventRepositoryImp
         newApi.deleteEventSubscription(eventId)
 
     override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
-        newApi.getEventDetails(eventId, "rights,current-user-registration")
+        newApi.getEventDetails(eventId, "rights,current-user-registration,form")
 
     override fun mailToEvent(body: MessageToEventBody): Completable =
         newApi.messageToEvent(body)

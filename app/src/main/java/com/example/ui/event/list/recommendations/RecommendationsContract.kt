@@ -17,8 +17,11 @@ interface RecommendationsContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setData(events: List<EventNew/*Event*/?>)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        fun hideEmptyListPlaceholder()
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
@@ -32,17 +35,17 @@ interface RecommendationsContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSearch()
 
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun updateActionButton(event: EventNew?)
+
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
-
-        fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String, registrationId: String?)
-        fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
     }
 }

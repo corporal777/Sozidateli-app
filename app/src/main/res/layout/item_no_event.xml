@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:layout_marginBottom="110dp"
         android:id="@+id/noDataPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

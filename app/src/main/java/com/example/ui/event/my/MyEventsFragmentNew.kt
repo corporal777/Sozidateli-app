@@ -1,7 +1,6 @@
 package com.example.ui.event.my
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
@@ -9,46 +8,35 @@ import android.widget.EditText
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
-import com.example.holders.EventStatusItem
-import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.holders.redesign.ScreenHeaderItem
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.my.items.NoEventItem
-import com.example.ui.event.my.items.SearchEventItem
-import com.example.ui.event.my.items.TagsItem
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.IS_EXPANDED
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import initDropDownView
-import kotlinx.android.synthetic.main.fragment_my_events.*
-import kotlinx.android.synthetic.main.fragment_my_events.swipeToRefresh
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
-import kotlinx.android.synthetic.main.layout_list.*
-import onScrolled
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -205,6 +193,11 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
 
     override fun hideEmptyListPlaceholder() {
         mBinding.noDataPlaceholder.isInvisible = true
+    }
+
+    fun smoothScrollToFirstItem() {
+        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
     override fun showAboutEvent(event: String) {

@@ -22,6 +22,7 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
@@ -41,11 +42,6 @@ class UserPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadUserData(true)
-
-        viewState.apply {
-            if (isCurrentUser()) setProfileTitle()
-            else setNoTitle()
-        }
 
         /*compositeDisposable += haChat.subscribeToExcludeFlagChange()
                 .performOnBackgroundOutOnMain()
@@ -112,12 +108,18 @@ class UserPresenter
                                 profileUserData.userData.user.address?.shortAddres =
                                     add.data[0].region
                             setUser(profileUserData)
-                            if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                            if (!isCurrentUser() && profileUserData.user.state?.isRegistered == true) {
+                                setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                                setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                            }
                         }
                     }, {
                         viewState.apply {
                             setUser(profileUserData)
-                            if (!isCurrentUser()) setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                            if (!isCurrentUser() && profileUserData.user.state?.isRegistered == true) {
+                                setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                                setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                            }
                         }
                     })
             }, {
@@ -196,20 +198,20 @@ class UserPresenter
             )
         )
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
             }
     }
 
     override fun onUnsubscribeClick() {
         compositeDisposable += eventRepository.deleteFromFavorite(profileUserData.user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = null
-                viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
             }
     }
 
@@ -219,18 +221,20 @@ class UserPresenter
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
                 .flatMapCompletable { chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1) }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = null
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setEnableAddToFavoriteButton(true)
                 }, { it.printStackTrace() })
         } else {
             compositeDisposable += chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = null
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setEnableAddToFavoriteButton(true)
                 }, { it.printStackTrace() })
         }
     }
@@ -245,18 +249,20 @@ class UserPresenter
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
                 .flatMap { chatRepository.chatBann(CreateChatBody(userId.toInt())) }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = it
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setEnableAddToFavoriteButton(false)
                 }, { it.printStackTrace() })
         } else {
             compositeDisposable += chatRepository.chatBann(CreateChatBody(userId.toInt()))
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = it
-                    viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                    viewState.setEnableAddToFavoriteButton(false)
                 }, { it.printStackTrace() })
         }
     }
@@ -289,9 +295,6 @@ class UserPresenter
         viewState.showDataEditor(UserEditDataType.ADDITIONAL_FILES)
     }
 
-    override fun onStatusClick() {
-        viewState.showStatus()
-    }
 
     override fun onChangePasswordClick() {
         viewState.showChangePassword()

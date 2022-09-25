@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -18,6 +19,7 @@ import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
@@ -83,6 +85,11 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
 
     override fun openChat(chatId: Int, userName: String) {
         findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
+    }
+
+    fun smoothScrollToFirstItem() {
+        val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 
     override fun layout() = R.layout.fragment_invite_list

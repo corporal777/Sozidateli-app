@@ -65,11 +65,6 @@ android {
     defaultConfig {
         buildConfigField "String", "DATA_DATA_API_URL", "\"https://suggestions.dadata.ru/\""
         signingConfig signingConfigs.debug
-        externalNativeBuild {
-            cmake {
-                cppFlags ''
-            }
-        }
 
         applicationVariants.all { variant ->
             def buildType = variant.buildType.name + ""

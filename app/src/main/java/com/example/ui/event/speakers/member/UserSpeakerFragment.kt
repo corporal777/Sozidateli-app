@@ -67,14 +67,11 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
-
         override fun onAddToScheduleClick(subEvent: EventActivityModel) =
             presenter.onAddToScheduleClick(subEvent)
 
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
             presenter.onRemoveFromScheduleClick(subEvent)
-
-        override fun onUpdateScheduleState(subEvent: EventActivityModel) {}
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

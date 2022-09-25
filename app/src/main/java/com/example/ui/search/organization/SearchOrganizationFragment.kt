@@ -47,36 +47,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         super.onViewCreated(view, savedInstanceState)
         mCanShowEventAndOrganizations = true
     }
-    override fun createItemNew(itemData: List<OrganizationNew?>): Group {
-        var label = ""
-        var title = ""
 
-        val mSection = Section()
-        mSection.update(itemData.map {
-            if (it == null) {
-                label = ""
-                PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
-            } else {
-                title = when(itemData.size){
-                    1 -> {
-                        "организация найдена"
-                    }
-                    2 -> {
-                        "организации найдено"
-                    }
-                    else -> "организаций найдено"
-                }
-                label = itemData.size.toString() + " " + title
-                OrganizationItem(
-                    it,
-                    { presenter.onOrganizationClick(it) },
-                    { presenter.onOrganizationSubscriptionClick(it) }
-                )
-            }
-        })
-        headerSection.update(listOf(SearchItemLabel(label)))
-        return mSection
-    }
 
     override fun createItem(itemData: OrganizationNew/*Organization*/?): Group {
 

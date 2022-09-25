@@ -403,6 +403,7 @@
     <string name="profile_interests">Интересы</string>
     <string name="profile_notifications_has_new">У вас есть непрочитанные уведомления</string>
     <string name="profile_uid">ID %d</string>
+    <string name="profile_uid_small">id %d</string>
     <string name="profile_show_in_profile">Отображать в профиле</string>
     <string name="profile_date_start_educate">Дата начала обучения</string>
     <string name="profile_date_end_educate">Дата окончания обучения</string>
@@ -880,7 +881,7 @@
     <string name="search_input_event_hint">Название или описание мероприятия</string>
     <string name="search_text_only"> Поиск</string>
     <string name="schedule_tags_title_new">Теги</string>
-    <string name="yet_btn_text">еще</string>
+    <string name="yet_btn_text">ещё</string>
     <string name="no_activity_title">Событий нет</string>
     <string name="no_activity_with_params_title">По данным параметрам нет событий</string>
     <string name="no_event_with_params_title">По данным параметрам нет мероприятий</string>
@@ -928,6 +929,9 @@
     <string name="no_data_found">Нет результатов</string>
     <string name="new_password_label">Новый пароль</string>
     <string name="password_repeat_label">Повторите пароль</string>
+    <string name="complain_about_user_label">Пожаловаться на пользователя</string>
+    <string name="unblock_user">Разблокировать пользователя</string>
+    <string name="block_user">Заблокировать пользователя</string>
 
 
     <string-array name="custom_months">

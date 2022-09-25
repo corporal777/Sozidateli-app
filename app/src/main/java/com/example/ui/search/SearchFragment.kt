@@ -253,7 +253,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     }
 
     protected abstract fun createItem(itemData: I?): Group
-    protected abstract fun createItemNew(itemData: List<I?>): Group
     protected abstract fun createFilterView(filter: F): View
     protected abstract fun clearFilterView(filterView: View)
 

@@ -127,8 +127,8 @@ class EventDetailActionBlock(
         if (eventRegistrationState != null) {
             val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
                 arrayListOf("") else eventRegistrationState?.availableActions
-            when {
-                eventRegistrationState?.prohibitions?.registrationClosed == false -> {
+            when (eventRegistrationState?.prohibitions?.registrationClosed) {
+                false -> {
                     when (actions?.get(0)) {
                         "register" -> {
                             mTextSize = 17f

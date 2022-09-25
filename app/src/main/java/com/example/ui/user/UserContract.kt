@@ -20,7 +20,13 @@ interface UserContract {
         fun openChat(userName: String, userAvatar: String?, chatId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubscribeAction(action: UserSubscribeButton.Action?)
+        fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEnableAddToFavoriteButton(enabled : Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSubscribeBlockAction(action: UserSubscribeButton.Action?)
 
         @StateStrategyType(SkipStrategy::class)
         fun downloadFile(file: String)
@@ -34,9 +40,6 @@ interface UserContract {
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showStatus()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showDataEditor(type: UserEditDataType)
 
@@ -46,12 +49,6 @@ interface UserContract {
         @StateStrategyType(SkipStrategy::class)
         fun showPasswordChangeComplete()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
-        fun setNoTitle()
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
-        fun setProfileTitle()
-
         @StateStrategyType(SkipStrategy::class)
         fun showUserHiddenDialog()
     }
@@ -60,7 +57,6 @@ interface UserContract {
         fun onWriteMessageClick()
         fun onOrganizationClick(organization: /*Organization*/OrganizationNew)
         fun onFileClick(file: /*RecommendationFile*/FileModel)
-        fun onStatusClick()
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

@@ -20,6 +20,9 @@ interface AboutEventContractNew {
             tags: List<Tag>
         )
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSubEvents(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>)
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(
             event: EventNew?,
@@ -73,7 +76,7 @@ interface AboutEventContractNew {
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>)
+        fun updateAppBarBackgroundColorValue(value : Int)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -99,5 +102,6 @@ interface AboutEventContractNew {
         fun onAddEventToFavoriteClick()
         fun onCreateEventSubscriptionClick()
         fun onDeleteEventSubscriptionClick()
+        fun changeAppBarBackgroundColorValue(canScrollVertically : Boolean, value : Int)
     }
 }

@@ -32,9 +32,6 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> :
             { presenter.onUserActionCLick(itemData) })
     }
 
-    override fun createItemNew(itemData: List<UserDetail?>): Group {
-        return Section()
-    }
 
     override fun updateUser(user: UserDetail) {
         val idLong = user.id.toLong()

@@ -1,5 +1,9 @@
 package com.example.ui.profile
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.content.Intent.*
 import android.net.Uri
@@ -7,6 +11,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -24,6 +29,7 @@ import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View,
     SimpleTitleToolbar {
@@ -127,7 +133,11 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         val userId = getString(R.string.user_id, user.id.toString())
         val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
         setToolbarTitleAndIcon(userId, actionIcon) {
-            showToast("Open bottom sheet for link")
+            val linkToAccount = BuildConfig.SHARE_URL + "portal/user/" + user.id
+            val clipboardManager = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip: ClipData = ClipData.newPlainText("idLink", linkToAccount)
+            clipboardManager.setPrimaryClip(clip)
+            showToast("Ссылка скопирована в буфер обмена")
         }
     }
 

@@ -134,7 +134,7 @@
 
     <color name="profile_logout_text">#FF0000</color>
     <color name="profile_name_text">#000000</color>
-    <color name="profile_id_text">#939598</color>
+    <color name="profile_id_text">#66000000</color>
     <color name="profile_action_subscribe">@color/colorAccent</color>
     <color name="profile_action_ban">@color/attention_action</color>
     <color name="profile_title_text">#80000000</color>

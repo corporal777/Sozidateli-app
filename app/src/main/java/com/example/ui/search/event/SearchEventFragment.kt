@@ -115,36 +115,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         mCanShowEventAndOrganizations = true
     }
 
-    override fun createItemNew(itemData: List<EventNew?>): Group {
-        var label = ""
-        var title = ""
-
-        val mSection = Section()
-        mSection.update(itemData.map {
-            if (it == null) {
-                label = ""
-                PlaceholderItem(PlaceholderItem.Type.EVENT)
-            } else {
-                title = when(itemData.size){
-                    1 -> {
-                        "мероприятие"
-                    }
-                    2 -> {
-                        "мероприятия"
-                    }
-                    else -> "мероприятий"
-                }
-                label = itemData.size.toString() + " " + title + " найдено"
-                EventGroupNew(
-                    it,
-                    onEventClickListener,
-                )
-
-            }
-        })
-        headerSection.update(listOf(SearchItemLabel(label)))
-        return mSection
-    }
 
     override fun createItem(itemData: EventNew?): Group {
 

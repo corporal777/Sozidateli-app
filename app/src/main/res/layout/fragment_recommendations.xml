@@ -114,7 +114,6 @@
             android:id="@+id/swipe_to_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -124,8 +123,7 @@
                 android:clipToPadding="false"
                 android:paddingBottom="70dp"
                 tools:listitem="@layout/item_event_new"
-                app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager" />
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
 
@@ -157,7 +155,6 @@
                 tools:ignore="MissingPrefix" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tvDescription"
                 fontPath="fonts/sf_pro_display_semibold.ttf"
                 android:layout_width="match_parent"
@@ -165,7 +162,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="По заданным параметрам нет подходящих мероприятий"
+                android:text="@string/no_event_with_params_title"
                 android:textColor="@color/no_data_item_description_color"
                 android:textSize="17sp"
                 tools:ignore="MissingPrefix" />
@@ -173,6 +170,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabUp"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"

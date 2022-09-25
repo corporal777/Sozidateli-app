@@ -39,9 +39,6 @@ class RecommendationsPresenter
     @Connectivity val connectivity: Observable<Boolean>
 ) : BasePresenter<RecommendationsContract.View>(appData), RecommendationsContract.Presenter {
 
-    private var scrollPosition = 0
-    private var scrollOffset = 0
-
     private val pagination: PaginationDataSourceFactory<EventNew?> =
         PaginationDataSourceFactory(::getPaginationRequest)
     private lateinit var paginationList: PaginationList<EventNew?>
@@ -50,7 +47,6 @@ class RecommendationsPresenter
 
     override fun attachView(view: RecommendationsContract.View?) {
         super.attachView(view)
-        //viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
         if (isFirstAttach) isFirstAttach = false
         else pagination.invalidate()
     }
@@ -66,28 +62,18 @@ class RecommendationsPresenter
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
         }
-            //.buildList(enablePlaceholders = true)
             .buildList(enablePlaceholders = false)
 
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
+                if (it.isEmpty())
+                    viewState.showEmptyListPlaceholder()
                 else {
-                    viewState.setData(it)
-                    /*compositeDisposable += eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple(
-                            onError = { error ->
-                                viewState.setData(it)
-                            },
-                            onSuccess = { formats ->
-                                it.forEach { event ->
-                                    event?.format?.name = formats?.firstOrNull { f -> f.id == event?.format?.value }?.name
-                                }
-                                viewState.setData(it.filterNotNull())
-                            }
-                        )*/
+                    viewState.apply {
+                        hideEmptyListPlaceholder()
+                        setData(it)
+                    }
                 }
             }
 
@@ -108,7 +94,7 @@ class RecommendationsPresenter
         Log.e("EventsList", "limit: $limit ,offset: $offset")
         return eventRepository.getEventsList(
             mapOf(
-                EVENT_LIMIT to limit,
+                EVENT_LIMIT to 30,
                 EVENT_OFFSET to offset,
                 EVENT_SORT_TYPE to "desc",
                 EVENT_SORT_FIELD to "id",
@@ -120,13 +106,6 @@ class RecommendationsPresenter
         )
     }
 
-
-    override fun onScrollChange(position: Int, offset: Int) {
-        scrollPosition = position
-        scrollOffset = offset
-    }
-
-
     override fun onActionCancel(event: String, registrationId: String?) {
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
             .andThen(eventRepository.getEventDetails(event))
@@ -137,12 +116,8 @@ class RecommendationsPresenter
             }
     }
 
-    override fun onActionShowEvent(event: String) {}
     override fun onSearchClick() = viewState.showSearch()
-    override fun onActionRegister(event: String) {
-        viewState.showEventRequest(event)
-    }
-
+    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
     override fun onRefreshRequest() = paginationList.invalidate()
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)

@@ -112,7 +112,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
             override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
                 super.onFragmentStopped(fm, f)
-                if (f is AboutEventFragmentNew|| f is EventRegistrationFragment) {
+                if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
                     cancelWindowTransparency()
                 }
                 if (f is StoriesFragment) {
@@ -866,9 +866,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
         mBinding.toolbarLabel.text = title
-        if (icon == null){
+        if (icon == null) {
             mBinding.ivAction.isVisible = false
-        }else {
+        } else {
             mBinding.ivAction.apply {
                 isVisible = true
                 setImageDrawable(icon)
@@ -890,7 +890,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
 
-
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
@@ -906,14 +905,58 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private fun setupMainNavBar() {
         val navController = findNavController(R.id.navHostFragment)
         mBinding.mainNavBar.setupWithNavController(navController)
-        mBinding.mainNavBar.setOnNavigationItemReselectedListener { }
-        mBinding.mainNavBar.setOnNavigationItemSelectedListener { item ->
+        mBinding.mainNavBar.setOnItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    findNavController(R.id.navHostFragment).popBackStack(
-                        R.id.recommendations_fragment,
-                        false
-                    )
+                    val frag =
+                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
+                    if (findNavController().currentDestination?.id == R.id.recommendations_fragment) {
+                        if (frag != null) {
+                            val rec =
+                                frag.childFragmentManager.primaryNavigationFragment as RecommendationsFragment
+                            rec.smoothScrollToFirstItem()
+                        }
+                    }
+                }
+                R.id.my_events -> {
+                    val frag =
+                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
+                    if (findNavController().currentDestination?.id == R.id.my_events_fragment_new) {
+                        if (frag != null) {
+                            val my =
+                                frag.childFragmentManager.primaryNavigationFragment as MyEventsFragmentNew
+                            my.smoothScrollToFirstItem()
+                        }
+                    }
+                }
+                R.id.notification -> {
+                    val frag =
+                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
+                    if (findNavController().currentDestination?.id == R.id.notifications_fragment) {
+                        if (frag != null) {
+                            val note =
+                                frag.childFragmentManager.primaryNavigationFragment as NotificationsFragment
+                            note.smoothScrollToFirstItem()
+                        }
+                    }
+                }
+                R.id.chats -> {
+                    val frag =
+                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
+                    if (findNavController().currentDestination?.id == R.id.chat_list_tabs_fragment) {
+                        if (frag != null) {
+                            val chats =
+                                frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
+                            chats.smoothScrollToFirstItem()
+                        }
+                    }
+                }
+            }
+        }
+        mBinding.mainNavBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.main -> {
+                    findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)
                     true
                 }
                 R.id.my_events -> {
@@ -936,13 +979,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.splash_fragment -> {
-                    hideNavBar()
-                }
+            if (destination.id == R.id.splash_fragment){
+                hideNavBar()
             }
         }
-
         mBadgeNotification = mBinding.mainNavBar.getOrCreateBadge(R.id.notification)
         mBadgeNotification.backgroundColor = Color.RED
         mBadgeChat = mBinding.mainNavBar.getOrCreateBadge(R.id.chats)
@@ -963,20 +1003,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private fun setupNavBarItems(f: Fragment) {
         when (f) {
             is RecommendationsFragment -> {
-                mBinding.mainNavBar.selectedItemId =
-                    mBinding.mainNavBar.menu.findItem(R.id.main).itemId
+                mBinding.mainNavBar.menu.findItem(R.id.main).isChecked = true
             }
             is ProfileFragment -> {
-                mBinding.mainNavBar.selectedItemId =
-                    mBinding.mainNavBar.menu.findItem(R.id.profile).itemId
+                mBinding.mainNavBar.menu.findItem(R.id.profile).isChecked = true
             }
             is ChatListTabsFragment -> {
-                mBinding.mainNavBar.selectedItemId =
-                    mBinding.mainNavBar.menu.findItem(R.id.chats).itemId
+                mBinding.mainNavBar.menu.findItem(R.id.chats).isChecked = true
             }
             is NotificationsFragment -> {
-                mBinding.mainNavBar.selectedItemId =
-                    mBinding.mainNavBar.menu.findItem(R.id.notification).itemId
+                mBinding.mainNavBar.menu.findItem(R.id.notification).isChecked = true
+            }
+            is MyEventsFragmentNew -> {
+                mBinding.mainNavBar.menu.findItem(R.id.my_events).isChecked = true
             }
         }
     }

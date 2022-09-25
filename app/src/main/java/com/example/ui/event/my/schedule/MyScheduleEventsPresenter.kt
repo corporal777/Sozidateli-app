@@ -60,51 +60,7 @@ class MyScheduleEventsPresenter
 
     fun getEventsList() {
         val mSubEventsDates = arrayListOf<CalendarDay>()
-        val req = eventRepository.getUserCalendarEvents()
-            .doOnSuccess { list ->
-                if (!list.isNullOrEmpty()) {
-                    mEventsList.clear()
-                    mEventsList.addAll(list)
-                    val subEventsList = arrayListOf<EventActivityModel>()
-                    list.forEach { subEvent ->
-                        subEvent.binds?.activity
-                            ?.filter { x -> x.binds?.userCalendar != null }
-                            ?.sortedBy { x -> x.holdingDate?.from }
-                            ?.forEach { x ->
-                                val cal =
-                                    defaultServerDateFormatter.parse(x.holdingDate?.from).time.calendar()
-                                mSubEventsDates.add(setEventCalendarDays(cal))
-                                subEventsList.add(x)
-                            }
-                    }
-                    mSubEventsList.apply {
-                        clear()
-                        addAll(subEventsList.sortedBy { x -> x.holdingDate?.from })
-                        mFirstDate = firstOrNull()?.holdingDate?.from ?: ""
-                        mLastDate = lastOrNull()?.holdingDate?.from ?: ""
-                    }
-                }
-            }
-        compositeDisposable +=
-            if (isFirstLaunch) {
-                req.performOnBackgroundOutOnMain()
-                    .withProgressBarLoadingDialog(viewState)
-            } else {
-                req.performOnBackgroundOutOnMain()
-            }
-                .subscribeSimple(
-                    onError = {
-                        it.printStackTrace()
-                    }, onSuccess = {
-                        if (it.isNullOrEmpty()) {
-                            viewState.showEmptyListPlaceholder()
-                        } else {
-                            initCalendarDays(mSubEventsDates, it)
-                        }
-                    })
-
-
-        /*compositeDisposable += eventRepository.getUserCalendarEvents()
+        compositeDisposable += eventRepository.getUserCalendarEvents()
             .doOnSuccess { list ->
                 if (!list.isNullOrEmpty()) {
                     mEventsList.clear()
@@ -130,19 +86,18 @@ class MyScheduleEventsPresenter
                 }
             }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                }, onSuccess = {
-                    if (it.isNullOrEmpty()) {
-                        viewState.showEmptyListPlaceholder()
-                    } else {
-                        initCalendarDays(mSubEventsDates, it)
-                    }
-                })
-
-         */
-
+            .let {
+                if (isFirstLaunch) {
+                    it.withProgressBarLoadingDialog(viewState)
+                } else it
+            }
+            .subscribeSimple {
+                if (it.isNullOrEmpty()) {
+                    viewState.showEmptyListPlaceholder()
+                } else {
+                    initCalendarDays(mSubEventsDates, it)
+                }
+            }
     }
 
     private fun initBottomSheetCalendarData(

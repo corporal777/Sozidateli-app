@@ -108,20 +108,17 @@
                 tools:text="Краснодарский край, г. Сочи" />
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnWhiteGhostStyle"
                 android:id="@+id/btnEventAction"
-                fontPath="fonts/sf_pro_text_bold.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/custom_btn_white_ghost_selectable"
                 android:letterSpacing="-0.02"
                 android:minHeight="@dimen/action_button_height"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
                 android:textColor="@color/vk_black"
-                android:textAllCaps="false"
-                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

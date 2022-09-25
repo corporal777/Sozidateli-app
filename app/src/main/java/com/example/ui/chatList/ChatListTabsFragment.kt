@@ -6,47 +6,45 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.databinding.FragmentChatListBinding
+import com.example.databinding.FragmentChatListTabsBinding
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import kotlinx.android.synthetic.main.fragment_chat_list_tabs.*
+import com.example.util.smoothScrollToFirstItem
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
+class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(), ChatListTabsContract.View {
 
 
     @InjectPresenter
     lateinit var presenter: ChatListTabsPresenter
 
-    private var isFinishAnimation = true
-
     @Inject
     lateinit var presenterProvider: Provider<ChatListTabsPresenter>
 
-    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState {
-        override fun onScrollUp(value: Int) {
-            showView(clTabs)
-        }
-
-        override fun onScrollDown(value: Int) {
-            hideView(clTabs)
-        }
-
-        override fun onScrollOffsetValue(value: Float) {
-            app_bar_layout.elevation = value
-        }
-    }
-
     @ProvidePresenter
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
+
+    private var isFinishAnimation = true
+    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState {
+        override fun onScrollUp(value: Int) = showView(mBinding.clTabs)
+        override fun onScrollDown(value: Int) = hideView(mBinding.clTabs)
+        override fun onScrollOffsetValue(value: Float) {
+            mBinding.appBarLayout.elevation = value
+        }
+    }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
@@ -68,44 +66,42 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager.apply {
-            adapter = object :
-                FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-                override fun getItem(position: Int) = fragments[position]
-                override fun getCount() = fragments.size
+        mBinding.apply {
+            viewPager.apply {
+                adapter = object :
+                    FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                    override fun getItem(position: Int) = fragments[position]
+                    override fun getCount() = fragments.size
+                }
+                addOnPageChangeListener(pageChangeListener)
             }
-            addOnPageChangeListener(pageChangeListener)
-            //setOnTouchListener(TranslateAnimationUtil(requireContext(), clTabs))
+            ivBack.setOnClickListener { findNavController().navigateUp() }
+            btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
+            btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
         }
-        iv_back.setOnClickListener {
-            findNavController().navigateUp()
-        }
-        btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
-        btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
+
     }
 
     override fun selectTab(position: Int) {
         when (position) {
             0 -> {
-                btnTabChats.isSelected = true
-                btnTabRequests.isSelected = false
+                mBinding.btnTabChats.isSelected = true
+                mBinding.btnTabRequests.isSelected = false
             }
             1 -> {
-                btnTabRequests.isSelected = true
-                btnTabChats.isSelected = false
+                mBinding.btnTabRequests.isSelected = true
+                mBinding.btnTabChats.isSelected = false
             }
         }
     }
 
     override fun setInvitesCount(count: Int) {
-        tvInvitesBadge.isVisible = count > 0
+        mBinding.tvInvitesBadge.isVisible = count > 0
     }
 
     override fun setChatsCount(count: Int) {
-        tvChatsBadge.isVisible = count > 0
+        mBinding.tvChatsBadge.isVisible = count > 0
     }
-
-    override fun layout() = R.layout.fragment_chat_list_tabs
 
 
     private fun hideView(animationView: View) {
@@ -154,4 +150,14 @@ class ChatListTabsFragment : BaseFragment(), ChatListTabsContract.View {
             animationView.startAnimation(animationUp)
         }
     }
+
+    fun smoothScrollToFirstItem() {
+        if (mBinding.viewPager.currentItem == 0){
+            (fragments[0] as ChatListFragment).smoothScrollToFirstItem()
+        }else {
+            (fragments[1] as InviteListFragment).smoothScrollToFirstItem()
+        }
+    }
+
+    override fun layout() = R.layout.fragment_chat_list_tabs
 }

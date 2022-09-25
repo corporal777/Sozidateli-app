@@ -10,6 +10,8 @@ import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
+import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_FORM_ID
+import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_USER_ID
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -52,11 +54,9 @@ class EventRegistrationPresenter
     private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
     private var takeFileMaybe: MaybeSubject<Uri>? = null
-    private var formId: Int? = null
+    private var formId: Int = 0
     private var approvingMode: String? = null
     lateinit var cleanResult: EventRegisterData
-    private var mDy = 0
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -66,117 +66,76 @@ class EventRegistrationPresenter
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                }, onSuccess = {event ->
+                onError = { onReceiveError(it) },
+                onSuccess = { event ->
                     viewState.showProgressBarLoadingDialog()
                     approvingMode = event.state?.registration?.approvingMode
-                    val eventData = EventRegistration(
-                        id = event.id.toString(),
-                        organization = null,
-                        code = "",
-                        organizationId = event.binds?.organization?.id?.toString(),
-                        name = event.name ?: "",
-                        description = event.description ?: "",
-                        logo = null,
-                        image = event.image?.uri ?: event.binds?.organization?.image?.uri,
-                        conferenceStart = event.holdingDate?.from,
-                        conferenceFinish = event.holdingDate?.to,
-                        registrationStart = null,
-                        registrationFinish = null,
-                        status = null,
-                        userAgreement = event.userAgreement?.uri,
-                        registrationName = null,
-                        userRegistration = event.status?.value ?: Event.Status.FINISHED,
-                        registrationHeadline = null,
-                        registrationSubtitle = null,
-                        isRequireModerate = null,
-                        moderateRegistration = null,
-                        conferenceFirstActivityStart = null,
-                        conferenceRegistrationFinishDate = event.requestsApply?.dateLimit
-                    )
-
+                    val eventData = getEventData(event)
                     if (event.state?.registration?.formEnabled == true) {
-                        compositeDisposable += eventRepository.getEventForm(
-                            mutableMapOf<String, Any>().apply {
-                                put(EventFormModel.FORM_EVENT_ID, eventId)
-                            })
+                        val form = event.binds?.form?.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
+                        eventData.registrationHeadline = form?.title
+                        eventData.registrationSubtitle = form?.subtitle
+                        val fieldsList = mapFields(form?.fields)
+                        formId = form?.id ?: 0
+
+                        compositeDisposable += eventRepository.getEventFormResult(
+                            mapOf(
+                                EVENT_FORM_RESULT_FORM_ID to formId,
+                                EVENT_FORM_RESULT_USER_ID to appData.getId()
+                            )
+                        )
                             .performOnBackgroundOutOnMain()
-                            .subscribeSimple { fields ->
-                                if (fields.data.isNotEmpty()) {
-                                    val form =
-                                        fields.data.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
-                                    eventData.registrationHeadline = form?.title
-                                    eventData.registrationSubtitle = form?.subtitle
-                                    val fieldsList = mapFields(form?.fields)
-                                    formId = form?.id
+                            .subscribeSimple { fieldsResult ->
+                                //set clean data
+                                var fieldsResultList = mapFieldsResult(
+                                    fieldsResult.data.firstOrNull { it.form == formId }?.fields,
+                                    fieldsList
+                                )
+                                var fieldsDataApi = createFieldsData(
+                                    fieldsList,
+                                    fieldsResultList
+                                )
+                                cleanResult = EventRegisterData(
+                                    eventData, null, null,
+                                    listOf(EventGroup("", "")),
+                                    fieldsDataApi ?: emptyList()
+                                )
 
-                                    compositeDisposable += eventRepository.getEventFormResult(
-                                        mutableMapOf<String, Any>().apply {
-                                            put(EventFormResultModel.EVENT_FORM_RESULT_FORM_ID, formId ?: 0)
-                                            put(EventFormResultModel.EVENT_FORM_RESULT_USER_ID, appData.getId())
-                                        }
+                                compositeDisposable += eventRepository.getEventFormResultDraft(
+                                    formId,
+                                    mapOf(
+                                        EVENT_FORM_RESULT_FORM_ID to formId,
+                                        EVENT_FORM_RESULT_USER_ID to appData.getId()
                                     )
-                                        .performOnBackgroundOutOnMain()
-                                        .subscribeSimple { fieldsResult ->
-                                            //set clean data
-                                            var fieldsResultList = mapFieldsResult(
-                                                fieldsResult.data.firstOrNull { it.form == formId }?.fields,
-                                                fieldsList
-                                            )
-                                            var fieldsDataApi = createFieldsData(
-                                                fieldsList, /*registration.fields*/
-                                                fieldsResultList
-                                            )
-                                            cleanResult = EventRegisterData(
-                                                eventData, null, null,
-                                                listOf(EventGroup("", "")),
-                                                fieldsDataApi ?: emptyList()
-                                            )
-
-                                            compositeDisposable += eventRepository.getEventFormResultDraft(
-                                                formId ?: 0,
-                                                emptyMap()
-//                                            mutableMapOf<String, Any>().apply {
-//                                                put(EVENT_FORM_RESULT_FORM_ID, formId ?: 0)
-//                                                put(EVENT_FORM_RESULT_USER_ID, appData.getId())
-//                                            }
-                                            )
-                                                .performOnBackgroundOutOnMain()
-                                                .subscribeSimple(
-                                                    onError = {
-                                                        it.printStackTrace()
-                                                        viewState.hideProgressBarLoadingDialog()
-                                                        initEventFormResultData(cleanResult)
-                                                    },
-                                                    onSuccess = { draft ->
-                                                        viewState.hideProgressBarLoadingDialog()
-                                                        if (draft.fields.isNullOrEmpty()) {
-                                                            initEventFormResultData(cleanResult)
-                                                        } else {
-                                                            fieldsResultList = mapFieldsResult(
-                                                                draft.fields,
-                                                                fieldsList
-                                                            )
-                                                            fieldsDataApi = createFieldsData(
-                                                                fieldsList, /*registration.fields*/
-                                                                fieldsResultList
-                                                            )
-                                                            val draftResult = EventRegisterData(
-                                                                eventData, null, null,
-                                                                listOf(EventGroup("", "")),
-                                                                fieldsDataApi ?: emptyList()
-                                                            )
-                                                            viewState.showLoadSavedFormResultDraftDialog(
-                                                                draftResult
-                                                            )
-                                                        }
-                                                    })
-                                        }
-
-                                }else {
-                                    viewState.hideProgressBarLoadingDialog()
-                                }
+                                )
+                                    .performOnBackgroundOutOnMain()
+                                    .subscribeSimple(
+                                        onError = {
+                                            it.printStackTrace()
+                                            viewState.hideProgressBarLoadingDialog()
+                                            initEventFormResultData(cleanResult)
+                                        },
+                                        onSuccess = { draft ->
+                                            viewState.hideProgressBarLoadingDialog()
+                                            if (draft.fields.isNullOrEmpty()) {
+                                                initEventFormResultData(cleanResult)
+                                            } else {
+                                                fieldsResultList = mapFieldsResult(
+                                                    draft.fields,
+                                                    fieldsList
+                                                )
+                                                fieldsDataApi = createFieldsData(
+                                                    fieldsList, /*registration.fields*/
+                                                    fieldsResultList
+                                                )
+                                                val draftResult = EventRegisterData(
+                                                    eventData, null, null,
+                                                    listOf(EventGroup("", "")),
+                                                    fieldsDataApi ?: emptyList()
+                                                )
+                                                viewState.showLoadSavedFormResultDraftDialog(draftResult)
+                                            }
+                                        })
                             }
                     } else {
                         viewState.hideProgressBarLoadingDialog()
@@ -587,6 +546,33 @@ class EventRegistrationPresenter
                 .build()
         }
 
+    }
+
+    private fun getEventData(event: EventNew): EventRegistration {
+        return EventRegistration(
+            id = event.id.toString(),
+            organization = null,
+            code = "",
+            organizationId = event.binds?.organization?.id?.toString(),
+            name = event.name ?: "",
+            description = event.description ?: "",
+            logo = null,
+            image = event.image?.uri ?: event.binds?.organization?.image?.uri,
+            conferenceStart = event.holdingDate?.from,
+            conferenceFinish = event.holdingDate?.to,
+            registrationStart = null,
+            registrationFinish = null,
+            status = null,
+            userAgreement = event.userAgreement?.uri,
+            registrationName = null,
+            userRegistration = event.status?.value ?: Event.Status.FINISHED,
+            registrationHeadline = null,
+            registrationSubtitle = null,
+            isRequireModerate = null,
+            moderateRegistration = null,
+            conferenceFirstActivityStart = null,
+            conferenceRegistrationFinishDate = event.requestsApply?.dateLimit
+        )
     }
 
     companion object {
