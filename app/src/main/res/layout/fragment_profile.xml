@@ -115,6 +115,7 @@
 
 
                     <TextView
+                        android:letterSpacing="-0.01"
                         android:id="@+id/state_title"
                         fontPath="fonts/sf_pro_text_bold.ttf"
                         android:layout_width="wrap_content"

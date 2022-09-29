@@ -1,7 +1,6 @@
 package com.example.holders.redesign
 
 import com.example.data.models.*
-import com.example.holders.EventStatusItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 
@@ -11,6 +10,19 @@ class EventGroupNew(
 ) : NestedGroup() {
     private val eventItem = EventItemNew(
         data,
+        data.id.toString(),
+        data.state,
+        data.status?.value,
+        data.binds?.currentUserRegistration?.status?.value,
+        data.binds?.organization?.backgroundColor?.value,
+        data.image?.uri,
+        data.binds?.eventRegistrationState,
+        data.userAgreement?.uri,
+        data.binds?.currentUserRegistration?.id.toString(),
+        data.name,
+        data.address?.getShortAddress(),
+        data.holdingDate?.from,
+        data.holdingDate?.to,
         eventClickListener,
     )
 

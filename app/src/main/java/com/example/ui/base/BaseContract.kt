@@ -48,13 +48,18 @@ interface BaseContract {
         fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showErrorMessage(canGoBack : Boolean, message: String)
+        fun showErrorMessage(canGoBack: Boolean, message: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setAppBarElevation(value : Float)
+        fun setAppBarElevation(value: Float)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setToolbarTitleAndIcon(title: String, icon: Drawable? = null, action: (() -> Unit?)? = null)
+        fun setToolbarTitleAndIcon(
+            title: CharSequence,
+            icon: Drawable? = null,
+            action: (() -> Unit?)? = null,
+            toolbarTitleAction: (() -> Unit?)? = null
+        )
     }
 
     interface LoadingView {
@@ -91,6 +96,6 @@ interface BaseContract {
 
     interface OnChangeElevation {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeAppBarElevation(value : Int)
+        fun changeAppBarElevation(value: Int)
     }
 }

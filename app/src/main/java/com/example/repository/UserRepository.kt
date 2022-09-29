@@ -19,6 +19,8 @@ interface UserRepository {
     fun getUserShortNew(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserByIdNew(id: String): Maybe<UserDetail>
+    fun getUserByShortName(name: String): Maybe<UserDetail>
+    fun updateUserShortName(id: Int, data: UserShortNameBody): Maybe<UserDetail>
     //fun getUserShort(): Maybe<UserShort>
     //fun getUserFull(): Maybe<User>
     //fun getLastNotification(): Single<List<Notification>>

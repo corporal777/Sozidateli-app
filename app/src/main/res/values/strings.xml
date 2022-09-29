@@ -932,6 +932,12 @@
     <string name="complain_about_user_label">Пожаловаться на пользователя</string>
     <string name="unblock_user">Разблокировать пользователя</string>
     <string name="block_user">Заблокировать пользователя</string>
+    <string name="short_name_label">Короткое имя</string>
+    <string name="short_name_description">Короткое имя позволит другим людям быстрее найти вас или упомянуть в своих записях.</string>
+    <string name="short_name_invalid_error">Адрес уже занят, пожалуйста, выберите другой вариант</string>
+    <string name="your_short_name_link_in_sozidateli">Ваша ссылка в «Созидателях»:</string>
+    <string name="put_user_short_name">Указать короткое имя</string>
+    <string name="short_name_valid_message">Короткое имя свободно</string>
 
 
     <string-array name="custom_months">

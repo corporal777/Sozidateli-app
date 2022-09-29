@@ -4,7 +4,8 @@
 
     <application>
 
-        <activity android:name="com.example.ui.main.MainActivity">
+        <activity android:name="com.example.ui.main.MainActivity"
+            android:exported="true">
 
             <intent-filter
                 android:autoVerify="true"
@@ -32,6 +33,11 @@
                 <data
                     android:host="sozidateli.ru"
                     android:pathPrefix="/event"
+                    android:scheme="https" />
+
+                <data
+                    android:host="beta.sozidateli.ru"
+                    android:pathPrefix="/portal/event"
                     android:scheme="https" />
 
                 <data

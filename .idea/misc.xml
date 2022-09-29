@@ -269,6 +269,7 @@
         <entry key="app/src/main/res/drawable/background_custom_tab_right_selector.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_custom_tab_right_selector_new.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_event_action_disabled.xml" value="0.1395" />
+        <entry key="app/src/main/res/drawable/background_gradient.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/background_gradient_down.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_highlight.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/background_image_placeholder.xml" value="0.1495" />
@@ -386,6 +387,7 @@
         <entry key="app/src/main/res/layout/activity_main_new.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/bottom_sheet_calendar.xml" value="0.26489512125651044" />
         <entry key="app/src/main/res/layout/bottom_sheet_change_password.xml" value="0.26360502697172616" />
+        <entry key="app/src/main/res/layout/bottom_sheet_change_short_name.xml" value="0.2754629629629629" />
         <entry key="app/src/main/res/layout/bottom_sheet_session.xml" value="0.2729791290680683" />
         <entry key="app/src/main/res/layout/calendar_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/custom_calendar_day.xml" value="0.3098958333333333" />
@@ -460,7 +462,7 @@
         <entry key="app/src/main/res/layout/fragment_organization.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_page.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_partner.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.21418602143653212" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.28210757409440174" />
         <entry key="app/src/main/res/layout/fragment_qr_scanner.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_recommendations.xml" value="0.12187216622488835" />
         <entry key="app/src/main/res/layout/fragment_recovery_password.xml" value="0.24832967122395833" />
@@ -518,7 +520,7 @@
         <entry key="app/src/main/res/layout/item_event_detail_speakers_block.xml" value="0.1603780110677083" />
         <entry key="app/src/main/res/layout/item_event_detail_tags_block.xml" value="0.20277777777777778" />
         <entry key="app/src/main/res/layout/item_event_image_header.xml" value="0.2754241133158185" />
-        <entry key="app/src/main/res/layout/item_event_new.xml" value="0.19899665551839466" />
+        <entry key="app/src/main/res/layout/item_event_new.xml" value="0.2693579836433947" />
         <entry key="app/src/main/res/layout/item_event_new_placeholder.xml" value="0.18562197298616978" />
         <entry key="app/src/main/res/layout/item_event_page.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_event_page_new.xml" value="0.3098958333333333" />

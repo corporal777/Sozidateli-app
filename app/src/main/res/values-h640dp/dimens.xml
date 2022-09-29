@@ -26,6 +26,8 @@
     <dimen name="current_session_item_height">110dp</dimen>
     <dimen name="other_session_item_height">85dp</dimen>
     <dimen name="day_item_start">5dp</dimen>
+
+    <dimen name="user_short_name_text_size">12sp</dimen>
     <!--  new margins  -->
 
 </resources>

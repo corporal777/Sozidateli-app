@@ -1,14 +1,12 @@
-package com.example.ui.views.dialogs_new
+package com.example.ui.userprofile.read.settings
 
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
@@ -17,7 +15,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import onTextChanged
-import setOnClickListener
 
 class ChangePasswordBottomSheetFragment : BottomSheetDialogFragment() {
 

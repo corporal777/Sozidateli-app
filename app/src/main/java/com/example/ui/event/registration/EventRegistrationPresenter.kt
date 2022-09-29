@@ -103,10 +103,11 @@ class EventRegistrationPresenter
 
                                 compositeDisposable += eventRepository.getEventFormResultDraft(
                                     formId,
-                                    mapOf(
-                                        EVENT_FORM_RESULT_FORM_ID to formId,
-                                        EVENT_FORM_RESULT_USER_ID to appData.getId()
-                                    )
+                                    emptyMap()
+//                                    mapOf(
+//                                        EVENT_FORM_RESULT_FORM_ID to formId,
+//                                        EVENT_FORM_RESULT_USER_ID to appData.getId()
+//                                    )
                                 )
                                     .performOnBackgroundOutOnMain()
                                     .subscribeSimple(
@@ -183,7 +184,7 @@ class EventRegistrationPresenter
         compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -450,6 +451,7 @@ class EventRegistrationPresenter
                         added = true
                     }
                     addFormDataPart("form", formId.toString())
+                    added = true
                     fieldsData.forEachIndexed { index, fieldData ->
                         //val key = fieldData.field.id
                         val position = index

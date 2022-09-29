@@ -12,6 +12,8 @@ interface ProfileContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: UserDetail)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setUserLink(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChangeOrAddNewAccount(size : Int)
@@ -69,6 +71,15 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showQrScannerToAuthWebSite()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setUserShortNameUnique(isUnique : Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showUserShortNameSuccessUpdated()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideChangeUserShortNameDialog()
     }
 
     interface Presenter : BaseContract.Presenter {

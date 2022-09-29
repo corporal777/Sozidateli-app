@@ -18,5 +18,7 @@
     <dimen name="other_session_item_height">90dp</dimen>
 
     <dimen name="day_item_start">12dp</dimen>
+
+    <dimen name="user_short_name_text_size">12sp</dimen>
     <!--  new margins  -->
 </resources>

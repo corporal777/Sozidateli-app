@@ -281,6 +281,7 @@ class ChatPresenter
                         null,
                         null,
                         null,
+                        null,
                         ContactInformationModel(null, null, null),
                         null,
                         ImageModel(

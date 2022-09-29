@@ -189,6 +189,38 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:text="@string/short_name_label" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvShortname"
+                    style="@style/Profile.Edit.InputFieldNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_input_text_field_new"
+                    android:gravity="center_vertical"
+                    android:minHeight="45dp"
+                    android:paddingHorizontal="15dp"
+                    android:text="@string/short_name_label" />
+
+                <TextView
+                    android:id="@+id/tvEditShortName"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/custom_text_background_selectable"
+                    android:drawablePadding="10dp"
+                    android:text="@string/edit_title"
+                    android:textColor="@color/main_brown_color_new"
+                    android:textSize="15sp"
+                    tools:ignore="MissingPrefix" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Profile.Edit.TextViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="@string/profile_phone_mobile" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -199,7 +231,7 @@
                     android:background="@drawable/background_input_text_field_new"
                     android:gravity="center_vertical"
                     android:minHeight="45dp"
-                    android:paddingStart="15dp"
+                    android:paddingHorizontal="15dp"
                     android:text="@string/profile_phone_mobile" />
 
                 <TextView
@@ -232,7 +264,7 @@
                     android:background="@drawable/background_input_text_field_new"
                     android:gravity="center_vertical"
                     android:minHeight="45dp"
-                    android:paddingStart="15dp"
+                    android:paddingHorizontal="15dp"
                     android:text="●●●●●●●●●" />
 
                 <TextView
@@ -269,7 +301,7 @@
                         android:background="@drawable/background_input_text_field_new"
                         android:gravity="center_vertical"
                         android:minHeight="45dp"
-                        android:paddingStart="15dp"
+                        android:paddingHorizontal="15dp"
                         android:text="@string/user_profile_email_title"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/ivInfo"

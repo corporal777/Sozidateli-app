@@ -80,6 +80,14 @@ class UserRepositoryImp
         )
     ).map { it }
 
+    override fun getUserByShortName(name: String): Maybe<UserDetail> {
+        return newApi.getUserByShortName(name)
+    }
+
+    override fun updateUserShortName(id: Int, data: UserShortNameBody): Maybe<UserDetail> {
+        return newApi.updateUserShortName(id, data)
+    }
+
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
         newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
             appData.checkUserState(state.fields)

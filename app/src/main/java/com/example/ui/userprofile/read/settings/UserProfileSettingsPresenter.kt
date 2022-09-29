@@ -6,6 +6,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.PasswordBody
+import com.example.data.bodies.UserShortNameBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_PHONE
@@ -348,12 +349,47 @@ class UserProfileSettingsPresenter @Inject constructor(
                 },
                 onSuccess = {
                     user.apply {
-                        Log.e("HIDDEN", it.state?.isHidden.toString())
                         phone = it.phone
                         /*it.user_status?.let { status -> user_status = status }
                         it.user_status_detail?.let { details -> user_status_detail = details }*/
                     }
                     appData.updateUserNew(onComplete)
+                })
+    }
+
+    override fun showChangeShortNameClick() {
+        viewState.showChangeShortName(user)
+    }
+
+
+    override fun checkUserShortNameUnique(short: String) {
+        compositeDisposable += userRepository.getUserByShortName(short)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.setUserShortNameUnique(true)
+                }, onSuccess = {
+                    viewState.setUserShortNameUnique(false)
+                })
+    }
+
+    override fun updateUserShortName(short: String) {
+        compositeDisposable += userRepository.updateUserShortName(user.id, UserShortNameBody(short))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.hideChangeUserShortNameDialog()
+                },
+                onSuccess = { new ->
+                    viewState.apply {
+                        appData.updateUserNew {
+                            this.shortName = new.shortName
+                        }
+                        showUserShortNameSuccessUpdated()
+                    }
                 })
     }
 

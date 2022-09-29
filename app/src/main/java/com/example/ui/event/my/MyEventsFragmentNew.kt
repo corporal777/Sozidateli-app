@@ -21,6 +21,7 @@ import com.example.holders.redesign.EventItemNew
 import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -58,21 +59,11 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
         mEventStateFilter = MyEventsFilter.NONE
     }
 
-    private val headerSection by lazy {
-        Section().apply {
-            add(ScreenHeaderItem(getString(R.string.my_events_title)))
-        }
-    }
-    private val searchSection = Section()
-    private val tagsSection = Section()
     private val eventsSection = Section()
 
 
     private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            //add(headerSection)
-            //add(searchSection)
-            //add(tagsSection)
             add(eventsSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
@@ -181,7 +172,7 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
 
     override fun showEmptyListPlaceholder() {
 //        eventsSection.update(
-//            listOf(NoDataItem(
+//            listOf(NoEventItem(
 //                "Нет результатов",
 //                "По заданным параметрам нет подходящих событий"
 //            ))

@@ -147,9 +147,9 @@ class MainPresenter
             //.andThen(subscribeToNotifications())
             .doOnComplete { connectToSocket(appData.getId()) }
             .andThen(Completable.defer { checkShowGreetings() })
-            //.andThen(Maybe.defer { checkUserEvent() })
+            .andThen(Maybe.defer { checkUserEvent() })
             .performOnBackgroundOutOnMain()
-            .subscribe({
+            .subscribe({ isMustShowEvent ->
                 if (!isEditingPhone) {
                     viewState.apply {
                         hideLoadingDialog()
@@ -411,31 +411,29 @@ class MainPresenter
     }
 
     override fun onHandleEvent(event: String) {
-        if (isAuthRequired) return
-        compositeDisposable += eventRepository.getEventsList(
-            mapOf(
-                EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-                EventNew.EVENT_CODE to event
-            )
-        )
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                if (it.data.isNotEmpty())
-                    viewState.showEvent(it.data[0]?.id.toString())
-            }, {
-                it.printStackTrace()
-            })
-        /*compositeDisposable += eventRepository.getEventByCode(event)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.showEvent(it.event.id)
-                }, {
-                    it.printStackTrace()
-                })*/
-        //viewState.showEvent(event)
+        if (isAuthRequired) {
+            viewState.showLogin()
+        } else {
+            if (!event.isNullOrEmpty()) {
+                viewState.showEvent(event)
+            }
+        }
+//        if (isAuthRequired) return
+//        compositeDisposable += eventRepository.getEventsList(
+//            mapOf(
+//                EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+//                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+//                EventNew.EVENT_CODE to event
+//            )
+//        )
+//            .performOnBackgroundOutOnMain()
+//            .withLoadingDialog(viewState)
+//            .subscribe({
+//                if (it.data.isNotEmpty())
+//                    viewState.showEvent(it.data[0]?.id.toString())
+//            }, {
+//                it.printStackTrace()
+//            })
     }
 
     override fun onInviteRegister(

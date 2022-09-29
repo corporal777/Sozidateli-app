@@ -26,6 +26,14 @@ interface NewApi {
     @GET("v1/user/{id}")
     fun getUserShort(@Path("id") id: Int, @Query("binds") binds: List<String>?): Maybe<UserDetail>
 
+    //+
+    @GET("v1/user/get-by-short-name")
+    fun getUserByShortName(@Query("shortName") shortName: String): Maybe<UserDetail>
+
+    //+
+    @PATCH("v1/user/{id}")
+    fun updateUserShortName(@Path("id") id: Int, @Body body: UserShortNameBody): Maybe<UserDetail>
+
     @POST("v1/user")
     fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
 

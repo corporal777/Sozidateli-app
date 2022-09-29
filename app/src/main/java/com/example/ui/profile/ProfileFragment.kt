@@ -3,15 +3,19 @@ package com.example.ui.profile
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.content.Intent.*
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -23,7 +27,10 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
+import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
+import com.example.ui.userprofile.read.settings.ChangePasswordBottomSheetFragment
 import com.example.ui.views.*
+import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
@@ -43,6 +50,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
 
+    private var changeShortNameDialog: ChangeUserShortNameFragment? = null
 
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get().apply {
@@ -116,9 +124,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
         val newState = if (!hasBase && !hasMax) {
             getString(R.string.state).firstLetterToUppercase() + " " + getString(R.string.state_empty)
-        }else if (hasBase && !hasMax) {
-            getString(R.string.state_base).firstLetterToUppercase() +  " " + getString(R.string.state)
-        }else {
+        } else if (hasBase && !hasMax) {
+            getString(R.string.state_base).firstLetterToUppercase() + " " + getString(R.string.state)
+        } else {
             getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
         }
         mBinding.stateTitle.apply {
@@ -129,27 +137,52 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         }
     }
 
-    private fun setUserLink(user: UserDetail) {
+    override fun setUserLink(user: UserDetail) {
         val userId = getString(R.string.user_id, user.id.toString())
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
-        setToolbarTitleAndIcon(userId, actionIcon) {
-            val linkToAccount = BuildConfig.SHARE_URL + "portal/user/" + user.id
-            val clipboardManager = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip: ClipData = ClipData.newPlainText("idLink", linkToAccount)
-            clipboardManager.setPrimaryClip(clip)
-            showToast("Ссылка скопирована в буфер обмена")
+        val toolbarTitle: SpannableStringBuilder
+        var shortNameClick : (() -> Unit)? = null
+        if (user.id.toString() == user.shortName) {
+            val userShortName = SpannableString(getString(R.string.put_user_short_name))
+            val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
+            userShortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
+            userShortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
+            userShortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            toolbarTitle = SpannableStringBuilder(userId + "\n").append(userShortName)
+            shortNameClick = {
+                showChangeUserShortNameDialog(user)
+            }
+        } else {
+            toolbarTitle = SpannableStringBuilder(userId)
         }
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
+        setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
+            copyLinkToBuffer(user)
+        }, {
+            shortNameClick?.invoke()
+        })
     }
 
     override fun setChangeOrAddNewAccount(size: Int) {
-        if (size <= 1){
+        if (size <= 1) {
             mBinding.apply {
                 tvChangeAccount.text = getString(R.string.add_account_label)
-                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit, 0, 0, 0);
+                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_profile_add_account_edit,
+                    0,
+                    0,
+                    0
+                );
             }
-        }else {
+        } else {
             mBinding.apply {
-                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit, 0, 0, 0);
+                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_profile_change_account_edit,
+                    0,
+                    0,
+                    0
+                );
                 tvChangeAccount.text = getString(R.string.change_account_label)
             }
         }
@@ -177,6 +210,31 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
                     presenter.sendPhone(phone)
                 }
             }
+    }
+
+    private fun showChangeUserShortNameDialog(user: UserDetail){
+        changeShortNameDialog = ChangeUserShortNameFragment(user)
+        changeShortNameDialog?.show(requireActivity().supportFragmentManager, "change_short_name")
+        changeShortNameDialog?.setOnCheckUserShortNameUniqueCallback {
+            presenter.checkUserShortNameUnique(it)
+        }
+        changeShortNameDialog?.setOnSaveUserShortNameCallback {
+            presenter.updateUserShortName(it)
+            changeShortNameDialog?.dismiss()
+        }
+    }
+
+    override fun hideChangeUserShortNameDialog() {
+        changeShortNameDialog = null
+    }
+
+    override fun setUserShortNameUnique(isUnique: Boolean) {
+        changeShortNameDialog?.setShortNameUnique(isUnique)
+    }
+
+    override fun showUserShortNameSuccessUpdated() {
+        changeShortNameDialog = null
+        showToast("Короткое имя изменено")
     }
 
     override fun showQrScannerToAuthWebSite() {
@@ -280,6 +338,14 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         val userId = "User id: $uid"
         val postfix = "\n---------------\nПожалуйста, опишите проблему ниже.\n\n"
         return listOf(os, api, appVersion, userId).joinToString(separator = "\n", postfix = postfix)
+    }
+
+    private fun copyLinkToBuffer(user: UserDetail) {
+        val linkToAccount = BuildConfig.SHARE_URL + "portal/user/" + user.id
+        val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("idLink", linkToAccount)
+        clipboardManager.setPrimaryClip(clip)
+        showToast("Ссылка скопирована в буфер обмена")
     }
 
     override fun openPlayMarket() {

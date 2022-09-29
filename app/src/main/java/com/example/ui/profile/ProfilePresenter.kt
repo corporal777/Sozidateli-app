@@ -1,10 +1,10 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
+import com.example.data.bodies.UserShortNameBody
 import com.example.data.models.FieldDetails
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
@@ -17,7 +17,6 @@ import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
 import withLoadingDialog
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -32,7 +31,8 @@ class ProfilePresenter
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     private var mDy = 0
-    private var mDeviceId = appData.deviceId?:""
+    private var mDeviceId = appData.deviceId ?: ""
+    private var userId = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -40,6 +40,7 @@ class ProfilePresenter
         compositeDisposable += userRepository.getUserShortNew()
             .performOnBackgroundOutOnMain()
             .subscribe({
+                userId = it.id
                 viewState.setUser(it)
                 getAdditionalData()
             }, { it.printStackTrace() })
@@ -62,7 +63,7 @@ class ProfilePresenter
         compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (!it.userSessions.isNullOrEmpty()){
+                if (!it.userSessions.isNullOrEmpty()) {
                     viewState.setChangeOrAddNewAccount(it.userSessions.filter { x -> x.isLogged }.size)
                 }
             }
@@ -104,7 +105,6 @@ class ProfilePresenter
             }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withLoadingDialog(viewState)
             .subscribeBy(
                 onError = {
                     it.printStackTrace()
@@ -205,6 +205,39 @@ class ProfilePresenter
                 viewState.hideDialogProgress()
                 it.printStackTrace()
             })
+    }
+
+
+    fun checkUserShortNameUnique(short: String) {
+        compositeDisposable += userRepository.getUserByShortName(short)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.setUserShortNameUnique(true)
+                }, onSuccess = {
+                    viewState.setUserShortNameUnique(false)
+                })
+    }
+
+    fun updateUserShortName(short: String) {
+        compositeDisposable += userRepository.updateUserShortName(userId, UserShortNameBody(short))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.hideChangeUserShortNameDialog()
+                },
+                onSuccess = { new ->
+                    viewState.apply {
+                        appData.updateUserNew {
+                            this.shortName = new.shortName
+                        }
+                        setUserLink(new)
+                        showUserShortNameSuccessUpdated()
+                    }
+                })
     }
 
     override fun onSettingsClick() {

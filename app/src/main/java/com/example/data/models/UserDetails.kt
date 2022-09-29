@@ -14,6 +14,7 @@ data class UserDetail(
     var lastName: String? = null,
     @SerializedName("middleName")
     var middleName: FieldDetails? = null,
+    var shortName : String? = null,
     @SerializedName("createdDate")
     val createdDate: String? = null,
     @SerializedName("modifiedDate")

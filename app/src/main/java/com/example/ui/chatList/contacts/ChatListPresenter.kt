@@ -55,7 +55,7 @@ class ChatListPresenter
             val user = if (it.isEventChat()) {
                 val img = it.binds?.event?.image
                 UserDetail(it.binds?.event?.id?: 0, it.binds?.event?.name, null, null,
-                null, null, null,null, ContactInformationModel(null, null, null),
+                null, null, null, null,null, ContactInformationModel(null, null, null),
                 null, ImageModel(img?.mimeType, img?.size, it.binds?.lastMessage?.event?.url?: img?.uri, img?.name, 1, null), null, null, null, null,null,
                         null,null,null,null,null,false)
             } else {

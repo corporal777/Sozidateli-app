@@ -1,33 +1,24 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
-import android.os.Handler
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
-import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.IS_EXPANDED
-import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
@@ -102,8 +93,22 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     override fun setData(events: List<EventNew?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventGroupNew(
+            //else EventGroupNew(
+            else EventItemNew(
                 it,
+                it.id.toString(),
+                it.state,
+                it.status?.value,
+                it.binds?.currentUserRegistration?.status?.value,
+                it.binds?.organization?.backgroundColor?.value,
+                it.image?.uri,
+                it.binds?.eventRegistrationState,
+                it.userAgreement?.uri,
+                it.binds?.currentUserRegistration?.id.toString(),
+                it.name,
+                it.address?.getShortAddress(),
+                it.holdingDate?.from,
+                it.holdingDate?.to,
                 onEventClickListener,
             )
         })
@@ -116,7 +121,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.clear()
+        dataGroup.update(emptyList())
         mBinding.noDataPlaceholder.isInvisible = false
 //        dataGroup.update(listOf(
 //            NoEventItem(

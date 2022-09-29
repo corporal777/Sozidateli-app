@@ -49,7 +49,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="alfa.sozidateli.ru"
                     android:path="/qr"
@@ -59,7 +58,6 @@
                     android:host="sozidateli.ru"
                     android:path="/qr"
                     android:scheme="https" />
-
             </intent-filter>
 
             <nav-graph android:value="@navigation/main_navigation" />

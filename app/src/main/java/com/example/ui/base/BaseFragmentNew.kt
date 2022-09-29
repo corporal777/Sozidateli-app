@@ -24,6 +24,8 @@ import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 
 abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment(),
     BaseContract.View {
@@ -52,15 +54,15 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
         savedInstanceState: Bundle?
     ): View? {
 
-//        RxJavaPlugins.setErrorHandler { e ->
-//            if (e is UndeliverableException) {
-//                e.printStackTrace()
-//            } else {
-//                Thread.currentThread().also { thread ->
-//                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
-//                }
-//            }
-//        }
+        RxJavaPlugins.setErrorHandler { e ->
+            if (e is UndeliverableException) {
+                e.printStackTrace()
+            } else {
+                Thread.currentThread().also { thread ->
+                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
+                }
+            }
+        }
 
         if (::mBinding.isInitialized.not()) {
             mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
@@ -139,8 +141,13 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
         mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
-        mActivity?.setToolbarTitleAndIcon(title, icon, action)
+    override fun setToolbarTitleAndIcon(
+        title: CharSequence,
+        icon: Drawable?,
+        action: (() -> Unit?)?,
+        toolbarTitleAction: (() -> Unit?)?
+    ) {
+        mActivity?.setToolbarTitleAndIcon(title, icon, action, toolbarTitleAction)
     }
 
     override fun navigateUp() {

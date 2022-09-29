@@ -49,6 +49,16 @@
                     android:pathPrefix="/event"
                     android:scheme="https" />
                 <data
+                    android:host="www.sozidateli.ru"
+                    android:pathPrefix="/portal/event"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/portal/event"
+                    android:scheme="https" />
+
+                <data
                     android:host="alfa.sozidateli.ru"
                     android:path="/"
                     android:scheme="https" />

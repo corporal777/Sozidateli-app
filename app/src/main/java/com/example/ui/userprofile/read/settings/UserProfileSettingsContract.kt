@@ -1,9 +1,9 @@
 package com.example.ui.userprofile.read.settings
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.UserDetail
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
 interface UserProfileSettingsContract {
@@ -20,6 +20,9 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangePassword()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showChangeShortName(user : UserDetail)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPasswordChangeComplete()
@@ -58,7 +61,7 @@ interface UserProfileSettingsContract {
         fun showPhoneNotUnique(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showOldPasswordError(attempts : Int)
+        fun showOldPasswordError(attempts: Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun showNewPasswordTypingContent()
@@ -69,6 +72,15 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRecoveryPassword(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showUserShortNameSuccessUpdated()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideChangeUserShortNameDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setUserShortNameUnique(isUnique : Boolean)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -101,5 +113,9 @@ interface UserProfileSettingsContract {
         fun confirmCode(phone: String, code: String)
         fun checkPasswordValid(password: String)
         fun logoutFromAccount()
+
+        fun showChangeShortNameClick()
+        fun checkUserShortNameUnique(short: String)
+        fun updateUserShortName(short: String)
     }
 }

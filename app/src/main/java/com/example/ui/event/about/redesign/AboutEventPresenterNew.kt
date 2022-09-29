@@ -51,12 +51,6 @@ class AboutEventPresenterNew
         }
     }
 
-    override fun attachView(view: AboutEventContractNew.View?) {
-        super.attachView(view)
-        viewState.updateAppBarBackgroundColorValue(mDy)
-    }
-
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val userEventInfo = userEventData.userEvent?.eventInfo

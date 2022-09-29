@@ -137,8 +137,13 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
-        mActivity?.setToolbarTitleAndIcon(title, icon, action)
+    override fun setToolbarTitleAndIcon(
+        title: CharSequence,
+        icon: Drawable?,
+        action: (() -> Unit?)?,
+        toolbarTitleAction: (() -> Unit?)?
+    ) {
+        mActivity?.setToolbarTitleAndIcon(title, icon, action, toolbarTitleAction)
     }
 
     override fun showNoConnectionMessage(show: Boolean) {

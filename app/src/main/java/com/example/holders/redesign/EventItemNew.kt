@@ -25,25 +25,24 @@ import parseColor
 import setOnClickListener
 
 class EventItemNew(
-    val eventData: EventNew?,
+    eventData: EventNew?,
+    val eventId: String,
+    val state: EventStateModel?,
+    val status: Event.Status?,
+    val userRegistration: Event.Status?,
+    val backgroundColor: String?,
+    val logo: String?,
+    val eventRegistrationState: EventRegistrationStateModel?,
+    val userAgreement: String?,
+    val registrationId: String,
+    val name: String?,
+    val address: String?,
+    dateFrom: String?,
+    dateTo: String?,
     private val onEventClickListener: OnEventClickListener
 ) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
 
-    val eventId = eventData?.id.toString()
-    val state = eventData?.state
-    val status = eventData?.status?.value
-    val userRegistration = eventData?.binds?.currentUserRegistration?.status?.value
-    val backgroundColor = eventData?.binds?.organization?.backgroundColor?.value
-    val logo = eventData?.image?.uri
-
-    val eventRegistrationState = eventData?.binds?.eventRegistrationState
-
-    private val userAgreement = eventData?.userAgreement?.uri
-
-    private val registrationId = eventData?.binds?.currentUserRegistration?.id.toString()
-    private val name = eventData?.name
-    private val address = eventData?.address?.getShortAddress()
-    val date = eventData?.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData?.holdingDate?.to) ?: ""
+    val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
@@ -121,10 +120,6 @@ class EventItemNew(
     }
 
     private fun decorActionButton(btnAction: Button) {
-        @StringRes var btnText: Int? = null
-        var clickAction: (() -> Unit)? = null
-        var visibility = true
-
         if (eventRegistrationState != null) {
             val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
                 arrayListOf("") else eventRegistrationState?.availableActions
@@ -132,48 +127,43 @@ class EventItemNew(
                 false -> {
                     when (actions?.get(0)) {
                         "register" -> {
-                            btnText = R.string.event_action_participate
-                            clickAction = {
-                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                    if (userAgreement.isNullOrEmpty()) {
-                                        onEventClickListener.onActionRegister(eventId)
-                                    } else {
-                                        showAgreementRegisterDialog(
-                                            btnAction.context,
-                                            userAgreement
-                                        )
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_participate)
+                                setOnClickListener {
+                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                        if (userAgreement.isNullOrEmpty()) {
+                                            onEventClickListener.onActionRegister(eventId)
+                                        } else {
+                                            showAgreementRegisterDialog(
+                                                btnAction.context,
+                                                userAgreement
+                                            )
+                                        }
                                     }
                                 }
                             }
+
                         }
                         "withdraw" -> {
-                            btnText = R.string.event_action_cancel_request
-                            clickAction = {
-                                eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                    onEventClickListener.onActionCancel(eventId, registrationId)
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_cancel_request)
+                                setOnClickListener {
+                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                        onEventClickListener.onActionCancel(eventId, registrationId)
+                                    }
                                 }
                             }
+
                         }
-                        else -> visibility = false
+                        else -> btnAction.isVisible = false
                     }
                 }
                 else -> {
-                    visibility = false
+                    btnAction.isVisible = false
                 }
             }
-        }
-
-        btnAction.apply {
-            text = btnText?.let { context.getString(it) }
-
-            if (clickAction != null) {
-                setOnClickListener(clickAction)
-            } else {
-                setOnClickListener(null)
-                isEnabled = false
-            }
-
-            isVisible = visibility
         }
     }
 
@@ -201,7 +191,6 @@ class EventItemNew(
         if (userRegistration != other.userRegistration) return false
         if (backgroundColor != other.backgroundColor) return false
         if (logo != other.logo) return false
-
         return true
     }
 
@@ -214,7 +203,6 @@ class EventItemNew(
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventNew) {
-                setApproveStatus(viewBinding.tvEventState)
                 decorActionButton(viewBinding.btnEventAction)
             }
         }

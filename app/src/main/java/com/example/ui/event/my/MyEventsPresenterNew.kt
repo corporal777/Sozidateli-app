@@ -40,7 +40,6 @@ class MyEventsPresenterNew
     private var mSearchFilter = SearchFilter.EventNew()
     private var isFirstAttach = true
     private var isFirstLaunch = true
-    private var mTags = arrayListOf<Tag>()
     private var mSearchText = ""
 
     private var isCommonDataLoaded = false
@@ -52,7 +51,7 @@ class MyEventsPresenterNew
     override fun attachView(view: MyEventsContractNew.View?) {
         super.attachView(view)
         if (isFirstAttach) isFirstAttach = false
-        else paginationList.invalidate()
+        else pagination.invalidate()
     }
 
     override fun onFirstViewAttach() {
@@ -69,6 +68,7 @@ class MyEventsPresenterNew
     }
 
     private fun getEventsData() {
+        if (isFirstLaunch) viewState.setData(List(5) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -77,7 +77,11 @@ class MyEventsPresenterNew
 
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
-            .setLoading(isFirstLaunch)
+            .let {
+                if (!isFirstLaunch) it.withCustomProgressBarLoadingDialog(viewState)
+                else it
+            }
+            //.setLoading(isFirstLaunch)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
@@ -143,14 +147,15 @@ class MyEventsPresenterNew
     override fun onSearchTextChange(text: String) {
         mSearchText = text
         viewState.hideEmptyListPlaceholder()
-        viewState.setData(List(20) { null })
-        pagination.invalidate()
         //getEventsData()
+        paginationList.invalidate()
     }
 
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
-        getEventsData()
+        viewState.hideEmptyListPlaceholder()
+        paginationList.invalidate()
+        //getEventsData()
     }
 
     override fun onRefreshRequest() {

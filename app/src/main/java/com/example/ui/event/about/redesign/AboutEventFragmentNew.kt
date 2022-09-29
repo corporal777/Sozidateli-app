@@ -414,7 +414,7 @@ class AboutEventFragmentNew() : BaseFragment(),
                 tbBackground.setBackgroundColor(Color.TRANSPARENT)
                 setWhiteIcons()
             }
-            if (value > 0 && value < 1600) {
+            if (value > 0 && value < 1750) {
                 tbBackground.apply {
                     tbContent.setBackgroundColor(Color.TRANSPARENT)
                     setBackgroundColor(Color.BLACK)

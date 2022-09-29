@@ -25,6 +25,8 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
@@ -46,6 +48,7 @@ import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragmentNew
@@ -617,9 +620,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
         )
+//        findNavController().navigate(
+//            R.id.about_event_fragment,
+//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+//        )
     }
 
     override fun showAuthWebsiteFragment(code: String) {
@@ -864,8 +871,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
     }
 
-    override fun setToolbarTitleAndIcon(title: String, icon: Drawable?, action: (() -> Unit?)?) {
-        mBinding.toolbarLabel.text = title
+    override fun setToolbarTitleAndIcon(
+        title: CharSequence,
+        icon: Drawable?,
+        action: (() -> Unit?)?,
+        toolbarTitleAction: (() -> Unit?)?
+    ) {
+        mBinding.toolbarLabel.apply {
+            text = title
+            setOnClickListener {
+                toolbarTitleAction?.invoke()
+            }
+        }
         if (icon == null) {
             mBinding.ivAction.isVisible = false
         } else {
@@ -956,11 +973,18 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.mainNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)
+                    if (!findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)){
+                        findNavController(R.id.navHostFragment).navigate(R.id.recommendations_fragment, null,
+                            navOptions {
+                                popUpTo(R.id.main_navigation) { inclusive = true }
+                            })
+                    }
                     true
                 }
                 R.id.my_events -> {
-                    findNavController(R.id.navHostFragment).navigate(R.id.my_events_fragment_new)
+                    if (!findNavController(R.id.navHostFragment).popBackStack(R.id.my_events_fragment_new, false)){
+                        findNavController(R.id.navHostFragment).navigate(R.id.my_events_fragment_new)
+                    }
                     true
                 }
                 R.id.chats -> {
@@ -979,8 +1003,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.splash_fragment){
-                hideNavBar()
+            when (destination.id) {
+                R.id.splash_fragment -> {
+                    hideNavBar()
+                }
             }
         }
         mBadgeNotification = mBinding.mainNavBar.getOrCreateBadge(R.id.notification)

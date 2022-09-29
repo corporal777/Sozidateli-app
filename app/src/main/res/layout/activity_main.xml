@@ -46,6 +46,7 @@
 
 
                     <TextView
+                        android:clickable="true"
                         android:id="@+id/toolbar_label"
                         fontPath="fonts/sf_pro_text_semibold.ttf"
                         android:letterSpacing="-0.02"

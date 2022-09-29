@@ -52,6 +52,7 @@ import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
+import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
@@ -358,4 +359,5 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChangeAccountFragment(): ChangeAccountFragment
+
 }
