@@ -2,7 +2,12 @@ package com.example.ui.event.registration
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
+import android.provider.DocumentsContract
+import android.util.Log
+import androidx.core.net.toFile
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -16,6 +21,7 @@ import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.FileUtils.getDataColumn
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -28,11 +34,16 @@ import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -44,10 +55,12 @@ class EventRegistrationPresenter
     private val userRepository: UserRepository,
     private val rxPermissions: RxPermissions,
     private val contentResolver: ContentResolver,
+    private val context: Context,
     private val appData: AppData
 ) : BasePresenter<EventRegistrationContract.View>(appData), EventRegistrationContract.Presenter {
 
     lateinit var eventId: String
+    private val oldFilesList = arrayListOf<EventRegisterFieldData<*>>()
 
     private var hasGroup = false
     private var selectedGroup: String? = null
@@ -187,7 +200,7 @@ class EventRegistrationPresenter
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
+                    onReceiveError(it)
                 }, onComplete = {
                     viewState.showSuccessRegister(approvingMode)
                 })
@@ -263,6 +276,21 @@ class EventRegistrationPresenter
                         responseField
                     ).fromJson(EventFile.Deserializer())
                 )
+//                EventRegisterField.Type.FILE ->  {
+//                    val file = EventRegisterFieldData.File(
+//                        field,
+//                        EventFile(
+//                            Uri.parse(findRegistrationDataValueNew(
+//                            field,
+//                            responseField
+//                        )), findRegistrationDataValueNew(
+//                            field,
+//                            responseField
+//                        )?:"", ""))
+//                    oldFilesList.add(file)
+//                    file
+//                }
+
                 EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
                     field,
                     findRegistrationDataValue(field, responseField).fromJson<Boolean>()
@@ -281,6 +309,15 @@ class EventRegistrationPresenter
         fields: List<EventRegisterResponseField?>?
     ): JsonElement? {
         return fields?.find { field.id == it?.id }?.value
+    }
+
+    private fun findRegistrationDataValueNew(
+        field: EventRegisterField,
+        fields: List<EventRegisterResponseField?>?
+        //): JsonElement? {
+    ): String? {
+
+        return fields?.find { field.id == it?.id }?.value.toString()
     }
 
     override fun onDataChange(field: EventRegisterFieldData<*>) {
@@ -408,7 +445,7 @@ class EventRegistrationPresenter
                     } != null
 
                     if (contains) {
-                        field.value = EventFile(path, fileName, fileExtension)
+                        field.value = EventFile("",path, fileName, fileExtension)
                         viewState.updateFileField(field.field.id)
                     } else {
                         viewState.showWrongFileExtensions(availableExtensions)
@@ -453,7 +490,6 @@ class EventRegistrationPresenter
                     addFormDataPart("form", formId.toString())
                     added = true
                     fieldsData.forEachIndexed { index, fieldData ->
-                        //val key = fieldData.field.id
                         val position = index
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
@@ -461,20 +497,25 @@ class EventRegistrationPresenter
                         when (fieldData) {
                             is EventRegisterFieldData.File -> fieldData.value?.let {
                                 val path = it.path
-                                if (path.scheme?.startsWith("http") != true) {
+                                val fileId = it.id
+                                if (path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true) {
                                     addFormDataPart("fields[$position][id]", key)
                                     val name = "${it.name}.${it.mimeType}"
                                     contentResolver.openInputStream(path)?.buffered()
                                         ?.use { stream -> stream.readBytes() }?.let { bytes ->
-                                            val body =
-                                                bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                            val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                             addFormDataPart(
-                                                "fields[$position][value][file]",
+                                                //"fields[$position][value][file]",
+                                                "fields[$position][value]",
                                                 name,
                                                 body
                                             )
                                             added = true
                                         }
+                                }else {
+                                    addFormDataPart("fields[$position][id]", key)
+                                    addFormDataPart("fields[$position][value]", fileId)
+                                    added = true
                                 }
                             }
                             else -> {

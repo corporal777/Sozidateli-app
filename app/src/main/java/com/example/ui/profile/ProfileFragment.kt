@@ -25,6 +25,7 @@ import com.example.R
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
+import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
@@ -283,7 +284,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun showChangeAccount() {
-        findNavController().navigate(ProfileFragmentDirections.profileToChangeAccount())
+        findNavController().navigate(ProfileFragmentDirections.profileToChangeAccount("", AuthType.NONE, false))
     }
 
     private fun showUserStateDialog() {

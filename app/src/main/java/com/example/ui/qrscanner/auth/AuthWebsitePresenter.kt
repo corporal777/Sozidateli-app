@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withDelay
 import withLoadingDialog
 import withProgressBarLoadingDialog
@@ -39,7 +40,7 @@ class AuthWebsitePresenter
         super.onFirstViewAttach()
 
         compositeDisposable += authRepository.sendQrCode(QrBody(mToken, null))
-            .withDelay(1000)
+            .withDelay(500)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -49,8 +50,10 @@ class AuthWebsitePresenter
                     viewState.hideContent()
                 },
                 onSuccess = {
-                    viewState.setEnterData(it)
-                    viewState.showContent()
+                    viewState.apply {
+                        setEnterData(it)
+                        showContent()
+                    }
                 }
             )
 
@@ -61,13 +64,12 @@ class AuthWebsitePresenter
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, true))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
                 },
                 onSuccess = {
-                    Log.d("DATA AUTH QR WEB", it.toString())
                     viewState.showEventList()
                 })
 
@@ -77,7 +79,7 @@ class AuthWebsitePresenter
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, false))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)

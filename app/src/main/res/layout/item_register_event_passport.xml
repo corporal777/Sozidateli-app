@@ -5,7 +5,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilSerial"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:endIconMode="none"
@@ -14,7 +14,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSerial"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:digits="0123456789"
             android:ems="5"
             android:hint="@string/event_register_serial"
@@ -25,7 +25,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilNumber"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -37,7 +37,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNumber"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:digits="0123456789"
             android:ems="7"
             android:hint="@string/event_register_number"
@@ -48,7 +48,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilAgency"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -59,14 +59,14 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAgency"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:hint="@string/event_register_agency"
             android:nextFocusDown="@id/etDate" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilDate"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -77,7 +77,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDate"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -87,7 +87,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilCode"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -98,7 +98,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCode"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:digits="0123456789"
             android:hint="@string/event_register_code"
             android:inputType="number"

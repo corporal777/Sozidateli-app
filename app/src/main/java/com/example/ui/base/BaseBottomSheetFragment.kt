@@ -17,9 +17,10 @@ import com.example.ui.views.StateType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.textfield.TextInputEditText
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseBottomSheetFragment<binding : ViewDataBinding> : BottomSheetDialogFragment(), BaseContract.View {
+abstract class BaseBottomSheetFragment<binding : ViewDataBinding> : BottomSheetDialogFragment() {
 
     lateinit var mBinding: binding
 
@@ -50,89 +51,23 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding> : BottomSheetD
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    override fun showToast(message: Int) {
-    }
 
-    override fun showToast(message: String) {
-    }
 
-    override fun navigateUp() {
-    }
-
-    override fun hideKeyboard() {
-
-    }
-
-    override fun hideKeyboard(v: View?) {
+    fun hideKeyboard(v: View?) {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         v?.let {
             imm.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
-    override fun showKeyboard() {
-    }
-
-    override fun showNoConnectionMessage(show: Boolean) {
-    }
-
-    override fun showRequestErrorMessage() {
-    }
-
-    override fun showEmailErrorMessage() {
-    }
-
-    override fun showPhoneErrorMessage() {
-    }
-
-    override fun showNotificationErrorMessage() {
-    }
-
-    override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-    }
-
-    override fun showErrorMessage(canGoBack: Boolean, message: String) {
-    }
-
-    override fun setAppBarElevation(value: Float) {
-    }
-
-    override fun setToolbarTitleAndIcon(
-        title: CharSequence,
-        icon: Drawable?,
-        action: (() -> Unit?)?,
-        toolbarTitleAction: (() -> Unit?)?
-    ) {
-
-    }
-
-
-    override fun showLoadingDialog() {
-
-    }
-
-    override fun hideLoadingDialog() {
-    }
-
-    override fun showCustomProgressDialog() {
-    }
-
-    override fun hideCustomProgressDialog() {
-    }
-
-    override fun showProgressBarLoadingDialog() {
-    }
-
-    override fun hideProgressBarLoadingDialog() {
-    }
-
-    override fun hideAllLoadingDialogs() {
-    }
-
-    override fun enableBackClick() {
-    }
-
-    override fun disableBackClick() {
+    fun focusOnInput(view : TextInputEditText, canShow: Boolean) {
+        view.apply {
+            post {
+                showSoftInputOnFocus = canShow
+                requestFocus()
+                if (canShow) showKeyboard(this)
+            }
+        }
     }
 
     override fun onDestroyView() {

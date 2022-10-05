@@ -11,42 +11,26 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.BottomSheetChangePasswordBinding
+import com.example.ui.base.BaseBottomSheetFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.textfield.TextInputEditText
 import onTextChanged
 
-class ChangePasswordBottomSheetFragment : BottomSheetDialogFragment() {
+class ChangePasswordBottomSheetFragment :
+    BaseBottomSheetFragment<BottomSheetChangePasswordBinding>() {
 
-    private var _binding: BottomSheetChangePasswordBinding? = null
-    private val mBinding get() = _binding!!
     private var onNextAction: (password: String) -> Unit = {}
     private var onSaveNewPasswordAction: (newPassword: String) -> Unit = {}
     private var onRecoveryPasswordAction: () -> Unit = {}
 
     private var newPasswordContentIsShown = false
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        if (dialog is BottomSheetDialog) {
-            dialog.behavior.skipCollapsed = true
-            dialog.behavior.state = STATE_EXPANDED
-        }
-        return dialog
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = BottomSheetChangePasswordBinding.inflate(inflater, container, false)
-        return mBinding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        focusOnInput(true)
+        focusOnInput(mBinding.etPassword, true)
         mBinding.apply {
             var password = ""
             etPassword.apply {
@@ -116,27 +100,6 @@ class ChangePasswordBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun focusOnInput(canShow: Boolean) {
-        mBinding.etPassword.apply {
-            post {
-                showSoftInputOnFocus = canShow
-                requestFocus()
-                showSoftInputOnFocus = true
-                if (canShow) showKeyboard(this)
-            }
-        }
-    }
-
-    private fun showKeyboard(view: View) {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun layout(): Int = R.layout.bottom_sheet_change_password
 
 }

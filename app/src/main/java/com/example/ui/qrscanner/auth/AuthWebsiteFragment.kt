@@ -2,7 +2,9 @@ package com.example.ui.qrscanner.auth
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -26,8 +28,6 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
     override val isLightStatus = false
 
     private val mArgs: AuthWebsiteFragmentArgs by navArgs()
-    private var mCode = ""
-
 
     @InjectPresenter
     lateinit var mPresenter: AuthWebsitePresenter
@@ -38,18 +38,16 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
     @ProvidePresenter
     fun providePresenter(): AuthWebsitePresenter = presenterProvider.get().apply {
         mArgs.let {
-            mCode = it.qrCode
-            val mTokenFromCode = getTokenFromQrCode(mCode)
-            this.mToken = mTokenFromCode
+            this.mToken = it.qrCode
         }
     }
 
 
     override fun setEnterData(data: QrAuthResponse) {
         mBinding.apply {
-            tvDevice.text = data.mDevice
-            tvIPAddress.text = data.mIPAddress
-            tvTime.text = longToTime(data.mTimeStamp)
+            tvDevice.text = data.device
+            tvIPAddress.text = data.ipAddress
+            tvTime.text = longToTime(data.timeStamp)
         }
     }
 
@@ -84,21 +82,11 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
     }
 
     override fun showContent() {
-        mBinding.apply {
-            tvJoinMessage.isVisible = true
-            llInfo.isVisible = true
-            btnConfirm.isVisible = true
-            btnDoNotConfirm.isVisible = true
-        }
+        mBinding.clContent.isInvisible = false
     }
 
     override fun hideContent() {
-        mBinding.apply {
-            tvJoinMessage.isVisible = false
-            llInfo.isVisible = false
-            btnConfirm.isVisible = false
-            btnDoNotConfirm.isVisible = false
-        }
+        mBinding.clContent.isInvisible = true
     }
 
 

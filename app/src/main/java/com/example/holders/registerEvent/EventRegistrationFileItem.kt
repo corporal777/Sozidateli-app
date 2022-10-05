@@ -8,11 +8,11 @@ import kotlinx.android.synthetic.main.item_event_registration_file.*
 import onTextChanged
 
 open class EventRegistrationFileItem(
-        id: Long,
-        private val filename: String,
-        private val editable: Boolean,
-        private val onRemoveFileClick: () -> Unit,
-        private val onNameChange: (String) -> Unit
+    id: Long,
+    private val filename: String,
+    private val editable: Boolean,
+    private val onRemoveFileClick: () -> Unit,
+    private val onNameChange: (String) -> Unit
 ) : Item(id) {
 
     private var textWatcher: TextWatcher? = null
@@ -21,7 +21,11 @@ open class EventRegistrationFileItem(
         viewHolder.apply {
             textInputEditText.apply {
                 setText(filename)
-                textWatcher = onTextChanged { text?.toString()?.let { onNameChange(it) } }
+                textWatcher = onTextChanged {
+                    text?.toString()?.let {
+                        onNameChange(it)
+                    }
+                }
                 isEnabled = editable
             }
 

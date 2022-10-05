@@ -30,7 +30,7 @@ class ChangeUserShortNameFragment(val user: UserDetail) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        focusOnInput(true)
+        focusOnInput(mBinding.etShortName, true)
         enableActionButton(false)
         mBinding.apply {
             tvShortName.text = userShortName
@@ -56,17 +56,6 @@ class ChangeUserShortNameFragment(val user: UserDetail) :
             btnSave.setOnClickListener {
                 hideKeyboard(mBinding.root)
                 onSaveUserShortName(etShortName.text.toString())
-            }
-        }
-    }
-
-    private fun focusOnInput(canShow: Boolean) {
-        mBinding.etShortName.apply {
-            post {
-                showSoftInputOnFocus = canShow
-                requestFocus()
-                //showSoftInputOnFocus = true
-                if (canShow) showKeyboard(this)
             }
         }
     }

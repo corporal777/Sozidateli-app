@@ -3,6 +3,7 @@ package com.example.ui.accountChange
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -10,7 +11,9 @@ import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
 import com.example.ui.accountChange.items.*
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -24,12 +27,16 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
     @InjectPresenter
     lateinit var presenter: ChangeAccountPresenter
 
+
     @Inject
     lateinit var presenterProvider: Provider<ChangeAccountPresenter>
 
     @ProvidePresenter
     fun providePresenter(): ChangeAccountPresenter = presenterProvider.get().apply {
-
+        val args = ChangeAccountFragmentArgs.fromBundle(requireArguments())
+        this.redirectLink = args.deepLink
+        this.isFromDeeplink = args.isFromDeepLink
+        this.authType = args.authType
     }
 
     private val logoSection by lazy {
@@ -124,6 +131,10 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(),
         dialog.setKillCallback { s ->
             presenter.killSession(s)
         }
+    }
+
+    override fun showBrowser(url: String) {
+        showCustomTabsBrowser(requireContext(), url)
     }
 
     override fun layout(): Int = R.layout.fragment_change_account

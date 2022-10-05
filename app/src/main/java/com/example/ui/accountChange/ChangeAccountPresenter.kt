@@ -1,6 +1,7 @@
 package com.example.ui.accountChange
 
 import android.app.NotificationManager
+import android.net.Uri
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -8,6 +9,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
+import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
@@ -27,12 +29,15 @@ class ChangeAccountPresenter
     private val notificationManager: NotificationManager
 ) : BasePresenter<ChangeAccountContract.View>(appData), ChangeAccountContract.Presenter {
 
-    var mDeviceId = appData.deviceId?:""
+    var mDeviceId = appData.deviceId ?: ""
     private var mDy = 0
     private val loggedSessions = arrayListOf<UserSessionModel>()
     private val unLoggedSessions = arrayListOf<UserSessionModel>()
     private var canShowMenu = true
     private var currentUserId = ""
+    var redirectLink = ""
+    var authType = AuthType.NONE
+    var isFromDeeplink = false
 
     override fun changeAppBarElevation(value: Int) {
         mDy += value
@@ -75,7 +80,7 @@ class ChangeAccountPresenter
 
 
     override fun logoutFromAccount(session: UserSessionModel) {
-        compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId)
+        compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId.toInt())
             .andThen(userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId))
             .doOnSuccess { s ->
                 transformData(s.userSessions)
@@ -108,8 +113,8 @@ class ChangeAccountPresenter
     }
 
     fun logoutFromAccountAndKill(session: UserSessionModel) {
-        compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId)
-            .andThen(userRepository.killUsersDeviceSession(session.sessionId))
+        compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId.toInt())
+            .andThen(userRepository.killUsersDeviceSession(session.sessionId.toInt()))
             .doOnComplete {
                 loggedSessions.remove(session)
                 if (isCurrentUser(session.userId.toString())) {
@@ -135,7 +140,7 @@ class ChangeAccountPresenter
     }
 
     fun killSession(session: UserSessionModel) {
-        compositeDisposable += userRepository.killUsersDeviceSession(session.sessionId)
+        compositeDisposable += userRepository.killUsersDeviceSession(session.sessionId.toInt())
             .doOnComplete {
                 unLoggedSessions.remove(session)
             }
@@ -154,22 +159,29 @@ class ChangeAccountPresenter
     }
 
     override fun switchAccount(session: UserSessionModel) {
-        viewState.showCustomProgressDialog()
-        if (!isCurrentUser(session.binds.user.id.toString())) {
-            compositeDisposable += Completable.fromAction {
-                appData.login(session.sessionUid)
-                appData.saveId(session.userId)
-                appData.setAllUserInfo(session.binds.user)
-            }.performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    val m = "Аккаунт сменен"
-                    viewState.showMessage(m)
+        when (authType) {
+            AuthType.OTHER_PLATFORM -> {
+                observeDeeplink(session)
+            }
+            else -> {
+                viewState.showCustomProgressDialog()
+                if (!isCurrentUser(session.binds.user.id.toString())) {
+                    compositeDisposable += Completable.fromAction {
+                        appData.login(session.sessionUid)
+                        appData.saveId(session.userId)
+                        appData.setAllUserInfo(session.binds.user)
+                    }.performOnBackgroundOutOnMain()
+                        .subscribeSimple {
+                            val m = "Аккаунт сменен"
+                            viewState.showMessage(m)
+                        }
+                } else {
+                    val m = "Вы уже авторизованы в данном аккаунте"
+                    viewState.apply {
+                        showMessage(m)
+                        hideCustomProgressDialog()
+                    }
                 }
-        } else {
-            val m = "Вы уже авторизованы в данном аккаунте"
-            viewState.apply {
-                showMessage(m)
-                hideCustomProgressDialog()
             }
         }
     }
@@ -233,6 +245,15 @@ class ChangeAccountPresenter
                 unLoggedSessions.add(session)
             }
         }
+    }
+
+    private fun observeDeeplink(currentSession: UserSessionModel) {
+        val uri = Uri.parse(redirectLink)
+            .buildUpon()
+            .appendQueryParameter("new_session", "true")
+            .appendQueryParameter("access_token", currentSession.sessionUid)
+            .build()
+        viewState.showBrowser(uri.toString())
     }
 
     private fun clearAppData() {

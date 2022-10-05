@@ -5,12 +5,12 @@ import java.util.*
 
 data class QrAuthResponse(
     @SerializedName("ip")
-    val mIPAddress: String,
+    val ipAddress: String,
     @SerializedName("device")
-    val mDevice: String,
+    val device: String,
     @SerializedName("time")
-    val mTime: String,
+    val time: String,
     @SerializedName("timestamp")
-    val mTimeStamp : Date
+    val timeStamp : Date
 
 )

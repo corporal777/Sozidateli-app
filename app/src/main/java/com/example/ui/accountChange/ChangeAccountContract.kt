@@ -26,6 +26,9 @@ interface ChangeAccountContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showLoginFragment(login : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showBrowser(url : String)
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {

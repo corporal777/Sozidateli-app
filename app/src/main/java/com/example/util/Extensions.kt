@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -17,6 +18,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.annotation.ColorInt
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,16 +33,14 @@ import com.example.extensions.calendar
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
-import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
-import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
-import org.commonmark.node.SoftLineBreak
 import java.io.File
+import java.net.URI
 import java.util.*
 
 
@@ -362,6 +362,12 @@ fun LinearLayoutManager.smoothScrollToFirstItem(context: Context, appBar : AppBa
     }
     mSmoothScroller.targetPosition = 0
     this.startSmoothScroll(mSmoothScroller)
+}
+
+fun showCustomTabsBrowser(context: Context, url : String){
+    val builder = CustomTabsIntent.Builder()
+    val customTabsIntent = builder.build()
+    customTabsIntent.launchUrl(context, Uri.parse(url))
 }
 
 

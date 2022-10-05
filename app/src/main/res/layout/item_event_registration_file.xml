@@ -7,7 +7,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/textInputLayout"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:endIconMode="none"
@@ -18,7 +18,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInputEditText"
-            style="@style/Profile.Edit.Input"
+            style="@style/Profile.Edit.InputEventRegister"
             android:gravity="top"
             tools:hint="@string/profile_phone_hint" />
     </com.example.ui.views.CustomTextInputLayout>

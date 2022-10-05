@@ -6,9 +6,11 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
@@ -25,7 +27,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
@@ -41,13 +42,13 @@ import com.example.extensions.dp
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
+import com.example.ui.accountChange.ChangeAccountFragmentArgs
+import com.example.ui.accountChange.data.AuthType
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
@@ -343,6 +344,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
+                if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
+                    val redirectLink = it.getQueryParameter("redirect") ?: ""
+                    if (!redirectLink.isNullOrEmpty()){
+                        presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
+                    }
+                }
+
                 if (lastPath == PATH_EVENT_MEMBER) {
                     val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
                     val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
@@ -356,16 +364,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     )
                 }
                 if (lastPath == PATH_QR) {
-                    QR_CODE_TO_AUTH_WEB = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
-                    val mCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
-                    presenter.openAuthWebsiteFragment(mCode)
+                    //QR_CODE_TO_AUTH_WEB = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
+                    val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
+                    if (!code.isNullOrEmpty()) {
+                        presenter.openAuthWebsiteFragment(code)
+                    }
                 }
 
                 if (paths.contains(PATH_EVENT) && lastPath != null) {
-                    if (lastPath.contains(PATH_HIDDEN))
-                        presenter.onHandleEvent(authCode ?: "")
-                    else
+                    EVENT_ID = lastPath
+                    if (lastPath.contains(PATH_HIDDEN)) {
+                        presenter.onHandleEventCode(authCode ?: "")
+                    } else {
                         presenter.onHandleEvent(lastPath)
+                    }
                 } else if (lastPath == PATH_CHANGE_EMAIL) {
                     /*if (changeEmail != null && authCode != null) {
                         presenter.onHandleChangeEmailConfirm(changeEmail, authCode)
@@ -465,6 +477,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     fun setIgnoreDeeplink(isIgnore: Boolean) {
         ignoreDeeplink = isIgnore
+    }
+
+    override fun showAccountChangeFragment(url: String, type: AuthType) {
+        findNavController().navigate(
+            R.id.change_account_fragment,
+            ChangeAccountFragmentArgs.Builder(url, type, true).build().toBundle()
+        )
     }
 
     override fun showInviteRegister(
@@ -618,7 +637,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             .build()
     )
 
-    override fun showEvent(event: String) {
+    override fun showAboutEvent(event: String) {
         findNavController().navigate(
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle()
@@ -973,8 +992,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.mainNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    if (!findNavController(R.id.navHostFragment).popBackStack(R.id.recommendations_fragment, false)){
-                        findNavController(R.id.navHostFragment).navigate(R.id.recommendations_fragment, null,
+                    if (!findNavController(R.id.navHostFragment).popBackStack(
+                            R.id.recommendations_fragment,
+                            false
+                        )
+                    ) {
+                        findNavController(R.id.navHostFragment).navigate(R.id.recommendations_fragment,
+                            null,
                             navOptions {
                                 popUpTo(R.id.main_navigation) { inclusive = true }
                             })
@@ -982,7 +1006,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     true
                 }
                 R.id.my_events -> {
-                    if (!findNavController(R.id.navHostFragment).popBackStack(R.id.my_events_fragment_new, false)){
+                    if (!findNavController(R.id.navHostFragment).popBackStack(
+                            R.id.my_events_fragment_new,
+                            false
+                        )
+                    ) {
                         findNavController(R.id.navHostFragment).navigate(R.id.my_events_fragment_new)
                     }
                     true
@@ -1087,6 +1115,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun removeProgressView() {
         mBinding.progressViewContainer.removeAllViews()
+    }
+
+    override fun showBrowser(url: String) {
+        showCustomTabsBrowser(this, url)
     }
 
     override fun layout() = R.layout.activity_main

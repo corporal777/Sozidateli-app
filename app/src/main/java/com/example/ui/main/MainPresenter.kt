@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.location.Location
+import android.net.Uri
 import android.os.Looper
 import android.util.Log
 import call
@@ -13,10 +14,8 @@ import com.example.data.UserEventData
 import com.example.data.bodies.EmailCodeBody
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.RecoverPasswordBody
-import com.example.data.models.EventNew
+import com.example.data.models.*
 import com.example.data.models.Notification
-import com.example.data.models.NotificationModel
-import com.example.data.models.RemoteNotification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
 import com.example.events.OnSocketConnectEvent
@@ -24,6 +23,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
+import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BasePresenter
 import com.example.util.*
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,6 +39,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -73,6 +74,7 @@ class MainPresenter
 
     private var isAuthRequired = false
     private var isFromQr = false
+    private var canShowBrowser = false
     private var inappList: Deque</*RemoteNotification*/NotificationModel>? = null
 
     private var isDoNotCheckConnectionFragmentOpened = false
@@ -153,25 +155,29 @@ class MainPresenter
                 if (!isEditingPhone) {
                     viewState.apply {
                         hideLoadingDialog()
-                        if (!isFromQr) {
-                            showRecommendations()
-                        } else {
-                            if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
-                                showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
-                                isFromQr = false
-                            }
-                        }
+                        showRecommendations()
+                        checkIntent()
+                    }
+                    showNextInapp()
+                    initInternetConnectionCheck()
+
+//                    if (isFromEvent) {
+//                        viewState.showAboutEvent(EVENT_ID)
+//                        isFromEvent = false
+//                    } else if (isFromQr) {
+//                        if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
+//                            viewState.showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
+//                            isFromQr = false
+//                        }
+//                    }else {
+//
+//                    }
 //                        if (isMustShowEvent) {
 //                            showEvent()
 //                        } else {
 //
 //
 //                        }
-                        checkIntent()
-                        showNextInapp()
-                    }
-
-                    initInternetConnectionCheck()
                 }
                 isEditingPhone = false
 //                    AuthBackground.clear()
@@ -410,30 +416,50 @@ class MainPresenter
         viewState.showChat(chatId, userName)
     }
 
+    override fun onHandleEventCode(event: String) {
+        if (isAuthRequired) {
+            viewState.showLogin()
+        } else {
+            compositeDisposable += eventRepository.getEventsList(
+                mapOf(
+                    EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+                    EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+                    EventNew.EVENT_CODE to event
+                )
+            )
+                .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribe({
+                    if (it.data.isNotEmpty())
+                        viewState.showAboutEvent(it.data[0]?.id.toString())
+                }, {
+                    it.printStackTrace()
+                })
+        }
+
+    }
+
     override fun onHandleEvent(event: String) {
         if (isAuthRequired) {
             viewState.showLogin()
         } else {
             if (!event.isNullOrEmpty()) {
-                viewState.showEvent(event)
+                viewState.showAboutEvent(event)
             }
         }
-//        if (isAuthRequired) return
-//        compositeDisposable += eventRepository.getEventsList(
-//            mapOf(
-//                EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-//                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-//                EventNew.EVENT_CODE to event
-//            )
-//        )
-//            .performOnBackgroundOutOnMain()
-//            .withLoadingDialog(viewState)
-//            .subscribe({
-//                if (it.data.isNotEmpty())
-//                    viewState.showEvent(it.data[0]?.id.toString())
-//            }, {
-//                it.printStackTrace()
-//            })
+    }
+
+    override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
+        if (isAuthRequired){
+            viewState.showLogin()
+            canShowBrowser = true
+        } else {
+            if (canShowBrowser){
+                observeDeeplink(url, type)
+            } else {
+                viewState.showAccountChangeFragment(url, type)
+            }
+        }
     }
 
     override fun onInviteRegister(
@@ -841,6 +867,22 @@ class MainPresenter
 
     fun ignoreTokenListener(isIgnore: Boolean) {
         isRegister = isIgnore
+    }
+
+    private fun observeDeeplink(url: String, type: AuthType) {
+        when (type) {
+            AuthType.OTHER_PLATFORM -> {
+                val uri = Uri.parse(url)
+                    .buildUpon()
+                    .appendQueryParameter("new_session", "true")
+                    .appendQueryParameter("access_token", appData.token)
+                    .build()
+                viewState.showBrowser(uri.toString())
+            }
+            else -> {
+            }
+        }
+
     }
 
     companion object {

@@ -13,7 +13,7 @@ data class UserSessionModel(
     @SerializedName("userId")
     val userId: Int,
     @SerializedName("sessionId")
-    val sessionId: Int,
+    val sessionId: Long,
     @SerializedName("sessionUid")
     val sessionUid: String,
     @SerializedName("sessionStart")

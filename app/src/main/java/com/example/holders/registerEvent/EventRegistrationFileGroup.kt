@@ -11,16 +11,17 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.kotlinandroidextensions.Item
 
 class EventRegistrationFileGroup(
-        context: Context,
-        val fieldData: EventRegisterFieldData<EventFile?>,
-        private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit,
-        onAddClick: () -> Unit
+    context: Context,
+    val fieldData: EventRegisterFieldData<EventFile?>,
+    private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit,
+    onAddClick: () -> Unit
 ) : NestedGroup() {
 
     private var fileItem: EventRegistrationFileItem? = null
-    private val fileAddItem = ProfileButtonEditItem(context.getString(R.string.add_file), true, onAddClick).apply {
-        hasDivider = false
-    }
+    private val fileAddItem =
+        ProfileButtonEditItem(context.getString(R.string.add_file), true, onAddClick).apply {
+            hasDivider = false
+        }
 
     private val descriptions: MutableList<Item> = mutableListOf()
 
@@ -32,10 +33,12 @@ class EventRegistrationFileGroup(
         }
 
         if (!fieldData.field.values.isNullOrEmpty()) {
-            val availableExtensions = EventRegistrationDescriptionItem(String.format(
+            val availableExtensions = EventRegistrationDescriptionItem(
+                String.format(
                     context.getString(R.string.event_register_available_extensions),
                     fieldData.field.values.joinToString()
-            ))
+                )
+            )
 
             descriptions.add(availableExtensions)
         }
@@ -86,14 +89,19 @@ class EventRegistrationFileGroup(
     }
 
     private fun createFileItem(fileName: String, path: Uri): EventRegistrationFileItem {
-        return EventRegistrationFileItem(FILE_ITEM_ID, fileName, path.scheme?.startsWith("http") != true, {
-            fieldData.value = null
-            this.fileItem = null
-            notifyItemChanged(0)
-            onDataChange(fieldData)
-        }, {
-            fieldData.value?.name = it
-        })
+        return EventRegistrationFileItem(
+            FILE_ITEM_ID,
+            fileName,
+            path.scheme?.startsWith("http") != true,
+            {
+                fieldData.value = null
+                this.fileItem = null
+                notifyItemChanged(0)
+                onDataChange(fieldData)
+            },
+            {
+                fieldData.value?.name = it
+            })
     }
 
     companion object {

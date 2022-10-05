@@ -1418,6 +1418,21 @@
             android:id="@+id/change_account_fragment_to_loginFragment"
             app:destination="@id/login_fragment" />
 
+        <argument
+            android:name="deepLink"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="authType"
+            app:argType="com.example.ui.accountChange.data.AuthType"
+            app:nullable="false" />
+
+        <argument
+            android:name="isFromDeepLink"
+            app:argType="boolean"
+            app:nullable="false" />
+
     </fragment>
 
     <fragment

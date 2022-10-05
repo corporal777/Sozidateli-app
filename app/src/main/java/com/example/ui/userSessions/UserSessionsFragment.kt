@@ -95,7 +95,7 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
                 OtherSessionItem(it) { s ->
                     showSessionDialog(
                         false,
-                        { presenter.killUsersDeviceSessionClick(s.sessionId) },
+                        { presenter.killUsersDeviceSessionClick(s.sessionId.toInt()) },
                         s
                     )
                 }

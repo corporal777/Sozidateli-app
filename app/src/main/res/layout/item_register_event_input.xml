@@ -8,13 +8,12 @@
         android:id="@+id/textInputLayout"
         style="@style/Profile.Edit.PasswordNew"
         android:layout_width="match_parent"
-        app:boxBackgroundColor="@color/white_smoke_color"
         android:layout_height="wrap_content"
         app:endIconMode="none">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInputEditText"
-            style="@style/Profile.Edit.Input"
+            style="@style/Profile.Edit.InputEventRegister"
             android:gravity="top"
             tools:hint="@string/profile_phone_hint" />
     </com.example.ui.views.CustomTextInputLayout>

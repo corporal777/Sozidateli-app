@@ -5,14 +5,14 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/textInputLayout"
-        style="@style/Profile.Edit.InputLayout"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:endIconMode="custom">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInputEditText"
-            style="@style/Profile.Edit.Input.SingleLine"
+            style="@style/Profile.Edit.InputEventRegister"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />

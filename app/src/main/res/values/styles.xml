@@ -453,6 +453,20 @@
         <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <style name="Profile.Edit.InputEventRegister">
+        <item name="fontPath">font/sf_pro_text.ttf</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:backgroundTint">@color/background_input_participant_profile</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
+        <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
+        <item name="android:minHeight">45dp</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+    </style>
+
 
     <style name="Profile.Edit.Input.SingleLine">
         <item name="android:letterSpacing">-0.01</item>

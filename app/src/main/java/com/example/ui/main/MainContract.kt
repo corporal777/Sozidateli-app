@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
+import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseContract
 import com.example.util.OneExecutionByTagStateStrategy
 
@@ -29,7 +30,7 @@ interface MainContract {
         fun showChat(chatId: String, userName: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEvent(event: String)
+        fun showAboutEvent(event: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showOrganization(organization: String)
@@ -96,6 +97,12 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun setStartDestinationAuthFragment()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        fun showAccountChangeFragment(url : String, type : AuthType)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showBrowser(url : String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -107,7 +114,9 @@ interface MainContract {
         fun onHandleRecoverPasswordLink(/*email: String,*/ code: String)
         fun onHandleChangeEmailConfirm(code: String, email: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
+        fun onHandleEventCode(event: String)
         fun onHandleEvent(event: String)
+        fun onHandleAuthToOtherPlatform(url: String, type : AuthType)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
         fun onSetPassword(/*email: String, */code: String, password: String)

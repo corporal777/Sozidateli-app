@@ -379,7 +379,7 @@ class EventRatingPresenter
                     } != null
 
                     if (contains) {
-                        field.value = EventFile(path, fileName, fileExtension)
+                        field.value = EventFile("", path, fileName, fileExtension)
                         viewState.updateFileField(field.field.id)
                     } else {
                         viewState.showWrongFileExtensions(availableExtensions)
