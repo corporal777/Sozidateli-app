@@ -2,12 +2,18 @@ package com.example.util
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Patterns
@@ -19,6 +25,7 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import androidx.annotation.ColorInt
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +36,11 @@ import coil.size.Scale
 import coil.transform.Transformation
 import com.example.BuildConfig
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.extensions.calendar
+import com.example.ui.views.CustomNewLineInlineProcessor
+import com.facebook.FacebookSdk
+import com.facebook.FacebookSdk.getCacheDir
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -37,10 +48,16 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
+import io.noties.markwon.inlineparser.NewLineInlineProcessor
 import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
+import org.commonmark.node.HardLineBreak
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.net.URI
+import java.net.URL
 import java.util.*
 
 
@@ -368,6 +385,70 @@ fun showCustomTabsBrowser(context: Context, url : String){
     val builder = CustomTabsIntent.Builder()
     val customTabsIntent = builder.build()
     customTabsIntent.launchUrl(context, Uri.parse(url))
+}
+
+fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
+    val filename = "${System.currentTimeMillis()}.png"
+    val write: (OutputStream) -> Boolean = {
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            put(
+                MediaStore.MediaColumns.RELATIVE_PATH,
+                "${Environment.DIRECTORY_DCIM}/$albumName"
+            )
+        }
+
+        context.contentResolver.let {
+            it.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let { uri ->
+                it.openOutputStream(uri)?.let(write)
+            }
+        }
+    } else {
+        val imagesDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                .toString() + File.separator + albumName
+        val file = File(imagesDir)
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        val image = File(imagesDir, filename)
+        write(FileOutputStream(image))
+    }
+}
+
+ fun saveImageToCache(context: Context, image: Bitmap): Uri? {
+    val imagesFolder = File(context.cacheDir, "images")
+    var uri: Uri? = null
+    try {
+        imagesFolder.mkdirs()
+        val file = File(imagesFolder, "shared_image.png")
+        val stream = FileOutputStream(file)
+        image.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        stream.flush()
+        stream.close()
+        uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return uri
+}
+
+fun copyTextToBuffer(context: Context, link : String) {
+    val clipboardManager =
+        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip: ClipData = ClipData.newPlainText("sozidateli_app_text", link)
+    clipboardManager.setPrimaryClip(clip)
+}
+
+fun getBitmapFromUrl(url : String): Bitmap {
+    return BitmapFactory.decodeStream(
+        URL(url).openConnection().getInputStream()
+    )
 }
 
 

@@ -22,6 +22,7 @@ import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -171,14 +172,15 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     }
 
     override fun showEmptyListPlaceholder() {
-//        eventsSection.update(
-//            listOf(NoEventItem(
-//                "Нет результатов",
-//                "По заданным параметрам нет подходящих событий"
-//            ))
-//        )
-        eventsSection.update(emptyList())
-        mBinding.noDataPlaceholder.isInvisible = false
+        eventsSection.update(
+            listOf(NoScheduleEventItem(
+                getString(R.string.no_data_found),
+                getString(R.string.no_event_with_params_title),
+                190
+            ))
+        )
+        //eventsSection.update(emptyList())
+        //mBinding.noDataPlaceholder.isInvisible = false
         mBinding.swipeToRefresh.isRefreshing = false
     }
 

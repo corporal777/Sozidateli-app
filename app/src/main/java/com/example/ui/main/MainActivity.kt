@@ -6,11 +6,9 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
@@ -38,7 +36,6 @@ import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
-import com.example.extensions.dp
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
@@ -68,6 +65,8 @@ import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.SimpleTitleToolbar
@@ -346,7 +345,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
                     val redirectLink = it.getQueryParameter("redirect") ?: ""
-                    if (!redirectLink.isNullOrEmpty()){
+                    if (!redirectLink.isNullOrEmpty()) {
                         presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
                     }
                 }
@@ -518,10 +517,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showDialogRecoverPassword(/*email: String,*/ code: String) {
-        NewPasswordDialog(this)
-            .setSelectCallback {
-                presenter.onSetPassword(/*email,*/ code, it)
-            }
+        val changePasswordDialog = ChangePasswordFragment(true, code)
+        changePasswordDialog.show(supportFragmentManager, "change_password_dialog")
+//        NewPasswordDialog(this)
+//            .setSelectCallback {
+//                presenter.onSetPassword(/*email,*/ code, it)
+//            }
     }
 
     override fun showDialogChangeEmailSuccess() {
@@ -1092,16 +1093,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         return mBinding.flLoading
     }
 
-    override fun addProgressView() {
-        val progressBar = CustomProgressView(this@MainActivity)
-        progressBar.setSize(35.dp)
-        progressBar.setProgressColor(
-            ContextCompat.getColor(
-                this@MainActivity,
-                R.color.main_brown_color_new
-            )
-        )
-        mBinding.progressViewContainer.addView(progressBar, 0)
+    override fun showProgressView() {
+        mBinding.progressView.showProgressBar()
+    }
+
+    override fun hideProgressView() {
+        mBinding.progressView.hideProgressBar()
     }
 
     override fun enableBackClickListener() {
@@ -1110,11 +1107,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun disableBackClickListener() {
         mCanGoBack = false
-    }
-
-
-    override fun removeProgressView() {
-        mBinding.progressViewContainer.removeAllViews()
     }
 
     override fun showBrowser(url: String) {

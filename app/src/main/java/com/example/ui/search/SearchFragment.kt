@@ -17,6 +17,7 @@ import com.example.holders.NoDataItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,7 +41,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     val headerSection = Section()
 
-    var mCanShowEventAndOrganizations = false
 
     protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
@@ -80,7 +80,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         if (data.isEmpty()) {
             adapter.update(
                 listOf(
-                    NoDataItem(
+                    NoEventItem(
                         getString(R.string.search_no_data_text),
                         getString(R.string.search_no_data_description)
                     )

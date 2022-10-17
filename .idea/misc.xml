@@ -244,12 +244,14 @@
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/layout/view_toolbar_content.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/menu/main_bottom_nav_menu.xml" value="0.1796875" />
         <entry key="..\:/Users/Rysbek/Documents/fond-android/app/src/main/res/menu/menu_event.xml" value="0.1796875" />
+        <entry key="app/src/main/res/drawable-v24/background_big_corners_border.xml" value="0.176" />
         <entry key="app/src/main/res/drawable/aaa_bg.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/aaaa_bbbbbb.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/aaaa_test.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_action_button_register.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/background_action_button_selector.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_bottom_sheet.xml" value="0.1495" />
+        <entry key="app/src/main/res/drawable/background_bottom_sheet_profile.xml" value="0.176" />
         <entry key="app/src/main/res/drawable/background_bottom_sheet_session.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_button_cancel.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/background_button_registered.xml" value="0.1495" />
@@ -261,6 +263,8 @@
         <entry key="app/src/main/res/drawable/background_corners_border.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_corners_disabled.xml" value="0.1825" />
         <entry key="app/src/main/res/drawable/background_corners_large.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/background_corners_snack_bar.xml" value="0.176" />
+        <entry key="app/src/main/res/drawable/background_corners_top.xml" value="0.176" />
         <entry key="app/src/main/res/drawable/background_custom_tab_left_selector.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_custom_tab_left_selector_new.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/background_custom_tab_new.xml" value="0.1495" />
@@ -389,6 +393,7 @@
         <entry key="app/src/main/res/layout/bottom_sheet_calendar.xml" value="0.26489512125651044" />
         <entry key="app/src/main/res/layout/bottom_sheet_change_password.xml" value="0.26360502697172616" />
         <entry key="app/src/main/res/layout/bottom_sheet_change_short_name.xml" value="0.2754629629629629" />
+        <entry key="app/src/main/res/layout/bottom_sheet_profile_data.xml" value="0.27418456934214774" />
         <entry key="app/src/main/res/layout/bottom_sheet_session.xml" value="0.2729791290680683" />
         <entry key="app/src/main/res/layout/calendar_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/custom_calendar_day.xml" value="0.3098958333333333" />
@@ -463,7 +468,7 @@
         <entry key="app/src/main/res/layout/fragment_organization.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_page.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_partner.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.28210757409440174" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.22260592614518288" />
         <entry key="app/src/main/res/layout/fragment_qr_scanner.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_recommendations.xml" value="0.12187216622488835" />
         <entry key="app/src/main/res/layout/fragment_recovery_password.xml" value="0.24832967122395833" />
@@ -485,7 +490,7 @@
         <entry key="app/src/main/res/layout/fragment_user_sessions.xml" value="0.21167208431688553" />
         <entry key="app/src/main/res/layout/fragment_user_speaker.xml" value="0.2915061020269627" />
         <entry key="app/src/main/res/layout/fragment_user_state.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_welcome.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_welcome.xml" value="0.3011006673177083" />
         <entry key="app/src/main/res/layout/item_account_change.xml" value="0.30213270142180093" />
         <entry key="app/src/main/res/layout/item_account_change_logo.xml" value="0.30885416666666665" />
         <entry key="app/src/main/res/layout/item_action_button.xml" value="0.3098958333333333" />
@@ -603,6 +608,7 @@
         <entry key="app/src/main/res/layout/layout_bottom_dialog.xml" value="0.237560265543857" />
         <entry key="app/src/main/res/layout/layout_chat_action_confirmation.xml" value="0.20101351351351351" />
         <entry key="app/src/main/res/layout/layout_chat_action_text.xml" value="0.20101351351351351" />
+        <entry key="app/src/main/res/layout/layout_custom_snack_bar.xml" value="0.27546296296296297" />
         <entry key="app/src/main/res/layout/layout_filter.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/layout_filter_event.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/layout_filter_user.xml" value="0.3098958333333333" />

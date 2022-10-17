@@ -9,8 +9,7 @@ import com.example.R
 import com.example.databinding.FragmentSplashBinding
 import com.example.extensions.dp
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.CustomProgressView
-import kotlinx.android.synthetic.main.fragment_splash.*
+import com.example.ui.views.CustomProgressBar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,7 +29,7 @@ class SplashFragment : BaseFragmentNew<FragmentSplashBinding>(), SplashContract.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val progressBar = CustomProgressView(context)
+        val progressBar = CustomProgressBar(context)
         progressBar.setSize(35.dp)
         progressBar.setProgressColor(
             ContextCompat.getColor(

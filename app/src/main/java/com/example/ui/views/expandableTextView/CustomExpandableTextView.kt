@@ -18,9 +18,11 @@ import android.util.AttributeSet
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.TextViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
 import com.example.util.ClickableSpan
@@ -121,6 +123,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
     private var collapsedDisplayedText: CharSequence? = null
 
     init {
+
         mListener = listener
         ellipsize = END
         check(maxLines == -1 || limitedMaxLines <= maxLines) {

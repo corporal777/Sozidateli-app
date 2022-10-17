@@ -17,6 +17,7 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
@@ -62,7 +63,7 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
-        if (chats.isEmpty()) invitesSection.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message))))
+        if (chats.isEmpty()) invitesSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message))))
         else invitesSection.apply {
             update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list_chat_requests)))
                 .plus(

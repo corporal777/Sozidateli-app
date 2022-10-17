@@ -44,7 +44,9 @@ data class UserDetail(
     @SerializedName("isCurrentUser")
     var isCurrentUser: Boolean = false,
     @SerializedName("blockedNotifications")
-    val blockedNotifications: BlockedNotifications? = null
+    val blockedNotifications: BlockedNotifications? = null,
+    @SerializedName("qrLink")
+    val qrCodeLink : String? = null
 
 ) : Parcelable {
 
@@ -156,7 +158,11 @@ data class UserBinds(
     @SerializedName("chat-room-with-me")
     var chatRoomWithMe: ChatRoomWithMeModel? = null,
     @SerializedName("is-user-in-ban")
-    var isUserInBan: BannedUsersModel? = null
+    var isUserInBan: BannedUsersModel? = null,
+    @SerializedName("sessionsCount")
+    val sessionsCount : Int? = null,
+    @SerializedName("deviceSessionsCount")
+    val deviceSessionsCount : Int? = null
 ) : Parcelable
 
 @Parcelize

@@ -36,7 +36,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.views.CustomProgressView
+import com.example.ui.views.CustomProgressBar
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.SimpleTextWatcher
@@ -416,7 +416,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
     }
 
     override fun showProgressLoadingDisplay() {
-        val mProgressView = CustomProgressView(requireContext())
+        val mProgressView = CustomProgressBar(requireContext())
         mProgressView.setSize(35.dp)
         mProgressView.setProgressColor(
             ContextCompat.getColor(

@@ -34,14 +34,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    override fun showLoadingDialog() {
-        if (!isFinishing) runOnUiThread {
-            countVisibleLoading++
-            addProgressView()
-            getLoadingView().visibility = View.VISIBLE
-        }
-    }
-
     override fun enableBackClick() {
         enableBackClickListener()
     }
@@ -50,11 +42,18 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         disableBackClickListener()
     }
 
+    override fun showLoadingDialog() {
+        if (!isFinishing) runOnUiThread {
+            countVisibleLoading++
+            showProgressView()
+            getLoadingView().visibility = View.VISIBLE
+        }
+    }
 
     override fun showProgressBarLoadingDialog() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading++
-            addProgressView()
+            showProgressView()
             getProgressBarLoadingView().visibility = View.VISIBLE
         }
     }
@@ -65,7 +64,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
             if (countVisibleLoading <= 0) {
                 countVisibleLoading = 0
                 getProgressBarLoadingView().visibility = View.GONE
-                removeProgressView()
+                hideProgressView()
             }
 
         }
@@ -77,7 +76,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
             if (countVisibleLoading <= 0) {
                 countVisibleLoading = 0
                 getLoadingView().visibility = View.GONE
-                removeProgressView()
+                hideProgressView()
             }
 
         }
@@ -125,8 +124,8 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     @LayoutRes
     abstract fun layout(): Int
 
-    abstract fun addProgressView()
-    abstract fun removeProgressView()
+    abstract fun showProgressView()
+    abstract fun hideProgressView()
 
     abstract fun getLoadingView(): View
     abstract fun getProgressBarLoadingView(): View

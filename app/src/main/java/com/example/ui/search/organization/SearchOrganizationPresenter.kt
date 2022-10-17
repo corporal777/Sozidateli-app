@@ -40,6 +40,10 @@ class SearchOrganizationPresenter
                     put(ORGANIZATION_LIMIT, limit)
                     put(ORGANIZATION_OFFSET, offset)
                     put(ORGANIZATION_BINDS, "userFavorite")
+
+                    put("status", "approved")
+                    put("isSpecial", true)
+
                     if (searchText.isNotEmpty()) put(ORGANIZATION_LEGAL_INFORMATION_NAME_SHORT, "$searchText%")
                     val name = filter.name
                     if (!name.isNullOrEmpty()) put(ORGANIZATION_LEGAL_INFORMATION_NAME_SHORT, "$name%")

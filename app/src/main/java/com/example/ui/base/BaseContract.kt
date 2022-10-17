@@ -60,6 +60,12 @@ interface BaseContract {
             action: (() -> Unit?)? = null,
             toolbarTitleAction: (() -> Unit?)? = null
         )
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun enableBackClick()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun disableBackClick()
     }
 
     interface LoadingView {
@@ -83,12 +89,6 @@ interface BaseContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun enableBackClick()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun disableBackClick()
     }
 
     interface Presenter {

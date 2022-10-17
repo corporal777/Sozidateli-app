@@ -66,65 +66,6 @@ class UserProfileSettingsPresenter @Inject constructor(
         viewState.showChangePassword()
     }
 
-    override fun onChangePasswordClickConfirm(newPassword: String) {
-        compositeDisposable += userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onComplete = {
-                    viewState.showPasswordChangeComplete()
-                })
-    }
-
-    override fun checkPasswordValid(password: String) {
-        compositeDisposable += userRepository.checkPasswordNew(password)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    appData.attemptsOfChangePassword = appData.attemptsOfChangePassword - 1
-                    if (appData.attemptsOfChangePassword <= 0) {
-                        viewState.apply {
-                            showOldPasswordError(0)
-                            showLoginAgainDialog()
-                        }
-                    } else {
-                        val newAttempts = appData.attemptsOfChangePassword
-                        viewState.showOldPasswordError(newAttempts)
-                    }
-                },
-                onComplete = {
-                    if (appData.attemptsOfChangePassword != 3){
-                        appData.attemptsOfChangePassword = 3
-                    }
-                    viewState.showNewPasswordTypingContent()
-                }
-            )
-    }
-
-    override fun logoutFromAccount() {
-        compositeDisposable += userRepository.logout(appData.getId())
-            .withDelay(500)
-            .doOnComplete {
-                appData.isSubscribedToPush = false
-                socket.disconnectFromSocket()
-                appData.logout()
-                notificationManager.cancelAll()
-            }
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeBy(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showRequestErrorMessage()
-                },
-                onComplete = {
-
-                }
-            )
-    }
 
     override fun onChangeEmailClick() {
         val email = appData.getUserNew().email
@@ -361,36 +302,5 @@ class UserProfileSettingsPresenter @Inject constructor(
         viewState.showChangeShortName(user)
     }
 
-
-    override fun checkUserShortNameUnique(short: String) {
-        compositeDisposable += userRepository.getUserByShortName(short)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.setUserShortNameUnique(true)
-                }, onSuccess = {
-                    viewState.setUserShortNameUnique(false)
-                })
-    }
-
-    override fun updateUserShortName(short: String) {
-        compositeDisposable += userRepository.updateUserShortName(user.id, UserShortNameBody(short))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.hideChangeUserShortNameDialog()
-                },
-                onSuccess = { new ->
-                    viewState.apply {
-                        appData.updateUserNew {
-                            this.shortName = new.shortName
-                        }
-                        showUserShortNameSuccessUpdated()
-                    }
-                })
-    }
 
 }

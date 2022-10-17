@@ -25,9 +25,6 @@ interface UserProfileSettingsContract {
         fun showChangeShortName(user : UserDetail)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPasswordChangeComplete()
-
-        @StateStrategyType(SkipStrategy::class)
         fun showChangePrivacy()
 
         @StateStrategyType(SkipStrategy::class)
@@ -59,35 +56,11 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showOldPasswordError(attempts: Int)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showNewPasswordTypingContent()
-
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showLoginAgainDialog()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRecoveryPassword(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showUserShortNameSuccessUpdated()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideChangeUserShortNameDialog()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun setUserShortNameUnique(isUnique : Boolean)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
         fun onChangePhoneClick()
-
         fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(newPassword: String)
         fun onChangeEmailClick()
         fun onChangeEmailConfirm(email: String, isFirst: Boolean)
         fun onDeleteEmail()
@@ -111,11 +84,8 @@ interface UserProfileSettingsContract {
         fun onChangeNotConfirmedPhone(phone: String)
         fun onPasswordInputComplete(password: String, phone: String)
         fun confirmCode(phone: String, code: String)
-        fun checkPasswordValid(password: String)
-        fun logoutFromAccount()
 
         fun showChangeShortNameClick()
-        fun checkUserShortNameUnique(short: String)
-        fun updateUserShortName(short: String)
+
     }
 }

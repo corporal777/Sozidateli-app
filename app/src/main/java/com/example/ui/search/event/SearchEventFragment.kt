@@ -112,7 +112,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mCanShowEventAndOrganizations = true
     }
 
 

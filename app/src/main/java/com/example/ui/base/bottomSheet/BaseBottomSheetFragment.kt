@@ -1,0 +1,186 @@
+package com.example.ui.base.bottomSheet
+
+import android.app.Dialog
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import com.example.data.models.UserDetail
+import com.example.ui.base.BaseActivity
+import com.example.ui.views.StateType
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
+import dagger.android.support.AndroidSupportInjection
+
+abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
+    MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
+
+    lateinit var mBinding: binding
+
+    protected var mActivity: BaseActivity? = null
+        private set
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is BaseActivity) {
+            this.mActivity = context
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        if (dialog is BottomSheetDialog) {
+            dialog.behavior.skipCollapsed = true
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        return dialog
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (::mBinding.isInitialized.not()) {
+            mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
+            mBinding.lifecycleOwner = this
+        }
+        return mBinding.root
+    }
+
+    override fun showKeyboard(v: View?) {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    override fun hideKeyboard(v: View?) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        v?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
+
+    override fun showRequestErrorMessage() {
+        mActivity?.showRequestErrorMessage()
+    }
+
+    override fun hideBottomSheetDialog() {
+        dismiss()
+    }
+
+    fun focusOnInput(view : TextInputEditText, canShow: Boolean) {
+        view.apply {
+            post {
+                showSoftInputOnFocus = canShow
+                requestFocus()
+                if (canShow) showKeyboard(this)
+            }
+        }
+    }
+
+    override fun showLoadingDialog() {
+        mActivity?.showLoadingDialog()
+    }
+
+    override fun hideLoadingDialog() {
+        mActivity?.hideLoadingDialog()
+    }
+
+    override fun showProgressBarLoadingDialog() {
+        mActivity?.showProgressBarLoadingDialog()
+    }
+
+    override fun hideProgressBarLoadingDialog() {
+        mActivity?.hideProgressBarLoadingDialog()
+    }
+
+    override fun hideAllLoadingDialogs() {
+        mActivity?.hideAllLoadingDialogs()
+    }
+
+    override fun showCustomProgressDialog() {
+        mActivity?.showCustomProgressDialog()
+    }
+
+    override fun hideCustomProgressDialog() {
+        mActivity?.hideCustomProgressDialog()
+    }
+
+    override fun showToast(message: String) {
+        mActivity?.showToast(message)
+    }
+
+    override fun showToast(message: Int) {
+
+    }
+
+    override fun navigateUp() {
+    }
+
+    override fun hideKeyboard() {
+    }
+
+    override fun showKeyboard() {
+    }
+
+    override fun showNoConnectionMessage(show: Boolean) {
+    }
+
+    override fun showEmailErrorMessage() {
+    }
+
+    override fun showPhoneErrorMessage() {
+    }
+
+    override fun showNotificationErrorMessage() {
+    }
+
+    override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
+    }
+
+    override fun showErrorMessage(canGoBack: Boolean, message: String) {
+    }
+
+    override fun setAppBarElevation(value: Float) {
+    }
+
+    override fun setToolbarTitleAndIcon(
+        title: CharSequence,
+        icon: Drawable?,
+        action: (() -> Unit?)?,
+        toolbarTitleAction: (() -> Unit?)?
+    ) {
+    }
+
+    override fun enableBackClick() {
+    }
+
+    override fun disableBackClick() {
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mBinding.unbind()
+    }
+
+    override fun onDetach() {
+        mActivity = null
+        super.onDetach()
+    }
+
+    @LayoutRes
+    abstract fun layout(): Int
+}

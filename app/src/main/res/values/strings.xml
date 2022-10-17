@@ -938,6 +938,9 @@
     <string name="your_short_name_link_in_sozidateli">Ваша ссылка в «Созидателях»:</string>
     <string name="put_user_short_name">Указать короткое имя</string>
     <string name="short_name_valid_message">Короткое имя свободно</string>
+    <string name="share_label">Поделиться</string>
+    <string name="link_is_copied">Ссылка скопирована.</string>
+    <string name="qr_code_is_saved">QR код сохранен.</string>
 
 
     <string-array name="custom_months">

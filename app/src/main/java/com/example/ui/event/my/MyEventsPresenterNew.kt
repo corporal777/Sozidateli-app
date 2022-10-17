@@ -95,7 +95,6 @@ class MyEventsPresenterNew
                         val list =
                             eventList.filter { x -> x?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED }
                         viewState.apply {
-                            hideEmptyListPlaceholder()
                             setData(eventList)
                         }
                         if (isFirstLaunch) isFirstLaunch = false
@@ -146,14 +145,14 @@ class MyEventsPresenterNew
 
     override fun onSearchTextChange(text: String) {
         mSearchText = text
-        viewState.hideEmptyListPlaceholder()
+        //viewState.hideEmptyListPlaceholder()
         //getEventsData()
         paginationList.invalidate()
     }
 
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
-        viewState.hideEmptyListPlaceholder()
+        //viewState.hideEmptyListPlaceholder()
         paginationList.invalidate()
         //getEventsData()
     }

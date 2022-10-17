@@ -18,7 +18,6 @@
         <attr name="showText" format="boolean" />
     </declare-styleable>
 
-
     <declare-styleable name="ExpandableTextView">
         <attr name="limitedMaxLines" format="integer" />
         <attr name="originalText" format="string" />
@@ -88,18 +87,5 @@
             <enum name="horizontal" value="1"/>
         </attr>
     </declare-styleable>
-
-    <declare-styleable name="BlurDialog">
-        <attr name="blurDialogIcon" format="reference" />
-        <attr name="blurDialogTitle" format="string" />
-        <attr name="blurDialogTitleSize" format="dimension"/>
-        <attr name="blurDialogCornerRadius" format="dimension"/>
-        <attr name="blurDialogDuration" format="enum">
-            <enum name="length_infinite" value="-1"/>
-            <enum name="length_short" value="0"/>
-            <enum name="length_long" value="1"/>
-        </attr>
-    </declare-styleable>
-
 
 </resources>

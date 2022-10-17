@@ -71,6 +71,7 @@ class EventRegistrationPresenter
     private var approvingMode: String? = null
     lateinit var cleanResult: EventRegisterData
 
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.enableActionButton(true)

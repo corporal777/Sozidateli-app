@@ -1,17 +1,34 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
+import android.content.Context
+import android.graphics.*
+import android.graphics.drawable.Drawable
+import android.util.Base64
+import android.util.Base64.decode
+import androidx.core.graphics.drawable.toDrawable
 import com.arellomobile.mvp.InjectViewState
+import com.bumptech.glide.Glide
+import com.example.BuildConfig
+import com.example.R
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.UserShortNameBody
 import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.github.alexzhirkevich.customqrgenerator.QrCodeGenerator
+import com.github.alexzhirkevich.customqrgenerator.QrData
+import com.github.alexzhirkevich.customqrgenerator.createQrOptions
+import com.github.alexzhirkevich.customqrgenerator.encoder.QrCodeMatrix
+import com.github.alexzhirkevich.customqrgenerator.style.*
+import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.runBlocking
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
@@ -19,6 +36,8 @@ import withDelay
 import withLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
+import kotlin.math.roundToInt
+
 
 @InjectViewState
 class ProfilePresenter
@@ -27,12 +46,13 @@ class ProfilePresenter
     private val appData: AppData,
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     private var mDy = 0
     private var mDeviceId = appData.deviceId ?: ""
     private var userId = 0
+    var bmImage: Bitmap? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -60,13 +80,6 @@ class ProfilePresenter
                     viewState.setUser(appData.getUserNew())
                 }, { it.printStackTrace() })
         }
-        compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (!it.userSessions.isNullOrEmpty()) {
-                    viewState.setChangeOrAddNewAccount(it.userSessions.filter { x -> x.isLogged }.size)
-                }
-            }
     }
 
     fun changeScrollingOffset(value: Int) {
@@ -208,39 +221,73 @@ class ProfilePresenter
     }
 
 
-    fun checkUserShortNameUnique(short: String) {
-        compositeDisposable += userRepository.getUserByShortName(short)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.setUserShortNameUnique(true)
-                }, onSuccess = {
-                    viewState.setUserShortNameUnique(false)
-                })
-    }
-
-    fun updateUserShortName(short: String) {
-        compositeDisposable += userRepository.updateUserShortName(userId, UserShortNameBody(short))
+    override fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context) {
+        compositeDisposable += Single.fromCallable {
+            val link = BuildConfig.SHARE_URL + "portal/user/" + user.shortName
+            val data = QrData.Url(link)
+            val opt = createQrOptions(1054, 1054, .2f) {
+                logo {
+                    val drawableSource: DrawableSource
+                    val drawableShape: QrLogoShape
+                    if (!user.image.uri.isNullOrEmpty()) {
+                        drawableSource = if (bmImage == null) {
+                            val bm =
+                                Glide.with(context).asBitmap().load(user.image.uri).submit().get()
+                            drawableShape = QrLogoShape.RoundCorners(.30f)
+                            CustomDrawableSource.DecodedBitmap(bm)
+                        } else {
+                            drawableShape = QrLogoShape.RoundCorners(.30f)
+                            CustomDrawableSource.DecodedBitmap(bmImage!!)
+                        }
+                    } else {
+                        drawableShape = QrLogoShape.Circle
+                        drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
+                    }
+                    drawable = drawableSource
+                    size = .25f
+                    padding = QrLogoPadding.Accurate(.2f)
+                    shape = drawableShape
+                }
+                colors { dark = QrColor.Solid(Color.BLACK) }
+                shapes {
+                    darkPixel = QrPixelShape.RoundCorners()
+                    ball = QrBallShape.RoundCorners(.30f)
+                    frame = QrFrameShape.RoundCorners(.30f)
+                }
+            }
+            QrCodeGenerator(context).generateQrCode(data, opt)
+        }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
-                    viewState.hideChangeUserShortNameDialog()
-                },
-                onSuccess = { new ->
-                    viewState.apply {
-                        appData.updateUserNew {
-                            this.shortName = new.shortName
+                    compositeDisposable += Maybe.fromCallable {
+                        val str = StringBuilder(user.qrCodeLink)
+                        val l = str.delete(0, 22)
+                        val imageByteArray = decode(l.toString(), Base64.DEFAULT)
+                        Glide.with(context).asBitmap().load(imageByteArray).submit().get()
+                    }.performOnBackgroundOutOnMain()
+                        .subscribeSimple { bm ->
+                            viewState.showProfileDataBottomSheetDialog(user, bm)
                         }
-                        setUserLink(new)
-                        showUserShortNameSuccessUpdated()
-                    }
+                },
+                onSuccess = {
+                    viewState.showProfileDataBottomSheetDialog(user, it)
                 })
+
     }
 
     override fun onSettingsClick() {
         viewState.showSettings()
     }
+
+    interface CustomDrawableSource {
+
+        data class DecodedBitmap(val bitmap: Bitmap) : DrawableSource {
+            override suspend fun get(context: Context): Drawable =
+                bitmap.toDrawable(context.resources)
+        }
+    }
+
 }

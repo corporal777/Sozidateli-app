@@ -528,7 +528,7 @@ class MainPresenter
     override fun onHandleRecoverPasswordLink(/*email: String, */code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribe {
                 viewState.showDialogRecoverPassword(/*email,*/ code)
             }.call(compositeDisposable)
@@ -636,7 +636,11 @@ class MainPresenter
         authRepository.recoverPasswordNew(RecoverPasswordBody("email", code, password))
             .performOnBackgroundOutOnMain()
             .withLoadingDialog(viewState)
-            .subscribe({}, { viewState.showDialogRecoverPassword(/*email,*/ code) })
+            .subscribe({
+
+            }, {
+                viewState.showDialogRecoverPassword(/*email,*/ code)
+            })
             .call(compositeDisposable)
     }
 

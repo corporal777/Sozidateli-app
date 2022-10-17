@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -44,6 +45,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import onScrolled
+import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -417,30 +419,19 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
     }
 
     override fun setEnableAddToFavoriteButton(enabled: Boolean) {
-        mBinding.ivAddToFavorite.apply {
-            isEnabled = enabled
-            alpha = if (enabled) 1f
-            else 0.6f
-        }
+        mBinding.ivAddToFavorite.setAlphaVision(enabled)
     }
 
     override fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?) {
-        mBinding.apply {
-            ivAddToFavorite.isVisible = true
-            if (action != null) {
-                if (action == UserSubscribeButton.Action.UNFAVORITE) {
-                    ivAddToFavorite.apply {
-                        setImageResource(R.drawable.ic_star_filled)
-                        setOnClickListener {
-                            presenter.onUnsubscribeClick()
-                        }
-                    }
-                } else {
-                    ivAddToFavorite.apply {
-                        setImageResource(R.drawable.ic_star)
-                        setOnClickListener {
-                            presenter.onSubscribeClick()
-                        }
+        mBinding.ivAddToFavorite.apply {
+            if (action != null){
+                isVisible = true
+                setAction(action)
+                setOnClickListener {
+                    if (action == UserSubscribeButton.Action.UNFAVORITE) {
+                        presenter.onUnsubscribeClick()
+                    } else {
+                        presenter.onSubscribeClick()
                     }
                 }
             }

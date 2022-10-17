@@ -53,11 +53,10 @@ class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            btnRecovery.setOnClickListener { presenter.onRecoveryClick() }
-//            etEmail.addTextChangedListener(SimpleTextWatcher().setOnTextChangeRunnable { charSequence, _, _, _ ->
-//                presenter.onChangeEmailText(charSequence.toString())
-//            })
-
+            btnRecovery.setOnClickListener {
+                presenter.onRecoveryClick()
+                hideKeyboard()
+            }
             etEmail.apply {
                 filters = emailFilter
                 onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }

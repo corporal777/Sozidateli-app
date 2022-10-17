@@ -1,6 +1,5 @@
 package com.example.ui.userprofile.read.settings
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -25,9 +24,10 @@ import com.example.extensions.showChangeEmailDialog
 import com.example.extensions.showNewChangeEmailDialog
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
-import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
+import com.example.ui.profile.shortName.ChangeShortNameFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
@@ -48,8 +48,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     private var isConfirmed = false
 
     private lateinit var mUser: UserDetail
-    private var changePasswordDialog: ChangePasswordBottomSheetFragment? = null
-    private var changeShortNameDialog: ChangeUserShortNameFragment? = null
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -160,7 +158,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun passwordSuccess(phone: String) {
-
         passwordDialog.hideDialog()
         dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
         dialog.setPhoneForCode(phone)
@@ -212,7 +209,12 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 )
 
             tvPhoneMobile.text = phone
-            tvShortname.text = "@" + user.shortName
+            if (user.shortName == user.id.toString()){
+                tvShortname.text = "@id" + user.shortName
+            }else {
+                tvShortname.text = "@" + user.shortName
+            }
+
 
             tvEmail.text = user.email?.onConfirmation ?: user.email?.value
 
@@ -321,75 +323,16 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     //var newPassDialog: ChangePasswordDialog? = null
 
     override fun showChangePassword() {
-        changePasswordDialog = ChangePasswordBottomSheetFragment()
-        changePasswordDialog?.show(requireActivity().supportFragmentManager, "change_password_dialog")
-        changePasswordDialog?.setOnNextActionCallback { password ->
-            presenter.checkPasswordValid(password)
-        }
-        changePasswordDialog?.setOnRecoveryPasswordActionCallback {
-            changePasswordDialog = null
-            showRecoveryPassword("")
-        }
+        val changePasswordDialog = ChangePasswordFragment(false, "")
+        changePasswordDialog.show(requireActivity().supportFragmentManager, "change_password_settings")
     }
 
     override fun showChangeShortName(user: UserDetail) {
-        changeShortNameDialog = ChangeUserShortNameFragment(user)
-        changeShortNameDialog?.show(requireActivity().supportFragmentManager, "change_short_name_settings")
-        changeShortNameDialog?.setOnCheckUserShortNameUniqueCallback {
-            presenter.checkUserShortNameUnique(it)
-        }
-        changeShortNameDialog?.setOnSaveUserShortNameCallback {
-            presenter.updateUserShortName(it)
-            changeShortNameDialog?.dismiss()
-        }
-    }
-
-    override fun showUserShortNameSuccessUpdated() {
-        changeShortNameDialog = null
-        showToast("Короткое имя изменено")
-    }
-
-    override fun hideChangeUserShortNameDialog() {
-        changeShortNameDialog = null
-    }
-
-    override fun setUserShortNameUnique(isUnique: Boolean) {
-        changeShortNameDialog?.setShortNameUnique(isUnique)
-    }
-
-    override fun showOldPasswordError(attempts: Int) {
-        changePasswordDialog?.setPasswordIsNotCorrect(attempts)
-    }
-
-
-    override fun showNewPasswordTypingContent() {
-        changePasswordDialog?.setPasswordIsCorrect()
-        changePasswordDialog?.setOnSavePasswordActionCallback { password ->
-            presenter.onChangePasswordClickConfirm(password)
-        }
-    }
-
-
-    override fun showLoginAgainDialog() {
-        MessageDialogWithBrownButton(
-            requireContext(),
-            "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново.",
-            false
-        ).setSelectCallback {
-            presenter.logoutFromAccount()
-            changePasswordDialog?.dismiss()
-            changePasswordDialog = null
-        }
-    }
-
-    override fun showRecoveryPassword(email: String) {
-        findNavController().navigate(UserProfileSettingsFragmentDirections.userProfileSettingsToRecoveryAction(email))
-    }
-
-
-    override fun showPasswordChangeComplete() {
-        showToast(getString(R.string.profile_password_change_complete))
-        changePasswordDialog = null
+        val changeShortNameDialog = ChangeShortNameFragment(user)
+        changeShortNameDialog.show(
+            requireActivity().supportFragmentManager,
+            "change_short_name_settings"
+        )
     }
 
     override fun showChangePrivacy() {

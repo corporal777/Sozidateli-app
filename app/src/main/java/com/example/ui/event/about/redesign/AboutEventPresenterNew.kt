@@ -53,6 +53,7 @@ class AboutEventPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.updateAppBarBackgroundColorValue(mDy)
         val userEventInfo = userEventData.userEvent?.eventInfo
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)

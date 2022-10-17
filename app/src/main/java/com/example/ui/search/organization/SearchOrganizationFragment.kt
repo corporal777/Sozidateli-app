@@ -45,12 +45,10 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mCanShowEventAndOrganizations = true
     }
 
 
     override fun createItem(itemData: OrganizationNew/*Organization*/?): Group {
-
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else {
             OrganizationItem(

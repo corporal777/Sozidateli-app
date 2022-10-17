@@ -123,7 +123,7 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/custom_text_background_selectable"
-                        android:paddingHorizontal="4dp"
+                        android:paddingHorizontal="5dp"
                         android:text="@string/state"
                         android:textColor="@color/main_brown_color_new"
                         android:textSize="14sp"

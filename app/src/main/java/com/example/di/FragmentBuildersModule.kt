@@ -52,8 +52,9 @@ import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
-import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
+import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
+import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.search.chat.SearchChatFragment
@@ -88,6 +89,7 @@ import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -359,5 +361,14 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChangeAccountFragment(): ChangeAccountFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChangePasswordBottomSheetFragment(): ChangePasswordFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChangeShortNameFragment(): ChangeShortNameFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProfileDataFragment(): ProfileDataFragment
 
 }

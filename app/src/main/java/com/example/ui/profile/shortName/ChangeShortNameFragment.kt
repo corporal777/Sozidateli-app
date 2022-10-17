@@ -1,4 +1,4 @@
-package com.example.ui.profile.changeShortName
+package com.example.ui.profile.shortName
 
 import android.os.Bundle
 import android.view.View
@@ -8,24 +8,37 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetChangeShortNameBinding
-import com.example.ui.base.BaseBottomSheetFragment
-import com.example.ui.profile.ProfileFragmentArgs
-import com.example.ui.profile.ProfilePresenter
-import com.example.ui.userprofile.read.settings.ChangePasswordBottomSheetFragment
-import kotlinx.android.synthetic.main.calendar_view.view.*
+import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
+import com.example.ui.userprofile.read.settings.change_password.ChangePasswordPresenter
+import com.example.ui.views.dialogs_new.CalendarBottomSheet
 import onTextChanged
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeUserShortNameFragment(val user: UserDetail) :
-    BaseBottomSheetFragment<BottomSheetChangeShortNameBinding>() {
+class ChangeShortNameFragment(val user: UserDetail) :
+    BaseBottomSheetFragment<BottomSheetChangeShortNameBinding>(), ChangeShortNameContract.View {
 
-    private var onSaveUserShortName: (name: String) -> Unit = { }
-    private var checkUserShortNameUnique: (name: String) -> Unit = {}
+    private var userShortName = ""
+    private var setUserShortName : (user : UserDetail) -> Unit = {}
 
-    private var userShortName = StringBuilder()
+    @InjectPresenter
+    lateinit var presenter: ChangeShortNamePresenter
+
+    @Inject
+    lateinit var presenterProvider: Provider<ChangeShortNamePresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): ChangeShortNamePresenter = presenterProvider.get().apply {
+    }
+
     init {
-        userShortName = getUserShortName(user.shortName)
+        userShortName = if (user.id.toString() == user.shortName){
+            "sozidateli.ru/id" + user.shortName
+        }else {
+            "sozidateli.ru/" + user.shortName
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,20 +55,16 @@ class ChangeUserShortNameFragment(val user: UserDetail) :
                     it?.toString()?.let { text ->
                         if (text.isNullOrEmpty()){
                             enableActionButton(false)
-                            tvShortName.text = userShortName
                             tvShortNameInvalidError.isVisible = false
                         }else {
-                            checkUserShortNameUnique.invoke(text)
-                            tvShortName.text = getUserShortName(text)
+                            presenter.checkUserShortNameUnique(text)
                             enableActionButton(true)
                         }
-
                     }
                 }
             }
             btnSave.setOnClickListener {
-                hideKeyboard(mBinding.root)
-                onSaveUserShortName(etShortName.text.toString())
+                presenter.updateUserShortName(user.id, etShortName.text.toString())
             }
         }
     }
@@ -64,16 +73,8 @@ class ChangeUserShortNameFragment(val user: UserDetail) :
         mBinding.btnSave.isEnabled = enable
     }
 
-    private fun getUserShortName(shortName: String?) : java.lang.StringBuilder{
-        val link =  if (user.id.toString() == shortName){
-            "sozidateli.ru/id"
-        }else {
-            "sozidateli.ru/"
-        }
-        return StringBuilder(link).append(shortName)
-    }
 
-    fun setShortNameUnique(isUnique: Boolean) {
+    override fun setUserShortNameUnique(isUnique: Boolean) {
         mBinding.tvShortNameInvalidError.apply {
             isVisible = true
             if (isUnique){
@@ -86,15 +87,19 @@ class ChangeUserShortNameFragment(val user: UserDetail) :
         }
     }
 
-    fun setOnSaveUserShortNameCallback(block: (name: String) -> Unit): ChangeUserShortNameFragment {
-        onSaveUserShortName = block
+    fun getUpdatedUserShortName(block: (user: UserDetail) -> Unit): ChangeShortNameFragment {
+        setUserShortName = block
         return this
     }
 
-    fun setOnCheckUserShortNameUniqueCallback(block: (name: String) -> Unit): ChangeUserShortNameFragment {
-        checkUserShortNameUnique = block
-        return this
+    override fun showUserShortNameSuccessUpdated() {
+        showToast("Короткое имя изменено")
     }
+
+    override fun updateUserShortNameInProfile(user: UserDetail) {
+        setUserShortName.invoke(user)
+    }
+
 
     override fun layout(): Int = R.layout.bottom_sheet_change_short_name
 }

@@ -1,5 +1,9 @@
 package com.example.ui.profile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -72,14 +76,9 @@ interface ProfileContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showQrScannerToAuthWebSite()
 
-        @StateStrategyType(SkipStrategy::class)
-        fun setUserShortNameUnique(isUnique : Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showUserShortNameSuccessUpdated()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideChangeUserShortNameDialog()
+        //fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap)
+        fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -100,5 +99,7 @@ interface ProfileContract {
         fun checkEmailIsUnique(email: String)
         fun checkPhoneIsUnique(phone: String)
         fun onQrScannerToAuthWebClick()
+
+        fun onShowProfileDataBottomSheetDialog(user: UserDetail, context : Context)
     }
 }

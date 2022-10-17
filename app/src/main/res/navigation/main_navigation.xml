@@ -1441,4 +1441,42 @@
         android:label="AuthorizationFragmentNew"
         tools:layout="@layout/fragment_authorization" />
 
+    <dialog
+        android:id="@+id/change_password_fragment"
+        android:name="com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/bottom_sheet_change_password">
+
+        <argument
+            android:name="isRecover"
+            app:argType="boolean"
+            app:nullable="false"/>
+
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="false"/>
+    </dialog>
+
+    <dialog
+        android:id="@+id/profile_data_fragment"
+        android:name="com.example.ui.profile.data.ProfileDataFragment"
+        android:label="fragment_profile_data"
+        tools:layout="@layout/bottom_sheet_profile_data">
+
+        <argument
+            android:name="shortName"
+            app:argType="string"
+            app:nullable="false"/>
+
+        <argument
+            android:name="userName"
+            app:argType="string"
+            app:nullable="false"/>
+
+        <argument
+            android:name="image"
+            app:argType="android.graphics.Bitmap"
+            app:nullable="false"/>
+    </dialog>
 </navigation>

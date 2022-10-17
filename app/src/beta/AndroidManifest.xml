@@ -49,6 +49,11 @@
                     android:host="beta.sozidateli.ru"
                     android:pathPrefix="/switch-account"
                     android:scheme="https" />
+
+                <data
+                    android:host="beta.sozidateli.ru"
+                    android:pathPrefix="/qr"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 

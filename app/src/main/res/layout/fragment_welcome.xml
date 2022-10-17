@@ -15,58 +15,38 @@
 
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/auth_logo_height"
-            android:layout_marginTop="@dimen/auth_logo_margin_top"
             android:contentDescription="@string/content_description_logo"
             android:src="@drawable/ic_app_logo_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/top_guideLine"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
 
-        <androidx.legacy.widget.Space
-            android:id="@+id/space"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top_guideLine"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
+
+
+        <com.example.ui.views.CustomProgressView
+            android:id="@+id/progressView"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             app:layout_constraintBottom_toTopOf="@id/tvGreeting"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivLogo" />
-
-        <LinearLayout
-            android:id="@+id/progressViewContainer"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_star_btn_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/tvGreeting"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/space" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/tvGreeting"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintTop_toBottomOf="@id/top_guideLine" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvGreeting"
             fontPath="fonts/sf_pro_text_semibold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
             android:gravity="center"
             android:letterSpacing="-0.01"
             android:textColor="@android:color/white"
@@ -74,8 +54,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar"
-            tools:ignore="MissingConstraints"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/welcome_greeting_message" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

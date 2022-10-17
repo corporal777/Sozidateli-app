@@ -23,7 +23,6 @@ class SearchUserFragment : AbstractSearchUserFragment<SearchUserPresenter>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mCanShowEventAndOrganizations = true
     }
 
 

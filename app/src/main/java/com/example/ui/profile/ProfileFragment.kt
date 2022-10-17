@@ -1,11 +1,10 @@
 package com.example.ui.profile
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
+import android.graphics.Bitmap
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -28,13 +27,16 @@ import com.example.databinding.FragmentProfileBinding
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
-import com.example.ui.profile.changeShortName.ChangeUserShortNameFragment
-import com.example.ui.userprofile.read.settings.ChangePasswordBottomSheetFragment
+import com.example.ui.profile.data.ProfileDataFragment
+import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
+import com.example.util.setImage
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -51,7 +53,22 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
 
-    private var changeShortNameDialog: ChangeUserShortNameFragment? = null
+    private var changeShortNameDialog: ChangeShortNameFragment? = null
+
+    private val dummyTarget = object : Target {
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            mBinding.ivAvatar.setImageDrawable(placeHolderDrawable)
+        }
+
+        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            e?.printStackTrace()
+        }
+
+        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+            mBinding.ivAvatar.setImageBitmap(bitmap)
+            presenter.bmImage = bitmap
+        }
+    }
 
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get().apply {
@@ -99,9 +116,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     override fun setUser(user: UserDetail) {
         setUserLink(user)
+        setChangeOrAddNewAccount(user.binds?.deviceSessionsCount ?: 0)
         val avatar = user.image?.uri
-        Picasso.get().load(if (avatar.isNullOrEmpty()) null else avatar)
-            .placeholder(R.drawable.avatar_placeholder_rectangle).into(mBinding.ivAvatar)
+        Picasso.get().load(avatar).into(dummyTarget)
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -141,15 +158,31 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun setUserLink(user: UserDetail) {
         val userId = getString(R.string.user_id, user.id.toString())
         val toolbarTitle: SpannableStringBuilder
-        var shortNameClick : (() -> Unit)? = null
+        var shortNameClick: (() -> Unit)? = null
         if (user.id.toString() == user.shortName) {
             val userShortName = SpannableString(getString(R.string.put_user_short_name))
-            val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
-            userShortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val font =
+                Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
+            userShortName.setSpan(
+                CustomTypefaceSpan("", font),
+                0,
+                userShortName.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
-            userShortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            userShortName.setSpan(
+                ForegroundColorSpan(expandColor),
+                0,
+                userShortName.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
-            userShortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            userShortName.setSpan(
+                AbsoluteSizeSpan(textSize),
+                0,
+                userShortName.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             toolbarTitle = SpannableStringBuilder(userId + "\n").append(userShortName)
             shortNameClick = {
                 showChangeUserShortNameDialog(user)
@@ -157,9 +190,12 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         } else {
             toolbarTitle = SpannableStringBuilder(userId)
         }
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
+        val actionIcon =
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
         setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
-            copyLinkToBuffer(user)
+            val link = BuildConfig.SHARE_URL + "portal/user/" + user.shortName
+            //copyTextToBuffer(requireContext(), link)
+            presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
         }, {
             shortNameClick?.invoke()
         })
@@ -174,7 +210,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
                     0,
                     0,
                     0
-                );
+                )
             }
         } else {
             mBinding.apply {
@@ -213,30 +249,19 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
             }
     }
 
-    private fun showChangeUserShortNameDialog(user: UserDetail){
-        changeShortNameDialog = ChangeUserShortNameFragment(user)
+    private fun showChangeUserShortNameDialog(user: UserDetail) {
+        changeShortNameDialog = ChangeShortNameFragment(user)
         changeShortNameDialog?.show(requireActivity().supportFragmentManager, "change_short_name")
-        changeShortNameDialog?.setOnCheckUserShortNameUniqueCallback {
-            presenter.checkUserShortNameUnique(it)
-        }
-        changeShortNameDialog?.setOnSaveUserShortNameCallback {
-            presenter.updateUserShortName(it)
-            changeShortNameDialog?.dismiss()
+        changeShortNameDialog?.getUpdatedUserShortName {
+            setUserLink(it)
         }
     }
 
-    override fun hideChangeUserShortNameDialog() {
-        changeShortNameDialog = null
+    override fun showProfileDataBottomSheetDialog(user: UserDetail, bm: Bitmap) {
+        val profileDataDialog = ProfileDataFragment(user.nameLastName, user.shortName ?: "", bm)
+        profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }
 
-    override fun setUserShortNameUnique(isUnique: Boolean) {
-        changeShortNameDialog?.setShortNameUnique(isUnique)
-    }
-
-    override fun showUserShortNameSuccessUpdated() {
-        changeShortNameDialog = null
-        showToast("Короткое имя изменено")
-    }
 
     override fun showQrScannerToAuthWebSite() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToQrScannerAuthWebsiteFragment())
@@ -284,7 +309,13 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun showChangeAccount() {
-        findNavController().navigate(ProfileFragmentDirections.profileToChangeAccount("", AuthType.NONE, false))
+        findNavController().navigate(
+            ProfileFragmentDirections.profileToChangeAccount(
+                "",
+                AuthType.NONE,
+                false
+            )
+        )
     }
 
     private fun showUserStateDialog() {
@@ -339,14 +370,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         val userId = "User id: $uid"
         val postfix = "\n---------------\nПожалуйста, опишите проблему ниже.\n\n"
         return listOf(os, api, appVersion, userId).joinToString(separator = "\n", postfix = postfix)
-    }
-
-    private fun copyLinkToBuffer(user: UserDetail) {
-        val linkToAccount = BuildConfig.SHARE_URL + "portal/user/" + user.id
-        val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("idLink", linkToAccount)
-        clipboardManager.setPrimaryClip(clip)
-        showToast("Ссылка скопирована в буфер обмена")
     }
 
     override fun openPlayMarket() {
