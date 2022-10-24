@@ -19,7 +19,7 @@
             tools:itemCount="1"
             tools:listitem="@layout/item_event_detail_image_block" />
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.example.ui.views.CustomAppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,16 +67,14 @@
                         android:textSize="11sp"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/iv_add_To_favorite" />
+                        app:layout_constraintEnd_toStartOf="@id/iv_add_to_favorite" />
 
-                    <ImageView
-                        android:id="@+id/iv_add_To_favorite"
+                    <com.example.ui.views.UserSubscribeImageView
+                        android:id="@+id/iv_add_to_favorite"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="5dp"
-                        android:foreground="@drawable/custom_toolbar_btn_background_selectable"
-                        android:padding="9dp"
                         android:src="@drawable/ic_star"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -86,7 +84,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
+        </com.example.ui.views.CustomAppBarLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

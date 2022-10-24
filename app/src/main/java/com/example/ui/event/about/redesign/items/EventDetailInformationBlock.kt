@@ -9,7 +9,7 @@ import com.xwray.groupie.Section
 
 class EventDetailInformationBlock(
     val label: String,
-    val data: EventNew?,
+    val address: String?,
     val pages: List<PageModel>?,
     val mapClick: () -> Unit,
     val pageClick: (id: Int) -> Unit
@@ -19,25 +19,29 @@ class EventDetailInformationBlock(
     private val mContentSection = Section()
 
     init {
-        add(mLabelItem)
-        mContentSection.apply {
-            if (!data?.address?.fullValue.isNullOrEmpty()) {
-                add(
-                    EventPageItemNew(
-                        1,
-                        "Как добраться"
-                    ) { mapClick() })
+        if (!address.isNullOrEmpty() || !pages.isNullOrEmpty()){
+            add(mLabelItem)
+            mContentSection.apply {
+                if (!address.isNullOrEmpty()) {
+                    add(
+                        EventPageItemNew(
+                            1,
+                            "Как добраться"
+                        ) { mapClick() })
+                }
+                if (!pages.isNullOrEmpty()) {
+                    addAll(pages.map { item ->
+                        EventPageItemNew(
+                            item.id ?: 0,
+                            item.name ?: ""
+                        ) { pageClick(it) }
+                    })
+                }
             }
-            if (!pages.isNullOrEmpty()) {
-                addAll(pages.map { item ->
-                    EventPageItemNew(
-                        item.id ?: 0,
-                        item.name ?: ""
-                    ) { pageClick(it) }
-                })
-            }
+            add(mContentSection)
         }
-        add(mContentSection)
+
+
     }
 
     override fun getGroup(position: Int): Group {

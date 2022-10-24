@@ -15,7 +15,10 @@ interface ProfileDataContract {
     interface View : BaseBottomSheetContract.View{
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(image : Bitmap, userName : String, userLink : String)
+        fun setImage(image : Bitmap)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setName(userName : String, userLink : String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showShareImage(uri : Uri)
@@ -25,12 +28,18 @@ interface ProfileDataContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnackBarMessage(message : String, icon : Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showQrCodeLoadingProgress()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideQrCodeLoadingProgress()
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
-        fun shareImageClick(context: Context)
+        fun shareImageClick(context: Context,image: Bitmap)
         fun shareLinkClick(text : String)
-        fun saveImageToGalleryClick(context: Context)
+        fun saveImageToGalleryClick(context: Context, image: Bitmap)
     }
 
 }

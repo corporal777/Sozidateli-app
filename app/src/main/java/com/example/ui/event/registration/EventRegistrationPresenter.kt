@@ -2,12 +2,8 @@ package com.example.ui.event.registration
 
 import android.Manifest
 import android.content.ContentResolver
-import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
-import android.provider.DocumentsContract
-import android.util.Log
-import androidx.core.net.toFile
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -21,7 +17,6 @@ import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.FileUtils.getDataColumn
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -34,13 +29,11 @@ import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -70,10 +63,26 @@ class EventRegistrationPresenter
     private var formId: Int = 0
     private var approvingMode: String? = null
     lateinit var cleanResult: EventRegisterData
+    private var mDy = 0
 
+    override fun changeAppBarBackgroundColorValue(canScrollVertically: Boolean, value: Int) {
+        if (!canScrollVertically) {
+            mDy = 0
+            viewState.updateAppBarBackgroundColorValue(mDy)
+        } else {
+            mDy += value
+            viewState.updateAppBarBackgroundColorValue(mDy)
+        }
+    }
+
+    override fun attachView(view: EventRegistrationContract.View?) {
+        super.attachView(view)
+        viewState.updateAppBarBackgroundColorValue(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.updateAppBarBackgroundColorValue(mDy)
         viewState.enableActionButton(true)
 
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
@@ -89,6 +98,22 @@ class EventRegistrationPresenter
                         val form = event.binds?.form?.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
                         eventData.registrationHeadline = form?.title
                         eventData.registrationSubtitle = form?.subtitle
+                        when(form?.background){
+                            EventFormModel.BackgroundType.ORGANIZATION -> {
+                                eventData.image = if (!event.binds?.organization?.image?.uri.isNullOrEmpty()){
+                                    event.binds?.organization?.image?.uri
+                                }else {
+                                    event.binds?.organization?.backgroundColor?.value
+                                }
+                            }
+                            EventFormModel.BackgroundType.EVENT -> {
+                                eventData.image = if (!event.image?.uri.isNullOrEmpty()){
+                                    event.image?.uri
+                                }else {
+                                    event.backgroundColor?.value
+                                }
+                            }
+                        }
                         val fieldsList = mapFields(form?.fields)
                         formId = form?.id ?: 0
 
@@ -193,6 +218,7 @@ class EventRegistrationPresenter
             }
         }
     }
+
 
     private fun registerToEvent() {
         compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
@@ -491,7 +517,6 @@ class EventRegistrationPresenter
                     addFormDataPart("form", formId.toString())
                     added = true
                     fieldsData.forEachIndexed { index, fieldData ->
-                        val position = index
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
                         //addFormDataPart("fields[$position][id]", key)
@@ -500,35 +525,36 @@ class EventRegistrationPresenter
                                 val path = it.path
                                 val fileId = it.id
                                 if (path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true) {
-                                    addFormDataPart("fields[$position][id]", key)
+                                    addFormDataPart("fields[$index][id]", key)
                                     val name = "${it.name}.${it.mimeType}"
                                     contentResolver.openInputStream(path)?.buffered()
                                         ?.use { stream -> stream.readBytes() }?.let { bytes ->
                                             val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                             addFormDataPart(
                                                 //"fields[$position][value][file]",
-                                                "fields[$position][value]",
+                                                "fields[$index][value]",
                                                 name,
                                                 body
                                             )
                                             added = true
                                         }
                                 }else {
-                                    addFormDataPart("fields[$position][id]", key)
-                                    addFormDataPart("fields[$position][value]", fileId)
+                                    addFormDataPart("fields[$index][id]", key)
+                                    addFormDataPart("fields[$index][value]", fileId)
                                     added = true
                                 }
                             }
                             else -> {
                                 if (value is Iterable<*>) {
                                     if (value.count() > 0) addFormDataPart(
-                                        "fields[$position][id]",
+                                        "fields[$index][id]",
                                         key
                                     )
-                                    value.forEachIndexed { index, any ->
+                                    value.forEachIndexed { _, any ->
                                         if (any != null) {
                                             addFormDataPart(
-                                                "fields[$position][value][]",
+                                                //"fields[$position][value][]",
+                                                "fields[$index][value]",
                                                 any.toString()
                                             )
                                             added = true
@@ -538,33 +564,33 @@ class EventRegistrationPresenter
                                     when (value) {
                                         is EventPassport ->
                                             if (value.isDataComplete()) {
-                                                addFormDataPart("fields[$position][id]", key)
+                                                addFormDataPart("fields[$index][id]", key)
                                                 addFormDataPart(
-                                                    "fields[$position][value][series]",
+                                                    "fields[$index][value][series]",
                                                     value.series ?: ""
                                                 )
                                                 addFormDataPart(
-                                                    "fields[$position][value][number]",
+                                                    "fields[$index][value][number]",
                                                     value.number ?: ""
                                                 )
                                                 addFormDataPart(
-                                                    "fields[$position][value][issuedBy]",
+                                                    "fields[$index][value][issuedBy]",
                                                     value.issuedBy ?: ""
                                                 )
                                                 addFormDataPart(
-                                                    "fields[$position][value][issuedDepartment]",
+                                                    "fields[$index][value][issuedDepartment]",
                                                     value.issuedDepartment ?: ""
                                                 )
                                                 addFormDataPart(
-                                                    "fields[$position][value][issuedDate]",
+                                                    "fields[$index][value][issuedDate]",
                                                     value.issuedDate ?: ""
                                                 )
                                                 added = true
                                             } else null
                                         else -> {
                                             val data = value.toString()
-                                            addFormDataPart("fields[$position][id]", key)
-                                            addFormDataPart("fields[$position][value]", data)
+                                            addFormDataPart("fields[$index][id]", key)
+                                            addFormDataPart("fields[$index][value]", data)
                                             added = true
                                         }
                                     }

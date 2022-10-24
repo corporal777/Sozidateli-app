@@ -454,7 +454,8 @@
     </style>
 
     <style name="Profile.Edit.InputEventRegister">
-        <item name="fontPath">font/sf_pro_text.ttf</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">17sp</item>
@@ -517,7 +518,7 @@
     <style name="Profile.Edit.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
@@ -657,6 +658,7 @@
     </style>
 
     <style name="CheckBox">
+        <item name="android:letterSpacing">-0.01</item>
         <item name="android:textSize">15sp</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
@@ -706,7 +708,7 @@
 
     <style name="Profile.Edit.TextViewTitle">
         <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">font/sf_pro_display.OTF</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/chat_list_date</item>
         <item name="android:layout_marginBottom">9dp</item>

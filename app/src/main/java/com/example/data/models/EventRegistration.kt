@@ -13,7 +13,7 @@ data class EventRegistration(
         val name: String,
         val description: String?,
         val logo: String?,
-        val image : String?,
+        var image : String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")

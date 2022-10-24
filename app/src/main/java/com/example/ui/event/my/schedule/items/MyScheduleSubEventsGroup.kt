@@ -1,17 +1,13 @@
 package com.example.ui.event.my.schedule.items
 
-import android.util.Log
-import com.example.data.models.EventActivityModel
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.event.about.redesign.items.EventDetailActivitiesBlock
 import com.example.ui.event.activities.items.NoSubEventItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
-import ru.ok.android.sdk.LOG_TAG
 
 class MyScheduleSubEventsGroup(
     val data: MyScheduleEventsData,

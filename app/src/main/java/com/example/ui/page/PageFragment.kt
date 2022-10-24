@@ -15,9 +15,12 @@ import com.example.databinding.FragmentPageBinding
 import com.example.holders.DocumentItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.markWon
+import com.example.util.showCustomTabsBrowser
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onScrolled
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,9 +51,9 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
             recyclerView.apply {
                 adapter = groupAdapter
             }
-            scrollContainer.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            scrollContainer.onScrolled { scrollY, oldScrollY, _, _ ->
                 presenter.changeAppBarElevation(scrollY - oldScrollY)
-            })
+            }
         }
 
     }
@@ -75,6 +78,7 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
                 isVisible = false
             } else {
                 isVisible = true
+                //markWon(requireContext()).setMarkdown(this, title)
                 setHtml(title, HtmlHttpImageGetter(this))
             }
         }
@@ -84,7 +88,8 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
                 isVisible = false
             } else {
                 isVisible = true
-                setHtml(content, HtmlHttpImageGetter(this))
+                markWon(requireContext()).setMarkdown(this, content)
+                //setHtml(content, HtmlHttpImageGetter(this))
             }
         }
 
@@ -93,8 +98,9 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
     }
 
     override fun openLinkInBrowser(link: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-        startActivity(browserIntent)
+        showCustomTabsBrowser(requireContext(), link)
+//        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+//        startActivity(browserIntent)
     }
 
 

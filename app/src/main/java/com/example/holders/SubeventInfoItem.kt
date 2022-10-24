@@ -14,12 +14,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
+import com.example.databinding.ItemSubeventInfoBinding
 import com.example.extensions.*
 import com.example.ui.views.TagChipNew
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
+import com.example.util.markWon
 import com.google.android.material.chip.Chip
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.fragment_about_event_new.*
@@ -40,44 +43,39 @@ open class SubeventInfoItem(
     private val onAddClickListener: (subEvent: EventActivityModel) -> Unit,
     private val onRemoveClickListener: (subEvent: EventActivityModel) -> Unit,
     private val onTagCLick: (id: Int) -> Unit
-) : Item(subEvent.id?.toLong() ?: 0) {
+) : BindableItem<ItemSubeventInfoBinding>(subEvent.id?.toLong() ?: 0) {
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            val time = subEvent.holdingDate?.from
-                .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
-                ?.let {
-                    StringBuilder(it)
-                        .append(" ")
-                    //.append(tvTitle.context.getString(R.string.sub_event_time_msk))
-                }
+    private var activityTime = ""
+    init {
+        val time = subEvent.holdingDate?.from
+            .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+            ?.let {
+                StringBuilder(it)
+                    .append(" ")
+                //.append(tvTitle.context.getString(R.string.sub_event_time_msk))
+            }
+        val dayAndMonth =
+            subEvent.holdingDate?.from.formatToSubEventDatesInterval(subEvent.holdingDate?.to)
+        activityTime = "$dayAndMonth $time"
+    }
 
-            val dayAndMonth =
-                subEvent.holdingDate?.from.formatToSubEventDatesInterval(subEvent.holdingDate?.to)
-
-            tvTime.text = "$dayAndMonth $time"
+    override fun bind(viewBinding: ItemSubeventInfoBinding, position: Int) {
+        viewBinding.apply {
             tvTitle.text = subEvent.title
+            tvTime.text = activityTime
             tvDescription.apply {
-                text = subEvent.description
+                //text = subEvent.description
                 isVisible = !subEvent.description.isNullOrEmpty()
+                markWon(context).setMarkdown(this, subEvent.description?:"")
             }
 
-            val message = subEvent.description
-
-            tvDescription.apply {
-                isVisible = !message.isNullOrEmpty()
-                text = message
-                BetterLinkMovementMethod.linkify(Linkify.ALL, this)
-            }
-            val location =
-                subEvent.binds?.auditorium?.name//subevent.auditoriums.joinToString("\n") { it.name }
+            val location = subEvent.binds?.auditorium?.name
             if (!location.isNullOrEmpty()) {
                 auditoryLn.isVisible = true
                 tvLocation.text = location
             } else auditoryLn.isVisible = false
 
-            decorActionButton(viewHolder.btnAddToTimetable, subEvent)
+            decorActionButton(btnAddToTimetable, subEvent)
 
             tagsGroup.apply {
                 val createChip: (Tags) -> CompoundButton = {
@@ -107,30 +105,26 @@ open class SubeventInfoItem(
 
                 }
             }
-
-
-//            btnSubscribe.apply {
-//                setAction(this, subevent.binds?.userFavorite != null)
-//                setOnClickListener(onFavoriteClickListener)
-//            }
         }
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewHolder, position, payloads)
+
+    override fun bind(
+        viewBinding: ItemSubeventInfoBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             //if (payload is Boolean) setAction(viewHolder.btnSubscribe, payload)
             //if (payload is Boolean) setAction(viewHolder.btnAddToTimetable, payload)
             if (payload is EventActivityModel) {
-                decorActionButton(viewHolder.btnAddToTimetable, payload)
+                decorActionButton(viewBinding.btnAddToTimetable, payload)
             }
         }
     }
 
-    private fun setAction(button: UserSubscribeButton, isInFavorites: Boolean) {
-        button.setAction(if (isInFavorites) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
-    }
 
     private fun decorActionButton(button: AppCompatButton, subEvent: EventActivityModel) {
 
@@ -233,4 +227,5 @@ open class SubeventInfoItem(
 
 
     override fun getLayout() = R.layout.item_subevent_info
+
 }

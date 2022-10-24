@@ -17,8 +17,8 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
-import java.lang.Math.abs
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserSpeakerPresenter
@@ -47,8 +47,8 @@ class UserSpeakerPresenter
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.changeAppbarElevation(abs(mDy / 10f))
+        mDy = value
+        viewState.changeAppbarElevation(abs(value / 10f))
     }
 
     private fun loadUserData() {

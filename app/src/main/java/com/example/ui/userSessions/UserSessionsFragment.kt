@@ -64,7 +64,12 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUserLink()
+        val userId = getString(R.string.sessions_label)
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
+        setToolbarTitleAndIcon(userId, actionIcon, action = {
+            showSessionInfoDialog()
+        })
+
         mBinding.rvSessions.apply {
             startPostponedEnterTransition()
             adapter = groupAdapter
@@ -135,14 +140,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     private fun showSessionInfoDialog() {
         val message = getString(R.string.session_info_message)
         MessageDialogWithBrownButton(requireContext(), message)
-    }
-
-    private fun setUserLink() {
-        val userId = getString(R.string.sessions_label)
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
-        setToolbarTitleAndIcon(userId, actionIcon) {
-            showSessionInfoDialog()
-        }
     }
 
     override fun layout(): Int = R.layout.fragment_user_sessions

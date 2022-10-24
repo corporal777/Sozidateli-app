@@ -159,7 +159,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
 
                 when (f) {
-                    is AboutEventFragmentNew,
                     is RecommendationsFragment,
                     is MyEventsFragmentNew,
                     is ChatListTabsFragment,

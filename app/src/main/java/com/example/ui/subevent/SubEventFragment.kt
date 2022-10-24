@@ -45,7 +45,6 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         subEventId = args.subEventId
     }
 
-    private val headerSection = Section()
     private val infoSection = Section()
     private val speakersSection by lazy {
         Section().apply {
@@ -55,7 +54,6 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
     }
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            //add(headerSection)
             add(infoSection)
             add(speakersSection)
         }
@@ -79,13 +77,12 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
     }
 
     override fun setData(isApproved: Boolean, subEvent: EventActivityModel) {
-        headerSection.update(listOf(ScreenHeaderItem(getString(R.string.event))))
         infoSection.update(listOf(SubeventInfoItem(isApproved, subEvent, {
             presenter.onAddToScheduleClick(it)
         }, {
             presenter.onRemoveFromScheduleClick(it)
         }, {
-            showToast(it.toString())
+            //showToast(it.toString())
         })))
     }
 

@@ -22,7 +22,8 @@ class SubEventSpeakerItem(
 
     private var speakerName = name
     private var speakerPosition = StringBuilder(orgPosition.replace("\n", " ")).toString()
-    private var speakerDescription = StringBuilder(description.replace("\n", " ")).toString()
+    //private var speakerDescription = StringBuilder(description.replace("\n", " ")).toString()
+    private var speakerDescription = StringBuilder(description).toString()
 
 //    private var speakerDescription =
 //        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -32,11 +33,9 @@ class SubEventSpeakerItem(
 
             ivSpeakerImage.setImage(avatar, error = R.drawable.empty_speaker_avatar)
             tvSpeakersName.text = speakerName
-            if (speakerPosition.isNullOrEmpty()) {
-                tvSpeakersPosition.isVisible = false
-            } else {
-                tvSpeakersPosition.isVisible = true
-                tvSpeakersPosition.text = speakerPosition
+            tvSpeakersPosition.apply {
+                isVisible = !speakerPosition.isNullOrEmpty()
+                text = speakerPosition
             }
 
             if (!speakerName.isNullOrEmpty()){

@@ -17,6 +17,8 @@ apply plugin: 'com.google.firebase.firebase-perf'
 //apply plugin: 'jacoco-android'
 apply plugin: "com.hiya.jacoco-android"
 
+apply plugin: "kotlinx-serialization"
+
 android {
     compileSdkVersion 31
     defaultConfig {
@@ -227,6 +229,14 @@ dependencies {
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
+    // kotlin coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0"
+
+    //zxing qr generator
+    implementation 'com.google.zxing:core:3.5.0'
+    //implementation 'com.github.alexzhirkevich:custom-qr-generator:1.5.0'
+
     //ui
     implementation "com.github.lisawray.groupie:groupie:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-databinding:2.6.0"
@@ -243,7 +253,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
-    implementation 'com.github.alexzhirkevich:custom-qr-generator:1.5.0'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'org.sufficientlysecure:html-textview:3.6'

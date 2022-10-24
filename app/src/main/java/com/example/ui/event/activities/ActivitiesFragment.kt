@@ -28,6 +28,7 @@ import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
@@ -302,7 +303,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         mBinding.calendarPager.isVisible = false
         eventsSection.update(
             listOf(
-                NoDataItem(
+                NoEventItem(
                     "Нет результатов",
                     "По заданным параметрам нет подходящих событий"
                 )

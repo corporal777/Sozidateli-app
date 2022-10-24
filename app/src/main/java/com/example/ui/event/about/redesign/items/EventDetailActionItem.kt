@@ -23,8 +23,8 @@ import setOnClickListener
 import java.util.*
 
 
-class EventDetailActionBlock(
-    var eventData: EventNew?,
+class EventDetailActionItem(
+    val eventData: EventNew?,
     val clickListener: OnActionClickListener,
 ) : BindableItem<ItemEventDetailActionBlockBinding>() {
 
@@ -242,6 +242,12 @@ class EventDetailActionBlock(
                 decorActionButton(payload, viewBinding.btnEventAction)
             }
         }
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is EventDetailActionItem) return false
+        if (eventData != other.eventData) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_event_detail_action_block

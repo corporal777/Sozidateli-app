@@ -7,11 +7,14 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.BuildConfig
 import com.example.R
+import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetProfileDataBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.views.CustomSnackBar
@@ -23,12 +26,13 @@ import javax.inject.Provider
 
 
 class ProfileDataFragment(
-    val name: String,
-    val shortName: String,
-    val bm: Bitmap
+    val user: Int,
+    val name : String,
+    val imageUrl : String,
+    val codeUrl : String,
+    val bm: Bitmap?
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
-    private var userProfileShareLink = ""
 
     @InjectPresenter
     lateinit var presenter: ProfileDataPresenter
@@ -36,44 +40,54 @@ class ProfileDataFragment(
     @Inject
     lateinit var presenterProvider: Provider<ProfileDataPresenter>
 
+
     @ProvidePresenter
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
-        image = bm
-        userShortName = shortName
+        userId = user
         userName = name
-        userProfileShareLink = BuildConfig.SHARE_URL + "portal/user/" + userShortName
+        userAvatar = bm
+        userImageUrl = imageUrl
+        userCodeUrl = codeUrl
+        context = requireContext()
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            clCopy.setOnClickListener {
-                copyTextToBuffer(requireContext(), userProfileShareLink)
-                showSnackBarMessage(
-                    getString(R.string.link_is_copied),
-                    R.drawable.ic_profile_link_edit
-                )
-            }
-            ivShareLink.setOnClickListener {
-                presenter.shareLinkClick(userProfileShareLink)
-            }
-            btnSave.setOnClickListener {
-                presenter.saveImageToGalleryClick(requireContext())
-            }
-            btnShare.setOnClickListener {
-                presenter.shareImageClick(requireContext())
-            }
             btnClose.setOnClickListener {
                 dismiss()
             }
         }
     }
 
-    override fun setData(image: Bitmap, userName: String, userLink: String) {
+
+    override fun setImage(image: Bitmap) {
         mBinding.apply {
             ivQrCode.setImage(image)
+            btnSave.setOnClickListener {
+                presenter.saveImageToGalleryClick(requireContext(), image)
+            }
+            btnShare.setOnClickListener {
+                presenter.shareImageClick(requireContext(), image)
+            }
+        }
+    }
+
+    override fun setName(userName: String, userLink: String) {
+        mBinding.apply {
             tvUserName.text = userName
             tvLink.text = userLink
+            clCopy.setOnClickListener {
+                copyTextToBuffer(requireContext(), userLink)
+                showSnackBarMessage(
+                    getString(R.string.link_is_copied),
+                    R.drawable.ic_profile_link_edit
+                )
+            }
+            ivShareLink.setOnClickListener {
+                presenter.shareLinkClick(userLink)
+            }
         }
     }
 
@@ -82,6 +96,14 @@ class ProfileDataFragment(
         snack.setText(message)
         snack.setIcon(icon)
         snack.show()
+    }
+
+    override fun showQrCodeLoadingProgress() {
+        mBinding.qrProgressBar.isVisible = true
+    }
+
+    override fun hideQrCodeLoadingProgress() {
+        mBinding.qrProgressBar.isVisible = false
     }
 
     override fun showShareImage(uri: Uri) {

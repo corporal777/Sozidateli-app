@@ -21,6 +21,7 @@ class EventRegistrationFileGroup(
     private val fileAddItem =
         ProfileButtonEditItem(context.getString(R.string.add_file), true, onAddClick).apply {
             hasDivider = false
+            compactMargin = true
         }
 
     private val descriptions: MutableList<Item> = mutableListOf()

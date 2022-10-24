@@ -19,7 +19,7 @@
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">50dp</dimen>
 
-    <dimen name="event_item_height_new">340dp</dimen>
+    <dimen name="event_item_height_new">400dp</dimen>
     <dimen name="event_image_height_new">370dp</dimen>
     <dimen name="event_image_shadow_height_new">220dp</dimen>
 
@@ -28,6 +28,8 @@
     <dimen name="day_item_start">5dp</dimen>
 
     <dimen name="user_short_name_text_size">12sp</dimen>
+
+    <dimen name="profile_qr_code_image_size">200dp</dimen>
     <!--  new margins  -->
 
 </resources>

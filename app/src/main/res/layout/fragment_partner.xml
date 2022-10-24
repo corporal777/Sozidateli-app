@@ -89,7 +89,6 @@
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:autoLink="all"
                     android:textColor="@color/profile_name_text"
                     android:textSize="14sp"
                     tools:ignore="MissingPrefix"

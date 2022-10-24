@@ -52,6 +52,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:maxLines="5"
             android:id="@+id/tvPartnerTitle"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="0dp"
@@ -61,7 +62,7 @@
             android:layout_marginBottom="25dp"
             android:letterSpacing="-0.03"
             tools:text="Первый партнер проекта"
-            android:textColor="#993C3C43"
+            android:textColor="@color/input_text_color_disabled_new"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

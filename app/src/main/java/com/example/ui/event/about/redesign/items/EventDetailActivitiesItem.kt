@@ -8,7 +8,7 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
-class EventDetailActivitiesBlock(
+class EventDetailActivitiesItem(
     val eventId : String,
     val canShow: Boolean?,
     val date: String,

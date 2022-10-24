@@ -4,7 +4,7 @@ import com.example.R
 import com.example.databinding.ItemEventDetailShowActivitiesBlockBinding
 import com.xwray.groupie.databinding.BindableItem
 
-class EventDetailShowActivitiesButtonBlock(
+class EventDetailShowActivitiesItem(
     val showActivitiesClick: () -> Unit
 ) : BindableItem<ItemEventDetailShowActivitiesBlockBinding>() {
 

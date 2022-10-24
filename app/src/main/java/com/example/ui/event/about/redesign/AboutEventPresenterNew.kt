@@ -1,6 +1,5 @@
 package com.example.ui.event.about.redesign
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -10,19 +9,16 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.views.StateType
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
-import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -42,13 +38,18 @@ class AboutEventPresenterNew
     private var mDy = 0
 
     override fun changeAppBarBackgroundColorValue(canScrollVertically: Boolean, value: Int) {
-        if (!canScrollVertically){
+        if (!canScrollVertically) {
             mDy = 0
             viewState.updateAppBarBackgroundColorValue(mDy)
-        }else {
+        } else {
             mDy += value
             viewState.updateAppBarBackgroundColorValue(mDy)
         }
+    }
+
+    override fun attachView(view: AboutEventContractNew.View?) {
+        super.attachView(view)
+        viewState.updateAppBarBackgroundColorValue(mDy)
     }
 
     override fun onFirstViewAttach() {
@@ -76,41 +77,29 @@ class AboutEventPresenterNew
 
     private fun setEventInfoData(eventInfo: EventInfo?) {
         this.event = eventInfo
+        viewState.apply {
+            setEventData(eventInfo?.event)
+            setOrganizationAndInformation(
+                eventInfo?.event?.binds?.organization,
+                eventInfo?.event?.binds?.page,
+                eventInfo?.event?.address?.fullValue,
+            )
+        }
         var pair = Pair<Boolean, Map<String, List<EventActivityModel>>>(false, emptyMap())
-        compositeDisposable += userEventData.getSortedSpeakersFromLocalDb(eventId)
-            .doOnSuccess {
-                val eventMember = getSortedSpeakers(eventInfo)
-                eventMember.isDataFromLocalStorage = true
-                userEventData.updateEventMembers(eventMember)
+        compositeDisposable += Maybe.fromCallable {
+            mTags.clear()
+            eventInfo?.event?.binds?.tag?.map {
+                mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
             }
-            .onErrorResumeNext {
-                it.printStackTrace()
-                val eventMember = getSortedSpeakers(eventInfo)
-                eventMember.isDataFromLocalStorage = true
-                userEventData.insertEventMembers(eventMember)
-                Single.just(eventMember)
-            }
-            .doOnSuccess {
-                it
-            }
-            .doFinally {
-                pair = getSubEvents(eventInfo?.event)
-                mTags.clear()
-                eventInfo?.event?.binds?.tag?.map {
-                    mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
-                }
-            }
-            .performOnBackgroundOutOnMain()
+            pair = getSubEvents(eventInfo?.event)
+            getSortedSpeakers(eventInfo)
+        }.performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    setEventData(
-                        eventInfo?.event,
-                        eventInfo?.event?.binds?.page,
-                        it.members,
-                        eventInfo?.event?.binds?.partner,
-                        mTags
-                    )
-                    setSubEvents(pair.first, pair.second)
+                    setEventSpeakers(it.first, it.second)
+                    setEventActivitiesAndTags(pair.first, pair.second, mTags)
+                    setEventPartners(eventInfo?.event?.binds?.partner)
+
                 }
             }
     }
@@ -192,10 +181,7 @@ class AboutEventPresenterNew
             //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
-                viewState.setActionButton(
-                    it.event,
-                    it?.event?.binds?.currentUserRegistration?.status?.value
-                )
+                viewState.setActionButton(it.event)
             }
     }
 
@@ -205,20 +191,14 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
-                viewState.setActionButton(
-                    it.event,
-                    it?.event?.binds?.currentUserRegistration?.status?.value
-                )
+                viewState.setActionButton(it.event)
             }
-
     }
 
     override fun onRefreshRequest() {
         compositeDisposable += eventRepository.getEventDetails(eventId)
-            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -352,13 +332,9 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
-                viewState.setActionButton(
-                    it.event,
-                    it?.event?.binds?.currentUserRegistration?.status?.value
-                )
+                viewState.setActionButton(it.event)
             }
     }
 
@@ -367,14 +343,25 @@ class AboutEventPresenterNew
 
     override fun onShareClick() = viewState.showShare(eventId)
 
-    private fun getSortedSpeakers(eventInfo: EventInfo?): EventMember {
-        val list = eventInfo?.event?.binds?.member?.filter { it.role == "speaker" }
+    private fun getSortedSpeakers(eventInfo: EventInfo?): Pair<Boolean, List<MemberModel>> {
+        var canShowMore = false
+        var list = eventInfo?.event?.binds?.member?.filter { it.role == "speaker" }
+        if (!list.isNullOrEmpty()) {
+            if (list.size > 5) {
+                list = list.subList(0, 5)
+                canShowMore = true
+            } else {
+                canShowMore = false
+            }
+        } else {
+            canShowMore = false
+        }
         val members = arrayListOf<MemberModel>()
         members.addAll(list?.filter { x -> x.isLead == true }
             ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
         members.addAll(list?.filter { x -> x.isLead == false }
             ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-        return EventMember(eventId, members, System.currentTimeMillis())
+        return Pair(canShowMore, members)
     }
 
 

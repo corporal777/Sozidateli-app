@@ -17,6 +17,7 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.dp
 import com.example.extensions.findItemBy
 import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
@@ -196,32 +197,44 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         )
     }
 
-    override fun setHeaderCalendar(days: List<EventScheduleCalendarDay>) {
-        val listDays = arrayListOf<EventScheduleCalendarDay>()
-        val listItems = arrayListOf<CalendarHorizontalListItem>()
-        var mCount = 0
-        var mCountSize = 0
-        days?.map { day ->
-            mCount += 1
-            mCountSize += 1
-            listDays.add(day)
-            if (mCount == 7) {
-                mCount = 0
-                listItems.add(CalendarHorizontalListItem(listDays) {
-                    mPresenter.onDaySelected(it)
-                }
-                )
-                listDays.clear()
-            } else {
-                if (mCountSize == days.size) {
-                    listItems.add(CalendarHorizontalListItem(listDays) {
-                        mPresenter.onDaySelected(it)
-                    }
-                    )
+    override fun setHeaderCalendar(days: List<List<EventScheduleCalendarDay>>) {
+//        val listDays = arrayListOf<EventScheduleCalendarDay>()
+//        val listItems = arrayListOf<CalendarHorizontalListItem>()
+//        var mCount = 0
+//        var mCountSize = 0
+//        days?.map { day ->
+//            mCount += 1
+//            mCountSize += 1
+//            listDays.add(day)
+//            if (mCount == 7) {
+//                mCount = 0
+//                listItems.add(CalendarHorizontalListItem(listDays) {
+//                    mPresenter.onDaySelected(it)
+//                }
+//                )
+//                listDays.clear()
+//            } else {
+//                if (mCountSize == days.size) {
+//                    listItems.add(CalendarHorizontalListItem(listDays) {
+//                        mPresenter.onDaySelected(it)
+//                    }
+//                    )
+//                }
+//            }
+//        }
+        calendarSection.update(
+            days.map {
+                CalendarHorizontalListItem(it) { day ->
+                    mPresenter.onDaySelected(day)
                 }
             }
-        }
-        calendarSection.update(listItems)
+        )
+//        days.map {
+//            calendarSection.add(CalendarHorizontalListItem(it) { day ->
+//                mPresenter.onDaySelected(day)
+//            })
+//        }
+        //calendarSection.update(listItems)
     }
 
     override fun setMonthCalendar(
@@ -297,7 +310,8 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
             listOf(
                 NoScheduleEventItem(
                     "Нет результатов",
-                    "По заданным параметрам нет подходящих событий"
+                    "По заданным параметрам нет подходящих событий",
+                    50.dp
                     //getString(R.string.no_sub_events_in_schedule),
                 )
             )

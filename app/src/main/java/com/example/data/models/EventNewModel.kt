@@ -226,6 +226,7 @@ data class EventFormModel(
     val subtitle: String? = null,
     val draft: EventFormDraftModel? = null,
     val type: Type? = null,
+    val background : BackgroundType,
     val files: List<FileModel>? = null,
     val fields: List<EventRegisterFields>? = null
 ) : Parcelable {
@@ -235,6 +236,13 @@ data class EventFormModel(
 
         @SerializedName("rating")
         RATING
+    }
+
+    enum class BackgroundType{
+        @SerializedName("event")
+        EVENT,
+        @SerializedName("organization")
+        ORGANIZATION
     }
 
     companion object {

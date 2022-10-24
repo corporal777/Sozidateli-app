@@ -4,6 +4,7 @@ import android.widget.ImageView
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemOtherSessionBinding
+import com.example.ui.event.about.redesign.items.EventDetailImageItem
 import com.xwray.groupie.databinding.BindableItem
 
 class OtherSessionItem(
@@ -75,6 +76,13 @@ class OtherSessionItem(
                 icon.setImageResource(R.drawable.ic_desktop_device)
             }
         }
+    }
+
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is OtherSessionItem) return false
+        if (session != other.session) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_other_session

@@ -4,27 +4,28 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventNew
+import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
-class EventDetailOrganizationBlock(
-    private val eventData: EventNew?,
+class EventDetailOrganizationItem(
+    private val organization: OrganizationNew?,
     private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
     private val onOrganizationClick: (id: String) -> Unit
 ) : BindableItem<ItemEventDetailOrganizationBlockBinding>() {
 
 
-    private val organizationName = eventData?.binds?.organization?.legalInformation?.name?.short
-        ?: eventData?.binds?.organization?.legalInformation?.name?.full
+    private val organizationName = organization?.legalInformation?.name?.short
+        ?: organization?.legalInformation?.name?.full
 
-    private var isFavorite: Boolean = eventData?.binds?.organization?.binds?.userFavorite != null
+    private var isFavorite: Boolean = organization?.binds?.userFavorite != null
 
 
-    private val organizationLogo = eventData?.binds?.organization?.logo?.uri ?: ""
-    private val backgroundColor = eventData?.binds?.organization?.backgroundColor?.value
+    private val organizationLogo = organization?.logo?.uri ?: ""
+    private val backgroundColor = organization?.backgroundColor?.value
 
     override fun bind(viewBinding: ItemEventDetailOrganizationBlockBinding, position: Int) {
         viewBinding.apply {
@@ -54,7 +55,7 @@ class EventDetailOrganizationBlock(
                 setOnClickListener { actionClickListener(this.action) }
             }
             organizationCl.setOnClickListener {
-                onOrganizationClick.invoke(eventData?.organization.toString())
+                onOrganizationClick.invoke(organization?.id.toString())
             }
 
         }

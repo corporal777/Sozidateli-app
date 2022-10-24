@@ -5,41 +5,28 @@ import com.example.data.models.MemberModel
 import com.example.holders.HorizontalListItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SpeakersHorizontalListItem(
     val data: List<MemberModel>,
+    val canShowMore: Boolean,
     val onItemClick: (id: Int) -> Unit,
     val showAllSpeakers: () -> Unit
 ) : HorizontalListItem<GroupieViewHolder>() {
 
     val items = arrayListOf<Item<*>>().apply {
-        if (data.size > 5) {
-            for (i in 0 until 5) {
-                data[i].let {
-                    add(EventSpeakerItem(
-                        it.id ?: 0,
-                        it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-                        it.binds?.user?.image?.uri ?: "",
-                        it.status ?: "",
-                        it.binds?.user?.state?.isRegistered ?: false
-                    ) { id -> onItemClick(id) })
-                }
-            }
+        addAll(data.map {
+            EventSpeakerItem(
+                it.id ?: 0,
+                it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
+                it.binds?.user?.image?.uri ?: "",
+                it.status ?: "",
+                it.binds?.user?.state?.isRegistered ?: false
+            ) { id -> onItemClick(id) }
+        })
+        if (canShowMore) {
             add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
-        } else {
-            data.forEach {
-                add(EventSpeakerItem(
-                    it.id ?: 0,
-                    it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-                    it.binds?.user?.image?.uri ?: "",
-                    it.status ?: "",
-                    it.binds?.user?.state?.isRegistered ?: false
-                ) { id -> onItemClick(id) })
-            }
         }
-
     }
 
     init {

@@ -17,6 +17,7 @@ import com.example.databinding.FragmentPartnerBinding
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.markWon
 import onScrolled
 import removeUrlUnderline
 import javax.inject.Inject
@@ -75,7 +76,8 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
 
             tvDescription.apply {
                 isVisible = !partner.description.isNullOrEmpty()
-                text = partner.description
+                markWon(requireContext()).setMarkdown(this, partner.description?:"")
+                //text = partner.description
             }
 
             //val link = partner.web?.takeIf { it.isNotBlank() }

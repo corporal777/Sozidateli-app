@@ -40,6 +40,7 @@ import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.StateType
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.markWon
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -202,9 +203,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
         }
 
         mBinding.tvDescription.apply {
-            isVisible = /*!organization.descriptionFull.isNullOrEmpty()*/
-                !organization.description.isNullOrEmpty()
-            text = /*organization.descriptionFull*/organization.description
+            isVisible = !organization.description.isNullOrEmpty()
+            markWon(requireContext()).setMarkdown(this, organization.description?:"")
+            //text = organization.description
         }
 
         mBinding.layoutMembers.isVisible = organization.binds?.membersSize != 0

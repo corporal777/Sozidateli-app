@@ -2,10 +2,8 @@ package com.example.util
 
 import android.annotation.TargetApi
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.ContentValues
-import android.content.Context
+import android.content.*
+import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color

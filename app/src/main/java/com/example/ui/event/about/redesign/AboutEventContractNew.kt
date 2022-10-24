@@ -10,24 +10,24 @@ import com.example.ui.base.BaseContract
 interface AboutEventContractNew {
     interface View : BaseContract.View {
 
-        //@StateStrategyType(AddToEndSingleStrategy::class)
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventData(
-            eventData: EventNew?,
-            pages: List<PageModel>?,
-            members: List<MemberModel>?,
-            partners: List<PartnerModel>?,
-            tags: List<Tag>
-        )
+        fun setEventData(eventData: EventNew?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>)
+        fun setOrganizationAndInformation(organization: OrganizationNew?, pages: List<PageModel>?, address : String?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEventSpeakers(isShowMore: Boolean, members: List<MemberModel>?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEventActivitiesAndTags(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>,tags: List<Tag>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEventPartners(partners: List<PartnerModel>?)
+
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setActionButton(
-            event: EventNew?,
-            userRegistration: Event.Status?
-        )
+        fun setActionButton(event: EventNew?)
 
 
         @StateStrategyType(SkipStrategy::class)

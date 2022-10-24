@@ -59,6 +59,9 @@ interface EventRegistrationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun dispatchOnBackPressed()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateAppBarBackgroundColorValue(offset : Int)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -78,5 +81,6 @@ interface EventRegistrationContract {
 
         fun saveEventFormResultDraft()
         fun initEventFormResultData(result : EventRegisterData)
+        fun changeAppBarBackgroundColorValue(canScrollVertically : Boolean, value : Int)
     }
 }

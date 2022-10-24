@@ -2,11 +2,12 @@ package com.example.ui.profile
 
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.*
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.util.Base64
 import android.util.Base64.decode
-import androidx.core.graphics.drawable.toDrawable
+import android.util.Log
+import androidx.core.content.ContextCompat
 import com.arellomobile.mvp.InjectViewState
 import com.bumptech.glide.Glide
 import com.example.BuildConfig
@@ -19,24 +20,28 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.github.alexzhirkevich.customqrgenerator.QrCodeGenerator
-import com.github.alexzhirkevich.customqrgenerator.QrData
-import com.github.alexzhirkevich.customqrgenerator.createQrOptions
-import com.github.alexzhirkevich.customqrgenerator.encoder.QrCodeMatrix
-import com.github.alexzhirkevich.customqrgenerator.style.*
+import com.example.util.qr_generator.QrCodeGenerator
+import com.example.util.qr_generator.QrData
+import com.example.util.qr_generator.QrErrorCorrectionLevel
+import com.example.util.qr_generator.createQrOptions
+import com.example.util.qr_generator.style.*
+import com.example.util.qr_generator.vector.QrCodeDrawable
+import com.example.util.qr_generator.vector.createQrVectorOptions
+import com.example.util.qr_generator.vector.style.QrVectorBallShape
+import com.example.util.qr_generator.vector.style.QrVectorColor
+import com.example.util.qr_generator.vector.style.QrVectorFrameShape
+import com.example.util.qr_generator.vector.style.QrVectorPixelShape
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.runBlocking
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
 import withLoadingDialog
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 
 @InjectViewState
@@ -222,72 +227,10 @@ class ProfilePresenter
 
 
     override fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context) {
-        compositeDisposable += Single.fromCallable {
-            val link = BuildConfig.SHARE_URL + "portal/user/" + user.shortName
-            val data = QrData.Url(link)
-            val opt = createQrOptions(1054, 1054, .2f) {
-                logo {
-                    val drawableSource: DrawableSource
-                    val drawableShape: QrLogoShape
-                    if (!user.image.uri.isNullOrEmpty()) {
-                        drawableSource = if (bmImage == null) {
-                            val bm =
-                                Glide.with(context).asBitmap().load(user.image.uri).submit().get()
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            CustomDrawableSource.DecodedBitmap(bm)
-                        } else {
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            CustomDrawableSource.DecodedBitmap(bmImage!!)
-                        }
-                    } else {
-                        drawableShape = QrLogoShape.Circle
-                        drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
-                    }
-                    drawable = drawableSource
-                    size = .25f
-                    padding = QrLogoPadding.Accurate(.2f)
-                    shape = drawableShape
-                }
-                colors { dark = QrColor.Solid(Color.BLACK) }
-                shapes {
-                    darkPixel = QrPixelShape.RoundCorners()
-                    ball = QrBallShape.RoundCorners(.30f)
-                    frame = QrFrameShape.RoundCorners(.30f)
-                }
-            }
-            QrCodeGenerator(context).generateQrCode(data, opt)
-        }
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    compositeDisposable += Maybe.fromCallable {
-                        val str = StringBuilder(user.qrCodeLink)
-                        val l = str.delete(0, 22)
-                        val imageByteArray = decode(l.toString(), Base64.DEFAULT)
-                        Glide.with(context).asBitmap().load(imageByteArray).submit().get()
-                    }.performOnBackgroundOutOnMain()
-                        .subscribeSimple { bm ->
-                            viewState.showProfileDataBottomSheetDialog(user, bm)
-                        }
-                },
-                onSuccess = {
-                    viewState.showProfileDataBottomSheetDialog(user, it)
-                })
-
+        viewState.showProfileDataBottomSheetDialog(user, bmImage)
     }
 
     override fun onSettingsClick() {
         viewState.showSettings()
     }
-
-    interface CustomDrawableSource {
-
-        data class DecodedBitmap(val bitmap: Bitmap) : DrawableSource {
-            override suspend fun get(context: Context): Drawable =
-                bitmap.toDrawable(context.resources)
-        }
-    }
-
 }

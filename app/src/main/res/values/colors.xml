@@ -241,5 +241,6 @@
     <color name="event_register_input_normal_color">#F6F6F6</color>
     <color name="event_register_input_focused_color">#E8E8E8</color>
     <color name="event_register_input_text_hint_color">#000000</color>
-    <color name="profile_snack_bar_color_background">#CC000000</color>
+    <color name="profile_snack_bar_color_background">#B3000000</color>
+    <color name="qr_code_pixels_color">#333333</color>
 </resources>

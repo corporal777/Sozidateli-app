@@ -1,9 +1,7 @@
 package com.example.ui.event.speakers.member
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,7 +16,7 @@ import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.items.EventDetailActivitiesBlock
+import com.example.ui.event.about.redesign.items.EventDetailActivitiesItem
 import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
 import com.example.ui.event.activities.items.NoSubEventItem
 import com.example.ui.event.speakers.member.items.UserSpeakerMainInfoItem
@@ -30,7 +28,6 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.abs
 
 class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
     UserSpeakerContract.View {
@@ -52,14 +49,18 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
     }
 
     private val mainDataSection = Section()
-    private val labelSection = Section()
-    private val subEventsDataSection = Section()
+    private val subEventsDataSection by lazy {
+        Section().apply {
+            setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers_activities_label)))
+            setHideWhenEmpty(true)
+        }
+    }
 
-
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
-        add(mainDataSection)
-        add(labelSection)
-        add(subEventsDataSection)
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            add(mainDataSection)
+            add(subEventsDataSection)
+        }
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
@@ -80,7 +81,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
             listSpeakersContent.apply {
                 this.adapter = groupAdapter
                 onScrolled { _, dy ->
-                    presenter.changeAppBarElevation(dy)
+                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
                 }
             }
 
@@ -100,11 +101,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     override fun changeAppbarElevation(value: Float) {
         mBinding.appBar.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
-            }
+            changeAppBarElevation(value)
         }
     }
 
@@ -155,21 +152,20 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         canShow: Boolean,
         data: Map<String?, List<EventActivityModel>>?
     ) {
-        subEventsDataSection.add(EventDetailBlocksLabelItem(getString(R.string.speakers_activities_label)))
         if (!data.isNullOrEmpty()) {
-            data.forEach {
-                subEventsDataSection.add(
-                    EventDetailActivitiesBlock(
+            subEventsDataSection.update(
+                data.map {
+                    EventDetailActivitiesItem(
                         presenter.eventId,
                         canShow,
                         it.key ?: "",
                         it.value,
                         onSubEventClickListener
                     )
-                )
-            }
+                }
+            )
         } else {
-            subEventsDataSection.add(NoSubEventItem(getString(R.string.no_activity_title)))
+            subEventsDataSection.update(listOf(NoSubEventItem(getString(R.string.no_activity_title))))
         }
     }
 
@@ -203,13 +199,8 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     override fun updateSpeaker(speaker: UserDetail) {
         mBinding.apply {
-            if (speaker.binds?.userFavorite == null) {
-                ivAddToFavorite.setImageResource(R.drawable.ic_star)
-            } else {
-                ivAddToFavorite.setImageResource(R.drawable.ic_star_filled)
-            }
+            ivAddToFavorite.setActionAlternative(speaker.binds?.userFavorite == null)
         }
-
     }
 
 

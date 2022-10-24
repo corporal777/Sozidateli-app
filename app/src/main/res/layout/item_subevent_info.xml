@@ -1,132 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/main_background"
-    android:orientation="vertical"
-    android:paddingBottom="20dp">
-
-    <TextView
-        android:id="@+id/tvTitle"
-        fontPath="fonts/sf_pro_display_bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
-        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
-        android:textColor="@color/text_color_title"
-        android:textSize="14sp"
-        tools:ignore="MissingPrefix"
-        tools:text="Прикладная че то там сессия" />
-
-    <TextView
-        android:id="@+id/tvTime"
-        fontPath="fonts/sf_pro_display_bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
-        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
-        android:textSize="14sp"
-        tools:ignore="MissingPrefix"
-        tools:text="9:00-10:00" />
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/tvLocation"-->
-    <!--        fontPath="fonts/Roboto-Medium.ttf"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="@dimen/margin_horizontal_default"-->
-    <!--        android:layout_marginTop="16dp"-->
-    <!--        android:layout_marginEnd="@dimen/margin_horizontal_default"-->
-    <!--        android:drawableStart="@drawable/ic_location_dark"-->
-    <!--        android:drawablePadding="10dp"-->
-    <!--        android:textColor="@color/text_color_default"-->
-    <!--        android:textSize="16sp"-->
-    <!--        tools:ignore="MissingPrefix"-->
-    <!--        tools:text="Павильон 1" />-->
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:id="@+id/auditoryLn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_top_sub_events_fragment">
+        android:background="@color/main_background"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
         <TextView
+            android:id="@+id/tvTitle"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:drawablePadding="10dp"
-            android:text="@string/label_auditory"
-            android:textColor="@color/input_text_color_disabled_new"
+            android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+            android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
+            android:textColor="@color/text_color_title"
             android:textSize="14sp"
-            tools:ignore="MissingPrefix" />
-
+            tools:text="Прикладная че то там сессия" />
 
         <TextView
-            android:id="@+id/tvLocation"
+            android:id="@+id/tvTime"
             fontPath="fonts/sf_pro_display_bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/chat_message_padding_vertical"
-            android:drawablePadding="10dp"
-            android:textColor="@color/vk_black"
+            android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+            android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+            android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
             android:textSize="14sp"
-            tools:ignore="MissingPrefix"
-            tools:text="Павильон 1" />
+            tools:text="9:00-10:00" />
+
+        <LinearLayout
+            android:id="@+id/auditoryLn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_sub_events_fragment">
+
+            <TextView
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:drawablePadding="10dp"
+                android:text="@string/label_auditory"
+                android:textColor="@color/input_text_color_disabled_new"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/tvLocation"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/chat_message_padding_vertical"
+                android:drawablePadding="10dp"
+                android:textColor="@color/vk_black"
+                android:textSize="14sp"
+                tools:text="Павильон 1" />
+
+        </LinearLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAddToTimetable"
+            fontPath="fonts/sf_pro_text_bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+            android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+            android:background="@drawable/custom_btn_green_selectable"
+            android:letterSpacing="-0.02"
+            android:minWidth="200dp"
+            android:minHeight="40dp"
+            android:text="@string/add_to_timetable"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/auditoryLn" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDescription"
+            fontPath="fonts/sf_pro_display_regular.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+            android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
+            android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
+            android:textColor="@color/text_color_default"
+            android:textSize="13sp"
+            tools:text="Прикладная че то там сессия" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagsGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            app:chipSpacingHorizontal="5dp"
+            app:lineSpacing="10dp" />
+
 
     </LinearLayout>
+</layout>
 
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAddToTimetable"
-        fontPath="fonts/sf_pro_text_bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
-        android:background="@drawable/custom_btn_green_selectable"
-        android:letterSpacing="-0.02"
-        android:minWidth="200dp"
-        android:minHeight="40dp"
-        android:text="@string/add_to_timetable"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/auditoryLn" />
-
-
-    <TextView
-        android:id="@+id/tvDescription"
-        fontPath="fonts/sf_pro_display_regular.OTF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-        android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
-        android:layout_marginEnd="@dimen/margin_top_sub_events_fragment"
-        android:textColor="@color/text_color_default"
-        android:textSize="13sp"
-        tools:ignore="MissingPrefix"
-        tools:text="Прикладная че то там сессия" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/tagsGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="10dp"
-        app:chipSpacingHorizontal="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDescription"
-        app:lineSpacing="10dp" />
-
-
-</LinearLayout>

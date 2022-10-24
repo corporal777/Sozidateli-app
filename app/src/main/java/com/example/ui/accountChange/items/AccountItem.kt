@@ -9,6 +9,8 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemAccountChangeBinding
+import com.example.holders.redesign.EventActivityItem
+import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_lecture.*
@@ -65,7 +67,12 @@ class AccountItem(
 
     private fun decorMenuButton(canShow : Boolean, imageView: ImageView){
         imageView.isVisible = canShow
-        Log.e("STATE", canShow.toString())
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is AccountItem) return false
+        if (session != other.session) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_account_change

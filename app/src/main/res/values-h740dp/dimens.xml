@@ -29,5 +29,7 @@
     <dimen name="day_item_start">10dp</dimen>
 
     <dimen name="user_short_name_text_size">12sp</dimen>
+
+    <dimen name="profile_qr_code_image_size">230dp</dimen>
     <!--  new margins  -->
 </resources>

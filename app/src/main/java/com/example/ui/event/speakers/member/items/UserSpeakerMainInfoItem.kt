@@ -1,6 +1,5 @@
 package com.example.ui.event.speakers.member.items
 
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
@@ -44,8 +43,7 @@ class UserSpeakerMainInfoItem(
 
             tvSpeakersPosition.apply {
                 isVisible = !description.isNullOrEmpty()
-                markWon(context)
-                    .setMarkdown(this, description?:"")
+                markWon(context).setMarkdown(this, description ?: "")
             }
 
             btnWriteMessage.setOnClickListener {

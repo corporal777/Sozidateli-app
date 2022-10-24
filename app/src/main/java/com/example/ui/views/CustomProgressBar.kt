@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -12,7 +13,25 @@ import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.extensions.dp
 
-class CustomProgressBar(context: Context?) : View(context) {
+class CustomProgressBar : View {
+
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+
     private var lastUpdateTime: Long = 0
     private var radOffset = 0f
     private var currentCircleLength = 0f
@@ -33,6 +52,7 @@ class CustomProgressBar(context: Context?) : View(context) {
     private var toCircle = false
     private var toCircleProgress = 0f
     private var noProgress = true
+
     fun setUseSelfAlpha(value: Boolean) {
         useSelfAlpha = value
     }

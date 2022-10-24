@@ -40,6 +40,14 @@ class UserSubscribeImageView : AppCompatImageView {
         setImageResource(iconFavorite)
     }
 
+    fun setActionAlternative(isFavorite : Boolean){
+        if (isFavorite) {
+            setImageResource(iconUnFavorite)
+        } else {
+            setImageResource(iconFavorite)
+        }
+    }
+
     fun setAlphaVision(enabled: Boolean){
         this.apply {
             isEnabled = enabled

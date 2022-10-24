@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_bottom_sheet_profile"
-            android:paddingBottom="5dp"
+            android:paddingBottom="10dp"
             tools:ignore="MissingPrefix">
 
             <View
@@ -25,13 +25,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/top_guideLine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.12" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btnClose"
@@ -49,25 +42,33 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_image"
-                android:layout_width="235dp"
-                android:layout_height="235dp"
+                android:layout_width="@dimen/profile_qr_code_image_size"
+                android:layout_height="@dimen/profile_qr_code_image_size"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="25dp"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/top_guideLine">
+                app:layout_constraintTop_toBottomOf="@id/view">
 
                 <ImageView
                     android:id="@+id/iv_qr_code"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:background="@drawable/background_corners"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_test" />
+                    android:scaleType="centerCrop" />
 
+
+                <com.example.ui.views.CustomProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/qr_progress_bar"
+                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"/>
             </com.google.android.material.card.MaterialCardView>
 
 
@@ -76,12 +77,13 @@
                 fontPath="fonts/sf_pro_text_bold.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
+                android:layout_marginVertical="15dp"
                 android:gravity="center"
                 android:letterSpacing="-0.02"
                 android:maxLines="2"
                 android:textColor="@color/profile_name_text"
                 android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/btn_share"
                 app:layout_constraintTop_toBottomOf="@id/cv_image"
                 tools:text="@tools:sample/full_names" />
 
@@ -110,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:minHeight="45dp"
                 android:text="@string/save"
                 android:textColor="@color/main_brown_color_new"
@@ -128,7 +130,7 @@
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:text="Я в Созидателях по ссылке:"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -140,23 +142,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/custom_btn_white_selectable"
                 android:minHeight="45dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/bottom_guideLine"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_link_description">
 
                 <TextView
-                    android:maxLines="2"
-                    android:layout_marginHorizontal="50dp"
                     android:id="@+id/tv_link"
                     fontPath="fonts/sf_pro_text_semibold.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="50dp"
                     android:gravity="center"
                     android:letterSpacing="-0.01"
+                    android:maxLines="2"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -166,11 +168,11 @@
                     tools:text="sozidateli.ru/alina_k" />
 
                 <ImageView
-                    android:background="@drawable/custom_toolbar_btn_background_selectable"
                     android:id="@+id/iv_share_link"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_toolbar_btn_background_selectable"
                     android:padding="5dp"
                     android:src="@drawable/ic_share_white"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -179,13 +181,6 @@
                     app:tint="@color/main_brown_color_new" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/bottom_guideLine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.95" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

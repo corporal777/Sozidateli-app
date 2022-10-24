@@ -30,7 +30,7 @@
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">40dp</dimen>
 
-    <dimen name="event_item_height_new">300dp</dimen>
+    <dimen name="event_item_height_new">380dp</dimen>
     <dimen name="event_image_height_new">310dp</dimen>
     <dimen name="event_image_shadow_height_new">160dp</dimen>
 
@@ -151,4 +151,7 @@
 
     <dimen name="default_blur_dialog_title_size">10sp</dimen>
     <dimen name="default_blur_dialog_corner_radius">15dp</dimen>
+
+
+    <dimen name="profile_qr_code_image_size">235dp</dimen>
 </resources>

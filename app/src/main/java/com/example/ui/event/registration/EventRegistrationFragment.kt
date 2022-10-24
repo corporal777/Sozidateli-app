@@ -51,7 +51,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     @Inject
     lateinit var presenterProvider: Provider<EventRegistrationPresenter>
-    private var mDy: Int = 0
 
     @ProvidePresenter
     fun providePresenter(): EventRegistrationPresenter = presenterProvider.get().apply {
@@ -84,13 +83,10 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             val layoutManager = this.layoutManager as LinearLayoutManager
             onScrolled { _, dy ->
                 if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    mDy = 0
-                    updateView(mDy)
+                    presenter.changeAppBarBackgroundColorValue(false, 0)
                 } else {
-                    mDy += dy
-                    updateView(mDy)
+                    presenter.changeAppBarBackgroundColorValue(true, dy)
                 }
-
             }
         }
         mBinding.ivBack.setOnClickListener {
@@ -417,7 +413,8 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }
     }
 
-    private fun updateView(offset: Int) {
+
+    override fun updateAppBarBackgroundColorValue(offset: Int) {
         mBinding.apply {
             if (offset == 0) {
                 tbBackground.setBackgroundColor(Color.TRANSPARENT)

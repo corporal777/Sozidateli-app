@@ -56,7 +56,6 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:letterSpacing="0.02"
             android:textColor="@color/vk_black"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/tvSpeakersLocation"
@@ -73,7 +72,6 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:letterSpacing="0.02"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/tvSpeakersPosition"
@@ -82,23 +80,21 @@
             app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
             tools:text="Москва" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSpeakersPosition"
             fontPath="fonts/sf_pro_display_regular.OTF"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:letterSpacing="0.02"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/btnWriteMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSpeakersLocation"
-            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)" />
+            tools:text="Доцент МГУ имени М.В.Ломоносова, акультет журналистики, Кафедра литературно-художественной критики и публицистики, Москва, Россия (2021)"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnWriteMessage"

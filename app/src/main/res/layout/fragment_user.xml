@@ -69,7 +69,6 @@
                         android:layout_marginBottom="5dp"
                         android:src="@drawable/ic_star"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/iv_share" />
 
                     <ImageView

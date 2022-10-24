@@ -32,9 +32,7 @@ import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.SimpleTitleToolbar
-import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
-import com.example.util.setImage
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import javax.inject.Inject
@@ -257,8 +255,14 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         }
     }
 
-    override fun showProfileDataBottomSheetDialog(user: UserDetail, bm: Bitmap) {
-        val profileDataDialog = ProfileDataFragment(user.nameLastName, user.shortName ?: "", bm)
+    override fun showProfileDataBottomSheetDialog(user: UserDetail, bm: Bitmap?) {
+        val profileDataDialog = ProfileDataFragment(
+            user.id,
+            user.nameLastName,
+            user.image.uri ?: "",
+            user.qrCodeLink ?: "",
+            bm
+        )
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }
 

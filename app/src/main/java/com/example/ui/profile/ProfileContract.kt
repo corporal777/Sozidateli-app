@@ -77,8 +77,8 @@ interface ProfileContract {
         fun showQrScannerToAuthWebSite()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        //fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap)
-        fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap)
+        //fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Drawable)
+        fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap?)
     }
 
     interface Presenter : BaseContract.Presenter {
