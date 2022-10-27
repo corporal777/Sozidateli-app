@@ -20,7 +20,7 @@
             tools:itemCount="6"
             tools:listitem="@layout/item_register_event_input" />
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.example.ui.views.CustomAppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/about_event_toolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="85dp"
                 android:background="@null"
@@ -42,6 +42,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tb_background"
+                        android:background="@android:color/white"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -61,7 +62,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
+        </com.example.ui.views.CustomAppBarLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

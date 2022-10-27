@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,6 +19,7 @@ import com.example.databinding.ItemEventNewBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.holders.EventStatusItem
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
+import com.example.util.setImage
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -43,6 +45,14 @@ class EventItemNew(
 ) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
 
     val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
+    private var imageColor = ColorDrawable(Color.DKGRAY)
+
+    init {
+        if (!backgroundColor.isNullOrEmpty()){
+            val color = backgroundColor.parseColor()?:Color.DKGRAY
+            imageColor = ColorDrawable(color)
+        }
+    }
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
@@ -57,14 +67,15 @@ class EventItemNew(
             tvLocation.text = address
             tvTitle.text = name
             ivLogo.apply {
-                val color = backgroundColor.parseColor()
-                    ?: ResourcesCompat.getColor(
-                        resources,
-                        R.color.event_item_no_image_background,
-                        null
-                    )
-                setBackgroundColor(color)
-                Picasso.get().load(logo).into(this)
+                setImage(logo ?: imageColor)
+//                val color = backgroundColor.parseColor()
+//                    ?: ResourcesCompat.getColor(
+//                        resources,
+//                        R.color.event_item_no_image_background,
+//                        null
+//                    )
+//                setBackgroundColor(color)
+//                Picasso.get().load(logo).into(this)
                 colorFilter = if (status == Event.Status.CANCELED) ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
                 else null
             }

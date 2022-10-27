@@ -14,6 +14,7 @@ data class EventRegistration(
         val description: String?,
         val logo: String?,
         var image : String?,
+        var backgroundColor : String?,
         @SerializedName("conference_start")
         val conferenceStart: String?,
         @SerializedName("conference_finish")

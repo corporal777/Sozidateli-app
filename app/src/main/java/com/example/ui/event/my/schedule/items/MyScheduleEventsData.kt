@@ -9,6 +9,5 @@ data class MyScheduleEventsData(
     val eventId: String,
     val eventName: String,
     val eventImage: String,
-    var subEvents: Map<String, List<EventActivityModel>>,
-    val showPlaceholder: Boolean,
+    var subEvents: Map<String, List<EventActivityModel>>
 )

@@ -1,5 +1,7 @@
 package com.example.ui.event.about.redesign.items
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -20,6 +22,14 @@ class EventDetailImageItem(
 ) : BindableItem<ItemEventDetailImageBlockBinding>() {
 
     val date: String = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
+    private var imageColor = ColorDrawable(Color.DKGRAY)
+
+    init {
+        if (!backgroundColor.isNullOrEmpty()){
+            val color = backgroundColor.parseColor()?:Color.DKGRAY
+            imageColor = ColorDrawable(color)
+        }
+    }
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
         viewBinding.apply {
@@ -31,13 +41,7 @@ class EventDetailImageItem(
             }
 
             ivLogo.apply {
-                val color = backgroundColor.parseColor()
-                    ?: ResourcesCompat.getColor(
-                        resources,
-                        R.color.event_item_no_image_background,
-                        null
-                    )
-                setImage(logo ?: color)
+                setImage(logo ?: imageColor)
             }
         }
     }

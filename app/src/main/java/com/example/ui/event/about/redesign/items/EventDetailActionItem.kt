@@ -2,6 +2,7 @@ package com.example.ui.event.about.redesign.items
 
 import android.content.Context
 import android.graphics.Color
+import android.view.ViewTreeObserver
 import android.widget.Button
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ class EventDetailActionItem(
 
     private var mDate = ""
     private var mCanShowDate = false
+    private var viewHeight = 0
 
     init {
         val limitDate = eventData?.requestsApply?.dateLimit
@@ -67,7 +69,6 @@ class EventDetailActionItem(
 
     override fun bind(viewBinding: ItemEventDetailActionBlockBinding, position: Int) {
         viewBinding.apply {
-
             if (mCanShowDate) {
                 tvRequestsDate.apply {
                     isVisible = true
@@ -111,6 +112,13 @@ class EventDetailActionItem(
 
             decorActionButton(eventData, btnEventAction)
         }
+
+        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                viewHeight = viewBinding.root.height
+            }
+        })
     }
 
     private fun decorActionButton(eventNew: EventNew?, btnAction: Button) {
@@ -270,6 +278,10 @@ class EventDetailActionItem(
             days++
         }
         return days
+    }
+
+    fun viewHeight() : Int {
+        return this.viewHeight
     }
 
 }

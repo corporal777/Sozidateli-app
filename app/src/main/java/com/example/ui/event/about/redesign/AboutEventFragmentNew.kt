@@ -120,7 +120,7 @@ class AboutEventFragmentNew() : BaseFragment(),
     }
 
     private var actionItem: EventDetailActionItem? = null
-    private var organizationItem: EventDetailOrganizationItem? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -161,9 +161,7 @@ class AboutEventFragmentNew() : BaseFragment(),
             mBinding.btnAddToCalendar.setOnClickListener {
                 addToCalendar(eventData)
             }
-            if (eventData.binds?.userFavorite != null)
-                decorEventFavoriteButton(true)
-            else decorEventFavoriteButton(false)
+            decorEventFavoriteButton(eventData.binds?.userFavorite != null)
 
             groupAdapter.notifyDataSetChanged()
             mainBlock.update(
@@ -176,7 +174,9 @@ class AboutEventFragmentNew() : BaseFragment(),
                         eventData.image?.uri,
                         eventData.backgroundColor?.value
                     ),
-                    EventDetailActionItem(eventData, onActionClickListener)
+                    EventDetailActionItem(eventData, onActionClickListener).apply {
+                        actionItem = this
+                    }
                 )
             )
         }
@@ -431,11 +431,7 @@ class AboutEventFragmentNew() : BaseFragment(),
     private fun decorEventFavoriteButton(isSubscribed: Boolean) {
         mBinding.apply {
             ivAddToFavorite.apply {
-                if (isSubscribed) {
-                    setImageResource(R.drawable.ic_star_filled)
-                } else {
-                    setImageResource(R.drawable.ic_star)
-                }
+                setActionAlternative(!isSubscribed)
                 setOnClickListener {
                     mPresenter.onAddEventToFavoriteClick()
                 }
@@ -449,64 +445,56 @@ class AboutEventFragmentNew() : BaseFragment(),
     }
 
     private fun addToCalendar(eventData: EventNew) {
-        val mStartDate = defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "")
-        val mEndDate = defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "")
-        val mStartCal = mStartDate.calendar()
-        val mEndCal = mEndDate.calendar()
+        try {
+            val startCal = defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
+            val endCal = defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
 
-        val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, mStartCal.timeInMillis)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, mEndCal.timeInMillis)
-            putExtra(CalendarContract.Events.TITLE, eventData.name)
-            putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
-            putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
-            putExtra(
-                CalendarContract.Events.AVAILABILITY,
-                CalendarContract.Events.AVAILABILITY_BUSY
-            )
+            val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
+                data = CalendarContract.Events.CONTENT_URI
+                putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
+                putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
+                putExtra(CalendarContract.Events.TITLE, eventData.name)
+                putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
+                putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
+                putExtra(
+                    CalendarContract.Events.AVAILABILITY,
+                    CalendarContract.Events.AVAILABILITY_BUSY
+                )
+            }
+            startActivity(intent)
+        }catch (e : Exception){
+            e.printStackTrace()
         }
-        startActivity(intent)
-
     }
 
     override fun updateAppBarBackgroundColorValue(value: Int) {
         Log.e("OFFSET", value.toString())
+
         mBinding.apply {
-            if (value == 0) {
-                tbBackground.setBackgroundColor(Color.TRANSPARENT)
-                setWhiteIcons()
-            }
-            if (value > 0 && value < 1750) {
+            if (value <= 0) {
+                tbBackground.alpha = 0f
+            }else {
                 tbBackground.apply {
-                    tbContent.setBackgroundColor(Color.TRANSPARENT)
-                    setBackgroundColor(Color.BLACK)
-                    val mAlpha = abs(value / (600).toFloat())
-                    alpha = mAlpha
-                    aboutEventAppBar.apply {
-                        elevation = 0f
-                        background = null
-                        aboutEventToolbar.background = null
+                    alpha = if (actionItem != null){
+                        if (actionItem!!.viewHeight() > 1400){
+                            abs(value / (actionItem!!.viewHeight()).toFloat())
+                        }else {
+                            abs(value / (1400).toFloat())
+                        }
+                    }else {
+                        abs(value / (1400).toFloat())
                     }
-                    //setWhiteIcons()
                 }
             }
-            if (value > 1750) {
-                tbBackground.apply {
-                    tbContent.setBackgroundColor(Color.BLACK)
-                    setBackgroundColor(Color.WHITE)
-                    val value = value - 1750
-                    val mAlpha = abs(value / (500).toFloat())
-                    alpha = mAlpha
-                }
-                aboutEventAppBar.apply {
-                    elevation = 10f
-                    setBackgroundColor(Color.WHITE)
-                    aboutEventToolbar.setBackgroundColor(Color.WHITE)
-                }
+            if (value >= 1450){
+                appBar.changeAppBarElevation(abs(value / 100f))
+            }else {
+                appBar.changeAppBarElevation(0f)
+            }
+
+            if (value >= 740){
                 setBlackIcons()
-            }
-            if (value < 1750) {
+            }else {
                 setWhiteIcons()
             }
         }

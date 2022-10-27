@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -107,6 +108,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
                 RegisterEventHeaderItemNew(
                     -100L,
                     event.image ?: "",
+                    event.backgroundColor?:"",
                     event.registrationHeadline,
                     event.registrationSubtitle,
                     event.conferenceStart ?: "",
@@ -415,43 +417,27 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
 
     override fun updateAppBarBackgroundColorValue(offset: Int) {
+        Log.e("OFFSET", offset.toString())
         mBinding.apply {
-            if (offset == 0) {
-                tbBackground.setBackgroundColor(Color.TRANSPARENT)
-            }
-            if (offset > 0 && offset < 1200) {
+            if (offset <= 0) {
+                tbBackground.alpha = 0f
+            } else {
                 tbBackground.apply {
-                    tbContent.setBackgroundColor(Color.TRANSPARENT)
-                    setBackgroundColor(Color.BLACK)
-                    val mAlpha = abs(offset / (600).toFloat())
-                    alpha = mAlpha
-                    appBar.apply {
-                        elevation = 0f
-                        background = null
-                        aboutEventToolbar.background = null
-                    }
-                    setWhiteIcons()
+                    alpha = abs(offset / (1000).toFloat())
                 }
             }
-            if (offset > 1200) {
-                setBlackIcons()
-                tbBackground.apply {
-                    tbContent.setBackgroundColor(Color.BLACK)
-                    setBackgroundColor(Color.WHITE)
-                    val value = offset - 1200
-                    val mAlpha = abs(value / (500).toFloat())
-                    alpha = mAlpha
-                }
-                appBar.apply {
-                    elevation = 10f
-                    setBackgroundColor(Color.WHITE)
-                    aboutEventToolbar.setBackgroundColor(Color.WHITE)
-                }
+            if (offset >= 990){
+                appBar.changeAppBarElevation(abs(offset / 100f))
+            }else {
+                appBar.changeAppBarElevation(0f)
+            }
 
-            }
-            if (offset < 1340) {
+            if (offset >= 500){
+                setBlackIcons()
+            }else {
                 setWhiteIcons()
             }
+
         }
 
     }

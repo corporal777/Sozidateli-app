@@ -109,6 +109,7 @@ class SocketIOManagerImpl
     override fun disconnectFromChat(chatId: String): Completable =
         Completable.fromAction {
             mSocket?.emit("leaveRoom", chatId)
+            Log.i("ChatSocket", "Stopped listening: $chatId")
         }
 
     override fun subscribeToChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>> =

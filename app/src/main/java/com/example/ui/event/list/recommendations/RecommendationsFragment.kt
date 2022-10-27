@@ -100,7 +100,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
                 it.state,
                 it.status?.value,
                 it.binds?.currentUserRegistration?.status?.value,
-                it.binds?.organization?.backgroundColor?.value,
+                it.backgroundColor?.value,
                 it.image?.uri,
                 it.binds?.eventRegistrationState,
                 it.userAgreement?.uri,

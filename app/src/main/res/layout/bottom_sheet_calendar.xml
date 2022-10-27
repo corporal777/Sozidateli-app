@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="5dp"
-    android:id="@+id/bottomSheet"
     tools:ignore="MissingPrefix">
 
 
@@ -53,18 +53,15 @@
         app:layout_constraintTop_toBottomOf="@id/btnClose" />
 
 
-    <!--    <androidx.viewpager2.widget.ViewPager2-->
-    <!--        android:id="@+id/calendarPager"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/divider" />-->
-
-
     <com.example.ui.views.calendarView.MaterialCalendarView
-        android:layout_marginTop="5dp"
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
+        app:mcv_tileWidth="50dp"
+        app:mcv_tileHeight="40dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/divider"/>
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

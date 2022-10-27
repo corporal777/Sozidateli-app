@@ -9,11 +9,7 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetChangeShortNameBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordPresenter
-import com.example.ui.views.dialogs_new.CalendarBottomSheet
 import onTextChanged
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 

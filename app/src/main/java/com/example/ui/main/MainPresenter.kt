@@ -151,45 +151,28 @@ class MainPresenter
             .andThen(Completable.defer { checkShowGreetings() })
             .andThen(Maybe.defer { checkUserEvent() })
             .performOnBackgroundOutOnMain()
-            .subscribe({ isMustShowEvent ->
-                if (!isEditingPhone) {
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    isAuthRequired = true
                     viewState.apply {
                         hideLoadingDialog()
-                        showRecommendations()
+                        showLogin()
                         checkIntent()
                     }
-                    showNextInapp()
                     initInternetConnectionCheck()
+                }, onSuccess = {
+                    if (!isEditingPhone) {
+                        viewState.apply {
+                            hideLoadingDialog()
+                            showRecommendations()
+                            checkIntent()
+                        }
+                        showNextInapp()
+                        initInternetConnectionCheck()
+                    }
+                    isEditingPhone = false
 
-//                    if (isFromEvent) {
-//                        viewState.showAboutEvent(EVENT_ID)
-//                        isFromEvent = false
-//                    } else if (isFromQr) {
-//                        if (!QR_CODE_TO_AUTH_WEB.isNullOrEmpty()) {
-//                            viewState.showAuthWebsiteFragment(QR_CODE_TO_AUTH_WEB)
-//                            isFromQr = false
-//                        }
-//                    }else {
-//
-//                    }
-//                        if (isMustShowEvent) {
-//                            showEvent()
-//                        } else {
-//
-//
-//                        }
-                }
-                isEditingPhone = false
-//                    AuthBackground.clear()
-            }, {
-                it.printStackTrace()
-                isAuthRequired = true
-                viewState.apply {
-                    hideLoadingDialog()
-                    showLogin()
-                    checkIntent()
-                }
-                initInternetConnectionCheck()
             })
     }
 

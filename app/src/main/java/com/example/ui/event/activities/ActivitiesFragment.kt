@@ -206,12 +206,33 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     }
 
     override fun setDays(days: List<List<EventScheduleCalendarDay>>) {
-        days.map {
-            calendarSection.add(CalendarHorizontalListItem(it) { day ->
-                presenter.onDaySelected(day)
-            })
-        }
+        calendarSection.update(
+            days.map {
+                CalendarHorizontalListItem(it) { day ->
+                    presenter.onDaySelected(day)
+                }
+            }
+        )
         mBinding.clSearch.isVisible = true
+    }
+
+    override fun setSubEvents(
+        canShow: Boolean,
+        subEvents: Map<String, List<EventActivityModel>>,
+        selectedTags: List<Tag>
+    ) {
+        eventsSection.update(
+            subEvents.map {
+                SubEventsWithDateItem(
+                    presenter.eventId,
+                    canShow,
+                    it.key,
+                    it.value,
+                    selectedTags,
+                    onSubEventClickListener
+                )
+            }
+        )
     }
 
     override fun selectDay(
@@ -264,28 +285,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         })
     }
 
-
-    override fun setSubEvents(
-        canShow: Boolean,
-        subEvents: Map<String, List<EventActivityModel>>,
-        selectedTags: List<Tag>
-    ) {
-        mBinding.calendarPager.isVisible = true
-        eventsSection.update(
-            subEvents.map {
-                SubEventsWithDateItem(
-                    presenter.eventId,
-                    canShow,
-                    it.key,
-                    it.value,
-                    selectedTags,
-                    onSubEventClickListener
-                )
-            }
-        )
-    }
-
-
     override fun scrollContent(day: EventScheduleCalendarDay) {
         val date = defaultServerDateFormatter.format(day.millis)
         val group =
@@ -300,7 +299,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     override fun showEmptyEventPlaceholder() {
-        mBinding.calendarPager.isVisible = false
         eventsSection.update(
             listOf(
                 NoEventItem(

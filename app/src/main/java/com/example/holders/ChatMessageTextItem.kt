@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.ChatMessage
+import com.example.holders.redesign.EventActivityItem
 import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
@@ -30,6 +31,12 @@ class ChatMessageTextItem(
     override fun getGuidLineEnd(viewHolder: GroupieViewHolder): Guideline = viewHolder.guidelineEnd
     override fun getMessageContainer(viewHolder: GroupieViewHolder): View = viewHolder.tvChatMessage
     override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessageDate
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is ChatMessageTextItem) return false
+        if (message != other.message) return false
+        return true
+    }
 
     override fun getLayout() = R.layout.item_chat_message_text
 }

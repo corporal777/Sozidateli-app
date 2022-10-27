@@ -29,7 +29,7 @@ import com.example.ui.event.my.schedule.items.MyScheduleSubEventsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.calendarView.CalendarDay
-import com.example.ui.views.dialogs_new.CalendarBottomSheet
+import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
@@ -64,7 +64,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     @ProvidePresenter
     fun providePresenter(): MyScheduleEventsPresenter = presenterProvider.get()
 
-    private val mSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
+    private val subEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
             mPresenter.onSubEventClick(eventId, subEvent)
 
@@ -191,37 +191,14 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                     it,
                     { id ->
                         mPresenter.onShowEventClick(id)
-                    }, mSubEventClickListener
+                    }, subEventClickListener
                 )
             }
         )
     }
 
     override fun setHeaderCalendar(days: List<List<EventScheduleCalendarDay>>) {
-//        val listDays = arrayListOf<EventScheduleCalendarDay>()
-//        val listItems = arrayListOf<CalendarHorizontalListItem>()
-//        var mCount = 0
-//        var mCountSize = 0
-//        days?.map { day ->
-//            mCount += 1
-//            mCountSize += 1
-//            listDays.add(day)
-//            if (mCount == 7) {
-//                mCount = 0
-//                listItems.add(CalendarHorizontalListItem(listDays) {
-//                    mPresenter.onDaySelected(it)
-//                }
-//                )
-//                listDays.clear()
-//            } else {
-//                if (mCountSize == days.size) {
-//                    listItems.add(CalendarHorizontalListItem(listDays) {
-//                        mPresenter.onDaySelected(it)
-//                    }
-//                    )
-//                }
-//            }
-//        }
+        mBinding.tvMonth.isVisible = !days.isNullOrEmpty()
         calendarSection.update(
             days.map {
                 CalendarHorizontalListItem(it) { day ->
@@ -229,20 +206,9 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                 }
             }
         )
-//        days.map {
-//            calendarSection.add(CalendarHorizontalListItem(it) { day ->
-//                mPresenter.onDaySelected(day)
-//            })
-//        }
-        //calendarSection.update(listItems)
     }
 
-    override fun setMonthCalendar(
-        subEventDays: List<CalendarDay>,
-        month: String,
-        firstDate: CalendarDay?,
-        lastDate: CalendarDay?
-    ) {
+    override fun setMonthCalendar(subEvents: List<EventActivityModel>, month: String) {
         mBinding.apply {
             calendarContainer.isVisible = true
             tvMonth.apply {
@@ -251,9 +217,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                     CalendarBottomSheet(
                         requireContext(),
                         mCurrentDay,
-                        subEventDays,
-                        firstDate,
-                        lastDate
+                        subEvents
                     ).setSelectCallback {
                         val valueLong =
                             defaultServerDateFormatter.parse(defaultServerDateFormatter.format(it.time)).time
@@ -261,7 +225,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                         changeDayWhenScrollDown(date)
                         changeDay(date)
                         scrollContent(date)
-                    }
+                    }.show()
                 }
             }
         }
@@ -299,20 +263,13 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
     }
 
     override fun showEmptyListPlaceholder() {
-//        calendarSection.clear()
-//        searchSection.clear()
-//        mBinding.tvMonth.apply {
-//            text = ""
-//            isVisible = false
-//        }
         hideLoadingAlertDialog()
         eventsSection.update(
             listOf(
                 NoScheduleEventItem(
                     "Нет результатов",
                     "По заданным параметрам нет подходящих событий",
-                    50.dp
-                    //getString(R.string.no_sub_events_in_schedule),
+                    70.dp
                 )
             )
         )
@@ -330,7 +287,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
             if (!result.isNullOrEmpty()) {
                 showLoadingAlertDialog()
                 mPresenter.getEventsList()
-                //removeBannedOrCancelledEvent(result)
             }
         }
     }
@@ -340,7 +296,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
             if (!eventId.isNullOrEmpty()) {
                 mPresenter.getEventsList()
                 showLoadingAlertDialog()
-                //removeBannedOrCancelledEvent(eventId)
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.example.di
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDialog
 import com.example.App
+import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.notifications.NotificationsView
@@ -37,4 +39,6 @@ interface AppComponent {
     fun inject(view: DaDataAutoCompleteTextView)
 
     fun inject(view: NotificationsView)
+
+    fun inject(dialog : CalendarBottomSheet)
 }

@@ -50,10 +50,7 @@ import io.noties.markwon.inlineparser.NewLineInlineProcessor
 import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
 import org.commonmark.node.HardLineBreak
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
+import java.io.*
 import java.net.URI
 import java.net.URL
 import java.util.*
@@ -447,6 +444,33 @@ fun getBitmapFromUrl(url : String): Bitmap {
     return BitmapFactory.decodeStream(
         URL(url).openConnection().getInputStream()
     )
+}
+
+fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): File {
+    //create a file to write bitmap data
+    val file = File(context.cacheDir, fileName)
+    file.createNewFile()
+
+    //Convert bitmap to byte array
+    val bos = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos)
+    val bitMapData = bos.toByteArray()
+
+    //write the bytes in file
+    var fos: FileOutputStream? = null
+    try {
+        fos = FileOutputStream(file)
+    } catch (e: FileNotFoundException) {
+        e.printStackTrace()
+    }
+    try {
+        fos?.write(bitMapData)
+        fos?.flush()
+        fos?.close()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return file
 }
 
 

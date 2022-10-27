@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.navigation.ActivityNavigatorExtras
@@ -149,7 +150,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                         }
                         //presenter.onLoadNextMessagesRequest()
                     }, { scroll ->
-                        Log.e("SCROLL", scroll.toString())
+
                     }
                 ))
                 addOnScrollListener(PositionOffsetScrollListener { position, offset ->

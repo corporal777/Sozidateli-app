@@ -32,6 +32,7 @@ import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -191,9 +192,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         val actionIcon =
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
         setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
-            val link = BuildConfig.SHARE_URL + "portal/user/" + user.shortName
-            //copyTextToBuffer(requireContext(), link)
-            presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
+            val link = BuildConfig.SHARE_URL + "portal/user/" + user.id
+            copyTextToBuffer(requireContext(), link)
+            //presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
         }, {
             shortNameClick?.invoke()
         })

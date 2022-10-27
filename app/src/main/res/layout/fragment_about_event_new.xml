@@ -18,29 +18,30 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/event_content_list"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="1"
                 tools:listitem="@layout/item_event_detail_image_block" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/about_event_appBar"
+        <com.example.ui.views.CustomAppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
             app:elevation="0dp"
+            android:background="@null"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/about_event_toolbar"
+                android:id="@+id/tool_bar"
                 android:layout_width="match_parent"
                 android:layout_height="85dp"
                 android:background="@null"
+                app:contentInsetEnd="0dp"
                 app:contentInsetStart="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,6 +51,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tb_background"
+                        android:background="@android:color/white"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -70,7 +72,7 @@
                         fontPath="fonts/sf_pro_text_semibold.ttf"
                         android:layout_width="145dp"
                         android:layout_height="30dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/custom_btn_add_to_calendar_background"
                         android:minHeight="@dimen/auth_button_min_height"
@@ -81,13 +83,11 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/iv_add_to_favorite" />
 
-                    <ImageView
+                    <com.example.ui.views.UserSubscribeImageView
                         android:id="@+id/iv_add_to_favorite"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginBottom="5dp"
-                        android:background="@drawable/custom_toolbar_btn_background_selectable"
-                        android:padding="9dp"
                         android:src="@drawable/ic_star"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/iv_share"
@@ -108,7 +108,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
+        </com.example.ui.views.CustomAppBarLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -22,13 +22,11 @@ interface MyScheduleEventsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setMonthCalendar(
-            subEventDays: List<CalendarDay>,
-            month : String,
-            firstDate: CalendarDay?,
-            lastDate : CalendarDay?
+            subEvents: List<EventActivityModel>,
+            month : String
         )
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContent(data: List<MyScheduleEventsData>)
 
         @StateStrategyType(SkipStrategy::class)

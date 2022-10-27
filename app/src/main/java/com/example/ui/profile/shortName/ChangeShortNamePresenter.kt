@@ -1,6 +1,7 @@
 package com.example.ui.profile.shortName
 
 import android.app.NotificationManager
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.UserShortNameBody

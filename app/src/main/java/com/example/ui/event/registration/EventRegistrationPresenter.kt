@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -100,17 +101,19 @@ class EventRegistrationPresenter
                         eventData.registrationSubtitle = form?.subtitle
                         when(form?.background){
                             EventFormModel.BackgroundType.ORGANIZATION -> {
-                                eventData.image = if (!event.binds?.organization?.image?.uri.isNullOrEmpty()){
-                                    event.binds?.organization?.image?.uri
+                                if (!event.binds?.organization?.image?.uri.isNullOrEmpty()){
+                                    eventData.image = event.binds?.organization?.image?.uri
                                 }else {
-                                    event.binds?.organization?.backgroundColor?.value
+                                    eventData.image = ""
+                                    eventData.backgroundColor = event.binds?.organization?.backgroundColor?.value
                                 }
                             }
                             EventFormModel.BackgroundType.EVENT -> {
-                                eventData.image = if (!event.image?.uri.isNullOrEmpty()){
-                                    event.image?.uri
+                                if (!event.image?.uri.isNullOrEmpty()){
+                                    eventData.image = event.image?.uri
                                 }else {
-                                    event.backgroundColor?.value
+                                    eventData.image = ""
+                                    eventData.backgroundColor = event.backgroundColor?.value
                                 }
                             }
                         }
@@ -303,21 +306,6 @@ class EventRegistrationPresenter
                         responseField
                     ).fromJson(EventFile.Deserializer())
                 )
-//                EventRegisterField.Type.FILE ->  {
-//                    val file = EventRegisterFieldData.File(
-//                        field,
-//                        EventFile(
-//                            Uri.parse(findRegistrationDataValueNew(
-//                            field,
-//                            responseField
-//                        )), findRegistrationDataValueNew(
-//                            field,
-//                            responseField
-//                        )?:"", ""))
-//                    oldFilesList.add(file)
-//                    file
-//                }
-
                 EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
                     field,
                     findRegistrationDataValue(field, responseField).fromJson<Boolean>()
@@ -338,14 +326,6 @@ class EventRegistrationPresenter
         return fields?.find { field.id == it?.id }?.value
     }
 
-    private fun findRegistrationDataValueNew(
-        field: EventRegisterField,
-        fields: List<EventRegisterResponseField?>?
-        //): JsonElement? {
-    ): String? {
-
-        return fields?.find { field.id == it?.id }?.value.toString()
-    }
 
     override fun onDataChange(field: EventRegisterFieldData<*>) {
         if (field.isValid()) invalidFieldsData.remove(field) else invalidFieldsData.add(field)
@@ -628,6 +608,7 @@ class EventRegistrationPresenter
             description = event.description ?: "",
             logo = null,
             image = event.image?.uri ?: event.binds?.organization?.image?.uri,
+            backgroundColor = "",
             conferenceStart = event.holdingDate?.from,
             conferenceFinish = event.holdingDate?.to,
             registrationStart = null,

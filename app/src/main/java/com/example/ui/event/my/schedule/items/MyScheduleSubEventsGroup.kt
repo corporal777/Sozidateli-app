@@ -21,42 +21,30 @@ class MyScheduleSubEventsGroup(
 
     init {
         mHeaderItem.apply {
-            if (data.showPlaceholder) {
-                update(
-                    listOf(
-                        EventActivityDateItem(data.firstDate),
-                    )
-                )
-            } else {
-                update(listOf(
-                    EventActivityDateItem(data.firstDate),
-                    EventImageHeaderItem(data.eventName, data.eventImage) {
-                        onHeaderClick(data.eventId ?: "")
-                    }
-                ))
-            }
+            update(listOf(
+                EventActivityDateItem(data.firstDate),
+                EventImageHeaderItem(data.eventName, data.eventImage) {
+                    onHeaderClick(data.eventId ?: "")
+                }
+            ))
         }
         add(mHeaderItem)
         mDataItem.apply {
-            if (data.showPlaceholder) {
-                add(NoSubEventItem(mNoParamTitle))
-            } else {
-                if (!data.subEvents.isNullOrEmpty()) {
-                    data.subEvents.forEach { subEvents ->
-                        if (!subEvents.key.isNullOrEmpty()) {
-                            add(EventActivityDateItem(subEvents.key))
-                        }
-                        if (!subEvents.value.isNullOrEmpty()) {
-                            subEvents.value.forEach {
-                                add(
-                                    EventActivityItem(
-                                        data.eventId,
-                                        it,
-                                        emptyList(),
-                                        onSubEventClickListener,
-                                        true)
-                                )
-                            }
+            if (!data.subEvents.isNullOrEmpty()) {
+                data.subEvents.forEach { subEvents ->
+                    if (!subEvents.key.isNullOrEmpty()) {
+                        add(EventActivityDateItem(subEvents.key))
+                    }
+                    if (!subEvents.value.isNullOrEmpty()) {
+                        subEvents.value.forEach {
+                            add(
+                                EventActivityItem(
+                                    data.eventId,
+                                    it,
+                                    emptyList(),
+                                    onSubEventClickListener,
+                                    true)
+                            )
                         }
                     }
                 }
