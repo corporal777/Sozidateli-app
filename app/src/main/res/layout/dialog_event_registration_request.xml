@@ -46,7 +46,7 @@
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatButton
-            style="@style/BtnGreenStyle"
+            style="@style/BtnBrownStyle"
             android:id="@+id/btnPositive"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

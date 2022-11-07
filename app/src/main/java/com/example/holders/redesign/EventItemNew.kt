@@ -48,8 +48,8 @@ class EventItemNew(
     private var imageColor = ColorDrawable(Color.DKGRAY)
 
     init {
-        if (!backgroundColor.isNullOrEmpty()){
-            val color = backgroundColor.parseColor()?:Color.DKGRAY
+        if (!backgroundColor.isNullOrEmpty()) {
+            val color = backgroundColor.parseColor() ?: Color.DKGRAY
             imageColor = ColorDrawable(color)
         }
     }
@@ -68,16 +68,11 @@ class EventItemNew(
             tvTitle.text = name
             ivLogo.apply {
                 setImage(logo ?: imageColor)
-//                val color = backgroundColor.parseColor()
-//                    ?: ResourcesCompat.getColor(
-//                        resources,
-//                        R.color.event_item_no_image_background,
-//                        null
-//                    )
-//                setBackgroundColor(color)
-//                Picasso.get().load(logo).into(this)
-                colorFilter = if (status == Event.Status.CANCELED) ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
-                else null
+                colorFilter =
+                    if (status == Event.Status.CANCELED) ColorMatrixColorFilter(ColorMatrix().apply {
+                        setSaturation(0f)
+                    })
+                    else null
             }
 
             setApproveStatus(tvEventState)
@@ -131,50 +126,55 @@ class EventItemNew(
     }
 
     private fun decorActionButton(btnAction: Button) {
-        if (eventRegistrationState != null) {
-            val actions = if (eventRegistrationState?.availableActions.isNullOrEmpty())
-                arrayListOf("") else eventRegistrationState?.availableActions
-            when (eventRegistrationState?.prohibitions?.registrationClosed) {
-                false -> {
-                    when (actions?.get(0)) {
-                        "register" -> {
-                            btnAction.apply {
-                                isVisible = true
-                                text = context.getString(R.string.event_action_participate)
-                                setOnClickListener {
-                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                        if (userAgreement.isNullOrEmpty()) {
-                                            onEventClickListener.onActionRegister(eventId)
-                                        } else {
-                                            showAgreementRegisterDialog(
-                                                btnAction.context,
-                                                userAgreement
-                                            )
+        when (status) {
+            Event.Status.REGISTRATION,
+            Event.Status.REGISTRATION_FINISHED,
+            Event.Status.RUNNING,
+            Event.Status.FINISHED -> {
+                if (eventRegistrationState != null) {
+                    val actions = eventRegistrationState.availableActions ?: arrayListOf("")
+                    val profileLevel = eventRegistrationState.prohibitions?.profileLevelToLow?.value
+                    if (eventRegistrationState.prohibitions?.registrationClosed == false) {
+                        when (actions.firstOrNull()) {
+                            "register" -> {
+                                btnAction.apply {
+                                    isVisible = true
+                                    text = context.getString(R.string.event_action_participate)
+                                    setOnClickListener {
+                                        profileLevel.checkStateLevel {
+                                            if (userAgreement.isNullOrEmpty()) {
+                                                onEventClickListener.onActionRegister(eventId)
+                                            } else {
+                                                showAgreementRegisterDialog(
+                                                    btnAction.context,
+                                                    userAgreement
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
-
-                        }
-                        "withdraw" -> {
-                            btnAction.apply {
-                                isVisible = true
-                                text = context.getString(R.string.event_action_cancel_request)
-                                setOnClickListener {
-                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                        onEventClickListener.onActionCancel(eventId, registrationId)
+                            "withdraw" -> {
+                                btnAction.apply {
+                                    isVisible = true
+                                    text = context.getString(R.string.event_action_cancel_request)
+                                    setOnClickListener {
+                                        profileLevel.checkStateLevel {
+                                            onEventClickListener.onActionCancel(
+                                                eventId,
+                                                registrationId
+                                            )
+                                        }
                                     }
                                 }
-                            }
 
+                            }
+                            else -> btnAction.isVisible = false
                         }
-                        else -> btnAction.isVisible = false
-                    }
-                }
-                else -> {
-                    btnAction.isVisible = false
+                    } else btnAction.isVisible = false
                 }
             }
+            else -> btnAction.isVisible = false
         }
     }
 

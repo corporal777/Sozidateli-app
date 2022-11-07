@@ -31,13 +31,15 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
     @ProvidePresenter
     fun providePresenter(): QrScannerPresenter = presenterProvider.get()
 
-    private lateinit var codeScanner: CodeScanner
+    private var codeScanner: CodeScanner? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarTitleAndIcon(getString(R.string.qr_scan_label))
-        codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
-            decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
+        if (codeScanner == null){
+            codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
+                decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
+            }
         }
         mBinding.apply {
             btnToEnterCode.setOnClickListener { presenter.onEnterCodeClick() }
@@ -48,7 +50,7 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
     override fun startPreview() {
         mBinding.clScanner.isVisible = true
         mBinding.clPermissionRequest.isVisible = false
-        codeScanner.apply { if (!isPreviewActive) startPreview() }
+        codeScanner?.apply { if (!isPreviewActive) startPreview() }
     }
 
     override fun showNoPermission() {
@@ -57,19 +59,19 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
     }
 
     override fun onPause() {
-        codeScanner.releaseResources()
+        codeScanner?.releaseResources()
         super.onPause()
     }
 
-    override fun showEvent(eventId: /*Event*/String) {
+    override fun showEvent(eventId: String) {
         findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragmentNew(eventId))
     }
 
     override fun showEventNotFoundError() {
         AlertDialog.Builder(requireContext())
                 .setMessage(R.string.qr_scan_not_found_event)
-                .setPositiveButton(R.string.ok) { _, _ -> codeScanner.startPreview() }
-                .setOnCancelListener { codeScanner.startPreview() }
+                .setPositiveButton(R.string.ok) { _, _ -> codeScanner?.startPreview() }
+                .setOnCancelListener { codeScanner?.startPreview() }
                 .show()
     }
 

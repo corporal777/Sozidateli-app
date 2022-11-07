@@ -46,8 +46,8 @@ class UserRepositoryImp
                 "external-invite-pgrf",
                 "chat-room-with-me",
                 "is-user-in-ban",
-//                "sessions-count",
-//                "device-sessions-count"
+                "sessions-count",
+                "device-sessions-count"
             )
         ).map { it }.doOnSuccess {
             appData.setAllUserInfo(it)

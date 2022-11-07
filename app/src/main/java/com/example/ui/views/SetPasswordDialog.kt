@@ -1,12 +1,16 @@
 package com.example.ui.views
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import com.example.R
 import com.example.databinding.DialogSetPasswordBinding
+import com.example.ui.main.MainActivity
 
 class SetPasswordDialog(val activity: Activity) {
 
@@ -31,12 +35,17 @@ class SetPasswordDialog(val activity: Activity) {
             binding.tilPassword.error = null
         }
         binding.btnPositive.setOnClickListener {
-            if (!binding.etPassword.text.isNullOrEmpty())
+            if (!binding.etPassword.text.isNullOrEmpty()){
+                (activity as MainActivity).hideKeyboard(it)
                 onSelect(binding.etPassword.text.toString())
+            }
             else
                 binding.tilPassword.error = activity.resources.getString(R.string.auth_error_no_password)
         }
         alertDialog = builder.create()
+        val back = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(back, 20)
+        alertDialog.window?.setBackgroundDrawable(inset)
         alertDialog.show()
     }
 

@@ -10,15 +10,16 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/tv_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -26,10 +27,11 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_check" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -45,9 +47,9 @@
                 android:id="@+id/tv_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_first">
@@ -55,10 +57,11 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_check" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -74,9 +77,9 @@
                 android:id="@+id/tv_third"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_second">
@@ -84,10 +87,11 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="2dp"
+                    app:srcCompat="@drawable/ic_check" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -99,204 +103,28 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:id="@+id/tv_fourth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_third">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_fourth"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tv_fifth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fourth">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_fifth"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tv_six"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_fifth">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_six"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tv_seventh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_six">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_seventh"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tv_eighth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_seventh">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_check"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_eighth"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/tv_percentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="25dp"
                 android:layout_marginTop="20dp"
+                android:paddingHorizontal="25dp"
                 android:text="@string/base_percentage"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_third" />
 
-            <!--<LinearLayout
-                android:id="@+id/tv_fill_first"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_percentage">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
-                    android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="@string/base_fill_first"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
-
-            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/tv_fill_secondd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_percentage">
@@ -304,19 +132,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/max_fill_second"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -327,9 +156,9 @@
                 android:id="@+id/tv_fill_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_secondd">
@@ -337,19 +166,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/base_fill_second"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -360,9 +190,9 @@
                 android:id="@+id/tv_fill_third"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_second">
@@ -370,19 +200,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/base_fill_third"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -393,9 +224,9 @@
                 android:id="@+id/tv_fill_fourth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_third">
@@ -403,19 +234,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/base_fill_fourth"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -426,9 +258,9 @@
                 android:id="@+id/tv_fill_fifth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_fourth">
@@ -436,19 +268,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/base_fill_fifth"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -459,9 +292,9 @@
                 android:id="@+id/tv_fill_sixth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="25dp"
-                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_fifth">
@@ -469,19 +302,20 @@
                 <ImageView
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:background="@drawable/orange_circle"
-                    app:srcCompat="@drawable/ic_add_sn"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/orange_circle"
                     android:padding="7dp"
-                    android:layout_marginTop="2dp"/>
+                    app:srcCompat="@drawable/ic_add_sn" />
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingStart="20dp"
                     android:text="@string/base_fill_sixth"
                     android:textSize="16sp"
-                    android:layout_gravity="center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnBaseState" />
@@ -490,27 +324,24 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnGetState"
-                android:layout_width="0dp"
+                style="@style/BtnBrownStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="12dp"
                 android:layout_marginStart="12dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/background_action_button_selector"
-                android:letterSpacing="0.01"
+                android:layout_marginBottom="10dp"
                 android:text="@string/get_base"
-                android:textAllCaps="false"
-                android:textColor="@color/text_color_action_button"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_fill_sixth"
-                app:layout_constraintVertical_bias="0.333"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
 
 </layout>

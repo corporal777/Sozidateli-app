@@ -12,7 +12,7 @@ class ApiErrorParser {
         fun parse(throwable: Throwable?): ApiError? {
             if (throwable == null) return null
             if (throwable is HttpException) {
-                val responseBody = throwable.response().errorBody()
+                val responseBody = throwable.response()?.errorBody()
                 var body: String? = null
                 if (responseBody != null) {
                     try {

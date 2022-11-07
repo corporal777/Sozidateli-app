@@ -19,7 +19,9 @@ import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @InjectViewState
 class AboutEventPresenterNew
@@ -88,7 +90,7 @@ class AboutEventPresenterNew
         var pair = Pair<Boolean, Map<String, List<EventActivityModel>>>(false, emptyMap())
         compositeDisposable += Maybe.fromCallable {
             mTags.clear()
-            eventInfo?.event?.binds?.tag?.map {
+            eventInfo?.event?.binds?.tag?.forEach {
                 mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
             }
             pair = getSubEvents(eventInfo?.event)
@@ -107,7 +109,7 @@ class AboutEventPresenterNew
     private fun getSubEvents(eventNew: EventNew?): Pair<Boolean, Map<String, List<EventActivityModel>>> {
         val isApproved =
             event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-        var filteredSubEvents = mutableMapOf<String, ArrayList<EventActivityModel>>()
+        var filteredSubEvents = mapOf<String, List<EventActivityModel>>()
         eventNew.let {
             if (!it?.binds?.activity.isNullOrEmpty()) {
                 val list = arrayListOf<EventActivityModel>()
@@ -119,8 +121,8 @@ class AboutEventPresenterNew
                     list.addAll(it.binds?.activity ?: emptyList())
                 }
                 filteredSubEvents = list.groupBy { event ->
-                    event.holdingDate?.from?.split(" ")?.get(0)
-                } as MutableMap<String, ArrayList<EventActivityModel>>
+                    event.holdingDate?.from?.split(" ")?.get(0) ?: ""
+                }
             }
         }
         return Pair(isApproved, filteredSubEvents.toSortedMap())
@@ -280,7 +282,6 @@ class AboutEventPresenterNew
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.updateSubEvent(subEvent)
             }
@@ -293,7 +294,6 @@ class AboutEventPresenterNew
             compositeDisposable += eventRepository.deleteFromFavorite(id)
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onComplete = {
                         event?.event?.binds?.organization?.binds?.userFavorite = null
@@ -313,7 +313,6 @@ class AboutEventPresenterNew
             )
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                //.withProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onSuccess = {
                         event?.event?.binds?.organization?.binds?.userFavorite =

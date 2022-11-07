@@ -35,7 +35,8 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     override fun onCreate() {
         super.onCreate()
 
-        val config: YandexMetricaConfig = YandexMetricaConfig.newConfigBuilder("faf7bdc3-762b-4c6a-8813-a6a8fb26f448").build()
+        val config: YandexMetricaConfig =
+            YandexMetricaConfig.newConfigBuilder("faf7bdc3-762b-4c6a-8813-a6a8fb26f448").build()
         YandexMetrica.activate(applicationContext, config)
         YandexMetrica.enableActivityAutoTracking(this)
 
@@ -53,18 +54,22 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
         createNotificationChannels()
 
         appComponent = DaggerAppComponent.builder()
-                .application(this)
-                .build()
-                .apply { inject(this@App) }
+            .application(this)
+            .build()
+            .apply { inject(this@App) }
 
-        //CalligraphyConfig.initDefault(calligraphyConfig)
-        ViewPump.init(ViewPump.builder()
-                .addInterceptor(CalligraphyInterceptor(
+        ViewPump.init(
+            ViewPump.builder()
+                .addInterceptor(
+                    CalligraphyInterceptor(
                         CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                                .setFontAttrId(R.attr.fontPath)
-                                .build()))
-                .build())
+                            .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                            .setFontAttrId(R.attr.fontPath)
+                            .build()
+                    )
+                )
+                .build()
+        )
         VKSdk.initialize(this)
     }
 
@@ -76,7 +81,8 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "default_channel"
         val channelName = getString(R.string.app_default_notification_channel_name)
 

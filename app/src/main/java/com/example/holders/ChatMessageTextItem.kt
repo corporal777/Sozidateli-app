@@ -1,18 +1,19 @@
 package com.example.holders
 
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.ChatMessage
-import com.example.holders.redesign.EventActivityItem
 import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
 
 class ChatMessageTextItem(
-        message: ChatMessage.Personal
+        message: ChatMessage.Personal,
+        val canAnim : Boolean
 ) : ChatMessageItem(message) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -23,6 +24,9 @@ class ChatMessageTextItem(
                 //text = message.message.message
                 setTextColor(ContextCompat.getColor(context, if (message.isMyMessage) R.color.chat_message_text_outgoing
                 else R.color.chat_message_text_incoming))
+            }
+            if (canAnim){
+                setFadeAnimation(this.root)
             }
         }
     }
@@ -36,6 +40,12 @@ class ChatMessageTextItem(
         if (other !is ChatMessageTextItem) return false
         if (message != other.message) return false
         return true
+    }
+
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 450
+        view.startAnimation(anim)
     }
 
     override fun getLayout() = R.layout.item_chat_message_text

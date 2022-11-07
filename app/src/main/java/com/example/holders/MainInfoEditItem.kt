@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.app.Activity
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
@@ -11,6 +12,7 @@ import com.example.data.models.*
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
+import com.example.ui.main.MainActivity
 import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
@@ -34,11 +36,7 @@ import java.util.*
 
 class MainInfoEditItem(
     id: Long,
-    context: Context,
-    /*private val name: String?,
-    private val surname: String?,
-    private val middleName: String?,
-    private val noMiddleName: Boolean,*/
+    val activity: Activity,
     private val gender: ToggleStringModel?,
     private val birthday: String?,
     private val address: UserAddress,
@@ -48,19 +46,14 @@ class MainInfoEditItem(
     private val email: FieldDetails?,
     private val image: ImageModel,
     private val isEnableNext: (isEnable: Boolean) -> Unit,
-    private val confirmPhoneClick: (String) -> Unit,
+    private val confirmPhoneClick: (String?) -> Unit,
     private val onImageClick: (canRemove: Boolean) -> Unit
 ) : Item(id) {
 
-    private val genderMale = context.getString(R.string.profile_gender_male)
-    private val genderFemale = context.getString(R.string.profile_gender_female)
-    private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
-
+    private val genderMale = activity.getString(R.string.profile_gender_male)
+    private val genderFemale = activity.getString(R.string.profile_gender_female)
+    private val emptyInputError = activity.getString(R.string.profile_edit_empty_field_error)
     private var mImage = image
-
-    /*private var mName = name
-    private var mSurname = surname
-    private var mMiddleName = middleName*/
     private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
 
     private var mGender = gender?.value?.firstLetterToUppercase()
@@ -81,43 +74,6 @@ class MainInfoEditItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            /*tilSurname.initNameInput(surname) {
-                mSurname = it.toString()
-                checkDataValid()
-            }
-            tilName.initNameInput(mName) {
-                mName = it.toString()
-                checkDataValid()
-            }
-            tilMiddleName.initNameInput(mMiddleName) {
-                mMiddleName = it.toString()
-                checkDataValid()
-            }*/
-            /*tilEmail.initEmailInput(email?.value) {
-                checkDataValid()
-            }*/
-
-            /*etEmail.apply {
-                setText(email?.value)
-                checkDataValid()
-            }*/
-
-            /*scNoMiddleName.apply {
-                isChecked = mNoMiddleNameChecked
-                isEnabled = isCanChangeName
-                if (isCanChangeName) {
-                    setOnCheckedChangeListener { _, isChecked ->
-                        mNoMiddleNameChecked = isChecked
-                        etMiddleName.apply {
-                            if (isChecked) etMiddleName.setText("")
-                            tilMiddleName.isEnabled = !isChecked
-                            if (!isEnabled) tilMiddleName.error = null
-                        }
-                        checkDataValid()
-                    }
-                }
-            }*/
-
             scGender.apply {
                 isChecked = mGenderShow
                 setOnCheckedChangeListener { _, isChecked ->
@@ -135,7 +91,7 @@ class MainInfoEditItem(
 
                     if (mIsPhoneConfirmed) {
                         mIsPhoneConfirmed =
-                            mMobilePhone == phone?.firstOrNull { ph -> ph.type == PHONE_PERSONAL }?.value
+                            mMobilePhone == phone?.firstOrNull{ ph -> ph.type == PHONE_PERSONAL }?.value
                         updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
@@ -148,11 +104,15 @@ class MainInfoEditItem(
                 checkDataValid()
             }
             tilBirthday.initAsDatePicker(
-                mBirthday?.let { defaultDateFormatter.parse(it) },
+                if (!mBirthday.isNullOrEmpty()){
+                    defaultDateFormatter.parse(mBirthday)
+                }else {
+                    null
+                },
+                //mBirthday?.let { defaultDateFormatter.parse(it) },
                 maxDate = Calendar.getInstance().apply {
                     add(Calendar.YEAR, -14)
-                }
-                    .time
+                }.time
             ) { year, month, day ->
                 checkDataValid()
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
@@ -190,16 +150,13 @@ class MainInfoEditItem(
             }
 
             btnPhoneConfirm.apply {
-                setOnClickListener {
-                    val phone = etMobilePhone.text.toString()
-                    if (/*phone.isValidPhoneNumber(context)*/Utils.newPhoneValidator(
-                            phone.replace(" ", "").replace("-", "")
-                        )
-                    ) {
-                        confirmPhoneClick(phone)
+                setOnClickListener { v ->
+                    mMobilePhone = etMobilePhone.text.toString()
+                    if (Utils.newPhoneValidator(mMobilePhone.phoneToServer())) {
+                        (activity as MainActivity).hideKeyboard(v)
+                        confirmPhoneClick(mMobilePhone)
                     } else {
                         tilMobilePhone.apply {
-                            //error = invalidNumberError
                             requestFocus()
                         }
                     }
@@ -307,25 +264,20 @@ class MainInfoEditItem(
 
     fun getEmail(): String = viewHolder.etEmail.text.toString()*/
 
-    fun getPersonalPhone() = mMobilePhone.phoneToServer()
+    fun getPersonalPhone() = mMobilePhone?.phoneToServer()
+    fun isPhoneValid() : Boolean = Utils.isNewPhoneIsValid(getPersonalPhone())
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            /*if (isCanChangeName) {
-                if (name != mName) put(UserDetail.USER_NAME, mName)
-                if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
-                val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
-                if (this@MainInfoEditItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
-            }*/
             if (gender?.value != mGender) put(
                 UserDetail.USER_GENDER,
                 ToggleStringModel(getGender(), mGenderShow)
             )
             mBirthday?.formatToDefaultServerDate()?.let {
-                if (birthday != it) put(
-                    UserDetail.USER_BIRTHDAY,
-                    FieldDetails(value = it, isVisible = mShowBirthday)
-                )
+                if (birthday != it) {
+
+                }
+                put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
             //if (email?.value != viewHolder.etEmail.text.toString()) put(UserDetail.USER_EMAIL, FieldDetails(value = viewHolder.etEmail.text.toString(), isConfirmed = false))
 
@@ -346,7 +298,7 @@ class MainInfoEditItem(
                                 mMobilePhone.phoneToServer() ?: ""
                             ),
                             type = PHONE_PERSONAL,
-                            isConfirmed = personal?.isConfirmed,
+                            isConfirmed = mIsPhoneConfirmed,
                             isVisible = personal?.isVisible,
                             absent = false
                         ),
@@ -411,6 +363,22 @@ class MainInfoEditItem(
         mImage = image
         checkDataValid()
         setAvatar()
+    }
+
+    fun updatePhone(phone : List<FieldDetails>?){
+        mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
+        mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
+        updatePhoneConfirmationStatus(viewHolder)
+        viewHolder.etMobilePhone.apply {
+            initInput(mMobilePhone) {
+
+            }
+            addTextChangedListener(PhoneNumberFormattingTextWatcher())
+        }
+    }
+
+    fun getNewPhoneConfirmation(): Boolean{
+        return mIsPhoneConfirmed
     }
 
     override fun getLayout(): Int = R.layout.item_edit_main_info

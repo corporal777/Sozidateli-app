@@ -19,7 +19,8 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(), UserProfileExperienceContract.View, SimpleTitleToolbar {
+class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
+    UserProfileExperienceContract.View, SimpleTitleToolbar {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -51,7 +52,13 @@ class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInteres
 
         val work = user.binds?.workExperience?.models ?: emptyList()
         if (work.isEmpty()) {
-            adapter.update(arrayListOf(EmptyItem(context?.resources?.getString(R.string.no_experience)?: "")))
+            adapter.update(
+                arrayListOf(
+                    EmptyItem(
+                        context?.resources?.getString(R.string.no_experience) ?: ""
+                    )
+                )
+            )
         } else {
             adapter.update(work.mapIndexed { index, socialRoles ->
                 ProfileDataWorkExperienceItem(socialRoles, index == 0)

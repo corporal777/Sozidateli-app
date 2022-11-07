@@ -59,7 +59,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
     override fun onChangePhoneClick() {
-        viewState.showPhoneEdit()
+        viewState.showPhoneEdit(appData.getUserNew().phone?.firstOrNull { it.type == PHONE_PERSONAL })
     }
 
     override fun onChangePasswordClick() {
@@ -114,42 +114,8 @@ class UserProfileSettingsPresenter @Inject constructor(
                 }
                 viewState.showChangeEmail()
             }
-        /*updateUser(mapOf(USER_EMAIL to FieldDetails(value = null, isConfirmed = null))) {
-            it.email?.value = null
-            it.email?.isConfirmed = null
-            viewState.showChangeEmail()
-        }*/
     }
 
-
-    override fun checkEmailIsUnique(email: String, isFirst: Boolean) {
-        compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({ onChangeEmailConfirm(email, isFirst) },
-                { viewState.showEmailNotUnique(email) })
-    }
-
-    override fun onChangeEmailConfirm(email: String, isFirst: Boolean) {
-        if (AuthValidateUtil.isValidEmail(email)) {
-            compositeDisposable += authRepository.registerEmailResend(email)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    appData.updateUserNew {
-                        /*if (isFirst) {
-                            this.email?.value = email
-                        }*/
-                        this.email?.onConfirmation = email
-                    }
-                    viewState.showChangeEmailComplete(email)
-                }
-        } else {
-            viewState.showUpdateError()
-        }
-    }
 
     override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
@@ -160,7 +126,8 @@ class UserProfileSettingsPresenter @Inject constructor(
 
                 sendPhone(phone)
             },
-                { viewState.showPhoneNotUnique(phone) })
+                {
+                    viewState.showPhoneNotUnique(phone) })
     }
 
     override fun sendPhone(phone: String) {

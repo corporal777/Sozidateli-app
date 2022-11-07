@@ -20,9 +20,6 @@ interface RecommendationsContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
-        fun hideEmptyListPlaceholder()
-
         @StateStrategyType(SkipStrategy::class)
         fun scrollToPositionWithOffset(position: Int, offset: Int)
 

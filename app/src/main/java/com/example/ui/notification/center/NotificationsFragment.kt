@@ -34,8 +34,6 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     @InjectPresenter
     lateinit var presenter: NotificationsPresenter
 
-    private var mDy: Int = 0
-
     @Inject
     lateinit var presenterProvider: Provider<NotificationsPresenter>
 
@@ -69,8 +67,7 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     private val openEventListener: OnOpenEventListener = {
         findNavController().navigate(
             NotificationsFragmentDirections.notificationToAboutEventFragment(
-                it,
-                AboutEventFragmentNew.ABOUT_FROM_OTHER
+                it
             )
         )
     }
@@ -107,7 +104,7 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@NotificationsFragment.adapter
-                onScrolled { dx, dy ->
+                onScrolled { _, _ ->
                     if (this.computeVerticalScrollOffset() <= 10) {
                         presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
                     } else {

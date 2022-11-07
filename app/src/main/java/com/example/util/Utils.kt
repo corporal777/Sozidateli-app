@@ -46,25 +46,20 @@ object Utils {
         return regex.containsMatchIn(text)
     }
 
-    fun newPhoneValidator(phone: String): Boolean {
+    fun newPhoneValidator(phone: String?): Boolean {
         var isValid = true
-        if (phone.contains("+")) {
-            if (phone.length == 12) {
-                if (phone.substring(0, 3) != "+79") isValid = false
-            } else isValid = false
-        } else {
-            if (phone.length == 11) {
-                val firstNumber = phone.substring(0, 2)
-                if (firstNumber != "79" && firstNumber != "89") isValid = false
-            } else isValid = false
+        if (!phone.isNullOrEmpty()){
+            if (phone.contains("+")) {
+                if (phone.length == 12) {
+                    if (phone.substring(0, 3) != "+79") isValid = false
+                } else isValid = false
+            } else {
+                if (phone.length == 11) {
+                    val firstNumber = phone.substring(0, 2)
+                    if (firstNumber != "79" && firstNumber != "89") isValid = false
+                } else isValid = false
+            }
         }
-        /*val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
-        val parsedPhone = try {
-            phoneNumberUtil.parse(phone, null)
-        } catch (e: Throwable) {
-            return false
-        }
-        return phoneNumberUtil.isValidNumber(parsedPhone)*/
         return isValid
     }
 

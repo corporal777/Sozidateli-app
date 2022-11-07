@@ -183,15 +183,13 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_email_text, email),
-            getString(R.string.confirm_phone_positive),
-            getString(R.string.event_register_no_form_negative)
+            getString(R.string.event_register_no_form_negative),
+            getString(R.string.confirm_phone_positive)
         )
             .setSelectCallback {
-                if (!it) {
+                if (it) {
                     showAlertLoadingDialog()
                     presenter.register(email, firstName, lastName, password, middleName, phone)
-                } else {
-                    //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
                 }
             }
     }
@@ -207,15 +205,14 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_phone_text, phone),
-            getString(R.string.confirm_phone_positive),
-            getString(R.string.event_register_no_form_negative)
+            getString(R.string.event_register_no_form_negative),
+            getString(R.string.confirm_phone_positive)
+
         )
             .setSelectCallback {
-                if (!it) {
+                if (it) {
                     showAlertLoadingDialog()
                     presenter.register(email, firstName, lastName, password, middleName, phone)
-                } else {
-                    //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
                 }
             }
     }
@@ -310,8 +307,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     override fun showAgreementError(show: Boolean) {
         mBinding.tvAgreeError.isInvisible = !show
     }
-
-
 
     override fun enableRegisterBtn(isEnable: Boolean) {
         //btnPhoneConfirm.apply { isEnabled = isEnable }

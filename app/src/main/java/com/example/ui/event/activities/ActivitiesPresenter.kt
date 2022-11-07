@@ -48,8 +48,8 @@ class ActivitiesPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        getEventData()
         if (firstAttach) {
-            getEventData()
             firstAttach = false
         }
     }
@@ -161,34 +161,45 @@ class ActivitiesPresenter
         compositeDisposable += Flowable.fromCallable {
             val eventsList = arrayListOf<EventActivityModel>()
             val selectedTags = tags.filter { it.isSelected }
-            eventsList.addAll(userEvent.activity.activities)
-            if (!mSearchWord.isNullOrEmpty()) {
-                eventsList.forEach { e ->
-                    if (!isEventHasParams(mSearchWord, e)) {
-                        if (eventsList.contains(e))
-                            eventsList.remove(e)
-                    }
-                }
-
-            }
-            if (!selectedTags.isNullOrEmpty()) {
-                eventsList.forEach { e ->
+            userEvent.activity.activities.forEach { e ->
+                if (!mSearchWord.isNullOrEmpty() && !selectedTags.isNullOrEmpty()){
                     selectedTags.forEach { tag ->
-                        if (!filterTagsNew(e, tag)) {
-                            if (eventsList.contains(e))
-                                eventsList.remove(e)
+                        if (filterTagsNew(e, tag) && isEventHasParams(mSearchWord, e)) {
+                            if (!eventsList.contains(e)){
+                                eventsList.add(e)
+                            }
                         }
                     }
                 }
+                else if (!mSearchWord.isNullOrEmpty()) {
+                    if (isEventHasParams(mSearchWord, e)) {
+                        if (!eventsList.contains(e)){
+                            eventsList.add(e)
+                        }
+                    }
+                }
+                else if (!selectedTags.isNullOrEmpty()) {
+                    selectedTags.forEach { tag ->
+                        if (filterTagsNew(e, tag)) {
+                            if (!eventsList.contains(e)){
+                                eventsList.add(e)
+                            }
+                        }
+                    }
+                }else {
+                    eventsList.add(e)
+                }
             }
-            dates = collectDatesToWeeks(userEventData.createCalendarDays(eventsList.map { e ->
-                defaultServerDateFormatter.parse(e.holdingDate?.from?.split(" ")?.get(0)).time
-            }))
             Pair(
                 eventsList.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }.toSortedMap(),
                 selectedTags
             )
         }
+            .doOnNext {
+                dates = collectDatesToWeeks(userEventData.createCalendarDays(it.first.map { e ->
+                    defaultServerDateFormatter.parse(e.key).time
+                }))
+            }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 val canShow =
@@ -210,16 +221,16 @@ class ActivitiesPresenter
         compositeDisposable += Maybe.fromCallable {
             val selectedTags = tags.filter { it.isSelected }
             val list = arrayListOf<EventActivityModel>()
-            list.addAll(userEvent.activity.activities)
             if (!selectedTags.isNullOrEmpty()) {
-                list.forEach { e ->
+                userEvent.activity.activities.forEach { e ->
                     selectedTags.forEach { tag ->
-                        if (!filterTagsNew(e, tag)) {
-                            if (list.contains(e))
-                                list.remove(e)
+                        if (filterTagsNew(e, tag)) {
+                            list.add(e)
                         }
                     }
                 }
+            }else {
+                list.addAll(userEvent.activity.activities)
             }
             Pair(
                 list.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }.toSortedMap(),

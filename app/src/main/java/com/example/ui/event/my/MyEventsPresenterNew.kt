@@ -51,12 +51,12 @@ class MyEventsPresenterNew
     override fun attachView(view: MyEventsContractNew.View?) {
         super.attachView(view)
         if (isFirstAttach) isFirstAttach = false
-        else pagination.invalidate()
+        else getEventsData(true, SHIMMER_LOADING)
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getEventsData()
+        getEventsData(true, SHIMMER_LOADING)
         getFiltersData()
         compositeDisposable += eventRepository.getUserCalendarEvents()
             .performOnBackgroundOutOnMain()
@@ -67,8 +67,8 @@ class MyEventsPresenterNew
             }
     }
 
-    private fun getEventsData() {
-        if (isFirstLaunch) viewState.setData(List(5) { null })
+    private fun getEventsData(isFirst : Boolean, loading : Int) {
+        if (loading == 0) viewState.setData(List(5) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -78,26 +78,22 @@ class MyEventsPresenterNew
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
             .let {
-                if (!isFirstLaunch) it.withCustomProgressBarLoadingDialog(viewState)
+                if (loading == 1) it.withCustomProgressBarLoadingDialog(viewState)
                 else it
             }
-            //.setLoading(isFirstLaunch)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
-                    viewState.showEmptyListPlaceholder()
+                    viewState.showEmptyListPlaceholder(isFirst)
                 },
                 onNext = { eventList ->
                     if (eventList.isEmpty()) {
-                        viewState.showEmptyListPlaceholder()
+                        viewState.showEmptyListPlaceholder(isFirst)
                     } else {
                         Log.e("EventList size: ", eventList.size.toString())
-                        val list =
-                            eventList.filter { x -> x?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED }
                         viewState.apply {
                             setData(eventList)
                         }
-                        if (isFirstLaunch) isFirstLaunch = false
                     }
 
                 })
@@ -145,16 +141,14 @@ class MyEventsPresenterNew
 
     override fun onSearchTextChange(text: String) {
         mSearchText = text
-        //viewState.hideEmptyListPlaceholder()
-        //getEventsData()
-        paginationList.invalidate()
+        getEventsData(false, SHIMMER_LOADING)
+        //paginationList.invalidate()
     }
 
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
-        //viewState.hideEmptyListPlaceholder()
-        paginationList.invalidate()
-        //getEventsData()
+        getEventsData(false, SHIMMER_LOADING)
+        //paginationList.invalidate()
     }
 
     override fun onRefreshRequest() {
@@ -162,7 +156,16 @@ class MyEventsPresenterNew
     }
 
     override fun updateData() {
-        getEventsData()
+        getEventsData(false, PROGRESS_LOADING)
+    }
+
+    override fun setEventStateFilter(isChecked: Boolean, filter: MyEventsFilter) {
+        if (isChecked) {
+            this.mEventStateFilter = filter
+        } else {
+            this.mEventStateFilter = MyEventsFilter.NONE
+        }
+        getEventsData(false, PROGRESS_LOADING)
     }
 
     override fun onActionRegister(event: String) {
@@ -185,15 +188,6 @@ class MyEventsPresenterNew
         if (isCommonDataLoaded) {
             viewState.showFilters()
         }
-    }
-
-    override fun setEventStateFilter(isChecked: Boolean, filter: MyEventsFilter) {
-        if (isChecked) {
-            this.mEventStateFilter = filter
-        } else {
-            this.mEventStateFilter = MyEventsFilter.NONE
-        }
-        getEventsData()
     }
 
     private fun getPaginationRequest(
@@ -272,4 +266,9 @@ class MyEventsPresenterNew
     }
 
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)
+
+    companion object {
+        const val SHIMMER_LOADING = 0
+        const val PROGRESS_LOADING = 1
+    }
 }

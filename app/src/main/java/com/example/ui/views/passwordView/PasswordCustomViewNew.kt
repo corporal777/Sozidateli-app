@@ -29,8 +29,9 @@ class PasswordCustomViewNew: FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    //val pattern = Pattern.compile("[a-zA-z0-9]*")
-    val pattern = Pattern.compile("[a-zA-z0-9]*^[^-_\"\'\\s.:;?/,#$%!@^<>*&+=(){}]*\$")
+    val pattern = Pattern.compile("[a-zA-z0-9]*")
+    val symbolsPattern = Pattern.compile("[^_\\W]+")
+    //val pattern = Pattern.compile("[a-zA-z0-9]*^[^-_\"\'\\s.:;?/,#$%!@^<>*&+=(){}]*\$")
     var etPassword: TextInputEditText
     var etPasswordConfirm: TextInputEditText
     var tvResult: TextView
@@ -159,7 +160,13 @@ class PasswordCustomViewNew: FrameLayout {
         }
 
         //usedUnacceptableSymbols = pattern.matcher(password).matches() != true
-        usedUnacceptableSymbols = !pattern.matcher(password).matches()
+        //usedUnacceptableSymbols = !pattern.matcher(password).matches()
+        usedUnacceptableSymbols = if (!symbolsPattern.matcher(password).matches()){
+            true
+        }else {
+            !pattern.matcher(password).matches()
+        }
+
 
         if (!usedUnacceptableSymbols) {
             if (!isValid) {

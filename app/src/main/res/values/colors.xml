@@ -243,4 +243,6 @@
     <color name="event_register_input_text_hint_color">#000000</color>
     <color name="profile_snack_bar_color_background">#B3000000</color>
     <color name="qr_code_pixels_color">#333333</color>
+
+    <color name="bottom_navigation_view_background_color">#F9F9F9</color>
 </resources>

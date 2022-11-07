@@ -5,26 +5,22 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.InviteDetail
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
-import kotlinx.android.synthetic.main.fragment_notification.*
+import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
 import removeUrlUnderline
@@ -48,11 +44,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         NotificationFragmentArgs.fromBundle(requireArguments()).let {
             notification = it.notification
         }
-    }
-
-    private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
-        presenter.onNotificationUrlClick(url)
-        true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,8 +88,7 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
                             val eventId = url.replace("event", "").replace("/", "")
                             findNavController().navigate(
                                 NotificationFragmentDirections.notificationToAboutEventFragment(
-                                    eventId,
-                                    ABOUT_FROM_OTHER
+                                    eventId
                                 )
                             )
                         } else {
@@ -184,12 +174,18 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
                 ).parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
-                        val eventMass = url.split("event")
-                        val eventId = eventMass.last().replace("/", "")
+                        val eventId = notification.eventId.toString()
+//                        val eventMass = url.split("event")
+//                        val eventId = if (eventMass.last().replace("/", "")
+//                            == notification.eventId.toString()
+//                        ) {
+//                            eventMass.last().replace("/", "")
+//                        } else {
+//                            notification.eventId.toString()
+//                        }
                         findNavController().navigate(
                             NotificationFragmentDirections.notificationToAboutEventFragment(
-                                eventId,
-                                ABOUT_FROM_OTHER
+                                eventId
                             )
                         )
                         true
@@ -218,11 +214,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
                 presenter.onNotificationCancelClick()
             }
         }
-
-        /*btnChangeDecision.apply {
-            isVisible = canChangeAccept
-            setOnClickListener { presenter.onNotificationChangeDecisionClick() }
-        }*/
     }
 
     private fun showCancelInfo() {
@@ -231,9 +222,7 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
     }
 
     override fun showUrl(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
-        })
+        showCustomTabsBrowser(requireContext(), url)
     }
 
     override fun showErrorDialog(errors: List<String>, projectName: String) {

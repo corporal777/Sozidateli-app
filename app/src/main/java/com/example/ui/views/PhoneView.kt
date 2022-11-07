@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.example.R
+import com.google.android.material.textfield.TextInputEditText
 import com.hbb20.CountryCodePicker
 import kotlinx.android.synthetic.main.phone_view.view.*
 import onTextChanged
@@ -16,6 +17,7 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     private var isPhoneValidd = false
     private var isPhoneValid: (education: Boolean) -> Unit = {}
     private var textChanged: (phone: String) -> Unit = {}
+    private var textChangedWithoutPlus: (phone: String) -> Unit = {}
 
     init {
         inflate(context, R.layout.phone_view, this)
@@ -29,6 +31,7 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
         etCountryCodePhone.apply {
             onTextChanged {
                 textChanged(getFullNumberWithPlus())
+                textChangedWithoutPlus(it.toString())
             }
             /*setOnFocusChangeListener { view, b ->
                 if (b)
@@ -49,6 +52,11 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
         return this
     }
 
+    fun getPhoneCallbackWithoutPlus(block: (phone: String) -> Unit): PhoneView {
+        textChangedWithoutPlus = block
+        return this
+    }
+
     fun setPhone(phone: String) {
         ccp.fullNumber = phone.replace("+", "")
         if (phone.contains("+7"))
@@ -58,6 +66,13 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     fun showError(show: Boolean) {
         tilCountryCodePhone.apply {
             error = if (show) context.resources.getString(R.string.invalid_phone_number_second_error) else null
+        }
+    }
+
+    fun showEmptyError(show: Boolean){
+        tilCountryCodePhone.apply {
+            error = if (show) context.resources.getString(R.string.invalid_phone_number_error) else null
+            requestFocus()
         }
     }
 
@@ -77,4 +92,6 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     fun getNumberWithoutCode(): String = etCountryCodePhone.text.toString()
 
     fun getIsValid(): Boolean = isPhoneValidd
+
+    fun getEditTextLayout() : TextInputEditText = etCountryCodePhone
 }

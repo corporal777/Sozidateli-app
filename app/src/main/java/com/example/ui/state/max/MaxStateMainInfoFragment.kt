@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,8 @@ import com.example.data.models.FileModel
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
+import com.example.databinding.FragmentMaxStateBinding
+import com.example.databinding.FragmentMaxStateInfoBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.extensions.showChangeEmailCompleteDialog
@@ -28,17 +31,19 @@ import com.example.holders.ProfileDataAdditionalFilesEditNewGroup
 import com.example.holders.ProfileDataFileEditItem
 import com.example.holders.ProfileDataFileItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_register_email.*
-import kotlinx.android.synthetic.main.fragment_user_edit.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
+class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
+    MaxStateMainInfoContract.View, SimpleTitleToolbar {
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
@@ -84,25 +89,15 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    hideKeyboard()
-                    navigateUp()
-                }
-            })
-        ivClose.setOnClickListener {
-            when (presenter.screen) {
-                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+        setToolbarTitle()
+        mBinding.recyclerView.apply {
+            adapter = this@MaxStateMainInfoFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
             }
         }
-        recyclerView.apply {
-            adapter = this@MaxStateMainInfoFragment.adapter
-        }
 
-        btnSave.setOnClickListener { onSaveClick?.invoke() }
+        mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
         buttonNextEnabled(false)
     }
 
@@ -176,14 +171,13 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
             adapter.update(listOf(dataItem))
             onSaveClick = {
                 if (dataItem?.workPhoneIsValid() == true) {
-                    recyclerView.requestFocus()
+                    mBinding.recyclerView.requestFocus()
                     val dataToSave = dataItem.getDataToSave() as MutableMap
                     presenter.updateFiles(dataToSave)
                 } else {
                     dataItem?.notValidWorkPhoneError()
                 }
             }
-            //}
         } else {
             if (!presenter.isUpdatePhoto)
                 findNavController().navigate(
@@ -201,7 +195,7 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
     }
 
     private fun buttonNextEnabled(enabled: Boolean) {
-        btnSave.isEnabled = isFilesValid && isOtherInfoValid
+        mBinding.btnSave.isEnabled = isFilesValid && isOtherInfoValid
     }
 
     private fun isGoToNextStep(user: UserDetail): Boolean {
@@ -276,7 +270,7 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
     }
 
     override fun saveOnClick(saveOnClick: Boolean) {
-        btnSave.isVisible = saveOnClick
+        mBinding.btnSave.isVisible = saveOnClick
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
@@ -301,7 +295,8 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
                     R.id.maxStateEducationFragment,
                     bundleOf("screen" to presenter.screen)
                 )
-            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(requireContext(),
+            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(
+                requireContext(),
                 resources.getString(R.string.you_got_max_state)
             )
                 .setSelectCallback {
@@ -322,6 +317,24 @@ class MaxStateMainInfoFragment : BaseFragment(), MaxStateMainInfoContract.View {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
             ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setToolbarTitle() {
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+        setToolbarTitleAndIcon(
+            getString(R.string.user_profile_contacts),
+            actionIcon,
+            action = {
+                presenter.onClickClose()
+            })
+    }
+
+    override fun setClickClose(type: Int) {
+        when (presenter.screen) {
+            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+            else -> navigateUp()
+        }
     }
 
     override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)

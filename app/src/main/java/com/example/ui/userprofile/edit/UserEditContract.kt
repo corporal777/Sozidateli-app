@@ -29,10 +29,7 @@ interface UserEditContract {
         fun showUpdateError(message: String? = null)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPersonalData(user: UserDetail)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPersonalDataNew(user: UserDetail, state: String)
+        fun setPersonalData(user: UserDetail, state: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContactsData(user: UserDetail)
@@ -45,9 +42,6 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmailComplete(email: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneConfirm(phone: String)
@@ -114,9 +108,12 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setTimerForResendCode(seconds : Int)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         //main data
 
         fun onDisabledMainInputInfoClick()
@@ -128,7 +125,6 @@ interface UserEditContract {
         //personal data
 
         fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String)
         fun onConfirmPhoneClick(phone: String)
 
         //additional data

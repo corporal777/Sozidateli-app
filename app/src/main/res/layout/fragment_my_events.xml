@@ -202,15 +202,14 @@
         <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:layout_height="wrap_content"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/eventsList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingBottom="70dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -220,45 +219,6 @@
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
 
-        <LinearLayout
-            android:id="@+id/noDataPlaceholder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:maxLines="1"
-                android:text="Нет результатов"
-                android:textColor="@color/no_data_item_title_color"
-                android:textSize="25sp"
-                tools:ignore="MissingPrefix" />
-
-            <TextView
-                android:id="@+id/tvDescription"
-                fontPath="fonts/sf_pro_display_semibold.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_horizontal"
-                android:text="По заданным параметрам нет подходящих мероприятий"
-                android:textColor="@color/no_data_item_description_color"
-                android:textSize="17sp"
-                tools:ignore="MissingPrefix" />
-        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

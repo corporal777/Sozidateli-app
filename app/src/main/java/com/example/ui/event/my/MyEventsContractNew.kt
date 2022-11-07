@@ -24,10 +24,7 @@ interface MyEventsContractNew {
         fun showFilters()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun showEmptyListPlaceholder()
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun hideEmptyListPlaceholder()
+        fun showEmptyListPlaceholder(isFirst : Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)

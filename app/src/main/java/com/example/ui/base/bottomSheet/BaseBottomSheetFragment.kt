@@ -2,12 +2,14 @@ package com.example.ui.base.bottomSheet
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -19,7 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
+abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int = 0) :
     MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
 
     lateinit var mBinding: binding
@@ -44,8 +46,26 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
         if (dialog is BottomSheetDialog) {
             dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            if (type == 1) {
+                dialog.setOnShowListener {
+                    setupFullHeight(dialog)
+                }
+            }
         }
         return dialog
+    }
+
+    fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet: FrameLayout =
+            dialog!!.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        showFullScreenBottomSheet(bottomSheet)
+    }
+
+    private fun showFullScreenBottomSheet(bottomSheet: FrameLayout) {
+        val layoutParams = bottomSheet.layoutParams
+        layoutParams.height = Resources.getSystem().displayMetrics.heightPixels - 50
+        bottomSheet.layoutParams = layoutParams
     }
 
     override fun onCreateView(
@@ -67,7 +87,8 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
     }
 
     override fun hideKeyboard(v: View?) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         v?.let {
             imm.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
@@ -81,7 +102,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
         dismiss()
     }
 
-    fun focusOnInput(view : TextInputEditText, canShow: Boolean) {
+    fun focusOnInput(view: TextInputEditText, canShow: Boolean) {
         view.apply {
             post {
                 showSoftInputOnFocus = canShow
@@ -183,4 +204,8 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding> :
 
     @LayoutRes
     abstract fun layout(): Int
+
+    companion object {
+        const val FULLSCREEN = 1
+    }
 }

@@ -4,8 +4,11 @@ import android.widget.ImageView
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemOtherSessionBinding
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.example.ui.event.about.redesign.items.EventDetailImageItem
 import com.xwray.groupie.databinding.BindableItem
+import java.util.*
 
 class OtherSessionItem(
     val session: UserSessionModel?,
@@ -48,12 +51,12 @@ class OtherSessionItem(
         viewBinding.apply {
             tvDeviceName.text = deviceName
             tvDeviceType.text = deviceType
-            tvLocation.text = deviceLocation
+            tvLocation.text = deviceLocation + " • " + getSessionStatus()
 
             if (session != null)
                 decorDeviceIcon(ivDeviceIcon, session)
 
-            cardSession.setOnClickListener {
+            itemContainer.setOnClickListener {
                 onSessionClick(session!!)
             }
         }
@@ -78,10 +81,34 @@ class OtherSessionItem(
         }
     }
 
+    private fun getSessionStatus(): String {
+        var status = ""
+        val calToday = System.currentTimeMillis().calendar()
+        val calSession = if (!session?.sessionEnd.isNullOrEmpty())
+            defaultServerDateFormatter.parse(session?.sessionEnd).time.calendar()
+        else {
+            defaultServerDateFormatter.parse(session?.sessionStart).time.calendar()
+        }
+        val sessionDay = calSession.get(Calendar.DAY_OF_MONTH)
+        val today = calToday.get(Calendar.DAY_OF_MONTH)
+        status = if (today - sessionDay == 1) {
+            "вчера"
+        } else if (today == sessionDay) {
+            "сегодня"
+        } else {
+            calSession.get(Calendar.DAY_OF_MONTH)
+                .toString() + "." + calSession.get(Calendar.MONTH) + "." + calSession.get(
+                Calendar.YEAR
+            )
+        }
+        return status
+    }
+
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is OtherSessionItem) return false
         if (session != other.session) return false
+        if (session?.sessionId != other.session?.sessionId) return false
         return true
     }
 

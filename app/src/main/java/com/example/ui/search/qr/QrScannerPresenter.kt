@@ -2,6 +2,7 @@ package com.example.ui.search.qr
 
 import android.Manifest
 import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.EventNew
@@ -10,7 +11,6 @@ import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 
@@ -54,14 +54,19 @@ class QrScannerPresenter
             )
                 .performOnBackgroundOutOnMain()
                 .withProgressBarLoadingDialog(viewState)
-                //.withLoadingDialog(viewState)
-                .subscribe({
-                    if (it.data.isNotEmpty())
-                        viewState.showEvent(it.data[0]?.id.toString())
-                }, {
-                    viewState.showEventNotFoundError()
-                    it.printStackTrace()
-                })
+                .subscribeSimple(
+                    onError = {
+                        viewState.showEventNotFoundError()
+                        it.printStackTrace()
+                    }, onSuccess = {
+                        if (it.data.isNotEmpty()){
+                            viewState.showEvent(it.data[0]?.id.toString())
+                        }else {
+                            viewState.showEventNotFoundError()
+                        }
+
+                    })
+
         }
     }
 

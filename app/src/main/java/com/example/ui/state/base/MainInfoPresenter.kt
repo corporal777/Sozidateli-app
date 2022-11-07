@@ -14,6 +14,9 @@ import com.example.util.*
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
+import io.reactivex.Completable
+import io.reactivex.CompletableSource
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -22,6 +25,7 @@ import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 @InjectViewState
@@ -37,35 +41,49 @@ class MainInfoPresenter
     var screen: Int = 1
     var isUpdatePhoto = false
     var isImageUpdating = false
+    private var mDy = 0f
+    private var canGoNext = false
+
+    override fun attachView(view: MainInfoContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                val user = it.value ?: throw RuntimeException("Edit null user")
-                viewState.apply {
-                    compositeDisposable += userRepository.searchAddress(
-                        user.address?.getShortAddress() ?: ""
-                    )
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({ add ->
-                            if (add.data?.isNotEmpty() == true)
-                                user.address?.shortAddres = add.data[0].region
-                            if (!isImageUpdating) setPersonalData(user)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.navigateUp()
+                },
+                onNext = {
+                    val user = it.value
+                    if (user != null){
+                        compositeDisposable += userRepository.searchAddress(
+                            user.address?.getShortAddress() ?: ""
+                        )
+                            .performOnBackgroundOutOnMain()
+                            .subscribeSimple(
+                                onError = {
+                                    if (!isImageUpdating) viewState.setPersonalData(user)
+                                    isImageUpdating = false
+                                }, onSuccess = { add ->
+                                    if (add.data?.isNotEmpty() == true)
+                                        user.address?.shortAddres = add.data[0].region
+                                    if (!isImageUpdating) viewState.setPersonalData(user)
+                                    isImageUpdating = false
 
-//                            Log.e("FIRST", user.phone?.firstOrNull()?.value)
-
-                            isImageUpdating = false
-                        }, {
-                            if (!isImageUpdating) setPersonalData(user)
-                            isImageUpdating = false
-                        })
-                }
-            }, {
-                it.printStackTrace()
-                viewState.navigateUp()
-            })
+                                })
+                    }
+                })
     }
 
     override fun onClickClose() {
@@ -73,9 +91,7 @@ class MainInfoPresenter
     }
 
     override fun updateFiles(data: MutableMap<String, Any?>) {
-
         onEditSave(data) {
-
             appData.updateUserNew {
                 name = it.name
                 middleName = it.middleName
@@ -93,9 +109,6 @@ class MainInfoPresenter
     }
 
     private fun onEditSave(data: MutableMap<String, Any?>, onComplete: (UserDetail) -> Boolean) {
-//        val phoneNew = data.get("phone") as ArrayList<FieldDetails>
-//        Log.e("NEW", phoneNew[0].value)
-
         if (data.isEmpty()) {
             viewState.navigateUp()
             return
@@ -105,35 +118,37 @@ class MainInfoPresenter
 
 
     private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
-
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                appData.getUserNew().apply {
-                    phone = it.phone
-                    name = it.name
-                    lastName = it.lastName
-                    middleName = it.middleName
-                    birthday = it.birthday
-                    gender = it.gender
-                    address = it.address
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showUpdateError(it.message)
+                },
+                onSuccess = {
+                    appData.getUserNew().apply {
+                        phone = it.phone
+                        name = it.name
+                        lastName = it.lastName
+                        middleName = it.middleName
+                        birthday = it.birthday
+                        gender = it.gender
+                        address = it.address
 
-                }
+                    }
 
-                if (onComplete(it))
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({
-                            viewState.goToNext()
-                        }, {
-                            viewState.goToNext()
-                        })
-                //viewState.goToNext()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
+                    if (onComplete(it))
+                        compositeDisposable += userRepository.checkUserProfileSingle()
+                            .performOnBackgroundOutOnMain()
+                            .subscribeSimple(
+                                onError = {
+                                    viewState.goToNext()
+                                }, onSuccess = {
+                                    viewState.goToNext()
+                                })
+                    //viewState.goToNext()
+                })
     }
 
 
@@ -152,39 +167,20 @@ class MainInfoPresenter
 
     fun getEmail() = appData.getUserNew().email
 
-    override fun onChangeEmailClick() {
-        viewState.showChangeEmail()
-    }
-
-    override fun onChangeEmailConfirm(email: String, isFirst: Boolean) {
-        if (AuthValidateUtil.isValidEmail(email)) {
-            updateUser(
-                userRepository.updateProfile(
-                    appData.getId(),
-                    mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-                )
-            ) {
-                it.email?.value = email
-                viewState.showChangeEmailComplete(email)
-                false
-            }
-        } else {
-            viewState.showUpdateError()
-        }
-    }
-
     override fun onConfirmPhoneClick(phone: String) {
-        //Log.e("CHANGE", phone)
         compositeDisposable += userRepository.checkEmailPhone(
             null,
             Utils.validatePhoneBeforeSend(phone)
         )
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({ viewState.showPhoneConfirm(phone) },
-                { viewState.showPhoneNotUnique(phone) })
-        //viewState.showPhoneConfirm(phone)
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.showPhoneNotUnique(phone)
+                }, onComplete = {
+                    viewState.showPhoneConfirm(phone)
+                })
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -205,7 +201,7 @@ class MainInfoPresenter
             }
             .flatMap { userRepository.changeUserImage(it) }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onSuccess = {
                     compositeDisposable += userRepository.checkUserProfileSingle()
@@ -238,28 +234,51 @@ class MainInfoPresenter
             )
     }
 
-    override fun onPasswordInputComplete(password: String, phone: String) {
+    override fun checkPassword(password: String, phone: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
+            .andThen(Completable.defer { sendRequestCheckPhone(phone) })
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                viewState.passwordSuccess(phone)
-
-            }, {
-                viewState.showRequestErrorMessage()
-            })
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.showPhoneNotUnique(phone)
+                }, onComplete = {
+                    viewState.showPhoneConfirm(phone)
+                })
     }
 
     override fun confirmCode(phone: String, code: String) {
+        val data =  mapOf(
+            UserDetail.USER_PHONE to arrayListOf(
+                FieldDetails(
+                    value = phone,
+                    type = PHONE_PERSONAL,
+                    isConfirmed = true,
+                )
+            )
+        )
         compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
+            .andThen(userRepository.updateProfile(appData.getId(), data))
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                appData.updatePhone(phone)
-                viewState.codeSuccess()
-            }, {
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    appData.updatePhoneNew(it.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?:"")
+                    viewState.codeSuccess(it.phone, canGoNext)
+                })
+    }
 
-                it.printStackTrace()
-            })
+    private fun sendRequestCheckPhone(phone: String): Completable =
+        userRepository.checkEmailPhone(
+            null,
+            Utils.validatePhoneBeforeSend(phone)
+        )
+
+    fun setCanGoNext(can : Boolean){
+        this.canGoNext = can
     }
 
     private fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)

@@ -13,6 +13,7 @@ import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class BaseStateInterestsPresenter
@@ -23,9 +24,22 @@ class BaseStateInterestsPresenter
 
     var screen: Int = 1
     private var isInterestsLoaded = false
+    private var mDy = 0f
+
+
+    override fun attachView(view: BaseStateInterestsContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
@@ -72,7 +86,7 @@ class BaseStateInterestsPresenter
     }
 
     override fun onClickClose() {
-        viewState.navigateUp()
+        viewState.setClickClose(screen)
     }
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
@@ -88,6 +102,8 @@ class BaseStateInterestsPresenter
             true
         }
     }
+
+
 
     private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
         compositeDisposable += request

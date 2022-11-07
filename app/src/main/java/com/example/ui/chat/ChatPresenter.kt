@@ -115,7 +115,7 @@ class ChatPresenter
                         getAllMessages()
                     } else {
                         viewState.showProgressLoadingDisplay()
-                        prepareListOfMessages(new)
+                        prepareListOfMessages(true,new)
                         subscribeToSocket()
 
                         timerCompositeDisposable  += Observable.interval(2000, TimeUnit.MILLISECONDS)
@@ -149,7 +149,7 @@ class ChatPresenter
                 if (it.data.isNullOrEmpty()) {
                     hasPrevious = false
                 }
-                prepareListOfMessages(it)
+                prepareListOfMessages(true, it)
                 subscribeToSocket()
             }
     }
@@ -160,13 +160,13 @@ class ChatPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple { socketData ->
                 if (!hasPrevious) {
-                    prepareListOfMessages(socketData)
+                    prepareListOfMessages(true, socketData)
                 }
             }
     }
 
     private var canScroll = 0
-    private fun prepareListOfMessages(it: ApiNewResponse<List<MessageModel>>) {
+    private fun prepareListOfMessages(show : Boolean, it: ApiNewResponse<List<MessageModel>>) {
         compositeDisposable += Maybe.fromCallable {
             messagesSize = it.totalCount ?: 0
             val result = it.data.filter { x -> x.chat.toString() == chatId }.map { m ->
@@ -198,7 +198,7 @@ class ChatPresenter
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                viewState.updateMessages(it.first)
+                viewState.updateMessages(show, it.first)
                 scrollOnChatMessagesUpdate(it.second)
                 isMessagesInitialLoad = true
             }
@@ -507,7 +507,7 @@ class ChatPresenter
                 .subscribeSimple {
                     hasPrevious = it.totalCount != 0
                     isCallingPrevious = false
-                    prepareListOfMessages(it)
+                    prepareListOfMessages(false,it)
                 }
         }
     }
@@ -529,7 +529,7 @@ class ChatPresenter
                 .subscribeSimple {
                     hasNext = it.totalCount != 0
                     isCallingNext = false
-                    prepareListOfMessages(it)
+                    prepareListOfMessages(false,it)
                 }
         }
     }
@@ -701,6 +701,12 @@ class ChatPresenter
 //        socket.stopListenChatUpdate()
 //        //socket.disconnectFromSocket()
 //        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onSocketConnect(event: OnSocketConnectEvent) {
+        //TODO fix this
+        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
     }
 
     companion object {

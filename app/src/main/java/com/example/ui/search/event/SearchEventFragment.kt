@@ -47,16 +47,11 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     @ProvidePresenter
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
-    private val mContentSection = Section()
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-       // override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
-
-        //override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) = presenter.onActionWriteToOrganization(emails)
-
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         //override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
@@ -116,41 +111,26 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     override fun createItem(itemData: EventNew?): Group {
-
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
         else {
-            return EventGroupNew(
+            return EventItemNew(
                 itemData,
+                itemData.id.toString(),
+                itemData.state,
+                itemData.status?.value,
+                itemData.binds?.currentUserRegistration?.status?.value,
+                itemData.backgroundColor?.value,
+                itemData.image?.uri,
+                itemData.binds?.eventRegistrationState,
+                itemData.userAgreement?.uri,
+                itemData.binds?.currentUserRegistration?.id.toString(),
+                itemData.name,
+                itemData.address?.getShortAddress(),
+                itemData.holdingDate?.from,
+                itemData.holdingDate?.to,
                 onEventClickListener,
             )
         }
-
-        //return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-//        else EventGroup(
-//                itemData.id.toString(),
-//                itemData.status?.value,
-//                itemData.binds?.currentUserRegistration?.status?.value,
-//                itemData.binds?.organization?.backgroundColor?.value,
-//                itemData.image?.uri,
-//                EventFormat(name = if (itemData.format?.name.isNullOrEmpty()) itemData.format?.custom?: "" else itemData.format?.name?: ""),
-//                itemData.binds?.organization?.email,
-//                (itemData.status?.value?: "") != Event.Status.REGISTRATION,
-//                onEventClickListener,
-//                EventDataListItem(
-//                        -(itemData.id?.toLong()?: 0),
-//                        itemData.name,
-//                        itemData.address?.getShortAddress(),
-//                        itemData.holdingDate?.from,
-//                        itemData.binds?.getFirstActionStartDate()
-//                ).apply {
-//                    showStartTime = false
-//                },
-//                itemData.userAgreement?.name?: itemData.userAgreement?.uri,
-//                itemData.binds?.eventRegistrationState,
-//                true,
-//                itemData.binds?.currentUserRegistration?.id?.toString()
-//        )
-
     }
 
     @SuppressLint("InflateParams")

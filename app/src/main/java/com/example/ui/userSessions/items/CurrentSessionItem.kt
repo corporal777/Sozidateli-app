@@ -46,12 +46,12 @@ class CurrentSessionItem(
         viewBinding.apply {
             tvDeviceName.text = deviceName
             tvDeviceType.text = deviceType
-            tvLocation.text = deviceLocation
+            tvLocation.text = "$deviceLocation • в сети"
             decorDeviceIcon(ivDeviceIcon, session)
             btnKillSessions.setOnClickListener {
                 onKillSessions.invoke()
             }
-            cardSession.setOnClickListener {
+            itemContainer.setOnClickListener {
                 onShowSession(session)
             }
         }

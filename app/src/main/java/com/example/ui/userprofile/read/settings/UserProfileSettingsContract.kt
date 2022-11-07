@@ -3,6 +3,7 @@ package com.example.ui.userprofile.read.settings
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.ui.userprofile.base.BaseUserProfileContract
 
@@ -31,7 +32,7 @@ interface UserProfileSettingsContract {
         fun showDeleteProfile()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneEdit()
+        fun showPhoneEdit(phone : FieldDetails?)
 
         @StateStrategyType(SkipStrategy::class)
         fun hideDialogProgress()
@@ -52,9 +53,6 @@ interface UserProfileSettingsContract {
         fun showNewChangeEmail(email: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEmailNotUnique(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
     }
 
@@ -62,11 +60,9 @@ interface UserProfileSettingsContract {
         fun onChangePhoneClick()
         fun onChangePasswordClick()
         fun onChangeEmailClick()
-        fun onChangeEmailConfirm(email: String, isFirst: Boolean)
         fun onDeleteEmail()
         fun onDeleteConfirmEmail(email: String)
         fun registerEmailResend(email: String)
-        fun checkEmailIsUnique(email: String, isFirst: Boolean)
         fun checkPhoneIsUnique(phone: String)
 
         fun onChangePrivacyClick()

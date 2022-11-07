@@ -68,6 +68,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
+
         override fun onAddToScheduleClick(subEvent: EventActivityModel) =
             presenter.onAddToScheduleClick(subEvent)
 
@@ -152,21 +153,17 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         canShow: Boolean,
         data: Map<String?, List<EventActivityModel>>?
     ) {
-        if (!data.isNullOrEmpty()) {
-            subEventsDataSection.update(
-                data.map {
-                    EventDetailActivitiesItem(
-                        presenter.eventId,
-                        canShow,
-                        it.key ?: "",
-                        it.value,
-                        onSubEventClickListener
-                    )
-                }
-            )
-        } else {
-            subEventsDataSection.update(listOf(NoSubEventItem(getString(R.string.no_activity_title))))
-        }
+        subEventsDataSection.update(
+            data?.map {
+                EventDetailActivitiesItem(
+                    presenter.eventId,
+                    canShow,
+                    it.key ?: "",
+                    it.value,
+                    onSubEventClickListener
+                )
+            } ?: emptyList()
+        )
     }
 
 

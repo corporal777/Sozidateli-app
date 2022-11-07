@@ -121,7 +121,7 @@
     </plurals>
     <string name="auth_login_registration_confirm">Пользователь не найден. Зарегистрировать нового пользователя?</string>
 
-    <string name="notifications_label">Центр уведомлений</string>
+    <string name="notifications_label">Уведомления</string>
     <string name="notification_label">Уведомление</string>
     <string name="notifications_read_more">Показать полностью</string>
     <string name="notifications_mark_as_read">Отметить прочитанным</string>
@@ -376,6 +376,7 @@
     <string name="profile_logout">Выйти</string>
     <string name="profile_contacts">Контактные данные</string>
     <string name="profile_phone_mobile">Мобильный телефон</string>
+    <string name="phone_mobile_is_updated_successfully">Мобильный телефон изменен</string>
     <string name="profile_phone_work">Рабочий телефон</string>
     <string name="profile_additional_number">Добавочный номер</string>
     <string name="profile_phone_hint">+7 (927) 298–16–17</string>
@@ -499,6 +500,7 @@
     <string name="status_profile_work_experience">Опыт работы</string>
     <string name="status_profile_additional_data">Дополнительные сведения</string>
     <string name="status_profile_title_set">Подтверждение номера телефона</string>
+    <string name="status_profile_title_set_new">Подтверждение номера</string>
     <string name="status_profile_message_set">Для того чтобы подтвердить номер телефона, введите Ваш пароль</string>
     <string name="status_profile_title_change">Изменение номера телефона</string>
     <string name="status_profile_message_change">Для того, чтобы изменить номер телефона, введите пароль, который указывали при регистрации</string>
@@ -511,8 +513,6 @@
     <string name="status_profile_status_phone_set_to_profile_mobile">Это мобильный</string>
     <string name="status_profile_status_phone_set_to_profile_work">Это рабочий</string>
     <string name="status_profile_status_phone_do_not_set_to_profile">Не указывать в профиле</string>
-    <string name="status_profile_status_code_set">На номер %s отправлен код из 6 цифр. Введите его для подтверждения</string>
-    <string name="status_profile_status_code_resend">На номер %s выслан новый код.</string>
     <string name="status_profile_status_code_hint">Введите 6 цифр из SMS</string>
     <string name="status_profile_status_code_empty">Введите код</string>
     <string name="status_profile_status_code_error">Введен неправильный код</string>
@@ -656,6 +656,7 @@
     <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
 
     <string name="phone_confirm_description">На номер %s отправлен код из 6 цифр. Введите его для подтверждения.</string>
+    <string name="phone_change_description">Для доступа ко всем возможностям портала укажите Ваш телефон.</string>
     <string name="phone_confirm_hint">Введите 6 цифр из СМС</string>
     <string name="phone_confirm_wrong_code">Введен неправильный код</string>
     <string name="phone_confirm_code_send_error">Не удалось отправить СМС. Проверьте правильность ввода данных номера телефона или обратитесь в службу поддержки support@sozidateli.ru.</string>
@@ -769,7 +770,9 @@
     <string name="add_email_dialog_title">Добавьте Ваш e-mail</string>
     <string name="add_email_dialog_text">Для получения важных уведомлений, пожалуйста, укажите Ваш актуальный электронный адрес.</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>
-    <string name="code_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения. </string>
+    <string name="code_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
+    <string name="code_dialog_text_label">Введите 6 цифр из СМС.</string>
+    <string name="code_dialog_text_title">На номер отправлен код из 6 цифр. Введите его для подтверждения.</string>
     <string name="send_code_again">Отправить код повторно</string>
     <string name="new_phone_number">Введите новый номер телефона</string>
     <string name="change_status_title">Повышение статуса</string>
@@ -836,7 +839,7 @@
     <string name="change_email_negative_button">Позже</string>
     <string name="current_login">Текущий логин</string>
     <string name="new_login">Новый логин</string>
-    <string name="new_email">Введи новый email</string>
+    <string name="new_email">Введите новый email</string>
     <string name="current_login_invalid">Введите правильный текущий логин</string>
     <string name="new_login_invalid">Введите правильный новый логин</string>
     <string name="profile_email_add">Добавить email</string>
@@ -927,6 +930,10 @@
     <string name="browser_label">Браузер</string>
     <string name="no_sub_events_in_schedule">Событий в расписании нет</string>
     <string name="no_data_found">Нет результатов</string>
+
+    <string name="no_event_schedule_you_have">У вас еще нет мероприятий</string>
+    <string name="choose_event_and_do_request">Выберите мероприятие и подайте заявку на участие на главной странице</string>
+
     <string name="new_password_label">Новый пароль</string>
     <string name="password_repeat_label">Повторите пароль</string>
     <string name="complain_about_user_label">Пожаловаться на пользователя</string>
@@ -941,6 +948,9 @@
     <string name="share_label">Поделиться</string>
     <string name="link_is_copied">Ссылка скопирована.</string>
     <string name="qr_code_is_saved">QR код сохранен.</string>
+    <string name="link_open_error">Не удалось открыть страницу</string>
+    <string name="no_active_events_found_title">Активных мероприятий пока нет</string>
+    <string name="incorrect_format_title">Неверный формат!</string>
 
 
     <string-array name="custom_months">

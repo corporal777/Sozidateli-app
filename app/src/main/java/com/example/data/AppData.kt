@@ -39,7 +39,6 @@ class AppData(
                     if (!isLoggedOut) {
                         logout()
                     }
-
                     tokenChangeSubject.onNext(Optional())
                 } else if (!isLoggedOut) {
                     field = value
@@ -122,10 +121,6 @@ class AppData(
         notificationsCount = user.notification_unread
     }
 
-    fun setUserShort(userShort: UserShort) {
-        setUser(userShort.toUser())
-    }
-
     fun setAllUserInfo(user: UserDetail) {
         val changed = this.newUser != user
         this.newUser = user
@@ -141,6 +136,15 @@ class AppData(
             }
         }
         userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun updatePhoneNew(phone: String) {
+        this.newUser?.phone?.forEach {
+            if (it.type == PHONE_PERSONAL) {
+                it.value = phone
+                it.isConfirmed = true
+            }
+        }
     }
 
     fun checkUserState(data: List<UserProfileFields>?) {

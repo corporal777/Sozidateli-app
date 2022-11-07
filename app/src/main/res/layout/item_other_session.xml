@@ -3,97 +3,86 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_session"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginVertical="5dp"
-        android:foreground="@drawable/custom_text_background_selectable"
-        app:cardBackgroundColor="#F6F6F6"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/itemContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="@dimen/other_session_item_height">
+        android:layout_marginTop="10dp"
+        android:background="@drawable/custom_session_background_selectable">
 
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="15dp"
-                app:cardBackgroundColor="#66BE9B72"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            app:cardBackgroundColor="#66BE9B72"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-                <ImageView
-                    android:id="@+id/iv_device_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_android_device" />
-
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/tvDeviceName"
-                fontPath="fonts/sf_pro_text.ttf"
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/iv_device_icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/vk_black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tvDeviceType"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Конференция лидеров проектов победителей конкурсов" />
+                android:layout_gravity="center"
+                android:src="@drawable/ic_android_device" />
 
 
-            <TextView
-                android:id="@+id/tvDeviceType"
-                fontPath="fonts/sf_pro_text.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/vk_black"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tvLocation"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card_icon"
-                app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
-                tools:text="Конференция лидеров проектов победителей конкурсов" />
+        </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/tvLocation"
-                fontPath="fonts/sf_pro_text.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginBottom="5dp"
-                android:alpha="0.5"
-                android:textColor="@color/vk_black"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/card_icon"
-                app:layout_constraintTop_toBottomOf="@id/tvDeviceType"
-                tools:text="29.02.2022 – 30.04.2022" />
+        <TextView
+            android:id="@+id/tvDeviceName"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tvDeviceType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Конференция лидеров проектов победителей конкурсов" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/tvDeviceType"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tvLocation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
+            tools:text="Конференция лидеров проектов победителей конкурсов" />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"
+            android:alpha="0.5"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/card_icon"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceType"
+            tools:text="29.02.2022 – 30.04.2022" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

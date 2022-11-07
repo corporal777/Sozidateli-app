@@ -5,10 +5,12 @@ import com.example.data.AppData
 import com.example.data.models.WorkExperienceServerModel
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.state.max.MaxStateMainInfoContract
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class MaxStateWorkPresenter
@@ -18,6 +20,17 @@ class MaxStateWorkPresenter
 ) : BasePresenter<MaxStateWorkContract.View>(appData), MaxStateWorkContract.Presenter {
 
     var screen: Int = 1
+    private var mDy = 0f
+
+    override fun attachView(view: MaxStateWorkContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -35,7 +48,7 @@ class MaxStateWorkPresenter
     }
 
     override fun onClickClose() {
-        viewState.navigateUp()
+        viewState.setClickClose(screen)
     }
 
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {

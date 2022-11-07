@@ -17,8 +17,11 @@ interface MaxStateWorkContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setClickClose(type : Int)
     }
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onClickClose()
         fun onSaveWorkClick(data: WorkExperienceServerModel)
     }

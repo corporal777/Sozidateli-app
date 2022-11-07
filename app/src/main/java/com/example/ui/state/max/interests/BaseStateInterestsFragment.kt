@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -11,22 +12,26 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.UserInterest
+import com.example.databinding.FragmentBaseStateBinding
+import com.example.databinding.FragmentBaseStateInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestEditItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_register_email.*
-import kotlinx.android.synthetic.main.fragment_user_edit.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.View {
+class BaseStateInterestsFragment : BaseFragmentNew<FragmentBaseStateInterestsBinding>(),
+    BaseStateInterestsContract.View, SimpleTitleToolbar {
 
     override fun layout(): Int = R.layout.fragment_base_state_interests
 
@@ -46,7 +51,10 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
     private val onItemExpandChange: OnExpandChange<*> = {
         if (it.isExpanded) {
             val position = adapter.getAdapterPosition(it.titleItem)
-            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
+            (mBinding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                position,
+                0
+            )
         }
     }
 
@@ -54,37 +62,32 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                hideKeyboard()
-                navigateUp()
-            }
-        })
-        ivClose.setOnClickListener {
-            when (presenter.screen) {
-                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-            }
-        }
-        recyclerView.apply {
+        setToolbarTitle()
+        mBinding.recyclerView.apply {
             adapter = this@BaseStateInterestsFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
 
-        btnSave.setOnClickListener { onSaveClick?.invoke() }
+        mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
     override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
         val findUserInterests: () -> List<InterestNew> = {
             interests.values.flatten().filter { item -> item.isUserInterest }
-                    .map { item -> item.interest }
+                .map { item -> item.interest }
         }
 
         var userInterests = findUserInterests()
-        btnSave.isEnabled = userInterests.isNotEmpty()
+        mBinding.btnSave.isEnabled = userInterests.isNotEmpty()
         adapter.update(interests.map {
             val parent = it.key
             val childList = it.value
-            ProfileExpandableSubtitleGroup(parent.name?: "", onExpandChange = onItemExpandChange).apply {
+            ProfileExpandableSubtitleGroup(
+                parent.name ?: "",
+                onExpandChange = onItemExpandChange
+            ).apply {
                 titleItem.badgeCount = childList.count { child -> child.isUserInterest }
                 val interestsItems = childList.mapIndexed { index, interest ->
                     ProfileDataInterestEditItem(interest, index != childList.size - 1) {
@@ -93,7 +96,7 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
                         titleItem.apply {
                             badgeCount = count
                             notifyChanged(count)
-                            btnSave.isEnabled = userInterests.isNotEmpty()
+                            mBinding.btnSave.isEnabled = userInterests.isNotEmpty()
                         }
                     }
                 }
@@ -108,22 +111,49 @@ class BaseStateInterestsFragment: BaseFragment(), BaseStateInterestsContract.Vie
         //findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
         when (Utils.maxStateScreen(presenter.getUserData())) {
             MaxStateScreenType.EDUCATION ->
-                findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateEducationFragment().setScreen(presenter.screen))
-            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
-                    .setSelectCallback {
-                        when (presenter.screen) {
-                            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                        }
+                findNavController().navigate(
+                    BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateEducationFragment()
+                        .setScreen(presenter.screen)
+                )
+            MaxStateScreenType.DONE -> MessageDialogWithBrownButton(
+                requireContext(),
+                getString(R.string.you_got_max_state)
+            )
+                .setSelectCallback {
+                    when (presenter.screen) {
+                        1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                        2 -> findNavController().popBackStack(R.id.userStateFragment, false)
                     }
+                }
             else ->
-                findNavController().navigate(BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment().setScreen(presenter.screen))
+                findNavController().navigate(
+                    BaseStateInterestsFragmentDirections.actionBaseStateInterestsFragmentToMaxStateWorkFragment()
+                        .setScreen(presenter.screen)
+                )
         }
     }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
-                ?: title, Toast.LENGTH_SHORT).show()
+            ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setToolbarTitle() {
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+        setToolbarTitleAndIcon(
+            getString(R.string.profile_interests),
+            actionIcon,
+            action = {
+                presenter.onClickClose()
+            })
+    }
+
+    override fun setClickClose(type: Int) {
+        when (presenter.screen) {
+            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+            else -> navigateUp()
+        }
     }
 }

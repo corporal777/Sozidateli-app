@@ -30,6 +30,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -59,6 +60,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -88,6 +90,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -187,6 +190,7 @@
             </LinearLayout>-->
 
             <TextView
+                fontPath="fonts/sf_pro_display_bold.ttf"
                 android:id="@+id/tv_percentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,6 +224,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -253,6 +258,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -286,6 +292,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -319,6 +326,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -352,6 +360,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -385,6 +394,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -418,6 +428,7 @@
                     android:layout_marginTop="2dp"/>
 
                 <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
@@ -464,17 +475,15 @@
             </LinearLayout>-->
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnBrownStyle"
                 android:id="@+id/btnGetState"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="12dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginStart="12dp"
-                android:background="@drawable/background_action_button_selector"
+                android:layout_marginTop="50dp"
                 android:text="@string/get_max"
-                android:letterSpacing="0.01"
-                android:textAllCaps="false"
                 android:layout_marginEnd="12dp"
-                android:textColor="@color/text_color_action_button"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

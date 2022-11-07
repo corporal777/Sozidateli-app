@@ -667,7 +667,7 @@
 
         <action
             android:id="@+id/notification_to_about_event_fragment"
-            app:destination="@id/about_event_fragment" />
+            app:destination="@id/about_event_fragment_new" />
     </fragment>
 
     <fragment
@@ -685,7 +685,7 @@
 
         <action
             android:id="@+id/notification_to_about_event_fragment"
-            app:destination="@id/about_event_fragment" />
+            app:destination="@id/about_event_fragment_new" />
 
         <action
             android:id="@+id/notification_to_organization_fragment"
@@ -851,7 +851,7 @@
     <fragment
         android:id="@+id/user_profile_education_fragment"
         android:name="com.example.ui.userprofile.read.education.UserProfileEducationFragment"
-        tools:layout="@layout/fragment_user_profile_education">
+        tools:layout="@layout/fragment_user_profile_interests">
         <action
             android:id="@+id/to_edit"
             app:destination="@+id/user_edit_fragment" />
@@ -955,7 +955,7 @@
 
         <action
             android:id="@+id/enter_event_code_fragment_to_about_event_fragment"
-            app:destination="@id/about_event_fragment" />
+            app:destination="@id/about_event_fragment_new" />
     </fragment>
 
     <fragment

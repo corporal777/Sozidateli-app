@@ -12,14 +12,22 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.DialogEventRegistrationAgreementBinding
 import com.example.databinding.DialogTitleMessageBinding
 import com.example.util.ClickableSpan
 
-class TitleMessageDialog(val context: Context, val title: String, val message: String) {
+class TitleMessageDialog(
+    val context: Context,
+    val title: String,
+    val message: String,
+    val btnPositiveText: String = "",
+    val btnNegativeText: String = "",
+    val canShowCancel: Boolean = false
+) {
 
-    private var onSelect: (state : Boolean) -> Unit = {}
+    private var onSelect: () -> Unit = {}
     private var onCancel: () -> Unit = {}
 
     private var mBinding = DialogTitleMessageBinding.inflate(LayoutInflater.from(context))
@@ -32,6 +40,7 @@ class TitleMessageDialog(val context: Context, val title: String, val message: S
         mBuilder.setCancelable(true)
 
         mBinding.tvTitle.apply {
+            isVisible = !title.isNullOrEmpty()
             text = title
         }
 
@@ -39,14 +48,31 @@ class TitleMessageDialog(val context: Context, val title: String, val message: S
             text = message
         }
 
-        mBinding.btnPositive.setOnClickListener {
-            onSelect.invoke(true)
-            mAlertDialog.dismiss()
+        mBinding.btnPositive.apply {
+            if (!btnPositiveText.isNullOrEmpty()){
+                text = btnPositiveText
+            }
+            setOnClickListener {
+                onSelect.invoke()
+                mAlertDialog.dismiss()
+            }
         }
 
-        mBinding.btnNegative.setOnClickListener {
-            onSelect.invoke(false)
-            mAlertDialog.dismiss()
+        mBinding.btnNegative.apply {
+            if (!btnNegativeText.isNullOrEmpty()){
+                text = btnNegativeText
+            }
+            setOnClickListener {
+                onCancel.invoke()
+                mAlertDialog.dismiss()
+            }
+        }
+
+        mBinding.btnCancel.apply {
+            isVisible = canShowCancel
+            setOnClickListener {
+                mAlertDialog.dismiss()
+            }
         }
 
         mAlertDialog = mBuilder.create()
@@ -56,8 +82,13 @@ class TitleMessageDialog(val context: Context, val title: String, val message: S
         mAlertDialog.show()
     }
 
-    fun setSelectCallback(block: (state : Boolean) -> Unit): TitleMessageDialog {
+    fun setPositiveSelectCallback(block: () -> Unit): TitleMessageDialog {
         onSelect = block
+        return this
+    }
+
+    fun setNegativeSelectCallback(block: () -> Unit): TitleMessageDialog {
+        onCancel = block
         return this
     }
 }

@@ -29,6 +29,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
                     android:text="@string/user_profile_last_name" />
 
@@ -68,6 +69,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/user_profile_name" />
@@ -117,6 +119,7 @@
                         android:id="@+id/tv_middle_name_title"
                         style="@style/Profile.Edit.TextViewTitle"
                         android:layout_width="wrap_content"
+                        android:layout_marginBottom="5dp"
                         android:layout_height="wrap_content"
                         android:text="@string/user_profile_middle_name"
                         app:layout_constraintBottom_toTopOf="@id/tvUserMiddleName"
@@ -124,7 +127,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-
                         android:id="@+id/tvUserMiddleName"
                         style="@style/Profile.Edit.InputFieldNew"
                         android:layout_width="match_parent"
@@ -186,6 +188,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:visibility="gone"
+                    android:layout_marginBottom="5dp"
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -222,6 +225,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/profile_phone_mobile" />
@@ -255,6 +259,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/user_profile_password_title" />
@@ -288,6 +293,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.Edit.TextViewTitle"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/user_profile_email_title" />

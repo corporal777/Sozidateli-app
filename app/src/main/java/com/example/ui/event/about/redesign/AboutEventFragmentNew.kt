@@ -59,7 +59,10 @@ class AboutEventFragmentNew() : BaseFragment(),
             setHideWhenEmpty(true)
         }
     }
-    private val tagsBlock = Section()
+    private val tagsBlock by lazy {
+        Section().apply {
+        }
+    }
     private val subEventsBlock = Section()
     private val showActivitiesBlock = Section()
 
@@ -224,15 +227,18 @@ class AboutEventFragmentNew() : BaseFragment(),
         subEvents: Map<String, List<EventActivityModel>>,
         tags: List<Tag>
     ) {
+
         tagsBlock.apply {
             if (!subEvents.isNullOrEmpty() || !tags.isNullOrEmpty()) {
                 setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
             }
-            update(
-                listOf(TagsItem(tags) {
-                    mPresenter.onTagSelected()
-                })
-            )
+            if (!tags.isNullOrEmpty()){
+                update(
+                    listOf(TagsItem(tags) {
+                        mPresenter.onTagSelected()
+                    })
+                )
+            }
         }
         if (!subEvents.isNullOrEmpty()) {
             subEventsBlock.update(

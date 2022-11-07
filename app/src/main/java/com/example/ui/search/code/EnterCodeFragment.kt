@@ -54,13 +54,8 @@ class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCode
         }
     }
 
-    override fun showEvent(eventId: /*Event*/String) {
-        findNavController().navigate(
-            EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(
-                eventId,
-                ABOUT_FROM_OTHER
-            )
-        )
+    override fun showEvent(eventId: String) {
+        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(eventId))
     }
 
     override fun showEventNotFoundError() {

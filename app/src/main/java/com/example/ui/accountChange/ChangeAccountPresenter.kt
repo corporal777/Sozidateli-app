@@ -238,13 +238,17 @@ class ChangeAccountPresenter
     private fun transformData(sessions: List<UserSessionModel>) {
         loggedSessions.clear()
         unLoggedSessions.clear()
-        sessions.sortedBy { x -> !isCurrentUser(x.userId.toString()) }.forEach { session ->
-            if (session.isLogged) {
-                loggedSessions.add(session)
-            } else {
-                unLoggedSessions.add(session)
-            }
-        }
+        val sorted = sessions.sortedBy { x -> !isCurrentUser(x.userId.toString()) }
+        loggedSessions.addAll(sorted.filter { x -> x.isLogged })
+        unLoggedSessions.addAll(sorted.filter { x -> !x.isLogged })
+//        sessions.sortedBy { x -> !isCurrentUser(x.userId.toString()) }.forEach { session ->
+//            Log.e("SORTED SESSIONS", session.toString())
+//            if (session.isLogged) {
+//                loggedSessions.add(session)
+//            } else {
+//                unLoggedSessions.add(session)
+//            }
+//        }
     }
 
     private fun observeDeeplink(currentSession: UserSessionModel) {

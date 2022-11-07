@@ -1,5 +1,7 @@
 package com.example.ui.event.my.schedule.items
 
+import android.view.View
+import android.view.animation.AlphaAnimation
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.example.R
@@ -26,7 +28,14 @@ class NoScheduleEventItem(
             } else {
                 tvDescription.text = description
             }
+            setFadeAnimation(this.root)
         }
+    }
+
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 350
+        view.startAnimation(anim)
     }
 
     override fun getLayout(): Int = R.layout.item_no_schedule_event

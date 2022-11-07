@@ -25,8 +25,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 58
-        versionName "1.0.30"
+        versionCode 60
+        versionName "1.0.34"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
         //flavorDimensions "default"
@@ -177,11 +177,9 @@ dependencies {
 
     // support
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    //implementation 'com.google.android.material:material:1.3.0-alpha04'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.core:core-ktx:1.3.2'
-
     // google
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-messaging-ktx'
@@ -190,7 +188,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf-ktx'
 
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
-    //implementation 'com.google.android.gms:play-services-maps:18.0.1'
     implementation 'com.google.android.gms:play-services-location:19.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.4'
 
@@ -212,6 +209,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     implementation "com.google.dagger:dagger:$dagger_version"
+    //noinspection OutdatedLibrary
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
 
@@ -238,21 +236,20 @@ dependencies {
     //implementation 'com.github.alexzhirkevich:custom-qr-generator:1.5.0'
 
     //ui
+    implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
     implementation "com.github.lisawray.groupie:groupie:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-databinding:2.6.0"
     implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:2.6.0"
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
     implementation "io.noties.markwon:core:4.6.2"
     implementation "io.noties.markwon:linkify:4.6.2"
     implementation "io.noties.markwon:html:4.6.2"
     implementation "io.noties.markwon:inline-parser:4.6.2"
 
-//    implementation "androidx.core:core-splashscreen:1.0.0-alpha02"
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'org.sufficientlysecure:html-textview:3.6'
@@ -275,13 +272,13 @@ dependencies {
     implementation 'com.github.qingmei2:rximagepicker:2.5.1'
     implementation 'com.isseiaoki:simplecropview:1.1.8'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-    implementation 'io.michaelrocks:libphonenumber-android:8.10.16'
+    implementation 'io.michaelrocks:libphonenumber-android:8.12.13'
 
     // network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.3'
 
     // sn
@@ -304,8 +301,7 @@ dependencies {
 
 
     //fragment
-    //implementation 'androidx.fragment:fragment-ktx:1.3.0-beta01'
-    implementation 'androidx.fragment:fragment-ktx:1.3.6'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'com.hbb20:ccp:2.4.5'
 
     implementation('io.socket:socket.io-client:1.0.0') {

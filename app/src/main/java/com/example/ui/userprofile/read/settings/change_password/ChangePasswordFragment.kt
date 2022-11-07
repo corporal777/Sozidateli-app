@@ -7,30 +7,34 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.BottomSheetChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
+import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class ChangePasswordFragment(
-    val fromRecover: Boolean,
-    val code: String
-) :
-    BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
+    val fromRecover: Boolean = false,
+    val code: String = ""
+) : BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
     ChangePasswordContract.View {
 
-    @InjectPresenter
+    private var passwordIsCorrect: () -> Unit = {}
+
+    @InjectPresenter(type = PresenterType.WEAK, tag = CHANGE_PASSWORD_FRAGMENT_TAG)
     lateinit var presenter: ChangePasswordPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ChangePasswordPresenter>
 
-    @ProvidePresenter
+    @ProvidePresenter(type = PresenterType.WEAK, tag = CHANGE_PASSWORD_FRAGMENT_TAG)
     fun providePresenter(): ChangePasswordPresenter = presenterProvider.get().apply {
         isRecover = fromRecover
         recoverCode = code
@@ -58,6 +62,45 @@ class ChangePasswordFragment(
         }
     }
 
+    override fun setRecoverPassword(code: String) {
+        mBinding.apply {
+            currentPasswordContainer.isInvisible = true
+            newPasswordContainer.isInvisible = false
+            var newPassword = ""
+            passwordView.setPasswordValidCallback {
+                newPassword = it.password ?: ""
+                btnNext.isEnabled = it.isValid && !it.password.isNullOrEmpty()
+            }
+            btnNext.apply {
+                text = getString(R.string.save)
+                isEnabled = false
+                setOnClickListener {
+                    presenter.onRecoverPasswordClickConfirm(code, newPassword)
+                }
+            }
+        }
+    }
+
+    override fun showEnterNewPassword() {
+        mBinding.apply {
+            currentPasswordContainer.isInvisible = true
+            newPasswordContainer.isInvisible = false
+            var newPassword = ""
+            passwordView.setPasswordValidCallback {
+                newPassword = it.password ?: ""
+                btnNext.isEnabled = it.isValid && !it.password.isNullOrEmpty()
+            }
+            btnNext.apply {
+                text = getString(R.string.save)
+                isEnabled = false
+                setOnClickListener {
+                    presenter.onChangePasswordClickConfirm(newPassword)
+                }
+            }
+        }
+    }
+
+
     override fun setPasswordIsNotCorrect(attempts: Int) {
         mBinding.apply {
             if (attempts > 0) {
@@ -81,43 +124,6 @@ class ChangePasswordFragment(
         ).show()
     }
 
-    override fun setPasswordIsCorrect() {
-        mBinding.apply {
-            currentPasswordContainer.isInvisible = true
-            newPasswordContainer.isInvisible = false
-            var newPassword = ""
-            passwordView.setPasswordValidCallback {
-                newPassword = it.password ?: ""
-                btnNext.isEnabled = it.isValid && !it.password.isNullOrEmpty()
-            }
-            btnNext.apply {
-                text = getString(R.string.save)
-                isEnabled = false
-                setOnClickListener {
-                    presenter.onChangePasswordClickConfirm(newPassword)
-                }
-            }
-        }
-    }
-
-    override fun setRecoverPassword(code: String) {
-        mBinding.apply {
-            currentPasswordContainer.isInvisible = true
-            newPasswordContainer.isInvisible = false
-            var newPassword = ""
-            passwordView.setPasswordValidCallback {
-                newPassword = it.password ?: ""
-                btnNext.isEnabled = it.isValid && !it.password.isNullOrEmpty()
-            }
-            btnNext.apply {
-                text = getString(R.string.save)
-                isEnabled = false
-                setOnClickListener {
-                    presenter.onRecoverPasswordClickConfirm(code, newPassword)
-                }
-            }
-        }
-    }
 
     override fun showLoginAgainDialog() {
         MessageDialogWithBrownButton(
@@ -135,6 +141,20 @@ class ChangePasswordFragment(
             R.id.recovery_password_fragment,
             RecoveryPasswordFragmentArgs.Builder(email).build().toBundle()
         )
+    }
+
+    override fun setPasswordIsCorrect() {
+        passwordIsCorrect.invoke()
+        dismiss()
+    }
+
+    fun setPasswordIsCorrectCallback(block: () -> Unit): ChangePasswordFragment {
+        passwordIsCorrect = block
+        return this
+    }
+
+    companion object {
+        const val CHANGE_PASSWORD_FRAGMENT_TAG = "change_password_tag"
     }
 
     override fun layout(): Int = R.layout.bottom_sheet_change_password

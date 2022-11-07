@@ -131,9 +131,7 @@ class MainPresenter
 
     var isEditingPhone = false
     private fun loadUser() {
-        //if (isAuthRequired) viewState.showLoadingDialog()
-        val loadUser = userRepository.getUserShortNew()
-            .ignoreElement()
+        val loadUser = userRepository.getUserShortNew().ignoreElement()
         val inApp = userRepository.getInAppList(
             mapOf(
                 NotificationModel.NOTIFICATION_LIMIT to 50,
@@ -141,15 +139,14 @@ class MainPresenter
                 NotificationModel.NOTIFICATION_IS_IN_APP to true,
                 NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
             )
-        ).doOnSuccess { inappList = LinkedList(it) }
-            .ignoreElement()
+        ).doOnSuccess { inappList = LinkedList(it) }.ignoreElement()
 
         compositeDisposable += Completable.merge(listOf(loadUser, checkUserLocation(), inApp))
             .andThen(Completable.defer { checkInternetConnected() })
             //.andThen(subscribeToNotifications())
             .doOnComplete { connectToSocket(appData.getId()) }
             .andThen(Completable.defer { checkShowGreetings() })
-            .andThen(Maybe.defer { checkUserEvent() })
+            //.andThen(Maybe.defer { checkUserEvent() })
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -161,7 +158,8 @@ class MainPresenter
                         checkIntent()
                     }
                     initInternetConnectionCheck()
-                }, onSuccess = {
+                },
+                onComplete = {
                     if (!isEditingPhone) {
                         viewState.apply {
                             hideLoadingDialog()
@@ -172,8 +170,9 @@ class MainPresenter
                         initInternetConnectionCheck()
                     }
                     isEditingPhone = false
-
-            })
+                },
+                //onSuccess = {}
+            )
     }
 
     private fun initInternetConnectionCheck() {

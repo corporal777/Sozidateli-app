@@ -28,11 +28,10 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import initDropDownView
-import kotlinx.android.synthetic.main.layout_list_search.*
 import onTextChanged
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
-    BaseFragment(), SearchContract.View<I, F> {
+    BaseFragmentNew<LayoutListSearchBinding>(), SearchContract.View<I, F> {
 
     abstract var presenter: P
 
@@ -69,10 +68,10 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchList.apply {
+            mBinding.searchList.apply {
             adapter = this@SearchFragment.adapter
         }
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
 
     }
 
@@ -92,7 +91,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
             adapter.update(data.map(::createItem))
             Log.e("SearchEventsList", "finish")
         }
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showFilter(filter: F) {

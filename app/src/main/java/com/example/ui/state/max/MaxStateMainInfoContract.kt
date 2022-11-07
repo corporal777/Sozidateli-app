@@ -43,8 +43,11 @@ interface MaxStateMainInfoContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun photoUpdated(photo: ImageModel)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setClickClose(type : Int)
     }
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onClickClose()
         fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
         fun updateFiles(data: MutableMap<String, Any?>)

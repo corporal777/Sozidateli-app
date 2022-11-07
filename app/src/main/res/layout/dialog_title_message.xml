@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix"
             android:text="@string/change_status_title"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
 
         <TextView
             fontPath="fonts/sf_pro_text.ttf"
@@ -47,36 +47,43 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPositive"
-            fontPath="fonts/sf_pro_text_bold.ttf"
+            style="@style/BtnBrownStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
-            android:background="@drawable/custom_btn_brown_selectable"
-            android:letterSpacing="-0.02"
+            android:stateListAnimator="@null"
             android:text="@string/yes"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMessage" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNegative"
-            fontPath="fonts/sf_pro_text_bold.ttf"
+            style="@style/BtnCancelStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/custom_btn_cancel_selectable"
-            android:letterSpacing="-0.02"
             android:stateListAnimator="@null"
             android:text="@string/cancel"
-            android:textAllCaps="false"
-            android:textColor="@color/button_cancel_text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnPositive"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancel"
+            style="@style/BtnCancelStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:stateListAnimator="@null"
+            android:text="@string/cancel"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnNegative"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,12 @@
 package com.example.ui.splash
 
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import androidx.core.content.ContextCompat
+import androidx.core.view.updatePadding
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -29,15 +33,23 @@ class SplashFragment : BaseFragmentNew<FragmentSplashBinding>(), SplashContract.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val progressBar = CustomProgressBar(context)
-        progressBar.setSize(35.dp)
-        progressBar.setProgressColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.main_brown_color_new
-            )
-        )
-        mBinding.progressContainer.addView(progressBar, 0)
+        mBinding.ivLogo.updatePadding(top = getHeightOfNavbar() - getHeightOfStatusBar())
+    }
+
+    private fun getHeightOfNavbar(): Int {
+        val resources: Resources = requireContext().resources
+        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else 0
+    }
+
+    private fun getHeightOfStatusBar(): Int {
+        val resources: Resources = requireContext().resources
+        val resourceId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else 0
     }
 
     override fun layout() = R.layout.fragment_splash

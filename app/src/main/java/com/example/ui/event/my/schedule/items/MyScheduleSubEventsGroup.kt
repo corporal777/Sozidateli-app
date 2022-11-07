@@ -1,10 +1,8 @@
 package com.example.ui.event.my.schedule.items
 
-import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.event.activities.items.NoSubEventItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -78,14 +76,6 @@ class MyScheduleSubEventsGroup(
 
     }
 
-    fun removeSubEventItem(id: String) {
-        val idLong = id.toLong()
-        val group = mDataItem.findGroupBy<SubEventGroup> { x -> x.isHasEvent(idLong) }
-        if (group != null) {
-            group.removeSubEventItem(id)
-        }
-    }
-    
 
     fun hasSubEventItem(id: Long) : Boolean {
         val group = mDataItem.findItemBy<EventActivityItem>{ x -> x.id == id }

@@ -29,6 +29,7 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
 import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
@@ -54,8 +55,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     @Inject
     lateinit var presenterProvider: Provider<ActivitiesPresenter>
 
-    private var mDy = 0
-    private var mAppBarScrollValue = 0f
     var mCanChangeDay = false
 
     @ProvidePresenter
@@ -68,10 +67,8 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
-    private val searchSection = Section()
     private val tagsSection = Section()
     private val calendarSection = Section()
-    private val daySection = Section()
     private val eventsSection = Section()
 
     private val groupAdapter by lazy {
@@ -301,9 +298,10 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     override fun showEmptyEventPlaceholder() {
         eventsSection.update(
             listOf(
-                NoEventItem(
+                NoScheduleEventItem(
                     "Нет результатов",
-                    "По заданным параметрам нет подходящих событий"
+                    "По заданным параметрам нет подходящих событий",
+                    30.dp
                 )
             )
         )

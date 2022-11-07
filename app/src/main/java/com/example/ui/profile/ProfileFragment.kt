@@ -15,6 +15,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.updateBounds
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -36,6 +37,7 @@ import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -83,9 +85,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            profileScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            profileScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
-            })
+            }
             ivAvatar.apply {
                 clipToOutline = true
             }
@@ -116,8 +118,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun setUser(user: UserDetail) {
         setUserLink(user)
         setChangeOrAddNewAccount(user.binds?.deviceSessionsCount ?: 0)
-        val avatar = user.image?.uri
-        Picasso.get().load(avatar).into(dummyTarget)
+        val avatar = user.image.uri
+        Picasso.get().load(avatar).placeholder(R.drawable.avatar_placeholder_rectangle)
+            .into(dummyTarget)
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -194,6 +197,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
             val link = BuildConfig.SHARE_URL + "portal/user/" + user.id
             copyTextToBuffer(requireContext(), link)
+            showToast(getString(R.string.link_is_copied))
             //presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
         }, {
             shortNameClick?.invoke()

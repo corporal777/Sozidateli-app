@@ -29,7 +29,7 @@ class UserSessionsPresenter
     private val allOtherSessions = arrayListOf<UserSessionModel>()
     private val shortAllOtherSessions = arrayListOf<UserSessionModel>()
     private var actionType = SessionsAction.HIDDEN
-    private var mDy = 0
+    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -37,9 +37,14 @@ class UserSessionsPresenter
         getUserSessionsData()
     }
 
+    override fun attachView(view: UserSessionsContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
+    }
+
     override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
     }
 
     private fun getUserSessionsData() {

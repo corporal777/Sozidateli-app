@@ -33,8 +33,11 @@ class PasswordCustomView : FrameLayout {
         defStyleAttr
     )
 
-    //val pattern = Pattern.compile("[a-zA-z0-9]*")
-    val pattern = Pattern.compile("[a-zA-z0-9]*^[^-_\"\'\\s.:;?/,#$%!@^<>*&+=(){}]*\$")
+    val pattern = Pattern.compile("[a-zA-z0-9]*")
+    val symbolsPattern = Pattern.compile("[^_\\W]+")
+    //val pattern = Pattern.compile("[a-zA-z0-9]*^[^-_\"\'\\s.:;?/,#$%!@^<>*&+=(){}]*\$")
+    //val pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$")
+
     var etPassword: TextInputEditText
     var etPasswordConfirm: TextInputEditText
     var tvResult: TextView
@@ -131,6 +134,12 @@ class PasswordCustomView : FrameLayout {
         cbAgree.setOnCheckedChangeListener { _, isChecked -> onAgreeChangedSelection(isChecked) }
     }
 
+    private fun validatePasswordNew(password: String?){
+        if ((password?.length ?: 0) >= PASSWORD_MIN_LENGTH) {
+
+        }
+    }
+
     private fun validatePassword(password: String?) {
         var isValid = true
         var usedUnacceptableSymbols = false
@@ -165,7 +174,11 @@ class PasswordCustomView : FrameLayout {
         }
 
         //usedUnacceptableSymbols = pattern.matcher(password).matches() != true
-        usedUnacceptableSymbols = !pattern.matcher(password).matches()
+        usedUnacceptableSymbols = if (!symbolsPattern.matcher(password).matches()){
+            true
+        }else {
+            !pattern.matcher(password).matches()
+        }
 
         if (!usedUnacceptableSymbols) {
             if (!isValid) {
@@ -189,30 +202,6 @@ class PasswordCustomView : FrameLayout {
                 tvResult.text = resources.getString(R.string.password_valid)
                 tvErrors.text = ""
             }
-            /*when (levelCounter) {
-                3, 2 -> {
-                    first.setBackgroundResource(R.drawable.password_red)
-                    second.setBackgroundResource(R.drawable.password_gray)
-                    third.setBackgroundResource(R.drawable.password_gray)
-                }
-                1 -> {
-                    first.setBackgroundResource(R.drawable.password_yellow)
-                    second.setBackgroundResource(R.drawable.password_yellow)
-                    third.setBackgroundResource(R.drawable.password_gray)
-                }
-                else -> {
-                    first.setBackgroundResource(R.drawable.password_green)
-                    second.setBackgroundResource(R.drawable.password_green)
-                    third.setBackgroundResource(R.drawable.password_green)
-                }
-            }
-            if (isValid) {
-                tvResult.text = resources.getString(R.string.password_valid)
-                tvErrors.text = ""
-            } else {
-                tvResult.text = resources.getString(R.string.password_invalid)
-                tvErrors.text = errors.joinToString(";\n", postfix = ".")
-            }*/
             hideShowAgree(isValid)
             if (etPasswordConfirm.text.toString().isEmpty()) matchPasswords(true, isValid)
             else matchPasswords(

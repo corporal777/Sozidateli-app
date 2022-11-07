@@ -308,13 +308,13 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         }
     }
 
-    override fun updateMessages(messages: List<ChatMessage>) {
+    override fun updateMessages(showAnim: Boolean, messages: List<ChatMessage>) {
         chatAdapter.update(messages.map {
             when (it) {
                 is ChatMessage.Personal -> {
                     val item = when (it.message.type) {
                         MessageType.IMAGE -> ChatMessageImageItem(it, imageClickListener)
-                        else -> ChatMessageTextItem(it)
+                        else -> ChatMessageTextItem(it, showAnim)
                     }
 
                     item.apply {

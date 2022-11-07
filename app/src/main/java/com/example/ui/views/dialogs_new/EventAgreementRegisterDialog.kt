@@ -18,9 +18,11 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.example.BuildConfig
 import com.example.R
 import com.example.databinding.DialogEventRegistrationAgreementBinding
 import com.example.util.ClickableSpan
+import com.example.util.showCustomTabsBrowser
 import kotlinx.android.synthetic.main.dialog_event_registration_agreement_form.view.*
 
 class EventAgreementRegisterDialog (val context: Context, val url: String) {
@@ -40,7 +42,7 @@ class EventAgreementRegisterDialog (val context: Context, val url: String) {
             val linkStart = 11
             val linkEnd = length
             setSpan(ClickableSpan(drawUnderline = false) {
-                showUserAgreement(url)
+                showCustomTabsBrowser(context, url)
             }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }
 
@@ -75,6 +77,7 @@ class EventAgreementRegisterDialog (val context: Context, val url: String) {
     }
 
     private fun showUserAgreement(url: String) {
+
         try {
             val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             context.startActivity(viewIntent)

@@ -89,7 +89,10 @@ import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
+import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
+import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
+import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -370,5 +373,14 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeProfileDataFragment(): ProfileDataFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChangeEmailBottomSheetFragment(): ChangeEmailFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChangePhoneBottomSheetFragment(): ChangePhoneFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeConfirmPhoneBottomSheetFragment(): ConfirmPhoneFragment
 
 }

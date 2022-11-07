@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -24,10 +23,10 @@ import com.example.R
 import com.example.data.models.*
 import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
+import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
-import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.*
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
@@ -35,21 +34,24 @@ import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.IT
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
+import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
-import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.*
 import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_user_edit.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserEditFragment : BaseFragment(), UserEditContract.View {
+class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View, SimpleTitleToolbar {
 
     private lateinit var dialog: AddPhoneEmailDialog
+    private lateinit var confirmPhoneDialog: ConfirmPhoneFragment
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
@@ -92,7 +94,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
     private val onItemExpandChange: OnExpandChange<*> = {
         if (it.isExpanded) {
             val position = adapter.getAdapterPosition(it.titleItem)
-            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+            (mBinding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
                 position,
                 0
             )
@@ -101,7 +103,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
 
     private var onSaveClick: (() -> Unit)? = null
 
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,11 +136,14 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
                 }
             })
 
-        recyclerView.apply {
+        mBinding.recyclerView.apply {
             adapter = this@UserEditFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
 
-        btnSave.setOnClickListener { onSaveClick?.invoke() }
+        mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
     override fun setMainData(user: UserDetail, avatar: Bitmap?) {
@@ -192,53 +196,17 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
         adapter.notifyItemChanged(0, avatar.asOptional())
     }
 
-    override fun setPersonalData(user: UserDetail) {
-        /*val dataItem = ProfileDataPersonalEditItem(
-                requireContext(),
-                user.email?.value,
-                user.user_email_show,
-                user.user_phone_work,
-                user.user_phone_work_show,
-                user.user_phone,
-                user.user_phone_show,
-                user.user_phone_confirmed,
-                user.user_gender?.firstLetterToUppercase(),
-                user.user_birthday,
-                user.user_birthday_show,
-                UserAddress.fromUser(user),
-                user.social_links,
-                user.user_social_links_absent,
-                user.user_phone_work_additional,
-                { presenter.onChangeEmailClick() },
-                { presenter.onConfirmPhoneClick(it) }
-        )
 
-        adapter.update(listOf(dataItem))
-
-        onSaveClick = {
-            recyclerView.requestFocus()
-            if (dataItem.checkDataValid()) {
-                presenter.onSavePersonalClick(dataItem.getDataToSave())
-            }
-        }*/
-    }
-
-    override fun setPersonalDataNew(user: UserDetail, state: String) {
+    override fun setPersonalData(user: UserDetail, state: String) {
         if (isUpdateInfo) {
             val dataItem = ProfileDataPersonalEditNewItem(
                 1,
                 requireContext(),
-                /*user.name,
-                user.lastName,
-                user.middleName?.value,
-                user.middleName?.absent?: false,*/
                 user.gender,
                 user.birthday?.value,
                 user.birthday?.isVisible ?: false,
                 DaDataUtil.formatSavedLocation(requireContext(), user.address),
                 user.notes,
-                /*user.state?.nameEdited?: false,
-                childFragmentManager*/
             ) { showWhyUserShouldAddDataToNotesField() }
 
             val files = ProfileDataAdditionalFilesEditNewGroup(
@@ -273,7 +241,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
             adapter.update(listOf(dataItem, files))
 
             onSaveClick = {
-                recyclerView.requestFocus()
+                mBinding.recyclerView.requestFocus()
                 if (dataItem.checkDataValid()) {
                     showEditWarning(
                         presenter.getBaseUserState(),
@@ -312,7 +280,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
 //            btnSave.isEnabled = false
 //        }
         onSaveClick = {
-            recyclerView.requestFocus()
+            mBinding.recyclerView.requestFocus()
             if (userPhone?.isConfirmed == true) {
                 //Toast.makeText(requireContext(), "ConfirmedPhone", Toast.LENGTH_SHORT).show()
                 if (item.checkDataValid()) {
@@ -357,7 +325,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
         adapter.update(listOf(item))
 
         onSaveClick = {
-            recyclerView.requestFocus()
+            mBinding.recyclerView.requestFocus()
             if (item.checkDataValid()) {
                 presenter.onSaveContactsClick(item.getDataToSave())
             }
@@ -379,40 +347,39 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
     }
 
     override fun showChangeEmail() {
-        WaitForAcceptDialog(
-            requireActivity(), null, getString(R.string.change_email_text),
-            getString(R.string.change_email_positive_button), getString(R.string.revoke)
-        )
-            .setSendCodeCallback {
-                if (it) {
-                    findNavController().navigate(R.id.user_profile_settings_fragment)
-                }
-            }
-        //showChangeEmailDialog(presenter::onChangeEmailConfirm)
+        TitleMessageDialog(
+            requireContext(),
+            "",
+            message = getString(R.string.change_email_text),
+            btnPositiveText = getString(R.string.change_email_positive_button),
+            btnNegativeText = getString(R.string.revoke)
+        ).setPositiveSelectCallback {
+            findNavController().navigate(R.id.user_profile_settings_fragment)
+        }
     }
-
-    override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override fun showPhoneConfirm(phone: String) {
-        showConfirmPhoneDialog(phone)
-        // findNavController().navigate(UserEditFragmentDirections.editToPhoneConfirm(phone, "", null))
+        confirmPhoneDialog = ConfirmPhoneFragment(phone)
+        confirmPhoneDialog.show(
+            requireActivity().supportFragmentManager,
+            "confirm_phone_dialog"
+        )
+        presenter.startTimerForResendCode(phone)
+        confirmPhoneDialog.setResendCallback {
+        }
+        confirmPhoneDialog.setConfirmCallback {
+            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+            presenter.confirmCode(phone, it)
+        }
     }
 
-    private fun showConfirmPhoneDialog(phone: String) {
-        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
-        dialog.setPhoneForCode(phone)
-        dialog.setSelectCallback {
-            if (it.type == RegisterDataType.CODE) {
-                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                presenter.confirmCode(phone, it.value)
-            }
-        }
-        dialog.setSendCodeCallback {
-        }
+    override fun setTimerForResendCode(seconds: Int) {
+        confirmPhoneDialog.setCodeResend(seconds)
     }
+
 
     override fun codeSuccess() {
-        dialog.hideDialog()
+        confirmPhoneDialog.dismissNow()
         presenter.onSaveContactsClick(data.getDataToSave())
 
     }
@@ -468,32 +435,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
                 }
             }
         }
-        /*} else {
-            val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
-                null else user.binds?.academicDegree
-            val dataItem = ProfileDataEducationEditGroup(
-                    requireContext(),
-                    user.birthday,
-                    user.educationLevel,
-                    user.educationLevelList ?: emptyList(),
-                    user.academicDegrees ?: emptyList(),
-                    user.speciality ?: emptyList(),
-                    user.binds?.education ?: emptyList(),
-                    academicDegree ?: emptyList()
-            ) { degreesLevel, sciencesLevel, position ->
-                findNavController().navigate(UserEditFragmentDirections.actionUserEditFragmentToEditDegreeFragment(degreesLevel, sciencesLevel, position))
-            }
-            adapter.update(listOf(dataItem))
-
-            onSaveClick = {
-                if (dataItem.checkDataValid()) {
-                    presenter.onSaveEducationClick(
-                            dataItem.getEducationLevelToSave(),
-                            dataItem.getEducationsToSave(),
-                            dataItem.getDegreeToSave())
-                }
-            }
-        }*/
     }
 
     override fun setWorkData(user: UserDetail) {
@@ -527,7 +468,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
 
         if (userInterests.isNullOrEmpty()) {
             //btnSave.isClickable = false
-            btnSave.isEnabled = false
+            mBinding.btnSave.isEnabled = false
         }
 
         adapter.update(interests.map {
@@ -550,7 +491,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
                         }
                         if (count > 0) {
                             //btnSave.isClickable = true
-                            btnSave.isEnabled = true
+                            mBinding.btnSave.isEnabled = true
                         }
                     }
                 }
@@ -565,7 +506,7 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
                 presenter.getMaxUserState(), false, userInterests.isEmpty()
             ) {
                 if (userInterests.isNullOrEmpty()) {
-                    btnSave.isEnabled = false
+                    mBinding.btnSave.isEnabled = false
                 }
                 presenter.onSaveInterestsClick(userInterests)
             }
@@ -660,18 +601,18 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
         }
     }
 
-    override fun setMainTitle() = setTitle(R.string.profile_edit_name_and_photo)
-    override fun setPersonalTitle() = setTitle(R.string.user_profile_main_info)
-    override fun setContactsTitle() = setTitle(R.string.user_profile_contacts)
-    override fun setPhoneTitle() = setTitle(R.string.profile_phone_mobile)
-    override fun setEducationTitle() = setTitle(R.string.profile_title_education)
-    override fun setWorkTitle() = setTitle(R.string.profile_work_experience)
-    override fun setInterestsTitle() = setTitle(R.string.profile_interests)
-    override fun setAdditionalNotesTitle() = setTitle(R.string.profile_notes)
-    override fun setAdditionalFilesTitle() = setTitle(R.string.profile_files_title)
+    override fun setMainTitle() = setTitle(getString(R.string.profile_edit_name_and_photo))
+    override fun setPersonalTitle() = setTitle(getString(R.string.user_profile_main_info))
+    override fun setContactsTitle() = setTitle(getString(R.string.user_profile_contacts))
+    override fun setPhoneTitle() = setTitle(getString(R.string.profile_phone_mobile))
+    override fun setEducationTitle() = setTitle(getString(R.string.profile_title_education))
+    override fun setWorkTitle() = setTitle(getString(R.string.profile_work_experience))
+    override fun setInterestsTitle() = setTitle(getString(R.string.profile_interests))
+    override fun setAdditionalNotesTitle() = setTitle(getString(R.string.profile_notes))
+    override fun setAdditionalFilesTitle() = setTitle(getString(R.string.profile_files_title))
 
-    private fun setTitle(@StringRes titleRes: Int) {
-        //setToolbarTitle(titleRes)
+    private fun setTitle(title: String) {
+        setToolbarTitleAndIcon(title)
     }
 
     override fun navigateUp() {
@@ -683,6 +624,6 @@ class UserEditFragment : BaseFragment(), UserEditContract.View {
     }
 
     override fun saveOnClick(saveOnClick: Boolean) {
-        btnSave.isVisible = saveOnClick
+        mBinding.btnSave.isVisible = saveOnClick
     }
 }

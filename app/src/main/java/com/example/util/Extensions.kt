@@ -17,11 +17,9 @@ import android.util.DisplayMetrics
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.PopupWindow
+import android.widget.*
 import androidx.annotation.ColorInt
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
@@ -63,7 +61,7 @@ fun String.firstLetterToUppercase(): String {
         this
 }
 
-fun CheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
+fun AppCompatCheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
     isChecked = checked
     setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
 }
@@ -377,9 +375,14 @@ fun LinearLayoutManager.smoothScrollToFirstItem(context: Context, appBar : AppBa
 }
 
 fun showCustomTabsBrowser(context: Context, url : String){
-    val builder = CustomTabsIntent.Builder()
-    val customTabsIntent = builder.build()
-    customTabsIntent.launchUrl(context, Uri.parse(url))
+    try {
+        val builder = CustomTabsIntent.Builder()
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(context, Uri.parse(url))
+    }catch (e : Exception){
+        Toast.makeText(context, R.string.link_open_error, Toast.LENGTH_LONG).show()
+    }
+
 }
 
 fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {

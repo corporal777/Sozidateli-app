@@ -42,7 +42,7 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     private val currentSessionSection by lazy {
         Section().apply {
             setHeader(SessionsHeaderItem(getString(R.string.current_session_label)))
-//            setHideWhenEmpty(true)
+            setHideWhenEmpty(true)
         }
     }
     private val otherSessionsSection by lazy {
@@ -71,10 +71,9 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
         })
 
         mBinding.rvSessions.apply {
-            startPostponedEnterTransition()
             adapter = groupAdapter
-            onScrolled { _, dy ->
-                presenter.changeAppBarElevation(dy)
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
             }
         }
     }

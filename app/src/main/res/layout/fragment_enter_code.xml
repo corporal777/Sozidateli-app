@@ -10,7 +10,7 @@
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilCode"
-            style="@style/Profile.Edit.InputLayout"
+            style="@style/Profile.Edit.PasswordNew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -29,9 +29,11 @@
 
         <TextView
             android:id="@+id/tvNoCode"
+            fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:letterSpacing="-0.01"
             android:text="@string/code_input_no_code"
             android:textSize="19sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,14 +41,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tilCode" />
 
         <androidx.appcompat.widget.AppCompatButton
+            style="@style/BtnBrownStyle"
             android:id="@+id/btnSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/background_action_button_selector"
             android:text="@string/search_label"
-            android:textAllCaps="false"
-            android:textColor="@color/text_color_action_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

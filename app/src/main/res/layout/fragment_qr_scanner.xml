@@ -33,6 +33,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView"
                 android:layout_width="0dp"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
@@ -64,6 +65,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvPermissionRequest"
                 android:layout_width="0dp"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
@@ -78,20 +80,16 @@
                 app:layout_constraintVertical_chainStyle="packed" />
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnBrownCancelStyle"
                 android:id="@+id/btnPermissionRequest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 android:layout_marginBottom="32dp"
-                android:background="@drawable/background_corners_border"
                 android:text="@string/qr_permission_request_apply"
-                android:textAllCaps="false"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp"
-                android:theme="@style/ViewBackgroundAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -100,6 +98,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvInput"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
@@ -116,19 +115,15 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.appcompat.widget.AppCompatButton
+            style="@style/BtnBrownCancelStyle"
             android:id="@+id/btnToEnterCode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/background_corners_border"
             android:text="@string/enter_code_btn_text"
-            android:textAllCaps="false"
             android:textColor="@color/colorAccent"
-            android:textSize="14sp"
-            android:theme="@style/ViewBackgroundAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

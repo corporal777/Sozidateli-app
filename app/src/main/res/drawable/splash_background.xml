@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque"> <!-- android:opacity="opaque" should be here -->
     <item>
-        <color android:color="@color/colorPrimary"/>
+        <color android:color="@color/main_background"/>
     </item>
-    <item>
-        <bitmap android:src="@drawable/ic_app_logo_gray"
-            android:gravity="center"/>
+    <item
+        android:drawable="@drawable/ic_app_logo_vector"
+        android:gravity="center">
     </item>
 </layer-list>

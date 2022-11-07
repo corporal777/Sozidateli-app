@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.databinding.FragmentSearchTabsBinding
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
@@ -19,12 +23,12 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
-import kotlinx.android.synthetic.main.fragment_search_tabs.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterfaceProvider {
+class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchTabsContract.View,
+    SearchInterfaceProvider {
 
 
     @InjectPresenter
@@ -55,14 +59,14 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             selectTab(position)
-            //setupToolbarIcons(position)
             setupQrScannerButton(position)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager.run {
+        mBinding.viewPager.run {
+            isSaveEnabled = false
             addOnPageChangeListener(pageChangeListener)
             adapter = object : FragmentStatePagerAdapter(
                 childFragmentManager,
@@ -77,58 +81,55 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
             setupQrScannerButton(currentItem)
         }
 
-        tvCancel.setOnClickListener {
+        mBinding.tvCancel.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        etSearch.apply {
+        mBinding.etSearch.apply {
             SearchInput(this).apply {
                 setOnTextChange { presenter.onSearchTextChange(it) }
                 setOnTextChangeDone {
                     presenter.onSearchTextSubmit(it)
-                    hideKeyboard(etSearch)
+                    hideKeyboard(mBinding.etSearch)
                 }
             }
 
             onTextChanged {
-                btnClear.isVisible = !it.isNullOrEmpty()
+                mBinding.btnClear.isVisible = !it.isNullOrEmpty()
             }
 
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                clSearch.setBackgroundResource(
+                mBinding.clSearch.setBackgroundResource(
                     if (hasFocus) R.drawable.background_search_field_rounded_focused
                     else R.drawable.background_search_field_rounded_normal
                 )
             }
         }
 
-        btnClear.apply {
-            btnClear.isVisible = !etSearch.text.isNullOrEmpty()
-            setOnClickListener { etSearch.text = null }
+        mBinding.apply {
+            btnClear.apply {
+                btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                setOnClickListener { mBinding.etSearch.text = null }
+            }
+
+            btnFilter.setOnClickListener { presenter.onFilterClick() }
+            cardQrScanner.setOnClickListener {
+                presenter.onScanClick()
+            }
+            btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
+            btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
+            btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
         }
 
-        btnFilter.setOnClickListener { presenter.onFilterClick() }
-        cardQrScanner.setOnClickListener {
-            presenter.onScanClick()
-        }
-        btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
-        btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
-        btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
     }
 
     private fun selectTab(position: Int) {
-        clTabs.apply {
+        mBinding.clTabs.apply {
             for (p in 0 until childCount) {
                 getChildAt(p).isSelected = p == position
             }
         }
     }
-
-//    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-//        super.setupToolbarContent(toolbarContentActionBar)
-//        this.toolbarContentActionBar = toolbarContentActionBar
-//        setupToolbarIcons(viewPager.currentItem)
-//    }
 
     private fun setupToolbarIcons(position: Int) {
         toolbarContentActionBar?.apply {
@@ -143,7 +144,7 @@ class SearchTabsFragment : BaseFragment(), SearchTabsContract.View, SearchInterf
     }
 
     private fun setupQrScannerButton(position: Int) {
-        cardQrScanner.isVisible = position == 0
+        mBinding.cardQrScanner.isVisible = position == 0
     }
 
     override fun provideSearchInterface(): SearchInterface {

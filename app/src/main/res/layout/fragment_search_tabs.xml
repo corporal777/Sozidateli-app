@@ -1,218 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clSearch"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:background="@drawable/background_search_field_rounded_normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvCancel"
-            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/container_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etSearch"
-                style="@style/Input.Search"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clSearch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@null"
-                android:hint="@string/search_input_hint"
-                android:imeOptions="actionSearch"
-                android:inputType="textFilter"
+                android:layout_height="40dp"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:background="@drawable/background_search_field_rounded_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnFilter"
+                app:layout_constraintEnd_toStartOf="@id/tvCancel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btnFilter"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_filters_new"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnClear"
-                app:layout_constraintStart_toEndOf="@id/etSearch"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.526" />
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etSearch"
+                    style="@style/Input.Search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:hint="@string/search_input_hint"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textFilter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnFilter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btnClear"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_input_clear"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btnFilter"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.526" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnFilter"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_filters_new"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnClear"
+                    app:layout_constraintStart_toEndOf="@id/etSearch"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.526" />
 
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <TextView
-            android:id="@+id/tvCancel"
-            fontPath="fonts/sf_pro_text_regular.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/custom_text_background_selectable"
-            android:letterSpacing="-0.02"
-            android:paddingStart="7dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="7dp"
-            android:paddingBottom="5dp"
-            android:text="@string/cancel_new"
-            android:textColor="#C49A6C"
-            android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/clSearch"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingPrefix" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnClear"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_input_clear"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btnFilter"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.526" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clTabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="@drawable/background_custom_tab_new"
-        app:layout_constraintTop_toBottomOf="@id/container_search">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnTabEvents"
-            style="@style/CustomTab"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/background_custom_tab_left_selector_new"
-            android:elevation="2dp"
-            android:letterSpacing="-0.01"
-            android:text="@string/search_events"
-            android:textColor="@color/vk_black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnTabOrganizations"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnTabOrganizations"
-            style="@style/CustomTab"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/background_custom_tab_right_selector_new"
-            android:elevation="2dp"
-            android:letterSpacing="-0.01"
-            android:text="@string/search_organizations"
-            android:textColor="@color/vk_black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnTabUsers"
-            app:layout_constraintStart_toEndOf="@+id/btnTabEvents"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnTabUsers"
-            style="@style/CustomTab"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
-            android:background="@drawable/background_custom_tab_right_selector_new"
-            android:elevation="2dp"
-            android:letterSpacing="-0.01"
-            android:text="@string/search_users"
-            android:textColor="@color/vk_black"
-            android:visibility="visible"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btnTabOrganizations"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnTabOrganizations" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardQrScanner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-        android:layout_marginTop="10dp"
-        android:foreground="@drawable/custom_text_background_selectable"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/clTabs">
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="35dp">
-
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_scan_qr_search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/scan_text"
-                app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <TextView
-                android:id="@+id/scan_text"
-                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:id="@+id/tvCancel"
+                fontPath="fonts/sf_pro_text_regular.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/scan_qr_code_title"
-                android:textSize="13sp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:letterSpacing="-0.02"
+                android:paddingStart="7dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="7dp"
+                android:paddingBottom="5dp"
+                android:text="@string/cancel_new"
+                android:textColor="#C49A6C"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/clSearch"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingPrefix" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardQrScanner" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="@drawable/background_custom_tab_new"
+            app:layout_constraintTop_toBottomOf="@id/container_search">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTabEvents"
+                style="@style/CustomTab"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/background_custom_tab_left_selector_new"
+                android:elevation="2dp"
+                android:letterSpacing="-0.01"
+                android:text="@string/search_events"
+                android:textColor="@color/vk_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnTabOrganizations"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTabOrganizations"
+                style="@style/CustomTab"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/background_custom_tab_right_selector_new"
+                android:elevation="2dp"
+                android:letterSpacing="-0.01"
+                android:text="@string/search_organizations"
+                android:textColor="@color/vk_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnTabUsers"
+                app:layout_constraintStart_toEndOf="@+id/btnTabEvents"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTabUsers"
+                style="@style/CustomTab"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/background_custom_tab_right_selector_new"
+                android:elevation="2dp"
+                android:letterSpacing="-0.01"
+                android:text="@string/search_users"
+                android:textColor="@color/vk_black"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btnTabOrganizations"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnTabOrganizations" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardQrScanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:layout_marginTop="10dp"
+            android:foreground="@drawable/custom_text_background_selectable"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/clTabs">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="35dp">
+
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_scan_qr_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/scan_text"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/scan_text"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_qr_code_title"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingPrefix" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardQrScanner" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

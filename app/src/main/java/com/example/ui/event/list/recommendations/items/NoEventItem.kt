@@ -1,24 +1,38 @@
 package com.example.ui.event.list.recommendations.items
 
+import android.view.View
+import android.view.animation.AlphaAnimation
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.example.R
 import com.example.databinding.ItemNoEventBinding
+import com.example.extensions.dp
 import com.xwray.groupie.databinding.BindableItem
 
 class NoEventItem(
     val title: String,
-    val description: String = ""
+    val description: String = "",
+    val paddingTop: Int = 0,
+    val paddingBottom: Int = 0
 ) : BindableItem<ItemNoEventBinding>() {
 
     override fun bind(viewBinding: ItemNoEventBinding, position: Int) {
         viewBinding.apply {
+            noDataPlaceholder.updatePadding(top = paddingTop.dp, bottom = paddingBottom.dp)
             tvTitle.text = title
             if (description.isNullOrEmpty()) {
                 tvDescription.isVisible = false
             } else {
                 tvDescription.text = description
             }
+            setFadeAnimation(this.root)
         }
+    }
+
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 350
+        view.startAnimation(anim)
     }
 
     override fun getLayout(): Int = R.layout.item_no_event

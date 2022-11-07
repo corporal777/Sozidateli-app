@@ -38,7 +38,6 @@ class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateC
                 presenter.onClickClose()
             }
         })
-        //ivClose.setOnClickListener { presenter.onClickClose() }
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {

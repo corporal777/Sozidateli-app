@@ -3,24 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!--<androidx.appcompat.widget.AppCompatImageButton
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/content_description_close"
-            android:id="@+id/ivClose"
-            android:layout_alignParentEnd="true"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:minHeight="48dp"
-            android:minWidth="48dp"
-            android:src="@drawable/ic_close"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />-->
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

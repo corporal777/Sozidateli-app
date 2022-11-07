@@ -27,16 +27,14 @@ class ChangePasswordPresenter
 ) : BaseBottomSheetPresenter<ChangePasswordContract.View>(appData),
     ChangePasswordContract.Presenter {
 
-
     var isRecover = false
+    var isCheck = false
     var recoverCode = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         if (isRecover && !recoverCode.isNullOrEmpty()) {
             viewState.setRecoverPassword(recoverCode)
-        } else {
-
         }
     }
 
@@ -97,7 +95,7 @@ class ChangePasswordPresenter
                     if (appData.attemptsOfChangePassword != 3) {
                         appData.attemptsOfChangePassword = 3
                     }
-                    viewState.setPasswordIsCorrect()
+                    viewState.showEnterNewPassword()
                 }
             )
     }

@@ -4,26 +4,30 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.databinding.FragmentMaxStateEducationBinding
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.ProfileDataEducationEditGroupNew
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.work.MaxStateWorkFragmentArgs
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_register_email.*
-import kotlinx.android.synthetic.main.fragment_user_edit.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View {
+class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBinding>(),
+    MaxStateEducationContract.View, SimpleTitleToolbar {
 
     override fun layout(): Int = R.layout.fragment_max_state_education
     private lateinit var dialog: AddPhoneEmailDialog
@@ -45,47 +49,43 @@ class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                hideKeyboard()
-                navigateUp()
-            }
-        })
-        ivClose.setOnClickListener {
-            when (presenter.screen) {
-                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-            }
-        }
-        recyclerView.apply {
+        setToolbarTitle()
+        mBinding.recyclerView.apply {
             adapter = this@MaxStateEducationFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
 
-        btnSave.setOnClickListener { onSaveClick?.invoke() }
-        btnSave.isEnabled = false
+        mBinding.btnSave.apply {
+            isEnabled = false
+            setOnClickListener { onSaveClick?.invoke() }
+        }
     }
 
     override fun setEducationData(user: UserDetail) {
-        val academicDegree = if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
-            null else user.binds?.academicDegree
+        val academicDegree =
+            if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
+                null else user.binds?.academicDegree
         val dataItem = ProfileDataEducationEditGroupNew(
-                requireContext(),
-                user.birthday,
-                user.educationLevel,
-                user.educationLevelList ?: emptyList(),
-                user.academicDegrees ?: emptyList(),
-                user.speciality ?: emptyList(),
-                user.binds?.education ?: emptyList(),
-                academicDegree ?: emptyList()
-        ) { isEnable -> btnSave.isEnabled = isEnable }
+            requireContext(),
+            user.birthday,
+            user.educationLevel,
+            user.educationLevelList ?: emptyList(),
+            user.academicDegrees ?: emptyList(),
+            user.speciality ?: emptyList(),
+            user.binds?.education ?: emptyList(),
+            academicDegree ?: emptyList()
+        ) { isEnable -> mBinding.btnSave.isEnabled = isEnable }
         adapter.update(listOf(dataItem))
 
         onSaveClick = {
             if (dataItem.checkDataValid()) {
                 presenter.onSaveEducationClick(
-                        dataItem.getEducationLevelToSave(),
-                        dataItem.getEducationsToSave(),
-                        dataItem.getDegreeToSave())
+                    dataItem.getEducationLevelToSave(),
+                    dataItem.getEducationsToSave(),
+                    dataItem.getDegreeToSave()
+                )
             }
         }
     }
@@ -95,27 +95,27 @@ class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View 
             maxActionWithSuccess()
         } else {
             dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
-                    .setSelectCallback {
-                        presenter.sendEmail(it.value)
-                    }.setNegativeClickCallback { maxActions() }
+                .setSelectCallback {
+                    presenter.sendEmail(it.value)
+                }.setNegativeClickCallback { maxActions() }
         }
     }
 
     private fun maxActionWithSuccess() {
         MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
-                .setSelectCallback {
-                    maxActions()
-                }
+            .setSelectCallback {
+                maxActions()
+            }
     }
 
     private fun maxActions() {
         /*BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
                 .setSelectCallback {*/
-                    when (presenter.screen) {
-                        1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                        2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                    }
-                //}
+        when (presenter.screen) {
+            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+        }
+        //}
     }
 
     override fun showChangeEmailComplete(email: String) {
@@ -127,6 +127,24 @@ class MaxStateEducationFragment: BaseFragment(), MaxStateEducationContract.View 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
-                ?: title, Toast.LENGTH_SHORT).show()
+            ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setToolbarTitle() {
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+        setToolbarTitleAndIcon(
+            getString(R.string.profile_title_education),
+            actionIcon,
+            action = {
+                presenter.onClickClose()
+            })
+    }
+
+    override fun setClickClose(type: Int) {
+        when (presenter.screen) {
+            1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+            2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+            else -> navigateUp()
+        }
     }
 }

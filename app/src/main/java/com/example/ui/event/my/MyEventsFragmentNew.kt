@@ -171,21 +171,26 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
             }
     }
 
-    override fun showEmptyListPlaceholder() {
-        eventsSection.update(
-            listOf(NoScheduleEventItem(
-                getString(R.string.no_data_found),
-                getString(R.string.no_event_with_params_title),
-                190
-            ))
-        )
-        //eventsSection.update(emptyList())
-        //mBinding.noDataPlaceholder.isInvisible = false
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
+    override fun showEmptyListPlaceholder(isFirst: Boolean) {
+        if (isFirst){
+            eventsSection.update(
+                listOf(NoScheduleEventItem(
+                    getString(R.string.no_event_schedule_you_have),
+                    getString(R.string.choose_event_and_do_request),
+                    60.dp
+                ))
+            )
+        }else {
+            eventsSection.update(
+                listOf(NoScheduleEventItem(
+                    getString(R.string.no_data_found),
+                    getString(R.string.no_event_with_params_title),
+                    60.dp
+                ))
+            )
+        }
 
-    override fun hideEmptyListPlaceholder() {
-        mBinding.noDataPlaceholder.isInvisible = true
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     fun smoothScrollToFirstItem() {

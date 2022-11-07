@@ -5,42 +5,49 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
+import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.MainInfoEditItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.suggestFieldView.DaDataUtil
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.Utils.maxStateScreen
+import com.example.util.phoneToServer
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_register_email.*
-import kotlinx.android.synthetic.main.fragment_user_edit.*
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class MainInfoFragment : BaseFragment(), MainInfoContract.View {
+class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoContract.View,
+    SimpleTitleToolbar {
 
     private lateinit var passwordDialog: SetPasswordDialog
     private lateinit var dialog: AddPhoneEmailDialog
     private lateinit var dataToSave: Map<String, Any?>
+    private lateinit var confirmPhoneDialog: ConfirmPhoneFragment
 
     private var canUpdateData = true
 
@@ -59,57 +66,44 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
     }
 
     private var onSaveClick: (() -> Unit)? = null
+    private var onConfirmClick: ((phone: String?) -> Unit)? = null
+    private var onImageClick: ((canRemove: Boolean) -> Unit)? = null
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    hideKeyboard()
-                    navigateUp()
-                }
-            })
-        ivClose.setOnClickListener { presenter.onClickClose() }
-        recyclerView.apply {
+        setToolbarTitle()
+        mBinding.recyclerView.apply {
             adapter = this@MainInfoFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
 
-        btnSave.setOnClickListener { onSaveClick?.invoke() }
+        mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
     override fun setPersonalData(user: UserDetail) {
         val dataItem = if (canUpdateData) {
             MainInfoEditItem(
                 1,
-                requireContext(),
-                /*user.name,
-                user.lastName,
-                user.middleName?.value,
-                user.middleName?.absent?: true,*/
+                requireActivity(),
                 user.gender,
                 user.birthday?.value,
                 DaDataUtil.formatSavedLocation(requireContext(), user.address),
                 user.phone,
-                user.birthday?.isVisible ?: false, user.state?.nameEdited ?: false,
-                user.email, user.image, { isEnable ->
-                    btnSave.isEnabled = isEnable
-                }, { phoneSuccess(it.replace(" ", "").replace("-", "")) },
-                {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.photo_alert_title)
-                        .apply {
-                            if (it) {
-                                setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                                    presenter.onRemovePhotoClick()
-                                }
-                            }
-                        }
-                        .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-                        .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-                        .show()
+                user.birthday?.isVisible ?: false,
+                user.state?.nameEdited ?: false,
+                user.email,
+                user.image,
+                isEnableNext = { isEnable ->
+                    mBinding.btnSave.isEnabled = isEnable
+                }, confirmPhoneClick = {
+                    onConfirmClick?.invoke(it)
+                },
+                onImageClick = {
+                    onImageClick?.invoke(it)
                 })
         } else {
             adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
@@ -129,48 +123,62 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
 
         adapter.update(listOf(dataItem))
 
-        onSaveClick = {
-            recyclerView.requestFocus()
-            dataToSave = dataItem?.getDataToSave() as MutableMap
-            //if (dataItem.showConfirmEmail()) showChangeEmailComplete(dataItem.getEmail())
-
-            if (user.phone?.firstOrNull()?.isConfirmed == true) {
-                if (!dataItem.getPersonalPhone().isNullOrEmpty()) {
-                    val phone = dataItem.getPersonalPhone()
-                    if (Utils.isNewPhoneIsValid(phone)) {
-                        phoneSuccess(Utils.validatePhoneBeforeSend(
-                            phone ?: ""
-                        ))
-                    } else {
-                        Toast.makeText(requireContext(), "Неверный формат!", Toast.LENGTH_SHORT)
-                            .show()
+        onImageClick = {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.photo_alert_title)
+                .apply {
+                    if (it) {
+                        setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+                            presenter.onRemovePhotoClick()
+                        }
                     }
                 }
+                .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+                .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+                .show()
+        }
 
+        onConfirmClick = {
+            presenter.setCanGoNext(false)
+            dataToSave = dataItem?.getDataToSave() as MutableMap
+            if (user.phone?.firstOrNull()?.isConfirmed == true) {
+                showCheckPassword(it.phoneToServer())
             } else {
-                if (Utils.isNewPhoneIsValid(dataItem.getPersonalPhone())){
+                presenter.onConfirmPhoneClick(it.phoneToServer() ?: "")
+            }
+        }
+        onSaveClick = {
+            mBinding.recyclerView.requestFocus()
+            dataToSave = dataItem?.getDataToSave() as MutableMap
+            presenter.setCanGoNext(true)
+            if (user.phone?.firstOrNull()?.isConfirmed == true) {
+                if (dataItem.getNewPhoneConfirmation()) {
+                    if (dataItem.isPhoneValid()) {
+                        presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
+                    } else {
+                        showToast(getString(R.string.incorrect_format_title))
+                    }
+                } else {
+                    val phone = dataItem.getPersonalPhone()
+                    if (dataItem.isPhoneValid()) {
+                        showCheckPassword(Utils.validatePhoneBeforeSend(phone ?: ""))
+                    } else {
+                        showToast(getString(R.string.incorrect_format_title))
+                    }
+                }
+            } else {
+                if (dataItem.isPhoneValid()) {
                     presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
-                }else{
-                    Toast.makeText(requireContext(), "Неверный формат!", Toast.LENGTH_SHORT)
-                        .show()
+                } else {
+                    showToast(getString(R.string.incorrect_format_title))
                 }
 
             }
-
-
         }
     }
 
     override fun photoUpdated(photo: ImageModel) {
         adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setImage(photo)
-    }
-
-    override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
-
-    override fun showChangeEmailComplete(email: String) {
-        dialog.hideDialog()
-        showChangeEmailCompleteDialog(email)
-        baseActions()
     }
 
     override fun goToNext() {
@@ -198,7 +206,10 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
                                 .setScreen(presenter.screen)
                         )
                     MaxStateScreenType.DONE -> {
-                        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
+                        MessageDialogWithBrownButton(
+                            requireContext(),
+                            getString(R.string.you_got_max_state)
+                        )
                             .setSelectCallback {
                                 when (presenter.screen) {
                                     1 -> findNavController().popBackStack(
@@ -228,79 +239,85 @@ class MainInfoFragment : BaseFragment(), MainInfoContract.View {
     }
 
     private fun baseActionsWithSuccess() {
-        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_base_state)).setSelectCallback {
+        MessageDialogWithBrownButton(
+            requireContext(),
+            getString(R.string.you_got_base_state)
+        ).setSelectCallback {
             baseActions()
         }
     }
 
     private fun baseActions() {
-        /*BaseStateDialog(resources.getString(R.string.you_got_base_state), requireActivity())
-                .setSelectCallback {*/
         when (presenter.screen) {
             1 -> findNavController().popBackStack(R.id.profile_fragment, false)
             2 -> findNavController().popBackStack(R.id.userStateFragment, false)
             3 -> findNavController().popBackStack()
         }
-        //}
     }
 
     override fun showPhoneNotUnique(phone: String) {
+        passwordDialog.hideDialog()
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_phone_text, phone),
-            getString(R.string.confirm_phone_positive),
-            getString(R.string.cancel)
-        )
-            .setSelectCallback {
-                if (!it) {
-                    showPhoneConfirm(phone)
-                } else {
-                    //findNavController().navigate(RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToRecoveryPasswordFragment(email))
-                }
-            }
-    }
-
-    override fun passwordSuccess(phone: String) {
-
-        passwordDialog.hideDialog()
-        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
-        dialog.setPhoneForCode(phone)
-        dialog.setSelectCallback {
-            if (it.type == RegisterDataType.CODE) {
-                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                presenter.confirmCode(phone, it.value)
+            getString(R.string.revoke),
+            getString(R.string.confirm_phone_positive)
+        ).setSelectCallback {
+            if (it) {
+                showPhoneConfirm(phone)
             }
         }
-        dialog.setSendCodeCallback {
+    }
+
+    override fun codeSuccess(phone: List<FieldDetails>?, canGoNext: Boolean) {
+        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.updatePhone(phone)
+        confirmPhoneDialog.dismiss()
+        if (canGoNext) {
+            presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
         }
     }
 
-    override fun codeSuccess() {
-        dialog.hideDialog()
-        presenter.updateFiles(dataToSave as MutableMap<String, Any?>)
-    }
-
-    override fun phoneSuccess(phone: String) {
+    override fun showCheckPassword(phone: String?) {
         passwordDialog = SetPasswordDialog(requireActivity())
             .setSelectCallback {
-                presenter.onPasswordInputComplete(it, phone)
+                presenter.checkPassword(it, phone ?: "")
             }
     }
 
     override fun showPhoneConfirm(phone: String) {
+        passwordDialog.hideDialog()
         canUpdateData = false
-        findNavController().navigate(
-            MainInfoFragmentDirections.actionMainInfoFragmentToPasswordConfirmFragment(
-                Utils.validatePhoneBeforeSend(
-                    phone.replace(" ", "").replace("-", "")
-                )/*phone.replace(" ", "").replace("-", "")*/
-            )
+        confirmPhoneDialog = ConfirmPhoneFragment(phone)
+        confirmPhoneDialog.show(
+            requireActivity().supportFragmentManager,
+            "main_info_phone_dialog"
         )
+        confirmPhoneDialog.setConfirmCallback {
+            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
+            presenter.confirmCode(phone, it)
+        }
     }
+
+    override fun showChangeEmailComplete(email: String) {
+        dialog.hideDialog()
+        showChangeEmailCompleteDialog(email)
+        baseActions()
+    }
+
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
             ?: title, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setToolbarTitle() {
+        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+        setToolbarTitleAndIcon(
+            getString(R.string.user_profile_main_info),
+            actionIcon,
+            action = {
+                presenter.onClickClose()
+            })
     }
 }

@@ -55,7 +55,6 @@ class ProfilePresenter
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
     private var mDy = 0
-    private var mDeviceId = appData.deviceId ?: ""
     private var userId = 0
     var bmImage: Bitmap? = null
 
@@ -89,7 +88,7 @@ class ProfilePresenter
 
     fun changeScrollingOffset(value: Int) {
         mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())

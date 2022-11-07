@@ -96,8 +96,6 @@
             style="@style/Profile.Edit.Button"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             android:text="@string/profile_edit_confirm_password"
             android:visibility="gone"
             tools:visibility="visible" />

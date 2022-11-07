@@ -166,7 +166,8 @@ data class EventBindsModel(
     @SerializedName("is-user-subscribed")
     val isUserSubscribed: Boolean,
     @SerializedName("event-subscribe")
-    val eventSubscribe: EventSubscriptionResponse? = null
+    val eventSubscribe: EventSubscriptionResponse? = null,
+    val format : NewEventFormat? = null
 ) : Parcelable {
 
     fun getFirstActionStartDate(): String? {

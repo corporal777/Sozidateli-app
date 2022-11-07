@@ -37,7 +37,7 @@ interface ChatContract {
         fun focusOnInput(showKeyboard: Boolean)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updateMessages(messages: List<ChatMessage>)
+        fun updateMessages(showAnim : Boolean, messages: List<ChatMessage>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()

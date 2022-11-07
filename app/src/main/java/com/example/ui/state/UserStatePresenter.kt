@@ -19,6 +19,7 @@ class UserStatePresenter
 
     override fun attachView(view: UserStateContract.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(0f)
         viewState.setStatesUI(arrayListOf(StateItemModel(UserState.BASE, appData.hasBaseState), StateItemModel(UserState.MAX, appData.hasMaxState)))
     }
 

@@ -16,6 +16,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -31,11 +33,13 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
+import com.example.extensions.dp
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
@@ -102,7 +106,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private val navBarColorDefault by lazy {
-        ContextCompat.getColor(this, R.color.navBarDefault)
+        ContextCompat.getColor(this, R.color.main_background)
+    }
+
+    private val navBarColorBottomNav by lazy {
+        ContextCompat.getColor(this, R.color.bottom_navigation_view_background_color)
     }
 
 
@@ -196,9 +204,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
                 }
 
-                window.navigationBarColor =
-                    if (f is NavBarColorFragment) f.navBarColor else navBarColorDefault
-
                 mBinding.root.background = bg
 
                 if (f is SimpleTitleToolbar) {
@@ -241,8 +246,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private var noInternetDialog: BottomSheetDialog? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        //setMainTheme()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 //        super.setSupportActionBar(toolbar)
 //        super.getSupportActionBar()?.apply {
@@ -253,6 +259,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 //                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 //            )
 //        }
+
+
 
         IS_EXPANDED = true
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
@@ -320,11 +328,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         return false
     }
 
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent)
     }
-
 
     private fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents(intent)) return
@@ -902,17 +910,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 toolbarTitleAction?.invoke()
             }
         }
-        if (icon == null) {
-            mBinding.ivAction.isVisible = false
-        } else {
-            mBinding.ivAction.apply {
-                isVisible = true
-                setImageDrawable(icon)
-                setOnClickListener {
-                    action?.invoke()
-                }
+        mBinding.ivAction.apply {
+            isVisible = icon != null
+            setImageDrawable(icon)
+            setOnClickListener {
+                action?.invoke()
             }
         }
+
     }
 
     override fun setAppBarElevation(value: Float) {
@@ -1075,10 +1080,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     fun showNavBar() {
+        window.navigationBarColor =
+            navBarColorBottomNav
         mBinding.navBarContainer.visibility = View.VISIBLE
     }
 
     fun hideNavBar() {
+        window.navigationBarColor =
+            navBarColorDefault
         mBinding.navBarContainer.visibility = View.GONE
     }
 

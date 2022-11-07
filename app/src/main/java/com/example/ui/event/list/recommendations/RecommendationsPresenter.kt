@@ -71,7 +71,6 @@ class RecommendationsPresenter
                     viewState.showEmptyListPlaceholder()
                 else {
                     viewState.apply {
-                        hideEmptyListPlaceholder()
                         setData(it)
                     }
                 }

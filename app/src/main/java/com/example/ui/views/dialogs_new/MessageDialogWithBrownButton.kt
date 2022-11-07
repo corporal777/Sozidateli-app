@@ -10,10 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import com.example.R
 import com.example.databinding.DialogMessageWithGrayButtonBinding
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class MessageDialogWithBrownButton(
     val context: Context,
-    val message: String,
+    val message: CharSequence,
     val isCancelable : Boolean = true
     ) {
 
@@ -30,6 +31,7 @@ class MessageDialogWithBrownButton(
 
         mBinding.tvMessage.apply {
             text = message
+            movementMethod = BetterLinkMovementMethod.getInstance()
         }
         mBinding.btnAction.setOnClickListener {
             clickAction.invoke()

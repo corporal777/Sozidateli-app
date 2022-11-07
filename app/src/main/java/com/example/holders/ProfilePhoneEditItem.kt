@@ -72,7 +72,7 @@ class ProfilePhoneEditItem(
 
             btnPhoneConfirm.apply {
                 setOnClickListener {
-                    val phone = etMobilePhone.getFullNumberWithPlus()//etMobilePhone.text.toString()
+                    val phone = etMobilePhone.getFullNumberWithPlus()
                     if (phone.isValidPhoneNumber(context)) {
                         confirmPhoneClick(phone)
                     } else {

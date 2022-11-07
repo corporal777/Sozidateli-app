@@ -11,10 +11,13 @@ interface ChangePasswordContract {
     interface View : BaseBottomSheetContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPasswordIsCorrect()
+        fun setRecoverPassword(code: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setRecoverPassword(code: String)
+        fun showEnterNewPassword()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setPasswordIsCorrect()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setPasswordIsNotCorrect(attempts: Int)

@@ -14,6 +14,7 @@ import com.example.R
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.util.loadBitmap
 import com.example.util.qr_generator.QrCodeGenerator
 import com.example.util.qr_generator.QrData
 import com.example.util.qr_generator.QrErrorCorrectionLevel

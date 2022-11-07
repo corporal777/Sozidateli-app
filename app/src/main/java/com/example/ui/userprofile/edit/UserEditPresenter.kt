@@ -12,7 +12,9 @@ import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
 import com.example.repository.AuthRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
+import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.ui.base.BasePresenter
+import com.example.ui.userSessions.UserSessionsContract
 import com.example.util.AuthValidateUtil
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.loadBitmap
@@ -33,7 +35,9 @@ import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserEditPresenter
@@ -46,97 +50,104 @@ class UserEditPresenter
 ) : BasePresenter<UserEditContract.View>(appData), UserEditContract.Presenter {
 
     private val compositeFilesDisposable = CompositeDisposable()
+    private val timerCompositeDisposable = CompositeDisposable()
     lateinit var editType: UserEditDataType
 
     private var isFileEdit = false
     private var isInterestsLoaded = false
+    private var mDy = 0f
+
+    override fun attachView(view: UserEditContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
+    }
+
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                val user = it.value ?: throw RuntimeException("Edit null user")
-                when (editType) {
-                    UserEditDataType.MAIN -> viewState.apply {
-                        setMainTitle()
-                        saveOnClick(true)
-                        setMainData(user)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.navigateUp()
+                },
+                onNext = {
+                    val user = it.value ?: throw RuntimeException("Edit null user")
+                    when (editType) {
+                        UserEditDataType.MAIN -> viewState.apply {
+                            setMainTitle()
+                            saveOnClick(true)
+                            setMainData(user)
+                        }
+                        UserEditDataType.PERSONAL -> viewState.apply {
+                            setPersonalTitle()
+                            compositeDisposable += userRepository.searchAddress(
+                                user.address?.getShortAddress() ?: ""
+                            )
+                                .performOnBackgroundOutOnMain()
+                                .subscribeSimple(
+                                    onError = { t ->
+                                        t.printStackTrace()
+                                        setPersonalData(
+                                            user,
+                                            if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
+                                        )
+                                    },
+                                    onSuccess = { add ->
+                                        if (add.data?.isNotEmpty() == true)
+                                            user.address?.shortAddres = add.data[0].region
+                                        setPersonalData(
+                                            user,
+                                            if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
+                                        )
+
+                                    })
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.CONTACTS -> viewState.apply {
+                            setContactsTitle()
+                            setContactsData(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.PHONE -> viewState.apply {
+                            setPhoneTitle()
+                            setPhoneData(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.EDUCATION -> viewState.apply {
+                            setEducationTitle()
+                            setEducationData(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.WORK -> viewState.apply {
+                            setWorkTitle()
+                            setWorkData(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.INTERESTS -> viewState.apply {
+                            setInterestsTitle()
+                            getInterests(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
+                            setAdditionalNotesTitle()
+                            setAdditionalNotesData(user)
+                            saveOnClick(true)
+                        }
+                        UserEditDataType.ADDITIONAL_FILES -> viewState.apply {
+                            setAdditionalFilesTitle()
+                            setAdditionalFilesData(user)
+                            saveOnClick(false)
+                        }
                     }
-                    UserEditDataType.PERSONAL -> viewState.apply {
-                        setPersonalTitle()
-                        compositeDisposable += userRepository.searchAddress(
-                            user.address?.getShortAddress() ?: ""
-                        )
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({ add ->
-                                if (add.data?.isNotEmpty() == true)
-                                    user.address?.shortAddres = add.data[0].region
-                                //if (BuildConfig.NEW_PROFILE_EDIT) {
-                                setPersonalDataNew(
-                                    user,
-                                    if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
-                                )
-                                /*} else {
-                                    setPersonalData(user)
-                                }*/
-                            }, {
-                                //if (BuildConfig.NEW_PROFILE_EDIT) {
-                                setPersonalDataNew(
-                                    user,
-                                    if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
-                                )
-                                /*} else {
-                                    setPersonalData(user)
-                                }*/
-                            })
-                        /*if (BuildConfig.NEW_PROFILE_EDIT) {
-                            setPersonalDataNew(user)
-                        } else {
-                            setPersonalData(user)
-                        }*/
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.CONTACTS -> viewState.apply {
-                        setContactsTitle()
-                        setContactsData(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.PHONE -> viewState.apply {
-                        setPhoneTitle()
-                        setPhoneData(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.EDUCATION -> viewState.apply {
-                        setEducationTitle()
-                        setEducationData(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.WORK -> viewState.apply {
-                        setWorkTitle()
-                        setWorkData(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.INTERESTS -> viewState.apply {
-                        setInterestsTitle()
-                        getInterests(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
-                        setAdditionalNotesTitle()
-                        setAdditionalNotesData(user)
-                        saveOnClick(true)
-                    }
-                    UserEditDataType.ADDITIONAL_FILES -> viewState.apply {
-                        setAdditionalFilesTitle()
-                        setAdditionalFilesData(user)
-                        saveOnClick(false)
-                    }
-                }
-            }, {
-                it.printStackTrace()
-                viewState.navigateUp()
-            })
+                })
     }
 
     private fun setMainData(user: UserDetail) {
@@ -403,42 +414,48 @@ class UserEditPresenter
         viewState.showChangeEmail()
     }
 
-    override fun onChangeEmailConfirm(email: String) {
-        if (AuthValidateUtil.isValidEmail(email)) {
-            updateUserNew(
-                userRepository.updateProfile(
-                    appData.getId(),
-                    mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-                )
-            ) {
-                it.email?.value = email
-                viewState.showChangeEmailComplete(email)
-                false
-            }
-        } else {
-            viewState.showUpdateError()
-        }
-    }
+
 
     override fun onConfirmPhoneClick(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone.phoneToServer() ?: "")
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({ viewState.showPhoneConfirm(phone) },
-                { viewState.showPhoneNotUnique(phone) })
-        //viewState.showPhoneConfirm(phone)
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.showPhoneNotUnique(phone)
+                }, onComplete = {
+                    viewState.showPhoneConfirm(phone)
+
+                })
+    }
+
+     fun startTimerForResendCode(phone: String) {
+        timerCompositeDisposable.clear()
+        timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val timeLeft =
+                    FinishRegisterPresenter.TIMER_SECONDS_COUNT - (it.toInt() + 1)
+                viewState.setTimerForResendCode(timeLeft)
+                if (timeLeft < 0) {
+                    timerCompositeDisposable.clear()
+                }
+            }, {
+                it.printStackTrace()
+            })
     }
 
     fun confirmCode(phone: String, code: String) {
         compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                appData.updatePhone(phone)
-                viewState.codeSuccess()
-            }, {
-
-                it.printStackTrace()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onComplete = {
+                    appData.updatePhone(phone)
+                    viewState.codeSuccess()
             })
     }
 

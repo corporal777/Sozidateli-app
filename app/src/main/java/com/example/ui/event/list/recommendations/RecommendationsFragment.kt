@@ -10,12 +10,16 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
+import com.example.extensions.dp
 import com.example.extensions.findItemBy
+import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.IS_EXPANDED
@@ -121,18 +125,14 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(emptyList())
-        mBinding.noDataPlaceholder.isInvisible = false
-//        dataGroup.update(listOf(
-//            NoEventItem(
-//                getString(R.string.no_result_found_lable),
-//                getString(R.string.no_event_with_params_title)
-//            )))
+        dataGroup.update(listOf(
+            NoScheduleEventItem(
+                getString(R.string.no_data_found),
+                getString(R.string.no_active_events_found_title),
+                padding = 70.dp
+            )
+        ))
         mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun hideEmptyListPlaceholder() {
-        mBinding.noDataPlaceholder.isInvisible = true
     }
 
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {

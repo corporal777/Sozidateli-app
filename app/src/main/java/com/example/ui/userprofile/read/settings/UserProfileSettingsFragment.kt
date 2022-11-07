@@ -1,38 +1,35 @@
 package com.example.ui.userprofile.read.settings
 
-import android.content.Context
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.parsePhone
 import com.example.extensions.showChangeEmailCompleteDialog
-import com.example.extensions.showChangeEmailDialog
-import com.example.extensions.showNewChangeEmailDialog
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.profile.shortName.ChangeShortNameFragment
+import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
+import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
-import com.google.android.material.textfield.TextInputLayout
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,6 +45,8 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     private var isConfirmed = false
 
     private lateinit var mUser: UserDetail
+    //var newPassDialog: ChangePasswordDialog? = null
+
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -60,35 +59,34 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //btnPhoneEdit.setOnClickListener(presenter::onChangePhoneClick)
         setToolbarTitleAndIcon(getString(R.string.profile_settings))
         mBinding.apply {
-            nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
-            })
+            }
 
             tvEditPhone.setOnClickListener {
-                dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
-                    .setSelectCallback {
-                        if (it.type == RegisterDataType.CHANGE_PHONE) {
-                            if (isConfirmed) {
-                                //Toast.makeText(requireContext(), "isConfirmed", Toast.LENGTH_SHORT).show()
-                                presenter.checkPhoneIsUnique(it.value)
-                            } else {
-                                presenter.onChangeNotConfirmedPhone(it.value)
-                            }
-                        }
-                    }
+                presenter.onChangePhoneClick()
+//                dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
+//                    .setSelectCallback {
+//                        if (it.type == RegisterDataType.CHANGE_PHONE) {
+//                            if (isConfirmed) {
+//                                presenter.checkPhoneIsUnique(it.value)
+//                            } else {
+//                                presenter.onChangeNotConfirmedPhone(it.value)
+//                            }
+//                        }
+//                    }
             }
 
             ivInfoName.setOnClickListener {
-                showDisabledMainInputInfo(requireContext())
+                showDisabledMainInputInfo()
             }
             ivInfoLastName.setOnClickListener {
-                showDisabledMainInputInfo(requireContext())
+                showDisabledMainInputInfo()
             }
             ivInfoMiddleName.setOnClickListener {
-                showDisabledMainInputInfo(requireContext())
+                showDisabledMainInputInfo()
             }
             tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
 
@@ -149,8 +147,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             .setSelectCallback {
                 presenter.onPasswordInputComplete(it, phone)
             }
-
-
     }
 
     override fun hideDialogProgress2() {
@@ -173,7 +169,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun codeSuccess() {
-        //Toast.makeText(requireContext(), "Code confirmed", Toast.LENGTH_SHORT).show()
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
         dialog.hideDialog()
     }
@@ -186,16 +181,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             tvUserLastName.text = user.lastName
             tvUserMiddleName.text = user.getMiddleName()
 
-            //scPrivacyProfile.isChecked = user.state?.isHidden ?: false
-            //scBlockNoteEvents.isChecked = user.blockedNotifications?.event ?: false
-            //scBlockNoteOrganizations.isChecked = user.blockedNotifications?.organizations ?: false
-            //if (user.blockedNotifications?.organizations == true){
-            //    ivBlockOrg.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.main_brown_color_new)
-            //}else {
-            //    ivBlockOrg.imageTintList = null
-            //}
-
-            //scBlockNoteProjects.isChecked = user.blockedNotifications?.projects ?: false
             ivNoMiddleName.apply {
                 setImage(user.middleName?.absent ?: false)
                 isEnabled = false
@@ -209,14 +194,17 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 )
 
             tvPhoneMobile.text = phone
-            if (user.shortName == user.id.toString()){
+            if (user.shortName == user.id.toString()) {
                 tvShortname.text = "@id" + user.shortName
-            }else {
+            } else {
                 tvShortname.text = "@" + user.shortName
             }
 
-
-            tvEmail.text = user.email?.onConfirmation ?: user.email?.value
+            tvEmail.text = if (!user.email?.onConfirmation.isNullOrEmpty()) {
+                user.email?.onConfirmation
+            } else {
+                user.email?.value
+            }
 
             ivPrivacyProfile.setImage(user.state?.isHidden.toBoolean())
             ivBlockEvent.setImage(user.blockedNotifications?.event ?: false)
@@ -227,78 +215,54 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             ivInfo.isVisible =
                 !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
             ivInfo.setOnClickListener {
-                WaitForAcceptDialog(
-                    requireActivity(),
-                    getString(R.string.wait_for_accept_title),
-                    getString(R.string.wait_for_accept_text),
-                    getString(R.string.wait_for_accept_positive_button),
-                    getString(R.string.content_description_delete),
-                    true
-                )
-                    .setSendCodeCallback {
-                        if (it) {
-                            presenter.registerEmailResend(
-                                user.email?.onConfirmation ?: user.email?.value ?: ""
-                            )
-                        } else {
-                            if (user.email?.value == null) {
-                                presenter.onDeleteEmail()
-                            } else {
-                                presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
-                            }
-                        }
+                TitleMessageDialog(
+                    requireContext(),
+                    title = getString(R.string.wait_for_accept_title),
+                    message = getString(R.string.wait_for_accept_text),
+                    btnPositiveText = getString(R.string.wait_for_accept_positive_button),
+                    btnNegativeText = getString(R.string.content_description_delete),
+                    canShowCancel = true
+                ).setPositiveSelectCallback {
+                    presenter.registerEmailResend(
+                        user.email?.onConfirmation ?: user.email?.value ?: ""
+                    )
+                }.setNegativeSelectCallback {
+                    if (user.email?.value == null) {
+                        presenter.onDeleteEmail()
+                    } else {
+                        presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
                     }
+                }
             }
         }
     }
 
-    private fun TextInputLayout.initNameInput(text: String?) {
-        editText?.setText(text)
-        error = null
-        isEnabled = true
-        editText?.isEnabled = false
-        setEndIconDrawable(R.drawable.ic_information)
-        setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
-        setEndIconOnClickListener { showDisabledMainInputInfo(context) }
-    }
 
-    private fun showDisabledMainInputInfo(context: Context) {
-        val supportEmail = context.getString(R.string.support_email)
+    private fun showDisabledMainInputInfo() {
+        val supportEmail = requireContext().getString(R.string.support_email)
         val message =
-            context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail)
+            requireContext().getString(R.string.profile_edit_name_disabled_message)
+                .format(supportEmail)
                 .toSpannable()
         Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-
-        AlertDialog.Builder(context)
-            .setTitle(R.string.profile_edit_name_disabled_title)
-            .setMessage(message)
-            .setPositiveButton(R.string.ok, null)
-            .show()
-            .apply {
-                findViewById<TextView>(android.R.id.message)?.let {
-                    it.movementMethod = BetterLinkMovementMethod.getInstance()
-                }
-            }
+        MessageDialogWithBrownButton(requireContext(), message)
     }
 
-    override fun showChangeEmail() = showChangeEmailDialog(presenter::checkEmailIsUnique)
+    override fun showChangeEmail() {
+        val changeEmailDialog = ChangeEmailFragment("")
+        changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
+        //showChangeEmailDialog(presenter::checkEmailIsUnique)
+    }
 
-    override fun showNewChangeEmail(email: String) =
-        showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
+    override fun showNewChangeEmail(email: String) {
+        val changeEmailDialog = ChangeEmailFragment(email)
+        changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
+        //showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
+    }
+
 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
-    override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_email_text, email),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    presenter.registerEmailResend(email)
-                }
-            }
-    }
 
     override fun showPhoneNotUnique(phone: String) {
         ConfirmPhoneDialog(
@@ -320,11 +284,12 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    //var newPassDialog: ChangePasswordDialog? = null
-
     override fun showChangePassword() {
         val changePasswordDialog = ChangePasswordFragment(false, "")
-        changePasswordDialog.show(requireActivity().supportFragmentManager, "change_password_settings")
+        changePasswordDialog.show(
+            requireActivity().supportFragmentManager,
+            "change_password_settings"
+        )
     }
 
     override fun showChangeShortName(user: UserDetail) {
@@ -333,6 +298,19 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             requireActivity().supportFragmentManager,
             "change_short_name_settings"
         )
+    }
+
+    override fun showPhoneEdit(phone: FieldDetails?) {
+        val changeShortNameDialog = ChangePhoneFragment(phone)
+        changeShortNameDialog.show(
+            requireActivity().supportFragmentManager,
+            "change_phone_settings"
+        )
+//        findNavController().navigate(
+//            UserProfileSettingsFragmentDirections.toEdit(
+//                UserEditDataType.PHONE
+//            )
+//        )
     }
 
     override fun showChangePrivacy() {
@@ -367,13 +345,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             .show()
     }
 
-    override fun showPhoneEdit() {
-        findNavController().navigate(
-            UserProfileSettingsFragmentDirections.toEdit(
-                UserEditDataType.PHONE
-            )
-        )
-    }
 
     private fun showBlockingInfoDialog(
         status: Boolean,
@@ -386,10 +357,10 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 requireContext(),
                 title,
                 message
-            ).setSelectCallback { state ->
-                if (state) {
-                    onAction.invoke(state)
-                }
+            ).setPositiveSelectCallback {
+                onAction.invoke(true)
+            }.setNegativeSelectCallback {
+                onAction.invoke(false)
             }
         } else {
             onAction.invoke(false)
