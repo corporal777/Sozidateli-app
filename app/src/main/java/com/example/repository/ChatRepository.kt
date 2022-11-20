@@ -59,5 +59,7 @@ interface ChatRepository {
 
     fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>>
 
+    fun getChatMessagesPagination(map: Map<String, Any>): Maybe<PaginationResponse<MessageModel>>
+
     fun markMessageAsRead(id: Int): Completable
 }

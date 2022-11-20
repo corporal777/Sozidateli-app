@@ -12,16 +12,14 @@ interface RegisterEmailNewContract {
     interface View : BaseAuthContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(
-                email: String?,
-                firstName: String?,
-                lastName: String?,
-                middleName: String?,
-                noMiddleNameChecked: Boolean,
-                password: String?,
-                passwordConfirm: String?,
-                phone: String?,
-                phoneVerified: Boolean,
-                isAgree: Boolean
+            email: String?,
+            firstName: String?,
+            lastName: String?,
+            middleName: String?,
+            noMiddleNameChecked: Boolean,
+            password: String?,
+            passwordConfirm: String?,
+            isAgree: Boolean
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -30,11 +28,18 @@ interface RegisterEmailNewContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailConfirmation(email: String, password: String)
+
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean)
+        fun showFinishRegister(
+            name: String,
+            lastName: String,
+            middleName: String?,
+            phone: String?,
+            email: String,
+            code: String,
+            isNoMiddleName: Boolean
+        )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)
@@ -49,25 +54,10 @@ interface RegisterEmailNewContract {
         fun showEmailAgainError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showPasswordError(show: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showPasswordConfirmError(show: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAgreementError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showWrongPhoneError(show: Boolean)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updatePhoneConfirmationStatus(confirmed: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPhoneConfirm(phone: String)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun phoneConfirmEnabled(enabled: Boolean)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
@@ -76,66 +66,32 @@ interface RegisterEmailNewContract {
         fun changeFieldType(type: String, isValid: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEmailNotUnique( email: String,
-                                firstName: String,
-                                lastName: String,
-                                password: String,
-                                middleName: String?,
-                                phone: String?)
+        fun showEmailNotUnique(email: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneNotUnique( email: String,
-                                firstName: String,
-                                lastName: String,
-                                password: String,
-                                middleName: String?,
-                                phone: String?)
+        fun showPhoneNotUnique(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showAlertLoadingDialog()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideAlertLoadingDialog()
     }
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickClose()
-        fun onClickRegister(
-                email: String?,
-                firstName: String?,
-                lastName: String?,
-                password: String?,
-                //passwordConfirm: String?,
-                isAgree: Boolean
-        )
+        fun onClickRegister()
 
         fun onChangeEmailText(email: String, context: Context)
         fun onChangeEmailAgainText(email: String)
+
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)
         fun onChangeMiddleNameText(middleName: String)
         fun onNoMiddleNameChecked(checked: Boolean)
-        fun onChangePasswordText(password: String)
+
         fun onChangePasswordConfirmText(password: String)
-        fun onChangeNewPasswordText(password: String, isValid: Boolean)
-        fun onChangePhoneText(phone: String, context: Context)
-        fun onPhoneConfirmClick()
+        fun onChangePasswordText(password: String, isValid: Boolean)
+
         fun onClickAgree(isAgree: Boolean)
-        fun checkPhoneEmailIsUnique(
-                email: String,
-                firstName: String,
-                lastName: String,
-                password: String,
-                middleName: String?,
-                phone: String?
-        )
-        fun register(
-                email: String,
-                firstName: String,
-                lastName: String,
-                password: String,
-                middleName: String?,
-                phone: String?
-        )
+
+        fun checkPhoneEmailIsUnique(email: String, )
+
+        fun register()
     }
 }

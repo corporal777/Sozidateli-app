@@ -11,8 +11,9 @@ import com.example.data.models.FieldDetails
 import com.example.databinding.BottomSheetChangePhoneBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.main.MainActivity
-import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.SetPasswordDialog
 import com.example.util.initSwitch
 import isValidPhoneNumber
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class ChangePhoneFragment(
 
     }
 
-    private var confirmPhoneDialog: ConfirmPhoneFragment? = null
+    private lateinit var passwordDialog: SetPasswordDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,23 +49,15 @@ class ChangePhoneFragment(
             btnPhoneConfirm.setOnClickListener {
                 val phone = etMobilePhone.getFullNumberWithPlus()
                 if (validatePhone(phone)) {
-                    if (phone.isValidPhoneNumber(requireContext())) {
-                        hideKeyboard(it)
-                        presenter.onConfirmPhoneClick(phone)
-                    } else {
-                        etMobilePhone.showError(true)
-                    }
+                    hideKeyboard(it)
+                    presenter.onConfirmPhoneClick(phone)
                 }
             }
             btnSave.setOnClickListener {
                 val phone = etMobilePhone.getFullNumberWithPlus()
                 if (validatePhone(phone)) {
-                    if (phone.isValidPhoneNumber(requireContext())) {
-                        hideKeyboard(it)
-                        presenter.checkPhoneIsUnique(phone)
-                    } else {
-                        etMobilePhone.showError(true)
-                    }
+                    hideKeyboard(it)
+                    presenter.onSaveNewPhoneClick(phone)
                 }
             }
             btnClose.setOnClickListener {
@@ -79,15 +72,13 @@ class ChangePhoneFragment(
         mBinding.etMobilePhone.apply {
             focusOnInput(getEditTextLayout(), true)
             setPhone(phone ?: "")
-            if (!phone.isNullOrEmpty()){
+            if (!phone.isNullOrEmpty()) {
                 getEditTextLayout().setSelection(phone.length + 1)
             }
             getPhoneCallback {
-                presenter.setNewPhone(it)
-                presenter.setNewPhoneIsConfirmed()
-            }
-            getPhoneCallbackWithoutPlus {
                 mBinding.btnSave.isEnabled = validatePhone(it)
+                presenter.setNewPhone(it)
+                presenter.setNewPhoneIsConfirmed(it)
             }
         }
     }
@@ -107,16 +98,23 @@ class ChangePhoneFragment(
         }
     }
 
-    override fun setPhoneIsUpdatedSuccessfully() {
-        if (confirmPhoneDialog != null) {
-            confirmPhoneDialog?.dismiss()
-            confirmPhoneDialog = null
-        }
+    override fun showPhoneIsUpdatedSuccessfully() {
         showToast(getString(R.string.phone_mobile_is_updated_successfully))
         dismiss()
     }
 
-    override fun showPhoneNotUnique(phone: String, type: ChangePhonePresenter.ConfirmType) {
+    override fun showEnterPassword(phone: String) {
+        passwordDialog = SetPasswordDialog(requireActivity())
+            .setSelectCallback {
+                presenter.checkPassword(it, phone)
+            }
+    }
+
+    override fun hideEnterPassword() {
+        passwordDialog.hideDialog()
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_phone_text, phone),
@@ -125,46 +123,39 @@ class ChangePhoneFragment(
         )
             .setSelectCallback {
                 if (it) {
-                    if (type == ChangePhonePresenter.ConfirmType.CONFIRM) {
-                        presenter.onSendCodeClick()
-                    } else {
-                        presenter.updatePhoneData()
-                    }
+                    showPhoneConfirmation(phone)
                 }
             }
     }
 
-    override fun showConfirmPhoneDialog(phone: String) {
-        if (confirmPhoneDialog == null) {
-            confirmPhoneDialog = ConfirmPhoneFragment(phone)
-            confirmPhoneDialog?.show(
-                requireActivity().supportFragmentManager,
-                "confirm_phone_dialog"
-            )
-        }
-        presenter.startTimerForResendCode(phone)
-        confirmPhoneDialog?.setResendCallback {
-            presenter.onSendCodeClick()
-        }
-        confirmPhoneDialog?.setConfirmCallback {
-            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-            presenter.onConfirmCodeClick(it)
+    override fun showPhoneConfirmation(phone: String) {
+        val confirmEmailPhoneDialog = ConfirmEmailPhoneFragment(phone)
+        confirmEmailPhoneDialog.show(
+            requireActivity().supportFragmentManager,
+            "confirm_phone_dialog"
+        )
+        confirmEmailPhoneDialog.setConfirmCallback {
+            setUserPhoneIsConfirmed(true)
+            presenter.isConfirmed = true
+            if (presenter.isWithUpdate()){
+                presenter.updatePhoneData()
+            }
         }
     }
-
-    override fun setTimerForResendConfirmCode(seconds: Int) {
-        confirmPhoneDialog?.setCodeResend(seconds)
-    }
-
 
     private fun validatePhone(phone: String): Boolean {
-        if (phone.isNullOrBlank()) {
+        var isValid = true
+        if (phone.isNullOrEmpty() || phone.length < 3){
             mBinding.etMobilePhone.showEmptyError(true)
-            return false
+            isValid = false
+        }else if (!phone.isValidPhoneNumber(requireContext())) {
+            mBinding.etMobilePhone.showError(true)
+            isValid = false
         } else {
-            mBinding.etMobilePhone.showEmptyError(false)
+            mBinding.etMobilePhone.showError(false)
+            isValid = true
         }
-        return true
+        return isValid
     }
 
 

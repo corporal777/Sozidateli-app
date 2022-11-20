@@ -22,13 +22,13 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
-import com.example.holders.redesign.SpeakersHorizontalListItem
+import com.example.ui.event.about.redesign.items.SpeakersHorizontalListItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.redesign.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
-import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
@@ -387,8 +387,8 @@ class AboutEventFragmentNew() : BaseFragment(),
 
     override fun showOrganization(organization: String) {
         findNavController().navigate(
-            R.id.organization_fragment,
-            OrganizationFragmentArgs.Builder(organization).build().toBundle()
+            R.id.organization_fragment_new,
+            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
         )
     }
 

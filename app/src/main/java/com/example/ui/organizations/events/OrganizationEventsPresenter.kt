@@ -17,32 +17,33 @@ import javax.inject.Inject
 @InjectViewState
 class OrganizationEventsPresenter
 @Inject constructor(
-        appData: AppData,
-        eventData: UserEventData,
-        private val eventRepository: EventRepository,
-        userRepository: UserRepository,
-        @Connectivity connectivity: Observable<Boolean>
-) : EventListPresenter<OrganizationEventsContract.View>(appData, eventData, eventRepository, userRepository, connectivity), OrganizationEventsContract.Presenter {
+    appData: AppData,
+    eventData: UserEventData,
+    private val eventRepository: EventRepository,
+    userRepository: UserRepository,
+    @Connectivity connectivity: Observable<Boolean>
+) : EventListPresenter<OrganizationEventsContract.View>(
+    appData,
+    eventData,
+    eventRepository,
+    userRepository,
+    connectivity
+), OrganizationEventsContract.Presenter {
 
     lateinit var organizationId: String
 
-    /*override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<Event?>> {
-        return eventRepository.getEventList(limit, offset, mapOf(
-                "organisation" to organizationId,
-                Event.FILTER_SHOW_CANCELED to true
-        ))
-    }*/
-
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
-    }
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
-        //TODO Finish this screen
-        return eventRepository.getOrganizationEventsList(mapOf(
+    override fun getPaginationRequest(
+        limit: Int,
+        offset: Int
+    ): Maybe<PaginationResponse<EventNew?>> {
+        return eventRepository.getOrganizationEventsList(
+            mapOf(
                 EventNew.EVENT_LIMIT to limit,
                 EventNew.EVENT_OFFSET to offset,
-               // EventNew.EVENT_SORT_TYPE to "desc",
-                EventNew.EVENT_ORGANIZATION to organizationId))
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,userFavorite",
+                // EventNew.EVENT_SORT_TYPE to "desc",
+                EventNew.EVENT_ORGANIZATION to organizationId
+            )
+        )
     }
 }

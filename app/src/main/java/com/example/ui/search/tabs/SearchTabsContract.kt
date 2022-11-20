@@ -8,6 +8,9 @@ interface SearchTabsContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showQrScanner()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setCurrentFragment(position : Int)
     }
 
     interface Presenter : BaseContract.Presenter {

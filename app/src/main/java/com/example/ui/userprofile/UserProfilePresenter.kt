@@ -44,6 +44,11 @@ class UserProfilePresenter @Inject constructor(
         viewState.setAppBarElevation(0f)
     }
 
+    override fun attachView(view: UserProfileContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(0f)
+    }
+
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
     override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
 

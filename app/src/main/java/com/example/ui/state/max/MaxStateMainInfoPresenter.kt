@@ -281,40 +281,6 @@ class MaxStateMainInfoPresenter
         }*/
     }
 
-    private fun updateUser(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
-        /*compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    appData.getUser().apply {
-                        user_phone_confirmed = it.user_phone_confirmed
-                        it.user_status?.let { status -> user_status = status }
-                        it.user_status_detail?.let { details -> user_status_detail = details }
-                    }
-                    if (onComplete(it))
-                        viewState.goToNext()
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                })*/
-    }
-
-    override fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>) {
-        /*onEditSave(data) {
-            if (BuildConfig.NEW_PROFILE_EDIT) {
-                viewState.updateFilesList(it.attached_recomendation_files)
-                appData.updateUser {
-                    attached_recomendation_files = it.attached_recomendation_files
-                }
-            } else {
-                appData.updateUser {
-                    attached_recomendation_files = it.attached_recomendation_files
-                }
-            }
-            compositeFilesDisposable.clear()
-            false
-        }*/
-    }
 
     override fun onDeleteFilesClick(data: FileModel) {
         compositeDisposable += userRepository.deleteRecommendedFile(data.id ?: 0)

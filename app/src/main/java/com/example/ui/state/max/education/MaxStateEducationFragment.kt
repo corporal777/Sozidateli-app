@@ -16,7 +16,9 @@ import com.example.holders.ProfileDataEducationEditGroupNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.work.MaxStateWorkFragmentArgs
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
+import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.SimpleTitleToolbar
@@ -96,7 +98,7 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
         } else {
             dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
                 .setSelectCallback {
-                    presenter.sendEmail(it.value)
+                    presenter.checkEmailIsUnique(it.value)
                 }.setNegativeClickCallback { maxActions() }
         }
     }
@@ -109,19 +111,35 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
     }
 
     private fun maxActions() {
-        /*BaseStateDialog(resources.getString(R.string.you_got_max_state), requireActivity())
-                .setSelectCallback {*/
         when (presenter.screen) {
             1 -> findNavController().popBackStack(R.id.profile_fragment, false)
             2 -> findNavController().popBackStack(R.id.userStateFragment, false)
         }
-        //}
     }
 
     override fun showChangeEmailComplete(email: String) {
-        dialog.hideDialog()
-        showChangeEmailCompleteDialog(email)
         maxActions()
+    }
+
+    override fun showEmailIsNotUnique(email: String) {
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_email_text, email),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    showEmailConfirmation(email)
+                }
+            }
+    }
+
+    override fun showEmailConfirmation(email: String) {
+        dialog.hideDialog()
+        val confirmEmail = ConfirmEmailPhoneFragment(email)
+        confirmEmail.show(requireActivity().supportFragmentManager, "max_state_confirm_email")
+        confirmEmail.setConfirmCallback {
+            presenter.updateEmail(email)
+        }
     }
 
     override fun showUpdateError(message: String?) {

@@ -15,9 +15,12 @@ interface ChatListTabsContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setInvitesCount(count: Int)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setAppBarShadow(value: Float)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onChatsSelected()
         fun onInvitesSelected()
     }

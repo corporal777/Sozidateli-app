@@ -190,6 +190,10 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         )
     }
 
+    override fun showCurrentUserProfile() {
+        findNavController().navigate(R.id.user_profile_fragment)
+    }
+
     override fun showSpeakerAddedToFavoriteMessage() {
         EventAddedToFavoriteDialog(requireContext())
     }

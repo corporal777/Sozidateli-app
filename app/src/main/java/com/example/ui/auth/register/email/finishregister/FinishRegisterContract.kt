@@ -83,7 +83,6 @@ interface FinishRegisterContract {
         fun phoneConfirmed(isConfirmed: Boolean)
         fun sendCodeAgain()
         fun onHandleAuthLink()
-        fun onPhoneConfirmClick()
         fun onNoMiddleNameChecked(checked: Boolean)
         fun getData()
         fun logout()

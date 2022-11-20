@@ -22,12 +22,13 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class SearchChatPresenter
 @Inject constructor(
-    appData: AppData,
-    userRepository: UserRepository,
+    val appData: AppData,
+    val userRepository: UserRepository,
     val commonRepository: CommonRepository
 ) : BasePresenter<SearchChatContract.View>(appData), SearchChatContract.Presenter {
 
@@ -35,7 +36,7 @@ class SearchChatPresenter
     private var filter = SearchFilter.UserNew()
     private var mSearchText = ""
     private lateinit var paginationList: PaginationList<UserDetail?>
-    private var mDy = 0
+    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -45,12 +46,12 @@ class SearchChatPresenter
 
     override fun attachView(view: SearchChatContract.View?) {
         super.attachView(view)
-        viewState.changeAppBarElevation(Math.abs(mDy / 10f))
+        viewState.changeAppBarElevation(mDy)
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.changeAppBarElevation(Math.abs(mDy / 10f))
+        mDy = abs(value / 10f)
+        viewState.changeAppBarElevation(mDy)
     }
 
     private fun initInterest() {
@@ -67,7 +68,13 @@ class SearchChatPresenter
     }
 
 
-    override fun onUserClick(user: UserDetail) = viewState.showUser(user)
+    override fun onUserClick(user: UserDetail) {
+        if (appData.isCurrentUser(user.id.toString())){
+            viewState.showCurrentUser()
+        }else {
+            viewState.showUser(user)
+        }
+    }
     override fun onFilterClick() = viewState.showFilter(filter)
     override fun onFilterApplyClick() = initData()
     override fun onRefreshRequest() = paginationList.invalidate()

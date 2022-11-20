@@ -20,6 +20,7 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.PHONE_PERSONAL
 import com.example.util.qr_generator.QrCodeGenerator
 import com.example.util.qr_generator.QrData
 import com.example.util.qr_generator.QrErrorCorrectionLevel
@@ -73,9 +74,22 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(abs(mDy / 10f))
-        viewState.setUserState(appData.hasBaseState, appData.hasMaxState)
-        try {
+        viewState.apply {
+            setAppBarElevation(abs(mDy / 10f))
+            setUserState(appData.hasBaseState, appData.hasMaxState)
+        }
+        compositeDisposable += Maybe.defer { Maybe.just(appData.getUserNew()) }
+            .onErrorResumeNext(userRepository.getUserShortNew())
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onSuccess = {
+                    viewState.setUser(appData.getUserNew())
+                })
+
+        /*try {
             viewState.setUser(appData.getUserNew())
         } catch (e: Exception) {
             compositeDisposable += userRepository.getUserShortNew()
@@ -84,6 +98,7 @@ class ProfilePresenter
                     viewState.setUser(appData.getUserNew())
                 }, { it.printStackTrace() })
         }
+         */
     }
 
     fun changeScrollingOffset(value: Int) {
@@ -163,67 +178,55 @@ class ProfilePresenter
             .subscribe({}, { it.printStackTrace() })
     }
 
-    override fun sendEmail(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.hideDialogProgress()
-                appData.updateUserNew {
-                    this.email = FieldDetails(email, null, true, false, false, null)
-                }
-                viewState.emailSuccess()
-            }, {
-                viewState.hideDialogProgress()
-                it.printStackTrace()
-            })
+
+    override fun onEmailConfirmed(email: String) {
+        appData.updateUserNew {
+            this.email = FieldDetails(email, null, true, true, false, null)
+        }
+        viewState.codeSuccess()
+    }
+
+    override fun onPhoneConfirmed(phone: String) {
+        appData.updateUserNew {
+            if (this.phone?.filter { x -> x.type == PHONE_PERSONAL }.isNullOrEmpty()){
+                this.phone = listOf(FieldDetails(phone, type = PHONE_PERSONAL, isConfirmed = true))
+            }else {
+                appData.updatePhone(phone)
+            }
+        }
+        viewState.codeSuccess()
     }
 
     override fun checkEmailIsUnique(email: String) {
         compositeDisposable += userRepository.checkEmailPhone(email, null)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({ sendEmail(email) },
-                { viewState.showEmailNotUnique(email) })
+            .subscribeSimple(
+                onError = {
+                    viewState.showEmailNotUnique(email)
+                },
+                onComplete = {
+                    viewState.showEmailConfirmation(email)
+                })
     }
 
     override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({ sendPhone(phone) },
-                { viewState.showPhoneNotUnique(phone) })
+            .subscribeSimple(
+                onError = {
+                    viewState.showPhoneNotUnique(phone)
+                },
+                onComplete = {
+                    viewState.showPhoneConfirmation(phone)
+                })
     }
+
 
     override fun onQrScannerToAuthWebClick() {
         viewState.showQrScannerToAuthWebSite()
     }
-
-    override fun sendPhone(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.hideDialogProgress()
-                viewState.phoneSuccess(phone)
-            }, {
-                viewState.hideDialogProgress()
-                it.printStackTrace()
-            })
-    }
-
-    override fun confirmCode(phone: String, code: String) {
-        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.hideDialogProgress()
-                viewState.codeSuccess()
-            }, {
-                viewState.hideDialogProgress()
-                it.printStackTrace()
-            })
-    }
-
 
     override fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context) {
         viewState.showProfileDataBottomSheetDialog(user, bmImage)

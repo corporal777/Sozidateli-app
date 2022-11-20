@@ -12,6 +12,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class MapPresenterNew
@@ -24,9 +25,11 @@ class MapPresenterNew
 
     private var mapInitializeDisposable: Disposable? = null
     private var isMapContentSet = false
+    private var mDy = 0f
 
     override fun attachView(view: MapContractNew.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(mDy)
         viewState.setDescription(mapInfo?.title, mapInfo?.description)
 
         val lat = mapInfo?.lat
@@ -43,9 +46,9 @@ class MapPresenterNew
         }
     }
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-
+    override fun changeAppBarElevation(value: Int) {
+        mDy += abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
     }
 
     override fun onMapReady() {
@@ -78,6 +81,7 @@ class MapPresenterNew
     override fun onOpenRouteClick() {
         viewState.openUrl("$GOOGLE_MAP_ROUTE_URL${mapInfo?.lat},${mapInfo?.lon}")
     }
+
 
     companion object {
         private const val GOOGLE_MAP_SHARE_URL = "https://www.google.com/maps/search/?api=1&query="

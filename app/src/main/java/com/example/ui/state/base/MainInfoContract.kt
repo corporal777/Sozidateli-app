@@ -19,10 +19,10 @@ interface MainInfoContract {
         fun goToNext()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showUpdateError(message: String? = null)
+        fun showPhoneConfirm(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneConfirm(phone: String)
+        fun showEmailConfirm(email: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmailComplete(email: String)
@@ -34,23 +34,29 @@ interface MainInfoContract {
         fun showPhoneNotUnique(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun codeSuccess(phone : List<FieldDetails>?, canGoNext : Boolean)
+        fun showEmailNotUnique(email : String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun updatePhoneConfirmation(phone : String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showCheckPassword(phone: String?)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideCheckPassword()
     }
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation  {
         fun onClickClose()
         fun updateFiles(data: MutableMap<String, Any?>)
         fun onConfirmPhoneClick(phone: String)
-        fun sendEmail(email: String)
+        fun updateEmail(email: String)
+
+        fun checkEmailIsUnique(email: String)
 
         fun onTakePhotoFromGalleryClick()
         fun onTakePhotoFromCameraClick()
         fun onRemovePhotoClick()
 
-
         fun checkPassword(password: String, phone: String)
-        fun confirmCode(phone: String, code: String)
     }
 }

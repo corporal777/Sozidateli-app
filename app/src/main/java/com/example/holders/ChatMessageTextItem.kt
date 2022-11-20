@@ -12,8 +12,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
 
 class ChatMessageTextItem(
-        message: ChatMessage.Personal,
-        val canAnim : Boolean
+        message: ChatMessage.Personal
 ) : ChatMessageItem(message) {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -25,9 +24,7 @@ class ChatMessageTextItem(
                 setTextColor(ContextCompat.getColor(context, if (message.isMyMessage) R.color.chat_message_text_outgoing
                 else R.color.chat_message_text_incoming))
             }
-            if (canAnim){
-                setFadeAnimation(this.root)
-            }
+            //setFadeAnimation(this.root)
         }
     }
 
@@ -42,11 +39,15 @@ class ChatMessageTextItem(
         return true
     }
 
-    private fun setFadeAnimation(view: View) {
-        val anim = AlphaAnimation(0.0f, 1.0f)
-        anim.duration = 450
-        view.startAnimation(anim)
-    }
+//    private fun setFadeAnimation(view: View) {
+//        val anim = AlphaAnimation(0.0f, 1.0f)
+//        if (counter <= 8){
+//            anim.duration = 450
+//        }else {
+//            anim.duration = 150
+//        }
+//        view.startAnimation(anim)
+//    }
 
     override fun getLayout() = R.layout.item_chat_message_text
 }

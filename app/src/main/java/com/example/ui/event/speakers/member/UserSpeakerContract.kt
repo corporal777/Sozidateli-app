@@ -38,6 +38,9 @@ interface UserSpeakerContract{
         fun showUserProfile(userId: String)
 
         @StateStrategyType(SkipStrategy::class)
+        fun showCurrentUserProfile()
+
+        @StateStrategyType(SkipStrategy::class)
         fun showSpeakerAddedToFavoriteMessage()
 
         @StateStrategyType(SkipStrategy::class)

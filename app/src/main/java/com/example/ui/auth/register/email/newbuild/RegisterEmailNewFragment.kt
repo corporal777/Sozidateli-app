@@ -35,7 +35,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     RegisterEmailNewContract.View {
 
     override fun layout() = R.layout.fragment_register_email_new
-    private lateinit var mProgressDialog: CustomProgressDialog
 
     private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
@@ -58,14 +57,9 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     @ProvidePresenter
     fun providePresenter(): RegisterEmailNewPresenter = presenterProvider.get()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presenter.deviceModel = getDeviceName()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mProgressDialog = CustomProgressDialog(requireContext())
         mBinding.apply {
             ivClose.setOnClickListener { presenter.onClickClose() }
 
@@ -110,12 +104,12 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 }
                 onFocusChanged { hasFocus ->
                     if (!hasFocus) {
-                        if (AuthValidateUtil.isDigits(text.toString())){
-                            if (!AuthValidateUtil.isValidPhone(text.toString())){
+                        if (AuthValidateUtil.isDigits(text.toString())) {
+                            if (!AuthValidateUtil.isValidPhone(text.toString())) {
                                 showWrongPhoneError(true)
                             }
-                        }else {
-                            if (!AuthValidateUtil.isValidEmail(text.toString())){
+                        } else {
+                            if (!AuthValidateUtil.isValidEmail(text.toString())) {
                                 showEmailError(true)
                             }
                         }
@@ -150,69 +144,41 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 showUserAgreement()
             }
             password.setPasswordValidCallback {
-                presenter.onChangeNewPasswordText(it.password ?: "", it.isValid)
+                presenter.onChangePasswordText(it.password ?: "", it.isValid)
             }
             password.setChangedSelectionCallback {
                 presenter.onClickAgree(it)
             }
             ibRegister.setOnClickListener {
                 hideKeyboard()
-                val name = removeAllDoubleSpaces(etFirstName.text.toString())
-                val lastName = removeAllDoubleSpaces(etLastName.text.toString())
-                /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()etMobilePhone.text.toString() == "" || etMobilePhone.text.toString().isValidPhoneNumber(requireContext())) {*/
-                presenter.onClickRegister(
-                    etEmail.text?.toString(),
-                    name,
-                    lastName,
-                    password.etPassword.text?.toString(),//etPassword.text?.toString(),
-                    //etPasswordConfirm.text?.toString(),
-                    password.cbAgree.isChecked
-                )
+                presenter.onClickRegister()
             }
         }
     }
 
-    override fun showEmailNotUnique(
-        email: String,
-        firstName: String,
-        lastName: String,
-        password: String,
-        middleName: String?,
-        phone: String?
-    ) {
+    override fun showEmailNotUnique(email: String) {
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_email_text, email),
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
+        ).setSelectCallback {
                 if (it) {
-                    showAlertLoadingDialog()
-                    presenter.register(email, firstName, lastName, password, middleName, phone)
+                    presenter.register()
                 }
             }
     }
 
-    override fun showPhoneNotUnique(
-        email: String,
-        firstName: String,
-        lastName: String,
-        password: String,
-        middleName: String?,
-        phone: String?
-    ) {
+    override fun showPhoneNotUnique(email: String) {
         ConfirmPhoneDialog(
             requireContext(),
-            getString(R.string.confirm_phone_text, phone),
+            getString(R.string.confirm_phone_text, email),
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
 
-        )
-            .setSelectCallback {
+        ).setSelectCallback {
                 if (it) {
-                    showAlertLoadingDialog()
-                    presenter.register(email, firstName, lastName, password, middleName, phone)
+                    presenter.register()
                 }
             }
     }
@@ -225,42 +191,18 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         noMiddleNameChecked: Boolean,
         password: String?,
         passwordConfirm: String?,
-        phone: String?,
-        phoneVerified: Boolean,
         isAgree: Boolean
     ) {
         mBinding.etEmail.setText(email)
         mBinding.etFirstName.setText(firstName)
         mBinding.etLastName.setText(lastName)
-        /*etPassword.setText(password)
-        etPasswordConfirm.setText(passwordConfirm)*/
+        mBinding.etMiddleName.setText(middleName)
         this.password.etPassword.setText(password)
         this.password.setAgreeSelection(isAgree)
-        updatePhoneConfirmationStatus(phoneVerified)
-    }
-
-    override fun updatePhoneConfirmationStatus(confirmed: Boolean) {
-        //btnPhoneConfirm.isVisible = !confirmed
-        //tvPhoneConfirmed.isVisible = confirmed
     }
 
     override fun changeFieldType(type: String, isValid: Boolean) {
         mBinding.tilEmailAgain.isVisible = type == "email" && isValid
-    }
-
-    override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(
-            RegisterEmailNewFragmentDirections.emailRegisterToPhoneConfirmFragment(
-                phone,
-                "",
-                null
-            )
-        )
-    }
-
-    override fun phoneConfirmEnabled(enabled: Boolean) {
-        //btnPhoneConfirm.isEnabled = enabled
-        //btnPhoneConfirm.isVisible = enabled
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
@@ -272,8 +214,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
     override fun showFirstNameError(show: Boolean) {
-        mBinding.tilFirstName.error =
-            if (show) getString(R.string.auth_error_no_first_name) else null
+        mBinding.tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
     }
 
     override fun showLastNameError(show: Boolean) {
@@ -288,17 +229,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         mBinding.tilEmail.error = if (show) getString(R.string.invalid_phone_number_second_error) else null
     }
 
-    override fun showPasswordError(show: Boolean) {
-        /*tilPassword.error = if (show) getString(
-                if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
-                else R.string.auth_error_short_password_length
-        ) else null*/
-    }
-
-    override fun showPasswordConfirmError(show: Boolean) {
-        //tilPasswordConfirm.error = if (show) getString(R.string.auth_error_password_do_not_match) else null
-    }
-
     override fun showEmailAgainError(show: Boolean) {
         mBinding.tilEmailAgain.error =
             if (show) getString(R.string.auth_error_email_do_not_match) else null
@@ -309,9 +239,9 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        //btnPhoneConfirm.apply { isEnabled = isEnable }
         mBinding.ibRegister.apply { isEnabled = isEnable }
     }
+
 
     override fun showFinishRegister(
         name: String,
@@ -320,34 +250,23 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         phone: String?,
         email: String,
         code: String,
-        userPhoneConfirmed: Boolean,
-        isNoMiddleName: Boolean,
-        nameEditable: Boolean
+        isNoMiddleName: Boolean
     ) {
         findNavController().navigate(
-            R.id.register_email_finish_fragment, bundleOf(
+            R.id.fragment_finish_register_new, bundleOf(
                 "code" to code,
                 "name" to name,
                 "lastName" to lastName,
                 "email" to email,
                 "phone" to phone,
                 "middleName" to middleName,
-                "isConfirmed" to userPhoneConfirmed,
                 "isNoMiddleName" to isNoMiddleName,
-                "nameEditable" to nameEditable
             ), NavOptions.Builder()
                 .setPopUpTo(R.id.main_navigation, true)
                 .build()
         )
-        //findNavController().navigate(RegisterEmailNewFragmentDirections.registerToFinishRegister(code, name, lastName, email, phone, middleName))
     }
 
-    override fun showEmailConfirmation(email: String, password: String) {
-        findNavController().navigate(
-            RegisterEmailNewFragmentDirections.actionRegisterEmailNewFragmentToAuthorizationFragment()
-                .setShowFinishRegister(true)
-        )
-    }
 
     override fun showSnRegistration(snUser: SnUser) {
         findNavController().navigate(
@@ -358,21 +277,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
     private fun showUserAgreement() {
-        try {
-            val viewIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.auth_agree_address)))
-            startActivity(viewIntent)
-        } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.error_title, Toast.LENGTH_LONG).show()
-        }
+        showCustomTabsBrowser(requireContext(), getString(R.string.auth_agree_address))
     }
 
-
-    override fun showAlertLoadingDialog() {
-        mProgressDialog.showDialog()
-    }
-
-    override fun hideAlertLoadingDialog() {
-        mProgressDialog.hideDialog()
-    }
 }

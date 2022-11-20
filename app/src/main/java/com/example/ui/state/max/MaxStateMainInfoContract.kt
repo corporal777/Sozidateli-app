@@ -58,7 +58,6 @@ interface MaxStateMainInfoContract {
         fun onAddFileClick()
         fun onFileClick(file: FileModel)
         fun onEditFileClick(file: FileModel)
-        fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>)
         fun onDeleteFilesClick(data: FileModel)
         fun onSaveFileClick(data: MutableMap<String, Any?>)
 

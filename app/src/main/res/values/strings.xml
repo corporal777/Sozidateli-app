@@ -113,7 +113,7 @@
     </plurals>
     <plurals name="minutes_timer">
         <item quantity="zero">%d минут</item>
-        <item quantity="one">%d минута</item>
+        <item quantity="one">%d минуту</item>
         <item quantity="two">%d минуты</item>
         <item quantity="few">%d минуты</item>
         <item quantity="many">%d минуты</item>
@@ -501,6 +501,7 @@
     <string name="status_profile_additional_data">Дополнительные сведения</string>
     <string name="status_profile_title_set">Подтверждение номера телефона</string>
     <string name="status_profile_title_set_new">Подтверждение номера</string>
+    <string name="status_profile_confirm_email_title">Подтверждение e-mail</string>
     <string name="status_profile_message_set">Для того чтобы подтвердить номер телефона, введите Ваш пароль</string>
     <string name="status_profile_title_change">Изменение номера телефона</string>
     <string name="status_profile_message_change">Для того, чтобы изменить номер телефона, введите пароль, который указывали при регистрации</string>
@@ -579,6 +580,7 @@
 
     <string name="organization_main_data">Общая информация</string>
     <string name="organization_peoples">Сотрудники (%d)</string>
+    <string name="organization_members">Сотрудники организации</string>
     <string name="organization_peoples_watch">Смотреть всех</string>
     <string name="organization_events">Мероприятия организации</string> <!-- (%d) -->
     <string name="organization_events_watch">Смотреть все мероприятия</string>
@@ -595,6 +597,8 @@
     <string name="qr_permission_request_apply">Разрешить</string>
     <string name="qr_scan_not_found_event">По этому коду не найдено ни одного мероприятия</string>
 
+    <string name="code_email_input_label"><font size="15">Введите 6 цифр из письма</font></string>
+    <string name="code_phone_input_label"><font size="15">Введите 6 цифр из смс</font></string>
     <string name="code_input_label">Ввод кода</string>
     <string name="code_input_hint">Введите код</string>
     <string name="code_input_no_code">Введите код, предоставленный Вам организатором мероприятия</string>
@@ -770,9 +774,11 @@
     <string name="add_email_dialog_title">Добавьте Ваш e-mail</string>
     <string name="add_email_dialog_text">Для получения важных уведомлений, пожалуйста, укажите Ваш актуальный электронный адрес.</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>
-    <string name="code_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
-    <string name="code_dialog_text_label">Введите 6 цифр из СМС.</string>
-    <string name="code_dialog_text_title">На номер отправлен код из 6 цифр. Введите его для подтверждения.</string>
+    <string name="code_phone_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
+    <string name="code_email_dialog_text">На почту %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
+    <string name="code_dialog_text_label">Введите 6 цифр.</string>
+    <string name="code_dialog_text_title">На номер отправлено письмо с кодом из 6 цифр. Введите его для подтверждения.</string>
+    <string name="code_dialog_text_information">Если Вы не нашли письмо с кодом в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
     <string name="send_code_again">Отправить код повторно</string>
     <string name="new_phone_number">Введите новый номер телефона</string>
     <string name="change_status_title">Повышение статуса</string>
@@ -831,7 +837,7 @@
     <string name="program">Программа</string>
     <string name="all_activities">Все события</string>
     <string name="wait_for_accept_title">Ожидает подтверждения</string>
-    <string name="wait_for_accept_text">Для подтверждения перейдите по ссылке из письма, направленного на указанный e-mail</string>
+    <string name="wait_for_accept_text">Для подтверждения перейдите введите код из письма, направленного на указанный e-mail</string>
     <string name="wait_for_accept_positive_button">Отправить письмо повторно</string>
     <string name="change_email_title">Смена основной почты</string>
     <string name="change_email_text">Эта почта является логином, на нее приходят все рассылки и уведомления, связанные с Вашим профилем. Для смены или подтверждения основной почты, пожалуйста, перейдите в настройки аккаунта.</string>

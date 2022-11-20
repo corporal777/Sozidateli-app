@@ -36,6 +36,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.old.AboutEventFragmentArgs
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.CustomProgressBar
 import com.example.ui.views.toolbar.ToolbarContentActionBar
@@ -43,6 +44,7 @@ import com.example.util.PositionOffsetScrollListener
 import com.example.util.SimpleTextWatcher
 import com.example.util.StayBottomOnLayoutChangeUtil
 import com.example.util.pagination.PaginationScrollListener
+import com.example.util.setCircleAvatar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -314,7 +316,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
                 is ChatMessage.Personal -> {
                     val item = when (it.message.type) {
                         MessageType.IMAGE -> ChatMessageImageItem(it, imageClickListener)
-                        else -> ChatMessageTextItem(it, showAnim)
+                        else -> ChatMessageTextItem(it)
                     }
 
                     item.apply {
@@ -411,8 +413,8 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
 
     override fun showEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
         )
     }
 
@@ -436,7 +438,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
 
     override fun setUserAvatar(url: String) {
         mBinding.ivAvatar.apply {
-            setCircleImage(url)
+            setCircleAvatar(url)
             isEnabled = false
             isClickable = false
         }

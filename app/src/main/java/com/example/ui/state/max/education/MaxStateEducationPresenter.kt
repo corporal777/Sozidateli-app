@@ -12,6 +12,7 @@ import com.example.ui.base.BasePresenter
 import com.example.ui.state.max.MaxStateMainInfoContract
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
@@ -77,7 +78,6 @@ class MaxStateEducationPresenter
                     }, {
                         viewState.goToNext()
                     })
-                //viewState.goToNext()
             }, {
                 it.printStackTrace()
                 viewState.showUpdateError(it.message)
@@ -86,16 +86,24 @@ class MaxStateEducationPresenter
 
     fun getEmail() = appData.getUserNew().email
 
-    override fun sendEmail(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
+
+    override fun checkEmailIsUnique(email: String) {
+        compositeDisposable += userRepository.checkEmailPhone(email, null)
+            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                appData.updateUserNew {
-                    this.email = FieldDetails(email, null, true, false, false, null)
-                }
-                viewState.showChangeEmailComplete(email)
-            }, {
-                it.printStackTrace()
-            })
+            .subscribeSimple(
+                onError = {
+                    viewState.showEmailIsNotUnique(email)
+                },
+                onComplete = {
+                    viewState.showEmailConfirmation(email)
+                })
+    }
+
+    override fun updateEmail(email: String) {
+        appData.updateUserNew {
+            this.email = FieldDetails(email, null, true, true, false, null)
+        }
+        viewState.showChangeEmailComplete(email)
     }
 }

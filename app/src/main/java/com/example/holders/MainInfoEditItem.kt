@@ -43,7 +43,6 @@ class MainInfoEditItem(
     private val phone: List<FieldDetails>?,
     private val showBirthday: Boolean,
     private val canEditName: Boolean,
-    private val email: FieldDetails?,
     private val image: ImageModel,
     private val isEnableNext: (isEnable: Boolean) -> Unit,
     private val confirmPhoneClick: (String?) -> Unit,
@@ -54,7 +53,10 @@ class MainInfoEditItem(
     private val genderFemale = activity.getString(R.string.profile_gender_female)
     private val emptyInputError = activity.getString(R.string.profile_edit_empty_field_error)
     private var mImage = image
+
     private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
+    private var mIsPhoneConfirmed =
+        phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
 
     private var mGender = gender?.value?.firstLetterToUppercase()
     private var mGenderShow = gender?.showInProfile ?: true
@@ -62,8 +64,7 @@ class MainInfoEditItem(
     private var mAddress = address
     private var mAddressShow = address.showInProfile ?: true
     private var mShowBirthday = showBirthday
-    private var mIsPhoneConfirmed =
-        phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
+
 
     //private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
 
@@ -87,13 +88,13 @@ class MainInfoEditItem(
                     mMobilePhone = it.toString()
                     if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error =
                         null
-                    checkDataValid()
 
                     if (mIsPhoneConfirmed) {
                         mIsPhoneConfirmed =
-                            mMobilePhone == phone?.firstOrNull{ ph -> ph.type == PHONE_PERSONAL }?.value
+                            mMobilePhone == phone?.firstOrNull { ph -> ph.type == PHONE_PERSONAL }?.value
                         updatePhoneConfirmationStatus(viewHolder)
                     }
+                    checkDataValid()
                 }
 
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
@@ -104,9 +105,9 @@ class MainInfoEditItem(
                 checkDataValid()
             }
             tilBirthday.initAsDatePicker(
-                if (!mBirthday.isNullOrEmpty()){
+                if (!mBirthday.isNullOrEmpty()) {
                     defaultDateFormatter.parse(mBirthday)
-                }else {
+                } else {
                     null
                 },
                 //mBirthday?.let { defaultDateFormatter.parse(it) },
@@ -229,15 +230,6 @@ class MainInfoEditItem(
         var isValid = true
         if (::viewHolder.isInitialized) {
             viewHolder.apply {
-                /*if (mSurname.isNullOrEmpty()) {
-                    isValid = false
-                }
-                if (mName.isNullOrEmpty()) {
-                    isValid = false
-                }
-                if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) {
-                    isValid = false
-                }*/
                 if (mGender.isNullOrEmpty()) {
                     isValid = false
                 }
@@ -247,94 +239,56 @@ class MainInfoEditItem(
                 if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) {
                     isValid = false
                 }
-                if (mMobilePhone.isNullOrEmpty()) {
+                if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) {
                     isValid = false
                 }
                 if (mImage.uri.isNullOrEmpty()) isValid = false
-                /*if (!AuthValidateUtil.isValidEmail(etEmail.text.toString())) {
-                    isValid = false
-                }*/
             }
         }
         isEnableNext(isValid)
         return isValid
     }
 
-    /*fun showConfirmEmail(): Boolean = email?.value != viewHolder.etEmail.text.toString()
+    private fun getPersonalPhone() = mMobilePhone?.phoneToServer() ?: ""
+    private fun isPhoneValid(): Boolean = Utils.isNewPhoneIsValid(getPersonalPhone())
+    fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone())
 
-    fun getEmail(): String = viewHolder.etEmail.text.toString()*/
-
-    fun getPersonalPhone() = mMobilePhone?.phoneToServer()
-    fun isPhoneValid() : Boolean = Utils.isNewPhoneIsValid(getPersonalPhone())
-
-    fun getDataToSave(): Map<String, Any?> {
+    fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
             if (gender?.value != mGender) put(
                 UserDetail.USER_GENDER,
                 ToggleStringModel(getGender(), mGenderShow)
             )
             mBirthday?.formatToDefaultServerDate()?.let {
-                if (birthday != it) {
-
-                }
                 put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
-            //if (email?.value != viewHolder.etEmail.text.toString()) put(UserDetail.USER_EMAIL, FieldDetails(value = viewHolder.etEmail.text.toString(), isConfirmed = false))
 
             if (address != mAddress) {
                 mAddress.showInProfile = mAddressShow
                 put(UserDetail.USER_ADDRESS, mAddress)
             }
 
-            if (phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value != mMobilePhone) {
 
-                val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
-                val work = phone?.firstOrNull { it.type == PHONE_WORK }
-
-                put(
-                    UserDetail.USER_PHONE, arrayListOf(
-                        FieldDetails(
-                            value = Utils.validatePhoneBeforeSend(
-                                mMobilePhone.phoneToServer() ?: ""
-                            ),
-                            type = PHONE_PERSONAL,
-                            isConfirmed = mIsPhoneConfirmed,
-                            isVisible = personal?.isVisible,
-                            absent = false
-                        ),
-                        FieldDetails(
-                            value = work?.value,
-                            type = PHONE_WORK,
-                            isVisible = work?.isVisible,
-                            absent = work?.absent
-                        )
+            val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
+            val work = phone?.firstOrNull { it.type == PHONE_WORK }
+            put(
+                UserDetail.USER_PHONE, arrayListOf(
+                    FieldDetails(
+                        value = getValidatedPhone(),
+                        type = PHONE_PERSONAL,
+                        isConfirmed = mIsPhoneConfirmed,
+                        isVisible = personal?.isVisible,
+                        absent = false
+                    ),
+                    FieldDetails(
+                        value = work?.value,
+                        type = PHONE_WORK,
+                        isVisible = work?.isVisible,
+                        absent = work?.absent,
+                        additional = work?.additional
                     )
                 )
-
-
-            } else {
-                val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
-                val work = phone?.firstOrNull { it.type == PHONE_WORK }
-                put(
-                    UserDetail.USER_PHONE, arrayListOf(
-                        FieldDetails(
-                            value = Utils.validatePhoneBeforeSend(
-                                personal?.value.phoneToServer() ?: ""
-                            ),
-                            type = PHONE_PERSONAL,
-                            isConfirmed = personal?.isConfirmed,
-                            isVisible = personal?.isVisible,
-                            absent = false
-                        ),
-                        FieldDetails(
-                            value = work?.value,
-                            type = PHONE_WORK,
-                            isVisible = work?.isVisible,
-                            absent = work?.absent
-                        )
-                    )
-                )
-            }
+            )
         }
     }
 
@@ -365,7 +319,7 @@ class MainInfoEditItem(
         setAvatar()
     }
 
-    fun updatePhone(phone : List<FieldDetails>?){
+    fun updatePhone(phone: List<FieldDetails>?) {
         mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
         mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
         updatePhoneConfirmationStatus(viewHolder)
@@ -377,7 +331,12 @@ class MainInfoEditItem(
         }
     }
 
-    fun getNewPhoneConfirmation(): Boolean{
+    fun updatePhoneConfirmation(isConfirmed: Boolean) {
+        this.mIsPhoneConfirmed = isConfirmed
+        updatePhoneConfirmationStatus(viewHolder)
+    }
+
+    fun newPhoneIsConfirmed(): Boolean {
         return mIsPhoneConfirmed
     }
 

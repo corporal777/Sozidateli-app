@@ -13,7 +13,6 @@
         android:paddingEnd="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-
             android:id="@+id/avatar_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,32 +66,36 @@
 
 
         <TextView
+            android:layout_marginTop="2dp"
             android:id="@+id/tv_name"
             fontPath="fonts/sf_pro_display_semibold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginEnd="5dp"
             android:letterSpacing="0.01"
             android:text="@string/change_account_for_enter"
-            android:textColor="@android:color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/tv_email"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_menu"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
+            android:layout_marginBottom="2dp"
             android:id="@+id/tv_email"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
             android:letterSpacing="0.01"
             android:text="@string/change_account_for_enter"
             android:textColor="@color/text_color_weekend"
             android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_menu"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/tv_name"
             tools:ignore="MissingPrefix" />
@@ -103,7 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="5dp"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="5dp"
             android:src="@drawable/ic_account_menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

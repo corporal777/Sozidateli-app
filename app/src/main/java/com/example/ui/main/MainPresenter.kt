@@ -432,11 +432,11 @@ class MainPresenter
     }
 
     override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
-        if (isAuthRequired){
+        if (isAuthRequired) {
             viewState.showLogin()
             canShowBrowser = true
         } else {
-            if (canShowBrowser){
+            if (canShowBrowser) {
                 observeDeeplink(url, type)
             } else {
                 viewState.showAccountChangeFragment(url, type)
@@ -695,19 +695,12 @@ class MainPresenter
         chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
             .performOnBackgroundOutOnMain()
             .subscribe({
+                Log.e("CHAT MESSAGE COUNT", it.toString())
                 appData.chatUnreadMessageCount = it
             }, {
                 it.printStackTrace()
                 appData.chatUnreadMessageCount = 0
             })
-        /*chatCompositeDisposable += haChat.subscribeToAllUnreadMessageCount()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    appData.chatUnreadMessageCount = it
-                }, {
-                    it.printStackTrace()
-                    appData.chatUnreadMessageCount = 0
-                })*/
     }
 
     private fun subscribeChatNewMessage() {
@@ -715,6 +708,7 @@ class MainPresenter
         chatCompositeDisposable += socket.subscribeNewChatMessage()
             .performOnBackgroundOutOnMain()
             .subscribe({
+                Log.e("CHAT NEW MESSAGE", it.data.toString())
                 it.data.forEach { message ->
                     chatHelper.showNotificationIfCan(
                         message.chat.toString(),
@@ -725,18 +719,9 @@ class MainPresenter
                         message.sender?.avatar
                     )
                 }
-                Log.e("NEW MESSAGE", it.data.toString())
             }, {
                 it.printStackTrace()
             })
-
-//        chatCompositeDisposable += haChat.subscribeToNewMessage()
-//                .performOnBackgroundOutOnMain()
-//                .subscribe({
-//                    processNewChatMessage(it)
-//                }, {
-//                    it.printStackTrace()
-//                })
     }
 
     private fun emitValueUpdates() {
@@ -752,14 +737,15 @@ class MainPresenter
                 .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
             disposables += socket.subscribeToInvitesCount()
                 .subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
-            /*disposables += haChat.subscribeTo<Number>(ACTION_REQUEST_COUNT).subscribe({ emitter.onNext(it.toInt()) }, { emitter.onError(it) })
-            disposables += haChat.subscribeToExcludeFlagChange()
-                    .flatMapSingle { chatRepository.getChatInvitesCount() }
-                    .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })*/
             emitter.setDisposable(disposables)
         }, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
-            .subscribe({ appData.chatRequestsCount = it }, { appData.chatRequestsCount = 0 })
+            .subscribe({
+                Log.e("CHAT REQUEST COUNT", it.toString())
+                appData.chatRequestsCount = it
+            }, {
+                appData.chatRequestsCount = 0
+            })
     }
 
     /*private fun processNewChatMessage(newMessage: NewMessage) {

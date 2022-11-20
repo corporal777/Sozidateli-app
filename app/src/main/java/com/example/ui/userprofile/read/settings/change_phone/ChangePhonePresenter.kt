@@ -4,13 +4,17 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.util.Utils
 import com.example.util.phoneToServer
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -32,12 +36,11 @@ class ChangePhonePresenter
     var isConfirmed = false
     var isVisible = false
     var phoneField: FieldDetails? = null
+    private var withUpdate = true
 
-    private val timerCompositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += timerCompositeDisposable
         viewState.apply {
             setUserPhone(mobilePhone)
             setUserPhoneIsConfirmed(isConfirmed)
@@ -45,14 +48,13 @@ class ChangePhonePresenter
         }
     }
 
-
     override fun setNewPhone(phone: String) {
         this.mobilePhone = phone
     }
 
-    override fun setNewPhoneIsConfirmed() {
-        if (isConfirmed) {
-            this.isConfirmed = mobilePhone == oldMobilePhone
+    override fun setNewPhoneIsConfirmed(phone: String) {
+        if (phoneField?.isConfirmed == true) {
+            this.isConfirmed = phone.phoneToServer() == oldMobilePhone
             viewState.setUserPhoneIsConfirmed(isConfirmed)
         }
     }
@@ -61,124 +63,96 @@ class ChangePhonePresenter
         this.isVisible = isVisible
     }
 
-    override fun checkPhoneIsUnique(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    viewState.showPhoneNotUnique(phone, ConfirmType.SAVE)
-                },
-                onComplete = {
-                    updatePhoneData()
-                })
-    }
-
-    override fun updatePhoneData() {
+    override fun onSaveNewPhoneClick(phone: String) {
+        withUpdate = true
         if (phoneField?.isConfirmed == true) {
-            onSendCodeClick()
+            if (this.isConfirmed) {
+                updatePhoneData()
+            } else {
+                viewState.showEnterPassword(phone)
+            }
         } else {
-            compositeDisposable += userRepository.updateUserProfile(
-                appData.getId(),
-                getDataToSave()
-            )
-                .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple(
-                    onError = {
-                        onReceiveError(it)
-                    },
-                    onSuccess = {
-                        viewState.setPhoneIsUpdatedSuccessfully()
-                    })
+            updatePhoneData()
         }
     }
 
-    override fun onConfirmPhoneClick(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
+    override fun checkPassword(password: String, phone: String) {
+        compositeDisposable += userRepository.checkPasswordNew(password)
+            .andThen(Completable.defer { userRepository.checkEmailPhone(null, phone) })
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    viewState.showPhoneNotUnique(phone, ConfirmType.CONFIRM)
-                },
-                onComplete = {
-                    onSendCodeClick()
+                    viewState.apply {
+                        hideEnterPassword()
+                        showPhoneNotUnique(phone)
+                    }
+
+                }, onComplete = {
+                    viewState.apply {
+                        hideEnterPassword()
+                        showPhoneConfirmation(phone)
+                    }
                 })
     }
 
-    override fun onConfirmCodeClick(code: String) {
-        compositeDisposable += authRepository.confirmPhone(
-            ConfirmCodeBody(
-                "personal",
-                mobilePhone ?: "",
-                code ?: ""
-            )
-        )
-            .doOnComplete { this.isConfirmed = true }
-            .andThen(
-                userRepository.updateUserProfile(
-                    appData.getId(),
-                    getDataToSave()
-                )
-            )
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                viewState.setPhoneIsUpdatedSuccessfully()
-            }
-    }
 
-
-    override fun onSendCodeClick() {
-        compositeDisposable += authRepository.registerPhoneResend("personal", mobilePhone)
+    override fun updatePhoneData() {
+        compositeDisposable += updatePhoneRequest()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
                 },
-                onComplete = {
-                    viewState.showConfirmPhoneDialog(mobilePhone)
+                onSuccess = {
+                    viewState.apply {
+                        showPhoneIsUpdatedSuccessfully()
+                    }
                 })
     }
 
+    override fun onConfirmPhoneClick(phone: String) {
+        withUpdate = false
+        if (phoneField?.isConfirmed == true) {
+            viewState.showEnterPassword(phone)
+        } else {
+            compositeDisposable += userRepository.checkEmailPhone(null, phone)
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple(
+                    onError = {
+                        viewState.showPhoneNotUnique(phone)
+                    },
+                    onComplete = {
+                        viewState.showPhoneConfirmation(phone)
+                    })
+        }
 
-    override fun startTimerForResendCode(phone: String) {
-        timerCompositeDisposable.clear()
-        timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                val timeLeft =
-                    FinishRegisterPresenter.TIMER_SECONDS_COUNT - (it.toInt() + 1)
-                viewState.setTimerForResendConfirmCode(timeLeft)
-                if (timeLeft < 0) {
-                    timerCompositeDisposable.clear()
-                }
-            }, {
-                it.printStackTrace()
-            })
     }
+
+
 
     private fun getDataToSave(): Map<String, Any?> {
         return mapOf(
             USER_PHONE to arrayListOf(
                 FieldDetails(
-                    value = mobilePhone.phoneToServer(),
+                    value = Utils.validatePhoneBeforeSend(mobilePhone.phoneToServer()?:""),
                     type = phoneField?.type,
                     isVisible = isVisible,
                     isConfirmed = isConfirmed,
-                    absent = phoneField?.absent,
-                    onConfirmation = phoneField?.onConfirmation,
-                    additional = phoneField?.additional
-
                 )
             )
         )
     }
 
-    enum class ConfirmType {
-        CONFIRM, SAVE
+    private fun updatePhoneRequest(): Single<UserDetail> {
+        return userRepository.updateUserProfile(
+            appData.getId(),
+            getDataToSave()
+        )
     }
+
+    fun isWithUpdate(): Boolean = withUpdate
+
 
 }

@@ -13,6 +13,8 @@ import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.organizations.redesign.OrganizationFragmentNew
+import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -117,8 +119,8 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
 
     override fun showOrganization(organization: OrganizationNew/*Organization*/) {
         findNavController().navigate(
-            R.id.organization_fragment,
-            OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+            R.id.organization_fragment_new,
+            OrganizationFragmentNewArgs.Builder(organization.id.toString()).build().toBundle()
         )
     }
 

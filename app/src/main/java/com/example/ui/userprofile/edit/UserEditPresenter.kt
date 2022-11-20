@@ -22,6 +22,7 @@ import com.example.util.phoneToServer
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -56,6 +57,7 @@ class UserEditPresenter
     private var isFileEdit = false
     private var isInterestsLoaded = false
     private var mDy = 0f
+    private var withUpdate = true
 
     override fun attachView(view: UserEditContract.View?) {
         super.attachView(view)
@@ -81,11 +83,6 @@ class UserEditPresenter
                 onNext = {
                     val user = it.value ?: throw RuntimeException("Edit null user")
                     when (editType) {
-                        UserEditDataType.MAIN -> viewState.apply {
-                            setMainTitle()
-                            saveOnClick(true)
-                            setMainData(user)
-                        }
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
                             compositeDisposable += userRepository.searchAddress(
@@ -116,19 +113,12 @@ class UserEditPresenter
                             setContactsData(user)
                             saveOnClick(true)
                         }
-                        UserEditDataType.PHONE -> viewState.apply {
-                            setPhoneTitle()
-                            setPhoneData(user)
-                            saveOnClick(true)
-                        }
                         UserEditDataType.EDUCATION -> viewState.apply {
                             setEducationTitle()
-                            setEducationData(user)
                             saveOnClick(true)
                         }
                         UserEditDataType.WORK -> viewState.apply {
                             setWorkTitle()
-                            setWorkData(user)
                             saveOnClick(true)
                         }
                         UserEditDataType.INTERESTS -> viewState.apply {
@@ -136,85 +126,10 @@ class UserEditPresenter
                             getInterests(user)
                             saveOnClick(true)
                         }
-                        UserEditDataType.ADDITIONAL_NOTES -> viewState.apply {
-                            setAdditionalNotesTitle()
-                            setAdditionalNotesData(user)
-                            saveOnClick(true)
-                        }
-                        UserEditDataType.ADDITIONAL_FILES -> viewState.apply {
-                            setAdditionalFilesTitle()
-                            setAdditionalFilesData(user)
-                            saveOnClick(false)
-                        }
                     }
                 })
     }
 
-    private fun setMainData(user: UserDetail) {
-        compositeDisposable += user.image?.uri.loadBitmap()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                viewState.setMainData(user, it.value)
-            }, {
-                it.printStackTrace()
-                viewState.setMainData(user, null)
-            })
-    }
-
-    override fun onCancelClick() {
-        viewState.navigateUp()
-    }
-
-    override fun onSaveMainClick(data: MutableMap<String, Any?>) {
-        onEditSave(data) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                user_avatar = it.user_avatar
-                user_name = it.user_name
-                user_last_name = it.user_last_name
-                user_middle_name = it.user_middle_name
-                user_name_edited = it.user_name_edited
-            }.asOptional())
-            true
-        }
-    }
-
-    override fun onSavePersonalClick(data: MutableMap<String, Any?>) {
-        onEditSave(data) {
-            compositeFilesDisposable.clear()
-            appData.updateUser {
-                user_email = it.user_email
-                user_email_show = it.user_email_show
-                user_phone_work = it.user_phone_work
-                user_phone_work_show = it.user_phone_work_show
-                user_phone = it.user_phone
-                user_phone_show = it.user_phone_show
-                user_name = it.user_name
-                user_last_name = it.user_last_name
-                user_middle_name = it.user_middle_name
-                user_gender = it.user_gender
-                user_birthday = it.user_birthday
-                user_birthday_show = it.user_birthday_show
-                user_address = it.user_address
-                social_links = it.social_links
-                user_short_address = it.user_short_address
-                user_address_index = it.user_address_index
-                user_address_country = it.user_address_country
-                user_address_region = it.user_address_region
-                user_address_area = it.user_address_area
-                user_address_city = it.user_address_city
-                user_address_district = it.user_address_district
-                user_address_settlement = it.user_address_settlement
-                user_address_street = it.user_address_street
-                user_address_house = it.user_address_house
-                user_address_flat = it.user_address_flat
-                user_notes = it.user_notes
-                attached_recomendation_files = it.attached_recomendation_files
-                user_social_links_absent = it.user_social_links_absent
-                user_phone_work_additional = it.user_phone_work_additional
-            }
-            true
-        }
-    }
 
     override fun onSaveContactsClick(data: MutableMap<String, Any?>) {
         onEditSaveNew(data) {
@@ -226,49 +141,6 @@ class UserEditPresenter
             }.asOptional())
             true
         }
-    }
-
-    override fun onSaveFileClick(data: MutableMap<String, Any?>) {
-        onEditSave(data) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                compositeFilesDisposable.clear()
-                attached_recomendation_files = it.attached_recomendation_files
-            }.asOptional())
-            true
-        }
-    }
-
-    override fun onSaveEducationClick(
-        educationLevel: ToggleIntModel?,
-        educationsList: List<EducationModel>?,
-        degree: List<AcademicDegreeModel>?
-    ) {
-        compositeDisposable += userRepository.updateUserEducationScreen(
-            educationLevel,
-            educationsList,
-            degree
-        )
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                viewState.navigateUp()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
-    }
-
-    override fun onSaveWorkClick(data: WorkExperienceServerModel) {
-        compositeDisposable += userRepository.updateWorkExperience(data)
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-
-                viewState.navigateUp()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
     }
 
     fun getBaseUserState() = appData.hasBaseState
@@ -286,14 +158,6 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveAdditionalNotesClick(notes: String?) {
-        onEditSave(mutableMapOf(User.FIELD_USER_NOTES to notes)) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                user_notes = it.user_notes
-            }.asOptional())
-            true
-        }
-    }
 
     override fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>) {
         if (data.isEmpty()) {
@@ -348,23 +212,6 @@ class UserEditPresenter
         }
     }
 
-    override fun onSaveAdditionalFilesClick(data: MutableMap<String, Any?>) {
-        /*onEditSave(data) {
-            if (BuildConfig.NEW_PROFILE_EDIT) {
-                viewState.updateFilesList(it.attached_recomendation_files)
-                appData.updateUser {
-                    attached_recomendation_files = it.attached_recomendation_files
-                }
-            } else {
-                appData.updateUser {
-                    attached_recomendation_files = it.attached_recomendation_files
-                }
-            }
-            compositeFilesDisposable.clear()
-            false
-        }*/
-    }
-
     override fun onDeleteFilesClick(data: FileModel) {
         compositeDisposable += userRepository.deleteRecommendedFile(data.id ?: 0)
             .performOnBackgroundOutOnMain()
@@ -414,10 +261,28 @@ class UserEditPresenter
         viewState.showChangeEmail()
     }
 
+    override fun checkPassword(password: String, phone: String) {
+        compositeDisposable += userRepository.checkPasswordNew(password)
+            .andThen(Completable.defer { userRepository.checkEmailPhone(null, phone) })
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.apply {
+                        hideEnterPassword()
+                        showPhoneNotUnique(phone)
+                    }
 
+                }, onComplete = {
+                    viewState.apply {
+                        hideEnterPassword()
+                        showPhoneConfirm(phone)
+                    }
+                })
+    }
 
     override fun onConfirmPhoneClick(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone.phoneToServer() ?: "")
+        compositeDisposable += userRepository.checkEmailPhone(null, phone)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
@@ -426,37 +291,7 @@ class UserEditPresenter
                     viewState.showPhoneNotUnique(phone)
                 }, onComplete = {
                     viewState.showPhoneConfirm(phone)
-
                 })
-    }
-
-     fun startTimerForResendCode(phone: String) {
-        timerCompositeDisposable.clear()
-        timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                val timeLeft =
-                    FinishRegisterPresenter.TIMER_SECONDS_COUNT - (it.toInt() + 1)
-                viewState.setTimerForResendCode(timeLeft)
-                if (timeLeft < 0) {
-                    timerCompositeDisposable.clear()
-                }
-            }, {
-                it.printStackTrace()
-            })
-    }
-
-    fun confirmCode(phone: String, code: String) {
-        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onComplete = {
-                    appData.updatePhone(phone)
-                    viewState.codeSuccess()
-            })
     }
 
     override fun onAddFileClick() {
@@ -465,7 +300,6 @@ class UserEditPresenter
 
     override fun onEditFileClick(file: FileModel) {
         isFileEdit = true
-        viewState.setFileEditData(file)
         viewState.saveOnClick(true)
     }
 
@@ -499,39 +333,15 @@ class UserEditPresenter
                         }
                     }
                 }.asOptional())
-                /*if (BuildConfig.NEW_PROFILE_EDIT) {
-                    //viewState.updateFilesList(it.attached_recomendation_files)
-                    appData.updateUser {
-                        attached_recomendation_files = it.attached_recomendation_files
-                    }
-                } else {
-                    appData.updateUser {
-                        attached_recomendation_files = it.attached_recomendation_files
-                    }
-                }*/
             }, {
                 it.printStackTrace()
                 viewState.showUpdateError()
             })
     }
 
-    override fun onFileEditSaveClick() {
-        onEditSave(
-            mutableMapOf(
-                User.FIELD_ATTACHED_FILES to (appData.getUser().attached_recomendation_files
-                    ?: emptyList())
-            )
-        ) {
-            appData.userChangeSubject.onNext(appData.getUser().apply {
-                attached_recomendation_files = it.attached_recomendation_files
-            }.asOptional())
-            true
-        }
-    }
 
     override fun onFileEditCancelClick() {
         isFileEdit = false
-        viewState.setAdditionalFilesData(appData.getUserNew())
     }
 
     override fun onNavigateUpRequest() {
@@ -594,9 +404,6 @@ class UserEditPresenter
             .subscribe({
                 appData.getUserNew().apply {
                     phone = it.phone
-                    /*user_phone_confirmed = it.user_phone_confirmed
-                    it.user_status?.let { status -> user_status = status }
-                    it.user_status_detail?.let { details -> user_status_detail = details }*/
                 }
                 compositeDisposable += userRepository.checkUserProfileSingle()
                     .performOnBackgroundOutOnMain()
@@ -608,95 +415,6 @@ class UserEditPresenter
                         if (onComplete(it))
                             viewState.navigateUp()
                     })
-
-                /*if (onComplete(it))
-                    viewState.navigateUp()*/
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
-    }
-
-    private fun onEditSave(data: MutableMap<String, Any?>, onComplete: (User) -> Boolean) {
-        if (data.isEmpty()) {
-            viewState.navigateUp()
-            return
-        }
-
-        val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
-        if (avatar != null) {
-            if (data.size == 1) {
-                compositeDisposable += userRepository.changeUserImage(avatar)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.navigateUp()
-                    }, {
-                        it.printStackTrace()
-                        viewState.showUpdateError(it.message)
-                    })
-                //updateUser(userRepository.changeUserImage(avatar), onComplete)
-            } else {
-                compositeDisposable += userRepository.changeUserImage(avatar)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.navigateUp()
-                    }, {
-                        it.printStackTrace()
-                        viewState.showUpdateError(it.message)
-                    })
-                /*updateUser(userRepository.changeUserImage(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)*/
-            }
-        } else {
-            val updateFiles = data[FIELD_ATTACHED_FILES]
-            if (updateFiles != null) {
-                val uFiles = if (updateFiles is List<*>)
-                    updateFiles as List<RecommendationFile>
-                else
-                    arrayListOf(updateFiles as RecommendationFile)
-                compositeFilesDisposable += appData.userChangeSubject
-                    .performOnBackgroundOutOnMain()
-                    .subscribeBy {
-                        val files = it.value?.attached_recomendation_files
-                        val update = arrayListOf<RecommendationFile>()
-                        files?.forEach { file ->
-                            val up = uFiles.firstOrNull { f -> f.id == file.id }
-                            if (up != null) {
-                                update.add(
-                                    RecommendationFile(
-                                        id = file.id,
-                                        name = if (up.newName.isNullOrEmpty()) up.name else up.newName
-                                    )
-                                )
-                            } else {
-                                if (updateFiles !is List<*>)
-                                    update.add(RecommendationFile(id = file.id, name = file.name))
-                            }
-                        }
-                        data.remove(FIELD_ATTACHED_FILES)
-                        data.put(FIELD_ATTACHED_FILES, update)
-                        updateUser(userRepository.updateUser(data), onComplete)
-                    }
-            } else {
-                updateUser(userRepository.updateUser(data), onComplete)
-            }
-        }
-    }
-
-    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
-        compositeDisposable += request
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                appData.getUser().apply {
-                    user_phone_confirmed = it.user_phone_confirmed
-                    it.user_status?.let { status -> user_status = status }
-                    it.user_status_detail?.let { details -> user_status_detail = details }
-                }
-                if (onComplete(it))
-                    viewState.navigateUp()
             }, {
                 it.printStackTrace()
                 viewState.showUpdateError(it.message)
@@ -714,4 +432,12 @@ class UserEditPresenter
 
     private fun textRequestBody(text: String?, fieldName: String): MultipartBody.Part? =
         MultipartBody.Part.createFormData(fieldName, text ?: "")
+
+    fun canUpdate(can: Boolean) {
+        this.withUpdate = can
+    }
+
+    fun isWithUpdate(): Boolean {
+        return withUpdate
+    }
 }

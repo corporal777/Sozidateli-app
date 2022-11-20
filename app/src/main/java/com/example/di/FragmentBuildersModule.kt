@@ -8,7 +8,7 @@ import com.example.ui.auth.authorization.AuthorizationFragmentNew
 import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
-import com.example.ui.auth.register.email.RegisterEmailFragment
+import com.example.ui.auth.register.email.finishregister.newbuild.FinishRegisterNewFragment
 import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
 import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
 import com.example.ui.auth.register.invite.InviteRegisterFragment
@@ -16,6 +16,7 @@ import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.banned.BannedFragment
 import com.example.ui.chat.ChatFragment
+import com.example.ui.chat.redesign.ChatFragmentNew
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
@@ -49,6 +50,7 @@ import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
+import com.example.ui.organizations.redesign.OrganizationFragmentNew
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
@@ -92,7 +94,7 @@ import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
-import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -123,7 +125,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeLoginEmailFragment(): LoginFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeRegisterEmailFragment(): RegisterEmailFragment
+    abstract fun contributeRegisterEmailFragment(): FinishRegisterNewFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRegisterEmailNewFragment(): RegisterEmailNewFragment
@@ -381,6 +383,12 @@ abstract class FragmentBuildersModule {
     abstract fun contributeChangePhoneBottomSheetFragment(): ChangePhoneFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeConfirmPhoneBottomSheetFragment(): ConfirmPhoneFragment
+    abstract fun contributeConfirmPhoneBottomSheetFragment(): ConfirmEmailPhoneFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeOrganizationFragmentNew(): OrganizationFragmentNew
+
+    @ContributesAndroidInjector
+    abstract fun contributeChatFragmentNew(): ChatFragmentNew
 
 }

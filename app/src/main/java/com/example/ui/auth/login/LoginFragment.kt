@@ -84,11 +84,7 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
     }
 
     override fun showEmailRegistration() {
-        if (BuildConfig.NEW_PROFILE_EDIT) {
-            findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailNewAction())
-        } else {
-            findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailAction())
-        }
+        findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailNewAction())
     }
 
     override fun showSnRegistration(snUser: SnUser) {

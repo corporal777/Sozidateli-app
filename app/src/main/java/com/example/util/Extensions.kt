@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import coil.load
 import coil.request.ImageRequest
 import coil.size.Scale
+import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.example.BuildConfig
 import com.example.R
@@ -200,6 +201,35 @@ fun ImageView.setImage(
     }
 }
 
+fun ImageView.setCircleAvatar(
+    image: Any?, crossFad: Int? = 500,
+    placeholder: Int? = R.drawable.background_image_placeholder,
+    error: Int? = R.drawable.avatar_placeholder
+) {
+    val resImage: Any = image ?: ""
+    when (resImage) {
+        is Int -> load(resImage) {
+            setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+        }
+        is String ->
+            if (Patterns.WEB_URL.matcher(resImage).matches())
+                load(resImage) {
+                    setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+                }
+            else
+                load(File(resImage)) {
+                    setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+                }
+        is Drawable ->
+            load(resImage) {
+                setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+            }
+        is Bitmap -> load(resImage) {
+            setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
+        }
+    }
+}
+
 
 fun ImageRequest.Builder.setParams(
     crossfad: Int? = 500,
@@ -304,8 +334,8 @@ fun removeFirstAndLastSpaces(str: String?): String {
     return value?.replace(reg, "") ?: ""
 }
 
-fun removeAllDoubleSpaces(str: String): String {
-    val newStr = str.trim().replace("[\\s]+".toRegex(), " ")
+fun String.removeAllDoubleSpaces(): String {
+    val newStr = this.trim().replace("[\\s]+".toRegex(), " ")
     val sb = StringBuilder(newStr)
     val currentChar = ' '
     var counter = 0

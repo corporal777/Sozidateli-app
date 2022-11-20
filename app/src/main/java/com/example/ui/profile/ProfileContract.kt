@@ -53,15 +53,6 @@ interface ProfileContract {
         fun showSessions()
 
         @StateStrategyType(SkipStrategy::class)
-        fun emailSuccess()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideDialogProgress()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun phoneSuccess(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -73,11 +64,16 @@ interface ProfileContract {
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneConfirmation(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailConfirmation(email: String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showQrScannerToAuthWebSite()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        //fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Drawable)
         fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap?)
     }
 
@@ -93,9 +89,8 @@ interface ProfileContract {
         fun onRateClick()
         fun onLogoutClick()
         fun onSettingsClick()
-        fun sendEmail(email: String)
-        fun sendPhone(phone: String)
-        fun confirmCode(phone: String, code: String)
+        fun onEmailConfirmed(email: String)
+        fun onPhoneConfirmed(phone: String)
         fun checkEmailIsUnique(email: String)
         fun checkPhoneIsUnique(phone: String)
         fun onQrScannerToAuthWebClick()

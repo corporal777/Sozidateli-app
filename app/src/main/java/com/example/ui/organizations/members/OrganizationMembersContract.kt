@@ -11,18 +11,17 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface OrganizationMembersContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(members: List</*OrganizationMember*/OrganizationNewMemberModel>)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun scrollToPositionWithOffset(position: Int, offset: Int)
+        fun setData(members: List<OrganizationNewMemberModel>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showUser(userId: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showCurrentUser(userId: String)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onMemberClick(member: /*OrganizationMember*/OrganizationNewMemberModel)
-        fun onScrollChange(position: Int, offset: Int)
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+        fun onMemberClick(member: OrganizationNewMemberModel)
         fun onRefreshRequest()
     }
 }

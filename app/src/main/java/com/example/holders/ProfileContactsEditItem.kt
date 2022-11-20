@@ -4,6 +4,7 @@ import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.InputFilter
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,9 +64,12 @@ class ProfileContactsEditItem(
     private var mMobilePhone = mobilePhone?.value
     private var mShowMobilePhone = mobilePhone?.isVisible ?: false//showMobilePhone
     private var mIsPhoneConfirmed = mobilePhone?.isConfirmed ?: false//isPhoneConfirmed
+
     private var mWorkPhone = workPhone?.value
     private var mShowWorkPhone = workPhone?.isVisible ?: false//showWorkPhone
+    private var mNoWorkPhone = workPhone?.absent ?: false//user_work_phone_absent
     private var mAdditionalPhone = workPhone?.additional
+
     private var mSite = (site?.values?.map {
         UserDataSite(
             value = it.value ?: "",
@@ -80,7 +84,6 @@ class ProfileContactsEditItem(
         .toMutableList()
     private var mNoSite = site?.absent ?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent ?: false//user_social_links_absent
-    private var mNoWorkPhone = workPhone?.absent ?: false//user_work_phone_absent
 
     private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks?.values?.map {
@@ -119,14 +122,12 @@ class ProfileContactsEditItem(
                         null
 
                     if (mobilePhone?.isConfirmed == true) {
-                        mIsPhoneConfirmed = mMobilePhone == mobilePhone.value
+                        mIsPhoneConfirmed = it.toString().phoneToServer() == mobilePhone.value
                         updatePhoneConfirmationStatus(viewHolder)
                     }
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
-            validatePhone()
-
             scMobilePhone.initSwitch(mShowMobilePhone) { mShowMobilePhone = it }
 
             btnPhoneConfirm.apply {
@@ -424,10 +425,11 @@ class ProfileContactsEditItem(
         var isValid = true
 
         isValid = validatePhone()
-
+//
         if (mobilePhone?.value != mMobilePhone
             && !mMobilePhone.isNullOrEmpty()
-            && !mMobilePhone.isValidPhoneNumber(context)
+            //&& !mMobilePhone.isValidPhoneNumber(context)
+            && !Utils.newPhoneValidator(mMobilePhone.phoneToServer())
         ) {
             viewHolder.tilMobilePhone.apply {
                 error = invalidNumberSecondError
@@ -436,12 +438,12 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
+
         if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {
             viewHolder.tilWorkPhone.apply {
-                //error = invalidError
                 error = invalidNumberSecondError
                 requestFocus()
             }
@@ -464,78 +466,82 @@ class ProfileContactsEditItem(
     }
 
     private fun validatePhone(): Boolean {
-        if (mMobilePhone.isNullOrBlank()) {
+        return if (mMobilePhone.isNullOrBlank()) {
             viewHolder.tilMobilePhone.apply {
                 error = invalidNumberError
                 requestFocus()
             }
-            return false
+            false
+        } else {
+            true
         }
-        return true
     }
 
-    fun isPhoneValidated() = mIsPhoneConfirmed
+    fun isNewPhoneIsValid(): Boolean {
+        return if (mMobilePhone.isNullOrBlank()) {
+            viewHolder.tilMobilePhone.apply {
+                error = invalidNumberError
+                requestFocus()
+            }
+            false
+        } else {
+            Utils.isNewPhoneIsValid(getPersonalPhone())
+        }
+    }
+
+    fun newPhoneIsConfirmed() = mIsPhoneConfirmed
     fun getPersonalPhone() = mMobilePhone.phoneToServer()
+    fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone() ?: "")
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            //if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
+            //add personal phone
+            val list = mutableListOf<FieldDetails>()
+            list.add(
+                FieldDetails(
+                    Utils.validatePhoneBeforeSend(getPersonalPhone() ?: ""),
+                    type = PHONE_PERSONAL,
+                    mShowMobilePhone,
+                    mIsPhoneConfirmed,
+                    false
+                )
+            )
+
+            //add work phone
             val workPhoneUpdate = if (mNoWorkPhone) null
             else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer() ?: "")
 
-            val phonesList = mutableListOf<FieldDetails>()
-
-            if (!workPhoneUpdate.isNullOrEmpty()) {
-                phonesList.add(
-                    FieldDetails(
-                        value = workPhoneUpdate,
-                        type = PHONE_WORK,
-                        isVisible = mShowWorkPhone,
-                        absent = mNoWorkPhone,
-                        additional = mAdditionalPhone
-                    )
+            list.add(
+                FieldDetails(
+                    value = workPhoneUpdate,
+                    type = PHONE_WORK,
+                    isVisible = mShowWorkPhone,
+                    absent = mNoWorkPhone,
+                    additional = mAdditionalPhone
                 )
-                put(UserDetail.USER_PHONE, phonesList)
-            } else {
-                phonesList.add(
-                    FieldDetails(
-                        value = null,
-                        type = PHONE_WORK,
-                        isVisible = mShowWorkPhone,
-                        absent = mNoWorkPhone,
-                        additional = mAdditionalPhone
-                    )
-                )
-                put(UserDetail.USER_PHONE, phonesList)
-            }
+            )
+            put(UserDetail.USER_PHONE, list)
 
+
+            //add contact information
             val siteUpdate = if (mNoSite) arrayListOf()
             else mSite
-            var isUpdateSites = false
-            if (mNoSite != site?.absent || site.values?.toHashSet() != siteUpdate.toHashSet()) {
-                isUpdateSites = true
-                //put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
-            }
+
 
             val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks
-            var isUpdateLinks = false
-            if (mNoNetworks != socialNetworks?.absent || socialNetworks.values?.toHashSet() != networkUpdate.toHashSet()) {
-                isUpdateLinks = true
-                //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
-            }
+
+
             val contactEmails = mutableListOf<EmailsModel>()
-            /*val contactEmails = */if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
-            null
-        } else {
-            mEmails.forEach {
-                if (!it.value.isNullOrEmpty()) {
-                    contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
+            if ((mEmails.size != 1) && !mEmails[0].value.isEmpty()) {
+                mEmails.forEach {
+                    if (!it.value.isNullOrEmpty()) {
+                        contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
+                    }
                 }
             }
-            //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
-        }
+
             put(
                 UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(
                     site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }
@@ -553,105 +559,22 @@ class ProfileContactsEditItem(
         }
     }
 
-    fun getDataToSaveWithInConfirmedPhone(): MutableMap<String, Any?> {
-        return mutableMapOf<String, Any?>().apply {
-            //if (showEmail != mShowEmail) put(UserDetail.USER_EMAIL, FieldDetails(value = email?.value, isVisible = mShowEmail, isConfirmed = email?.isConfirmed))
 
-            val workPhoneUpdate = if (mNoWorkPhone) null
-            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer() ?: "")
+    fun updatePhone(phone: List<FieldDetails>?) {
+        mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
+        mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
+        mShowMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isVisible ?: true
+        updatePhoneConfirmationStatus(viewHolder)
+        viewHolder.etMobilePhone.apply {
+            initInput(mMobilePhone) {
 
-            val phonesList = mutableListOf<FieldDetails>()
-
-            if (!workPhoneUpdate.isNullOrEmpty()) {
-                phonesList.add(
-                    FieldDetails(
-                        value = workPhoneUpdate,
-                        type = PHONE_WORK,
-                        isVisible = mShowWorkPhone,
-                        absent = mNoWorkPhone,
-                        additional = mAdditionalPhone
-                    )
-                )
-                put(UserDetail.USER_PHONE, phonesList)
-            } else {
-                phonesList.add(
-                    FieldDetails(
-                        value = null,
-                        type = PHONE_WORK,
-                        isVisible = mShowWorkPhone,
-                        absent = mNoWorkPhone,
-                        additional = mAdditionalPhone
-                    )
-                )
-                put(UserDetail.USER_PHONE, phonesList)
             }
-
-
-            val list = mutableListOf<FieldDetails>()
-            if (mMobilePhone != mobilePhone?.value) {
-                list.add(
-                    FieldDetails(
-                        mMobilePhone.phoneToServer(),
-                        type = PHONE_PERSONAL,
-                        true,
-                        false,
-                        false
-                    )
-                )
-                put(UserDetail.USER_PHONE, list)
-            } else {
-                list.add(
-                    FieldDetails(
-                        mobilePhone?.value.phoneToServer(),
-                        type = PHONE_PERSONAL,
-                        true,
-                        false,
-                        false
-                    )
-                )
-                put(UserDetail.USER_PHONE, list)
-            }
-
-            val siteUpdate = if (mNoSite) arrayListOf()
-            else mSite
-            var isUpdateSites = false
-            if (mNoSite != site?.absent || site.values?.toHashSet() != siteUpdate.toHashSet()) {
-                isUpdateSites = true
-                //put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
-            }
-
-            val networkUpdate = if (mNoNetworks) arrayListOf()
-            else mSocialNetworks
-            var isUpdateLinks = false
-            if (mNoNetworks != socialNetworks?.absent || socialNetworks.values?.toHashSet() != networkUpdate.toHashSet()) {
-                isUpdateLinks = true
-                //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
-            }
-            val contactEmails = mutableListOf<EmailsModel>()
-            /*val contactEmails = */if ((mEmails.size == 1) && mEmails[0].value.isEmpty()) {
-            null
-        } else {
-            mEmails.forEach {
-                if (!it.value.isNullOrEmpty()) {
-                    contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
-                }
-            }
-            //mEmails.map { EmailsModel(value = it.value, showInProfile = /*it.showInProfile*/true) }
+            addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
-            put(
-                UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(
-                    site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }
-                        .map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
-                    socialLinks = LinksModel(
-                        values = networkUpdate.filter { it.value.isNotBlank() }
-                            .map { ToggleStringModel(it.value, it.showInProfile) },
-                        absent = mNoNetworks
-                    ),
-                    emails = contactEmails
-                )
-            )
+    }
 
-
-        }
+    fun setPhoneConfirmed(isConfirmed: Boolean) {
+        mIsPhoneConfirmed = isConfirmed
+        updatePhoneConfirmationStatus(viewHolder)
     }
 }

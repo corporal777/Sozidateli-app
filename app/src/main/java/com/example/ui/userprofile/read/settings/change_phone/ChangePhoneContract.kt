@@ -19,28 +19,30 @@ interface ChangePhoneContract {
         fun setUserPhoneIsVisible(isVisible : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showConfirmPhoneDialog(phone: String)
+        fun showPhoneIsUpdatedSuccessfully()
 
         @StateStrategyType(SkipStrategy::class)
-        fun setTimerForResendConfirmCode(seconds : Int)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setPhoneIsUpdatedSuccessfully()
+        fun showEnterPassword(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneNotUnique(phone: String, type: ChangePhonePresenter.ConfirmType)
+        fun hideEnterPassword()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showPhoneConfirmation(phone: String)
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
         fun setNewPhone(phone: String)
-        fun setNewPhoneIsConfirmed()
+        fun setNewPhoneIsConfirmed(phone: String)
         fun setNewPhoneIsVisible(isVisible: Boolean)
-        fun updatePhoneData()
-        fun onSendCodeClick()
-        fun onConfirmPhoneClick(phone : String)
-        fun onConfirmCodeClick(code : String)
-        fun startTimerForResendCode(phone: String)
 
-        fun checkPhoneIsUnique(phone : String)
+        fun updatePhoneData()
+        fun onConfirmPhoneClick(phone : String)
+        fun onSaveNewPhoneClick(phone : String)
+
+        fun checkPassword(password : String, phone: String)
     }
 }

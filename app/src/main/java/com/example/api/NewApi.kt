@@ -56,6 +56,9 @@ interface NewApi {
     @POST("v1/user/{id}/email/confirm")
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
 
+    @POST("v1/user/{userId}/email/confirm")
+    fun confirmEmailCodeNew(@Path("userId") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
+
     @POST("v1/user/{id}/phone/confirm")
     fun confirmPhoneCode(@Path("id") id: Int, @Body body: PhoneCodeBody): Completable
 

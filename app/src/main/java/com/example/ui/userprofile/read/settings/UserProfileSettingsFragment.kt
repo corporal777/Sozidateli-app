@@ -24,6 +24,7 @@ import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
@@ -38,15 +39,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     UserProfileSettingsContract.View,
     SimpleTitleToolbar {
 
-    private lateinit var dialog: AddPhoneEmailDialog
-    private lateinit var passwordDialog: SetPasswordDialog
-
-    override fun layout() = R.layout.fragment_user_profile_settings
-    private var isConfirmed = false
-
     private lateinit var mUser: UserDetail
-    //var newPassDialog: ChangePasswordDialog? = null
-
 
     @InjectPresenter
     lateinit var presenter: UserProfileSettingsPresenter
@@ -65,20 +58,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
             }
 
-            tvEditPhone.setOnClickListener {
-                presenter.onChangePhoneClick()
-//                dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CHANGE_PHONE)
-//                    .setSelectCallback {
-//                        if (it.type == RegisterDataType.CHANGE_PHONE) {
-//                            if (isConfirmed) {
-//                                presenter.checkPhoneIsUnique(it.value)
-//                            } else {
-//                                presenter.onChangeNotConfirmedPhone(it.value)
-//                            }
-//                        }
-//                    }
-            }
-
             ivInfoName.setOnClickListener {
                 showDisabledMainInputInfo()
             }
@@ -88,9 +67,11 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             ivInfoMiddleName.setOnClickListener {
                 showDisabledMainInputInfo()
             }
+            tvEditPhone.setOnClickListener(presenter::onChangePhoneClick)
             tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
-
             btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
+            tvEditEmail.setOnClickListener(presenter::onChangeEmailClick)
+            tvEditShortName.setOnClickListener(presenter::showChangeShortNameClick)
 
             ivPrivacyProfile.setOnClickListener {
                 if (mUser.state?.isHidden.toBoolean()) {
@@ -128,49 +109,8 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                     presenter.onBlockOrganizationNotificationsClick(state)
                 }
             }
-            tvEditEmail.setOnClickListener(presenter::onChangeEmailClick)
-            tvEditShortName.setOnClickListener {
-                presenter.showChangeShortNameClick()
-            }
         }
 
-    }
-
-    override fun hideDialogProgress() {
-        dialog.isProgressVisible(false)
-    }
-
-    override fun phoneSuccess(phone: String) {
-        dialog.hideDialog()
-
-        passwordDialog = SetPasswordDialog(requireActivity())
-            .setSelectCallback {
-                presenter.onPasswordInputComplete(it, phone)
-            }
-    }
-
-    override fun hideDialogProgress2() {
-        passwordDialog.isProgressVisible(false)
-    }
-
-    override fun passwordSuccess(phone: String) {
-        passwordDialog.hideDialog()
-        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
-        dialog.setPhoneForCode(phone)
-        dialog.setSelectCallback {
-            if (it.type == RegisterDataType.CODE) {
-                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                presenter.confirmCode(phone, it.value)
-            }
-        }
-        dialog.setSendCodeCallback {
-            presenter.sendPhone(phone)
-        }
-    }
-
-    override fun codeSuccess() {
-        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
-        dialog.hideDialog()
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
@@ -182,11 +122,10 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             tvUserMiddleName.text = user.getMiddleName()
 
             ivNoMiddleName.apply {
-                setImage(user.middleName?.absent ?: false)
                 isEnabled = false
+                if (user.middleName?.absent == true || user.middleName?.value == "-") setImage(true)
+                else setImage(false)
             }
-
-            isConfirmed = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed == true
 
             val phone =
                 user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
@@ -214,6 +153,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
             ivInfo.isVisible =
                 !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
+
             ivInfo.setOnClickListener {
                 TitleMessageDialog(
                     requireContext(),
@@ -223,9 +163,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                     btnNegativeText = getString(R.string.content_description_delete),
                     canShowCancel = true
                 ).setPositiveSelectCallback {
-                    presenter.registerEmailResend(
-                        user.email?.onConfirmation ?: user.email?.value ?: ""
-                    )
+                    showEmailConfirmation(user.email?.onConfirmation ?: user.email?.value ?: "")
                 }.setNegativeSelectCallback {
                     if (user.email?.value == null) {
                         presenter.onDeleteEmail()
@@ -251,32 +189,13 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     override fun showChangeEmail() {
         val changeEmailDialog = ChangeEmailFragment("")
         changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
-        //showChangeEmailDialog(presenter::checkEmailIsUnique)
     }
 
     override fun showNewChangeEmail(email: String) {
         val changeEmailDialog = ChangeEmailFragment(email)
         changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
-        //showNewChangeEmailDialog(email, presenter::checkEmailIsUnique)
     }
 
-
-    override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
-
-
-    override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_phone_text, phone),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    presenter.sendPhone(phone)
-                } else {
-                    dialog.isProgressVisible(false)
-                }
-            }
-    }
 
     override fun showUpdateError(message: String?) {
         val title = getString(R.string.profile_edit_request_error)
@@ -301,16 +220,23 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun showPhoneEdit(phone: FieldDetails?) {
-        val changeShortNameDialog = ChangePhoneFragment(phone)
-        changeShortNameDialog.show(
+        val changePhoneDialog = ChangePhoneFragment(phone)
+        changePhoneDialog.show(
             requireActivity().supportFragmentManager,
             "change_phone_settings"
         )
-//        findNavController().navigate(
-//            UserProfileSettingsFragmentDirections.toEdit(
-//                UserEditDataType.PHONE
-//            )
-//        )
+    }
+
+    override fun showEmailConfirmation(email: String) {
+        val confirmEmailDialog = ConfirmEmailPhoneFragment(email)
+        confirmEmailDialog.show(
+            requireActivity().supportFragmentManager,
+            "confirm_email_settings"
+        )
+        confirmEmailDialog.setConfirmCallback {
+            presenter.updateEmail(email)
+        }
+
     }
 
     override fun showChangePrivacy() {
@@ -330,19 +256,20 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                     true
                 }
             }
-        }
-            .show()
+        }.show()
     }
 
     override fun showDeleteProfile() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.user_profile_delete_confirm_title)
-            .setMessage(R.string.user_profile_delete_confirm_message)
-            .setNegativeButton(R.string.user_profile_delete_confirm_approve) { _, _ ->
-                presenter.onDeleteProfileConfirm()
-            }
-            .setPositiveButton(R.string.user_profile_delete_confirm_decline) { _, _ -> Unit }
-            .show()
+        TitleMessageDialog(
+            requireContext(),
+            getString(R.string.user_profile_delete_confirm_title),
+            getString(R.string.user_profile_delete_confirm_message),
+            getString(R.string.remove),
+            getString(R.string.revoke),
+            false
+        ).setPositiveSelectCallback {
+            presenter.onDeleteProfileConfirm()
+        }
     }
 
 
@@ -367,5 +294,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
         }
 
     }
+
+    override fun layout() = R.layout.fragment_user_profile_settings
 }
 

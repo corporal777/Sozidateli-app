@@ -30,6 +30,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list.*
+import onScrolled
 
 abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment(),
     EventListContract.View {
@@ -53,19 +54,13 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-        //override fun onActionShowEvent(event: String) = presenter.onActionShowEvent(event)
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
-
-       // override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) =
-           // presenter.onActionWriteToOrganization(emails)
 
         override fun onShowEventClick(view: View, event: String) {
             eventToShowView = view
             presenter.onShowEventClick(event)
         }
-
-       // override fun onShowFilterClick(format: Int) = presenter.onShowFilterClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
@@ -81,6 +76,9 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
+            onScrolled { dx, dy ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -131,32 +129,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
-        val emailsList = emails.map {
-            it.getAffiliationString(underlinedEmail = true)
-        }
-            .filter { it.isNotEmpty() }
-            .toTypedArray()
-
-        AlertDialog.Builder(requireContext())
-            .setItems(emailsList) { dialog, which ->
-                val email = emails[which]
-                presenter.onWriteToOrganizationEmailChosen(email)
-                dialog.dismiss()
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
-
-    override fun showWriteToOrganization(email: EventPhoneModel) {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
-    }
-
     override fun scrollToPositionWithOffset(position: Int, offset: Int) {
         (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
             position,
@@ -165,12 +137,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
     }
 
     override fun showAboutEvent(event: String) {
-//        findNavController().navigate(
-//            R.id.about_event_fragment,
-//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle(),
-//            null,
-//            eventToShowView?.let { FragmentNavigatorExtras(it to it.transitionName) })
-
         findNavController().navigate(
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle())
@@ -181,14 +147,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         findNavController().navigate(
             R.id.request_fragment,
             EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
-    }
-
-    override fun selectEvent() {
-        findNavController().navigate(
-            R.id.event_tabs_fragment, null, NavOptions.Builder()
-                .setPopUpTo(R.id.main_navigation, true)
-                .build()
         )
     }
 

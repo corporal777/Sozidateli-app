@@ -1,6 +1,9 @@
 package com.example.ui.views
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.example.R
@@ -32,6 +35,8 @@ class WarningDialog(val activity: Activity, val text: String) {
             alertDialog.dismiss()
         }
         alertDialog = builder.create()
+        val back = ColorDrawable(Color.TRANSPARENT)
+        alertDialog.window?.setBackgroundDrawable(back)
         alertDialog.show()
     }
 

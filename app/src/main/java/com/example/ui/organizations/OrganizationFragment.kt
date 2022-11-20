@@ -31,7 +31,9 @@ import com.example.holders.EventStatusItem
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.old.AboutEventFragmentArgs
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.search.tabs.SearchTabsFragmentArgs
@@ -361,8 +363,8 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
         )
     }
 
@@ -397,13 +399,6 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
         )
     }
 
-    override fun showAboutEvent(event: Event) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event.id, ABOUT_FROM_OTHER).build().toBundle()
-        )
-    }
-
     override fun showEventRequest(event: Event) {
         findNavController().navigate(
             R.id.request_fragment,
@@ -421,6 +416,10 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(), Org
 
     override fun showUser(id: String) {
         findNavController().navigate(OrganizationFragmentDirections.organizationToUser(id))
+    }
+
+    override fun showCurrentUser(id: String) {
+        findNavController().navigate(R.id.user_profile_fragment)
     }
 
     override fun changeScrollY(scroll: Int) {

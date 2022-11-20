@@ -14,6 +14,13 @@ class SearchTabsPresenter
 
     lateinit var searchInterface: SearchInterface
     var filter: SearchFilter? = null
+    var currentPosition = 0
+
+    override fun attachView(view: SearchTabsContract.View?) {
+        super.attachView(view)
+        viewState.setCurrentFragment(currentPosition)
+    }
+
 
     override fun onSearchTextChange(text: String) {
         onSearchTextSubmit(text)

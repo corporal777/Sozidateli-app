@@ -254,17 +254,11 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
             listOf(
                 editItem,
                 ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-                /*ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
-                    hasDivider = false
-                    compactMargin = true
-                }*/
             )
         )
 
         onSaveClick = {
             hideKeyboard()
-            /*file.desc = editItem.mName
-            file.newName = editItem.mName*/
             presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
         }
     }

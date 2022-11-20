@@ -62,6 +62,7 @@ import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
@@ -370,7 +371,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     )
                 }
                 if (lastPath == PATH_QR) {
-                    //QR_CODE_TO_AUTH_WEB = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
                     val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
                     if (!code.isNullOrEmpty()) {
                         presenter.openAuthWebsiteFragment(code)
@@ -390,7 +390,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }*/
                 } else if (authEmail != null && authCode != null) {
                     //presenter.onHandleAuthLink(authEmail, authCode)
-                } else if (/*authCode != null && recoverEmail != null*/lastPath == PASSWORD_RECOVERY && authCode != null) {
+                } else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
                     presenter.onHandleRecoverPasswordLink(/*recoverEmail, */authCode)
                 } else if (lastPath == PATH_SN_AUTHORIZATION) {
                     val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
@@ -670,8 +670,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showOrganization(organization: String) {
         findNavController().navigate(
-            R.id.organization_fragment,
-            OrganizationFragmentArgs.Builder(organization).build().toBundle()
+            R.id.organization_fragment_new,
+            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
         )
     }
 

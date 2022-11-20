@@ -132,7 +132,7 @@ class FinishRegisterPresenter
             AuthBody(
                 LoginModel(loginType, login ?: ""),
                 LoginModel("temporary", code),
-                deviceId?:"",
+                deviceId ?: "",
                 deviceModel,
                 appCode,
                 appVersion
@@ -240,121 +240,70 @@ class FinishRegisterPresenter
     }
 
     override fun onHandleAuthLink() {
-        when (loginType) {
-            "phone" -> {
-                compositeDisposable += authRepository.confirmPhone(
-                    ConfirmCodeBody(
-                        "personal",
-                        phone ?: "",
-                        phoneCode ?: ""
-                    )
+        viewState.showCustomProgressDialog()
+        compositeDisposable += if (loginType == "email") {
+            userRepository.confirmEmailCode(
+                appData.getId(),
+                EmailCodeBody(code = code, email = email ?: "")
+            ).ignoreElement()
+        } else {
+            authRepository.confirmPhone(
+                ConfirmCodeBody(
+                    "personal",
+                    phone ?: "",
+                    phoneCode ?: ""
                 )
-                    .performOnBackgroundOutOnMain()
-                    .withCustomProgressBarLoadingDialog(viewState)
-                    .subscribeSimple(
-                        onError = {
-                            onReceiveError(it)
-                            viewState.codeError()
-                        },
-                        onComplete = {
-                            userRepository.updateUserProfile(appData.getId(),
-                                mutableMapOf<String, Any>().apply {
-                                    put(
-                                        USER_PHONE,
-                                        arrayListOf(
-                                            FieldDetails(
-                                                value = phone?.replace(" ", ""),
-                                                type = PHONE_PERSONAL,
-                                                isVisible = true,
-                                                isConfirmed = true
-                                            )
-                                        )
-                                    )
-                                    if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
-                                    if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
-                                    if (defMiddleName != middleName) put(
-                                        USER_MIDDLE_NAME,
-                                        FieldDetails(
-                                            value = middleName,
-                                            absent = noMiddleNameChecked
-                                        )
-                                    )
-                                    put(USER_REGISTRATION_FINISH, true)
-                                }
-                                /*mapOf(USER_NAME to firstName,
-                                USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked),
-                                USER_PHONE to arrayListOf(FieldDetails(value = phone?.replace(" ", ""), type = PHONE_PERSONAL, isVisible = true, isConfirmed = true)))*/
-                            )
-                                .performOnBackgroundOutOnMain()
-                                .withCustomProgressBarLoadingDialog(viewState)
-                                .subscribeSimple(
-                                    onError = {
-                                        onReceiveError(it)
-                                    },
-                                    onSuccess = {
-                                        viewState.openHome()
-                                    })
-                                .call(compositeDisposable)
-
-                        })
-            }
-            "email" -> {
-                userRepository.confirmEmailCode(
-                    appData.getId(),
-                    EmailCodeBody(code = code, email = email ?: "")
-                )
-                    .performOnBackgroundOutOnMain()
-                    .withCustomProgressBarLoadingDialog(viewState)
-                    .subscribeSimple(
-                        onError = {
-                            onReceiveError(it)
-                            viewState.codeError()
-                        },
-                        onSuccess = {
-                            userRepository.updateUserProfile(appData.getId(),
-                                mutableMapOf<String, Any>().apply {
-                                    put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
-                                    if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
-                                    if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
-                                    if (defMiddleName != middleName) put(
-                                        USER_MIDDLE_NAME,
-                                        FieldDetails(
-                                            value = middleName,
-                                            absent = noMiddleNameChecked
-                                        )
-                                    )
-                                    put(USER_REGISTRATION_FINISH, true)
-                                }
-                                /* mapOf(USER_EMAIL to FieldDetails(value = email, isVisible = true), USER_NAME to firstName,
-                                 USER_LAST_NAME to lastName, USER_MIDDLE_NAME to FieldDetails(value = middleName, absent = noMiddleNameChecked))*/
-                            )
-                                .performOnBackgroundOutOnMain()
-                                .withCustomProgressBarLoadingDialog(viewState)
-                                .subscribe({
-                                    viewState.openHome()
-                                }, {
-                                    onReceiveError(it)
-                                })
-                                .call(compositeDisposable)
-                        })
-            }
+            )
         }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    viewState.hideCustomProgressDialog()
+                    onReceiveError(it)
+                    viewState.codeError()
+                },
+                onComplete = {
+                    userRepository.updateUserProfile(appData.getId(),
+                        mutableMapOf<String, Any>().apply {
+                            if (loginType == "email"){
+                                put(USER_EMAIL, FieldDetails(value = email, isVisible = true))
+                            }else {
+                                put(
+                                    USER_PHONE,
+                                    arrayListOf(
+                                        FieldDetails(
+                                            value = phone?.replace(" ", ""),
+                                            type = PHONE_PERSONAL,
+                                            isVisible = true,
+                                            isConfirmed = true
+                                        )
+                                    )
+                                )
+                            }
+                            if (defFirstName != firstName) put(USER_NAME, firstName ?: "")
+                            if (defLastName != lastName) put(USER_LAST_NAME, lastName ?: "")
+                            if (defMiddleName != middleName) put(USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = noMiddleNameChecked))
+                            put(USER_REGISTRATION_FINISH, true)
+                        }
+                    )
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({
+                            viewState.hideCustomProgressDialog()
+                            viewState.openHome()
+                        }, {
+                            viewState.hideCustomProgressDialog()
+                            onReceiveError(it)
+                        })
+                        .call(compositeDisposable)
+                })
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
         viewState.showSnRegistration(snUser)
     }
 
-    override fun onPhoneConfirmClick() {
-        val phone = this.phone
-        val phoneValid = phone.isValidPhoneNumber(phoneNumberUtil)
-        viewState.apply {
-            showWrongPhoneError(!phoneValid)
-            if (phone != null) showPhoneConfirm(phone)
-        }
-    }
 
     companion object {
-        const val TIMER_SECONDS_COUNT = 60
+        const val TIMER_SECONDS_COUNT = 120
     }
 }

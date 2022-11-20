@@ -58,6 +58,7 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
+            presenter.currentPosition = position
             selectTab(position)
             setupQrScannerButton(position)
         }
@@ -77,7 +78,6 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
                 override fun getCount() = fragments.size
             }
             selectTab(currentItem)
-            //setupToolbarIcons(currentItem)
             setupQrScannerButton(currentItem)
         }
 
@@ -131,14 +131,13 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
         }
     }
 
-    private fun setupToolbarIcons(position: Int) {
-        toolbarContentActionBar?.apply {
-            removeAllRightViews()
-            if (position == 0) {
-                addRightView(ToolbarButton(requireContext()).apply {
-                    setImageResource(R.drawable.ic_scan)
-                    setOnClickListener { presenter.onScanClick() }
-                })
+    override fun setCurrentFragment(position: Int) {
+        mBinding.viewPager.apply {
+            if (currentItem == position) {
+                return
+            } else {
+                currentItem = position
+                selectTab(position)
             }
         }
     }

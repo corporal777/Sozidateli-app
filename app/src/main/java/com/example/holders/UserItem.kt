@@ -4,19 +4,13 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.setCircleAvatar
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_user.*
 import setCircleImage
 
 class UserItem(
-        /*private val id: Int,
-        private val name: String,
-        private val description: String?,
-        private val avatar: String?,
-        private val onUserClick: () -> Unit,
-        var action: UserSubscribeButton.Action? = null,
-        private val onActionClick: (() -> Unit)? = null*/
         private val id: Int,
         private val name: String,
         private val description: String?,
@@ -33,7 +27,7 @@ class UserItem(
                 isVisible = !description.isNullOrEmpty()
                 text = description
             }
-            ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
+            ivUserAvatar.setCircleAvatar(avatar)
             itemView.setOnClickListener { onUserClick.invoke() }
             btnAction.apply {
                 val action = this@UserItem.action

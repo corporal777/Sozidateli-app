@@ -22,6 +22,9 @@ interface NotificationsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showNotification(notification: Notification)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAboutEvent(eventId: String)
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {

@@ -1,5 +1,6 @@
 package com.example.ui.user
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
@@ -11,20 +12,30 @@ import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.models.user.UserData
+import com.example.extensions.defaultServerDateFormatter
 import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.userSessions.UserSessionsContract
+import com.example.util.ImageUtil
 import com.example.util.loadBitmap
+import com.example.util.loadBitmapNew
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.functions.Function
+import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserPresenter
@@ -33,113 +44,74 @@ class UserPresenter
     private val chatRepository: ChatRepository,
     private val userRepository: UserRepository,
     private val commonRepository: CommonRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
 ) : BasePresenter<UserContract.View>(appData), UserContract.Presenter {
 
+    private var mDy = 0f
     lateinit var userId: String
     private lateinit var profileUserData: ProfileUserData
+    lateinit var context: Context
+
+
+    override fun attachView(view: UserContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarShadow(mDy)
+    }
+
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarShadow(mDy)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadUserData(true)
-
-        /*compositeDisposable += haChat.subscribeToExcludeFlagChange()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    /*if (::profileUserData.isInitialized && it.roomKey == profileUserData.user.chat?.id.toString()) {
-                        viewState.apply {
-                            profileUserData.user.chat?.isBannedByYou = it.exclude
-                            viewState.setSubscribeAction(profileUserData.user.getUserSubscribeAction())
-                        }
-                    }*/
-                }, { it.printStackTrace() })*/
     }
 
     private fun loadUserData(withLoading: Boolean) {
-        val getUser = if (isCurrentUser()) {
-            userRepository.getUserShortNew()
-                .flatMapObservable { appData.userNewChangeSubject }
-                .map { it.value!! }
-        } else {
-            userRepository.getUserByIdNew(userId).toObservable()
-
-        }
-            .performOnBackgroundOutOnMain()
-
-            .flatMapMaybe { user ->
-                user.image?.uri.loadAvatar().map { user to it }
-            }
-            .observeOn(Schedulers.io())
-
-
-
-        compositeDisposable += commonRepository.getInterests()
-            .flatMapObservable { interests ->
-                getUser.map {
-                    val user = it.first
-                    val avatar = it.second.value
-                    UserData(user, avatar, groupUserInterests(user, interests))
-                }
+        if (withLoading) viewState.showShimmerPlaceholder()
+        compositeDisposable += userRepository.getUserByIdNew(userId)
+            .zipWith(commonRepository.getInterests())
+            .flatMap {
+                val user = it.first
+                val avatar = it.first.image.uri.loadAvatarNew()
+                val interests = it.second
+                Maybe.just(UserData(user, avatar, groupUserInterests(user, interests)))
             }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (withLoading) it.withLoadingDialog(viewState)
-                else it
-            }
-            .subscribe({
-                profileUserData = if (BuildConfig.NEW_PROFILE_EDIT) {
-                    ProfileUserData(
-                        it,
-                        !BuildConfig.NEW_PROFILE_EDIT
-                    )
-                } else {
-                    ProfileUserData(
-                        it,
-                        isCurrentUser()
-                    )
-                }
-                compositeDisposable += userRepository.searchAddress(
-                    profileUserData.userData.user.address?.getShortAddress() ?: ""
-                )
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({ add ->
-                        viewState.apply {
-                            if (add.data?.isNotEmpty() == true)
-                                profileUserData.userData.user.address?.shortAddres =
-                                    add.data[0].region
-                            setUser(profileUserData)
-                            if (!isCurrentUser() && profileUserData.user.state?.isRegistered == true) {
-                                setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                                setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
-                            }
-                        }
-                    }, {
-                        viewState.apply {
-                            setUser(profileUserData)
-                            if (!isCurrentUser() && profileUserData.user.state?.isRegistered == true) {
-                                setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                                setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
-                            }
-                        }
-                    })
-            }, {
-                it.printStackTrace()
-                viewState.showUserHiddenDialog()
-            })
-    }
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showUserHiddenDialog()
+                },
+                onSuccess = {
+                    profileUserData = ProfileUserData(it, false)
+                    compositeDisposable += userAddressRequest()
+                        .performOnBackgroundOutOnMain()
+                        .subscribeSimple(
+                            onError = {
+                                viewState.apply {
+                                    setUser(profileUserData)
+                                    if (profileUserData.user.state?.isRegistered == true) {
+                                        setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                                        setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                                    }
+                                }
+                            },
+                            onSuccess = { add ->
+                                viewState.apply {
+                                    if (add.data?.isNotEmpty() == true)
+                                        profileUserData.userData.user.address?.shortAddres =
+                                            add.data[0].region
 
-    private fun getAdditionalData() {
-        compositeDisposable += userRepository.getEducationLevel()
-            .performOnBackgroundOutOnMain()
-            .subscribe({}, { it.printStackTrace() })
-
-        compositeDisposable += userRepository.getSpeciality()
-            .performOnBackgroundOutOnMain()
-            .subscribe({}, { it.printStackTrace() })
-
-        compositeDisposable += userRepository.getAcademicDegrees()
-            .performOnBackgroundOutOnMain()
-            .subscribe({}, { it.printStackTrace() })
+                                    setUser(profileUserData)
+                                    if (profileUserData.user.state?.isRegistered == true) {
+                                        setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                                        setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
+                                    }
+                                }
+                            })
+                })
     }
 
     private fun groupUserInterests(
@@ -166,13 +138,10 @@ class UserPresenter
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     viewState.openChat(user.fullName, user.image.uri, it.id.toString())
                 }
-            /*.subscribe({
-                viewState.openChat(user.fullName, user.image.uri, it.id.toString())
-            }, { it.printStackTrace() })*/
         } else {
             viewState.openChat(
                 user.fullName,
@@ -267,110 +236,12 @@ class UserPresenter
         }
     }
 
-    override fun onEditMainDataClick() {
-        viewState.showDataEditor(UserEditDataType.MAIN)
-    }
-
-    override fun onEditPersonalDataClick() {
-        viewState.showDataEditor(UserEditDataType.PERSONAL)
-    }
-
-    override fun onEditEducationClick() {
-        viewState.showDataEditor(UserEditDataType.EDUCATION)
-    }
-
-    override fun onEditWorkClick() {
-        viewState.showDataEditor(UserEditDataType.WORK)
-    }
-
-    override fun onEditInterestsClick() {
-        viewState.showDataEditor(UserEditDataType.INTERESTS)
-    }
-
-    override fun onEditAdditionalNotesDataClick() {
-        viewState.showDataEditor(UserEditDataType.ADDITIONAL_NOTES)
-    }
-
-    override fun onEditAdditionalFilesDataClick() {
-        viewState.showDataEditor(UserEditDataType.ADDITIONAL_FILES)
-    }
-
-
-    override fun onChangePasswordClick() {
-        viewState.showChangePassword()
-    }
-
-    override fun onChangePasswordClickConfirm(
-        oldPassword: String,
-        newPassword: String,
-        newPasswordConfirm: String
-    ) {
-        onEditSave(
-            mapOf(
-                User.FIELD_USER_OLD_PASSWORD to oldPassword,
-                User.FIELD_USER_NEW_PASSWORD to newPassword
-            )
-        ) {
-            viewState.showPasswordChangeComplete()
-            false
-        }
-    }
-
-    private fun onEditSave(data: Map<String, Any?>, onComplete: (User) -> Boolean) {
-        if (data.isEmpty()) {
-            viewState.navigateUp()
-            return
-        }
-
-        val avatar = data[User.FIELD_USER_AVATAR] as? Bitmap
-        if (avatar != null) {
-            if (data.size == 1) {
-                //updateUser(userRepository.changeUserImage(avatar), onComplete)
-                compositeDisposable += userRepository.changeUserImage(avatar)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.navigateUp()
-                    }, {
-                        it.printStackTrace()
-                        viewState.showUpdateError(it.message)
-                    })
-            } else {
-                compositeDisposable += userRepository.changeUserImage(avatar)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        viewState.navigateUp()
-                    }, {
-                        it.printStackTrace()
-                        viewState.showUpdateError(it.message)
-                    })
-                /*updateUser(userRepository.changeUserImage(avatar)
-                        .flatMap { userRepository.updateUser(data.minus(User.FIELD_USER_AVATAR)) }, onComplete)*/
-            }
-        } else {
-            updateUser(userRepository.updateUser(data), onComplete)
-        }
-    }
-
-    private fun updateUser(request: Single<User>, onComplete: (User) -> Boolean) {
-        compositeDisposable += request
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                appData.getUser().apply {
-                    it.user_status?.let { status -> user_status = status }
-                    it.user_status_detail?.let { details -> user_status_detail = details }
-                }
-                if (onComplete(it)) viewState.navigateUp()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
-    }
-
     private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
         return loadBitmap()
+    }
+
+    private fun String?.loadAvatarNew(): Bitmap? {
+        return loadBitmapNew(context)
     }
 
     private fun isCurrentUser() = userId == appData.getId().toString()
@@ -378,4 +249,11 @@ class UserPresenter
     override fun onRefreshRequest() {
         loadUserData(false)
     }
+
+    private fun userAddressRequest(): Single<SearchAddressModel> {
+        return userRepository.searchAddress(
+            profileUserData.userData.user.address?.getShortAddress() ?: ""
+        )
+    }
+
 }

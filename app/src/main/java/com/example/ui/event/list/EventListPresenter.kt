@@ -21,6 +21,7 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
 import java.net.UnknownHostException
+import kotlin.math.abs
 
 abstract class EventListPresenter<V : EventListContract.View>(
         private val appData: AppData,
@@ -32,6 +33,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     private var scrollPosition = 0
     private var scrollOffset = 0
+    private var mDy = 0f
 
     private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
     private lateinit var paginationList: PaginationList<EventNew?>
@@ -40,12 +42,12 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setAppBarElevation(0f)
         viewState.setData(List(10) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
         }
-                //.buildList(enablePlaceholders = true)
                 .buildList(enablePlaceholders = false)
 
         compositeDisposable += Observable.create(paginationList)
@@ -81,24 +83,19 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun attachView(view: V?) {
         super.attachView(view)
+        viewState.setAppBarElevation(mDy)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
         if (isFirstAttach) isFirstAttach = false
         else pagination.invalidate()
     }
 
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
+
     override fun onActionRegister(event: String) {
         viewState.showEventRequest(event)
-        /*compositeDisposable += eventRepository.checkUserProfile()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            checkRegistrationFields(event, emptyList())
-                        },
-                        onSuccess = {
-                            checkRegistrationFields(event, it.fields?: emptyList())
-                        }
-                )*/
     }
 
     private fun checkRegistrationFields(event: String, fields: List<UserProfileFields>) {
@@ -125,23 +122,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
                 }
     }
 
-    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
-        if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
-    }
-
-    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
-        viewState.showWriteToOrganization(email)
-    }
-
-    override fun onActionShowEvent(event: String) {
-        compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, event.toInt())))
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }
-    }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 

@@ -91,20 +91,14 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
     }
 
     override fun onUserClick(user: UserDetail) {
-        viewState.showUser(user)
+        if (appData.isCurrentUser(user.id.toString())){
+            viewState.showCurrentUser()
+        }else {
+            viewState.showUser(user)
+        }
     }
 
     override fun onUserActionCLick(user: UserDetail) {
-        /*val id = user.id.toString()
-        val request = if (user.binds?.userFavorite != null) userRepository.removeFromFavorite(id)
-        else userRepository.addToFavorite(id)
-        compositeDisposable += request
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    user.is_in_favorite = !user.is_in_favorite
-                    viewState.updateUser(user)
-                }*/
         val isSubscribed = user.binds?.userFavorite != null
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())

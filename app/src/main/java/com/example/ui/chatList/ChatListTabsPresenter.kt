@@ -6,6 +6,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class ChatListTabsPresenter
@@ -14,6 +15,8 @@ class ChatListTabsPresenter
 ) : BasePresenter<ChatListTabsContract.View>(appData), ChatListTabsContract.Presenter {
 
     private var selectedTab = TAB_CHATS
+
+    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -25,8 +28,14 @@ class ChatListTabsPresenter
                 .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
     }
 
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarShadow(mDy)
+    }
+
     override fun attachView(view: ChatListTabsContract.View?) {
         super.attachView(view)
+        viewState.setAppBarShadow(mDy)
         viewState.selectTab(selectedTab)
     }
 

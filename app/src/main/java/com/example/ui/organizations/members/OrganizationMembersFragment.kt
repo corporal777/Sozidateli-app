@@ -15,6 +15,7 @@ import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PositionOffsetScrollListener
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -43,20 +44,20 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon("")
+        setToolbarTitleAndIcon(getString(R.string.organization_members))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationMembersFragment.adapter
-                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-                    presenter.onScrollChange(position, offset)
-                })
+                onScrolled { _, _ ->
+                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+                }
             }
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-    override fun setData(members: List</*OrganizationMember*/OrganizationNewMemberModel>) {
+    override fun setData(members: List<OrganizationNewMemberModel>) {
         adapter.update(members.mapNotNull {
             val user = it.binds?.user ?: return@mapNotNull null
             OrganizationUserItem(
@@ -69,19 +70,16 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (mBinding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-            position,
-            offset
-        )
-    }
-
     override fun showUser(userId: String) {
         findNavController().navigate(
             OrganizationMembersFragmentDirections.organizationMembersToUser(
                 userId
             )
         )
+    }
+
+    override fun showCurrentUser(userId: String) {
+        findNavController().navigate(R.id.user_profile_fragment)
     }
 
     override fun layout() = R.layout.layout_list

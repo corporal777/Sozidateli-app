@@ -43,6 +43,10 @@ abstract class AbstractSearchUserFragment<P : SearchUserContract.Presenter> :
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
+    override fun showCurrentUser() {
+        findNavController().navigate(R.id.user_profile_fragment)
+    }
+
     override fun createFilterView(filter: SearchFilter.UserNew): View {
         return layoutInflater.inflate(R.layout.layout_filter_user, null).apply {
             etAddress.apply {

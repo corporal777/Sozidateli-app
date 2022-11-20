@@ -9,10 +9,10 @@ import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
 import com.example.extensions.*
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
+import com.example.util.setCircleAvatar
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_chat.*
-import setCircleImage
 import java.util.*
 
 
@@ -28,7 +28,7 @@ class UserChatItem(
         onBind?.invoke(this)
         viewHolder.apply {
             ivAvatar.apply {
-                setCircleImage(userChat.user.image.uri/*.user_avatar*/, R.drawable.avatar_placeholder)
+                setCircleAvatar(userChat.user.image.uri)
             }
 
             updateBadge(viewHolder.tvBadge)

@@ -13,6 +13,9 @@ interface SearchUserContract {
         fun showUser(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showCurrentUser()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateUser(user: UserDetail)
     }
 

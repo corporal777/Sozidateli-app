@@ -34,6 +34,7 @@ import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.organizations.OrganizationFragmentArgs
+import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.user.UserFragmentArgs
@@ -122,7 +123,12 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     private val padding = 16.dp
 
-                    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
                         if (parent.getChildViewHolder(view).itemViewType == R.layout.item_event_partner) {
                             val layoutParams = view.layoutParams as GridLayoutManager.LayoutParams
                             val gridLayoutManager = parent.layoutManager as GridLayoutManager
@@ -162,8 +168,9 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         userAgreement: String?*/
     ) {
         val aboutItem = EventDataAboutItem(
-            -(eventData?.id?.toLong()?: 0),
-            eventData?.binds?.organization?.legalInformation?.name?.short?:eventData?.binds?.organization?.legalInformation?.name?.full,
+            -(eventData?.id?.toLong() ?: 0),
+            eventData?.binds?.organization?.legalInformation?.name?.short
+                ?: eventData?.binds?.organization?.legalInformation?.name?.full,
             eventData?.name,
             null,
             eventData?.holdingDate?.from.formatToEventDatesIntervalNew(eventData?.holdingDate?.to),
@@ -209,12 +216,16 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 userRegistration,
                 eventData?.binds?.organization?.backgroundColor?.value,
                 eventData?.image?.uri,
-                EventFormat(name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom?: "" else eventData?.format?.name?: ""),
+                EventFormat(
+                    name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom
+                        ?: "" else eventData?.format?.name ?: ""
+                ),
                 null,
-                /*!eventData?.binds?.rights?.registration!!*/(eventData?.status?.value?: "") != Event.Status.REGISTRATION,
+                /*!eventData?.binds?.rights?.registration!!*/
+                (eventData?.status?.value ?: "") != Event.Status.REGISTRATION,
                 eventClickListener,
                 aboutItem,
-                eventData?.userAgreement?.name?: eventData?.userAgreement?.uri,
+                eventData?.userAgreement?.name ?: eventData?.userAgreement?.uri,
                 null,
                 false,
                 eventData?.binds?.currentUserRegistration?.id.toString()
@@ -224,18 +235,30 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 val isNotHide = eventData?.binds?.activity?.firstOrNull { !it.hide }
                 if (!eventData?.binds?.activity.isNullOrEmpty() && isNotHide != null) add(
                     EventPageItem(-90, getString(R.string.about_event_activities)) {
-                    findNavController().navigate(AboutEventFragmentDirections.actionAboutEventFragmentToActivitiesFragment(eventData?.id?:0))
-                })
-                if (showContacts) add(EventPageItem(-90, getString(R.string.about_event_contacts)) { presenter.onContactsClick() })
+                        findNavController().navigate(
+                            AboutEventFragmentDirections.actionAboutEventFragmentToActivitiesFragment(
+                                eventData?.id ?: 0
+                            )
+                        )
+                    })
+                if (showContacts) add(
+                    EventPageItem(
+                        -90,
+                        getString(R.string.about_event_contacts)
+                    ) { presenter.onContactsClick() })
                 if (!eventData?.binds?.member?.filter { it.role == "speaker" }.isNullOrEmpty()) {
-                    add(EventPageItem(-80, getString(R.string.about_event_speakers)) { presenter.onSpeakersClick() })
+                    add(
+                        EventPageItem(
+                            -80,
+                            getString(R.string.about_event_speakers)
+                        ) { presenter.onSpeakersClick() })
                 }
 
-                val rating = eventData?.binds?.userFormResult?.sumBy { it.result?.ratingMark?: 0 }
+                val rating = eventData?.binds?.userFormResult?.sumBy { it.result?.ratingMark ?: 0 }
                 val hasRating = eventData?.status?.value == Event.Status.FINISHED &&
                         (eventData?.state?.rating?.formEnabled == true) &&
                         eventData?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED &&
-                        (rating?: 0) <= 0
+                        (rating ?: 0) <= 0
                 /*val hasRating = (eventData?.status?.value == Event.Status.FINISHED ||
                         eventData?.status?.value == Event.Status.IN_ARCHIVE) &&
                         eventData.binds?.form?.firstOrNull { it.type == EventFormModel.Type.RATING } != null &&
@@ -245,15 +268,24 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 val hasAgreement = userAgreement.isNullOrEmpty().not()
 
                 //if (BuildConfig.NEW_PROFILE_EDIT) {
-                add(EventPageItem(-70, getString(R.string.about_event_write_to_organization)) { presenter.onWriteToOrganizationClick() }.apply {
-                    hasBottomPadding = !hasRating && !hasAgreement && hasPages == true
-                })
+                add(
+                    EventPageItem(
+                        -70,
+                        getString(R.string.about_event_write_to_organization)
+                    ) { presenter.onWriteToOrganizationClick() }.apply {
+                        hasBottomPadding = !hasRating && !hasAgreement && hasPages == true
+                    })
                 //}
 
                 if (hasRating) {
-                    add(EventPageItem(-100, getString(R.string.about_event_rate), presenter::onRateClick).apply {
-                        hasBottomPadding = !hasAgreement && hasPages == true
-                    })
+                    add(
+                        EventPageItem(
+                            -100,
+                            getString(R.string.about_event_rate),
+                            presenter::onRateClick
+                        ).apply {
+                            hasBottomPadding = !hasAgreement && hasPages == true
+                        })
                 }
 
                 if (hasAgreement) {
@@ -267,16 +299,25 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                 }
 
                 addAll(pages?.mapIndexed { index, item ->
-                    EventPageItem(item.id?: 0, item.name?: "" /*item.menu*/) { presenter.onPageClick(item) }.apply {
+                    EventPageItem(
+                        item.id ?: 0,
+                        item.name ?: "" /*item.menu*/
+                    ) { presenter.onPageClick(item) }.apply {
                         hasBottomPadding = index == pages.size - 1
                     }
-                }?: arrayListOf())
+                } ?: arrayListOf())
             },
 
             Section().apply {
                 setHeader(PartnersTitleItem(-50))
                 setHideWhenEmpty(true)
-                addAll(partners?.map { EventPartnerItem(it.id?: 0, it.logo?.uri/*it.logo*/, it.name) { presenter.onPartnerClick(it) } }?: arrayListOf())
+                addAll(partners?.map {
+                    EventPartnerItem(
+                        it.id ?: 0,
+                        it.logo?.uri/*it.logo*/,
+                        it.name
+                    ) { presenter.onPartnerClick(it) }
+                } ?: arrayListOf())
             }
         ))
         swipeToRefresh.isRefreshing = false
@@ -296,7 +337,8 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
                         textRes = R.string.event_action_participate
                         clickAction = {
                             event.binds?.eventRegistrationState?.prohibitions?.profileLevelToLow?.value.checkStateLevel {
-                                val agreement = event.userAgreement?.name ?: event.userAgreement?.uri
+                                val agreement =
+                                    event.userAgreement?.name ?: event.userAgreement?.uri
                                 if (/*!BuildConfig.REGISTER_AGREEMENT_ENABLED ||*/ agreement.isNullOrEmpty()) {
                                     presenter.onGoToEventClick()
                                 } else {
@@ -403,7 +445,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             }
         }
 
-        recyclerView.updatePadding(bottom = if (flRegister.isVisible) resources.getDimensionPixelSize(R.dimen.about_event_bottom_gradient_height) else 20.dp)
+        recyclerView.updatePadding(
+            bottom = if (flRegister.isVisible) resources.getDimensionPixelSize(
+                R.dimen.about_event_bottom_gradient_height
+            ) else 20.dp
+        )
     }
 
     private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
@@ -415,24 +461,26 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     private fun showAgreementRegisterDialog(url: String) {
-        val view = layoutInflater.inflate(R.layout.dialog_event_registration_agreement_form, null).apply {
-            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
-                val linkStart = 11
-                val linkEnd = length
-                setSpan(ClickableSpan(drawUnderline = false) {
-                    showUserAgreement(url)
-                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
+        val view =
+            layoutInflater.inflate(R.layout.dialog_event_registration_agreement_form, null).apply {
+                val agreementText =
+                    SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
+                        val linkStart = 11
+                        val linkEnd = length
+                        setSpan(ClickableSpan(drawUnderline = false) {
+                            showUserAgreement(url)
+                        }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
 
-            tvAgree.apply {
-                text = agreementText
-                movementMethod = LinkMovementMethod.getInstance()
-            }
+                tvAgree.apply {
+                    text = agreementText
+                    movementMethod = LinkMovementMethod.getInstance()
+                }
 
-            cbAgree.setOnCheckedChangeListener { _, checked ->
-                btnPositive.isEnabled = checked
+                cbAgree.setOnCheckedChangeListener { _, checked ->
+                    btnPositive.isEnabled = checked
+                }
             }
-        }
 
         AlertDialog.Builder(requireContext())
             .setView(view)
@@ -462,7 +510,11 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(viewIntent)
         } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                R.string.about_event_agreement_open_error,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -524,7 +576,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showEditProfile(id: String) {
-        findNavController().navigate(R.id.user_profile_fragment, UserFragmentArgs.Builder(id).build().toBundle())
+        findNavController().navigate(
+            R.id.user_profile_fragment,
+            UserFragmentArgs.Builder(id).build().toBundle()
+        )
     }
 
     override fun hideWriteToOrganizationForm() {
@@ -541,15 +596,24 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showPage(eventId: String, pageId: String) {
-        findNavController().navigate(R.id.page_fragment, PageFragmentArgs.Builder(eventId, pageId).build().toBundle())
+        findNavController().navigate(
+            R.id.page_fragment,
+            PageFragmentArgs.Builder(eventId, pageId).build().toBundle()
+        )
     }
 
     override fun showPartner(eventId: String, partnerId: String) {
-        findNavController().navigate(R.id.partner_fragment, PartnerFragmentArgs.Builder(eventId, partnerId).build().toBundle())
+        findNavController().navigate(
+            R.id.partner_fragment,
+            PartnerFragmentArgs.Builder(eventId, partnerId).build().toBundle()
+        )
     }
 
     override fun showSpeakers(eventId: String) {
-        findNavController().navigate(R.id.speakers_list_fragment, EventSpeakersFragmentArgs.Builder(eventId).build().toBundle())
+        findNavController().navigate(
+            R.id.speakers_list_fragment,
+            EventSpeakersFragmentArgs.Builder(eventId).build().toBundle()
+        )
     }
 
     override fun showContacts(
@@ -572,30 +636,35 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
         mapInfo: MapInfo?,
         places: List<Place>?*/
     ) {
-        findNavController().navigate(R.id.contacts_fragment, EventContactsFragmentArgs.Builder(
-            /*eventName,
-            phones.toTypedArray(),
-            emails.toTypedArray(),
-            webLinks?.toTypedArray()?: arrayOf(),
-            socialLinks?.toTypedArray()?: arrayOf(),
-            address,
-            place,
-            mapInfo,
-            places?.toTypedArray()*/
-            eventName,
-            phones.toTypedArray(),
-            emails.toTypedArray(),
-            webLinks?.toTypedArray()?: arrayOf(),
-            socialLinks?.toTypedArray()?: arrayOf(),
-            address,
-            place,
-            mapInfo,
-            places?.toTypedArray()
-        ).build().toBundle())
+        findNavController().navigate(
+            R.id.contacts_fragment, EventContactsFragmentArgs.Builder(
+                /*eventName,
+                phones.toTypedArray(),
+                emails.toTypedArray(),
+                webLinks?.toTypedArray()?: arrayOf(),
+                socialLinks?.toTypedArray()?: arrayOf(),
+                address,
+                place,
+                mapInfo,
+                places?.toTypedArray()*/
+                eventName,
+                phones.toTypedArray(),
+                emails.toTypedArray(),
+                webLinks?.toTypedArray() ?: arrayOf(),
+                socialLinks?.toTypedArray() ?: arrayOf(),
+                address,
+                place,
+                mapInfo,
+                places?.toTypedArray()
+            ).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(R.id.request_fragment, EventRegistrationFragmentArgs.Builder(event).build().toBundle())
+        findNavController().navigate(
+            R.id.request_fragment,
+            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun showLogoImage(url: String) {
@@ -606,7 +675,10 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     }
 
     override fun showRating(eventId: String) {
-        findNavController().navigate(R.id.event_rating_fragment, EventRatingFragmentArgs.Builder(eventId).build().toBundle())
+        findNavController().navigate(
+            R.id.event_rating_fragment,
+            EventRatingFragmentArgs.Builder(eventId).build().toBundle()
+        )
     }
 
     override fun showAgreement(url: String) {
@@ -614,18 +686,27 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
             val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(viewIntent)
         } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                R.string.about_event_agreement_open_error,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
     override fun showOrganization(organization: String) {
-        findNavController().navigate(R.id.organization_fragment, OrganizationFragmentArgs.Builder(organization).build().toBundle())
+        findNavController().navigate(
+            R.id.organization_fragment_new,
+            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
+        )
     }
 
     override fun selectEvent() {
-        findNavController().navigate(R.id.event_tabs_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build())
+        findNavController().navigate(
+            R.id.event_tabs_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build()
+        )
     }
 
     override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {

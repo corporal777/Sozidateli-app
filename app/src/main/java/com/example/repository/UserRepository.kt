@@ -58,6 +58,7 @@ interface UserRepository {
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
+    fun confirmEmailCodeNew(id: Int, body: EmailCodeBody): Completable
     fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
     fun sendPhoneCode(id: Int, phone: String): Completable
 

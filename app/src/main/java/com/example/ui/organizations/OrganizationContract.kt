@@ -21,9 +21,6 @@ interface OrganizationContract {
         fun changeScrollY(scroll: Int)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showAboutEvent(event: Event)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: Event)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
@@ -36,7 +33,10 @@ interface OrganizationContract {
         fun showUser(id: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateUser(user: /*User*/UserDetail?)
+        fun showCurrentUser(id: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateUser(user: UserDetail?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
@@ -65,7 +65,6 @@ interface OrganizationContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onShowMoreEventsClick()
-        fun onEventClick(event: Event)
         fun onGoToEventClick(event: Event)
 
         fun onShowMoreUsersClick()

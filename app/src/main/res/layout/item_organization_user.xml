@@ -28,8 +28,9 @@
         tools:text="@tools:sample/full_names" />
 
     <TextView
+        android:letterSpacing="-0.02"
         android:id="@+id/tvDescription"
-        fontPath="fonts/Roboto-Light.ttf"
+        fontPath="fonts/sf_pro_text_regular.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

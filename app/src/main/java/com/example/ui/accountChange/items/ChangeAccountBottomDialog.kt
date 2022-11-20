@@ -1,15 +1,23 @@
 package com.example.ui.accountChange.items
 
+import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.DialogChangeAccountBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.type.Color
+import kotlinx.android.synthetic.main.popup_menu.*
 
 class ChangeAccountBottomDialog(
     val session: UserSessionModel

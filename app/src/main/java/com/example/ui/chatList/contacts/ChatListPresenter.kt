@@ -36,38 +36,89 @@ import javax.inject.Inject
 @InjectViewState
 class ChatListPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository,
-        private val appData: AppData,
-        private val userRepository: UserRepository,
-        private val socket: SocketIOManager
+    private val chatRepository: ChatRepository,
+    private val appData: AppData,
+    private val userRepository: UserRepository,
+    private val socket: SocketIOManager
 ) : BasePresenter<ChatListContract.View>(appData), ChatListContract.Presenter {
 
     private val chatsPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
-                mapOf(CHAT_SORT to "desc", CHAT_LIMIT to limit, CHAT_OFFSET to offset,
-                        CHAT_BINDS to "users,event,bans,last-message"/*last-unread-message,*/, /*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "accepted",
-                        CHAT_USER to appData.getId(),
-                        CHAT_SHOW_EVENTS to true)
+            mapOf(
+                CHAT_SORT to "desc",
+                CHAT_LIMIT to limit,
+                CHAT_OFFSET to offset,
+                CHAT_BINDS to "users,event,bans,last-message",
+                CHAT_USER_STATUS to "accepted",
+                CHAT_USER to appData.getId(),
+                CHAT_SHOW_EVENTS to true
+            )
         ).map { response ->
-            appData.chatUnreadMessageCount = response.unreadMessagesTotalCount?: 0
+            //appData.chatUnreadMessageCount = response.unreadMessagesTotalCount ?: 0
 
             val items = response.data.map {
-            val user = if (it.isEventChat()) {
-                val img = it.binds?.event?.image
-                UserDetail(it.binds?.event?.id?: 0, it.binds?.event?.name, null, null,
-                null, null, null, null,null, ContactInformationModel(null, null, null),
-                null, ImageModel(img?.mimeType, img?.size, it.binds?.lastMessage?.event?.url?: img?.uri, img?.name, 1, null), null, null, null, null,null,
-                        null,null,null,null,null,false)
-            } else {
-                it.binds?.users?.first { us -> us.id != appData.getId() }!!
+                val user = if (it.isEventChat()) {
+                    val img = it.binds?.event?.image
+                    UserDetail(
+                        it.binds?.event?.id ?: 0,
+                        it.binds?.event?.name,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        ContactInformationModel(null, null, null),
+                        null,
+                        ImageModel(
+                            img?.mimeType,
+                            img?.size,
+                            it.binds?.lastMessage?.event?.url ?: img?.uri,
+                            img?.name,
+                            1,
+                            null
+                        ),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        false
+                    )
+                } else {
+                    it.binds?.users?.first { us -> us.id != appData.getId() }!!
+                }
+                ChatListDataItem.Chat(
+                    UserChat(
+                        it.id, /*it.binds?.users?.first { us -> us.id != appData.getId() }!!*/
+                        user,
+                        it.createdDate ?: "",
+                        it.binds?.lastMessage?.message,
+                        it.binds?.lastMessage?.createdDate,
+                        if (it.binds?.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
+                        if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastMessage?.acknowledge?.get(
+                            0
+                        )?.user else 0,
+                        null,
+                        it.binds?.lastMessage?.id.toString(),
+                        false,
+                        it.isInInvites(appData.getId()),
+                        it.isWaitForAcceptInvites(appData.getId()),
+                        it.isBannedByRecipient(appData.getId()),
+                        it.isBannedByYou(appData.getId()),
+                        it.isEventChat(),
+                        it.binds?.event?.id.toString(),
+                        it.unreadMessagesCount ?: 0
+                    )
+                )
             }
-            ChatListDataItem.Chat(UserChat(it.id, /*it.binds?.users?.first { us -> us.id != appData.getId() }!!*/user,
-            it.createdDate?: "", it.binds?.lastMessage?.message, it.binds?.lastMessage?.createdDate,
-            if (it.binds?.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                    if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastMessage?.acknowledge?.get(0)?.user else 0, null, it.binds?.lastMessage?.id.toString(),
-                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
-                    it.binds?.event?.id.toString(), it.unreadMessagesCount?: 0)) }
-                    //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
+            //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }
         /*chatRepository.loadChatList(limit, offset).map { response ->
@@ -76,8 +127,8 @@ class ChatListPresenter
             PaginationResponse(response.response_detail?.total, items)
         }*/
     }
-            .applyErrorHandler { viewState.showRequestErrorMessage() }
-            .buildList(enablePlaceholders = true)
+        .applyErrorHandler { viewState.showRequestErrorMessage() }
+        .buildList(enablePlaceholders = true)
 
     private val chatUnreadMessageSubscriptions = SparseArray<Disposable>()
     private val chatUnreadMessageCounters = SparseIntArray()
@@ -96,27 +147,27 @@ class ChatListPresenter
 
         viewState.setChatsData(List(20) { null }, emptyList())
         compositeDisposable += appData.chatMessageCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val lastCount = lastChatUnreadCount
-                    if (lastCount != null && lastCount < it) chatsPagination.invalidate()
-                    lastChatUnreadCount = it
-                }, {})
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val lastCount = lastChatUnreadCount
+                if (lastCount != null && lastCount < it) chatsPagination.invalidate()
+                lastChatUnreadCount = it
+            }, {})
 
         compositeDisposable += socket.subscribeToMessagesCount()
-                .performOnBackgroundOutOnMain()
-                .subscribe(chatUnreadMessageConsumer, Consumer {})
+            .performOnBackgroundOutOnMain()
+            .subscribe(chatUnreadMessageConsumer, Consumer {})
 
         compositeDisposable += Observable.create(chatsPagination)
-                .subscribe({
-                    viewState.apply {
-                        checkScrollPosition()
-                        dispatchChatsListUpdate(it)
-                        if (isScrolledToTop) scrollToTopPosition()
-                    }
-                }, {
-                    it.printStackTrace()
-                })
+            .subscribe({
+                viewState.apply {
+                    checkScrollPosition()
+                    dispatchChatsListUpdate(it)
+                    if (isScrolledToTop) scrollToTopPosition()
+                }
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun attachView(view: ChatListContract.View?) {
@@ -140,64 +191,44 @@ class ChatListPresenter
         }
 
         compositeDisposable += userRepository.getUsersWithoutPagination(
-                mutableMapOf<String, Any>().apply {
-                    put(UserDetail.USER_LIMIT, 50)
-                    put(UserDetail.USER_BINDS, "userFavorite,chat-room-with-me")
-                }
+            mutableMapOf<String, Any>().apply {
+                put(UserDetail.USER_LIMIT, 50)
+                put(UserDetail.USER_BINDS, "userFavorite,chat-room-with-me")
+            }
         ).performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onSuccess = {
-                            it.filter { userDetail -> userDetail?.binds?.userFavorite != null }.forEach { user ->
-                                if (user != null) favorites.add(user)
-                            }
-                            viewState.setChatsData(chats, favorites)
-                        },
-                        onError = {
-                            viewState.setChatsData(chats, favorites)
+            .subscribeSimple(
+                onSuccess = {
+                    it.filter { userDetail -> userDetail?.binds?.userFavorite != null }
+                        .forEach { user ->
+                            if (user != null) favorites.add(user)
                         }
-                )
-        /*compositeDisposable += userRepository.getUsersFavoritesWithoutPagination(
-                mutableMapOf<String, Any>().apply {
-                    put(UsersFavoriteModel.USERS_FAVORITE_LIMIT, 100)
-                    put(UsersFavoriteModel.USERS_FAVORITE_TYPE, UsersFavoriteModel.USERS_TYPE)
-                    put(UsersFavoriteModel.USERS_FAVORITE_LOAD_MODEL, true)
-                    put(UsersFavoriteModel.USERS_FAVORITE_USER, appData.getId())
+                    viewState.setChatsData(chats, favorites)
+                },
+                onError = {
+                    viewState.setChatsData(chats, favorites)
                 }
-        ).performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onSuccess = {
-                            it.forEach { user ->
-                                if (user != null) favorites.add(user)
-                            }
-                            viewState.setChatsData(chats, favorites)
-                        },
-                        onError = {
-                            viewState.setChatsData(chats, favorites)
-                        }
-                )*/
-
-
-        //viewState.setChatsData(chats, favorites)
+            )
     }
 
-    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
+    override fun onChatClick(userChat: UserChat) =
+        viewState.openChat(userChat.id, userChat.user.nameLastName, userChat.user.image.uri)
 
-    override fun onUserClick(uid: Int, userName: String, chatRoomWithMe: ChatRoomWithMeModel?) {
+    override fun onUserClick(
+        uid: Int,
+        userName: String,
+        avatar: String?,
+        chatRoomWithMe: ChatRoomWithMeModel?
+    ) {
         if (chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeSimple {
-                        viewState.openChat(it.id, userName)
-                    }
-        } else {
-            viewState.openChat(chatRoomWithMe.id, userName)
-        }
-
-        //TODO finish this
-        /*compositeDisposable += chatRepository.startChat(uid.toString())
                 .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.openChat(it.chat_id, userName) }, {})*/
+                .withLoadingDialog(viewState)
+                .subscribeSimple {
+                    viewState.openChat(it.id, userName, avatar)
+                }
+        } else {
+            viewState.openChat(chatRoomWithMe.id, userName, avatar)
+        }
     }
 
     override fun onFabAddChatClick() = viewState.openSearch()
@@ -216,10 +247,10 @@ class ChatListPresenter
         }
 
         val subscription = socket.subscribeToMessagesCount()
-                .performOnBackgroundOutOnMain()
-                .subscribe(chatUnreadMessageConsumer, Consumer {
-                    chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribe(chatUnreadMessageConsumer, Consumer {
+                chatUnreadMessageConsumer.accept(RoomUnreadMessageCount(chatId.toString(), 0))
+            })
 
         //chatUnreadMessageSubscriptions[chatId] = subscription
         chatUnreadMessageSubscriptions.put(chatId, subscription)

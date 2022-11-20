@@ -13,10 +13,8 @@ import com.example.data.models.SearchFilter
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.SearchItemLabel
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
-import com.xwray.groupie.Section
 import kotlinx.android.synthetic.main.layout_filter_organization.view.*
 import onTextChanged
 import javax.inject.Inject
@@ -34,8 +32,8 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
-    override fun showOrganization(organization: OrganizationNew/*Organization*/) {
-        findNavController().navigate(R.id.organization_fragment, bundleOf("organizationId" to organization.id.toString()))
+    override fun showOrganization(organization: OrganizationNew) {
+        findNavController().navigate(R.id.organization_fragment_new, bundleOf("organizationId" to organization.id.toString()))
     }
 
     override fun changeSubscription(organization: OrganizationNew/*Organization*/) {

@@ -94,24 +94,9 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 ibRegister.apply { isEnabled = true }
             }
             ivClose.setOnClickListener { presenter.onClickClose() }
-            //cbAgree.setOnCheckedChangeListener { _, isChecked -> presenter.onClickAgree(isChecked) }
-            //cbAgree.isChecked = true
-            if (BuildConfig.NEW_PROFILE_EDIT) {
-                //tilMiddleName.visibility = View.VISIBLE
-                //llAgree.visibility = View.GONE
-                //phone_layout.visibility = View.VISIBLE
-            } else {
-                //tilMiddleName.visibility = View.GONE
-                //llAgree.visibility = View.VISIBLE
-                //phone_layout.visibility = View.GONE
-            }
-            //scNoMiddleName.setOnCheckedChangeListener { _, checked -> presenter.onNoMiddleNameChecked(checked) }
             scNoMiddleName.initSwitch(isNoMiddleName) {
                 presenter.onNoMiddleNameChecked(it)
             }
-            /*etMobilePhone.getPhoneCallback { it.let { text ->
-                presenter.onChangePhoneText(text)
-            } }*/
             etFirstName.apply {
                 filters = filter
                 onTextChanged { it?.toString()?.let { text -> presenter.onChangeNameText(text) } }
@@ -146,24 +131,6 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 tilCode.error = null
                 it?.toString()?.let { text -> presenter.onChangeCodeText(text) }
             }
-            val agreementText = SpannableString(getString(R.string.auth_agree_user_agreement)).apply {
-                val linkStart = 11
-                val linkEnd = length
-                setSpan(ClickableSpan(drawUnderline = false) {
-                    presenter.onClickUserAgreement()
-                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
-
-            /*tvAgree.apply {
-                text = agreementText
-                movementMethod = LinkMovementMethod.getInstance()
-            }
-
-            flAgree.setOnClickListener {
-                cbAgree.apply {
-                    isChecked = !isChecked
-                }
-            }*/
             btnResend.apply {
                 setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
@@ -192,18 +159,10 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                         presenter.onHandleAuthLink()
                     }
                 }
-
-                /*if (etMobilePhone.getNumberWithoutCode() == "" || etMobilePhone.getIsValid()) {
-                presenter.onHandleAuthLink()
-                } else {
-                    showWrongPhoneError(true)
-                }*/
             }
-            //btnPhoneConfirm.setOnClickListener { presenter.onPhoneConfirmClick() }
-            //scNoMiddleName.isChecked = isNoMiddleName
             when (loginType) {
                 "phone" -> {
-                    tvText.text = requireContext().resources.getString(R.string.code_dialog_text, presenter.phone)
+                    tvText.text = requireContext().resources.getString(R.string.code_phone_dialog_text, presenter.phone)
                     layPhoneConfirm.isVisible = true
                 }
                 "email" -> {
@@ -309,7 +268,6 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     }
 
     override fun setTimeLeft(seconds: Int) {
-        //val quantity = resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
         val quantity = timerFormatter(seconds, requireContext())
         mBinding.tvTimer.text = String.format(timerMessage, quantity)
     }

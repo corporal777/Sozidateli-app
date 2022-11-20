@@ -69,25 +69,26 @@ class UserProfileSettingsPresenter @Inject constructor(
 
     override fun onChangeEmailClick() {
         val email = appData.getUserNew().email
-        if (email?.value == null) {
+        if (email?.value.isNullOrEmpty() && email?.onConfirmation.isNullOrEmpty()) {
             viewState.showChangeEmail()
         } else {
-            viewState.showNewChangeEmail(email.value ?: "")
+            if (!email?.value.isNullOrEmpty()) {
+                viewState.showNewChangeEmail(email?.value ?: "")
+            } else {
+                viewState.showNewChangeEmail(email?.onConfirmation ?: "")
+            }
+        }
+
+    }
+
+    override fun updateEmail(email: String) {
+        appData.updateUserNew {
+            this.email?.value = email
+            this.email?.isConfirmed = true
+            this.email?.onConfirmation = null
         }
     }
 
-    override fun registerEmailResend(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribeSimple {
-                appData.updateUserNew {
-                    this.email?.onConfirmation = email
-                }
-                viewState.showChangeEmailComplete(email)
-            }
-    }
 
     override fun onDeleteConfirmEmail(email: String) {
         compositeDisposable += authRepository.deleteConfirmEmail(email)
@@ -117,68 +118,6 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
 
-    override fun checkPhoneIsUnique(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-
-                sendPhone(phone)
-            },
-                {
-                    viewState.showPhoneNotUnique(phone) })
-    }
-
-    override fun sendPhone(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend(
-            "personal", phone.phoneToServer()
-                ?: ""
-        )
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.hideDialogProgress()
-                viewState.phoneSuccess(phone)
-
-            }, {
-                viewState.hideDialogProgress()
-                it.printStackTrace()
-            })
-    }
-
-
-    override fun onPasswordInputComplete(password: String, phone: String) {
-        compositeDisposable += userRepository.checkPasswordNew(password)
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                viewState.hideDialogProgress2()
-                viewState.passwordSuccess(phone)
-
-            }, {
-                viewState.hideDialogProgress2()
-                viewState.showRequestErrorMessage()
-                //viewState.showUpdateError("Неправильный пароль!")
-            })
-    }
-
-    override fun confirmCode(phone: String, code: String) {
-        compositeDisposable += authRepository.confirmPhone(ConfirmCodeBody("personal", phone, code))
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.hideDialogProgress()
-                appData.updatePhone(phone)
-                viewState.codeSuccess()
-            }, {
-                viewState.hideDialogProgress()
-                it.printStackTrace()
-            })
-    }
-
-    override fun onChangePrivacyClick() {
-        viewState.showChangePrivacy()
-    }
-
     override fun onChangePrivacyConfirm(hidden: Boolean) {
         updateUser(mapOf(USER_STATE to UserState(isHidden = hidden.toString()))) {
             it.state?.isHidden = hidden.toString()
@@ -201,30 +140,6 @@ class UserProfileSettingsPresenter @Inject constructor(
     override fun onBlockProjectNotificationsClick(hidden: Boolean) {
         updateUser(mapOf(UserDetail.BLOCK_PROJECT to hidden)) {
             it.blockedNotifications?.projects = hidden
-        }
-    }
-
-    override fun onChangeNotConfirmedPhone(phone: String) {
-//        appData.updateUserNew {
-//            if (this.phone?.firstOrNull()?.type == PHONE_PERSONAL) {
-//                this.phone?.firstOrNull()?.value = phone
-//            }
-//
-//        }
-        updateUser(
-            mapOf(
-                USER_PHONE to arrayListOf(
-                    FieldDetails(
-                        value = phone.phoneToServer(),
-                        type = PHONE_PERSONAL,
-                        isVisible = true,
-                        isConfirmed = false
-                    )
-                )
-            )
-        ) {
-            it.phone?.firstOrNull()?.value = phone
-            viewState.codeSuccess()
         }
     }
 

@@ -50,7 +50,7 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
             recyclerView.apply {
                 adapter = this@BannedFragment.adapter
                 onScrolled { dx, dy ->
-                    presenter.changeScrollingOffset(dy)
+                    presenter.changeScrollingOffset(this.computeVerticalScrollOffset())
                 }
             }
 

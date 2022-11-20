@@ -114,6 +114,13 @@ class UserRepositoryImp
             appData.saveId(it.id)
         }
 
+    override fun confirmEmailCodeNew(id: Int, body: EmailCodeBody): Completable {
+        return newApi.confirmEmailCodeNew(id, body).doOnSuccess {
+            appData.login(it.token)
+            appData.saveId(it.id)
+        }.ignoreElement()
+    }
+
     /*override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
         appData.setUserShort(it)
     }*/

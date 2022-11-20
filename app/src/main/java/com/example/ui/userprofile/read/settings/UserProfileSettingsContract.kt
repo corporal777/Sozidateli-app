@@ -14,9 +14,6 @@ interface UserProfileSettingsContract {
         fun showChangeEmail()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmailComplete(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
 
         @StateStrategyType(SkipStrategy::class)
@@ -35,25 +32,10 @@ interface UserProfileSettingsContract {
         fun showPhoneEdit(phone : FieldDetails?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun hideDialogProgress()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideDialogProgress2()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun phoneSuccess(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun passwordSuccess(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun codeSuccess()
+        fun showEmailConfirmation(email : String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showNewChangeEmail(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPhoneNotUnique(phone: String)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -62,10 +44,8 @@ interface UserProfileSettingsContract {
         fun onChangeEmailClick()
         fun onDeleteEmail()
         fun onDeleteConfirmEmail(email: String)
-        fun registerEmailResend(email: String)
-        fun checkPhoneIsUnique(phone: String)
+        fun updateEmail(email: String)
 
-        fun onChangePrivacyClick()
         fun onChangePrivacyConfirm(hidden: Boolean)
 
         fun onBlockProjectNotificationsClick(hidden: Boolean)
@@ -75,13 +55,7 @@ interface UserProfileSettingsContract {
         fun onDeleteProfileClick()
         fun onDeleteProfileConfirm()
 
-        fun sendPhone(phone: String)
-
-        fun onChangeNotConfirmedPhone(phone: String)
-        fun onPasswordInputComplete(password: String, phone: String)
-        fun confirmCode(phone: String, code: String)
 
         fun showChangeShortNameClick()
-
     }
 }

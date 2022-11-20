@@ -9,6 +9,9 @@ import com.example.data.models.EventNew
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withProgressBarLoadingDialog
@@ -40,34 +43,33 @@ class QrScannerPresenter
     }
 
     override fun onDecodeQrCode(code: String) {
-        val uri = Uri.parse(code)
-        val codee = uri.getQueryParameter("code")
-        val parsedCode = codee ?: uri.lastPathSegment
-        if (parsedCode == null) viewState.showEventNotFoundError()
-        else {
-            compositeDisposable += eventRepository.getEventsList(
-                mapOf(
-                    EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                    EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-                    EventNew.EVENT_CODE to parsedCode
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
-                .subscribeSimple(
-                    onError = {
-                        viewState.showEventNotFoundError()
-                        it.printStackTrace()
-                    }, onSuccess = {
-                        if (it.data.isNotEmpty()){
-                            viewState.showEvent(it.data[0]?.id.toString())
-                        }else {
-                            viewState.showEventNotFoundError()
-                        }
-
-                    })
-
+        compositeDisposable += Maybe.fromCallable {
+            val codee = Uri.parse(code).getQueryParameter("code")
+            codee ?: Uri.parse(code).lastPathSegment ?: ""
         }
+            .flatMap { parsedCode ->
+                eventRepository.getEventsList(
+                    mapOf(
+                        EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
+                        EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+                        EventNew.EVENT_CODE to parsedCode
+                    )
+                )
+            }
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showEventNotFoundError()
+                },
+                onSuccess = {
+                    if (it.data.isNotEmpty()) {
+                        viewState.showEvent(it.data[0]?.id.toString())
+                    } else {
+                        viewState.showEventNotFoundError()
+                    }
+                })
     }
 
     override fun onEnterCodeClick() {

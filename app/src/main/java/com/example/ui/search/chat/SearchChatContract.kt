@@ -21,6 +21,9 @@ interface SearchChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUser(user: UserDetail)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showCurrentUser()
+
         @StateStrategyType(SkipStrategy::class)
         fun showEmptyDataPlaceholder()
 

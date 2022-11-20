@@ -1,8 +1,10 @@
-package com.example.holders.redesign
+package com.example.ui.event.about.redesign.items
 
 import android.graphics.Color
 import com.example.data.models.MemberModel
 import com.example.holders.HorizontalListItem
+import com.example.holders.redesign.EventSpeakerItem
+import com.example.holders.redesign.ShowAllSpeakersItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

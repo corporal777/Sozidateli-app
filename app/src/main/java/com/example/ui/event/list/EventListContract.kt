@@ -29,15 +29,6 @@ interface EventListContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun selectEvent()
-
-        @StateStrategyType(SkipStrategy::class)
         fun showSearch(format: Int)
 
         @StateStrategyType(SkipStrategy::class)
@@ -47,19 +38,15 @@ interface EventListContract {
         fun showEditProfile(id: String)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
 
         fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()
 
         fun onActionRegister(event: String)
         fun onActionCancel(event: String, registrationId: String?)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
-        fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFilterClick(format: Int)
-
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/)
 
         fun onShowEditProfileClick()
     }

@@ -31,7 +31,7 @@ interface MapContractNew {
         fun openUrl(url: String)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onMapReady()
         fun onShareClick()
         fun onOpenRouteClick()

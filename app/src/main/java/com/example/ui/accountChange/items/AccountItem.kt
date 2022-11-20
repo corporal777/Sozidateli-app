@@ -1,21 +1,12 @@
 package com.example.ui.accountChange.items
 
-import android.util.Log
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemAccountChangeBinding
-import com.example.holders.redesign.EventActivityItem
-import com.xwray.groupie.Item
+import com.example.util.setCircleAvatar
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_lecture.*
-import setCircleImage
-import setOnClickListener
 
 class AccountItem(
     var canShow: Boolean,
@@ -28,7 +19,7 @@ class AccountItem(
     val isCurrentUser = currentAccountId == session.binds.user.id.toString()
     override fun bind(viewBinding: ItemAccountChangeBinding, position: Int) {
         viewBinding.apply {
-            ivAvatar.setCircleImage(session.binds.user.image.uri, R.drawable.avatar_placeholder)
+            ivAvatar.setCircleAvatar(session.binds.user.image.uri)
             tvName.text = session.binds.user.nameLastName
             if (session.binds.user.email != null && !session.binds.user.email?.value.isNullOrEmpty()) {
                 tvEmail.text = session.binds.user.email?.value

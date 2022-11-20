@@ -13,8 +13,6 @@ import com.example.R
 import com.example.databinding.BottomSheetChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
-import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import onTextChanged
 import javax.inject.Inject

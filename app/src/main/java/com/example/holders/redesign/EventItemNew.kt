@@ -75,12 +75,16 @@ class EventItemNew(
                     else null
             }
 
-            setApproveStatus(tvEventState)
-            decorActionButton(btnEventAction)
+            setApproveStatus(tvEventState, status, userRegistration)
+            decorActionButton(btnEventAction, status, eventRegistrationState)
         }
     }
 
-    private fun setApproveStatus(tvStatus: TextView) {
+    private fun setApproveStatus(
+        tvStatus: TextView,
+        status: Event.Status?,
+        userRegistration: Event.Status?
+    ) {
         tvStatus.apply {
             val mTextBackground: Int
             val mTextRes: Int
@@ -125,7 +129,11 @@ class EventItemNew(
         }
     }
 
-    private fun decorActionButton(btnAction: Button) {
+    private fun decorActionButton(
+        btnAction: Button,
+        status: Event.Status?,
+        eventRegistrationState: EventRegistrationStateModel?
+    ) {
         when (status) {
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
@@ -214,7 +222,16 @@ class EventItemNew(
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventNew) {
-                decorActionButton(viewBinding.btnEventAction)
+                decorActionButton(
+                    viewBinding.btnEventAction,
+                    payload.status?.value,
+                    payload.binds?.eventRegistrationState
+                )
+                setApproveStatus(
+                    viewBinding.tvEventState,
+                    payload.status?.value,
+                    payload.binds?.currentUserRegistration?.status?.value
+                )
             }
         }
 

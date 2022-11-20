@@ -43,6 +43,7 @@
 
 
                     <TextView
+                        android:maxLength="18"
                         android:id="@+id/tv_user_name"
                         fontPath="fonts/sf_pro_text_semibold.ttf"
                         android:letterSpacing="-0.02"
@@ -51,7 +52,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="50dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/custom_text_background_selectable"
                         android:ellipsize="end"
                         android:gravity="center"
                         android:textColor="@android:color/black"
@@ -62,6 +62,7 @@
                         tools:ignore="MissingPrefix" />
 
                     <ImageView
+                        android:background="@drawable/custom_toolbar_btn_background_selectable"
                         android:id="@+id/iv_avatar"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -69,14 +70,6 @@
                         android:layout_marginBottom="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" />
-
-                    <View
-                        android:visibility="gone"
-                        android:id="@+id/nav_bar_divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="#C6C6C8"
-                        app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>

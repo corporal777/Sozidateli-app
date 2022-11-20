@@ -176,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:textColor="@android:color/darker_gray"
-                        tools:text="@string/code_dialog_text"
+                        tools:text="@string/code_phone_dialog_text"
                         tools:ignore="MissingPrefix" />
 
                     <com.example.ui.views.CustomTextInputLayout
@@ -235,56 +235,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
 
                 </LinearLayout>
-
-                <!--<LinearLayout
-                    android:id="@+id/llAgree"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:visibility="gone"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:id="@+id/flAgree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:minWidth="48dp"
-                        android:minHeight="48dp">
-
-                        <androidx.appcompat.widget.AppCompatCheckBox
-                            android:id="@+id/cbAgree"
-                            fontPath="fonts/Roboto-Light.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@null"
-                            android:clickable="false"
-                            android:minWidth="0dp"
-                            android:minHeight="0dp"
-                            android:theme="@style/CheckBox" />
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/tvAgree"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/auth_title_text"
-                        tools:text="@string/auth_agree_user_agreement" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvAgreeError"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:gravity="center"
-                    android:text="@string/auth_error_agreement"
-                    android:textColor="@color/attention_action"
-                    android:visibility="invisible" />-->
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton

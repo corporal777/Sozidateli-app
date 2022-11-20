@@ -97,7 +97,7 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
         mBinding.apply {
             searchList.adapter = this@SearchChatFragment.adapter
             searchList.onScrolled { dx, dy ->
-                presenter.changeAppBarElevation(dy)
+                presenter.changeAppBarElevation(searchList.computeVerticalScrollOffset())
             }
             etSearch.apply {
                 SearchInput(this).apply {
@@ -154,6 +154,10 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
 
     override fun showUser(user: UserDetail) {
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
+    }
+
+    override fun showCurrentUser() {
+        findNavController().navigate(R.id.user_profile_fragment)
     }
 
     override fun showEmptyDataPlaceholder() {
@@ -300,13 +304,7 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
     }
 
     override fun changeAppBarElevation(value: Float) {
-        mBinding.appBarLayout.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
-            }
-        }
+        mBinding.appBarLayout.changeAppBarElevation(value)
     }
 
     override fun layout() = R.layout.fragment_chat_search

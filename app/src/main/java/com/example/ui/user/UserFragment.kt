@@ -54,8 +54,6 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
     @InjectPresenter
     lateinit var presenter: UserPresenter
 
-    private var mDy: Int = 0
-
     @Inject
     lateinit var presenterProvider: Provider<UserPresenter>
 
@@ -63,6 +61,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
     fun providePresenter(): UserPresenter = presenterProvider.get().apply {
         val args = UserFragmentArgs.fromBundle(requireArguments())
         userId = args.userId
+        context = requireContext()
     }
 
     private val onOrganizationClickListener: (/*Organization*/OrganizationNew) -> Unit = {
@@ -84,7 +83,9 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         }
     }
 
-    private val mainDataSection = Section()
+    private val mainDataSection = Section().apply {
+        setPlaceholder(PlaceholderItem(PlaceholderItem.Type.USER_PROFILE))
+    }
     private val personalDataSection = Section()
     private val educationDataSection = Section()
     private val workDataSection = Section()
@@ -102,23 +103,13 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         add(actionsDataSection)
     }
 
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
-
-    private val editText by lazy {
-        getString(R.string.edit)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.contentList.apply {
             adapter = this@UserFragment.adapter
-            onScrolled { dx, dy ->
-                mDy = this.computeVerticalScrollOffset()
-                if (this.computeVerticalScrollOffset() <= 10) {
-                    mBinding.appBar.elevation = mDy.toFloat()
-                } else {
-                    mBinding.appBar.elevation = 10f
-                }
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
             }
         }
         mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -132,30 +123,25 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         }
     }
 
+    override fun showShimmerPlaceholder() {
+        //mainDataSection.setPlaceholder(PlaceholderItem(PlaceholderItem.Type.USER_PROFILE))
+    }
+
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
         val avatar = profileUserData.avatar
         val interests = profileUserData.interests
         val editable = profileUserData.editable
-        val headerItem = if (editable) initEditableProfileItem(user, avatar)
-        else initProfileItem(user, avatar)
-        mainDataSection.update(listOf(headerItem))
 
-        val personalData = mutableListOf<Group>()
-        if (editable) {
-            personalData.add(ProfileButtonItem(getString(R.string.profile_password_change)) { presenter.onChangePasswordClick() })
-        }
-        initPersonalDataItem(user, editable)?.let { personalData.add(it) }
-        personalDataSection.update(personalData)
-        educationDataSection.update(listOfNotNull(initEducationDataItem(user, editable)))
-        workDataSection.update(listOfNotNull(initWorkExperience(user, editable)))
-        interestsDataSection.update(listOfNotNull(initInterests(interests, editable)))
-        additionalDataSection.update(listOfNotNull(initAdditionalInformation(user, editable)))
+        mainDataSection.update(listOf(initProfileItem(user, avatar)))
+        personalDataSection.update(listOf(initPersonalDataItem(user)))
+        educationDataSection.update(listOfNotNull(initEducationDataItem(user)))
+        workDataSection.update(listOfNotNull(initWorkExperience(user)))
+        interestsDataSection.update(listOfNotNull(initInterests(interests)))
+        additionalDataSection.update(listOfNotNull(initAdditionalInformation(user)))
 
         if (profileUserData.user.state?.isRegistered == true) {
-            if (editable) {
-                actionsDataSection.update(emptyList())
-            } else actionsDataSection.update(
+            actionsDataSection.update(
                 listOf(
                     ProfileDataDividerItem(),
                     initActions(profileUserData.user.getUserSubscribeAction())
@@ -166,22 +152,8 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    private fun initEditableProfileItem(user: /*User*/UserDetail, avatar: Bitmap?): Item {
-        return ProfileDataUserEditableItem(
-            HEADER_ITEM_ID,
-            user.image?.uri,
-            avatar,
-            user.nameLastName,
-            user.id,
-            { presenter.onEditMainDataClick() },
-            { imageView ->
-                val url = user.image?.uri ?: return@ProfileDataUserEditableItem
-                onAvatarClick(imageView, url)
-            }
-        )
-    }
 
-    private fun initProfileItem(user: /*User*/UserDetail, avatar: Bitmap?): ProfileDataUserItem {
+    private fun initProfileItem(user: UserDetail, avatar: Bitmap?): ProfileDataUserItem {
         return ProfileDataUserItem(
             HEADER_ITEM_ID,
             user.image?.uri,
@@ -212,26 +184,8 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         )
     }
 
-    private fun initPersonalDataItem(user: /*User*/UserDetail, editable: Boolean): Group? {
-        return ProfileExpandableTitleGroup(
-            getString(R.string.profile_title_general_info),
-            onExpandChange = onItemExpandChange
-        ).apply {
-            add(initProfileDataPersonalItem(user, editable))
-            if (editable) add(
-                ProfileButtonEditItem(
-                    editText,
-                    false
-                ) { presenter.onEditPersonalDataClick() })
-        }
-    }
-
-    private fun initProfileDataPersonalItem(
-        user: /*User*/UserDetail,
-        editable: Boolean
-    ): ProfileDataPersonalItem {
-        val organizations: List</*Organization*/OrganizationNew>? =
-            if (!editable) user.binds?.organization else null
+    private fun initPersonalDataItem(user: UserDetail): Group? {
+        val organizations: List<OrganizationNew>? = user.binds?.organization
         val email = user.email?.value
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value
         val mobilePhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
@@ -239,28 +193,35 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         val birthday = user.birthday?.value?.formatToDefaultDate()
         val city = user.address?.shortAddres ?: user.address?.city
         val socialNetworks = user.contactInformation.socialLinks?.values
-
-        return ProfileDataPersonalItem(
-            organizations,
-            email,
-            workPhone,
-            mobilePhone,
-            editable && user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false,
-            gender?.value,
-            birthday,
-            city,
-            socialNetworks,
-            user.phone?.firstOrNull { it.type == PHONE_WORK }?.value,
-            onOrganizationClickListener
-        )
+        return ProfileExpandableTitleGroup(
+            getString(R.string.profile_title_general_info),
+            onExpandChange = onItemExpandChange
+        ).apply {
+            add(
+                ProfileDataPersonalItem(
+                    organizations,
+                    email,
+                    workPhone,
+                    mobilePhone,
+                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false,
+                    gender?.value,
+                    birthday,
+                    city,
+                    socialNetworks,
+                    user.phone?.firstOrNull { it.type == PHONE_WORK }?.value,
+                    onOrganizationClickListener
+                )
+            )
+        }
     }
 
-    private fun initEducationDataItem(user: /*User*/UserDetail, editable: Boolean): Group? {
+
+    private fun initEducationDataItem(user: UserDetail): Group? {
         val educationLevel =
             user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()
         val education = user.binds?.education ?: emptyList()
-        return if (editable || education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
+        return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_title_education),
                 onExpandChange = onItemExpandChange
@@ -273,19 +234,14 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                         )
                     )
                     addAll(education.map { ProfileDataEducationItem(it) })
-                    if (editable) add(
-                        ProfileButtonEditItem(
-                            editText,
-                            false
-                        ) { presenter.onEditEducationClick() })
                 })
             }
         } else null
     }
 
-    private fun initWorkExperience(user: /*User*/UserDetail, editable: Boolean): Group? {
+    private fun initWorkExperience(user: UserDetail): Group? {
         val work = user.binds?.workExperience?.models ?: emptyList()
-        return if (editable || work.isNotEmpty()) {
+        return if (work.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_work_experience),
                 onExpandChange = onItemExpandChange
@@ -295,22 +251,16 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                     addAll(work.mapIndexed { index, socialRoles ->
                         ProfileDataWorkExperienceItem(socialRoles, index == 0)
                     })
-                    if (editable) add(
-                        ProfileButtonEditItem(
-                            editText,
-                            false
-                        ) { presenter.onEditWorkClick() })
                 })
             }
         } else null
     }
 
     private fun initInterests(
-        interests: Map</*Interest*/InterestNew, List</*Interest*/InterestNew>>?,
-        editable: Boolean
+        interests: Map<InterestNew, List<InterestNew>>?
     ): Group? {
         val nonNullInterests = interests ?: emptyMap()
-        return if (editable || nonNullInterests.isNotEmpty()) {
+        return if (nonNullInterests.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_interests),
                 onExpandChange = onItemExpandChange
@@ -326,17 +276,12 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                             addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
                         }
                     })
-                    if (editable) add(
-                        ProfileButtonEditItem(
-                            editText,
-                            false
-                        ) { presenter.onEditInterestsClick() })
                 })
             }
         } else null
     }
 
-    private fun initActions(action: UserSubscribeButton.Action?): Group? {
+    private fun initActions(action: UserSubscribeButton.Action?): Group {
         return ProfileExpandableTitleGroup(
             getString(R.string.yet_btn_text).firstLetterToUppercase(),
             onExpandChange = onItemExpandChange
@@ -353,7 +298,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         }
     }
 
-    private fun initAdditionalInformation(user: /*User*/UserDetail, editable: Boolean): Group? {
+    private fun initAdditionalInformation(user: UserDetail): Group? {
         val notes = user.notes
         val files = user.binds?.recommendationFile ?: emptyList()
 
@@ -364,11 +309,6 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                 onExpandChange = onItemExpandChange
             ).apply {
                 add(ProfileDataNotesItem(notes?.value.let { if (it.isNullOrEmpty()) "-" else it }))
-                if (editable) add(
-                    ProfileButtonEditItem(
-                        editText,
-                        false
-                    ) { presenter.onEditAdditionalNotesDataClick() })
             })
 
         subgroups.add(
@@ -379,19 +319,13 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
                 if (files.isNotEmpty()) {
                     addAll(files.map { file ->
                         ProfileDataFileItem(
-                            (/*if (file.desc.isNullOrBlank())*/ file.name /*else file.desc*/)
-                                ?: "file"
+                            file.name ?: "file"
                         ) { presenter.onFileClick(file) }
                     })
                 }
-                if (editable) add(
-                    ProfileButtonEditItem(
-                        editText,
-                        false
-                    ) { presenter.onEditAdditionalFilesDataClick() })
             })
 
-        return if (editable || !notes?.value.isNullOrEmpty() || files.isNotEmpty()) {
+        return if (!notes?.value.isNullOrEmpty() || files.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_additional_data),
                 onExpandChange = onItemExpandChange
@@ -401,14 +335,9 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         } else null
     }
 
-    override fun showChangePassword() =
-        showChangePasswordDialog(presenter::onChangePasswordClickConfirm)
-
-    override fun showPasswordChangeComplete() = showPasswordChangeCompleteDialog()
-
     override fun setSubscribeBlockAction(action: UserSubscribeButton.Action?) {
         mainDataSection.notifyItemChanged(0, action)
-        val item = actionsDataSection.findItemBy<UserProfileActionsItem> { x -> x.isAction  }
+        val item = actionsDataSection.findItemBy<UserProfileActionsItem> { x -> x.isAction }
         if (item != null) {
             item.notifyChanged(action)
             item.action = {
@@ -424,7 +353,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
 
     override fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?) {
         mBinding.ivAddToFavorite.apply {
-            if (action != null){
+            if (action != null) {
                 isVisible = true
                 setAction(action)
                 setOnClickListener {
@@ -479,9 +408,6 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showDataEditor(type: UserEditDataType) {
-        findNavController().navigate(UserFragmentDirections.userToEdit(type))
-    }
 
     private fun showShare(userId: String) {
         val link = BuildConfig.SHARE_URL + "portal/user/" + userId
@@ -493,6 +419,10 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         } catch (e: Exception) {
             showRequestErrorMessage()
         }
+    }
+
+    override fun setAppBarShadow(value: Float) {
+        mBinding.appBar.changeAppBarElevation(value)
     }
 
     override fun layout() = R.layout.fragment_user

@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start"
+        android:letterSpacing="-0.01"
         android:text="@string/confirm_phone_text"
         android:textColor="@color/dialog_event_registration_profile_fields_message"
         android:textSize="16sp"

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +26,7 @@ import com.example.data.models.user.RecommendationFile
 import com.example.data.models.user.User
 import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
@@ -34,7 +36,7 @@ import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.IT
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
-import com.example.ui.userprofile.read.settings.change_phone.confirm_phone.ConfirmPhoneFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
@@ -50,8 +52,7 @@ import javax.inject.Provider
 
 class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View, SimpleTitleToolbar {
 
-    private lateinit var dialog: AddPhoneEmailDialog
-    private lateinit var confirmPhoneDialog: ConfirmPhoneFragment
+    private lateinit var passwordDialog: SetPasswordDialog
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
     private var isUpdateInfo = true
@@ -102,14 +103,13 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     }
 
     private var onSaveClick: (() -> Unit)? = null
+    private var onConfirmClick: ((phone : String) -> Unit)? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentFragmentManager.setFragmentResultListener(FILE_EDIT_CODE, this) {
                 requestKey, result ->
-            val file = result.getParcelable<RecommendationFile>(FILE_PATH)
-            presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
         }
         parentFragmentManager.setFragmentResultListener(DEGREE_EDIT_CODE, this) {
                 requestKey, result ->
@@ -144,26 +144,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
 
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
-    }
-
-    override fun setMainData(user: UserDetail, avatar: Bitmap?) {
-        val dataItem = ProfileDataUserEditItem(
-            avatar,
-            user.name,
-            user.lastName,
-            user.middleName?.value,
-            user.state?.nameEdited ?: false,
-            { presenter.onRemoveAvatarClick() },
-            { presenter.onEditAvatarClick() },
-            { presenter.onDisabledMainInputInfoClick() }
-        )
-        adapter.update(listOf(dataItem))
-
-        onSaveClick = {
-            if (dataItem.checkDataComplete()) {
-                presenter.onSaveMainClick(dataItem.getDataToSave())
-            }
-        }
     }
 
     override fun showDisabledMainInputInfo() {
@@ -226,7 +206,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
                 { data, files ->
                     mainInfoFiles = files
                     isUpdateInfo = false
-                    presenter.onSaveAdditionalFilesClick(data)
                 }, {
                     showEditWarning(
                         presenter.getBaseUserState(),
@@ -259,205 +238,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         isUpdateInfo = true
     }
 
-    override fun setContactsData(user: UserDetail) {
-        val userPhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
-        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
-        val item = ProfileContactsEditItem(
-            requireContext(),
-            userPhone,
-            workPhone,
-            user.contactInformation.socialLinks,
-            user.contactInformation.site,
-            user.email,
-            user.email?.isVisible ?: false,
-            user.contactInformation.emails ?: emptyList(),
-            presenter::onChangeEmailClick,
-            presenter::onConfirmPhoneClick
-        )
-        data = item
-        adapter.update(listOf(item))
-//        if (userPhone?.value.isNullOrEmpty()) {
-//            btnSave.isEnabled = false
-//        }
-        onSaveClick = {
-            mBinding.recyclerView.requestFocus()
-            if (userPhone?.isConfirmed == true) {
-                //Toast.makeText(requireContext(), "ConfirmedPhone", Toast.LENGTH_SHORT).show()
-                if (item.checkDataValid()) {
-                    if (item.isPhoneValidated()) {
-                        //Toast.makeText(requireContext(), "Just Save", Toast.LENGTH_SHORT).show()
-                        showEditWarning(
-                            presenter.getBaseUserState(),
-                            presenter.getMaxUserState(),
-                            item.checkBaseFieldsValid(),
-                            item.checkMaxFieldsValid()
-                        ) {
-                            presenter.onSaveContactsClick(item.getDataToSave())
-                        }
-                    } else {
-//                        Toast.makeText(requireContext(), "Just Change", Toast.LENGTH_SHORT)
-//                            .show()
-                        presenter.onConfirmPhoneClick(item.getPersonalPhone() ?: "")
-                    }
-                }
-            } else {
-                if (!item.getPersonalPhone().isNullOrEmpty()) {
-//                    Toast.makeText(requireContext(), "Not ConfirmedPhone", Toast.LENGTH_SHORT)
-//                        .show()
-                    presenter.onSaveContactsClick(item.getDataToSaveWithInConfirmedPhone())
-                }
-
-            }
-
-        }
-    }
-
-    override fun setPhoneData(user: UserDetail) {
-        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
-        val item = ProfilePhoneEditItem(
-            requireContext(),
-            phone?.value,
-            phone?.isVisible ?: false,
-            phone?.isConfirmed ?: false,
-            presenter::onConfirmPhoneClick
-        )
-
-        adapter.update(listOf(item))
-
-        onSaveClick = {
-            mBinding.recyclerView.requestFocus()
-            if (item.checkDataValid()) {
-                presenter.onSaveContactsClick(item.getDataToSave())
-            }
-        }
-    }
-
-    override fun updateFilesList(files: List<FileModel>?) {
-        files?.forEach {
-            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
-            if (editedName != null)
-                it.name = editedName.name
-            else
-                it.name = it.name
-        }
-        mainInfoFiles = null
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
-            true
-        }?.updateFiles(files ?: emptyList())
-    }
-
-    override fun showChangeEmail() {
-        TitleMessageDialog(
-            requireContext(),
-            "",
-            message = getString(R.string.change_email_text),
-            btnPositiveText = getString(R.string.change_email_positive_button),
-            btnNegativeText = getString(R.string.revoke)
-        ).setPositiveSelectCallback {
-            findNavController().navigate(R.id.user_profile_settings_fragment)
-        }
-    }
-
-    override fun showPhoneConfirm(phone: String) {
-        confirmPhoneDialog = ConfirmPhoneFragment(phone)
-        confirmPhoneDialog.show(
-            requireActivity().supportFragmentManager,
-            "confirm_phone_dialog"
-        )
-        presenter.startTimerForResendCode(phone)
-        confirmPhoneDialog.setResendCallback {
-        }
-        confirmPhoneDialog.setConfirmCallback {
-            (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-            presenter.confirmCode(phone, it)
-        }
-    }
-
-    override fun setTimerForResendCode(seconds: Int) {
-        confirmPhoneDialog.setCodeResend(seconds)
-    }
-
-
-    override fun codeSuccess() {
-        confirmPhoneDialog.dismissNow()
-        presenter.onSaveContactsClick(data.getDataToSave())
-
-    }
-
-    override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_phone_text, phone),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    showPhoneConfirm(phone)
-                }
-            }
-    }
-
-
-    override fun showUpdateError(message: String?) {
-        val title = getString(R.string.profile_edit_request_error)
-        Toast.makeText(requireContext(), message?.let { "$title: $it" }
-            ?: title, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun setEducationData(user: UserDetail) {
-        //if (BuildConfig.NEW_PROFILE_EDIT) {
-        val academicDegree =
-            if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
-                null else user.binds?.academicDegree
-        val dataItem = ProfileDataEducationEditGroupNew(
-            requireContext(),
-            user.birthday,
-            user.educationLevel,
-            user.educationLevelList ?: emptyList(),
-            user.academicDegrees ?: emptyList(),
-            user.speciality ?: emptyList(),
-            user.binds?.education ?: emptyList(),
-            academicDegree ?: emptyList()
-        ) {}
-        adapter.update(listOf(dataItem))
-
-        onSaveClick = {
-            if (dataItem.checkDataValid()) {
-                val education = dataItem.getEducationsToSave()
-                showEditWarning(
-                    presenter.getBaseUserState(),
-                    presenter.getMaxUserState(), false, education?.isEmpty() ?: false
-                ) {
-                    presenter.onSaveEducationClick(
-                        dataItem.getEducationLevelToSave(),
-                        education,
-                        dataItem.getDegreeToSave()
-                    )
-                }
-            }
-        }
-    }
-
-    override fun setWorkData(user: UserDetail) {
-        val work = user.binds?.workExperience
-        val dataItem = ProfileDataWorkEditGroup(
-            requireContext(),
-            user.birthday,
-            work,
-            { /*presenter.onSaveWorkClick(mutableMapOf(User.FIELD_USER_HAS_WORK_EXPERIENCE to it))*/ },
-            {})
-        adapter.update(listOf(dataItem))
-        onSaveClick = {
-            if (dataItem.checkDataValid()) {
-                showEditWarning(
-                    presenter.getBaseUserState(),
-                    presenter.getMaxUserState(), false, false
-                ) {
-                    presenter.onSaveWorkClick(dataItem.getDataToSave())
-                }
-            }
-        }
-    }
-
     override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
         val findUserInterests: () -> List<InterestNew> = {
             interests.values.flatten().filter { item -> item.isUserInterest }
@@ -467,7 +247,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         var userInterests = findUserInterests()
 
         if (userInterests.isNullOrEmpty()) {
-            //btnSave.isClickable = false
             mBinding.btnSave.isEnabled = false
         }
 
@@ -490,7 +269,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
                         }
                         if (count > 0) {
-                            //btnSave.isClickable = true
                             mBinding.btnSave.isEnabled = true
                         }
                     }
@@ -514,15 +292,114 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     }
 
-    override fun setAdditionalNotesData(user: UserDetail) {
-        val dataItem = ProfileDataNotesEditItem(1L, user.notes?.value)
-        adapter.update(
-            listOf(
-                ProfileDataNotesDescriptionItem(0L) { showWhyUserShouldAddDataToNotesField() },
-                dataItem
-            )
+    override fun setContactsData(user: UserDetail) {
+        val userPhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
+        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
+
+        val item = ProfileContactsEditItem(
+            requireContext(),
+            userPhone,
+            workPhone,
+            user.contactInformation.socialLinks,
+            user.contactInformation.site,
+            user.email,
+            user.email?.isVisible ?: false,
+            user.contactInformation.emails ?: emptyList(),
+            presenter::onChangeEmailClick
+        ) {
+            onConfirmClick?.invoke(it)
+        }.apply {
+            data = this
+        }
+        adapter.update(listOf(item))
+
+        onSaveClick = {
+            presenter.canUpdate(true)
+            if (item.checkDataValid()){
+                if (userPhone?.isConfirmed == true) {
+                    if (item.newPhoneIsConfirmed()) {
+                        showEditWarning(presenter.getBaseUserState(), presenter.getMaxUserState(), item.checkBaseFieldsValid(), item.checkMaxFieldsValid()) {
+                            presenter.onSaveContactsClick(item.getDataToSave())
+                        }
+                    } else {
+                        showEnterPassword(item.getValidatedPhone())
+                    }
+                } else {
+                    presenter.onSaveContactsClick(item.getDataToSave())
+                }
+            }
+        }
+        onConfirmClick = {
+            presenter.canUpdate(false)
+            if (userPhone?.isConfirmed == true) {
+                if (item.isNewPhoneIsValid()){
+                    showEnterPassword(item.getValidatedPhone())
+                }
+            }else {
+                presenter.onConfirmPhoneClick(item.getValidatedPhone())
+            }
+        }
+    }
+
+    override fun showChangeEmail() {
+        TitleMessageDialog(
+            requireContext(),
+            "",
+            message = getString(R.string.change_email_text),
+            btnPositiveText = getString(R.string.change_email_positive_button),
+            btnNegativeText = getString(R.string.revoke)
+        ).setPositiveSelectCallback {
+            findNavController().navigate(R.id.user_profile_settings_fragment)
+        }
+    }
+
+    override fun showEnterPassword(phone: String) {
+        passwordDialog = SetPasswordDialog(requireActivity())
+            .setSelectCallback {
+                presenter.checkPassword(it, phone)
+            }
+    }
+
+    override fun hideEnterPassword() {
+        passwordDialog.hideDialog()
+    }
+
+    override fun showPhoneConfirm(phone: String) {
+        val confirmEmailPhoneDialog = ConfirmEmailPhoneFragment(phone)
+        confirmEmailPhoneDialog.show(
+            requireActivity().supportFragmentManager,
+            "confirm_phone_dialog"
         )
-        onSaveClick = { presenter.onSaveAdditionalNotesClick(dataItem.mNotes) }
+        confirmEmailPhoneDialog.setConfirmCallback {
+            updatePhoneConfirmation(phone)
+        }
+    }
+
+    override fun updatePhoneConfirmation(phone: String) {
+        val item = adapter.findItemBy<GroupieViewHolder, ProfileContactsEditItem> { true }
+        item?.setPhoneConfirmed(true)
+        if (presenter.isWithUpdate()){
+            presenter.onSaveContactsClick(data.getDataToSave())
+        }
+    }
+
+    override fun showPhoneNotUnique(phone: String) {
+        ConfirmPhoneDialog(
+            requireContext(), getString(R.string.confirm_phone_text, phone),
+            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
+        )
+            .setSelectCallback {
+                if (it) {
+                    showPhoneConfirm(phone)
+                }
+            }
+    }
+
+
+    override fun showUpdateError(message: String?) {
+        val title = getString(R.string.profile_edit_request_error)
+        Toast.makeText(requireContext(), message?.let { "$title: $it" }
+            ?: title, Toast.LENGTH_SHORT).show()
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
@@ -534,16 +411,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
             .setSelectCallback { }
     }
 
-    override fun setAdditionalFilesData(user: UserDetail) {
-        /*adapter.update(listOf(ProfileDataAdditionalFilesEditGroup(
-                requireContext(),
-                user.binds.recommendationFile ?: emptyList(),
-                { presenter.onAddFileClick() },
-                { presenter.onFileClick(it) },
-                { presenter.onEditFileClick(it) },
-                { presenter.onSaveAdditionalFilesClick(it) }
-        )))*/
-    }
 
     override fun showFileSelector() {
         PermissionsBuilder(REQUEST_GALLERY)
@@ -556,27 +423,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
                 galleryImage.launch(intent)
             }
             .request()
-    }
-
-    override fun setFileEditData(file: FileModel) {
-        val editItem = ProfileDataFileEditItem(file.name)
-        adapter.update(
-            listOf(
-                editItem,
-                ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-                /*ProfileButtonEditItem(getString(R.string.add_file), true) { presenter.onFileEditSaveClick() }.apply {
-                    hasDivider = false
-                    compactMargin = true
-                }*/
-            )
-        )
-
-        onSaveClick = {
-            hideKeyboard()
-            /*file.desc = editItem.mName
-            file.newName = editItem.mName*/
-            presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
-        }
     }
 
     override fun downloadFile(file: String) {
@@ -601,15 +447,29 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
     }
 
-    override fun setMainTitle() = setTitle(getString(R.string.profile_edit_name_and_photo))
+    override fun updateFilesList(files: List<FileModel>?) {
+        files?.forEach {
+            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
+            if (editedName != null)
+                it.name = editedName.name
+            else
+                it.name = it.name
+        }
+        mainInfoFiles = null
+        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
+            true
+        }?.updateFiles(files ?: emptyList())
+    }
+
+    //override fun setMainTitle() = setTitle(getString(R.string.profile_edit_name_and_photo))
     override fun setPersonalTitle() = setTitle(getString(R.string.user_profile_main_info))
     override fun setContactsTitle() = setTitle(getString(R.string.user_profile_contacts))
     override fun setPhoneTitle() = setTitle(getString(R.string.profile_phone_mobile))
     override fun setEducationTitle() = setTitle(getString(R.string.profile_title_education))
     override fun setWorkTitle() = setTitle(getString(R.string.profile_work_experience))
     override fun setInterestsTitle() = setTitle(getString(R.string.profile_interests))
-    override fun setAdditionalNotesTitle() = setTitle(getString(R.string.profile_notes))
-    override fun setAdditionalFilesTitle() = setTitle(getString(R.string.profile_files_title))
+    //override fun setAdditionalNotesTitle() = setTitle(getString(R.string.profile_notes))
+    //override fun setAdditionalFilesTitle() = setTitle(getString(R.string.profile_files_title))
 
     private fun setTitle(title: String) {
         setToolbarTitleAndIcon(title)

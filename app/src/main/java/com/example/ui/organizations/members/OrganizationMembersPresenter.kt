@@ -8,61 +8,69 @@ import com.example.data.models.OrganizationNewMemberModel
 import com.example.extensions.buildList
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.user.UserContract
 import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class OrganizationMembersPresenter
 @Inject constructor(
-        private val organizationRepository: OrganizationRepository,
-        appData: AppData
-) : BasePresenter<OrganizationMembersContract.View>(appData), OrganizationMembersContract.Presenter {
+    private val organizationRepository: OrganizationRepository,
+    val appData: AppData
+) : BasePresenter<OrganizationMembersContract.View>(appData),
+    OrganizationMembersContract.Presenter {
 
     lateinit var organizationId: String
+    private var mDy = 0f
 
-    private var scrollPosition = 0
-    private var scrollOffset = 0
-
-    //OrganizationMember
 
     val pagination = PaginationDataSourceFactory { limit, offset ->
         organizationRepository.getOrganizationMembers(
-                mutableMapOf<String, Any>().apply {
-                    put(OrganizationMember.MEMBERS_LIMIT, limit)
-                    put(OrganizationMember.MEMBERS_OFFSET, offset)
-                    put(OrganizationMember.MEMBERS_BINDS, "user")
-                    put(OrganizationMember.MEMBERS_ORGANIZATION, organizationId)
-                })
+            mutableMapOf<String, Any>().apply {
+                put(OrganizationMember.MEMBERS_LIMIT, limit)
+                put(OrganizationMember.MEMBERS_OFFSET, offset)
+                put(OrganizationMember.MEMBERS_BINDS, "user,userFavorite")
+                put(OrganizationMember.MEMBERS_ORGANIZATION, organizationId)
+            })
     }.buildList()
-    /*val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getMembers(limit, offset, organizationId)
-    }.buildList()*/
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setAppBarElevation(0f)
         compositeDisposable += Observable.create(pagination)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    viewState.setData(it)
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
+            .subscribe({
+                viewState.setData(it)
+            }, {
+                it.printStackTrace()
+            })
     }
 
 
-    override fun onMemberClick(member: /*OrganizationMember*/OrganizationNewMemberModel) {
-        viewState.showUser(member.user?.toString()?: "")
+    override fun attachView(view: OrganizationMembersContract.View?) {
+        super.attachView(view)
+        viewState.setAppBarElevation(mDy)
     }
 
-    override fun onScrollChange(position: Int, offset: Int) {
-        scrollPosition = position
-        scrollOffset = offset
+    override fun changeAppBarElevation(value: Int) {
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
+    }
+
+
+    override fun onMemberClick(member: OrganizationNewMemberModel) {
+        if (appData.isCurrentUser(member.user?.toString() ?: "")) {
+            viewState.showCurrentUser(appData.getUserNew().id.toString())
+        } else {
+            viewState.showUser(member.user?.toString() ?: "")
+        }
     }
 
     override fun onItemTake(position: Int) {

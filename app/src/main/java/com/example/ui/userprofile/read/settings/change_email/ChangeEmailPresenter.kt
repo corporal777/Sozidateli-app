@@ -3,11 +3,17 @@ package com.example.ui.userprofile.read.settings.change_email
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.bodies.ConfirmCodeBody
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
+import com.example.util.phoneToServer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -33,35 +39,44 @@ class ChangeEmailPresenter
     }
 
     override fun checkEmailIsUnique(email: String) {
-        if (AuthValidateUtil.isValidEmail(email)){
+        if (AuthValidateUtil.isValidEmail(email)) {
             compositeDisposable += userRepository.checkEmailPhone(email, null)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                //.withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
                         viewState.showEmailNotUnique(email)
                     },
                     onComplete = {
-                        onChangeEmailConfirm(email)
+                        viewState.showEmailConfirm(email)
                     })
-        }else {
+        } else {
             viewState.showEmailNotValid(email)
         }
 
     }
 
-    override fun onChangeEmailConfirm(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .withCheckInternetConnectivity()
+
+    override fun updateEmail(email: String) {
+        compositeDisposable += userRepository.updateUserProfile(
+            appData.getId(),
+            mutableMapOf<String, Any>().apply {
+                put(
+                    UserDetail.USER_EMAIL,
+                    FieldDetails(value = email, isVisible = true, isConfirmed = true)
+                )
+            }
+        )
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                appData.updateUserNew {
-                    this.email?.onConfirmation = email
-                }
-                viewState.showChangeEmailComplete(email)
-            }
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    viewState.showChangeEmailComplete()
+                })
     }
 
 

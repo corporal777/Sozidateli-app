@@ -97,7 +97,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
             RegisterDataType.CODE -> {
                 startTimer()
                 binding.tvTitle.text = activity.resources.getString(R.string.code_dialog_title)
-                binding.tvMessage.text = activity.resources.getString(R.string.code_dialog_text, phone)
+                binding.tvMessage.text = activity.resources.getString(R.string.code_phone_dialog_text, phone)
                 binding.etLogin.setHint(R.string.enter_code_btn_text)
                 binding.tvCode.isVisible = true
             }

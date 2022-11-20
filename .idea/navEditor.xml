@@ -152,11 +152,6 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="authorization_fragment_to_register_email_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="authorization_fragment_to_register_email_new_fragment">
                               <value>
                                 <LayoutPositions />
@@ -272,8 +267,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="6894" />
-                            <option name="y" value="5352" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -284,6 +279,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="chat_fragment_new">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -538,6 +545,27 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="fragment_finish_register_new">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="register_to_mail">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="fragment_map_new">
                     <value>
                       <LayoutPositions>
@@ -579,11 +607,6 @@
                               </value>
                             </entry>
                             <entry key="login_to_recovery_action">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="login_to_register_email_action">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -832,8 +855,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="6162" />
-                            <option name="y" value="4996" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -854,6 +877,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="organization_fragment_new">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -890,11 +925,6 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="organizations_fragment_to_organization_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="organizations_fragment_to_self">
                               <value>
                                 <LayoutPositions />
@@ -1211,42 +1241,6 @@
                               </value>
                             </entry>
                             <entry key="register_to_mail">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="register_email_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="4160" />
-                            <option name="y" value="4882" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_register_email_fragment_to_authorization_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="email_register_to_authorization_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="email_register_to_email_confirm">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="email_register_to_sn_register">
                               <value>
                                 <LayoutPositions />
                               </value>

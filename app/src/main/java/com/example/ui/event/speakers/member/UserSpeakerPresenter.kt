@@ -34,7 +34,7 @@ class UserSpeakerPresenter
     lateinit var memberId: String
 
     lateinit var mUser: UserDetail
-    private var mDy: Int = 0
+    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -43,12 +43,12 @@ class UserSpeakerPresenter
 
     override fun attachView(view: UserSpeakerContract.View?) {
         super.attachView(view)
-        viewState.changeAppbarElevation(abs(mDy / 10f))
+        viewState.changeAppbarElevation(mDy)
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy = value
-        viewState.changeAppbarElevation(abs(value / 10f))
+        mDy = abs(value / 10f)
+        viewState.changeAppbarElevation(mDy)
     }
 
     private fun loadUserData() {
@@ -142,7 +142,13 @@ class UserSpeakerPresenter
         }
     }
 
-    override fun onGoToProfileClick() = viewState.showUserProfile(mUser.id.toString())
+    override fun onGoToProfileClick() {
+        if (appData.isCurrentUser(mUser.id.toString())){
+            viewState.showCurrentUserProfile()
+        }else {
+            viewState.showUserProfile(mUser.id.toString())
+        }
+    }
 
     override fun onItemTake(position: Int) {
     }

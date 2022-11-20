@@ -33,17 +33,15 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatSection by lazy { Section() }
+    private val chatSection by lazy {
+        Section().apply {
+            setHeader(ListSectionNameItem(-300L, getString(R.string.chat_list)))
+        }
+    }
 
     private val favoritesSection by lazy {
         Section().apply {
-            setHeader(
-                ListSectionNameItem(
-                    -200L,
-                    getString(R.string.search_contact_section_favorites)
-                ).apply {
-                    withTopMargin = true
-                })
+            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
             setHideWhenEmpty(true)
         }
     }
@@ -66,11 +64,7 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
             chatList.apply {
                 adapter = this@ChatListFragment.adapter
                 onScrolled { _, dy ->
-                    if (this.computeVerticalScrollOffset() <= 10) {
-                        onScrollState.onScrollOffsetValue(this.computeVerticalScrollOffset().toFloat())
-                    } else {
-                        onScrollState.onScrollOffsetValue(10f)
-                    }
+                    onScrollState.onScrollOffsetValue(this.computeVerticalScrollOffset())
                     if (dy <= 0) {
                         onScrollState.onScrollUp(dy)
                     } else {
@@ -87,14 +81,14 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
     }
 
 
-    override fun setChatsData(chats: List<UserChat?>, favorites: List</*User*/UserDetail>) {
+    override fun setChatsData(chats: List<UserChat?>, favorites: List<UserDetail>) {
         if (chats.isEmpty()) {
             chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
         } else {
             chatSection.apply {
                 val chatsCount = chats.size
-                update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list)))
-                    .plus(chats.mapIndexed { index, chat ->
+                update(
+                    chats.mapIndexed { index, chat ->
                         if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
                         else UserChatItem(
                             chat,
@@ -103,14 +97,19 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
                             { presenter.onChatGoneFromScreen(chat.id) },
                             index != chatsCount - 1
                         )
-                    })
+                    }
                 )
             }
         }
 
         favoritesSection.update(favorites.map {
             UserItem(it.id, it.fullName, null, it.image.uri, {
-                presenter.onUserClick(it.id, it.nameLastName, it.binds?.chatRoomWithMe)
+                presenter.onUserClick(
+                    it.id,
+                    it.nameLastName,
+                    it.image.uri,
+                    it.binds?.chatRoomWithMe
+                )
             })
         })
         mBinding.swipeToRefresh.isRefreshing = false
@@ -141,10 +140,15 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
         return (mBinding.chatList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
-    override fun openChat(chatId: Int, userName: String) {
+    override fun openChat(chatId: Int, userName: String, avatar: String?) {
+//        findNavController().navigate(
+//            R.id.chat_fragment,
+//            bundleOf("label" to userName, "chatId" to chatId.toString())
+//        )
+
         findNavController().navigate(
-            R.id.chat_fragment,
-            bundleOf("label" to userName, "chatId" to chatId.toString())
+            R.id.chat_fragment_new,
+            bundleOf("name" to userName, "chatId" to chatId.toString(), "userAvatar" to avatar)
         )
     }
 
@@ -163,6 +167,6 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
     interface OnChatListScrollingState {
         fun onScrollUp(value: Int)
         fun onScrollDown(value: Int)
-        fun onScrollOffsetValue(value: Float)
+        fun onScrollOffsetValue(value: Int)
     }
 }

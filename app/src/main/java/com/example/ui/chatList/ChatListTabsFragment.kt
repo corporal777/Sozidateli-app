@@ -25,7 +25,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(), ChatListTabsContract.View {
+class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
+    ChatListTabsContract.View {
 
 
     @InjectPresenter
@@ -41,9 +42,7 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(), Cha
     private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState {
         override fun onScrollUp(value: Int) = showView(mBinding.clTabs)
         override fun onScrollDown(value: Int) = hideView(mBinding.clTabs)
-        override fun onScrollOffsetValue(value: Float) {
-            mBinding.appBarLayout.elevation = value
-        }
+        override fun onScrollOffsetValue(value: Int) = presenter.changeAppBarElevation(value)
     }
 
     private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
@@ -69,7 +68,10 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(), Cha
         mBinding.apply {
             viewPager.apply {
                 adapter = object :
-                    FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                    FragmentPagerAdapter(
+                        childFragmentManager,
+                        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+                    ) {
                     override fun getItem(position: Int) = fragments[position]
                     override fun getCount() = fragments.size
                 }
@@ -152,11 +154,15 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(), Cha
     }
 
     fun smoothScrollToFirstItem() {
-        if (mBinding.viewPager.currentItem == 0){
+        if (mBinding.viewPager.currentItem == 0) {
             (fragments[0] as ChatListFragment).smoothScrollToFirstItem()
-        }else {
+        } else {
             (fragments[1] as InviteListFragment).smoothScrollToFirstItem()
         }
+    }
+
+    override fun setAppBarShadow(value: Float) {
+        mBinding.appBarLayout.changeAppBarElevation(value)
     }
 
     override fun layout() = R.layout.fragment_chat_list_tabs

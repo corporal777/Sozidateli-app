@@ -5,38 +5,27 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.MapInfo
-import com.example.ui.base.BaseFragment
-import com.example.ui.event.location.map.MapFragment
+import com.example.databinding.FragmentMapNewBinding
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_map.*
-import kotlinx.android.synthetic.main.fragment_map_new.*
-import kotlinx.android.synthetic.main.fragment_map_new.btnGoTo
-import kotlinx.android.synthetic.main.fragment_map_new.btnShare
-import kotlinx.android.synthetic.main.fragment_map_new.flMapContainer
-import kotlinx.android.synthetic.main.fragment_map_new.flMapTouchWrapper
-import kotlinx.android.synthetic.main.fragment_map_new.llMapAction
-import kotlinx.android.synthetic.main.fragment_map_new.scrollContainer
-import kotlinx.android.synthetic.main.fragment_map_new.tvDescription
-import kotlinx.android.synthetic.main.fragment_map_new.tvDescriptionTitle
+import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MapFragmentNew : BaseFragment(), MapContractNew.View , OnMapReadyCallback{
+class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.View,
+    OnMapReadyCallback, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: MapPresenterNew
@@ -58,8 +47,9 @@ class MapFragmentNew : BaseFragment(), MapContractNew.View , OnMapReadyCallback{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        iv_back.setOnClickListener {
-            findNavController().popBackStack()
+        setToolbarTitleAndIcon("")
+        mBinding.scrollContainer.onScrolled { scrollY, oldScrollY, _, _ ->
+            presenter.changeAppBarElevation(scrollY - oldScrollY)
         }
     }
 
@@ -67,43 +57,46 @@ class MapFragmentNew : BaseFragment(), MapContractNew.View , OnMapReadyCallback{
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initializeMap() {
-        flMapContainer.apply {
-            updateLayoutParams {
-                val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
-                height = dh.roundToInt()
+        mBinding.apply {
+            flMapContainer.apply {
+                updateLayoutParams {
+                    val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
+                    height = dh.roundToInt()
+                }
+
+                (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).apply {
+                    getMapAsync(this@MapFragmentNew)
+                }
+                isVisible = true
             }
 
-            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).apply {
-                getMapAsync(this@MapFragmentNew)
-            }
-            isVisible = true
-        }
+            llMapAction.isVisible = true
 
-        llMapAction.isVisible = true
-
-        flMapTouchWrapper.apply {
-            setOnTouchListener { _, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_UP -> {
-                        scrollContainer.requestDisallowInterceptTouchEvent(false)
-                        true
+            flMapTouchWrapper.apply {
+                setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_UP -> {
+                            scrollContainer.requestDisallowInterceptTouchEvent(false)
+                            true
+                        }
+                        MotionEvent.ACTION_DOWN,
+                        MotionEvent.ACTION_MOVE -> {
+                            scrollContainer.requestDisallowInterceptTouchEvent(true)
+                            false
+                        }
+                        else -> true
                     }
-                    MotionEvent.ACTION_DOWN,
-                    MotionEvent.ACTION_MOVE -> {
-                        scrollContainer.requestDisallowInterceptTouchEvent(true)
-                        false
-                    }
-                    else -> true
                 }
             }
+
+            btnShare.setOnClickListener { presenter.onShareClick() }
+            btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
         }
 
-        btnShare.setOnClickListener { presenter.onShareClick() }
-        btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
     }
 
     override fun showContent() {
-        scrollContainer.isVisible = true
+        mBinding.scrollContainer.isVisible = true
     }
 
     @SuppressLint("MissingPermission")
@@ -118,12 +111,12 @@ class MapFragmentNew : BaseFragment(), MapContractNew.View , OnMapReadyCallback{
     }
 
     override fun setDescription(title: String?, description: String?) {
-        tvDescriptionTitle.apply {
+        mBinding.tvDescriptionTitle.apply {
             text = title
             isVisible = !title.isNullOrEmpty()
         }
 
-        tvDescription.apply {
+        mBinding.tvDescription.apply {
             text = description
             isVisible = !description.isNullOrEmpty()
         }

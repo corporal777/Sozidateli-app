@@ -22,6 +22,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class NotificationsPresenter
@@ -35,6 +36,7 @@ class NotificationsPresenter
     private var firstLaunch = true
     private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
+    private var mDy = 0f
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotificationsList(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
@@ -48,11 +50,9 @@ class NotificationsPresenter
             }
             .buildList(enablePlaceholders = true)
 
-    private var mDy = 0
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
+        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.notificationsCountSubject
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple { if (!blockInvalidation) pagination.invalidate() }
@@ -81,14 +81,14 @@ class NotificationsPresenter
 
     override fun attachView(view: NotificationsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy.toFloat())
+        viewState.setAppBarElevation(mDy)
         if (firstLaunch) firstLaunch = false
         else pagination.invalidate()
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy = value
-        viewState.setAppBarElevation(mDy.toFloat())
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
     }
 
     override fun onNotificationUrlClick(url: String) {

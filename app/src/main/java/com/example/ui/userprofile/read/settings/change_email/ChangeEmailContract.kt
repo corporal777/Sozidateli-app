@@ -18,12 +18,15 @@ interface ChangeEmailContract {
         fun showEmailNotUnique(email: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmailComplete(email: String)
+        fun showChangeEmailComplete()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailConfirm(email: String)
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
         fun checkEmailIsUnique(email: String)
-        fun onChangeEmailConfirm(email: String)
+        fun updateEmail(email: String)
 
     }
 }

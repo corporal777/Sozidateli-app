@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
@@ -51,9 +52,9 @@ abstract class NotificationItem(
                 ).parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
-                        /*val eventMass = url.split("event")
-                        val eventId = eventMass.last().replace("/", "")*/
-                        openEventListener(/*eventId*/notification.eventId.toString())
+                        if (notification.eventId != null){
+                            openEventListener(notification.eventId.toString())
+                        }
                         true
                     }
                 removeUrlUnderline()

@@ -1,7 +1,6 @@
 package com.example.ui.userprofile.read.settings.change_email
 
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -10,8 +9,8 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.BottomSheetChangeEmailBinding
-import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import javax.inject.Inject
 import javax.inject.Provider
@@ -51,13 +50,12 @@ class ChangeEmailFragment(
 
 
     override fun setCurrentEmail(currentEmail: String) {
-        if (!currentEmail.isNullOrEmpty()){
+        if (!currentEmail.isNullOrEmpty()) {
             mBinding.tvCurrentEmail.setText(currentEmail)
-        }else {
+        } else {
             mBinding.apply {
                 tvCurrentEmail.isVisible = false
                 tvCurrentLogin.isVisible = false
-                tvNewLogin.text = getString(R.string.profile_email_change_message)
             }
         }
 
@@ -74,13 +72,21 @@ class ChangeEmailFragment(
         )
             .setSelectCallback {
                 if (it) {
-                    presenter.onChangeEmailConfirm(email)
+                    showEmailConfirm(email)
                 }
             }
     }
 
-    override fun showChangeEmailComplete(email: String) {
-        showChangeEmailCompleteDialog(email)
+    override fun showEmailConfirm(email: String) {
+        val confirmEmail = ConfirmEmailPhoneFragment(email)
+        confirmEmail.show(requireActivity().supportFragmentManager, "confirm_email_dialog")
+        confirmEmail.setConfirmCallback {
+            presenter.updateEmail(email)
+        }
+    }
+
+    override fun showChangeEmailComplete() {
+        showToast(getString(R.string.email_change_confirm_success))
         dismiss()
     }
 

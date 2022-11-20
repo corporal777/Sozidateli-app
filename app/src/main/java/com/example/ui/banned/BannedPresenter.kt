@@ -27,7 +27,7 @@ class BannedPresenter
 ) : BasePresenter<BannedContract.View>(appData), BannedContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
 
     private var firstLaunch = true
-    private var mDy = 0
+    private var mDy = 0f
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.bannedList(mapOf(
@@ -53,14 +53,14 @@ class BannedPresenter
 
     override fun attachView(view: BannedContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(mDy)
 //        if (firstLaunch) firstLaunch = false
 //        else pagination.invalidate()
     }
 
     fun changeScrollingOffset(value : Int){
-        mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun onUserClick(userChat: UserChat) {

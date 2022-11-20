@@ -2,6 +2,7 @@ package com.example.holders
 
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.util.setCircleAvatar
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_organization_user.*
@@ -18,7 +19,7 @@ class OrganizationUserItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             tvUserName.text = name
-            ivUserAvatar.setCircleImage(avatar, R.drawable.avatar_placeholder)
+            ivUserAvatar.setCircleAvatar(avatar)
             tvDescription.apply {
                 isVisible = !description.isNullOrEmpty()
                 text = description

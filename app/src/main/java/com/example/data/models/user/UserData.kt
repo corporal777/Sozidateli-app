@@ -7,7 +7,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserInterest
 
 data class UserData(
-        var user: /*User*/UserDetail,
+        var user: UserDetail,
         var avatar: Bitmap?,
         var interests: Map<InterestNew, List<InterestNew>>?
 )

@@ -19,6 +19,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -65,17 +66,13 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         { presenter.onNotificationRateClick(it) }
 
     private val openEventListener: OnOpenEventListener = {
-        findNavController().navigate(
-            NotificationsFragmentDirections.notificationToAboutEventFragment(
-                it
-            )
-        )
+        showAboutEvent(it)
     }
 
     private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
         if (url.contains("/organization/")) {
             findNavController().navigate(
-                R.id.organization_fragment,
+                R.id.organization_fragment_new,
                 bundleOf("organizationId" to Uri.parse(url).lastPathSegment)
             )
         } else {
@@ -94,22 +91,15 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.notifications_label))
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarTitleAndIcon(getString(R.string.notifications_label))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@NotificationsFragment.adapter
                 onScrolled { _, _ ->
-                    if (this.computeVerticalScrollOffset() <= 10) {
-                        presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-                    } else {
-                        presenter.changeAppBarElevation(10)
-                    }
+                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
                 }
             }
 
@@ -169,10 +159,15 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         )
     }
 
+    override fun showAboutEvent(eventId: String) {
+        findNavController().navigate(NotificationsFragmentDirections.notificationToAboutEventFragment(eventId))
+    }
+
     override fun showUrl(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
-        })
+        showCustomTabsBrowser(requireContext(), url)
+//        startActivity(Intent(Intent.ACTION_VIEW).apply {
+//            data = Uri.parse(url)
+//        })
     }
 
     override fun onNotificationNeedUpdate(id: Int) {

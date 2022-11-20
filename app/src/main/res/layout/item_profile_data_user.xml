@@ -50,6 +50,7 @@
             tools:ignore="MissingPrefix"
             tools:text="id1370926" />
 
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnChat"
             style="@style/BtnGrayWriteStyle"

@@ -138,14 +138,6 @@ class AppData(
         userNewChangeSubject.onNext(newUser.asOptional())
     }
 
-    fun updatePhoneNew(phone: String) {
-        this.newUser?.phone?.forEach {
-            if (it.type == PHONE_PERSONAL) {
-                it.value = phone
-                it.isConfirmed = true
-            }
-        }
-    }
 
     fun checkUserState(data: List<UserProfileFields>?) {
         val base = data?.filter { it.requiredFor?.contains("basic") == true }
@@ -248,5 +240,9 @@ class AppData(
         chatUnreadMessageCount = 0
         userChangeSubject.onNext(Optional(null))
         userPhoneConfirmedSubject.onNext(false)
+    }
+
+    fun isCurrentUser(id : String): Boolean {
+        return newUser?.id.toString() == id
     }
 }

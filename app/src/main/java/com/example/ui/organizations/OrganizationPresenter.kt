@@ -162,9 +162,6 @@ class OrganizationPresenter
         viewState.showEvents(organizationId)
     }
 
-    override fun onEventClick(event: Event) {
-        viewState.showAboutEvent(event)
-    }
 
     override fun onGoToEventClick(event: Event) {
         viewState.showEventRequest(event)
@@ -206,8 +203,13 @@ class OrganizationPresenter
         viewState.showUsers(organizationId)
     }
 
-    override fun onUserClick(user: UserDetail?/*User*/) {
-        viewState.showUser(user?.id.toString()/*user.user_id.toString()*/)
+    override fun onUserClick(user: UserDetail?) {
+        if (appData.isCurrentUser(user?.id.toString())){
+            viewState.showCurrentUser(appData.getUserNew().id.toString())
+        }else {
+            viewState.showUser(user?.id.toString())
+        }
+
     }
 
     override fun onUserActionCLick(user: UserDetail?/*User*/) {

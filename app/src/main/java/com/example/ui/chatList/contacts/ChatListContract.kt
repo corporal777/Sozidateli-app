@@ -14,7 +14,7 @@ interface ChatListContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun openChat(chatId: Int, userName: String)
+        fun openChat(chatId: Int, userName: String, avatar : String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun openSearch()
@@ -34,7 +34,7 @@ interface ChatListContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
-        fun onUserClick(uid: Int, userName: String, chatRoomWithMe: ChatRoomWithMeModel?)
+        fun onUserClick(uid: Int, userName: String, avatar : String?, chatRoomWithMe: ChatRoomWithMeModel?)
         fun onChatOnScreen(chatId: Int)
         fun onChatGoneFromScreen(chatId: Int)
         fun onFabAddChatClick()

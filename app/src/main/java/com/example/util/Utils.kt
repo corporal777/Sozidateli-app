@@ -18,16 +18,24 @@ object Utils {
         get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
     fun getDatesInterval(startDate: String?, finishDate: String?): String {
-        return getDatesInterval(if (startDate == null) 0 else defaultServerDateFormatter.parse(startDate).time, if (finishDate == null) 0 else defaultServerDateFormatter.parse(finishDate).time)
+        return getDatesInterval(
+            if (startDate == null) 0 else defaultServerDateFormatter.parse(
+                startDate
+            ).time, if (finishDate == null) 0 else defaultServerDateFormatter.parse(finishDate).time
+        )
     }
 
     fun getDatesInterval(startDate: Long, finishDate: Long): String {
         val start = Calendar.getInstance().apply { timeInMillis = startDate }
         val finish = Calendar.getInstance().apply { timeInMillis = finishDate }
 
-        val startFormat = if (start.get(Calendar.YEAR) == finish.get(Calendar.YEAR)) DATE_FORMAT_SHORT_MONTH_NO_YEAR else DATE_FORMAT_SHORT_MONTH_FULL_YEAR
+        val startFormat =
+            if (start.get(Calendar.YEAR) == finish.get(Calendar.YEAR)) DATE_FORMAT_SHORT_MONTH_NO_YEAR else DATE_FORMAT_SHORT_MONTH_FULL_YEAR
         val formattedStart = SimpleDateFormat(startFormat, Locale.getDefault()).format(start.time)
-        var formattedFinish = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault()).format(finish.time)
+        var formattedFinish = SimpleDateFormat(
+            DATE_FORMAT_SHORT_MONTH_FULL_YEAR,
+            Locale.getDefault()
+        ).format(finish.time)
 
         if (finishDate == 0L) formattedFinish = "н.в"
 
@@ -48,7 +56,7 @@ object Utils {
 
     fun newPhoneValidator(phone: String?): Boolean {
         var isValid = true
-        if (!phone.isNullOrEmpty()){
+        if (!phone.isNullOrEmpty()) {
             if (phone.contains("+")) {
                 if (phone.length == 12) {
                     if (phone.substring(0, 3) != "+79") isValid = false
@@ -59,13 +67,15 @@ object Utils {
                     if (firstNumber != "79" && firstNumber != "89") isValid = false
                 } else isValid = false
             }
+        } else {
+            isValid = false
         }
         return isValid
     }
 
     fun isNewPhoneIsValid(phone: String?): Boolean {
         var valid = true
-        if (!phone.isNullOrEmpty()){
+        if (!phone.isNullOrEmpty()) {
             if (phone.contains("+")) {
                 if (phone.length == 12) {
                     if (phone.substring(0, 3) != "+79") valid = false
@@ -76,7 +86,7 @@ object Utils {
                     if (firstNumber != "79" && firstNumber != "89") valid = false
                 } else valid = false
             }
-        }else {
+        } else {
             valid = false
         }
         return valid
@@ -91,11 +101,33 @@ object Utils {
         return sb.toString()
     }
 
-    fun timerFormatter(time: Int, context: Context) : String =
-        if (time > 59) {
+    fun timerFormatter(time: Int, context: Context): String =
+        if (time > 119) {
+            val seconds = time - 60
+            val minute = ceil((time - seconds).toDouble() / 60).toInt()
+            context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
+        } else if (time > 59) {
             val minute = ceil(time.toDouble() / 60).toInt()
             context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
         } else context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
+
+    fun timerFormatterNew(time: Int, context: Context): String {
+        var remainTime = ""
+        if (time > 59) {
+            val seconds = time - 60
+            val minute = ceil((time - seconds).toDouble() / 60).toInt()
+
+            val m = context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
+            val s = if (seconds > 0){
+                " " + context.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
+            } else ""
+            remainTime = m + s
+        } else  {
+            remainTime = context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
+        }
+        return remainTime
+    }
+
 
     fun maxStateScreen(user: UserDetail): MaxStateScreenType {
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
@@ -107,7 +139,8 @@ object Utils {
         val works = user.binds?.workExperience
         val isWork = if (works?.absent == true) false else works?.models?.isNullOrEmpty()
         return if (/*user.binds?.recommendationFile.isNullOrEmpty() ||*/ user.notes?.value.isNullOrEmpty() ||
-                (isSite == true) || (isLinks == true) || isWorkPhone || user.image?.uri.isNullOrEmpty()) MaxStateScreenType.BASE
+            (isSite == true) || (isLinks == true) || isWorkPhone || user.image?.uri.isNullOrEmpty()
+        ) MaxStateScreenType.BASE
         else if (user.interests.isNullOrEmpty()) MaxStateScreenType.INTERESTS
         else if (isWork == true) MaxStateScreenType.WORK
         else if (user.binds?.education.isNullOrEmpty()) MaxStateScreenType.EDUCATION

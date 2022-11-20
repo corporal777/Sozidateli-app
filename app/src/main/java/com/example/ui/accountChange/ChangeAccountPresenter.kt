@@ -61,7 +61,7 @@ class ChangeAccountPresenter
     private fun loadData() {
         compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId)
             .doOnSuccess {
-                transformData(it.userSessions)
+                transformData(it.userSessions.filter { x -> x.deviceId == mDeviceId })
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -170,7 +170,8 @@ class ChangeAccountPresenter
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
-                    }.performOnBackgroundOutOnMain()
+                    }.doOnComplete { appData.token = session.sessionUid }
+                        .performOnBackgroundOutOnMain()
                         .subscribeSimple {
                             val m = "Аккаунт сменен"
                             viewState.showMessage(m)

@@ -30,9 +30,11 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.Utils
 import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
 import com.squareup.picasso.Picasso
@@ -53,8 +55,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
-
-    private var changeShortNameDialog: ChangeShortNameFragment? = null
 
     private val dummyTarget = object : Target {
         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -131,7 +131,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
                 .setSelectCallback {
                     when (it.type) {
                         RegisterDataType.PHONE -> {
-                            presenter.checkPhoneIsUnique(it.value)
+                            presenter.checkPhoneIsUnique(Utils.validatePhoneBeforeSend(it.value))
                         }
                         RegisterDataType.EMAIL -> {
                             presenter.checkEmailIsUnique(it.value)
@@ -235,7 +235,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         )
             .setSelectCallback {
                 if (it) {
-                    presenter.sendEmail(email)
+                    showEmailConfirmation(email)
                 }
             }
     }
@@ -247,15 +247,15 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         )
             .setSelectCallback {
                 if (it) {
-                    presenter.sendPhone(phone)
+                    showPhoneConfirmation(phone)
                 }
             }
     }
 
     private fun showChangeUserShortNameDialog(user: UserDetail) {
-        changeShortNameDialog = ChangeShortNameFragment(user)
-        changeShortNameDialog?.show(requireActivity().supportFragmentManager, "change_short_name")
-        changeShortNameDialog?.getUpdatedUserShortName {
+        val changeShortNameDialog = ChangeShortNameFragment(user)
+        changeShortNameDialog.show(requireActivity().supportFragmentManager, "change_short_name")
+        changeShortNameDialog.getUpdatedUserShortName {
             setUserLink(it)
         }
     }
@@ -272,49 +272,34 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
 
+    override fun showPhoneConfirmation(phone: String) {
+        dialog.hideDialog()
+        val confirmPhone = ConfirmEmailPhoneFragment(phone)
+        confirmPhone.show(requireActivity().supportFragmentManager, "confirm_phone")
+        confirmPhone.setConfirmCallback {
+            presenter.onPhoneConfirmed(phone)
+        }
+    }
+
+    override fun showEmailConfirmation(email: String) {
+        dialog.hideDialog()
+        val confirmEmail = ConfirmEmailPhoneFragment(email)
+        confirmEmail.show(requireActivity().supportFragmentManager, "confirm_email")
+        confirmEmail.setConfirmCallback {
+            presenter.onEmailConfirmed(email)
+        }
+    }
+
     override fun showQrScannerToAuthWebSite() {
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToQrScannerAuthWebsiteFragment())
     }
 
-    override fun emailSuccess() {
-        dialog.hideDialog()
-        FinishRegisterDialog(requireContext())
-            .setSelectCallback { showUserStateDialog() }
-    }
-
-    override fun phoneSuccess(phone: String) {
-        dialog.hideDialog()
-        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
-        dialog.setPhoneForCode(phone)
-        dialog.setSelectCallback {
-            if (it.type == RegisterDataType.CODE) {
-                (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                presenter.confirmCode(phone, it.value)
-            }
-        }
-        dialog.setNegativeClickCallback { showUserStateDialog() }
-        dialog.setSendCodeCallback {
-            presenter.sendPhone(phone)
-        }
-    }
-
-    override fun hideDialogProgress() {
-        dialog.isProgressVisible(false)
-    }
-
     override fun codeSuccess() {
-        Toast.makeText(requireContext(), "Code confirmed", Toast.LENGTH_SHORT).show()
-        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
-        dialog.hideDialog()
         showUserStateDialog()
     }
 
     override fun showProfile(uid: String) {
-        //if (BuildConfig.NEW_PROFILE_EDIT) {
         findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
-        /*} else {
-            findNavController().navigate(ProfileFragmentDirections.profileToUser(uid))
-        }*/
     }
 
     override fun showChangeAccount() {

@@ -14,6 +14,9 @@ interface UserContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showShimmerPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(profileUserData: ProfileUserData)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -40,20 +43,14 @@ interface UserContract {
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showDataEditor(type: UserEditDataType)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangePassword()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPasswordChangeComplete()
-
         @StateStrategyType(SkipStrategy::class)
         fun showUserHiddenDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setAppBarShadow(value : Float)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         fun onWriteMessageClick()
         fun onOrganizationClick(organization: /*Organization*/OrganizationNew)
         fun onFileClick(file: /*RecommendationFile*/FileModel)
@@ -64,17 +61,6 @@ interface UserContract {
         fun onBlockClick()
         fun onBlockConfirm()
 
-        fun onEditMainDataClick()
-        fun onEditPersonalDataClick()
-        fun onEditEducationClick()
-        fun onEditWorkClick()
-        fun onEditInterestsClick()
-        fun onEditAdditionalNotesDataClick()
-        fun onEditAdditionalFilesDataClick()
-
         fun onRefreshRequest()
-
-        fun onChangePasswordClick()
-        fun onChangePasswordClickConfirm(oldPassword: String, newPassword: String, newPasswordConfirm: String)
     }
 }

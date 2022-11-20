@@ -54,7 +54,7 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeOrganizationSubscription(isSubscribed: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showShare(eventId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -66,7 +66,7 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showEventActivities(eventId: String, listTags: List<NewTags>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showSpeakerProfile(speakerId: Int)
 
         @StateStrategyType(SkipStrategy::class)
@@ -75,7 +75,7 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun updateAppBarBackgroundColorValue(value : Int)
     }
 
