@@ -224,10 +224,6 @@ class UserEditPresenter
             }
     }
 
-    override fun onDisabledMainInputInfoClick() {
-        viewState.showDisabledMainInputInfo()
-    }
-
     override fun onEditAvatarClick() {
         viewState.showTakePictureChooser()
     }

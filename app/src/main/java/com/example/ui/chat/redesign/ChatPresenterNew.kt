@@ -3,7 +3,6 @@ package com.example.ui.chat.redesign
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
@@ -13,20 +12,18 @@ import com.example.data.socket.SocketIOManager
 import com.example.extensions.*
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.chat.ChatContract
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
 import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.convertBitmapToFile
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
 import com.yandex.metrica.impl.ob.it
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -44,7 +41,6 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @InjectViewState
 class ChatPresenterNew

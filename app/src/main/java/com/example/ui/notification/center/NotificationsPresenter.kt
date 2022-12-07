@@ -13,9 +13,9 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign

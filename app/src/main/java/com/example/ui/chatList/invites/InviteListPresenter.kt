@@ -10,8 +10,8 @@ import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationResponse
+import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import org.greenrobot.eventbus.EventBus

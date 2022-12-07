@@ -39,6 +39,8 @@
     <dimen name="day_item_start">5dp</dimen>
 
     <dimen name="user_short_name_text_size">12sp</dimen>
+
+    <dimen name="in_app_notification_fragment_margin_top">40dp</dimen>
     <!--  new margins  -->
 
     <dimen name="auth_logo_margin_top">24dp</dimen>

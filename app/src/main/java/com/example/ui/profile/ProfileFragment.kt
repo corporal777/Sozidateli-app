@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -13,11 +12,10 @@ import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.updateBounds
-import androidx.core.widget.NestedScrollView
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
@@ -25,6 +23,7 @@ import com.example.R
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
+import com.example.extensions.dp
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
@@ -37,8 +36,7 @@ import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.Utils
 import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.example.util.setImage
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
@@ -56,20 +54,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
 
-    private val dummyTarget = object : Target {
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-            mBinding.ivAvatar.setImageDrawable(placeHolderDrawable)
-        }
-
-        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-            e?.printStackTrace()
-        }
-
-        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-            mBinding.ivAvatar.setImageBitmap(bitmap)
-            presenter.bmImage = bitmap
-        }
-    }
 
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get().apply {
@@ -88,15 +72,15 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
             profileScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
             }
-            ivAvatar.apply {
-                clipToOutline = true
-            }
             //tvBanned.setOnClickListener { presenter.onBannedClick() }
             tvSettings.setOnClickListener { presenter.onSettingsClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
             tvRate.setOnClickListener { presenter.onRateClick() }
             tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
-            tvLogout.setOnClickListener { presenter.onLogoutClick() }
+            tvLogout.setOnClickListener {
+                (requireActivity() as MainActivity).setIgnoreTokenListener(false)
+                presenter.onLogoutClick()
+            }
             //tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
             tvSessions.setOnClickListener {
                 presenter.onSessionsClick()
@@ -116,11 +100,13 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
 
     override fun setUser(user: UserDetail) {
-        setUserLink(user)
-        setChangeOrAddNewAccount(user.binds?.deviceSessionsCount ?: 0)
-        val avatar = user.image.uri
-        Picasso.get().load(avatar).placeholder(R.drawable.avatar_placeholder_rectangle)
-            .into(dummyTarget)
+        mBinding.ivAvatar.apply {
+            setImage(
+                user.image.uri,
+                error = R.drawable.avatar_placeholder_rectangle,
+                transformations = listOf(RoundedCornersTransformation(10f.dp))
+            )
+        }
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -196,35 +182,33 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
         setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
             val link = BuildConfig.SHARE_URL + "portal/user/" + user.id
-            copyTextToBuffer(requireContext(), link)
-            showToast(getString(R.string.link_is_copied))
-            //presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
+            //copyTextToBuffer(requireContext(), link)
+            //showToast(getString(R.string.link_is_copied))
+            presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
         }, {
             shortNameClick?.invoke()
         })
     }
 
-    override fun setChangeOrAddNewAccount(size: Int) {
-        if (size <= 1) {
-            mBinding.apply {
-                tvChangeAccount.text = getString(R.string.add_account_label)
-                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_profile_add_account_edit,
-                    0,
-                    0,
-                    0
-                )
-            }
-        } else {
-            mBinding.apply {
-                tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_profile_change_account_edit,
-                    0,
-                    0,
-                    0
-                );
-                tvChangeAccount.text = getString(R.string.change_account_label)
-            }
+
+    override fun showShimmerView() {
+        mBinding.apply {
+            shimmerView.isVisible = true
+            clHeader.isVisible = false
+        }
+    }
+
+    override fun hideShimmerView() {
+        mBinding.apply {
+            shimmerView.isVisible = false
+            clHeader.isVisible = true
+        }
+    }
+
+    override fun setChangeOrAddNewAccount(description: Int, icon: Int) {
+        mBinding.apply {
+            tvChangeAccount.text = getString(description)
+            tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0)
         }
     }
 
@@ -260,13 +244,12 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         }
     }
 
-    override fun showProfileDataBottomSheetDialog(user: UserDetail, bm: Bitmap?) {
+    override fun showProfileDataBottomSheetDialog(user: UserDetail) {
         val profileDataDialog = ProfileDataFragment(
             user.id,
             user.nameLastName,
-            user.image.uri ?: "",
-            user.qrCodeLink ?: "",
-            bm
+            user.image.uri,
+            user.qrCodeLink,
         )
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }

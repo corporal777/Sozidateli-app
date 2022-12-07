@@ -2,53 +2,53 @@ package com.example.holders
 
 import android.content.Context
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
 import com.example.extensions.*
+import com.example.holders.redesign.EventActivityItem
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_chat.*
+import kotlinx.android.synthetic.main.item_dropdown.*
 import java.util.*
 
 
 class UserChatItem(
-        val userChat: UserChat,
-        private val onClick: (UserChat) -> Unit,
-        private val onBind: ((UserChatItem) -> Unit)? = null,
-        private val onUnBind: ((UserChatItem) -> Unit)? = null,
-        private val withDivider: Boolean
+    val userChat: UserChat,
+    private val onClick: (UserChat) -> Unit,
+    private val onBind: ((UserChatItem) -> Unit)? = null,
+    private val onUnBind: ((UserChatItem) -> Unit)? = null,
+    private val withDivider: Boolean
 ) : Item(userChat.id.toLong()) {
+
+    private lateinit var mViewHolder: GroupieViewHolder
+    private var lastMessage = userChat.lastMessage
+    private var messageCount = userChat.unreadMessageCount
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         onBind?.invoke(this)
+        mViewHolder = viewHolder
         viewHolder.apply {
-            ivAvatar.apply {
-                setCircleAvatar(userChat.user.image.uri)
-            }
-
-            updateBadge(viewHolder.tvBadge)
-
+            ivAvatar.setCircleAvatar(userChat.user.image.uri)
             tvName.text = userChat.user.nameLastName
-
             tvLastMessage.apply {
                 text = when (userChat.lastMessageType) {
                     MessageType.IMAGE -> context.getString(R.string.chat_photo_message_text)
                     MessageType.SERVICE -> {
-                        if (userChat.lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
+                        if (lastMessage == CHAT_SERVICE_MESSAGE_ACCEPT) {
                             if (userChat.lastMessageSender == userChat.user.id) context.getString(R.string.chat_accepted)
                             else context.getString(R.string.chat_accept_by_me)
                         } else ""
                     }
-                    else -> userChat.lastMessage
+                    else -> lastMessage
                 }
             }
-
-            itemView.setOnClickListener { onClick(userChat) }
 
             tvDate.apply {
                 if (userChat.lastMessageDate == null) visibility = View.GONE
@@ -58,6 +58,9 @@ class UserChatItem(
                 }
             }
 
+            itemView.setOnClickListener { onClick(userChat) }
+
+            updateBadge(messageCount)
             divider.isVisible = withDivider
         }
     }
@@ -66,16 +69,26 @@ class UserChatItem(
         val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewHolder, position, payloads)
         else if (payload is Int) {
-            updateBadge(viewHolder.tvBadge)
+            //updateBadge(viewHolder.tvBadge)
         }
     }
 
-    private fun updateBadge(tvBadge: TextView) {
-        tvBadge.apply {
-            val messageCount = userChat.unreadMessageCount
-            isVisible = messageCount > 0
-            val count = if (messageCount <= 99) messageCount.toString() else "99+"
-            text = count
+    fun updateBadge(count: Int) {
+        if (this::mViewHolder.isInitialized) {
+            mViewHolder.tvBadge.apply {
+                isVisible = count > 0
+                messageCount = count
+                text = if (count <= 99) count.toString() else "99+"
+            }
+        }
+    }
+
+    fun updateMessage(message: String) {
+        if (message != userChat.lastMessage) {
+            if (this::mViewHolder.isInitialized) {
+                mViewHolder.tvLastMessage.text = message
+                lastMessage = message
+            }
         }
     }
 
@@ -85,8 +98,8 @@ class UserChatItem(
         val now = Calendar.getInstance()
 
         return when {
-            messageCalendar.isSameDay(now) -> defaultTimeFormatter.format(messageDate)//context.getString(R.string.today)
-            //messageCalendar.isYesterday(now) -> context.getString(R.string.yesterday)
+            messageCalendar.isSameDay(now) -> context.getString(R.string.today)
+            messageCalendar.isYesterday(now) -> context.getString(R.string.yesterday)
             else -> dateFormatterShortMothNoYear.format(messageDate)
         }
     }
@@ -107,7 +120,19 @@ class UserChatItem(
         return true
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is UserChatItem) return false
+        if (userChat != other.userChat) return false
+        return true
+    }
+
     override fun hashCode(): Int {
         return userChat.hashCode()
+    }
+
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 450
+        view.startAnimation(anim)
     }
 }

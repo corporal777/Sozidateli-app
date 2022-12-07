@@ -15,7 +15,7 @@ import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(), AboutContract.View, SimpleTitleToolbar {
+class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(true), AboutContract.View, SimpleTitleToolbar {
 
 
     @InjectPresenter
@@ -30,6 +30,7 @@ class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(), AboutContract.Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarTitleAndIcon(getString(R.string.profile_about_app))
+        startPostponedEnterTransition()
         mBinding.apply {
             tvAppVersion.text = getString(R.string.about_version).format(BuildConfig.VERSION_NAME)
             tvDeveloperSite.apply {
@@ -37,7 +38,6 @@ class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(), AboutContract.Vie
                 removeUrlUnderline(textColors.defaultColor)
             }
         }
-
     }
 
     override fun layout() = R.layout.fragment_about

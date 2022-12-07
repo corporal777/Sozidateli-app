@@ -2,6 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tvNewMessages"
+    fontPath="fonts/sf_pro_display.OTF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/chat_new_messages_background"
@@ -10,4 +11,5 @@
     android:paddingBottom="8dp"
     android:textAllCaps="true"
     android:textColor="@color/chat_new_messages_text"
+    tools:ignore="MissingPrefix"
     tools:text="@string/chat_new_messages_count" />

@@ -8,10 +8,13 @@ import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
+import com.example.ui.event.registration.items.ProfileFieldsData
+import com.example.ui.event.registration.items.ProfileFieldsFormModel
 import com.example.util.pagination.PaginationResponse
 import com.google.gson.JsonElement
 import fromJson
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -267,6 +270,20 @@ class EventRepositoryImp
                 PaginationResponse(it.totalCount, it.data ?: arrayListOf())
             }
 
+    override fun getEventsListFlow(map: Map<String, Any>): Flowable<PaginationResponse<EventNew?>> {
+        return newApi.getEventsListFlow(map)
+            .map {
+                val eventFormats = appData.getEventFormats()
+                if (!eventFormats.isNullOrEmpty()) {
+                    it.data?.forEach { ev ->
+                        ev?.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                    }
+                }
+                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
+            }
+    }
+
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         newApi.getSortedEventsList(map)
             .map {
@@ -336,11 +353,7 @@ class EventRepositoryImp
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(
             eventId,
-            "rights,organization,organization.userFavorite,tag,page,format,activity," +
-                    "activity.userCalendar,activity.auditorium,user-registration,user-form-result,partner," +
-                    "member,member.user,userFavorite,current-user-registration," +
-                    "destination-scheme,eventRegistrationState,current-user-registration-state," +
-                    "is-user-subscribed,event-subscribe"
+            "rights,organization,organization.userFavorite,tag,page,format,activity,activity.userCalendar,activity.auditorium,user-registration,user-form-result,partner,member,member.user,userFavorite,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state,is-user-subscribed,event-subscribe"
         )
             .map {
                 val eventFormats = appData.getEventFormats()
@@ -455,8 +468,13 @@ class EventRepositoryImp
     override fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel> =
         newApi.sendEventFormResultForRegister(body)
 
-    override fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>> =
+    override fun eventRegisterNew(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>> =
         newApi.eventRegister(body)
+
+    //+
+    override fun loadEventFormResult(id: String): Single<ProfileFieldsData> {
+        return newApi.loadProfileFieldsFormResult(id)
+    }
 
     override fun registerToEvent(eventId: Int): Completable =
         newApi.registerToEvent(eventId, RegisterToEventBody(appData.getId()))

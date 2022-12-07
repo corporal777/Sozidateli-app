@@ -15,9 +15,6 @@ interface EventRatingContract {
         //fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>, rating: Int)
         fun setFields(
                 event: EventRegistration,
-                groupField: EventRegisterField?,
-                selectedGroup: String?,
-                groups: List<EventGroup>,
                 fieldsData: List<EventRegisterFieldData<*>>,
                 rating: Int,
                 files: List<FileModel>?

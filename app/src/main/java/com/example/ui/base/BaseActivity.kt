@@ -34,12 +34,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    override fun enableBackClick() {
-        enableBackClickListener()
-    }
-
-    override fun disableBackClick() {
-        disableBackClickListener()
+    override fun showEnterAnimation() {
     }
 
     override fun showLoadingDialog() {
@@ -118,8 +113,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    abstract fun hideToolbar()
-    abstract fun showToolbar()
 
     @LayoutRes
     abstract fun layout(): Int
@@ -129,9 +122,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     abstract fun getLoadingView(): View
     abstract fun getProgressBarLoadingView(): View
-
-    abstract fun enableBackClickListener()
-    abstract fun disableBackClickListener()
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

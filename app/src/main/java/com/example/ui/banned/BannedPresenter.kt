@@ -10,8 +10,8 @@ import com.example.data.models.UserChat
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain

@@ -19,7 +19,7 @@ import com.example.ui.views.toolbar.SimpleTitleToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(), FavoriteContract.View, SimpleTitleToolbar {
+class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), FavoriteContract.View, SimpleTitleToolbar {
 
     @InjectPresenter
     lateinit var presenter: FavoritePresenter
@@ -67,6 +67,7 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(), Favorit
             btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
             btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
         }
+        startPostponedEnterTransition()
     }
 
     private fun selectTab(position: Int) {

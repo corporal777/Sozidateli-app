@@ -11,10 +11,10 @@ import com.example.extensions.groupByNotNull
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
@@ -24,7 +24,6 @@ import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class MyEventsPresenterNew

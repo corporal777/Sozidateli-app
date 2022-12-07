@@ -7,8 +7,8 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
-class MyScheduleSubEventsGroup(
-    val data: MyScheduleEventsData,
+class EventScheduleGroup(
+    val data: EventScheduleData,
     val onHeaderClick: (id: String) -> Unit,
     val onSubEventClickListener: EventActivityItem.OnEventActivityClickListener
 ) : NestedGroup() {
@@ -21,8 +21,8 @@ class MyScheduleSubEventsGroup(
         mHeaderItem.apply {
             update(listOf(
                 EventActivityDateItem(data.firstDate),
-                EventImageHeaderItem(data.eventName, data.eventImage) {
-                    onHeaderClick(data.eventId ?: "")
+                EventImageHeaderItem(data.getName(), data.getImage(), data.getBackgroundColor()) {
+                    onHeaderClick(data.getId())
                 }
             ))
         }
@@ -37,7 +37,7 @@ class MyScheduleSubEventsGroup(
                         subEvents.value.forEach {
                             add(
                                 EventActivityItem(
-                                    data.eventId,
+                                    data.getId(),
                                     it,
                                     emptyList(),
                                     onSubEventClickListener,
@@ -65,21 +65,6 @@ class MyScheduleSubEventsGroup(
             mDataItem -> 1
             else -> -1
         }
-    }
-
-    fun getEventId(): String {
-        return data.eventId
-    }
-
-    fun getFirstItemDate(): String? {
-        return (mHeaderItem.getItem(0) as EventActivityDateItem).date
-
-    }
-
-
-    fun hasSubEventItem(id: Long) : Boolean {
-        val group = mDataItem.findItemBy<EventActivityItem>{ x -> x.id == id }
-        return group != null
     }
 
     override fun getGroupCount() = 2

@@ -3,27 +3,26 @@ package com.example.ui.auth.register.email.finishregister.newbuild
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.InputFilter
-import android.text.SpannableString
-import android.text.Spanned
+import android.text.SpannableStringBuilder
+import android.text.util.Linkify
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.BuildConfig
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterNewBinding
-import com.example.ui.auth.register.email.finishregister.FinishRegisterFragmentDirections
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.chat.ChatFragmentArgs
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog
-import com.example.util.ClickableSpan
+import com.example.util.AuthValidateUtil
 import com.example.util.Utils
 import com.example.util.initSwitch
 import com.example.util.removeFirstAndLastSpaces
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onFocusChanged
 import onTextChanged
 import javax.inject.Inject
@@ -69,7 +68,7 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            ivClose.setOnClickListener { presenter.onClickClose() }
+            ivClose.setOnClickListener { findNavController().navigateUp() }
             scNoMiddleName.initSwitch(presenter.noMiddleNameChecked) {
                 presenter.onNoMiddleNameChecked(it)
             }
@@ -104,7 +103,26 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
                     }
                 }
             }
-            etEmail.filters = emailFilter
+            etEmail.apply {
+                filters = emailFilter
+                onTextChanged {
+                    tilEmail.error = null
+                    it?.toString()?.let { text -> presenter.onChangeEmailText(text) }
+                }
+                onFocusChanged { hasFocus ->
+                    if (!hasFocus) {
+                        if (AuthValidateUtil.isDigits(text.toString())) {
+                            if (!AuthValidateUtil.isValidPhone(text.toString())) {
+                                showWrongPhoneError(true)
+                            }
+                        } else {
+                            if (!AuthValidateUtil.isValidEmail(text.toString())) {
+                                showWrongEmailError(true)
+                            }
+                        }
+                    }
+                }
+            }
             etCode.onTextChanged {
                 tilCode.error = null
                 it?.toString()?.let { text -> presenter.onChangeCodeText(text) }
@@ -146,22 +164,13 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
 
     override fun setData(
         email: String?,
-        phone: String?,
         firstName: String?,
         lastName: String?,
         middleName: String?
     ) {
         mBinding.apply {
-            when (presenter.loginType) {
-                "phone" -> {
-                    tvText.text = getString(R.string.code_phone_dialog_text, presenter.phone)
-                    etEmail.setText(phone)
-                }
-                "email" -> {
-                    tvText.text = getString(R.string.code_email_dialog_text, presenter.email)
-                    etEmail.setText(email)
-                }
-            }
+            etEmail.setText(email)
+
             etFirstName.setText(firstName)
             etLastName.setText(lastName)
             if (middleName == "-" || middleName.isNullOrEmpty()) {
@@ -175,7 +184,7 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
     }
 
     override fun setTimeLeft(seconds: Int) {
-        val quantity = Utils.timerFormatterNew(seconds, requireContext())
+        val quantity = Utils.timerFormatter(seconds, requireContext())
         mBinding.tvTimer.text = String.format(timerMessage, quantity)
     }
 
@@ -200,6 +209,41 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
         mBinding.tilCode.error = getString(R.string.auth_error_code)
     }
 
+    override fun setDescriptionText(canShow: Boolean) {
+        mBinding.lnText.isVisible = canShow
+        if (canShow){
+            mBinding.apply {
+                when (presenter.loginType) {
+                    "phone" -> {
+                        tvDescription.isVisible = false
+                        tvText.text = getString(R.string.code_phone_dialog_text, presenter.phone)
+                    }
+                    "email" -> {
+                        tvText.text = getString(R.string.code_email_dialog_text, presenter.email)
+                        tvDescription.apply {
+                            isVisible = true
+                            val supportEmail = getString(R.string.support_email)
+                            val message =
+                                getString(R.string.code_dialog_text_information).format(supportEmail)
+                                    .toSpannable()
+                            Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+                            text = message
+                            movementMethod = BetterLinkMovementMethod.getInstance()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun showWrongEmailError(canShow: Boolean) {
+        mBinding.tilEmail.error = if (canShow) getString(R.string.auth_error_wrong_email) else null
+    }
+    override fun showWrongPhoneError(canShow: Boolean) {
+        mBinding.tilEmail.error =
+            if (canShow) getString(R.string.invalid_phone_number_second_error) else null
+    }
+
     override fun openHome() {
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
         findNavController().navigate(FinishRegisterNewFragmentDirections.registerToMail(true))
@@ -207,9 +251,11 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
 
     override fun logout() {
         (requireActivity() as MainActivity).setIgnoreTokenListener(false)
-        findNavController().navigate(R.id.register_email_new_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build())
+        findNavController().navigate(
+            R.id.register_email_new_fragment, null, NavOptions.Builder()
+                .setPopUpTo(R.id.main_navigation, true)
+                .build()
+        )
     }
 
 

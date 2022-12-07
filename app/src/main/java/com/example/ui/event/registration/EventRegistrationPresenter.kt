@@ -8,9 +8,6 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
-import com.example.data.UserEventData
-import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
 import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_FORM_ID
 import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_USER_ID
@@ -18,13 +15,16 @@ import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.event.registration.items.*
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
 import fileName
 import fromJson
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.*
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -32,19 +32,18 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import withDelay
+import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
+import kotlin.Comparator
 
 @InjectViewState
 class EventRegistrationPresenter
 @Inject constructor(
-    private val eventData: UserEventData,
     private val eventRepository: EventRepository,
     private val userRepository: UserRepository,
     private val rxPermissions: RxPermissions,
@@ -54,170 +53,187 @@ class EventRegistrationPresenter
 ) : BasePresenter<EventRegistrationContract.View>(appData), EventRegistrationContract.Presenter {
 
     lateinit var eventId: String
-    private val oldFilesList = arrayListOf<EventRegisterFieldData<*>>()
+    private var isFirstLaunch = true
 
-    private var hasGroup = false
     private var selectedGroup: String? = null
-    private var fieldsData: List<EventRegisterFieldData<*>> = emptyList()
+    private var fieldsData = arrayListOf<EventRegisterFieldData<*>>()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
+
     private var takeFileMaybe: MaybeSubject<Uri>? = null
     private var formId: Int = 0
     private var approvingMode: String? = null
-    lateinit var cleanResult: EventRegisterData
     private var mDy = 0
 
-    override fun changeAppBarBackgroundColorValue(canScrollVertically: Boolean, value: Int) {
-        if (!canScrollVertically) {
-            mDy = 0
-            viewState.updateAppBarBackgroundColorValue(mDy)
-        } else {
-            mDy += value
-            viewState.updateAppBarBackgroundColorValue(mDy)
-        }
+
+    private lateinit var eventData: EventRegistration
+
+    private val formFields = arrayListOf<EventRegisterField>()
+    private val prefilledFormFields = arrayListOf<EventRegisterFields>()
+
+    override fun changeAppBarBackground(value: Int) {
+        mDy = value
+        viewState.updateAppBarBackgroundColorValue(mDy)
     }
 
     override fun attachView(view: EventRegistrationContract.View?) {
         super.attachView(view)
-        viewState.updateAppBarBackgroundColorValue(mDy)
+        //viewState.updateAppBarBackgroundColorValue(mDy)
+        compositeDisposable += loadUserProfileFormFields()
+            .doOnSuccess {
+                val field = fieldsData.find { x -> x.field.id == it.field.id }
+                if (field != null && it.field.type == EventRegisterField.Type.PREFILLED) {
+                    val prefilledField = field as EventRegisterFieldData.Prefilled
+                    val index = fieldsData.indexOf(prefilledField)
+                    fieldsData[index] = it
+                    invalidFieldsData = fieldsData.filter { f -> !f.isValid() }.toMutableSet()
+                }
+            }
+            .withDelay(500)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (it.value != null) {
+                    viewState.updateProfileFields(it.value!!)
+                    checkDataValid()
+                }
+            }
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.updateAppBarBackgroundColorValue(mDy)
-        viewState.enableActionButton(true)
+        viewState.apply {
+            updateAppBarBackgroundColorValue(mDy)
+            enableActionButton(true)
+            setRecyclerViewContent()
+        }
 
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
+            .doOnSuccess {
+                approvingMode = it.state?.registration?.approvingMode
+                val form =
+                    it.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
+                eventData = getEventData(form, it)
+                formId = form?.id ?: 0
+                formFields.addAll(mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED }))
+                prefilledFormFields.addAll(form?.fields?.filter { x -> x.type == EventRegisterField.Type.PREFILLED }
+                    ?: emptyList())
+            }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { onReceiveError(it) },
+                onError = {
+                    onReceiveError(it)
+                },
                 onSuccess = { event ->
                     viewState.showProgressBarLoadingDialog()
-                    approvingMode = event.state?.registration?.approvingMode
-                    val eventData = getEventData(event)
                     if (event.state?.registration?.formEnabled == true) {
-                        val form = event.binds?.form?.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
-                        eventData.registrationHeadline = form?.title
-                        eventData.registrationSubtitle = form?.subtitle
-                        when(form?.background){
-                            EventFormModel.BackgroundType.ORGANIZATION -> {
-                                if (!event.binds?.organization?.image?.uri.isNullOrEmpty()){
-                                    eventData.image = event.binds?.organization?.image?.uri
-                                }else {
-                                    eventData.image = ""
-                                    eventData.backgroundColor = event.binds?.organization?.backgroundColor?.value
-                                }
-                            }
-                            EventFormModel.BackgroundType.EVENT -> {
-                                if (!event.image?.uri.isNullOrEmpty()){
-                                    eventData.image = event.image?.uri
-                                }else {
-                                    eventData.image = ""
-                                    eventData.backgroundColor = event.backgroundColor?.value
-                                }
-                            }
-                        }
-                        val fieldsList = mapFields(form?.fields)
-                        formId = form?.id ?: 0
+                        viewState.setFormHeader(eventData)
 
-                        compositeDisposable += eventRepository.getEventFormResult(
-                            mapOf(
-                                EVENT_FORM_RESULT_FORM_ID to formId,
-                                EVENT_FORM_RESULT_USER_ID to appData.getId()
-                            )
-                        )
-                            .performOnBackgroundOutOnMain()
-                            .subscribeSimple { fieldsResult ->
-                                //set clean data
-                                var fieldsResultList = mapFieldsResult(
-                                    fieldsResult.data.firstOrNull { it.form == formId }?.fields,
-                                    fieldsList
-                                )
-                                var fieldsDataApi = createFieldsData(
-                                    fieldsList,
-                                    fieldsResultList
-                                )
-                                cleanResult = EventRegisterData(
-                                    eventData, null, null,
-                                    listOf(EventGroup("", "")),
-                                    fieldsDataApi ?: emptyList()
-                                )
-
-                                compositeDisposable += eventRepository.getEventFormResultDraft(
-                                    formId,
-                                    emptyMap()
-//                                    mapOf(
-//                                        EVENT_FORM_RESULT_FORM_ID to formId,
-//                                        EVENT_FORM_RESULT_USER_ID to appData.getId()
-//                                    )
-                                )
-                                    .performOnBackgroundOutOnMain()
-                                    .subscribeSimple(
-                                        onError = {
-                                            it.printStackTrace()
-                                            viewState.hideProgressBarLoadingDialog()
-                                            initEventFormResultData(cleanResult)
-                                        },
-                                        onSuccess = { draft ->
-                                            viewState.hideProgressBarLoadingDialog()
-                                            if (draft.fields.isNullOrEmpty()) {
-                                                initEventFormResultData(cleanResult)
-                                            } else {
-                                                fieldsResultList = mapFieldsResult(
-                                                    draft.fields,
-                                                    fieldsList
-                                                )
-                                                fieldsDataApi = createFieldsData(
-                                                    fieldsList, /*registration.fields*/
-                                                    fieldsResultList
-                                                )
-                                                val draftResult = EventRegisterData(
-                                                    eventData, null, null,
-                                                    listOf(EventGroup("", "")),
-                                                    fieldsDataApi ?: emptyList()
-                                                )
-                                                viewState.showLoadSavedFormResultDraftDialog(draftResult)
-                                            }
-                                        })
-                            }
+                        getEventFormResult(eventData, formFields)
                     } else {
                         viewState.hideProgressBarLoadingDialog()
                         registerToEvent()
                     }
-
-
                 })
+    }
 
-
+    private fun getEventFormResult(eventData: EventRegistration, list: List<EventRegisterField>) {
+        val registerResult = EventRegisterData(eventData, false, mutableListOf(), mutableListOf())
+        compositeDisposable += Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += eventRepository.getEventFormResult(getFormBody())
+                .doOnSuccess { result ->
+                    val fieldsResultList =
+                        mapFieldsResult(
+                            result.data.firstOrNull { x -> x.form == formId }?.fields,
+                            list
+                        )
+                    val formResult = createFieldsData(list, fieldsResultList)
+                    registerResult.addFields(formResult)
+                }
+                .subscribeSimple(
+                    onError = {
+                        it.printStackTrace()
+                        getProfileFormFields(emitter, disposable, registerResult, list)
+                    }, onSuccess = {
+                        getProfileFormFields(emitter, disposable, registerResult, list)
+                    })
+            emitter.setDisposable(disposable)
+        }.performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    viewState.hideProgressBarLoadingDialog()
+                    initFormResultData(registerResult.event, registerResult.getSortedFields())
+                    if (it is HttpException && it.code() == 404) it.printStackTrace()
+                    else onReceiveError(it)
+                }, onComplete = {
+                    viewState.hideProgressBarLoadingDialog()
+                    if (registerResult.hasDraft) {
+                        viewState.showLoadSavedFormResultDraftDialog(registerResult)
+                    } else {
+                        initFormResultData(registerResult.event, registerResult.getSortedFields())
+                    }
+                })
     }
 
 
-    override fun initEventFormResultData(result: EventRegisterData) {
-        val hasForm =
-            result.groups.isNotEmpty() || result.fieldsData.isNotEmpty()
-        hasGroup = result.groupField != null
-        selectedGroup = result.selectedGroup
-        fieldsData = result.fieldsData
-        invalidFieldsData =
-            fieldsData.filter { field -> !field.isValid() }
-                .toMutableSet()
+    private fun getProfileFormFields(
+        emitter: CompletableEmitter,
+        disposable: CompositeDisposable,
+        registerResult: EventRegisterData,
+        list: List<EventRegisterField>
+    ) {
+        disposable += loadUserProfileFormFields()
+            .doOnSuccess {
+                registerResult.addField(it)
+            }
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    getEventFormDraftFields(emitter, disposable, registerResult, list)
+                },
+                onSuccess = {
+                    getEventFormDraftFields(emitter, disposable, registerResult, list)
+                })
+    }
 
-        viewState.setFields(
-            result.event,
-            result.groupField,
-            result.selectedGroup,
-            result.groups,
-            result.fieldsData,
-            hasForm
-        )
-        if (hasForm) {
-            checkDataValid()
-        } else {
-            val agreement = result.event.userAgreement
-            if (agreement.isNullOrEmpty()) {
-                viewState.showEventRegisterConfirmation()
+
+    private fun getEventFormDraftFields(
+        emitter: CompletableEmitter,
+        disposable: CompositeDisposable,
+        registerResult: EventRegisterData,
+        list: List<EventRegisterField>
+    ) {
+        disposable += eventRepository.getEventFormResultDraft(formId, emptyMap())
+            .doOnSuccess { result ->
+                registerResult.hasDraft = !result.fields.isNullOrEmpty()
+                val fieldsResultList = mapFieldsResult(result.fields, list)
+                val draftFields = createFieldsData(list, fieldsResultList)
+                registerResult.addDraftFields(draftFields)
+            }
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    emitter.onError(it)
+                },
+                onSuccess = {
+                    emitter.onComplete()
+                })
+    }
+
+
+    override fun initFormResultData(
+        event: EventRegistration,
+        result: List<EventRegisterFieldData<*>>
+    ) {
+        fieldsData.addAll(result)
+        invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
+        val hasForm = !result.filter { x -> x.value != null || x.field != null }.isNullOrEmpty()
+        viewState.apply {
+            setFormFields(event, result, hasForm)
+            if (hasForm) {
+                checkDataValid()
             } else {
-                viewState.showAgreementRegisterDialog(agreement)
+                showEventRegisterConfirmation()
             }
         }
     }
@@ -334,9 +350,7 @@ class EventRegistrationPresenter
 
     override fun onRegisterClick() {
         compositeDisposable += getRequestBody(false)
-            .flatMap { /*eventRepository.eventRegister(eventId, it)*/
-                eventRepository.eventRegisterNew(it)
-            }
+            .flatMap { eventRepository.eventRegisterNew(it) }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
@@ -354,7 +368,8 @@ class EventRegistrationPresenter
     }
 
     override fun onBackClick() {
-        if (fieldsData.filter { f -> f.value != null }.isNullOrEmpty()) {
+        val fields = fieldsData.filter { x -> x.field.type != EventRegisterField.Type.PREFILLED }
+        if (fields.filter { f -> f.value != null }.isNullOrEmpty()) {
             viewState.navigateUp()
         } else {
             viewState.showSaveFormResultDraftDialog()
@@ -382,26 +397,7 @@ class EventRegistrationPresenter
     }
 
     override fun onSuccessGoToEvent() {
-        /*compositeDisposable += eventRepository.setDefaultEvent(eventId)
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(eventId))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.showEvent() }*/
-
-        compositeDisposable += eventRepository.addEventToCalendar(
-            EventCalendarBody(
-                appData.getId(),
-                EventCalendarBodyEntity(EventCalendarBody.CALENDAR_EVENT, eventId.toInt())
-            )
-        )
-            .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-            .andThen(eventData.load(eventId))
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribeSimple { viewState.showEvent() }
+        viewState.showEvent(eventId)
     }
 
 
@@ -415,7 +411,8 @@ class EventRegistrationPresenter
     }
 
     private fun checkDataValid() {
-        viewState.enableActionButton((!hasGroup || selectedGroup != null) && invalidFieldsData.isEmpty())
+        val isValid = invalidFieldsData.isNullOrEmpty()
+        viewState.enableActionButton(isValid)
     }
 
     override fun onPersonalDataFileClick(url: String) {
@@ -452,7 +449,7 @@ class EventRegistrationPresenter
                     } != null
 
                     if (contains) {
-                        field.value = EventFile("",path, fileName, fileExtension)
+                        field.value = EventFile("", path, fileName, fileExtension)
                         viewState.updateFileField(field.field.id)
                     } else {
                         viewState.showWrongFileExtensions(availableExtensions)
@@ -499,17 +496,24 @@ class EventRegistrationPresenter
                     fieldsData.forEachIndexed { index, fieldData ->
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
-                        //addFormDataPart("fields[$position][id]", key)
+
                         when (fieldData) {
+                            is EventRegisterFieldData.Prefilled -> {
+                                if (!isDraft) addFormDataPart("fields[$index][id]", key)
+                            }
                             is EventRegisterFieldData.File -> fieldData.value?.let {
                                 val path = it.path
                                 val fileId = it.id
-                                if (path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true) {
+                                if (path.scheme?.startsWith("https") != true && path.scheme?.contains(
+                                        "https"
+                                    ) != true
+                                ) {
                                     addFormDataPart("fields[$index][id]", key)
                                     val name = "${it.name}.${it.mimeType}"
                                     contentResolver.openInputStream(path)?.buffered()
                                         ?.use { stream -> stream.readBytes() }?.let { bytes ->
-                                            val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                            val body =
+                                                bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                             addFormDataPart(
                                                 //"fields[$position][value][file]",
                                                 "fields[$index][value]",
@@ -518,7 +522,7 @@ class EventRegistrationPresenter
                                             )
                                             added = true
                                         }
-                                }else {
+                                } else {
                                     addFormDataPart("fields[$index][id]", key)
                                     addFormDataPart("fields[$index][value]", fileId)
                                     added = true
@@ -574,16 +578,6 @@ class EventRegistrationPresenter
                                             added = true
                                         }
                                     }
-                                    /*val data = when (value) {
-                                        is EventPassport ->
-                                            if (value.isDataComplete()) GsonBuilder().serializeNulls().create().toJson(value)
-                                            else null
-                                        else -> value.toString()
-                                    }
-                                    if (data != null) {
-                                        addFormDataPart("fields[$position][value]", data)
-                                        added = true
-                                    }*/
                                 }
                             }
                         }
@@ -598,31 +592,116 @@ class EventRegistrationPresenter
 
     }
 
-    private fun getEventData(event: EventNew): EventRegistration {
-        return EventRegistration(
-            id = event.id.toString(),
-            organization = null,
-            code = "",
-            organizationId = event.binds?.organization?.id?.toString(),
-            name = event.name ?: "",
-            description = event.description ?: "",
-            logo = null,
-            image = event.image?.uri ?: event.binds?.organization?.image?.uri,
-            backgroundColor = "",
-            conferenceStart = event.holdingDate?.from,
-            conferenceFinish = event.holdingDate?.to,
-            registrationStart = null,
-            registrationFinish = null,
-            status = null,
-            userAgreement = event.userAgreement?.uri,
-            registrationName = null,
-            userRegistration = event.status?.value ?: Event.Status.FINISHED,
-            registrationHeadline = null,
-            registrationSubtitle = null,
-            isRequireModerate = null,
-            moderateRegistration = null,
-            conferenceFirstActivityStart = null,
-            conferenceRegistrationFinishDate = event.requestsApply?.dateLimit
+    private fun getEventData(form: EventFormModel?, event: EventNew): EventRegistration {
+        return EventRegistration.setEventRegistration(event).apply {
+            setBackgroundColor(event)
+            registrationHeadline = form?.title
+            registrationSubtitle = form?.subtitle
+        }
+    }
+
+    private fun getFormBody(): Map<String, Int> {
+        return mapOf(
+            EVENT_FORM_RESULT_FORM_ID to formId,
+            EVENT_FORM_RESULT_USER_ID to appData.getId()
+        )
+    }
+
+    private fun loadUserProfileFormFields(): Maybe<EventRegisterFieldData.Prefilled> {
+        return if (!prefilledFormFields.isNullOrEmpty()) {
+            val prefilledFieldsId = prefilledFormFields.firstOrNull()?.id ?: 0
+            val options = prefilledFormFields.firstOrNull()?.parameters?.options
+
+            eventRepository.loadEventFormResult(prefilledFieldsId.toString())
+                .map { data ->
+                    prepareProfileFieldsData(data).apply {
+                        setFieldsIsChosen(options, this)
+                    }
+                }
+                .flatMapMaybe {
+                    val field = prefilledFormFields.first().let { f ->
+                        EventRegisterField(
+                            f.id.toString(), f.name, f.sort ?: 0,
+                            EventRegisterField.Type.PREFILLED, f.isRequired,
+                            f.description, f.parameters?.options, null, null, null
+                        )
+                    }
+
+                    if (isFirstLaunch) {
+                        viewState.setProfileFields(it)
+                        isFirstLaunch = false
+                    }
+                    Maybe.just(EventRegisterFieldData.Prefilled(field, it))
+                }
+        } else {
+            Maybe.defer { Maybe.just(null) }
+        }
+    }
+
+    private fun prepareProfileFieldsData(data: ProfileFieldsData): ProfileFieldsFormResult {
+        val fields = data.fields
+
+        return ProfileFieldsFormResult(
+            fieldsIsRequired = data.isRequired,
+            user_birthday = ProfileFieldString(data.isRequired, false, false, fields.user_birthday),
+            user_gender = ProfileFieldString(data.isRequired, false, false, fields.user_gender),
+            user_notes = ProfileFieldString(data.isRequired, false, false, fields.user_notes),
+            user_phone = ProfileFieldString(data.isRequired, false, false, fields.user_phone),
+            user_work_phone = ProfileFieldString(
+                data.isRequired,
+                false,
+                fields.work_phone_absent,
+                fields.user_work_phone
+            ),
+            user_email = ProfileFieldString(data.isRequired, false, false, fields.user_email),
+            address = ProfileFieldString(
+                data.isRequired,
+                false,
+                false,
+                fields.address?.fullValue ?: fields.address?.getShortAddress()
+            ),
+            educationLevel = ProfileFieldEducationLevel(data.isRequired, fields.educationLevel),
+            education = ProfileFieldEducation(data.isRequired, false, fields.education),
+            academic_degree = ProfileFieldAcademicDegree(
+                data.isRequired,
+                false,
+                fields.academic_degree
+            ),
+            work_experience = ProfileFieldWorkExperience(
+                data.isRequired,
+                false,
+                fields.work_experience_absent,
+                fields.work_experience
+            ),
+            user_links = ProfileFieldString(
+                data.isRequired,
+                false,
+                fields.social_links_absent,
+                fields.contactInformation?.socialLinks?.values?.joinToString("\n") {
+                    it.value ?: ""
+                }),
+            user_sites = ProfileFieldString(
+                data.isRequired,
+                false,
+                fields.site_absent,
+                fields.contactInformation?.site?.values?.joinToString("\n") {
+                    it.value ?: ""
+                }),
+            user_public_email = ProfileFieldString(
+                data.isRequired,
+                false,
+                false,
+                fields.contactInformation?.emails?.joinToString("\n") {
+                    it.value ?: ""
+                }),
+            user_files = ProfileFieldString(
+                data.isRequired,
+                false,
+                false,
+                fields.recommendationFile?.joinToString("\n") {
+                    it.name ?: ""
+                }
+            )
         )
     }
 

@@ -2,6 +2,7 @@ package com.example.ui.auth.register.email.finishregister.newbuild
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
@@ -12,7 +13,6 @@ interface FinishRegisterNewContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(
             email: String?,
-            phone: String?,
             firstName: String?,
             lastName: String?,
             middleName: String?
@@ -33,6 +33,15 @@ interface FinishRegisterNewContract {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun codeError()
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showWrongPhoneError(canShow : Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showWrongEmailError(canShow : Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setDescriptionText(canShow: Boolean)
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun openHome()
 
@@ -42,11 +51,11 @@ interface FinishRegisterNewContract {
 
     interface Presenter : BaseAuthContract.Presenter {
         fun sendCodeAgain()
-        fun onClickClose()
         fun onChangeCodeText(code: String)
         fun onChangeNameText(name: String)
         fun onChangeLastNameText(lastName: String)
         fun onChangeMiddleNameText(lastName: String)
+        fun onChangeEmailText(email: String)
         fun onHandleAuthLink()
         fun onNoMiddleNameChecked(checked: Boolean)
         fun logout()

@@ -9,7 +9,6 @@ import com.example.holders.UserItem
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog

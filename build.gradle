@@ -4,8 +4,7 @@ buildscript {
     ext.kotlin_version = '1.6.21'
     ext.leakcanary_version = '1.6.3'
     ext.dagger_version = '2.21'
-    ext.nav_version = '2.2.2'
-    //ext.nav_version = '2.5.2'
+    ext.nav_version = '2.5.2'
     ext.moxy_version = '1.5.3'
     ext.paging_version = '2.1.2'
     ext.retrofit_version = '2.9.0'
@@ -17,7 +16,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'

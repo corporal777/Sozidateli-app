@@ -448,3 +448,11 @@ data class FieldListDetails(
     val type: String? = null,
     val absent: Boolean? = null
 ) : Parcelable
+
+@Parcelize
+data class AcademicDegreeModelNew(
+    val id: Int? = null,
+    val user : Int? = null,
+    val speciality: EducationLevel? = null,
+    val degree: EducationLevel? = null
+) : Parcelable

@@ -28,9 +28,8 @@ import javax.inject.Provider
 class ProfileDataFragment(
     val user: Int,
     val name : String,
-    val imageUrl : String,
-    val codeUrl : String,
-    val bm: Bitmap?
+    val imageUrl : String?,
+    val codeUrl : String?,
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
 
@@ -45,9 +44,8 @@ class ProfileDataFragment(
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
         userId = user
         userName = name
-        userAvatar = bm
-        userImageUrl = imageUrl
-        userCodeUrl = codeUrl
+        userImageUrl = imageUrl?:""
+        userCodeUrl = codeUrl?:""
         context = requireContext()
     }
 

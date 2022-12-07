@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <LinearLayout
+        android:id="@+id/ln_academic_degree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_academic_degree"
+            style="@style/EventRegistration.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/profile_degrees_level" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_academic_degree"
+            style="@style/EventRegistration.Field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            tools:text="25.10.2003" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_academic_speciality"
+            style="@style/EventRegistration.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/search_filter_specialization" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_academic_speciality"
+            style="@style/EventRegistration.Field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            tools:text="25.10.2003" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divider_darker" />
+    </LinearLayout>
+
+
+</layout>

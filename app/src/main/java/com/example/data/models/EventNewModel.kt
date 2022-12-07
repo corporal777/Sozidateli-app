@@ -1,8 +1,10 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 data class EventNewModel(
     val data: List<EventNew?>? = null,
@@ -270,6 +272,9 @@ data class EventRegisterFields(
     val parameters: FieldsParameters? = null
 ) : Parcelable {
     enum class Type {
+        @SerializedName("prefilled")
+        PREFILLED,
+
         @SerializedName("string")
         STRING,
 

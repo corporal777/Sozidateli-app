@@ -1,10 +1,10 @@
-package com.example.util.pagination
+package com.example.util.pagination.observable
 
 import androidx.paging.DataSource
 
 class ConvertedPaginationDataSource<I, R>(
-        private val source: PaginationDataSource<I>,
-        private val converter: (item: I, index: Int, total: Int?) -> R
+    private val source: PaginationDataSource<I>,
+    private val converter: (item: I, index: Int, total: Int?) -> R
 ) : PaginationDataSource<R>() {
 
     private var totalCount: Int? = 0

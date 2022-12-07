@@ -32,7 +32,7 @@
         <TextView
             android:letterSpacing="-0.01"
             android:id="@+id/tvDescription"
-            fontPath="fonts/sf_pro_text_regular.ttf"
+            fontPath="fonts/sf_pro_display_regular.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

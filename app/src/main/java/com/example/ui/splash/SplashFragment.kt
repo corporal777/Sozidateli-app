@@ -3,6 +3,7 @@ package com.example.ui.splash
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import androidx.core.content.ContextCompat
@@ -33,7 +34,7 @@ class SplashFragment : BaseFragmentNew<FragmentSplashBinding>(), SplashContract.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.ivLogo.updatePadding(top = getHeightOfNavbar() - getHeightOfStatusBar())
+        //mBinding.splashCl.updatePadding(top = getHeightOfNavbar().dp - getHeightOfStatusBar())
     }
 
     private fun getHeightOfNavbar(): Int {

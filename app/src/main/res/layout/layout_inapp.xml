@@ -14,8 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="64dp"
-        android:background="@drawable/background_corners_top"
-        android:theme="@style/ViewBackgroundWhite"
+        android:background="@drawable/background_bottom_sheet"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
         app:layout_behavior="com.example.util.ScrollingChildBehavior">
@@ -33,14 +32,13 @@
                 android:layout_width="34dp"
                 android:layout_height="4dp"
                 android:layout_gravity="center"
-                android:background="@drawable/background_corners"
-                android:theme="@style/ViewBackgroundGray" />
+                android:background="@drawable/bottom_sheet_top" />
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/flNotificationContainer"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             app:layout_constrainedHeight="true"
@@ -74,26 +72,21 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnPositive"
+                style="@style/BtnBrownStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/background_action_button_selector"
-                android:stateListAnimator="@null"
-                android:textAllCaps="false"
-                android:textColor="@color/text_color_action_button"
-                android:textSize="16sp"
+                android:minHeight="45dp"
                 android:visibility="gone"
                 tools:text="@android:string/ok"
                 tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
+                style="@style/BtnCancelStyle"
                 android:id="@+id/btnNegative"
+                android:minHeight="45dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_background_cancel"
-                android:textAllCaps="false"
-                android:textColor="@color/button_cancel_text"
-                android:textSize="16sp"
                 android:visibility="gone"
                 tools:text="@android:string/cancel"
                 tools:visibility="visible" />

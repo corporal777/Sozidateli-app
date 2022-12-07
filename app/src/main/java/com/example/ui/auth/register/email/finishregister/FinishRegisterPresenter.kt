@@ -304,6 +304,6 @@ class FinishRegisterPresenter
 
 
     companion object {
-        const val TIMER_SECONDS_COUNT = 120
+        const val TIMER_SECONDS_COUNT = 60
     }
 }

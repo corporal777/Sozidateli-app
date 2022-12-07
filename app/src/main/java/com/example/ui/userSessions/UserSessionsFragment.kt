@@ -24,7 +24,7 @@ import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
+class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     UserSessionsContract.View, SimpleTitleToolbar {
 
 
@@ -109,6 +109,7 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(),
     }
 
     override fun showSessionsLoadingPlaceholder() {
+        startPostponedEnterTransition()
         currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
     }
 

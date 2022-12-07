@@ -414,6 +414,10 @@
         <argument
             android:name="eventId"
             app:argType="string" />
+
+        <action
+            android:id="@+id/request_to_user_profile"
+            app:destination="@+id/user_profile_fragment" />
     </fragment>
 
     <fragment
@@ -531,27 +535,15 @@
 
         <action
             android:id="@+id/profile_to_about"
-            app:destination="@+id/about_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@+id/about_fragment" />
 
         <action
             android:id="@+id/profile_to_user_profile"
-            app:destination="@+id/user_profile_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@+id/user_profile_fragment" />
 
         <action
             android:id="@+id/profile_to_change_account"
-            app:destination="@+id/change_account_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@+id/change_account_fragment" />
 
         <action
             android:id="@+id/profile_to_favorite"
@@ -568,19 +560,11 @@
 
         <action
             android:id="@+id/action_profile_fragment_to_user_profile_settings_fragment"
-            app:destination="@id/user_profile_settings_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@id/user_profile_settings_fragment" />
 
         <action
             android:id="@+id/action_profile_fragment_to_user_sessions_fragment"
-            app:destination="@id/user_sessions_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@id/user_sessions_fragment" />
 
         <argument
             android:name="isShowPopup"
@@ -588,11 +572,7 @@
 
         <action
             android:id="@+id/action_profile_fragment_to_userStateFragment"
-            app:destination="@id/userStateFragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+            app:destination="@id/userStateFragment" />
 
         <action
             android:id="@+id/action_profile_fragment_to_mainInfoFragment"

@@ -4,21 +4,25 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileBinding
+import com.example.extensions.dp
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
 import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.util.setImage
 import com.squareup.picasso.Picasso
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(), UserProfileContract.View, SimpleTitleToolbar {
+class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
+    UserProfileContract.View, SimpleTitleToolbar {
 
 
     override fun layout() = R.layout.fragment_user_profile
@@ -46,16 +50,16 @@ class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(), UserP
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
+        startPostponedEnterTransition()
         user ?: return
         mBinding.ivAvatar.apply {
             val avatarUrl = user.image?.uri?.takeIf { it.isNotBlank() }
-            clipToOutline = true
             transitionName = avatarUrl
-            Picasso.get()
-                .load(avatarUrl)
-                .placeholder(R.drawable.avatar_placeholder_rectangle)
-                .error(R.drawable.avatar_placeholder_rectangle)
-                .into(this)
+            setImage(
+                avatarUrl,
+                error = R.drawable.avatar_placeholder_rectangle,
+                transformations = listOf(RoundedCornersTransformation(10f.dp))
+            )
         }
     }
 

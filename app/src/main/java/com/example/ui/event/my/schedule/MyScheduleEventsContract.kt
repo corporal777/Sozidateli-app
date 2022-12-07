@@ -1,18 +1,13 @@
 package com.example.ui.event.my.schedule
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.ui.base.BaseContract
-import com.example.ui.event.my.schedule.items.MyScheduleEventsData
-import com.example.ui.views.calendarView.CalendarDay
+import com.example.ui.event.my.schedule.items.EventScheduleData
 import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.Group
 
 interface MyScheduleEventsContract {
     interface View : BaseContract.View {
@@ -27,7 +22,7 @@ interface MyScheduleEventsContract {
         )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setContent(data: List<MyScheduleEventsData>)
+        fun setContent(data: List<EventScheduleData>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(eventId: String)

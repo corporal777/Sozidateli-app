@@ -20,7 +20,7 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.PHONE_PERSONAL
+import com.example.util.*
 import com.example.util.qr_generator.QrCodeGenerator
 import com.example.util.qr_generator.QrData
 import com.example.util.qr_generator.QrErrorCorrectionLevel
@@ -32,7 +32,9 @@ import com.example.util.qr_generator.vector.style.QrVectorBallShape
 import com.example.util.qr_generator.vector.style.QrVectorColor
 import com.example.util.qr_generator.vector.style.QrVectorFrameShape
 import com.example.util.qr_generator.vector.style.QrVectorPixelShape
+import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
@@ -57,19 +59,41 @@ class ProfilePresenter
 
     private var mDy = 0
     private var userId = 0
-    var bmImage: Bitmap? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
+        viewState.apply {
+            setAppBarElevation(0f)
+            showShimmerView()
+        }
         compositeDisposable += userRepository.getUserShortNew()
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                userId = it.id
-                viewState.setUser(it)
+            .doOnSuccess {
                 getAdditionalData()
-            }, { it.printStackTrace() })
-
+            }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    userId = it.id
+                    viewState.apply {
+                        hideShimmerView()
+                        setUser(it)
+                        setUserLink(it)
+                        if (it.binds?.deviceSessionsCount ?: 0 <= 1) {
+                            setChangeOrAddNewAccount(
+                                R.string.add_account_label,
+                                R.drawable.ic_profile_add_account_edit
+                            )
+                        } else {
+                            setChangeOrAddNewAccount(
+                                R.string.change_account_label,
+                                R.drawable.ic_profile_change_account_edit
+                            )
+                        }
+                    }
+                })
     }
 
     override fun attachView(view: ProfileContract.View?) {
@@ -78,7 +102,7 @@ class ProfilePresenter
             setAppBarElevation(abs(mDy / 10f))
             setUserState(appData.hasBaseState, appData.hasMaxState)
         }
-        compositeDisposable += Maybe.defer { Maybe.just(appData.getUserNew()) }
+        compositeDisposable += Maybe.just(appData.getUserNew())
             .onErrorResumeNext(userRepository.getUserShortNew())
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -86,19 +110,11 @@ class ProfilePresenter
                     it.printStackTrace()
                 },
                 onSuccess = {
-                    viewState.setUser(appData.getUserNew())
+                    viewState.apply {
+                        setUser(it)
+                        setUserLink(it)
+                    }
                 })
-
-        /*try {
-            viewState.setUser(appData.getUserNew())
-        } catch (e: Exception) {
-            compositeDisposable += userRepository.getUserShortNew()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.setUser(appData.getUserNew())
-                }, { it.printStackTrace() })
-        }
-         */
     }
 
     fun changeScrollingOffset(value: Int) {
@@ -118,13 +134,12 @@ class ProfilePresenter
 
     override fun onSupportClick() = viewState.openSupportEmail(appData.getId().toString())
 
+    override fun onRateClick() = viewState.openPlayMarket()
 
     override fun onSessionsClick() = viewState.showSessions()
     override fun onChangeAccountClick() = viewState.showChangeAccount()
 
-    override fun onRateClick() {
-        viewState.openPlayMarket()
-    }
+
 
     override fun onLogoutClick() {
         compositeDisposable += userRepository.logout(appData.getId())
@@ -188,9 +203,9 @@ class ProfilePresenter
 
     override fun onPhoneConfirmed(phone: String) {
         appData.updateUserNew {
-            if (this.phone?.filter { x -> x.type == PHONE_PERSONAL }.isNullOrEmpty()){
+            if (this.phone?.filter { x -> x.type == PHONE_PERSONAL }.isNullOrEmpty()) {
                 this.phone = listOf(FieldDetails(phone, type = PHONE_PERSONAL, isConfirmed = true))
-            }else {
+            } else {
                 appData.updatePhone(phone)
             }
         }
@@ -229,7 +244,7 @@ class ProfilePresenter
     }
 
     override fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context) {
-        viewState.showProfileDataBottomSheetDialog(user, bmImage)
+        viewState.showProfileDataBottomSheetDialog(user)
     }
 
     override fun onSettingsClick() {

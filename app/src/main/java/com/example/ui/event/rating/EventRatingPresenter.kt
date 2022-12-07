@@ -127,28 +127,23 @@ class EventRatingPresenter
                                         val fieldsDataApi = createFieldsData(
                                             fieldsList, /*registration.fields*/
                                             fieldsResultList
-                                        )
+                                        )?.toMutableList()
 
                                         val result = EventRegisterData(
-                                            eventData, null, null,
-                                            listOf(EventGroup("", "")),
-                                            fieldsDataApi ?: emptyList()
+                                            eventData,
+                                            hasDraft = false,
+                                            fieldsData = fieldsDataApi!!,
+                                            mutableListOf()
                                         )
 
                                         viewState.apply {
-                                            val hasForm =
-                                                result.groups.isNotEmpty() || result.fieldsData.isNotEmpty()
-                                            hasGroup = result.groupField != null
-                                            selectedGroup = result.selectedGroup
+                                            val hasForm = result.fieldsData.isNotEmpty()
                                             fieldsData = result.fieldsData
                                             invalidFieldsData =
                                                 fieldsData.filter { field -> !field.isValid() }
                                                     .toMutableSet()
                                             setFields(
                                                 result.event,
-                                                result.groupField,
-                                                result.selectedGroup,
-                                                result.groups,
                                                 result.fieldsData,
                                                 rating,
                                                 files
@@ -188,7 +183,7 @@ class EventRatingPresenter
                 EventRegisterField(
                     field.id.toString(), field.name, field.sort ?: 0,
                     field.type ?: EventRegisterField.Type.STRING, field.isRequired,
-                    field.description, field.parameters?.options, null, null, null
+                    field.description, emptyList(), null, null, null
                 )
             )
         }
@@ -342,15 +337,15 @@ class EventRatingPresenter
                                     val name = "${it.name}.${it.mimeType}"
                                     contentResolver.openInputStream(path)?.buffered()
                                         ?.use { stream -> stream.readBytes() }?.let { bytes ->
-                                        val body =
-                                            bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
-                                        addFormDataPart(
-                                            "fields[$position][value][file]",
-                                            name,
-                                            body
-                                        )
-                                        added = true
-                                    }
+                                            val body =
+                                                bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                            addFormDataPart(
+                                                "fields[$position][value][file]",
+                                                name,
+                                                body
+                                            )
+                                            added = true
+                                        }
                                 }
                             }
                             else -> {

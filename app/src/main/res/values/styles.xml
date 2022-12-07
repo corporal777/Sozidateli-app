@@ -29,16 +29,21 @@
     </style>
 
     <style name="SplashTheme.Starting" parent="Theme.SplashScreen">
-        <item name="splashScreenIconSize">350dp</item>
         <item name="windowSplashScreenBackground">@color/main_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_background</item>
-        <item name="windowSplashScreenAnimationDuration">100</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_for_splash</item>
+        <!--        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_background</item>-->
+        <!--        <item name="windowSplashScreenAnimationDuration">100</item>-->
+        <!--                <item name="splashScreenIconSize">350dp</item>-->
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
 
     <style name="TransparentBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/navBarDefault</item>
     </style>
 
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
@@ -310,7 +315,7 @@
     <style name="Profile" />
 
     <style name="Profile.Title">
-        <item name="fontFamily">@fonts/sf_pro_display_regular.OTF</item>
+        <item name="fontPath">fonts/sf_pro_text_regular.ttf</item>
         <item name="android:textColor">@color/profile_title_text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginTop">20dp</item>
@@ -326,7 +331,7 @@
 
     <style name="Profile.Data">
         <item name="android:letterSpacing">-0.02</item>
-        <item name="fontFamily">@fonts/sf_pro_text.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:textColor">@color/profile_data_text</item>
         <item name="android:textColorLink">@color/profile_data_text_link</item>
         <item name="android:textColorHint">@color/profile_data_text_hint</item>
@@ -505,7 +510,7 @@
 
     <style name="Profile.Edit.Switch" parent="Profile.Edit.InputTitle">
         <item name="android:letterSpacing">-0.02</item>
-        <item name="fontFamily">@fonts/sf_pro_text.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingStart">5dp</item>
         <item name="android:paddingTop">5dp</item>
@@ -518,7 +523,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/profile_title_text</item>
         <item name="android:letterSpacing">-0.02</item>
-        <item name="fontFamily">@fonts/sf_pro_text.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingStart">5dp</item>
         <item name="android:button">@drawable/drawable_switch</item>
@@ -555,7 +560,7 @@
 
     <style name="UserItem.Name">
         <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">10dp</item>
@@ -698,7 +703,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textSize">13sp</item>
-        <item name="fontPath">font/sf_pro_text_semibold.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:paddingTop">4dp</item>
@@ -796,6 +801,28 @@
     <style name="TextAppearance.MaterialCalendarWidget.WeekDayWeekend" parent="android:TextAppearance.DeviceDefault.Small">
         <item name="android:textColor">#543C3C43</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="EventRegistration" />
+
+
+    <style name="EventRegistration.Title">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
+        <item name="android:textColor">@color/profile_data_text_hint</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+    </style>
+
+    <style name="EventRegistration.Field">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:textColor">@color/profile_edit_button_text_enabled</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 
 

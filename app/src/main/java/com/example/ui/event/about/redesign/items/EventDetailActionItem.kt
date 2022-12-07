@@ -138,7 +138,8 @@ class EventDetailActionItem(
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
             Event.Status.RUNNING,
-            Event.Status.FINISHED -> {
+            Event.Status.FINISHED,
+            Event.Status.APPROVED-> {
                 if (eventRegistrationState != null) {
                     val actions = eventRegistrationState.availableActions ?: arrayListOf("")
                     if (eventRegistrationState.prohibitions?.registrationClosed == false) {

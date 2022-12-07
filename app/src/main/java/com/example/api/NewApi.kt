@@ -4,7 +4,9 @@ import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.ui.chat.body.MessageBodyNew
+import com.example.ui.event.registration.items.ProfileFieldsData
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -57,7 +59,10 @@ interface NewApi {
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
 
     @POST("v1/user/{userId}/email/confirm")
-    fun confirmEmailCodeNew(@Path("userId") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
+    fun confirmEmailCodeNew(
+        @Path("userId") id: Int,
+        @Body body: EmailCodeBody
+    ): Single<ConfirmEmail>
 
     @POST("v1/user/{id}/phone/confirm")
     fun confirmPhoneCode(@Path("id") id: Int, @Body body: PhoneCodeBody): Completable
@@ -157,6 +162,9 @@ interface NewApi {
     //+
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+
+    @GET("v1/event")
+    fun getEventsListFlow(@QueryMap map: Map<String, Any>): Flowable<EventNewModel>
 
     //+
     @GET("v1/event/sorted")
@@ -308,10 +316,17 @@ interface NewApi {
     fun getEventFormResult(@QueryMap map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
 
     @GET("v1/event-form-result/{id}/draft")
-    fun getEventFormResultDraft(@Path("id") id: Int, @QueryMap map: Map<String, Any>): Maybe<EventFormResultDraftModel>
+    fun getEventFormResultDraft(
+        @Path("id") id: Int,
+        @QueryMap map: Map<String, Any>
+    ): Maybe<EventFormResultDraftModel>
 
     @POST("v1/event-form-result")
-    fun eventRegister(@Body body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
+    fun eventRegister(@Body body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>>
+
+    //+
+    @GET("v1/event-form-result/prefilled/{ID}")
+    fun loadProfileFieldsFormResult(@Path("ID") id: String): Single<ProfileFieldsData>
 
     //+
     @POST("v1/event-form-result")

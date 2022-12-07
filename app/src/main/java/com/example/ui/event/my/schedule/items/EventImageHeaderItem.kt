@@ -1,17 +1,30 @@
 package com.example.ui.event.my.schedule.items
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import com.example.R
 import com.example.databinding.ItemEventImageHeaderBinding
 import com.example.holders.redesign.EventActivityItem
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
+import parseColor
 import setOnClickListener
 
 class EventImageHeaderItem(
     val title: String?,
     val image: String?,
+    val backgroundColor: String?,
     val onHeaderClick: () -> Unit
 ) : BindableItem<ItemEventImageHeaderBinding>() {
+
+    private var imageColor = ColorDrawable(Color.DKGRAY)
+
+    init {
+        if (!backgroundColor.isNullOrEmpty()) {
+            val color = backgroundColor.parseColor() ?: Color.DKGRAY
+            imageColor = ColorDrawable(color)
+        }
+    }
 
     override fun bind(viewBinding: ItemEventImageHeaderBinding, position: Int) {
         viewBinding.apply {
@@ -19,14 +32,14 @@ class EventImageHeaderItem(
                 onHeaderClick.invoke()
             }
             eventTitle.text = title
-            eventImage.setImage(image)
+            eventImage.setImage(image ?: imageColor)
         }
     }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventImageHeaderItem) return false
         if (title != other.title) return false
-        if (image!= other.image) return false
+        if (image != other.image) return false
         return true
     }
 

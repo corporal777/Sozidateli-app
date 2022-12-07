@@ -9,7 +9,7 @@ import com.example.extensions.buildList
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.user.UserContract
-import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain

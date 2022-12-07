@@ -146,23 +146,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
-    override fun showDisabledMainInputInfo() {
-        val supportEmail = getString(R.string.support_email)
-        val message = getString(R.string.profile_edit_name_disabled_message).format(supportEmail)
-            .toSpannable()
-        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.profile_edit_name_disabled_title)
-            .setMessage(message)
-            .setPositiveButton(R.string.ok, null)
-            .show()
-            .apply {
-                findViewById<TextView>(android.R.id.message)?.let {
-                    it.movementMethod = BetterLinkMovementMethod.getInstance()
-                }
-            }
-    }
 
     override fun showTakePictureChooser() {
         AlertDialog.Builder(requireContext())

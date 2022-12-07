@@ -44,7 +44,6 @@ class ProfileDataPresenter
     private val appData: AppData,
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
-    var userAvatar: Bitmap? = null
     var userId = 0
     var userImageUrl = ""
     var userCodeUrl = ""
@@ -55,7 +54,7 @@ class ProfileDataPresenter
         super.onFirstViewAttach()
         if (context != null) {
             val userLink = BuildConfig.SHARE_URL + "portal/user/" + userId
-            compositeDisposable += getQrCodeBitmapFromDrawable(context, userLink, userImageUrl)
+            compositeDisposable += getQrCodeBitmapFromDrawable(context!!, userLink, userImageUrl)
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
                     onError = {
@@ -138,15 +137,9 @@ class ProfileDataPresenter
                     val drawableSource: DrawableSource
                     val drawableShape: QrLogoShape
                     if (!uri.isNullOrEmpty()) {
-                        drawableSource = if (userAvatar == null) {
-                            val bm =
-                                Glide.with(context).asBitmap().load(uri).submit().get()
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            DrawableSource.DecodedBitmap(bm)
-                        } else {
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            DrawableSource.DecodedBitmap(userAvatar!!)
-                        }
+                        drawableShape = QrLogoShape.RoundCorners(.30f)
+                        val bm = Glide.with(context).asBitmap().load(uri).submit().get()
+                        drawableSource = DrawableSource.DecodedBitmap(bm)
                     } else {
                         drawableShape = QrLogoShape.Circle
                         drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
@@ -171,7 +164,7 @@ class ProfileDataPresenter
     }
 
     private fun getQrCodeBitmapFromDrawable(
-        ct: Context?,
+        ct: Context,
         link: String,
         uri: String
     ): Maybe<Bitmap> {
@@ -183,15 +176,9 @@ class ProfileDataPresenter
                     val drawableSource: DrawableSource
                     val drawableShape: QrLogoShape
                     if (!uri.isNullOrEmpty()) {
-                        drawableSource = if (userAvatar == null) {
-                            val bm =
-                                Glide.with(ct!!).asBitmap().load(uri).submit().get()
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            DrawableSource.DecodedBitmap(bm)
-                        } else {
-                            drawableShape = QrLogoShape.RoundCorners(.30f)
-                            DrawableSource.DecodedBitmap(userAvatar!!)
-                        }
+                        drawableShape = QrLogoShape.RoundCorners(.30f)
+                        val bm = Glide.with(ct).asBitmap().load(uri).submit().get()
+                        drawableSource = DrawableSource.DecodedBitmap(bm)
                     } else {
                         drawableShape = QrLogoShape.Circle
                         drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
@@ -202,7 +189,7 @@ class ProfileDataPresenter
                 }
                 colors {
                     dark = QrVectorColor
-                        .Solid(ContextCompat.getColor(ct!!, R.color.qr_code_pixels_color))
+                        .Solid(ContextCompat.getColor(ct, R.color.qr_code_pixels_color))
                 }
                 shapes {
                     darkPixel = QrVectorPixelShape.RoundCorners(.5f)

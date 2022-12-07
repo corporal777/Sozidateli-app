@@ -9,6 +9,7 @@ import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
+import com.example.ui.chatList.contacts.items.UserChatData
 
 interface ChatListContract {
     interface View : BaseContract.View {
@@ -26,21 +27,15 @@ interface ChatListContract {
         fun setChatUnreadMessageCount(chatId: String, count: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun checkScrollPosition()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollToTopPosition()
+        fun setChatUnreadMessage(chatId: String, message: String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
         fun onUserClick(uid: Int, userName: String, avatar : String?, chatRoomWithMe: ChatRoomWithMeModel?)
-        fun onChatOnScreen(chatId: Int)
-        fun onChatGoneFromScreen(chatId: Int)
         fun onFabAddChatClick()
         fun onEmptyChatsButtonAddChatClick()
         fun onItemTake(position: Int)
-        fun onChatScrollChange(isTopPosition: Boolean)
         fun onRefreshRequest()
     }
 }

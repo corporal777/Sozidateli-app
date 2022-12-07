@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_user_state.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateContract.View, SimpleTitleToolbar{
+class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(true), UserStateContract.View, SimpleTitleToolbar{
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -33,6 +33,7 @@ class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarTitleAndIcon(getString(R.string.states))
+        startPostponedEnterTransition()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 presenter.onClickClose()
@@ -41,6 +42,7 @@ class UserStateFragment: BaseFragmentNew<FragmentUserStateBinding>(), UserStateC
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {
+
         val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
             when (it) {

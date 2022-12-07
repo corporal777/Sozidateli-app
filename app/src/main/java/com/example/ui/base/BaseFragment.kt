@@ -21,6 +21,7 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -68,6 +69,16 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         super.onDetach()
     }
 
+    override fun showEnterAnimation() {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+            duration = (250).toLong()
+        }
+
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+            duration = (450).toLong()
+        }
+    }
+
     @LayoutRes
     abstract fun layout(): Int
 
@@ -75,14 +86,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun enableBackClick() {
-        mActivity?.enableBackClick()
-    }
-
-    override fun disableBackClick() {
-        mActivity?.disableBackClick()
     }
 
     override fun showLoadingDialog() {

@@ -142,7 +142,7 @@
                     style="@style/Profile.User.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoLink="web"
+                    android:autoLink="web|email"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="https://google.com" />
 

@@ -19,7 +19,7 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
 import com.example.ui.views.StateType
-import com.example.util.pagination.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog

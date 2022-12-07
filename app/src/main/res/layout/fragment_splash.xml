@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/splash_cl"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/ivLogo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/auth_logo_height"
             android:contentDescription="@string/content_description_logo"
-            android:src="@drawable/ic_app_logo_vector"
+            android:src="@drawable/ic_app_logo_gray"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -20,9 +21,9 @@
 
 
         <com.example.ui.views.CustomProgressBar
-            android:layout_marginTop="20dp"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivLogo" />

@@ -39,7 +39,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
-    private val click = ClickableSpan(false) {
+    private val click = ClickableSpan(drawUnderline = false) {
         toggle()
     }
 

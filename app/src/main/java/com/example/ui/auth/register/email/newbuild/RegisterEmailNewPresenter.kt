@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.newbuild
 
-import android.annotation.SuppressLint
 import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -15,14 +14,9 @@ import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Maybes
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
-import isValidPhoneNumber
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 
@@ -43,7 +37,6 @@ class RegisterEmailNewPresenter
     private var middleName: String = ""
     private var noMiddleNameChecked = middleName == USER_DATA_EMPTY
     private var email: String = ""
-    private var emailAgain: String = ""
     private var password: String = ""
     private var passwordConfirm: String = ""
     private var isAgree: Boolean = false
@@ -112,21 +105,11 @@ class RegisterEmailNewPresenter
     override fun onChangeEmailText(email: String, context: Context) {
         this.email = email
         viewState.showEmailError(false)
-        if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
-            loginType = "phone"
-            Utils.newPhoneValidator(email)
-            viewState.changeFieldType(loginType, false)
+        loginType = if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
+            "phone"
         } else {
-            loginType = "email"
-            AuthValidateUtil.isValidEmail(email)
-            viewState.changeFieldType(loginType, AuthValidateUtil.isValidEmail(email))
+            "email"
         }
-        performDataChange()
-    }
-
-    override fun onChangeEmailAgainText(email: String) {
-        this.emailAgain = email
-        viewState.showEmailAgainError(this.emailAgain != email)
         performDataChange()
     }
 
@@ -282,7 +265,7 @@ class RegisterEmailNewPresenter
         val lastNameValid = !lastName.isNullOrBlank()
         val passwordValid = password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
         val emailValid =
-            if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString()) && (email == emailAgain)) else Utils.newPhoneValidator(
+            if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString())) else Utils.newPhoneValidator(
                 email ?: ""
             )
         val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
@@ -297,11 +280,10 @@ class RegisterEmailNewPresenter
 
     private fun showErrors() {
         viewState.apply {
-            showEmailError(email.isNullOrEmpty())
             showFirstNameError(firstName.isNullOrEmpty())
             showLastNameError(lastName.isNullOrEmpty())
             if (loginType == "email")
-                showEmailAgainError(email != emailAgain)
+                showEmailError(AuthValidateUtil.isValidEmail(email))
             else {
                 showWrongPhoneError(Utils.isNewPhoneIsValid(email))
             }

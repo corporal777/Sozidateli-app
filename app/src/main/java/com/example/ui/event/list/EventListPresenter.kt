@@ -2,23 +2,20 @@ package com.example.ui.event.list
 
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withLoadingDialog
 import java.net.UnknownHostException
 import kotlin.math.abs

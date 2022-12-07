@@ -15,9 +15,6 @@ interface UserEditContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDisabledMainInputInfo()
-
-        @StateStrategyType(SkipStrategy::class)
         fun showTakePictureChooser()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -92,7 +89,6 @@ interface UserEditContract {
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         //main data
 
-        fun onDisabledMainInputInfoClick()
         fun onEditAvatarClick()
         fun onRemoveAvatarClick()
         fun onTakePhotoFromCameraRequest()

@@ -51,9 +51,6 @@ interface RegisterEmailNewContract {
         fun showEmailError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailAgainError(show: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAgreementError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -61,9 +58,6 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeFieldType(type: String, isValid: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEmailNotUnique(email: String)
@@ -78,7 +72,6 @@ interface RegisterEmailNewContract {
         fun onClickRegister()
 
         fun onChangeEmailText(email: String, context: Context)
-        fun onChangeEmailAgainText(email: String)
 
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)

@@ -13,14 +13,18 @@ import com.example.data.models.EventNew.Companion.EVENT_SORT_FIELD
 import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.di.Connectivity
-import com.example.extensions.buildList
+import com.example.extensions.buildListNew
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.flow.PaginationDataSourceFactoryNew
+import com.example.util.pagination.flow.PaginationListFlow
+import com.example.util.pagination.flow.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
@@ -41,7 +45,7 @@ class RecommendationsPresenter
 
     private val pagination: PaginationDataSourceFactory<EventNew?> =
         PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<EventNew?>
+    private lateinit var paginationList: PaginationListFlow<EventNew?>
     private var isFirstAttach = true
 
 
@@ -62,9 +66,9 @@ class RecommendationsPresenter
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
         }
-            .buildList(enablePlaceholders = false)
+            .buildListNew(enablePlaceholders = false)
 
-        compositeDisposable += Observable.create(paginationList)
+        compositeDisposable += Flowable.create(paginationList, BackpressureStrategy.BUFFER)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it.isEmpty())
@@ -75,6 +79,18 @@ class RecommendationsPresenter
                     }
                 }
             }
+
+//        compositeDisposable += Observable.create(paginationList)
+//            .performOnBackgroundOutOnMain()
+//            .subscribeSimple {
+//                if (it.isEmpty())
+//                    viewState.showEmptyListPlaceholder()
+//                else {
+//                    viewState.apply {
+//                        setData(it)
+//                    }
+//                }
+//            }
 
         compositeDisposable += connectivity
             .performOnBackgroundOutOnMain()

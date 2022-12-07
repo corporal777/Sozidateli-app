@@ -46,9 +46,6 @@ class ChangeAccountPresenter
 
     override fun attachView(view: ChangeAccountContract.View?) {
         super.attachView(view)
-        if (appData.isLoggedOut) {
-            viewState.disableBackClick()
-        }
     }
 
     override fun onFirstViewAttach() {
@@ -85,29 +82,17 @@ class ChangeAccountPresenter
             .doOnSuccess { s ->
                 transformData(s.userSessions)
             }
-            .doFinally {
-                if (isCurrentUser(session.userId.toString())) {
-                    canShowMenu = false
-                    userRepository.logout(appData.getId())
-                        .subscribeSimple {
-                            clearAppData()
-                        }
-                }
-            }
+            .flatMapCompletable { clearAppData(session) }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    viewState.showRequestErrorMessage()
-                    it.printStackTrace()
+                    onReceiveError(it)
                 },
-                onSuccess = {
+                onComplete = {
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
-                        if (isCurrentUser(session.userId.toString())) {
-                            disableBackClick()
-                        }
                     }
                 })
     }
@@ -117,11 +102,8 @@ class ChangeAccountPresenter
             .andThen(userRepository.killUsersDeviceSession(session.sessionId.toInt()))
             .doOnComplete {
                 loggedSessions.remove(session)
-                if (isCurrentUser(session.userId.toString())) {
-                    canShowMenu = false
-                    clearAppData()
-                }
             }
+            .andThen(clearAppData(session))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -132,9 +114,6 @@ class ChangeAccountPresenter
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
-                        if (isCurrentUser(session.userId.toString())) {
-                            disableBackClick()
-                        }
                     }
                 })
     }
@@ -167,6 +146,7 @@ class ChangeAccountPresenter
                 viewState.showCustomProgressDialog()
                 if (!isCurrentUser(session.binds.user.id.toString())) {
                     compositeDisposable += Completable.fromAction {
+                        viewState.ignoreTokenListener(false)
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
@@ -188,27 +168,10 @@ class ChangeAccountPresenter
     }
 
 
-    private fun logoutFromAccount() {
-        compositeDisposable += userRepository.logout(appData.getId())
-            .doOnComplete {
-                appData.isSubscribedToPush = false
-                socket.disconnectFromSocket()
-                appData.logout()
-                notificationManager.cancelAll()
-            }
-            .performOnBackgroundOutOnMain()
-            .subscribeBy(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showRequestErrorMessage()
-                }
-            )
-    }
-
     override fun authToAccountClick() {
         viewState.apply {
+            ignoreTokenListener(false)
             showAuthorizationFragment()
-            enableBackClick()
         }
     }
 
@@ -226,8 +189,15 @@ class ChangeAccountPresenter
             }
         }
         viewState.apply {
+            ignoreTokenListener(false)
             showLoginFragment(login)
-            enableBackClick()
+        }
+
+    }
+
+    override fun onClickClose() {
+        if (!appData.isLoggedOut) {
+            viewState.navigateUp()
         }
     }
 
@@ -242,14 +212,6 @@ class ChangeAccountPresenter
         val sorted = sessions.sortedBy { x -> !isCurrentUser(x.userId.toString()) }
         loggedSessions.addAll(sorted.filter { x -> x.isLogged })
         unLoggedSessions.addAll(sorted.filter { x -> !x.isLogged })
-//        sessions.sortedBy { x -> !isCurrentUser(x.userId.toString()) }.forEach { session ->
-//            Log.e("SORTED SESSIONS", session.toString())
-//            if (session.isLogged) {
-//                loggedSessions.add(session)
-//            } else {
-//                unLoggedSessions.add(session)
-//            }
-//        }
     }
 
     private fun observeDeeplink(currentSession: UserSessionModel) {
@@ -261,10 +223,17 @@ class ChangeAccountPresenter
         viewState.showBrowser(uri.toString())
     }
 
-    private fun clearAppData() {
-        appData.isSubscribedToPush = false
-        socket.disconnectFromSocket()
-        appData.logoutNew()
-        notificationManager.cancelAll()
+    private fun clearAppData(session: UserSessionModel): Completable {
+        return if (isCurrentUser(session.userId.toString())) {
+            canShowMenu = false
+            userRepository.logout(appData.getId())
+                .doOnComplete {
+                    viewState.ignoreTokenListener(true)
+                    appData.isSubscribedToPush = false
+                    socket.disconnectFromSocket()
+                    appData.logout()
+                    notificationManager.cancelAll()
+                }
+        } else Completable.complete()
     }
 }

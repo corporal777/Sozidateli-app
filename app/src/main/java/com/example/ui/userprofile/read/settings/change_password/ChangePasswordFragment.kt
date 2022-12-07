@@ -13,6 +13,7 @@ import com.example.R
 import com.example.databinding.BottomSheetChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.main.MainActivity
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import onTextChanged
 import javax.inject.Inject
@@ -129,6 +130,7 @@ class ChangePasswordFragment(
             "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново.",
             false
         ).setSelectCallback {
+            (requireActivity() as MainActivity).setIgnoreTokenListener(false)
             presenter.logoutFromAccount()
             dismiss()
         }

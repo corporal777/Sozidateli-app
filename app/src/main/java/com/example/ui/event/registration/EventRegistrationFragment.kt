@@ -3,19 +3,18 @@ package com.example.ui.event.registration
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
@@ -28,14 +27,14 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.registration.items.RegisterEventHeaderItemNew
+import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.registration.items.*
 import com.example.ui.views.BottomDialog
+import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
-import com.xwray.groupie.Group
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.NestedGroup
-import com.xwray.groupie.Section
+import com.example.util.showCustomTabsBrowser
+import com.xwray.groupie.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
 import java.util.*
@@ -46,6 +45,7 @@ import kotlin.math.abs
 class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     EventRegistrationContract.View {
 
+    private lateinit var mListState: Parcelable
 
     @InjectPresenter
     lateinit var presenter: EventRegistrationPresenter
@@ -58,10 +58,12 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         eventId = EventRegistrationFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
-    private val section = Section()
+    private val headerSection = Section()
+    private val fieldsDataSection = Section()
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            add(section)
+            add(headerSection)
+            add(fieldsDataSection)
         }
     }
     private val saveButtonItem by lazy {
@@ -69,6 +71,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             presenter.onRegisterClick()
         }
     }
+    private lateinit var profileItemsGroup: RegisterEventProfileItemsGroup
 
     private val personalDataFileClickListener: OnPersonalDataFileClickListener =
         { presenter.onPersonalDataFileClick(it) }
@@ -77,75 +80,81 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     private var bottomDialog: Dialog? = null
 
+    private val customLayoutManager by lazy {
+        LinearLayoutManagerAccurateOffset(requireContext())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.recyclerView.apply {
-            adapter = this@EventRegistrationFragment.adapter
-            val layoutManager = this.layoutManager as LinearLayoutManager
-            onScrolled { _, dy ->
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    presenter.changeAppBarBackgroundColorValue(false, 0)
-                } else {
-                    presenter.changeAppBarBackgroundColorValue(true, dy)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    hideKeyboard()
+                    presenter.onBackClick()
                 }
-            }
-        }
+            })
         mBinding.ivBack.setOnClickListener {
+            hideKeyboard()
             presenter.onBackClick()
         }
     }
 
-    override fun setFields(
+    override fun setRecyclerViewContent() {
+        mBinding.recyclerView.apply {
+            layoutManager = customLayoutManager
+            adapter = this@EventRegistrationFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarBackground(this.computeVerticalScrollOffset())
+            }
+        }
+    }
+
+
+    override fun setFormHeader(event: EventRegistration) {
+        headerSection.setHeader(
+            RegisterEventImageHeaderItem(
+                -100L,
+                event.image,
+                event.backgroundColor,
+                event.registrationHeadline,
+                event.registrationSubtitle,
+                event.conferenceStart,
+            )
+        )
+    }
+
+
+    override fun setProfileFields(profileForm: ProfileFieldsFormResult) {
+        if (!this::profileItemsGroup.isInitialized) {
+            profileItemsGroup = RegisterEventProfileItemsGroup(profileForm) {
+                showEditProfile()
+            }
+        }
+    }
+
+    override fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
+        profileItemsGroup.updateProfileFields(profileForm)
+    }
+
+    override fun setFormFields(
         event: EventRegistration,
-        groupField: EventRegisterField?,
-        selectedGroup: String?,
-        groups: List<EventGroup>,
         fieldsData: List<EventRegisterFieldData<*>>,
         withConfirm: Boolean
     ) {
-        section.apply {
-            setHeader(
-                RegisterEventHeaderItemNew(
-                    -100L,
-                    event.image ?: "",
-                    event.backgroundColor?:"",
-                    event.registrationHeadline,
-                    event.registrationSubtitle,
-                    event.conferenceStart ?: "",
-                )
-            )
-//                RegisterEventHeaderItem(
-//                    -100L,
-//                    event.name,
-//                    null,
-//                    event.conferenceStart?.formatToEventDatesIntervalNew(event.conferenceFinish),
-//                    event.conferenceRegistrationFinishDate?.parseAndFormat(
-//                        defaultServerDateFormatter,
-//                        dateFormatterFullMothFullYear
-//                    ),
-//                    event.registrationHeadline,
-//                    event.registrationSubtitle
-//                )
-//            )
+
+        fieldsDataSection.apply {
             if (withConfirm) {
                 setFooter(saveButtonItem)
             }
 
-            if (groupField != null) {
-                add(
-                    EventRegistrationGroupsItem(
-                        groupField.id.toLong(),
-                        groupField.description,
-                        groups,
-                        selectedGroup
-                    ) {
-                        presenter.onSelectedGroupChange(it)
-                    }.withEventRegistrationTitle(groupField.name)
-                )
-            }
-
-            addAll(fieldsData.map {
+            update(fieldsData.map {
                 when (it) {
+                    is EventRegisterFieldData.Prefilled -> {
+                        if (this@EventRegistrationFragment::profileItemsGroup.isInitialized) {
+                            profileItemsGroup
+                        } else return
+                    }
                     is EventRegisterFieldData.String ->
                         RegisterEventStringItem(
                             it,
@@ -187,6 +196,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
                             it,
                             onFieldDataChange
                         ) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
+                    else -> null
                 }
             })
         }
@@ -243,7 +253,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
             presenter.onRegisterClick()
         }
-
     }
 
     override fun showSaveFormResultDraftDialog() {
@@ -273,9 +282,9 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             false
         ).setSelectCallback { state ->
             if (state) {
-                presenter.initEventFormResultData(result)
+                presenter.initFormResultData(result.event, result.getSortedDraftFields())
             } else {
-                presenter.initEventFormResultData(presenter.cleanResult)
+                presenter.initFormResultData(result.event, result.getSortedFields())
             }
         }
     }
@@ -321,12 +330,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     }
 
     override fun openUrl(url: String) {
-        try {
-            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(viewIntent)
-        } catch (e: Throwable) {
-            Toast.makeText(requireContext(), R.string.error_title, Toast.LENGTH_LONG).show()
-        }
+        showCustomTabsBrowser(requireContext(), url)
     }
 
     override fun openFileSelector() {
@@ -393,9 +397,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }
     }
 
-    override fun dispatchOnBackPressed() {
-        presenter.onBackClick()
-    }
 
     override fun showEventLists() {
         if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
@@ -405,14 +406,17 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }
     }
 
-    override fun showEvent() {
-        findNavController().apply {
-            graph.startDestination = R.id.event_tabs_fragment
-            val opts = NavOptions.Builder()
-                .setPopUpTo(R.id.recommendations_fragment, true)
-                .build()
-            navigate(R.id.event_tabs_fragment, null, opts)
-        }
+    override fun showEvent(eventId: String) {
+        findNavController().navigate(
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(eventId).build().toBundle(),
+            navOptions {
+                popUpTo(R.id.request_fragment) { inclusive = true }
+            })
+    }
+
+    override fun showEditProfile() {
+        findNavController().navigate(EventRegistrationFragmentDirections.requestToUserProfile())
     }
 
 
@@ -423,18 +427,18 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
                 tbBackground.alpha = 0f
             } else {
                 tbBackground.apply {
-                    alpha = abs(offset / (1000).toFloat())
+                    alpha = abs(offset / (900).toFloat())
                 }
             }
-            if (offset >= 990){
-                appBar.changeAppBarElevation(abs(offset / 100f))
-            }else {
+            if (offset >= 1070) {
+                appBar.changeAppBarElevation(abs(offset / 120f))
+            } else {
                 appBar.changeAppBarElevation(0f)
             }
 
-            if (offset >= 500){
+            if (offset >= 500) {
                 setBlackIcons()
-            }else {
+            } else {
                 setWhiteIcons()
             }
 
@@ -449,7 +453,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             requireActivity().window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-
     }
 
     private fun setWhiteIcons() {
@@ -457,7 +460,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             requireActivity().window.decorView.systemUiVisibility = 0
             ivBack.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
         }
-
     }
 
 

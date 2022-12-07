@@ -58,6 +58,7 @@ import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.eventTabs.EventTabsFragment
+import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
@@ -94,7 +95,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
-    private var mCanGoBack = true
 
     @Inject
     lateinit var presenterProvider: Provider<MainPresenter>
@@ -177,18 +177,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     else -> hideNavBar()
                 }
 
-//                if (f is ToolbarFragment) {
-//                    supportActionBar?.title = f.title
-//                    (supportActionBar as? ToolbarContentActionBar)?.apply {
-//                        f.setupToolbarContent(
-//                            this
-//                        )
-//                    }
-//                    showToolbar()
-//                } else {
-//                    hideToolbar()
-//                }
-
                 setupNavBarItems(f)
 
                 val isLightStatus: Boolean
@@ -232,11 +220,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 navContr.navigateUp()
             } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                 finish()
-            } else if (fr is EventRegistrationFragment) {
-                fr.dispatchOnBackPressed()
             } else {
-                if (mCanGoBack)
-                    navContr.navigateUp()
+                navContr.navigateUp()
             }
         }
     }
@@ -247,21 +232,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private var noInternetDialog: BottomSheetDialog? = null
 
+    private lateinit var splashScreen: SplashScreen
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        //splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-//        super.setSupportActionBar(toolbar)
-//        super.getSupportActionBar()?.apply {
-//            setDisplayShowCustomEnabled(true)
-//            setDisplayShowTitleEnabled(false)
-//            setCustomView(
-//                ToolbarContentView(this@MainActivity),
-//                ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-//            )
-//        }
-
-
 
         IS_EXPANDED = true
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
@@ -293,23 +269,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
-    override fun setStartDestinationRecommendationsFragment() {
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.main_navigation)
-        graph.startDestination = R.id.recommendations_fragment
-        navHostFragment.navController.graph = graph
-    }
-
-    override fun setStartDestinationAuthFragment() {
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.main_navigation)
-        graph.startDestination = R.id.authorization_fragment
-        navHostFragment.navController.graph = graph
-    }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         throw UnsupportedOperationException("Do not set toolbars, use custom toolbar view instead")
@@ -545,8 +504,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             this,
             getString(R.string.you_got_max_state)
         ).setSelectCallback {}
-//        BaseStateDialog(resources.getString(R.string.you_got_max_state), this)
-//            .setSelectCallback {}
     }
 
     override fun showDialogHasBaseState() {
@@ -554,8 +511,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             this,
             getString(R.string.you_got_base_state)
         ).setSelectCallback {}
-//        BaseStateDialog(resources.getString(R.string.you_got_base_state), this)
-//            .setSelectCallback {}
     }
 
     override fun showChat(chatId: String, userName: String) {
@@ -650,10 +605,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle()
         )
-//        findNavController().navigate(
-//            R.id.about_event_fragment,
-//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
-//        )
     }
 
     override fun showAuthWebsiteFragment(code: String) {
@@ -691,22 +642,17 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
-    override fun showToolbar() {
-        supportActionBar?.show()
-    }
 
-    override fun hideToolbar() {
-        supportActionBar?.apply {
-            title = ""
-            hide()
-            if (this is ToolbarContentActionBar) {
-                removeAllLeftViews()
-                removeAllRightViews()
-            }
-        }
-    }
+    override fun showInApp(inapp: Notification) {
 
-    override fun showInapp(inapp: Notification) {
+//        val inAppNotification = InAppNotificationFragment(inapp)
+//        inAppNotification.show(supportFragmentManager, "inAppDialog")
+//        inAppNotification.setSimpleActionCallback {
+//            inAppNotification.dismiss()
+//            presenter.onInappHidden()
+//        }
+
+
         supportFragmentManager.beginTransaction()
             .replace(mBinding.include.flNotificationContainer.id, createNotificationFragment(inapp))
             .commitNowAllowingStateLoss()
@@ -716,7 +662,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 mBinding.include.btnPositive.apply {
                     isVisible = true
                     text = getString(R.string.ok)
-                    setOnClickListener { presenter.onInappOkClick(inapp) }
+                    setOnClickListener {
+                        presenter.onInappOkClick(inapp)
+                    }
                 }
                 mBinding.include.btnNegative.apply {
                     isVisible = false
@@ -746,7 +694,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         inAppBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    override fun hideInapp() {
+    override fun hideInApp() {
         inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
@@ -917,17 +865,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 action?.invoke()
             }
         }
-
     }
 
+
     override fun setAppBarElevation(value: Float) {
-        mBinding.appBar.apply {
-            elevation = if (value <= 10f) {
-                value
-            } else {
-                10f
-            }
-        }
+        mBinding.appBar.changeAppBarElevation(value)
     }
 
 
@@ -1109,13 +1051,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.progressView.hideProgressBar()
     }
 
-    override fun enableBackClickListener() {
-        mCanGoBack = true
-    }
-
-    override fun disableBackClickListener() {
-        mCanGoBack = false
-    }
 
     override fun showBrowser(url: String) {
         showCustomTabsBrowser(this, url)

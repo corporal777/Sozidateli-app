@@ -30,12 +30,14 @@ import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.toolbar.SimpleTitleToolbar
 import com.example.util.PHONE_PERSONAL
+import com.google.android.material.transition.MaterialFade
+import com.google.android.material.transition.MaterialSharedAxis
 import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsBinding>(),
+class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsBinding>(canShowAnim = true),
     UserProfileSettingsContract.View,
     SimpleTitleToolbar {
 
@@ -49,6 +51,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
     @ProvidePresenter
     fun providePresenter(): UserProfileSettingsPresenter = presenterProvider.get()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -114,6 +117,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
+        startPostponedEnterTransition()
         user ?: return
         mUser = user
         mBinding.apply {

@@ -1,6 +1,7 @@
 package com.example.ui.chatList.contacts
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -11,8 +12,11 @@ import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatListBinding
+import com.example.extensions.findGroupBy
+import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.chatList.contacts.items.UserChatGroup
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
@@ -41,7 +45,12 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
 
     private val favoritesSection by lazy {
         Section().apply {
-            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
+            setHeader(
+                ListSectionNameItem(
+                    -200L,
+                    getString(R.string.search_contact_section_favorites)
+                )
+            )
             setHideWhenEmpty(true)
         }
     }
@@ -90,11 +99,11 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
                 update(
                     chats.mapIndexed { index, chat ->
                         if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-                        else UserChatItem(
+                        else UserChatGroup(
                             chat,
                             { presenter.onChatClick(it) },
-                            { presenter.onChatOnScreen(chat.id) },
-                            { presenter.onChatGoneFromScreen(chat.id) },
+                            { },
+                            { },
                             index != chatsCount - 1
                         )
                     }
@@ -116,28 +125,22 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {
-        for (i in 0 until chatSection.itemCount) {
-            val item = chatSection.getItem(i)
-            if (item is UserChatItem && item.userChat.id.toString() == chatId) {
-                if (item.userChat.unreadMessageCount != count) {
-                    item.userChat.unreadMessageCount = count
-                    item.notifyChanged(count)
-                }
-                break
+        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
+        //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
+        item?.updateBadge(count)
+    }
+
+    override fun setChatUnreadMessage(chatId: String, message: String) {
+        //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
+        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
+        if (item != null) {
+            item.updateMessage(message)
+            val oldPosition = chatSection.getPosition(item)
+            if (oldPosition != 0 && oldPosition != 1){
+                chatSection.remove(item)
+                chatSection.add(0, item)
             }
         }
-    }
-
-    override fun checkScrollPosition() {
-        presenter.onChatScrollChange(isChatScrolledToTop())
-    }
-
-    override fun scrollToTopPosition() {
-        mBinding.chatList.scrollToPosition(0)
-    }
-
-    private fun isChatScrolledToTop(): Boolean {
-        return (mBinding.chatList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
     override fun openChat(chatId: Int, userName: String, avatar: String?) {

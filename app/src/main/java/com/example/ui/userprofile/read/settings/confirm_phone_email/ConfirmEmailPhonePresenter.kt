@@ -76,7 +76,7 @@ class ConfirmEmailPhonePresenter
         timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
             .performOnBackgroundOutOnMain()
             .subscribe({
-                val timeLeft = 120 - (it.toInt() + 1)
+                val timeLeft = 60 - (it.toInt() + 1)
                 viewState.apply {
                     setButtonSendAgain(false)
                     setTimeLeft(timeLeft)

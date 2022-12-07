@@ -6,8 +6,11 @@ import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.ui.event.registration.items.ProfileFieldsData
+import com.example.ui.event.registration.items.ProfileFieldsFormModel
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -52,6 +55,7 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventsListFlow(map: Map<String, Any>): Flowable<PaginationResponse<EventNew?>>
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
     fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
@@ -74,14 +78,14 @@ interface EventRepository {
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
     fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
 
-    //fun loadEventRegistrationDataNew(eventId: String): Single<EventRegisterData>
     fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel/*EventRegisterField*/>>>
     fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
     //+
     fun getEventFormResultDraft(id : Int, map: Map<String, Any>): Maybe<EventFormResultDraftModel>
     fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel>
+    fun loadEventFormResult(id : String): Single<ProfileFieldsData>
 
-    fun eventRegisterNew(body: RequestBody): Single<ApiResponse<List<EventFormResultModel>>>
+    fun eventRegisterNew(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>>
     fun registerToEvent(eventId : Int): Completable
     fun cancelRegisterToEvent(eventId : Int): Completable
     fun addEventToCalendarWithResult(body: EventCalendarBody): Single<EventCalendarItem>

@@ -17,10 +17,17 @@ interface ProfileContract {
         fun setUser(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setUserState(hasBase: Boolean, hasMax: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUserLink(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setChangeOrAddNewAccount(size : Int)
+        fun showShimmerView()
+        fun hideShimmerView()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setChangeOrAddNewAccount(description : Int, icon : Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showProfile(uid: String)
@@ -55,8 +62,6 @@ interface ProfileContract {
         @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setUserState(hasBase: Boolean, hasMax: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEmailNotUnique(email: String)
@@ -74,7 +79,7 @@ interface ProfileContract {
         fun showQrScannerToAuthWebSite()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showProfileDataBottomSheetDialog(user: UserDetail, bm : Bitmap?)
+        fun showProfileDataBottomSheetDialog(user: UserDetail)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -95,6 +100,6 @@ interface ProfileContract {
         fun checkPhoneIsUnique(phone: String)
         fun onQrScannerToAuthWebClick()
 
-        fun onShowProfileDataBottomSheetDialog(user: UserDetail, context : Context)
+        fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context)
     }
 }

@@ -29,6 +29,9 @@ interface ChangeAccountContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBrowser(url : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun ignoreTokenListener(ignore : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
@@ -36,5 +39,6 @@ interface ChangeAccountContract {
         fun switchAccount(session: UserSessionModel)
         fun authToAccountClick()
         fun loginToAccountClick(user : UserDetail)
+        fun onClickClose()
     }
 }

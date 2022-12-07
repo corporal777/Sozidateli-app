@@ -1,6 +1,7 @@
-package com.example.util.pagination
+package com.example.util.pagination.observable
 
 import androidx.paging.PagedList
+import com.example.util.pagination.PaginationCallback
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe

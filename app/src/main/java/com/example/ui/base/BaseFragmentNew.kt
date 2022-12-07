@@ -23,11 +23,13 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 
-abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment(),
+abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boolean = false) :
+    MvpAppCompatFragment(),
     BaseContract.View {
 
     lateinit var mBinding: binding
@@ -46,6 +48,10 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+        if(canShowAnim){
+            postponeEnterTransition()
+            showEnterAnimation()
+        }
     }
 
     override fun onCreateView(
@@ -79,18 +85,20 @@ abstract class BaseFragmentNew<binding : ViewDataBinding> : MvpAppCompatFragment
     @LayoutRes
     abstract fun layout(): Int
 
+    override fun showEnterAnimation() {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+            duration = (350).toLong()
+        }
+
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+            duration = (450).toLong()
+        }
+    }
+
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun enableBackClick() {
-        mActivity?.enableBackClick()
-    }
-
-    override fun disableBackClick() {
-        mActivity?.disableBackClick()
     }
 
     override fun showLoadingDialog() {

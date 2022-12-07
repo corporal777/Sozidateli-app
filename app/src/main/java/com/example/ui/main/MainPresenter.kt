@@ -79,6 +79,7 @@ class MainPresenter
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true
+    var isSplashShown = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -117,14 +118,16 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribe { token ->
                 unsubscribeChat()
-                if (token.value == null) {
-                    isAuthRequired = true
-                    viewState.apply {
-                        showLogin()
-                        checkIntent()
+                if (!isRegister){
+                    if (token.value == null) {
+                        isAuthRequired = true
+                        viewState.apply {
+                            showLogin()
+                            checkIntent()
+                        }
+                    } else {
+                        loadUser()
                     }
-                } else {
-                    if (!isRegister) loadUser()
                 }
             }
     }
@@ -137,7 +140,9 @@ class MainPresenter
                 NotificationModel.NOTIFICATION_LIMIT to 50,
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
                 NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to true
+//                NotificationModel.NOTIFICATION_IS_IN_APP to 0,
+//                NotificationModel.NOTIFICATION_ACKNOWLEDGED to 0
             )
         ).doOnSuccess { inappList = LinkedList(it) }.ignoreElement()
 
@@ -360,7 +365,7 @@ class MainPresenter
     private fun showNextInapp() {
         inappList?.pollFirst()?.let {
             val notification = Notification.fromRemoteNotification(it)
-            viewState.showInapp(notification)
+            viewState.showInApp(notification)
             onInappOkClick(notification)
         }
     }
@@ -383,14 +388,14 @@ class MainPresenter
             .withLoadingDialog(viewState)
             .subscribeSimple {
                 notificationManager.cancel(notificationId)
-                viewState.hideInapp()
+                viewState.hideInApp()
             }
     }
 
     override fun onInappOkClick(inapp: Notification) {
         //updateNotificationInvite(userRepository.markAsRead(inapp.id.toString()), inapp.id)
         //userRepository.markAsRead(id.toString())
-        viewState.hideInapp()
+        viewState.hideInApp()
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -707,21 +712,24 @@ class MainPresenter
         //chatCompositeDisposable += socket.subscribeToChatUpdate()
         chatCompositeDisposable += socket.subscribeNewChatMessage()
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                Log.e("CHAT NEW MESSAGE", it.data.toString())
-                it.data.forEach { message ->
-                    chatHelper.showNotificationIfCan(
-                        message.chat.toString(),
-                        message.id.toString(),
-                        message.sender?.name + " " + message.sender?.lastName,
-                        message.message ?: "",
-                        "",
-                        message.sender?.avatar
-                    )
-                }
-            }, {
-                it.printStackTrace()
-            })
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onNext = {
+                    Log.e("CHAT NEW MESSAGE", it.data.toString())
+                    it.data.lastOrNull().let { message ->
+                        chatHelper.showNotificationIfCan(
+                            message?.chat.toString(),
+                            message?.id.toString(),
+                            message?.sender?.name + " " + message?.sender?.lastName,
+                            message?.message ?: "",
+                            "",
+                            message?.sender?.avatar
+                        )
+                    }
+                    appData.setNewChatMessage(it.data.lastOrNull())
+                })
     }
 
     private fun emitValueUpdates() {

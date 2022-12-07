@@ -15,13 +15,13 @@ import com.xwray.groupie.databinding.BindableItem
 import parseColor
 import java.util.*
 
-class RegisterEventHeaderItemNew(
+class RegisterEventImageHeaderItem(
     id: Long,
-    private val logo: String,
-    private val backgroundColor : String,
+    private val logo: String?,
+    private val backgroundColor : String?,
     private val formTitle: String?,
     private val formDescription: String?,
-    private val date: String,
+    private val date: String?,
 ) : BindableItem<ItemRegisterEventHeaderNewBinding>(id) {
 
     private var eventStartDate = ""

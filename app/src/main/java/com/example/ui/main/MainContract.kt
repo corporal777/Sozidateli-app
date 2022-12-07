@@ -63,10 +63,10 @@ interface MainContract {
         fun showStories()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showInapp(inapp: Notification)
+        fun showInApp(inapp: Notification)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideInapp()
+        fun hideInApp()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
         fun showErrorMessage(message: String)
@@ -91,12 +91,6 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun setMainTheme()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun setStartDestinationRecommendationsFragment()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun setStartDestinationAuthFragment()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun showAccountChangeFragment(url : String, type : AuthType)

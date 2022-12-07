@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_fifteen"
@@ -25,6 +25,7 @@
         tools:visibility="visible" />
 
     <TextView
+        fontPath="fonts/sf_pro_display.OTF"
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +40,8 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_goneMarginTop="0dp"
         tools:text="@string/event_register_sent_moderate_message"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        tools:ignore="MissingPrefix" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnPositive"

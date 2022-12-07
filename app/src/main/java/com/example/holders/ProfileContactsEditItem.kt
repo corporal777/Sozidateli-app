@@ -17,6 +17,8 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.databinding.ItemProfileEmailBinding
+import com.example.databinding.ItemProfileSocialNetworkBinding
 import com.example.util.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -99,15 +101,15 @@ class ProfileContactsEditItem(
         }
         .toMutableList()
 
-    private var mEmails =
-        (emails?.map { UserEmailsData(value = it.value ?: "", showInProfile = it.showInProfile) }
-            ?: emptyList())
-            .map { it.copy() }
-            .let {
-                if (it.isEmpty()) it.plus(UserEmailsData(value = "", showInProfile = false))
-                else it
-            }
-            .toMutableList()
+    private val publicEmails = arrayListOf<UserEmailsData>().apply {
+        addAll(emails.map {
+            UserEmailsData(value = it.value ?: "", showInProfile = it.showInProfile)
+        })
+        if (emails.isNullOrEmpty()) {
+            add(UserEmailsData("", true))
+        }
+    }
+
 
     override fun getLayout() = R.layout.item_profile_data_edit_contacts
 
@@ -184,20 +186,18 @@ class ProfileContactsEditItem(
             }
 
             llEmails.removeAllViews()
-            mEmails.forEach { initEmailsInput(viewHolder, it) }
+            publicEmails.forEach { initEmailsInput(viewHolder, it) }
             btnEmailAdd.apply {
                 setOnClickListener {
-                    if (mEmails.lastOrNull()?.value?.isNotBlank() == true && AuthValidateUtil.isValidEmail(
-                            mEmails.lastOrNull()?.value
-                                ?: ""
-                        )
+                    if (publicEmails.lastOrNull()?.value?.isNotBlank() == true
+                        && AuthValidateUtil.isValidEmail(publicEmails.lastOrNull()?.value ?: "")
                     ) {
                         UserEmailsData(value = "", showInProfile = false).apply {
-                            mEmails.add(this)
+                            publicEmails.add(this)
                             initEmailsInput(viewHolder, this)
                         }
                     } else {
-                        if (mEmails[mEmails.size - 1].value.isEmpty()) {
+                        if (publicEmails[publicEmails.size - 1].value.isEmpty()) {
                             emailsError.text = context.resources.getString(R.string.fill_field)
                         } else {
                             emailsError.text = context.resources.getString(R.string.incorrect_data)
@@ -292,47 +292,46 @@ class ProfileContactsEditItem(
         }
     }
 
-    private fun initEmailsInput(viewHolder: GroupieViewHolder, em: UserEmailsData) {
-        var csn = em
-        val parent = LayoutInflater.from(context)
-            .inflate(R.layout.item_profile_email, viewHolder.llEmails, false)
-        val etSn = parent.findViewById<EditText>(R.id.etEm).apply {
+    private fun initEmailsInput(viewHolder: GroupieViewHolder, email: UserEmailsData) {
+        val binding = ItemProfileEmailBinding.inflate(
+            LayoutInflater.from(context),
+            viewHolder.llEmails,
+            false
+        )
+        binding.etEm.apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
                     it.isWhitespace()
                 }
             })
             inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-            initInput(csn.value) { csn.value = it?.toString() ?: "" }
-        }
-        /*parent.findViewById<CheckBox>(R.id.scShowEmail).apply {
-            initSwitch(csn.showInProfile) {
-                csn.showInProfile = it
+            initInput(email.value) {
+                email.value = it?.toString() ?: ""
+                viewHolder.emailsError.visibility = View.GONE
             }
-        }*/
-        parent.findViewById<View>(R.id.btnDeleteEmail).apply {
-            setOnClickListener {
-                if (mEmails.remove(csn)) {
-                    if (mEmails.isEmpty()) {
-                        csn = UserEmailsData(value = "", showInProfile = false)
-                        mEmails.add(csn)
-                        etSn.text?.clear()
-                    } else {
-                        viewHolder.llEmails.removeView(it.parent as View)
-                    }
+        }
+        binding.btnDeleteEmail.setOnClickListener {
+            binding.etEm.text?.clear()
+            if (publicEmails.size < 2) {
+                email.value = ""
+            } else {
+                if (publicEmails.remove(email)) {
+                    viewHolder.llEmails.removeView(it.parent as View)
                     viewHolder.emailsError.visibility = View.GONE
                 }
             }
         }
-
-        viewHolder.llEmails.addView(parent)
+        viewHolder.llEmails.addView(binding.root)
     }
 
     private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
         var csn = sn
-        val parent = LayoutInflater.from(context)
-            .inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
-        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+        val binding = ItemProfileSocialNetworkBinding.inflate(
+            LayoutInflater.from(context),
+            viewHolder.llSocialNetworks,
+            false
+        )
+        binding.etSn.apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
                     it.isWhitespace()
@@ -341,32 +340,34 @@ class ProfileContactsEditItem(
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             initInput(csn.value) { csn.value = it?.toString() ?: "" }
         }
-        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+        binding.scNetwork.apply {
             isVisible = sn.value.isNotEmpty()
             initSwitch(csn.showInProfile) { csn.showInProfile = it }
         }
-        parent.findViewById<View>(R.id.btnDelete).apply {
-            setOnClickListener {
-                if (mSocialNetworks.remove(csn)) {
-                    if (mSocialNetworks.isEmpty()) {
-                        csn = UserDataSocialLink(value = "", showInProfile = false)
-                        mSocialNetworks.add(csn)
-                        etSn.text?.clear()
-                    } else {
-                        viewHolder.llSocialNetworks.removeView(it.parent as View)
-                    }
-                    viewHolder.networksError.visibility = View.GONE
+        binding.btnDelete.setOnClickListener {
+            if (mSocialNetworks.remove(csn)) {
+                if (mSocialNetworks.isEmpty()) {
+                    csn = UserDataSocialLink(value = "", showInProfile = false)
+                    mSocialNetworks.add(csn)
+                    binding.etSn.text?.clear()
+                } else {
+                    viewHolder.llSocialNetworks.removeView(it.parent as View)
                 }
+                viewHolder.networksError.visibility = View.GONE
             }
         }
 
-        viewHolder.llSocialNetworks.addView(parent)
+        viewHolder.llSocialNetworks.addView(binding.root)
     }
 
     private fun initSiteInput(viewHolder: GroupieViewHolder, site: UserDataSite) {
-        val parent = LayoutInflater.from(context)
-            .inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
-        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+        val binding = ItemProfileSocialNetworkBinding.inflate(
+            LayoutInflater.from(context),
+            viewHolder.llSocialNetworks,
+            false
+        )
+
+        binding.etSn.apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
                     it.isWhitespace()
@@ -377,27 +378,25 @@ class ProfileContactsEditItem(
             initInput(site.value) { site.value = it?.toString() ?: "" }
         }
 
-        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+        binding.scNetwork.apply {
             isVisible = site.value.isNotEmpty()
             initSwitch(site.showInProfile) { site.showInProfile = it }
         }
 
-        parent.findViewById<View>(R.id.btnDelete).apply {
-            setOnClickListener {
-                if (mSite.remove(site)) {
-                    if (mSite.isEmpty()) {
-                        site.value = ""
-                        mSite.add(site)
-                        etSn.text?.clear()
-                    } else {
-                        viewHolder.llSites.removeView(it.parent as View)
-                    }
-                    viewHolder.sitesError.visibility = View.GONE
+        binding.btnDelete.setOnClickListener {
+            if (mSite.remove(site)) {
+                if (mSite.isEmpty()) {
+                    site.value = ""
+                    mSite.add(site)
+                    binding.etSn.text?.clear()
+                } else {
+                    viewHolder.llSites.removeView(it.parent as View)
                 }
+                viewHolder.sitesError.visibility = View.GONE
             }
         }
 
-        viewHolder.llSites.addView(parent)
+        viewHolder.llSites.addView(binding.root)
     }
 
     fun checkBaseFieldsValid(): Boolean {
@@ -450,9 +449,9 @@ class ProfileContactsEditItem(
             isValid = false
         }
 
-        if (!mEmails.lastOrNull()?.value.isNullOrEmpty()) {
-            if (!AuthValidateUtil.isValidEmail(mEmails.lastOrNull()?.value ?: "")) {
-                if (mEmails[mEmails.size - 1].value.isEmpty()) {
+        if (!publicEmails.lastOrNull()?.value.isNullOrEmpty()) {
+            if (!AuthValidateUtil.isValidEmail(publicEmails.lastOrNull()?.value ?: "")) {
+                if (publicEmails[publicEmails.size - 1].value.isEmpty()) {
                     viewHolder.emailsError.text = context.resources.getString(R.string.fill_field)
                 } else {
                     viewHolder.emailsError.text =
@@ -534,11 +533,9 @@ class ProfileContactsEditItem(
 
 
             val contactEmails = mutableListOf<EmailsModel>()
-            if ((mEmails.size != 1) && !mEmails[0].value.isEmpty()) {
-                mEmails.forEach {
-                    if (!it.value.isNullOrEmpty()) {
-                        contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
-                    }
+            publicEmails.forEach {
+                if (!it.value.isNullOrEmpty()) {
+                    contactEmails.add(EmailsModel(value = it.value, showInProfile = true))
                 }
             }
 

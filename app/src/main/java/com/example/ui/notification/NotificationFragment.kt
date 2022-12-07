@@ -46,13 +46,9 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.notification_label))
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarTitleAndIcon(getString(R.string.notification_label))
         mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
             presenter.changeAppBarElevation(scrollY - oldScrollY)
         }

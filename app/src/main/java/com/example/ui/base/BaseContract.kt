@@ -61,11 +61,8 @@ interface BaseContract {
             toolbarTitleAction: (() -> Unit?)? = null
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun enableBackClick()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun disableBackClick()
+        @StateStrategyType(SkipStrategy::class)
+        fun showEnterAnimation()
     }
 
     interface LoadingView {

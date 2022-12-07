@@ -113,7 +113,7 @@ class ConfirmEmailPhoneFragment(val phone: String) :
     }
 
     override fun setTimeLeft(time: Int) {
-        val quantity = Utils.timerFormatterNew(time, requireContext())
+        val quantity = Utils.timerFormatter(time, requireContext())
         mBinding.tvTimer.apply {
             if (time <= 0) {
                 isInvisible = true

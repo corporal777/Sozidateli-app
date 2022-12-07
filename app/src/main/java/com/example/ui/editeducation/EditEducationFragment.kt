@@ -263,7 +263,7 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
             rvInterests.apply {
                 adapter = this@EditEducationFragment.adapter
                 onScrolled { _, dy ->
-                    presenter.changeAppBarElevation(dy)
+                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
                 }
             }
             btnEdit.setOnClickListener {

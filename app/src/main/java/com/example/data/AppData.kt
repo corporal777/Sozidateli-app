@@ -11,18 +11,18 @@ class AppData(
     private val appPrefs: AppPrefs
 ) {
 
-    var deviceId : String? = appPrefs.uniqueDeviceId
+    var deviceId: String? = appPrefs.uniqueDeviceId
         set(value) {
-            if (field.isNullOrEmpty()){
+            if (field.isNullOrEmpty()) {
                 field = value
                 appPrefs.uniqueDeviceId = value
             }
         }
 
 
-    var attemptsOfChangePassword : Int = appPrefs.attemptsOfChangePassword
+    var attemptsOfChangePassword: Int = appPrefs.attemptsOfChangePassword
         set(value) {
-            if (field <= 3){
+            if (field <= 3) {
                 field = value
                 appPrefs.attemptsOfChangePassword = value
             }
@@ -89,6 +89,7 @@ class AppData(
 
     private var user: User? = null
     private var newUser: UserDetail? = null
+    private var newChatMessage: MessageModel? = null
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
@@ -101,6 +102,7 @@ class AppData(
     val userNewChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
+    val chatUnreadMessageSubject = BehaviorSubject.createDefault(newChatMessage.asOptional())
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
     val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
@@ -126,6 +128,11 @@ class AppData(
         this.newUser = user
         appPrefs.userId = user.id
         if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+    }
+
+    fun setNewChatMessage(message: MessageModel?) {
+        this.newChatMessage = message
+        chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
     }
 
     fun updatePhone(phone: String) {
@@ -231,18 +238,7 @@ class AppData(
         token = null
     }
 
-    fun logoutNew() {
-        isLoggedOut = true
-        user = null
-        appPrefs.userId = -1
-        notificationsCount = 0
-        chatRequestsCount = 0
-        chatUnreadMessageCount = 0
-        userChangeSubject.onNext(Optional(null))
-        userPhoneConfirmedSubject.onNext(false)
-    }
-
-    fun isCurrentUser(id : String): Boolean {
+    fun isCurrentUser(id: String): Boolean {
         return newUser?.id.toString() == id
     }
 }

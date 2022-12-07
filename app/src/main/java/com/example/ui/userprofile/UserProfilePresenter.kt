@@ -1,21 +1,10 @@
 package com.example.ui.userprofile
 
-import android.view.View
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
-import com.example.data.models.UserEditDataType
-import com.example.data.models.user.User
-import com.example.di.FragmentBuildersModule_ContributeUserProfileInterestsFragment
 import com.example.repository.UserRepository
-import com.example.ui.userprofile.base.BaseUserProfileContract
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
-import com.example.ui.userprofile.read.interests.UserProfileInterestsContract
-import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
-import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
-import com.example.ui.userprofile.read.interests.UserProfileInterestsPresenter
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto

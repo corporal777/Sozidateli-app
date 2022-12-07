@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.example.ui.views.CustomAppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.AppBarLayout>
+        </com.example.ui.views.CustomAppBarLayout>
 
 
         <FrameLayout
@@ -102,9 +102,7 @@
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/layout_inapp" />
+
 
     <FrameLayout
         android:id="@+id/fl_loading"
@@ -202,5 +200,9 @@
             app:menu="@menu/main_bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/layout_inapp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

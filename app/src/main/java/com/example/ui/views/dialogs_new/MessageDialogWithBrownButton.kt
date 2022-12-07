@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
@@ -15,10 +16,11 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 class MessageDialogWithBrownButton(
     val context: Context,
     val message: CharSequence,
-    val isCancelable : Boolean = true
-    ) {
+    val isCancelable: Boolean = true
+) {
 
-    private val mBinding = DialogMessageWithGrayButtonBinding.inflate(LayoutInflater.from(context))
+    private val mBinding =
+        DialogMessageWithGrayButtonBinding.inflate(LayoutInflater.from(context))
 
     private var clickAction: () -> Unit = {}
 

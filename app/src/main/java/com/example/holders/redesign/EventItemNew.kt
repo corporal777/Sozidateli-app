@@ -138,7 +138,8 @@ class EventItemNew(
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
             Event.Status.RUNNING,
-            Event.Status.FINISHED -> {
+            Event.Status.FINISHED,
+            Event.Status.APPROVED-> {
                 if (eventRegistrationState != null) {
                     val actions = eventRegistrationState.availableActions ?: arrayListOf("")
                     val profileLevel = eventRegistrationState.prohibitions?.profileLevelToLow?.value

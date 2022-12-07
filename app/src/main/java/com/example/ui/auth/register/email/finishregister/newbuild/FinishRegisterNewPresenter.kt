@@ -5,7 +5,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
-import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
@@ -22,9 +21,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -45,7 +42,7 @@ class FinishRegisterNewPresenter
     var email: String = ""
     var phone: String = ""
     var noMiddleNameChecked = false
-    private var code: String = ""
+    private var code = ""
     var loginType = "email"
     private var deviceId = appData.deviceId
     private var deviceModel = getDeviceName()
@@ -57,7 +54,13 @@ class FinishRegisterNewPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
-        viewState.setData(email, phone, firstName, lastName, middleName)
+        viewState.apply {
+            setData(
+                email = if (loginType == "email") email else phone,
+                firstName, lastName, middleName
+            )
+            enableRegisterBtn(code.length == 6)
+        }
         startTimer()
     }
 
@@ -71,6 +74,7 @@ class FinishRegisterNewPresenter
         viewState.apply {
             setCanResend(false)
             setTimeLeft(FinishRegisterPresenter.TIMER_SECONDS_COUNT)
+            setDescriptionText(true)
         }
 
         timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
@@ -90,19 +94,21 @@ class FinishRegisterNewPresenter
 
 
     override fun sendCodeAgain() {
-        compositeDisposable += if (loginType == "email") {
-            authRepository.registerEmailResend(email)
-        } else {
-            authRepository.registerPhoneResend(
-                "personal",
-                validatePhoneBeforeSend(phone)
-            )
+        if (checkEmailValid()){
+            compositeDisposable += if (loginType == "email") {
+                authRepository.registerEmailResend(email)
+            } else {
+                authRepository.registerPhoneResend(
+                    "personal",
+                    validatePhoneBeforeSend(phone)
+                )
+            }
+                .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribe({
+                    startTimer()
+                }, { it.printStackTrace() })
         }
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                startTimer()
-            }, { it.printStackTrace() })
     }
 
     override fun onHandleAuthLink() {
@@ -153,16 +159,22 @@ class FinishRegisterNewPresenter
         this.middleName = lastName
     }
 
+    override fun onChangeEmailText(email: String) {
+        if (loginType == "email") {
+            this.email = email
+        } else {
+            this.phone = email
+        }
+        viewState.apply {
+            setDescriptionText(false)
+            setCanResend(true)
+        }
+    }
+
     override fun onNoMiddleNameChecked(checked: Boolean) {
         noMiddleNameChecked = checked
         viewState.enableMiddleNameInput(!checked)
     }
-
-
-    override fun onClickClose() {
-        viewState.navigateUp()
-    }
-
 
     override fun logout() {
         appData.isSubscribedToPush = false
@@ -171,6 +183,22 @@ class FinishRegisterNewPresenter
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
+    }
+
+    private fun checkEmailValid(): Boolean {
+        var isValid = true
+        if (loginType == "email") {
+            if (!AuthValidateUtil.isValidEmail(email)) {
+                isValid = false
+                viewState.showWrongEmailError(true)
+            }
+        } else {
+            if (!Utils.isNewPhoneIsValid(validatePhoneBeforeSend(phone))) {
+                viewState.showWrongPhoneError(true)
+                isValid = false
+            }
+        }
+        return isValid
     }
 
     private fun confirmCodeRequest(): Completable {

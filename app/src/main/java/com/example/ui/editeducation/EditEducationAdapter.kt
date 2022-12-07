@@ -423,11 +423,13 @@ class EditEducationAdapter(
     ) {
         textView.apply {
             popupReceiving = EducationPopupWindow(context, variants.toList())
-            text = initialVariant
+            text = initialVariant ?: context.getString(R.string.search_filters_not_chosen)
             validateCheckbox(initialVariant, cb)
             setOnClickListener {
-                popupReceiving.setCurrentSelection(textView.text.toString())
-                popupReceiving.showPopup(this)
+                if (!variants.isNullOrEmpty()){
+                    popupReceiving.setCurrentSelection(textView.text.toString())
+                    popupReceiving.showPopup(this)
+                }
             }
             popupReceiving.setEducationClickCallback {
                 if (it != text) {

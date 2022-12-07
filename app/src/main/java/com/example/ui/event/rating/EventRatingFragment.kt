@@ -18,6 +18,7 @@ import com.example.holders.ActionButtonItem.Companion.ACTION_SEND
 import com.example.holders.RatingItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.registration.items.RegisterEventProfileMainItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
@@ -60,8 +61,12 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
         recyclerView.apply { adapter = this@EventRatingFragment.adapter }
     }
 
-    override fun setFields(event: EventRegistration, groupField: EventRegisterField?, selectedGroup: String?,
-                           groups: List<EventGroup>, fieldsData: List<EventRegisterFieldData<*>>, rating: Int, files: List<FileModel>?) {
+    override fun setFields(
+        event: EventRegistration,
+        fieldsData: List<EventRegisterFieldData<*>>,
+        rating: Int,
+        files: List<FileModel>?
+    ) {
         val editable = rating <= 0
         section.apply {
             setHeader(RegisterEventHeaderItem(
@@ -80,6 +85,24 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
 
             addAll(fieldsData.map {
                 when (it) {
+//                    is EventRegisterFieldData.Prefilled -> {
+//                        RegisterEventProfileMainItem(
+//                            it.value?.user_birthday,
+//                            it.value?.user_gender,
+//                            it.value?.address?.getShortAddress(),
+//                            it.value?.user_notes,
+//                            "",
+//                            it.value?.user_email,
+//                            it.value?.user_phone,
+//                            it.value?.user_work_phone,
+//                            it.value?.contactInformation?.socialLinks?.values?.joinToString("\n") {
+//                                it.value ?: ""
+//                            },
+//                            it.value?.contactInformation?.site?.values?.joinToString("\n") {
+//                                it.value ?: ""
+//                            }
+//                        )
+//                    }
                     is EventRegisterFieldData.String ->
                         RegisterEventStringItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Date ->
@@ -98,6 +121,7 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
                         EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) {
                             presenter.onAddFileClick(it)
                         }.createFieldItemFrom(it)
+                    else -> null
                 }
             })
 

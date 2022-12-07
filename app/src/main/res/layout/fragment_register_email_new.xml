@@ -179,63 +179,7 @@
 
                 </com.example.ui.views.CustomTextInputLayout>
 
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/til_email_again"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_email_again"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:layout_marginTop="8dp"
-                        android:hint="@string/auth_input_email_again_hint"
-                        android:inputType="textEmailAddress" />
-
-                </com.example.ui.views.CustomTextInputLayout>
-
-                <!--<com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilPassword"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="password_toggle"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPassword"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/auth_input_password_hint"
-                        android:inputType="textPassword" />
-                </com.example.ui.views.CustomTextInputLayout>
-
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilPasswordConfirm"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="password_toggle"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPasswordConfirm"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/auth_input_password_confirm_hint"
-                        android:inputType="textPassword" />
-                </com.example.ui.views.CustomTextInputLayout>-->
 
                 <com.example.ui.views.passwordView.PasswordCustomView
                     android:id="@+id/password"

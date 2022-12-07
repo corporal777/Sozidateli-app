@@ -3,6 +3,7 @@ package com.example.ui.base.bottomSheet
 import android.app.Dialog
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,6 +47,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         if (dialog is BottomSheetDialog) {
             dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
             if (type == 1) {
                 dialog.setOnShowListener {
                     setupFullHeight(dialog)
@@ -78,6 +80,10 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
             mBinding.lifecycleOwner = this
         }
         return mBinding.root
+    }
+
+    override fun showEnterAnimation() {
+        TODO("Not yet implemented")
     }
 
     override fun showKeyboard(v: View?) {
@@ -184,12 +190,6 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         action: (() -> Unit?)?,
         toolbarTitleAction: (() -> Unit?)?
     ) {
-    }
-
-    override fun enableBackClick() {
-    }
-
-    override fun disableBackClick() {
     }
 
     override fun onDestroyView() {

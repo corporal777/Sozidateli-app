@@ -4,9 +4,9 @@ import com.example.data.AppData
 import com.example.data.models.SearchFilter
 import com.example.extensions.buildList
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationDataSourceFactory
-import com.example.util.pagination.PaginationList
-import com.example.util.pagination.applyErrorHandler
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
+import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign

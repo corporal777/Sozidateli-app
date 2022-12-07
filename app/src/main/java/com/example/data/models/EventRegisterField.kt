@@ -1,5 +1,6 @@
 package com.example.data.models
 
+import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 
 data class EventRegisterField(
@@ -19,6 +20,9 @@ data class EventRegisterField(
 ) {
 
     enum class Type {
+        @SerializedName("prefilled")
+        PREFILLED,
+
         @SerializedName("string")
         STRING,
 

@@ -116,22 +116,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                     }
                 }
             }
-            etEmailAgain.apply {
-                filters = emailFilter
-                onTextChanged {
-                    it?.toString()?.let { text -> presenter.onChangeEmailAgainText(text) }
-                }
-                onFocusChanged { hasFocus ->
-                    if (!hasFocus) {
-                        if (!text.isNullOrEmpty()) {
-                            if (text.toString() != mBinding.etEmail.text.toString()) {
-                                showEmailAgainError(true)
-                            }
-                        }
-                    }
-                }
-            }
-
 
             scNoMiddleName.setOnCheckedChangeListener { _, checked ->
                 presenter.onNoMiddleNameChecked(
@@ -201,9 +185,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         this.password.setAgreeSelection(isAgree)
     }
 
-    override fun changeFieldType(type: String, isValid: Boolean) {
-        mBinding.tilEmailAgain.isVisible = type == "email" && isValid
-    }
 
     override fun enableMiddleNameInput(enable: Boolean) {
         mBinding.etMiddleName.isEnabled = enable
@@ -227,11 +208,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
 
     override fun showWrongPhoneError(show: Boolean) {
         mBinding.tilEmail.error = if (show) getString(R.string.invalid_phone_number_second_error) else null
-    }
-
-    override fun showEmailAgainError(show: Boolean) {
-        mBinding.tilEmailAgain.error =
-            if (show) getString(R.string.auth_error_email_do_not_match) else null
     }
 
     override fun showAgreementError(show: Boolean) {

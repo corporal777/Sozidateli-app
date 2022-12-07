@@ -1,7 +1,9 @@
-package com.example.util.pagination
+package com.example.util.pagination.observable
 
 import android.util.Log
 import androidx.paging.DataSource
+import com.example.util.pagination.DataSourceFactory
+import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 
 @Suppress("UNCHECKED_CAST")

@@ -12,12 +12,11 @@ import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.my.schedule.items.MyScheduleEventsData
+import com.example.ui.event.my.schedule.items.EventScheduleData
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.util.getDaysFromDateToDate
 import com.example.util.getMonthName
 import com.google.gson.Gson
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -193,7 +192,8 @@ class MyScheduleEventsPresenter
                     Maybe.fromCallable {
                         val list = arrayListOf<EventActivityModel>()
                         events.forEach { it.subEvents.forEach { map -> list.addAll(map.value) } }
-                        month = getMonthName(defaultServerDateFormatter.parse(list.first().holdingDate?.from).time.calendar())
+                        month =
+                            getMonthName(defaultServerDateFormatter.parse(list.first().holdingDate?.from).time.calendar())
                         Pair(getCalendarDays(list), list)
                     }
                         .performOnBackgroundOutOnMain()
@@ -228,8 +228,8 @@ class MyScheduleEventsPresenter
     private fun transformDataToShow(
         eventsList: List<EventNew?>,
         text: String
-    ): List<MyScheduleEventsData> {
-        val listScheduleEvents = arrayListOf<MyScheduleEventsData>()
+    ): List<EventScheduleData> {
+        val listScheduleEvents = arrayListOf<EventScheduleData>()
 
         eventsList.forEach { event ->
             val firstDate = event?.binds?.activity
@@ -251,16 +251,7 @@ class MyScheduleEventsPresenter
 
             if (!eventsMap.isNullOrEmpty()) {
                 eventsMap.put("", eventsMap.remove(firstDate)!!)
-                listScheduleEvents.add(
-                    MyScheduleEventsData(
-                        firstDate,
-                        event?.id.toString(),
-                        event?.name ?: "",
-                        event?.image?.uri ?: "",
-                        eventsMap
-                    )
-                )
-                //if (!firstDate.isNullOrEmpty())
+                listScheduleEvents.add(EventScheduleData(event, firstDate, eventsMap))
 
             }
         }

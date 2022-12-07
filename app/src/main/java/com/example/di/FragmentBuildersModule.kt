@@ -44,6 +44,7 @@ import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.event.speakers.list.EventSpeakersFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragment
 import com.example.ui.eventTabs.EventTabsFragment
+import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.organizations.OrganizationFragment
@@ -390,5 +391,8 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChatFragmentNew(): ChatFragmentNew
+
+    @ContributesAndroidInjector
+    abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment
 
 }

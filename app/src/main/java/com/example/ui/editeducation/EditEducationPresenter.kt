@@ -15,6 +15,7 @@ import ru.ok.android.sdk.LOG_TAG
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class EditEducationPresenter
@@ -23,7 +24,7 @@ class EditEducationPresenter
     private val userRepository: UserRepository
 ) : BasePresenter<EditEducationContract.View>(appData), EditEducationContract.Presenter {
 
-    private var mDy = 0
+    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -33,6 +34,7 @@ class EditEducationPresenter
             .subscribe({
                 val user = it.value ?: throw RuntimeException("Edit null user")
                 viewState.apply {
+                    Log.e("EDUCATION", it.value.educationLevelList.toString())
                     setEducationData(user)
                 }
             }, {
@@ -43,12 +45,12 @@ class EditEducationPresenter
 
     override fun attachView(view: EditEducationContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(mDy)
     }
 
     override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        mDy = abs(value / 10f)
+        viewState.setAppBarElevation(mDy)
     }
 
     override fun onSaveEducationClick(

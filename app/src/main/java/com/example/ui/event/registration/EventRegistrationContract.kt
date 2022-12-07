@@ -7,30 +7,42 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
+import com.example.ui.event.registration.items.ProfileFieldsFormModel
+import com.example.ui.event.registration.items.ProfileFieldsFormResult
 import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventRegistrationContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setFields(
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setRecyclerViewContent()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setFormHeader(event: EventRegistration)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setProfileFields(profileForm : ProfileFieldsFormResult)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateProfileFields(profileForm : ProfileFieldsFormResult)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setFormFields(
                 event: EventRegistration,
-                groupField: EventRegisterField?,
-                selectedGroup: String?,
-                groups: List<EventGroup>,
                 fieldsData: List<EventRegisterFieldData<*>>,
                 withConfirm: Boolean
         )
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @StateStrategyType(SkipStrategy::class)
         fun showEventRegisterConfirmation()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @StateStrategyType(SkipStrategy::class)
         fun showAgreementRegisterDialog(url: String)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showSaveFormResultDraftDialog()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showLoadSavedFormResultDraftDialog(result : EventRegisterData)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
@@ -54,13 +66,13 @@ interface EventRegistrationContract {
         @StateStrategyType(SkipStrategy::class)
         fun showEventLists()
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showEvent()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun dispatchOnBackPressed()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEditProfile()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEvent(eventId : String)
+
+        @StateStrategyType(SkipStrategy::class)
         fun updateAppBarBackgroundColorValue(offset : Int)
     }
 
@@ -80,7 +92,7 @@ interface EventRegistrationContract {
         fun onBackClick()
 
         fun saveEventFormResultDraft()
-        fun initEventFormResultData(result : EventRegisterData)
-        fun changeAppBarBackgroundColorValue(canScrollVertically : Boolean, value : Int)
+        fun initFormResultData(event : EventRegistration, result : List<EventRegisterFieldData<*>>)
+        fun changeAppBarBackground(value : Int)
     }
 }
