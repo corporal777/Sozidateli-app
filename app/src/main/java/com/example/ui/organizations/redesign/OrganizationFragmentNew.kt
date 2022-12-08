@@ -129,7 +129,6 @@ class OrganizationFragmentNew : BaseFragmentNew<FragmentOrganizationNewBinding>(
 
 
     override fun setMainData(organization: OrganizationNew) {
-        groupAdapter.notifyDataSetChanged()
         mainDataSection.update(listOf(
             OrganizationHeaderItem(
                 organization.image?.uri,
@@ -144,6 +143,7 @@ class OrganizationFragmentNew : BaseFragmentNew<FragmentOrganizationNewBinding>(
                 presenter.onSubscribeClick(it)
             }
         ))
+        groupAdapter.notifyDataSetChanged()
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
@@ -161,23 +161,23 @@ class OrganizationFragmentNew : BaseFragmentNew<FragmentOrganizationNewBinding>(
         )
     }
 
-    override fun setEventsData(events: List<EventNew>) {
+    override fun setEventsData(events: List<EventNew?>) {
         eventsDataSection.update(events.map {
             EventItemNew(
                 it,
-                it.id.toString(),
-                it.state,
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.backgroundColor?.value,
-                it.image?.uri,
-                it.binds?.eventRegistrationState,
-                it.userAgreement?.uri,
-                it.binds?.currentUserRegistration?.id.toString(),
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.holdingDate?.to,
+                it?.id.toString(),
+                it?.state,
+                it?.status?.value,
+                it?.binds?.currentUserRegistration?.status?.value,
+                it?.backgroundColor?.value,
+                it?.image?.uri,
+                it?.binds?.eventRegistrationState,
+                it?.userAgreement?.uri,
+                it?.binds?.currentUserRegistration?.id.toString(),
+                it?.name,
+                it?.address?.getShortAddress(),
+                it?.holdingDate?.from,
+                it?.holdingDate?.to,
                 onEventClickListener,
             )
         })

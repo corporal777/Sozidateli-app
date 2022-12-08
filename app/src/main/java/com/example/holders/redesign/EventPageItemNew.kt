@@ -9,7 +9,7 @@ class EventPageItemNew(
     val id : Int,
     val name : String,
     val onPageClick: (id : Int) -> Unit
-) : BindableItem<ItemEventPageNewBinding>() {
+) : BindableItem<ItemEventPageNewBinding>(id.toLong()) {
 
 
     override fun bind(viewBinding: ItemEventPageNewBinding, position: Int) {

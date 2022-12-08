@@ -2,14 +2,19 @@ package com.example.ui.event.about.redesign.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.databinding.GroupieViewHolder
 import parseColor
 
 class EventDetailImageItem(
@@ -19,7 +24,7 @@ class EventDetailImageItem(
     val dateTo: String?,
     val logo: String?,
     val backgroundColor: String?
-) : BindableItem<ItemEventDetailImageBlockBinding>() {
+) : BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
 
     val date: String = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
     private var imageColor = ColorDrawable(Color.DKGRAY)
@@ -32,6 +37,7 @@ class EventDetailImageItem(
     }
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
+
         viewBinding.apply {
             tvTitle.text = name
             tvDate.text = date
@@ -50,6 +56,10 @@ class EventDetailImageItem(
         if (other !is EventDetailImageItem) return false
         if (name != other.name) return false
         if (address != other.address) return false
+        if (dateFrom != other.dateFrom) return false
+        if (dateTo != other.dateTo) return false
+        if (logo != other.logo) return false
+        if (backgroundColor != other.backgroundColor) return false
         return true
     }
 

@@ -1,5 +1,6 @@
 package com.example.ui.event.about.redesign
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
@@ -22,8 +22,7 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
-import com.example.ui.event.about.redesign.items.SpeakersHorizontalListItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
@@ -32,11 +31,14 @@ import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
+import com.example.ui.views.GridLayoutManagerAccurateOffset
+import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
 import setOnClickListener
 import javax.inject.Inject
@@ -44,37 +46,26 @@ import javax.inject.Provider
 import kotlin.math.abs
 
 
-class AboutEventFragmentNew() : BaseFragment(),
+class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     AboutEventContractNew.View {
-
-    private var mEventId = ""
 
     override fun layout() = R.layout.fragment_about_event_new
 
-    private val mainBlock = Section()
-    private val organizationAndInformationBlock = Section()
-    private val speakersBlock by lazy {
+    private val eventMainSection by lazy { Section() }
+    private val eventOrganizationSection by lazy { Section() }
+    private val eventSpeakersSection by lazy {
         Section().apply {
             setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)))
             setHideWhenEmpty(true)
         }
     }
-    private val tagsBlock by lazy {
-        Section().apply {
-        }
-    }
-    private val subEventsBlock = Section()
-    private val showActivitiesBlock = Section()
-
-    private val partnersBlock by lazy {
+    private val eventProgramSection by lazy { Section() }
+    private val eventPartnersSection by lazy {
         Section().apply {
             setHeader(EventDetailBlocksLabelItem(getString(R.string.partners_label)))
             setHideWhenEmpty(true)
         }
     }
-
-    private var _binding: FragmentAboutEventNewBinding? = null
-    private val mBinding get() = _binding!!
 
     @InjectPresenter
     lateinit var mPresenter: AboutEventPresenterNew
@@ -85,18 +76,15 @@ class AboutEventFragmentNew() : BaseFragment(),
     @ProvidePresenter
     fun providePresenter(): AboutEventPresenterNew = presenterNewProvider.get().apply {
         eventId = AboutEventFragmentNewArgs.fromBundle(requireArguments()).eventId
-        this@AboutEventFragmentNew.mEventId = eventId
     }
 
     private val groupAdapter by lazy {
-        GroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>().apply {
-            add(mainBlock)
-            add(organizationAndInformationBlock)
-            add(speakersBlock)
-            add(tagsBlock)
-            add(subEventsBlock)
-            add(showActivitiesBlock)
-            add(partnersBlock)
+        GroupAdapter<GroupieViewHolder>().apply {
+            add(eventMainSection)
+            add(eventOrganizationSection)
+            add(eventSpeakersSection)
+            add(eventProgramSection)
+            add(eventPartnersSection)
         }
     }
 
@@ -123,164 +111,149 @@ class AboutEventFragmentNew() : BaseFragment(),
     }
 
     private var actionItem: EventDetailActionItem? = null
+    private val customLayoutManager by lazy {
+        LinearLayoutManagerAccurateOffset(requireContext())
+    }
 
 
+    @SuppressLint("RestrictedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentAboutEventNewBinding.bind(view)
-        mBinding.eventContentList.apply {
-            adapter = groupAdapter
-            setItemViewCacheSize(10)
-            recycledViewPool.setMaxRecycledViews(0, 10)
-            val layoutManager = this.layoutManager as LinearLayoutManager
-            onScrolled { _, dy ->
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    mPresenter.changeAppBarBackgroundColorValue(false, 0)
-                } else {
-                    mPresenter.changeAppBarBackgroundColorValue(true, dy)
+        mBinding.apply {
+            ivShare.setOnClickListener(mPresenter::onShareClick)
+            ivBack.setOnClickListener(findNavController()::navigateUp)
+            btnAddToCalendar.setOnClickListener {
+                mPresenter.onAddEventToCalendarClick()
+            }
+            swipeToRefresh.apply {
+                setProgressViewOffset(
+                    true,
+                    resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
+                    resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
+                )
+                setOnRefreshListener {
+                    mPresenter.onRefreshRequest()
                 }
             }
         }
 
-        mBinding.ivShare.setOnClickListener(mPresenter::onShareClick)
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun setAboutEventContentList() {
+        mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
+            mPresenter.changeAppBarBackgroundColorValue(mBinding.nestedScrollView.computeVerticalScrollOffset())
         }
-        mBinding.swipeToRefresh.apply {
-            setProgressViewOffset(
-                true,
-                resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
-                resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
-            )
-            setOnRefreshListener {
-                mPresenter.onRefreshRequest()
+        mBinding.eventContentList.apply {
+            setItemViewCacheSize(50)
+            adapter = groupAdapter
+            layoutManager =
+                GridLayoutManagerAccurateOffset(requireContext(), groupAdapter.spanCount).apply {
+                    spanSizeLookup = groupAdapter.spanSizeLookup
+                }
+            onScrolled { _, _ ->
+                //mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
             }
         }
     }
 
-    override fun setEventData(eventData: EventNew?) {
-        mBinding.swipeToRefresh.isRefreshing = false
-        if (eventData != null) {
-            mBinding.btnAddToCalendar.setOnClickListener {
-                addToCalendar(eventData)
-            }
-            decorEventFavoriteButton(eventData.binds?.userFavorite != null)
+    override fun setEventData(eventData: AboutEventData) {
+        decorEventFavoriteButton(eventData.event.binds?.userFavorite != null)
 
-            groupAdapter.notifyDataSetChanged()
-            mainBlock.update(
-                listOf(
-                    EventDetailImageItem(
-                        eventData.name,
-                        eventData.address?.getShortAddress(),
-                        eventData.holdingDate?.from,
-                        eventData.holdingDate?.to,
-                        eventData.image?.uri,
-                        eventData.backgroundColor?.value
-                    ),
-                    EventDetailActionItem(eventData, onActionClickListener).apply {
-                        actionItem = this
-                    }
-                )
+        eventMainSection.update(
+            listOf(
+                EventDetailImageItem(
+                    eventData.event.name,
+                    eventData.event.address?.getShortAddress(),
+                    eventData.event.holdingDate?.from,
+                    eventData.event.holdingDate?.to,
+                    eventData.event.image?.uri,
+                    eventData.event.backgroundColor?.value
+                ),
+                EventDetailActionItem(eventData.event, onActionClickListener)
             )
-        }
-
-    }
-
-
-    override fun setOrganizationAndInformation(
-        organization: OrganizationNew?,
-        pages: List<PageModel>?,
-        address: String?
-    ) {
-        organizationAndInformationBlock.update(
+        )
+        eventOrganizationSection.update(
             listOf(
                 EventDetailInfoBlock(
-                    organization,
+                    eventData.event.binds?.organization,
                     { mPresenter.onAddOrganizationToFavoriteClick() },
                     { mPresenter.onOrganizationClick(it) },
                     getString(R.string.information),
-                    address,
-                    pages,
+                    eventData.event.address?.fullValue,
+                    eventData.event.binds?.page,
                     { mPresenter.onMapPageSelected() },
                     { mPresenter.onPageClick(it) }
                 )
             )
         )
-    }
 
-    override fun setEventSpeakers(isShowMore: Boolean, members: List<MemberModel>?) {
-        if (!members.isNullOrEmpty()) {
-            speakersBlock.update(
+        if (!eventData.speakers.isNullOrEmpty()) {
+            eventSpeakersSection.update(
                 listOf(
                     SpeakersHorizontalListItem(
-                        members,
-                        isShowMore,
+                        eventData.speakers,
+                        eventData.showMoreSpeakers,
                         { mPresenter.onSpeakerClick(it) },
                         { mPresenter.onShowAllSpeakersClick() }),
                 )
             )
         }
-    }
 
-    override fun setEventActivitiesAndTags(
-        isApproved: Boolean,
-        subEvents: Map<String, List<EventActivityModel>>,
-        tags: List<Tag>
-    ) {
-
-        tagsBlock.apply {
-            if (!subEvents.isNullOrEmpty() || !tags.isNullOrEmpty()) {
+        if (!eventData.subEvents.isNullOrEmpty() || !eventData.tags.isNullOrEmpty()) {
+            eventProgramSection.apply {
                 setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
-            }
-            if (!tags.isNullOrEmpty()){
                 update(
-                    listOf(TagsItem(tags) {
-                        mPresenter.onTagSelected()
-                    })
+                    if (!eventData.tags.isNullOrEmpty()) {
+                        listOf(TagsItem(eventData.tags) {
+                            mPresenter.onTagSelected()
+                        })
+                    } else {
+                        emptyList()
+                    }
+                        .plus(eventData.subEvents.map {
+                            EventDetailActivitiesItem(
+                                eventData.event.id.toString(),
+                                eventData.getUserRegistrationState(),
+                                it.key,
+                                it.value,
+                                onSubEventClickListener
+                            )
+                        })
                 )
+                if (eventData.showMoreSubEvents) {
+                    setFooter(EventDetailShowActivitiesItem {
+                        mPresenter.onShowEventActivitiesClick()
+                    })
+                }
             }
         }
-        if (!subEvents.isNullOrEmpty()) {
-            subEventsBlock.update(
-                subEvents.map {
-                    EventDetailActivitiesItem(
-                        mEventId,
-                        isApproved,
-                        it.key,
-                        it.value,
-                        onSubEventClickListener
-                    )
+
+        eventPartnersSection.update(
+            eventData.partners.map {
+                EventPartnerItem(
+                    it.id ?: 0,
+                    it.name,
+                    it.description,
+                    it.logo?.uri ?: it.image?.uri
+                ) { id ->
+                    mPresenter.onPartnerClick(id)
                 }
-            )
-            showActivitiesBlock.update(listOf(
-                EventDetailShowActivitiesItem {
-                    mPresenter.onShowEventActivitiesClick()
-                }
-            ))
-        }
+            }
+        )
+        groupAdapter.notifyDataSetChanged()
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun setEventPartners(partners: List<PartnerModel>?) {
-        if (!partners.isNullOrEmpty()) {
-            partnersBlock.update(
-                partners.map {
-                    EventPartnerItem(
-                        it.id ?: 0,
-                        it.name,
-                        it.description,
-                        it.logo?.uri ?: it.image?.uri
-                    ) { id ->
-                        mPresenter.onPartnerClick(id)
-                    }
-                }
-            )
-        }
-    }
 
     override fun updateSubEvent(subEvent: EventActivityModel) {
         val idLong = subEvent.id?.toLong()
-        subEventsBlock.findItemBy<EventActivityItem> { it.id == idLong }
+        eventProgramSection.findItemBy<EventActivityItem> { it.id == idLong }
             ?.notifyChanged(subEvent)
+    }
+
+    override fun updateTags(tag: Tag) {
+        eventProgramSection.findItemBy<TagsItem> { true }?.updateTag(tag)
     }
 
     override fun changeEventSubscription(isSubscribed: Boolean) {
@@ -288,12 +261,12 @@ class AboutEventFragmentNew() : BaseFragment(),
     }
 
     override fun changeOrganizationSubscription(isSubscribed: Boolean) {
-        val item = organizationAndInformationBlock.findItemBy<EventDetailOrganizationItem> { true }
+        val item = eventOrganizationSection.findItemBy<EventDetailOrganizationItem> { true }
         item?.notifyChanged(isSubscribed)
     }
 
     override fun setActionButton(event: EventNew?) {
-        val item = mainBlock.findItemBy<EventDetailActionItem> { true }
+        val item = eventMainSection.findItemBy<EventDetailActionItem> { true }
         item?.notifyChanged(event)
     }
 
@@ -310,19 +283,16 @@ class AboutEventFragmentNew() : BaseFragment(),
         )
     }
 
-    override fun showSpeakerProfile(speakerId: Int) {
+    override fun showSpeakerProfile(speakerId: Int, eventId: String) {
         findNavController().navigate(
             R.id.user_speaker_fragment,
-            UserSpeakerFragmentArgs.Builder(speakerId.toString(), mEventId).build()
-                .toBundle()
+            UserSpeakerFragmentArgs.Builder(speakerId.toString(), eventId).build().toBundle()
         )
     }
 
     override fun showMap(mapInfo: MapInfo?) {
         findNavController().navigate(
-            AboutEventFragmentNewDirections.actionAboutEventFragmentNewToMapFragmentNew(
-                mapInfo
-            )
+            AboutEventFragmentNewDirections.actionAboutEventFragmentNewToMapFragmentNew(mapInfo)
         )
     }
 
@@ -371,11 +341,7 @@ class AboutEventFragmentNew() : BaseFragment(),
         )
     }
 
-    override fun showErrorMessageWithResult(
-        withResult: Boolean,
-        eventId: String,
-        message: String
-    ) {
+    override fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String) {
         MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
             if (withResult) {
                 setFragmentResult("eventKey", bundleOf("eventId" to eventId))
@@ -435,42 +401,44 @@ class AboutEventFragmentNew() : BaseFragment(),
 
 
     private fun decorEventFavoriteButton(isSubscribed: Boolean) {
-        mBinding.apply {
-            ivAddToFavorite.apply {
-                setActionAlternative(!isSubscribed)
-                setOnClickListener {
-                    mPresenter.onAddEventToFavoriteClick()
-                }
+        mBinding.ivAddToFavorite.apply {
+            setActionAlternative(!isSubscribed)
+            setOnClickListener {
+                mPresenter.onAddEventToFavoriteClick()
             }
         }
-
     }
 
     override fun showEventAddedToFavoriteMessage() {
         EventAddedToFavoriteDialog(requireContext())
     }
 
-    private fun addToCalendar(eventData: EventNew) {
-        try {
-            val startCal = defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
-            val endCal = defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
+    override fun addEventToCalendar(eventData: EventNew?) {
+        if (eventData != null) {
+            try {
+                val startCal =
+                    defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
+                val endCal =
+                    defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
 
-            val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
-                data = CalendarContract.Events.CONTENT_URI
-                putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
-                putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
-                putExtra(CalendarContract.Events.TITLE, eventData.name)
-                putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
-                putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
-                putExtra(
-                    CalendarContract.Events.AVAILABILITY,
-                    CalendarContract.Events.AVAILABILITY_BUSY
-                )
+                val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
+                    data = CalendarContract.Events.CONTENT_URI
+                    putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
+                    putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
+                    putExtra(CalendarContract.Events.TITLE, eventData.name)
+                    putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
+                    putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
+                    putExtra(
+                        CalendarContract.Events.AVAILABILITY,
+                        CalendarContract.Events.AVAILABILITY_BUSY
+                    )
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            startActivity(intent)
-        }catch (e : Exception){
-            e.printStackTrace()
         }
+
     }
 
     override fun updateAppBarBackgroundColorValue(value: Int) {
@@ -479,37 +447,19 @@ class AboutEventFragmentNew() : BaseFragment(),
         mBinding.apply {
             if (value <= 0) {
                 tbBackground.alpha = 0f
-            }else {
+            } else {
                 tbBackground.apply {
-                    alpha = if (actionItem != null){
-                        if (actionItem!!.viewHeight() > 1400){
-                            abs(value / (actionItem!!.viewHeight()).toFloat())
-                        }else {
-                            abs(value / (1400).toFloat())
-                        }
-                    }else {
-                        abs(value / (1400).toFloat())
-                    }
+                    alpha = abs(value / (1450).toFloat())
                 }
-            }
-            if (value >= 1450){
-                appBar.changeAppBarElevation(abs(value / 100f))
-            }else {
-                appBar.changeAppBarElevation(0f)
-            }
+                if (value >= 1450) appBar.changeAppBarElevation(abs(value / 100f))
+                else appBar.changeAppBarElevation(0f)
 
-            if (value >= 740){
-                setBlackIcons()
-            }else {
-                setWhiteIcons()
+                if (value >= 740) setBlackIcons()
+                else setWhiteIcons()
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
     companion object {
         const val ABOUT_FROM_EVENT = 1

@@ -30,17 +30,13 @@ import kotlin.math.acos
 class EventDetailActionItem(
     val eventData: EventNew?,
     val clickListener: OnActionClickListener,
-) : BindableItem<ItemEventDetailActionBlockBinding>() {
+) : BindableItem<ItemEventDetailActionBlockBinding>(-1001L) {
 
     val status: Event.Status? = eventData?.status?.value
     val userRegistration: Event.Status? = eventData?.binds?.currentUserRegistration?.status?.value
     val backgroundColor: String? = eventData?.binds?.organization?.backgroundColor?.value
     val logo: String? = eventData?.image?.uri
 
-    //    val eventFormat = EventFormat(
-//        name = if (eventData?.format?.name.isNullOrEmpty()) eventData?.format?.custom
-//            ?: "" else eventData?.format?.name ?: ""
-//    )
     val eventFormat = EventFormat(
         name = if (!eventData?.binds?.format?.name.isNullOrEmpty()) {
             eventData?.binds?.format?.name ?: ""

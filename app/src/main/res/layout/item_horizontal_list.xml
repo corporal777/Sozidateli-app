@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    tools:itemCount="7"
     android:orientation="horizontal"
+    android:overScrollMode="never"
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:itemCount="7"
     tools:listitem="@layout/item_day" />

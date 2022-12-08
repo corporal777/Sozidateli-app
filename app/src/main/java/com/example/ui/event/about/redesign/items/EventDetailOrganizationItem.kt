@@ -3,7 +3,6 @@ package com.example.ui.event.about.redesign.items
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventNew
 import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
@@ -15,7 +14,7 @@ class EventDetailOrganizationItem(
     private val organization: OrganizationNew?,
     private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
     private val onOrganizationClick: (id: String) -> Unit
-) : BindableItem<ItemEventDetailOrganizationBlockBinding>() {
+) : BindableItem<ItemEventDetailOrganizationBlockBinding>(organization?.id ?: 0) {
 
 
     private val organizationName = organization?.legalInformation?.name?.short
@@ -46,7 +45,7 @@ class EventDetailOrganizationItem(
                         )
                     )
                 }
-            }else {
+            } else {
                 ivOrganizationLogo.setImage(organizationLogo)
             }
 

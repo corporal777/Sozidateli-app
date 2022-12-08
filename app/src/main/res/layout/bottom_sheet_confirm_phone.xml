@@ -66,14 +66,13 @@
                 android:id="@+id/tv_phone_description"
                 fontPath="fonts/sf_pro_display.OTF"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:breakStrategy="high_quality"
                 android:layout_marginHorizontal="@dimen/margin_fifteen"
                 android:layout_marginTop="30dp"
+                android:breakStrategy="high_quality"
                 android:letterSpacing="-0.01"
-                android:text="@string/code_dialog_text_title"
+                tools:text="@string/code_email_dialog_text"
                 android:textColor="@color/chat_list_date"
                 android:textSize="15sp" />
 
@@ -82,10 +81,10 @@
                 fontPath="fonts/sf_pro_display.OTF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:breakStrategy="high_quality"
                 android:layout_below="@id/tv_phone_description"
                 android:layout_marginHorizontal="@dimen/margin_fifteen"
                 android:layout_marginTop="20dp"
+                android:breakStrategy="high_quality"
                 android:letterSpacing="-0.01"
                 android:textColor="@color/chat_list_date"
                 android:textSize="15sp"

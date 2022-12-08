@@ -25,7 +25,7 @@ class EventDetailInfoBlock(
         EventDetailOrganizationItem(organization, actionClickListener, onOrganizationClick)
 
     private val mInformationItem = Section().apply {
-        setHeader(EventDetailBlocksLabelItem(infoTitle))
+        setHeader(EventDetailBlocksLabelItem(infoTitle, id = -1005L))
         setHideWhenEmpty(true)
     }
 

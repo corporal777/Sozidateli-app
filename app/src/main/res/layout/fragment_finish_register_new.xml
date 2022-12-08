@@ -181,7 +181,7 @@
                     android:textColor="@color/chat_list_date"
                     android:textSize="14sp"
                     tools:ignore="MissingPrefix"
-                    tools:text="@string/code_phone_dialog_text" />
+                    tools:text="@string/code_dialog_text_information" />
 
             </LinearLayout>
 

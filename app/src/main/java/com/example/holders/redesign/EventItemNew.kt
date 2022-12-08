@@ -5,26 +5,22 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.Event
+import com.example.data.models.EventNew
+import com.example.data.models.EventRegistrationStateModel
+import com.example.data.models.EventStateModel
 import com.example.databinding.ItemEventNewBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
-import com.example.holders.EventStatusItem
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.util.setImage
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.Item
 import parseColor
-import setOnClickListener
 
 class EventItemNew(
     eventData: EventNew?,
@@ -139,49 +135,44 @@ class EventItemNew(
             Event.Status.REGISTRATION_FINISHED,
             Event.Status.RUNNING,
             Event.Status.FINISHED,
-            Event.Status.APPROVED-> {
+            Event.Status.APPROVED -> {
                 if (eventRegistrationState != null) {
                     val actions = eventRegistrationState.availableActions ?: arrayListOf("")
                     val profileLevel = eventRegistrationState.prohibitions?.profileLevelToLow?.value
                     if (eventRegistrationState.prohibitions?.registrationClosed == false) {
-                        when (actions.firstOrNull()) {
-                            "register" -> {
-                                btnAction.apply {
-                                    isVisible = true
-                                    text = context.getString(R.string.event_action_participate)
-                                    setOnClickListener {
-                                        profileLevel.checkStateLevel {
-                                            if (userAgreement.isNullOrEmpty()) {
-                                                onEventClickListener.onActionRegister(eventId)
-                                            } else {
-                                                showAgreementRegisterDialog(
-                                                    btnAction.context,
-                                                    userAgreement
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            "withdraw" -> {
-                                btnAction.apply {
-                                    isVisible = true
-                                    text = context.getString(R.string.event_action_cancel_request)
-                                    setOnClickListener {
-                                        profileLevel.checkStateLevel {
-                                            onEventClickListener.onActionCancel(
-                                                eventId,
-                                                registrationId
+                        if (actions.firstOrNull() == "register") {
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_participate)
+                                setOnClickListener {
+                                    profileLevel.checkStateLevel {
+                                        if (userAgreement.isNullOrEmpty()) {
+                                            onEventClickListener.onActionRegister(eventId)
+                                        } else {
+                                            showAgreementRegisterDialog(
+                                                btnAction.context,
+                                                userAgreement
                                             )
                                         }
                                     }
                                 }
-
                             }
-                            else -> btnAction.isVisible = false
-                        }
+                        } else if (actions.firstOrNull() == "withdraw") {
+                            btnAction.apply {
+                                isVisible = true
+                                text = context.getString(R.string.event_action_cancel_request)
+                                setOnClickListener {
+                                    profileLevel.checkStateLevel {
+                                        onEventClickListener.onActionCancel(
+                                            eventId,
+                                            registrationId
+                                        )
+                                    }
+                                }
+                            }
+                        } else btnAction.isVisible = false
                     } else btnAction.isVisible = false
-                }
+                } else btnAction.isVisible = false
             }
             else -> btnAction.isVisible = false
         }

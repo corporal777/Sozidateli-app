@@ -3,15 +3,14 @@ package com.example.util
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.*
-import android.database.ContentObserver
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Patterns
@@ -33,11 +32,7 @@ import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.UserDetail
 import com.example.extensions.calendar
-import com.example.ui.views.CustomNewLineInlineProcessor
-import com.facebook.FacebookSdk
-import com.facebook.FacebookSdk.getCacheDir
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -45,13 +40,9 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
-import io.noties.markwon.inlineparser.NewLineInlineProcessor
 import io.noties.markwon.linkify.LinkifyPlugin
 import onTextChanged
-import org.commonmark.node.HardLineBreak
 import java.io.*
-import java.net.URI
-import java.net.URL
 import java.util.*
 
 
@@ -371,7 +362,11 @@ fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.Y
 fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)
 fun getCurrentDay(): Int = System.currentTimeMillis().calendar().get(Calendar.DAY_OF_MONTH)
 
-fun LinearLayoutManager.smoothScrollToFirstItem(context: Context, appBar : AppBarLayout?, jumpToPosition : Int){
+fun LinearLayoutManager.smoothScrollToFirstItem(
+    context: Context,
+    appBar: AppBarLayout?,
+    jumpToPosition: Int
+) {
     val mSmoothScroller by lazy {
         object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
@@ -404,12 +399,12 @@ fun LinearLayoutManager.smoothScrollToFirstItem(context: Context, appBar : AppBa
     this.startSmoothScroll(mSmoothScroller)
 }
 
-fun showCustomTabsBrowser(context: Context, url : String){
+fun showCustomTabsBrowser(context: Context, url: String) {
     try {
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(context, Uri.parse(url))
-    }catch (e : Exception){
+    } catch (e: Exception) {
         Toast.makeText(context, R.string.link_open_error, Toast.LENGTH_LONG).show()
     }
 
@@ -449,7 +444,7 @@ fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
     }
 }
 
- fun saveImageToCache(context: Context, image: Bitmap): Uri? {
+fun saveImageToCache(context: Context, image: Bitmap): Uri? {
     val imagesFolder = File(context.cacheDir, "images")
     var uri: Uri? = null
     try {
@@ -466,18 +461,13 @@ fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
     return uri
 }
 
-fun copyTextToBuffer(context: Context, link : String) {
+fun copyTextToBuffer(context: Context, link: String) {
     val clipboardManager =
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip: ClipData = ClipData.newPlainText("sozidateli_app_text", link)
     clipboardManager.setPrimaryClip(clip)
 }
 
-fun getBitmapFromUrl(url : String): Bitmap {
-    return BitmapFactory.decodeStream(
-        URL(url).openConnection().getInputStream()
-    )
-}
 
 fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): File {
     //create a file to write bitmap data
@@ -504,6 +494,22 @@ fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): Fil
         e.printStackTrace()
     }
     return file
+}
+
+fun getEmailFilter(): Array<InputFilter> {
+    return arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_' || it == '+'
+        }
+    })
+}
+
+fun getNameFilter(): Array<InputFilter> {
+    return arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isLetter() || it == '-' || it == ' '
+        }
+    })
 }
 
 

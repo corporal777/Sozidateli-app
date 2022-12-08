@@ -1,27 +1,28 @@
 package com.example.ui.event.about.redesign
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.*
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.event.about.redesign.items.AboutEventData
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import java.util.*
+import withDelay
+import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @InjectViewState
 class AboutEventPresenterNew
@@ -34,19 +35,12 @@ class AboutEventPresenterNew
 
     lateinit var eventId: String
     private var event: EventInfo? = null
-    private var firstLaunch = true
-    private var mTags = arrayListOf<Tag>()
-    private lateinit var mUserEvent: UserEvent
     private var mDy = 0
+    private lateinit var aboutEventData: AboutEventData
 
-    override fun changeAppBarBackgroundColorValue(canScrollVertically: Boolean, value: Int) {
-        if (!canScrollVertically) {
-            mDy = 0
-            viewState.updateAppBarBackgroundColorValue(mDy)
-        } else {
-            mDy += value
-            viewState.updateAppBarBackgroundColorValue(mDy)
-        }
+    override fun changeAppBarBackgroundColorValue(value: Int) {
+        mDy = value
+        viewState.updateAppBarBackgroundColorValue(mDy)
     }
 
     override fun attachView(view: AboutEventContractNew.View?) {
@@ -56,88 +50,78 @@ class AboutEventPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.updateAppBarBackgroundColorValue(mDy)
+        viewState.apply {
+            updateAppBarBackgroundColorValue(mDy)
+            setAboutEventContentList()
+        }
         val userEventInfo = userEventData.userEvent?.eventInfo
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
             else eventRepository.getEventDetails(eventId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
 
         compositeDisposable += eventInfoMaybe
+            .flatMap {
+                this.event = it
+                prepareAboutEventData(it.event)
+            }
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
                     catchEventError(it)
-                },
-                onSuccess = { eventInfo ->
-                    setEventInfoData(eventInfo)
+                }, onSuccess = { eventInfo ->
+                    viewState.setEventData(eventInfo)
                 })
     }
 
-
-    private fun setEventInfoData(eventInfo: EventInfo?) {
-        this.event = eventInfo
-        viewState.apply {
-            setEventData(eventInfo?.event)
-            setOrganizationAndInformation(
-                eventInfo?.event?.binds?.organization,
-                eventInfo?.event?.binds?.page,
-                eventInfo?.event?.address?.fullValue,
-            )
-        }
-        var pair = Pair<Boolean, Map<String, List<EventActivityModel>>>(false, emptyMap())
-        compositeDisposable += Maybe.fromCallable {
-            mTags.clear()
-            eventInfo?.event?.binds?.tag?.forEach {
-                mTags.add(Tag.EventTag(it.id.toString(), it.name ?: ""))
+    private fun prepareAboutEventData(event: EventNew?): Maybe<AboutEventData> {
+        return if (event != null) {
+            val tags = event.binds?.tag?.map {
+                Tag.EventTag(it.id.toString(), it.name ?: "")
+            } ?: emptyList()
+            aboutEventData = AboutEventData(event, tags = tags).apply {
+                setSortedSpeakers()
+                setSubEvents()
+                setPartners()
             }
-            pair = getSubEvents(eventInfo?.event)
-            getSortedSpeakers(eventInfo)
-        }.performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.apply {
-                    setEventSpeakers(it.first, it.second)
-                    setEventActivitiesAndTags(pair.first, pair.second, mTags)
-                    setEventPartners(eventInfo?.event?.binds?.partner)
-
-                }
-            }
+            Maybe.just(aboutEventData)
+        } else Maybe.just(null)
     }
 
-    private fun getSubEvents(eventNew: EventNew?): Pair<Boolean, Map<String, List<EventActivityModel>>> {
-        val isApproved =
-            event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-        var filteredSubEvents = mapOf<String, List<EventActivityModel>>()
-        eventNew.let {
-            if (!it?.binds?.activity.isNullOrEmpty()) {
-                val list = arrayListOf<EventActivityModel>()
-                if (it?.binds?.activity?.size!! > 4) {
-                    for (i in 0 until 4) {
-                        list.add(it.binds?.activity!!.get(i))
-                    }
-                } else {
-                    list.addAll(it.binds?.activity ?: emptyList())
-                }
-                filteredSubEvents = list.groupBy { event ->
-                    event.holdingDate?.from?.split(" ")?.get(0) ?: ""
-                }
+    override fun onRefreshRequest() {
+        compositeDisposable += eventRepository.getEventDetails(eventId)
+            .flatMap {
+                this.event = it
+                prepareAboutEventData(it.event)
             }
-        }
-        return Pair(isApproved, filteredSubEvents.toSortedMap())
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                }, onSuccess = {
+                    viewState.setEventData(it)
+                })
+
     }
+
 
     override fun onTagSelected() {
-        val selectedTags = mTags.filter { x -> x.isSelected }.map {
+        val selectedTags = aboutEventData.tags.filter { x -> x.isSelected }.map {
             NewTags(it.id, it.name, it.isSelected)
         }
         viewState.showEventActivities(eventId, selectedTags)
-        mTags.map {
-            if (it.isSelected) {
-                it.isSelected = false
+        compositeDisposable += Maybe.fromCallable {
+            aboutEventData.tags.find { it.isSelected }?.apply {
+                this.isSelected = false
             }
         }
+            .withDelay(100)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (it != null)
+                    viewState.updateTags(it)
+            }
     }
 
     override fun onShowEventActivitiesClick() {
@@ -156,14 +140,11 @@ class AboutEventPresenterNew
         } else {
             compositeDisposable += eventRepository.addToFavorites(
                 AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(
-                        AddToFavoriteEntityModel.FAVORITE_EVENT,
-                        eventId.toInt()
+                    appData.getId(), AddToFavoriteEntityModel(
+                        AddToFavoriteEntityModel.FAVORITE_EVENT, eventId.toInt()
                     )
                 )
-            )
-                .performOnBackgroundOutOnMain()
+            ).performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
@@ -177,8 +158,7 @@ class AboutEventPresenterNew
 
     override fun onCreateEventSubscriptionClick() {
         compositeDisposable += eventRepository.createEventSubscription(eventId.toInt())
-            .andThen(eventRepository.getEventDetails(eventId))
-            .performOnBackgroundOutOnMain()
+            .andThen(eventRepository.getEventDetails(eventId)).performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
@@ -190,33 +170,20 @@ class AboutEventPresenterNew
     override fun onDeleteEventSubscriptionClick() {
         val mSubscriptionId = event?.event?.binds?.eventSubscribe?.id ?: 0
         compositeDisposable += eventRepository.deleteEventSubscription(eventId.toInt())
-            .andThen(eventRepository.getEventDetails(eventId))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
+            .andThen(eventRepository.getEventDetails(eventId)).performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState).subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
             }
     }
 
-    override fun onRefreshRequest() {
-        compositeDisposable += eventRepository.getEventDetails(eventId)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                }, onSuccess = {
-                    setEventInfoData(it)
-                })
-
-    }
 
     override fun onPageClick(page: Int) {
-        checkInternetAndRun { viewState.showPage(eventId, page.toString()) }
+        viewState.showPage(eventId, page.toString())
     }
 
     override fun onPartnerClick(partner: Int) {
-        checkInternetAndRun { viewState.showPartner(eventId, partner.toString()) }
+        viewState.showPartner(eventId, partner.toString())
     }
 
     override fun onGoToEventClick() {
@@ -226,23 +193,18 @@ class AboutEventPresenterNew
     }
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
-        processChangeEventInCalendarStatusRequest(
-            subEvent,
+        processChangeEventInCalendarStatusRequest(subEvent,
             eventRepository.addEventToCalendarWithResult(
                 EventCalendarBody(
-                    appData.getId(),
-                    EventCalendarBodyEntity(
-                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id
-                            ?: 0
+                    appData.getId(), EventCalendarBodyEntity(
+                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id ?: 0
                     )
                 )
-            )
-                .flatMapCompletable { subEv ->
-                    Completable.fromAction {
-                        subEvent.binds?.userCalendar = subEv
-                    }
+            ).flatMapCompletable { subEv ->
+                Completable.fromAction {
+                    subEvent.binds?.userCalendar = subEv
                 }
-        )
+            })
     }
 
     override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
@@ -254,29 +216,24 @@ class AboutEventPresenterNew
     }
 
     override fun onSubEventClick(subEvent: EventActivityModel) {
-        checkInternetAndRun {
-            viewState.showSubEvent(eventId, subEvent.id.toString())
-        }
+        viewState.showSubEvent(eventId, subEvent.id.toString())
     }
 
-    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId)
+    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
     override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
     override fun onMapPageSelected() {
         viewState.apply {
             val eventInfo = event
             if (eventInfo?.event?.address?.lat != null && eventInfo.event.address.lon != null) {
-                showMap(
-                    eventInfo.event.createMapInfo(),
-                )
+                showMap(eventInfo.event.createMapInfo())
             }
         }
     }
 
 
     private fun processChangeEventInCalendarStatusRequest(
-        subEvent: EventActivityModel,
-        request: Completable
+        subEvent: EventActivityModel, request: Completable
     ) {
         compositeDisposable += request
             .withCheckInternetConnectivity()
@@ -294,44 +251,37 @@ class AboutEventPresenterNew
             compositeDisposable += eventRepository.deleteFromFavorite(id)
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple(
-                    onComplete = {
-                        event?.event?.binds?.organization?.binds?.userFavorite = null
-                        viewState.changeOrganizationSubscription(false)
-                    }, onError = {
-                        it.printStackTrace()
-                    })
+                .subscribeSimple(onComplete = {
+                    event?.event?.binds?.organization?.binds?.userFavorite = null
+                    viewState.changeOrganizationSubscription(false)
+                }, onError = {
+                    it.printStackTrace()
+                })
         } else {
             compositeDisposable += eventRepository.addToFavorites(
                 AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(
+                    appData.getId(), AddToFavoriteEntityModel(
                         AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
                         event?.event?.binds?.organization?.id?.toInt()
                     )
                 )
-            )
-                .performOnBackgroundOutOnMain()
+            ).performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple(
-                    onSuccess = {
-                        event?.event?.binds?.organization?.binds?.userFavorite =
-                            EventUserFavorite(it.id, it.user)
-                        viewState.changeOrganizationSubscription(true)
-                    }, onError = {
-                        it.printStackTrace()
-                    })
+                .subscribeSimple(onSuccess = {
+                    event?.event?.binds?.organization?.binds?.userFavorite =
+                        EventUserFavorite(it.id, it.user)
+                    viewState.changeOrganizationSubscription(true)
+                }, onError = {
+                    it.printStackTrace()
+                })
         }
     }
 
     override fun onActionCancel() {
         compositeDisposable += eventRepository.cancelRegisterToEvent(
             event?.event?.binds?.currentUserRegistration?.id ?: 0
-        )
-            .andThen(eventRepository.getEventDetails(eventId))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
+        ).andThen(eventRepository.getEventDetails(eventId)).performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState).subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
             }
@@ -341,27 +291,7 @@ class AboutEventPresenterNew
         viewState.showOrganization(organization)
 
     override fun onShareClick() = viewState.showShare(eventId)
-
-    private fun getSortedSpeakers(eventInfo: EventInfo?): Pair<Boolean, List<MemberModel>> {
-        var canShowMore = false
-        var list = eventInfo?.event?.binds?.member?.filter { it.role == "speaker" }
-        if (!list.isNullOrEmpty()) {
-            if (list.size > 5) {
-                list = list.subList(0, 5)
-                canShowMore = true
-            } else {
-                canShowMore = false
-            }
-        } else {
-            canShowMore = false
-        }
-        val members = arrayListOf<MemberModel>()
-        members.addAll(list?.filter { x -> x.isLead == true }
-            ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-        members.addAll(list?.filter { x -> x.isLead == false }
-            ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-        return Pair(canShowMore, members)
-    }
+    override fun onAddEventToCalendarClick() = viewState.addEventToCalendar(this.event?.event)
 
 
     private fun catchEventError(t: Throwable) {
@@ -370,8 +300,7 @@ class AboutEventPresenterNew
                 403 -> {
                     try {
                         val error = Gson().fromJson(
-                            t.response()?.errorBody()?.string(),
-                            NewErrors::class.java
+                            t.response()?.errorBody()?.string(), NewErrors::class.java
                         )
                         when (error.errors[0].message) {
                             "you have no access for such operation" -> {
@@ -382,8 +311,7 @@ class AboutEventPresenterNew
                             "The event has been banned" -> {
                                 val eventName = error.errors[0].additionalData?.name
                                 val eventId = error.errors[0].additionalData?.id.toString()
-                                val message =
-                                    "Мероприятие «$eventName» заблокировано."
+                                val message = "Мероприятие «$eventName» заблокировано."
                                 viewState.showErrorMessageWithResult(true, eventId, message)
                             }
                             "The event has been cancelled" -> {
@@ -401,8 +329,9 @@ class AboutEventPresenterNew
 
                     }
                 }
+                else -> onReceiveError(t)
             }
-        }
+        } else onReceiveError(t)
     }
 
 }

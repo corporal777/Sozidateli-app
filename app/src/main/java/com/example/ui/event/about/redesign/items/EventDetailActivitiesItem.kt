@@ -9,7 +9,7 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class EventDetailActivitiesItem(
-    val eventId : String,
+    val eventId: String,
     val canShow: Boolean?,
     val date: String,
     val subEvents: List<EventActivityModel>,
@@ -21,11 +21,9 @@ class EventDetailActivitiesItem(
 
     init {
         add(mDateItem)
-        mContentItem.apply {
-            subEvents.map { data ->
-                add(EventActivityItem(eventId, data, emptyList(), clickListener, canShow ?: false))
-            }
-        }
+        mContentItem.update(subEvents.map { data ->
+            EventActivityItem(eventId, data, emptyList(), clickListener, canShow ?: false)
+        })
         add(mContentItem)
     }
 

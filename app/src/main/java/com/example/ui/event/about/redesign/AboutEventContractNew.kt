@@ -6,29 +6,19 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
+import com.example.ui.event.about.redesign.items.AboutEventData
 
 interface AboutEventContractNew {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventData(eventData: EventNew?)
+        fun setAboutEventContentList()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setOrganizationAndInformation(organization: OrganizationNew?, pages: List<PageModel>?, address : String?)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventSpeakers(isShowMore: Boolean, members: List<MemberModel>?)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventActivitiesAndTags(isApproved: Boolean, subEvents: Map<String, List<EventActivityModel>>,tags: List<Tag>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventPartners(partners: List<PartnerModel>?)
-
+        fun setEventData(eventData: AboutEventData)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(event: EventNew?)
-
 
         @StateStrategyType(SkipStrategy::class)
         fun showPage(eventId: String, pageId: String)
@@ -60,6 +50,9 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEvent(subEvent: EventActivityModel)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateTags(tag: Tag)
+
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
 
@@ -67,7 +60,7 @@ interface AboutEventContractNew {
         fun showEventActivities(eventId: String, listTags: List<NewTags>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSpeakerProfile(speakerId: Int)
+        fun showSpeakerProfile(speakerId: Int, eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showMap(mapInfo: MapInfo?)
@@ -75,14 +68,17 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun addEventToCalendar(eventData : EventNew?)
+
         @StateStrategyType(SkipStrategy::class)
         fun updateAppBarBackgroundColorValue(value : Int)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onGoToEventClick()
-        fun onPageClick(page: Int/*EventPage*/)
-        fun onPartnerClick(partner: Int/*EventParther*/)
+        fun onPageClick(page: Int)
+        fun onPartnerClick(partner: Int)
         fun onRefreshRequest()
 
         fun onOrganizationClick(organization: String)
@@ -102,6 +98,8 @@ interface AboutEventContractNew {
         fun onAddEventToFavoriteClick()
         fun onCreateEventSubscriptionClick()
         fun onDeleteEventSubscriptionClick()
-        fun changeAppBarBackgroundColorValue(canScrollVertically : Boolean, value : Int)
+        fun changeAppBarBackgroundColorValue(value : Int)
+
+        fun onAddEventToCalendarClick()
     }
 }

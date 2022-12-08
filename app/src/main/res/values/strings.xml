@@ -774,11 +774,11 @@
     <string name="add_email_dialog_title">Добавьте Ваш e-mail</string>
     <string name="add_email_dialog_text">Для получения важных уведомлений, пожалуйста, укажите Ваш актуальный электронный адрес.</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>
-    <string name="code_phone_dialog_text">На номер %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
-    <string name="code_email_dialog_text">На почту %s отправлен код из 6 цифр. Введите  его для подтверждения.</string>
+    <string name="code_phone_dialog_text">На номер %s отправлен код из\u00A06\u00A0цифр. Введите\u00A0его для\u00A0подтверждения.</string>
+    <string name="code_email_dialog_text">На почту %s отправлен код из\u00A06\u00A0цифр. Введите\u00A0его для\u00A0подтверждения.</string>
     <string name="code_dialog_text_label">Введите 6 цифр.</string>
     <string name="code_dialog_text_title">На номер отправлено письмо с кодом из 6 цифр. Введите его для подтверждения.</string>
-    <string name="code_dialog_text_information">Если Вы не нашли письмо с кодом в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
+    <string name="code_dialog_text_information">Если Вы не\u00A0нашли письмо с\u00A0кодом в\u00A0папке «Входящие», загляните в\u00A0«Спам». Но если и\u00A0в\u00A0этом случае письмо не\u00A0обнаружено, обратитесь в\u00A0службу поддержки %s</string>
     <string name="send_code_again">Отправить код повторно</string>
     <string name="new_phone_number">Введите новый номер телефона</string>
     <string name="change_status_title">Повышение статуса</string>

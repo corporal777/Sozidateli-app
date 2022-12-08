@@ -36,18 +36,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
 
     override fun layout() = R.layout.fragment_register_email_new
 
-    private val filter = arrayOf(InputFilter { source, _, _, _, _, _ ->
-        source.toString().filter {
-            it.isLetter() || it == '-' || it == ' '
-        }
-    })
-
-    private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
-        source.toString().filter {
-            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_' || it == '+'
-        }
-    })
-
     @InjectPresenter
     lateinit var presenter: RegisterEmailNewPresenter
 
@@ -64,7 +52,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
             ivClose.setOnClickListener { presenter.onClickClose() }
 
             etFirstName.apply {
-                filters = filter
+                filters = getNameFilter()
                 onTextChanged {
                     it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) }
                 }
@@ -75,7 +63,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 }
             }
             etLastName.apply {
-                filters = filter
+                filters = getNameFilter()
                 onTextChanged {
                     it?.toString()?.let { text -> presenter.onChangeLastNameText(text) }
                 }
@@ -86,7 +74,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 }
             }
             etMiddleName.apply {
-                filters = filter
+                filters = getNameFilter()
                 onTextChanged {
                     it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) }
                 }
@@ -97,7 +85,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 }
             }
             etEmail.apply {
-                filters = emailFilter
+                filters = getEmailFilter()
                 onTextChanged {
                     it?.toString()
                         ?.let { text -> presenter.onChangeEmailText(text, requireContext()) }

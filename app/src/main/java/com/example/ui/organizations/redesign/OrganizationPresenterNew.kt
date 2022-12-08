@@ -1,6 +1,5 @@
 package com.example.ui.organizations.redesign
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -14,19 +13,16 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.organizations.redesign.data.OrgLocalDataNew
+import com.example.ui.organizations.redesign.data.AboutOrganizationData
 import com.example.ui.views.UserSubscribeButton
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
-import io.reactivex.functions.Function3
-import withCustomProgressBarLoadingDialog
-import withDelay
 
 
 @InjectViewState
@@ -64,7 +60,7 @@ class OrganizationPresenterNew
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
+                    onReceiveError(it)
                 },
                 onSuccess = {
                     viewState.apply {
@@ -161,14 +157,14 @@ class OrganizationPresenterNew
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
     override fun onRefreshRequest() = loadData(false)
 
-    private fun organizationDataRequest(): Maybe<OrgLocalDataNew> {
+    private fun organizationDataRequest(): Maybe<AboutOrganizationData> {
         val organization = organizationRepository.getOrganizationDetails(organizationId).toMaybe()
         val events = eventRepository.getOrganizationEventsListWithoutPagination(
             mapOf(
                 EventNew.EVENT_ACTIVE to true,
                 EventNew.EVENT_LIMIT to 3,
                 EventNew.EVENT_OFFSET to 0,
-                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,userFavorite",
+                EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,userFavorite,current-user-registration,eventRegistrationState,current-user-registration-state",
                 EventNew.EVENT_ORGANIZATION to organizationId,
                 EventNew.EVENT_SORT_FIELD to "id"
             )
@@ -192,7 +188,7 @@ class OrganizationPresenterNew
                     UserBinds(userFavorite = member.binds?.userFavorite)
                 membersList.add(member)
             }
-            OrgLocalDataNew(org, e.data, membersList.subList(0, 3), membersList.size)
+            AboutOrganizationData(org, e.data, membersList.subList(0, 3), membersList.size)
         }
     }
 

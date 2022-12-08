@@ -13,7 +13,7 @@ class EventPartnerItem(
     val title: String?,
     val image: String?,
     val onPartnerClick: (id : Int) -> Unit
-) : BindableItem<ItemPartnerBinding>() {
+) : BindableItem<ItemPartnerBinding>(id.toLong()) {
 
 
     override fun bind(viewBinding: ItemPartnerBinding, position: Int) {

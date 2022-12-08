@@ -559,8 +559,8 @@
     </style>
 
     <style name="UserItem.Name">
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display_medium.ttf</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">10dp</item>

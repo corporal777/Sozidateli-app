@@ -16,7 +16,7 @@ class EventSpeakerItem(
     val status: String,
     val isRegistered: Boolean,
     val onItemClick: (id: Int) -> Unit
-) : BindableItem<ItemSpeakerNewBinding>() {
+) : BindableItem<ItemSpeakerNewBinding>(id.toLong()) {
 
 
     override fun bind(viewBinding: ItemSpeakerNewBinding, position: Int) {
