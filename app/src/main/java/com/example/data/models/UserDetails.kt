@@ -73,6 +73,10 @@ data class UserDetail(
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
     }
 
+    fun getUserShortName(){
+
+    }
+
     fun getUserSubscribeAction(): UserSubscribeButton.Action? {
         return when {
             isCurrentUser -> null
@@ -231,6 +235,11 @@ data class FileModel(
     val uri: String? = null,
     @SerializedName("showInProfile")
     var showInProfile: Boolean? = false
+) : Parcelable
+
+@Parcelize
+data class UserFiles(
+  val data : List<FileModel>? = null
 ) : Parcelable
 
 @Parcelize
@@ -399,7 +408,11 @@ data class ImageModel(
     val name: String? = null,
     val id: Int? = null,
     val user: Int? = null
-) : Parcelable
+) : Parcelable {
+    fun toFileModel() : FileModel {
+        return FileModel(id = id, user = user, mimeType = mimeType, size = size, name = name, uri = uri)
+    }
+}
 
 @Parcelize
 data class ToggleIntModel(

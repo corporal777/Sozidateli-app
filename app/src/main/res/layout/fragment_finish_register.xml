@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -13,8 +12,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:paddingBottom="10dp"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:paddingBottom="10dp">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ivClose"
@@ -47,228 +46,221 @@
             <TextView
                 android:id="@+id/tvRegisterTitle"
                 fontPath="fonts/sf_pro_text_semibold.ttf"
-                android:letterSpacing="-0.02"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="30dp"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="2dp"
+                android:letterSpacing="-0.02"
                 android:text="@string/auth_register_finish"
                 android:textColor="@color/auth_title_text"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@+id/llInput"
+                app:layout_constraintBottom_toTopOf="@id/tilFirstName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivLogo"
                 tools:ignore="MissingPrefix" />
 
-            <LinearLayout
-                android:id="@+id/llInput"
-                android:layout_width="0dp"
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilFirstName"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="30dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/ibRegister"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@id/tilLastName"
                 app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle">
 
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilFirstName"
-                    style="@style/Profile.Edit.InputLayout"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFirstName"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/auth_input_first_name_hint"
+                    android:inputType="textCapWords" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilLastName"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@id/tilMiddleName"
+                app:layout_constraintTop_toBottomOf="@id/tilFirstName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLastName"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/auth_input_last_name_hint"
+                    android:inputType="textCapWords" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilMiddleName"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="3dp"
+                app:endIconMode="custom"
+                app:errorEnabled="false"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@id/tilEmail"
+                app:layout_constraintTop_toBottomOf="@id/tilLastName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMiddleName"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/auth_input_middle_name_hint"
+                    android:inputType="textCapWords" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/scNoMiddleName"
+                    style="@style/Profile.Edit.Switch"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/profile_edit_user_no_middle_name" />
+
+            </com.example.ui.views.CustomTextInputLayout>
+
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilEmail"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="10dp"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@id/ln_text"
+                app:layout_constraintTop_toBottomOf="@id/tilMiddleName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/auth_input_email_hint"
+                    android:inputType="textEmailAddress" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/tilCode"
+                app:layout_constraintTop_toBottomOf="@id/tilEmail">
+
+                <TextView
+                    android:id="@+id/tvText"
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
+                    android:letterSpacing="-0.01"
+                    android:textColor="@color/chat_list_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/code_phone_dialog_text" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFirstName"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/auth_input_first_name_hint"
-                        android:inputType="textCapWords" />
-                </com.example.ui.views.CustomTextInputLayout>
-
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilLastName"
-                    style="@style/Profile.Edit.InputLayout"
+                <TextView
+                    android:id="@+id/tvDescription"
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:letterSpacing="-0.01"
+                    android:textColor="@color/chat_list_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="@string/code_dialog_text_information" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLastName"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/auth_input_last_name_hint"
-                        android:inputType="textCapWords" />
-                </com.example.ui.views.CustomTextInputLayout>
-
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilMiddleName"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="custom"
-                    app:errorEnabled="false"
-                    app:errorIconDrawable="@null">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMiddleName"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:hint="@string/auth_input_middle_name_hint"
-                        android:inputType="textCapWords" />
-
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/scNoMiddleName"
-                        style="@style/Profile.Edit.Switch"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/profile_edit_user_no_middle_name" />
-
-                </com.example.ui.views.CustomTextInputLayout>
-
-
-
-                <com.example.ui.views.CustomTextInputLayout
-                    android:id="@+id/tilEmail"
-                    style="@style/Profile.Edit.InputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default"
-                    app:endIconMode="custom"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
-                        style="@style/Profile.Edit.Input.SingleLine"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:enabled="false"
-                        android:hint="@string/auth_input_email_hint"
-                        android:inputType="textEmailAddress" />
-                </com.example.ui.views.CustomTextInputLayout>
-
-                <LinearLayout
-                    android:id="@+id/layPhoneConfirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="@dimen/margin_horizontal_default"
-                    android:layout_marginEnd="@dimen/margin_horizontal_default">
-
-                    <TextView
-                        fontPath="fonts/sf_pro_text_regular.ttf"
-                        android:id="@+id/tvText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/darker_gray"
-                        tools:text="@string/code_phone_dialog_text"
-                        tools:ignore="MissingPrefix" />
-
-                    <com.example.ui.views.CustomTextInputLayout
-                        android:id="@+id/tilCode"
-                        style="@style/Profile.Edit.InputLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        app:endIconMode="custom"
-                        app:errorEnabled="true"
-                        app:errorIconDrawable="@null">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCode"
-                            style="@style/Profile.Edit.Input.SingleLine"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:maxLength="9"
-                            android:hint="@string/auth_error_no_code"
-                            android:inputType="numberDecimal" />
-                    </com.example.ui.views.CustomTextInputLayout>
-
-                    <TextView
-                        fontPath="fonts/sf_pro_text_regular.ttf"
-                        android:id="@+id/tvTimer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:lineSpacingExtra="2dp"
-                        android:textColor="@color/auth_title_text"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@+id/btnResend"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        tools:ignore="MissingPrefix"
-                        tools:text="@string/auth_register_confirm_email_timer_two" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnResend"
-                        ffontPath="fonts/sf_pro_text_medium.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginEnd="@dimen/margin_horizontal_default"
-                        android:background="?attr/selectableItemBackground"
-                        android:paddingEnd="16dp"
-                        android:text="@string/send_code_again"
-                        android:textAllCaps="false"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
-
-                </LinearLayout>
             </LinearLayout>
 
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilCode"
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="7dp"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
+                app:layout_constraintBottom_toTopOf="@id/tvTimer"
+                app:layout_constraintTop_toBottomOf="@id/ln_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCode"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/auth_error_no_code"
+                    android:inputType="numberDecimal"
+                    android:maxLength="9" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <TextView
+                android:id="@+id/tvTimer"
+                fontPath="fonts/sf_pro_display_regular.OTF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:gravity="start"
+                android:textColor="@color/auth_title_text"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@id/btnResend"
+                app:layout_constraintTop_toBottomOf="@+id/tilCode"
+                tools:ignore="MissingPrefix"
+                tools:text="@string/auth_register_confirm_email_timer_two" />
+
             <androidx.appcompat.widget.AppCompatButton
-                style="@style/BtnBrownStyle"
+                android:id="@+id/btnResend"
+                fontPath="fonts/sf_pro_display_semibold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/send_code_again"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ibRegister"
-                android:layout_width="0dp"
+                style="@style/BtnBrownStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                android:text="@string/auth_action_register"
-                android:enabled="false"
+                android:layout_marginTop="30dp"
                 android:minHeight="@dimen/auth_button_min_height"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llInput"
+                android:text="@string/auth_action_register"
                 app:layout_constraintBottom_toTopOf="@+id/ibCancel"
-                app:layout_goneMarginBottom="24dp" />
+                app:layout_constraintTop_toBottomOf="@+id/btnResend" />
 
 
             <androidx.appcompat.widget.AppCompatButton
-                style="@style/BtnCancelStyle"
                 android:id="@+id/ibCancel"
-                android:layout_width="0dp"
+                style="@style/BtnCancelStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/auth_button_min_height"
-                android:layout_marginVertical="8dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginVertical="10dp"
+                android:minHeight="@dimen/auth_button_min_height"
                 android:text="@string/revoke"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ibRegister"
-                app:layout_goneMarginBottom="24dp"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toBottomOf="@+id/ibRegister" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
