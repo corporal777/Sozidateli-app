@@ -1,7 +1,9 @@
 package com.example.ui.profile.favoritesTab
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -10,16 +12,18 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationsFilter
 import com.example.databinding.FragmentFavoriteBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.list.OrganizationsFragmentArgs
 import com.example.ui.users.favorite.FavoriteUsersFragment
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), FavoriteContract.View, SimpleTitleToolbar {
+class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), FavoriteContract.View,
+    ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: FavoritePresenter
@@ -52,7 +56,6 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.profile_favorite))
         mBinding.apply {
             viewPager.run {
                 addOnPageChangeListener(pageChangeListener)
@@ -62,12 +65,13 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
                     override fun getCount() = fragments.size
                 }
                 selectTab(currentItem)
+                doOnPreDraw { startPostponedEnterTransition() }
             }
             btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
             btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
             btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
         }
-        startPostponedEnterTransition()
+
     }
 
     private fun selectTab(position: Int) {
@@ -79,4 +83,10 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
     }
 
     override fun layout() = R.layout.fragment_favorite
+    override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

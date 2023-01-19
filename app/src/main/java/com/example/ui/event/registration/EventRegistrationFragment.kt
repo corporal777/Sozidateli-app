@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE

@@ -112,7 +112,7 @@ class PasswordCustomView : FrameLayout {
 
     private fun setAgreeText() {
         val agreementText =
-            SpannableString(context.resources.getString(R.string.auth_agree_user_agreement)).apply {
+            SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
                 val linkStart = 11
                 val linkEnd = length
                 setSpan(ClickableSpan(drawUnderline = false) {

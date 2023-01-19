@@ -1,17 +1,9 @@
 package com.example.ui.event.registration.items
 
-import android.net.Uri
 import android.os.Parcelable
-import android.util.Log
 import com.example.data.models.*
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import okhttp3.internal.notify
-import java.lang.reflect.Type
-import kotlin.reflect.full.declaredMemberProperties
 
 @Parcelize
 data class ProfileFieldsData(

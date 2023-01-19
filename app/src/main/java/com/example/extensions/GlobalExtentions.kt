@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ContentResolver
@@ -17,6 +18,8 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
@@ -32,12 +35,14 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
 import com.example.util.*
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
@@ -114,6 +119,44 @@ fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.O
     return watcher
 }
 
+fun ViewPager2.onPageChanged(
+    onPageChanged: (
+        position: Int,
+        positionOffset: Float,
+        positionOffsetPixels: Int
+    ) -> Unit
+): ViewPager2.OnPageChangeCallback {
+    val listener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) = onPageChanged(position, positionOffset, positionOffsetPixels)
+    }
+    registerOnPageChangeCallback(listener)
+    return listener
+}
+
+fun onPageChanged(onPageChanged: (position : Int) -> Unit): ViewPager.SimpleOnPageChangeListener {
+    val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
+        override fun onPageSelected(position: Int) {
+            onPageChanged(position)
+        }
+    }
+    return pageChangeListener
+}
+
+fun AppBarLayout.offsetChangedListener(
+    offsetChanged: (appBarLayout : AppBarLayout, offset : Int) -> Unit
+): AppBarLayout.OnOffsetChangedListener {
+    val listener = object : AppBarLayout.OnOffsetChangedListener {
+        override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) =
+            offsetChanged(appBarLayout, verticalOffset)
+    }
+    addOnOffsetChangedListener(listener)
+    return listener
+}
+
 fun RecyclerView.onScrolled(
     onScrolled: (dx: Int, dy: Int) -> Unit,
 ): RecyclerView.OnScrollListener {
@@ -145,23 +188,7 @@ fun NestedScrollView.onScrolled(onScrolled: (scrollY: Int, oldScrollY: Int, scro
     return listener
 }
 
-fun ViewPager2.onPageChanged(
-    onPageChanged: (
-        position: Int,
-        positionOffset: Float,
-        positionOffsetPixels: Int
-    ) -> Unit
-): ViewPager2.OnPageChangeCallback {
-    val listener = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageScrolled(
-            position: Int,
-            positionOffset: Float,
-            positionOffsetPixels: Int
-        ) = onPageChanged(position, positionOffset, positionOffsetPixels)
-    }
-    registerOnPageChangeCallback(listener)
-    return listener
-}
+
 
 fun TextView.checkIsEllipsized(onChecked: (Boolean) -> Unit) {
     val check: (Layout) -> Unit = {
@@ -365,6 +392,7 @@ fun TextInputLayout.initAsDateTimePicker(
     }
 }
 
+@SuppressLint("ClickableViewAccessibility")
 private fun TextInputLayout.initAsDatePicker(
     startDate: Date?,
     minDate: Date?,
@@ -433,7 +461,7 @@ private fun TextInputLayout.initAsDatePicker(
         isFocusableInTouchMode = false
         setOnTouchListener { _, event ->
             if (event.action == ACTION_UP) showDatePicker()
-            true
+            false
         }
     }
 }

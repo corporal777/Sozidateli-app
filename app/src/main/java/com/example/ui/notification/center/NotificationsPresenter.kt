@@ -13,13 +13,13 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
@@ -27,10 +27,10 @@ import kotlin.math.abs
 @InjectViewState
 class NotificationsPresenter
 @Inject constructor(
-        private val userRepository: UserRepository,
-        private val eventRepository: EventRepository,
-        private val appData: AppData,
-        private val notificationManager: NotificationManager
+    private val userRepository: UserRepository,
+    private val eventRepository: EventRepository,
+    private val appData: AppData,
+    private val notificationManager: NotificationManager
 ) : BasePresenter<NotificationsContract.View>(appData), NotificationsContract.Presenter {
 
     private var firstLaunch = true
@@ -39,43 +39,59 @@ class NotificationsPresenter
     private var mDy = 0f
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        userRepository.getNotificationsList(mapOf(NotificationModel.NOTIFICATION_LIMIT to limit,
+        userRepository.getNotificationsList(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to limit,
                 NotificationModel.NOTIFICATION_OFFSET to offset,
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
                 NotificationModel.NOTIFICATION_LOAD_MODEL to true,
-                NotificationModel.NOTIFICATION_SORT to "desc"))
+                NotificationModel.NOTIFICATION_SORT to "desc"
+            )
+        )
     }
-            .applyErrorHandler {
-                viewState.showRequestErrorMessage()
-            }
-            .buildList(enablePlaceholders = true)
+        .applyErrorHandler { viewState.showRequestErrorMessage() }
+        .buildList(enablePlaceholders = true)
+    //.buildListNew(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
+        viewState.apply {
+            setAppBarElevation(mDy)
+            setNotificationsList()
+            setData(List(20) { null })
+        }
+
         compositeDisposable += appData.notificationsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple { if (!blockInvalidation) pagination.invalidate() }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (!blockInvalidation) {
+                    pagination.invalidate()
+                }
+            }
 
         compositeDisposable += appData.notificationReadSubject
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    val id = it.first
-                    val state = it.second
-                    notifications.find { notification -> notification?.id == id }?.apply {
-                        wasRead = true
-                        acceptState = state
-                        viewState.onNotificationNeedUpdate(id)
-                    }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val id = it.first
+                val state = it.second
+                notifications.find { notification -> notification?.id == id }?.apply {
+                    wasRead = true
+                    acceptState = state
+                    viewState.onNotificationNeedUpdate(id)
                 }
+            }
 
-        viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-                .subscribe({
-                    notifications = it
-                    viewState.apply { setData(it) }
-                }, {
+            //compositeDisposable += Flowable.create(pagination, BackpressureStrategy.BUFFER)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
                     it.printStackTrace()
+                },
+                onNext = {
+                    notifications = it
+                    if (!it.isNullOrEmpty()) viewState.setData(it)
+                    else viewState.showEmptyListPlaceholder()
                 })
     }
 
@@ -91,17 +107,10 @@ class NotificationsPresenter
         viewState.setAppBarElevation(mDy)
     }
 
-    override fun onNotificationUrlClick(url: String) {
-        viewState.showUrl(url)
-    }
+    override fun onNotificationUrlClick(url: String) = viewState.showUrl(url)
+    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
 
-    override fun onItemTake(position: Int) {
-        pagination.onItemTake(position)
-    }
-
-    override fun onRefreshRequest() {
-        pagination.invalidate()
-    }
 
     override fun onNotificationAcceptClick(notification: Notification) {
         //updateNotification(userRepository.notificationsInviteAccept(notification.id), notification.id)
@@ -113,7 +122,12 @@ class NotificationsPresenter
     }
 
     private fun approveOrgMember(id: Int) {
-        updateNotification(userRepository.approveOrgMember(id.toString(), ApproveBody(appData.getId())), id)
+        updateNotification(
+            userRepository.approveOrgMember(
+                id.toString(),
+                ApproveBody(appData.getId())
+            ), id
+        )
     }
 
     private fun approvePgrf(id: Int) {
@@ -135,7 +149,12 @@ class NotificationsPresenter
     }
 
     private fun declineOrgMember(id: Int) {
-        updateNotification(userRepository.declineOrgMember(id.toString(), DeclineBody(appData.getId())), id)
+        updateNotification(
+            userRepository.declineOrgMember(
+                id.toString(),
+                DeclineBody(appData.getId())
+            ), id
+        )
     }
 
     private fun declinePgrf(id: Int) {
@@ -147,7 +166,12 @@ class NotificationsPresenter
     }
 
     private fun cancelEvMember(id: Int) {
-        updateNotification(userRepository.cancelEvMember(id.toString(), CancelBody(appData.getId())), id)
+        updateNotification(
+            userRepository.cancelEvMember(
+                id.toString(),
+                CancelBody(appData.getId())
+            ), id
+        )
     }
 
     override fun onNotificationChangeDecisionClick(notification: Notification) {
@@ -173,16 +197,16 @@ class NotificationsPresenter
 
     private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += Completable.fromAction { blockInvalidation = true }
-                .andThen(request)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(onError = {
-                    blockInvalidation = false
-                    onReceiveError(it)
-                }, onComplete = {
-                    blockInvalidation = false
-                    pagination.invalidate()
-                    notificationManager.cancel(notificationId)
-                })
+            .andThen(request)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(onError = {
+                blockInvalidation = false
+                onReceiveError(it)
+            }, onComplete = {
+                blockInvalidation = false
+                pagination.invalidate()
+                notificationManager.cancel(notificationId)
+            })
     }
 }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
@@ -30,6 +31,22 @@
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="30dp"
+            android:minHeight="30dp"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -62,14 +79,14 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_short_name"
-                android:textSize="14sp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:letterSpacing="-0.01"
-                android:paddingHorizontal="10dp"
                 fontPath="fonts/sf_pro_text_semibold.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/custom_text_background_selectable"
+                android:letterSpacing="-0.01"
+                android:paddingHorizontal="10dp"
                 android:textColor="@color/main_brown_color_new"
+                android:textSize="14sp"
                 tools:text="sozidateli.ru/id000777" />
 
         </LinearLayout>
@@ -103,10 +120,10 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:visibility="gone"
             android:text="@string/short_name_invalid_error"
             android:textColor="@color/red_new"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilPassword" />
@@ -137,8 +154,6 @@
             android:minHeight="@dimen/auth_button_min_height"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bottom_guideLine" />
 
 

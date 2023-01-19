@@ -36,6 +36,10 @@ interface NewApi {
     @PATCH("v1/user/{id}")
     fun updateUserShortName(@Path("id") id: Int, @Body body: UserShortNameBody): Maybe<UserDetail>
 
+    //+
+    @POST("v1/user")
+    fun registerUser(@Body body: RegisterBody): Single<NewAuthResponse>
+
     @POST("v1/user")
     fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
 
@@ -57,12 +61,6 @@ interface NewApi {
 
     @POST("v1/user/{id}/email/confirm")
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
-
-    @POST("v1/user/{userId}/email/confirm")
-    fun confirmEmailCodeNew(
-        @Path("userId") id: Int,
-        @Body body: EmailCodeBody
-    ): Single<ConfirmEmail>
 
     @POST("v1/user/{id}/phone/confirm")
     fun confirmPhoneCode(@Path("id") id: Int, @Body body: PhoneCodeBody): Completable
@@ -119,6 +117,13 @@ interface NewApi {
         @Path("id") fileId: Int,
         @Part body: List<MultipartBody.Part?>
     ): Single<ImageModel>
+
+    //+
+    @PATCH("v1/user-recommendation-file/user/{id}")
+    fun changeRecommendedFiles(
+        @Path("id") userId: Int,
+        @Body body: RequestBody
+    ): Single<UserFiles>
 
     @DELETE("v1/user-recommendation-file/{id}")
     fun deleteRecommendedFile(@Path("id") fileId: Int): Completable
@@ -455,4 +460,7 @@ interface NewApi {
 
     @POST("v1/event-user-message")
     fun messageToEvent(@Body body: MessageToEventBody): Completable
+
+    @GET("v1/search")
+    fun searchDataNew(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
 }

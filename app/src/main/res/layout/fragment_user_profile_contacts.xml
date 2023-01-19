@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
-                    android:hint="@string/user_profile_no_social_networks"
+                    android:hint="@string/user_profile_files_hint"
                     tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
 
                 <TextView

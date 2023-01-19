@@ -1,6 +1,5 @@
-package com.example.ui.organizations.redesign.items
+package com.example.ui.organizations.detail.items
 
-import androidx.databinding.Bindable
 import com.example.R
 import com.example.databinding.ItemProfileButtonEditNewBinding
 import com.xwray.groupie.databinding.BindableItem

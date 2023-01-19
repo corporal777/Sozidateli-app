@@ -19,10 +19,8 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangePasswordFragment(
-    val fromRecover: Boolean = false,
-    val code: String = ""
-) : BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
+class ChangePasswordFragment(val isRecover : Boolean, val code: String = "")
+    : BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
     ChangePasswordContract.View {
 
     private var passwordIsCorrect: () -> Unit = {}
@@ -35,8 +33,8 @@ class ChangePasswordFragment(
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = CHANGE_PASSWORD_FRAGMENT_TAG)
     fun providePresenter(): ChangePasswordPresenter = presenterProvider.get().apply {
-        isRecover = fromRecover
         recoverCode = code
+        fromRecover = isRecover
     }
 
 
@@ -44,38 +42,12 @@ class ChangePasswordFragment(
         super.onViewCreated(view, savedInstanceState)
         focusOnInput(mBinding.etPassword, true)
         mBinding.apply {
-            var password = ""
-            etPassword.apply {
-                setText(password)
-                onTextChanged {
-                    it?.toString()?.let { text -> password = text }
-                }
-            }
             btnNext.setOnClickListener {
-                presenter.checkPasswordValid(password)
+                presenter.checkPasswordValid(etPassword.text.toString())
             }
             tvForgetPassword.setOnClickListener {
                 presenter.onRecoveryPasswordClick()
                 dismiss()
-            }
-        }
-    }
-
-    override fun setRecoverPassword(code: String) {
-        mBinding.apply {
-            currentPasswordContainer.isInvisible = true
-            newPasswordContainer.isInvisible = false
-            var newPassword = ""
-            passwordView.setPasswordValidCallback {
-                newPassword = it.password ?: ""
-                btnNext.isEnabled = it.isValid && !it.password.isNullOrEmpty()
-            }
-            btnNext.apply {
-                text = getString(R.string.save)
-                isEnabled = false
-                setOnClickListener {
-                    presenter.onRecoverPasswordClickConfirm(code, newPassword)
-                }
             }
         }
     }
@@ -93,7 +65,9 @@ class ChangePasswordFragment(
                 text = getString(R.string.save)
                 isEnabled = false
                 setOnClickListener {
+                    (requireActivity() as MainActivity).setIgnoreTokenListener(true)
                     presenter.onChangePasswordClickConfirm(newPassword)
+                    hideKeyboard(it)
                 }
             }
         }
@@ -103,11 +77,8 @@ class ChangePasswordFragment(
     override fun setPasswordIsNotCorrect(attempts: Int) {
         mBinding.apply {
             if (attempts > 0) {
-                val warning = if (attempts > 1) {
-                    "Неверный пароль, осталось $attempts попытки"
-                } else {
-                    "Неверный пароль, осталась $attempts попытка"
-                }
+                val warning = if (attempts > 1) "Неверный пароль, осталось $attempts попытки"
+                else "Неверный пароль, осталась $attempts попытка"
                 tvAttemptsLeft.text = warning
                 tvAttemptsLeft.isVisible = true
             } else tvAttemptsLeft.isVisible = false
@@ -115,12 +86,9 @@ class ChangePasswordFragment(
     }
 
     override fun showPasswordSuccessUpdated() {
+        (requireActivity() as MainActivity).setIgnoreTokenListener(false)
         dismiss()
-        Toast.makeText(
-            requireContext(),
-            getString(R.string.profile_password_change_complete),
-            Toast.LENGTH_SHORT
-        ).show()
+        showToast(getString(R.string.profile_password_change_complete))
     }
 
 
@@ -136,10 +104,10 @@ class ChangePasswordFragment(
         }
     }
 
-    override fun showRecoveryPassword(email: String) {
+    override fun showRecoveryPassword() {
         findNavController().navigate(
             R.id.recovery_password_fragment,
-            RecoveryPasswordFragmentArgs.Builder(email).build().toBundle()
+            RecoveryPasswordFragmentArgs.Builder("").build().toBundle()
         )
     }
 
@@ -157,6 +125,9 @@ class ChangePasswordFragment(
         const val CHANGE_PASSWORD_FRAGMENT_TAG = "change_password_tag"
     }
 
+    enum class ChangePasswordType {
+        RECOVER, CHANGE
+    }
     override fun layout(): Int = R.layout.bottom_sheet_change_password
 
 }

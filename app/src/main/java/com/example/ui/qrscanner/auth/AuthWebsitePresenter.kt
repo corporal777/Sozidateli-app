@@ -1,23 +1,18 @@
 package com.example.ui.qrscanner.auth
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.QrBody
-import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
-import withLoadingDialog
 import withProgressBarLoadingDialog
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -29,18 +24,12 @@ class AuthWebsitePresenter
     private val authRepository: AuthRepository
 ) : BasePresenter<AuthWebsiteContract.View>(appData), AuthWebsiteContract.Presenter {
 
-    var mToken = ""
-
-
-    override fun initToken(str: String) {
-        this.mToken = str
-    }
+    var token = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        compositeDisposable += authRepository.sendQrCode(QrBody(mToken, null))
-            .withDelay(500)
+        compositeDisposable += authRepository.sendQrCode(QrBody(token, null))
+            .withDelay(300)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -61,7 +50,7 @@ class AuthWebsitePresenter
 
 
     override fun onConfirmEnterToWebsiteClick() {
-        compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, true))
+        compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, true))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
@@ -76,13 +65,14 @@ class AuthWebsitePresenter
     }
 
     override fun onDoNotConfirmToEnterWebsiteClick() {
-        compositeDisposable += authRepository.authWebWithQrCode(QrBody(mToken, false))
+        compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, false))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    onReceiveError(it)
+                    it.printStackTrace()
+                    viewState.showEventList()
                 },
                 onSuccess = {
                     viewState.showEventList()

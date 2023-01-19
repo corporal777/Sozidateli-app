@@ -1,5 +1,6 @@
 package com.example.ui.userprofile.read.education
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -10,8 +11,9 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.ProfileDataEducationItem
 import com.example.holders.ProfileDataEducationLevelItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -21,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
-    UserProfileEducationContract.View, SimpleTitleToolbar {
+    UserProfileEducationContract.View, ToolbarFragmentNew {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -38,7 +40,6 @@ class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.user_profile_education))
         mBinding.apply {
             rvInterests.adapter = adapter
             rvInterests.onScrolled { dx, dy ->
@@ -72,4 +73,11 @@ class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterest
         //findNavController().navigate(UserProfileEducationFragmentDirections.toEdit(UserEditDataType.EDUCATION))
         findNavController().navigate(R.id.editEducationFragment)
     }
+
+    override val title: CharSequence by lazy { getString(R.string.user_profile_education) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

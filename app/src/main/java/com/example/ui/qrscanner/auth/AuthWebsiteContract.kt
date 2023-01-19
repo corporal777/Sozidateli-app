@@ -12,12 +12,6 @@ interface AuthWebsiteContract {
         fun setEnterData(data : QrAuthResponse)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSuccessEnterMessage()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showErrorEnterMessage()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEventList()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -25,14 +19,10 @@ interface AuthWebsiteContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideContent()
-
-
     }
 
     interface Presenter : BaseContract.Presenter {
-
         fun onConfirmEnterToWebsiteClick()
         fun onDoNotConfirmToEnterWebsiteClick()
-        fun initToken(str : String)
     }
 }

@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         tools:ignore="MissingPrefix">
 
-
         <View
             android:id="@+id/view"
             android:layout_width="30dp"
@@ -47,19 +46,11 @@
             android:src="@drawable/ic_close" />
 
 
-        <com.example.ui.views.CustomProgressView
-            android:id="@+id/progressView"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_centerInParent="true" />
-
         <RelativeLayout
             android:id="@+id/content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_bottom_sheet_label"
-            android:visibility="invisible"
-            tools:visibility="visible">
+            android:layout_below="@id/tv_bottom_sheet_label">
 
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -72,9 +63,9 @@
                 android:layout_marginTop="30dp"
                 android:breakStrategy="high_quality"
                 android:letterSpacing="-0.01"
-                tools:text="@string/code_email_dialog_text"
                 android:textColor="@color/chat_list_date"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="@string/code_email_dialog_text" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_phone_information"
@@ -149,7 +140,7 @@
 
             <TextView
                 android:id="@+id/tv_timer"
-                fontPath="fonts/sf_pro_text_regular.ttf"
+                fontPath="fonts/sf_pro_display_regular.OTF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/btnResend"
@@ -161,7 +152,6 @@
                 tools:text="@string/auth_register_confirm_email_timer_two" />
 
         </RelativeLayout>
-
 
     </RelativeLayout>
 

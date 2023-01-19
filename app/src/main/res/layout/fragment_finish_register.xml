@@ -139,7 +139,7 @@
                 app:endIconMode="custom"
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null"
-                app:layout_constraintBottom_toTopOf="@id/ln_text"
+                app:layout_constraintBottom_toTopOf="@id/tvText"
                 app:layout_constraintTop_toBottomOf="@id/tilMiddleName">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -149,41 +149,20 @@
                     android:inputType="textEmailAddress" />
             </com.example.ui.views.CustomTextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/ln_text"
+            <TextView
+                android:id="@+id/tvText"
+                fontPath="fonts/sf_pro_display.OTF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical"
+                android:letterSpacing="-0.01"
+                android:textColor="@color/chat_list_date"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/tilCode"
-                app:layout_constraintTop_toBottomOf="@id/tilEmail">
-
-                <TextView
-                    android:id="@+id/tvText"
-                    fontPath="fonts/sf_pro_display.OTF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:letterSpacing="-0.01"
-                    android:textColor="@color/chat_list_date"
-                    android:textSize="14sp"
-                    tools:ignore="MissingPrefix"
-                    tools:text="@string/code_phone_dialog_text" />
-
-                <TextView
-                    android:id="@+id/tvDescription"
-                    fontPath="fonts/sf_pro_display.OTF"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:letterSpacing="-0.01"
-                    android:textColor="@color/chat_list_date"
-                    android:textSize="14sp"
-                    tools:ignore="MissingPrefix"
-                    tools:text="@string/code_dialog_text_information" />
-
-            </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@id/tilEmail"
+                tools:ignore="MissingPrefix"
+                tools:text="@string/code_phone_dialog_text" />
 
 
             <com.example.ui.views.CustomTextInputLayout
@@ -197,7 +176,7 @@
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null"
                 app:layout_constraintBottom_toTopOf="@id/tvTimer"
-                app:layout_constraintTop_toBottomOf="@id/ln_text">
+                app:layout_constraintTop_toBottomOf="@id/tvText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCode"

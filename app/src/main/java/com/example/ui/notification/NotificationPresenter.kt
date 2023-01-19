@@ -88,28 +88,31 @@ class NotificationPresenter
     override fun onNotificationAcceptClick() {
         compositeDisposable += userRepository.checkUserProfile()
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                val fields = it.fields?.filter { f -> f.filled == false }
-                if (fields?.isEmpty() == true) {
-                    //updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
-                    when (notification.notificationMainType) {
-                        NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(
-                            notification.entity?.id ?: 0
-                        )
-                        NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(
-                            notification.entity?.id ?: 0
-                        )
-                        NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(
-                            notification.entity?.id ?: 0
-                        )
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                }, onSuccess = {
+                    val fields = it.fields?.filter { f -> f.filled == false }
+                    if (fields?.isEmpty() == true) {
+                        //updateNotificationInvite(userRepository.notificationsInviteAccept(notification.id), notification.id)
+                        when (notification.notificationMainType) {
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(
+                                notification.entity?.id ?: 0
+                            )
+                            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(
+                                notification.entity?.id ?: 0
+                            )
+                            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(
+                                notification.entity?.id ?: 0
+                            )
+                        }
+                        //viewState.showSuccessAccepted()
+                    } else {
+                        val errors = mutableListOf<String>()
+                        fields?.forEach { f -> errors.add("-" + f.name) }
+                        viewState.showErrorDialog(errors, notification.project_name ?: "")
                     }
-                    //viewState.showSuccessAccepted()
-                } else {
-                    val errors = mutableListOf<String>()
-                    fields?.forEach { f -> errors.add("-" + f.name) }
-                    viewState.showErrorDialog(errors, notification.project_name ?: "")
-                }
-            }, { it.printStackTrace() })
+                })
 
     }
 

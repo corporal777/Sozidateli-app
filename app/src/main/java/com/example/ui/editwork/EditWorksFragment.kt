@@ -1,7 +1,7 @@
 package com.example.ui.editwork
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -13,18 +13,19 @@ import com.example.data.models.WorkExperienceModel
 import com.example.data.models.WorkExperienceServerModel
 import com.example.databinding.FragmentEditWorkFragmentBinding
 import com.example.databinding.ItemProfileDataEditNoWorkNewBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.editwork.EditWorksModel.Companion.ADD_WORK
 import com.example.ui.editwork.EditWorksModel.Companion.HAS_WORK
 import com.example.ui.editwork.EditWorksModel.Companion.WORK_ITEM
 import com.example.ui.views.NoWorkDialog
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
-    EditWorksContract.View, SimpleTitleToolbar {
+    EditWorksContract.View, ToolbarFragmentNew {
 
     private lateinit var adapter: EditWorksAdapter
     private var birthday: String? = ""
@@ -57,7 +58,6 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.profile_work_experience))
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditWorksFragment.adapter
@@ -274,4 +274,11 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
             ?: title, Toast.LENGTH_SHORT).show()
     }
+
+    override val title: CharSequence by lazy { getString(R.string.profile_work_experience) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

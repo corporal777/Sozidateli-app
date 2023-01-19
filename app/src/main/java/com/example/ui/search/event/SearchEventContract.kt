@@ -6,7 +6,7 @@ import com.example.data.models.*
 import com.example.ui.search.SearchContract
 
 interface SearchEventContract {
-    interface View : SearchContract.View<EventNew/*Event*/, SearchFilter.EventNew/*Event*/> {
+    interface View : SearchContract.View<EventNew, SearchFilter.EventNew/*Event*/> {
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
 

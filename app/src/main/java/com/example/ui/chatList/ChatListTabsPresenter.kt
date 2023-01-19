@@ -16,8 +16,6 @@ class ChatListTabsPresenter
 
     private var selectedTab = TAB_CHATS
 
-    private var mDy = 0f
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.chatRequestsCountSubject
@@ -28,14 +26,8 @@ class ChatListTabsPresenter
                 .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarShadow(mDy)
-    }
-
     override fun attachView(view: ChatListTabsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarShadow(mDy)
         viewState.selectTab(selectedTab)
     }
 
@@ -46,6 +38,8 @@ class ChatListTabsPresenter
     override fun onInvitesSelected() {
         selectedTab = TAB_INVITES
     }
+
+    override fun onFabAddChatClick() = viewState.openSearch()
 
     companion object {
         private const val TAB_CHATS = 0

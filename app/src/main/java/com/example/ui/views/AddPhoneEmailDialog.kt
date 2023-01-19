@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import com.example.R
 import com.example.databinding.DialogAddPhoneEmailBinding
-import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
+import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils
 import com.example.util.Utils.timerFormatter
@@ -44,7 +43,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
     init {
         builder.setView(binding.root)
         binding.btnPositive.setOnClickListener {
-            isProgressVisible(true)
+            //isProgressVisible(true)
             onSelect.invoke(PhoneEmailResult(type, binding.etLogin.text.toString()))
         }
         binding.tvCode.apply {

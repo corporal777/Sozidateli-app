@@ -240,7 +240,7 @@ fun <T> Observable<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.
 
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
-        .delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
+        //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnComplete {
             baseView.showLoadingDialog()

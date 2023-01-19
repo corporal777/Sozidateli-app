@@ -2,6 +2,7 @@ package com.example.ui.userprofile.read.maindata
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -14,18 +15,20 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.suggestFieldView.DaDataUtil
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataBinding>(),
-    UserProfileMainDataContract.View, SimpleTitleToolbar {
+    UserProfileMainDataContract.View, ToolbarFragmentNew {
 
     override fun layout() = R.layout.fragment_user_profile_main_data
 
@@ -40,8 +43,10 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.user_profile_main_info))
         mBinding.apply {
+            nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
+                presenter.changeAppBarElevation(scrollY - oldScrollY)
+            }
             btnEdit.setOnClickListener(presenter::onEditClick)
         }
     }
@@ -49,14 +54,6 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
         val jObject = DaDataUtil.getLocationJson(requireContext())
-        /*tvLastName.text = user.lastName
-
-        tvName.text = user.name
-
-        tvMiddleName.text = user.getMiddleName()
-        val isNoMiddleNameChecked = user.middleName?.value == USER_DATA_EMPTY
-        tvMiddleNameTitle.isVisible = !isNoMiddleNameChecked
-        tvMiddleName.isVisible = !isNoMiddleNameChecked*/
 
         mBinding.apply {
             tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
@@ -103,4 +100,12 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
             else -> ""
         }
     }
+
+
+    override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

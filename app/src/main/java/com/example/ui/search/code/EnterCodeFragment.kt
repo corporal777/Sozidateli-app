@@ -1,5 +1,6 @@
 package com.example.ui.search.code
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -8,15 +9,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentEnterCodeBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCodeContract.View,
-    SimpleTitleToolbar {
+    ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: EnterCodePresenter
@@ -29,7 +30,6 @@ class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCode
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.code_input_label))
         mBinding.apply {
             etCode.apply {
                 setOnKeyListener { _, keyCode, _ ->
@@ -55,7 +55,11 @@ class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCode
     }
 
     override fun showEvent(eventId: String) {
-        findNavController().navigate(EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(eventId))
+        findNavController().navigate(
+            EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(
+                eventId
+            )
+        )
     }
 
     override fun showEventNotFoundError() {
@@ -63,4 +67,10 @@ class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCode
     }
 
     override fun layout() = R.layout.fragment_enter_code
+    override val title: CharSequence by lazy { getString(R.string.code_input_label) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

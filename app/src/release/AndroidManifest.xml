@@ -43,7 +43,7 @@
 
                 <data
                     android:host="sozidateli.ru"
-                    android:path="/qr"
+                    android:pathPrefix="/qr"
                     android:scheme="https" />
             </intent-filter>
         </activity>

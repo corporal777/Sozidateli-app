@@ -22,7 +22,6 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.util.*
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
 import onFocusChanged
 import onTextChanged
 import java.lang.StringBuilder
@@ -87,8 +86,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
             etEmail.apply {
                 filters = getEmailFilter()
                 onTextChanged {
-                    it?.toString()
-                        ?.let { text -> presenter.onChangeEmailText(text, requireContext()) }
+                    it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) }
                 }
                 onFocusChanged { hasFocus ->
                     if (!hasFocus) {
@@ -106,20 +104,19 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
             }
 
             scNoMiddleName.setOnCheckedChangeListener { _, checked ->
-                presenter.onNoMiddleNameChecked(
-                    checked
-                )
+                presenter.onNoMiddleNameChecked(checked)
             }
-            password.setShowAgree(true)
-
-            password.setHyperlinkClickCallback {
-                showUserAgreement()
-            }
-            password.setPasswordValidCallback {
-                presenter.onChangePasswordText(it.password ?: "", it.isValid)
-            }
-            password.setChangedSelectionCallback {
-                presenter.onClickAgree(it)
+            passwordView.apply {
+                setShowAgree(true)
+                setHyperlinkClickCallback {
+                    showUserAgreement()
+                }
+                setPasswordValidCallback {
+                    presenter.onChangePasswordText(it.password ?: "", it.isValid)
+                }
+                setChangedSelectionCallback {
+                    presenter.onClickAgree(it)
+                }
             }
             ibRegister.setOnClickListener {
                 hideKeyboard()
@@ -153,24 +150,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                     presenter.register()
                 }
             }
-    }
-
-    override fun setData(
-        email: String?,
-        firstName: String?,
-        lastName: String?,
-        middleName: String?,
-        noMiddleNameChecked: Boolean,
-        password: String?,
-        passwordConfirm: String?,
-        isAgree: Boolean
-    ) {
-        mBinding.etEmail.setText(email)
-        mBinding.etFirstName.setText(firstName)
-        mBinding.etLastName.setText(lastName)
-        mBinding.etMiddleName.setText(middleName)
-        this.password.etPassword.setText(password)
-        this.password.setAgreeSelection(isAgree)
     }
 
 
@@ -217,7 +196,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         isNoMiddleName: Boolean
     ) {
         findNavController().navigate(
-            R.id.fragment_finish_register_new, bundleOf(
+            R.id.fragment_finish_register, bundleOf(
                 "code" to code,
                 "name" to name,
                 "lastName" to lastName,

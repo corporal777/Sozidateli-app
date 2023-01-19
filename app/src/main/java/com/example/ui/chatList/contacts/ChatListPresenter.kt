@@ -142,7 +142,6 @@ class ChatListPresenter
         }
     }
 
-    override fun onFabAddChatClick() = viewState.openSearch()
 
     override fun onEmptyChatsButtonAddChatClick() = viewState.openSearch()
 

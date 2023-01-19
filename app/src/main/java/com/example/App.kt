@@ -5,16 +5,14 @@ import android.content.Context
 import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
+import com.shakebugs.shake.Shake
 import com.vk.sdk.VKSdk
-import com.yandex.metrica.YandexMetrica
-import com.yandex.metrica.YandexMetricaConfig
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
-import ru.ok.android.sdk.BuildConfig
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,19 +33,24 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     override fun onCreate() {
         super.onCreate()
 
-        val config: YandexMetricaConfig =
-            YandexMetricaConfig.newConfigBuilder("faf7bdc3-762b-4c6a-8813-a6a8fb26f448").build()
-        YandexMetrica.activate(applicationContext, config)
-        YandexMetrica.enableActivityAutoTracking(this)
+        //Shake bug init
+        if (!BuildConfig.DEBUG) {
+            Shake.getReportConfiguration().isScreenshotIncluded = false
+            Shake.getReportConfiguration().isInvokeShakeOnShakeDeviceEvent = false
+        }
+        Shake.setCrashReportingEnabled(true)
+        Shake.start(
+            this,
+            getString(R.string.shake_client_id),
+            getString(R.string.shake_client_secret)
+        )
 
-//        if (LeakCanary.isInAnalyzerProcess(this)) {
-        // This process is dedicated to LeakCanary for heap analysis.
-        // You should not init your app in this process.
-//            return
-//        }
-        //LeakCanary.install(this)
 
         if (BuildConfig.DEBUG) {
+            //Yandex app metric
+//            val config: YandexMetricaConfig = YandexMetricaConfig.newConfigBuilder(getString(R.string.yandex_app_metric_key)).build()
+//            YandexMetrica.activate(applicationContext, config)
+//            YandexMetrica.enableActivityAutoTracking(this)
             Timber.plant(Timber.DebugTree())
         }
 

@@ -2,14 +2,13 @@ package com.example.di
 
 import com.example.ui.about.AboutFragment
 import com.example.ui.accountChange.ChangeAccountFragment
+import com.example.ui.accountChange.AccountAuthFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.authorization.AuthorizationFragmentNew
 import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
-import com.example.ui.auth.register.email.finishregister.newbuild.FinishRegisterNewFragment
-import com.example.ui.auth.register.email.finishregister.FinishRegisterFragment
+import com.example.ui.auth.register.email.finish.FinishRegisterFragment
 import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
 import com.example.ui.auth.register.invite.InviteRegisterFragment
 import com.example.ui.auth.register.sn.RegisterSnFragment
@@ -22,8 +21,8 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.editeducation.EditEducationFragment
 import com.example.ui.editwork.EditWorksFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.about.old.AboutEventFragment
+import com.example.ui.event.about.redesign.AboutEventFragmentNew
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.contacts.EventContactsFragment
@@ -47,19 +46,18 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.organizations.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
-import com.example.ui.organizations.redesign.OrganizationFragmentNew
+import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
-import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
+import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.search.chat.SearchChatFragment
 import com.example.ui.search.code.EnterCodeFragment
 import com.example.ui.search.event.SearchEventFragment
@@ -70,9 +68,9 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserStateFragment
 import com.example.ui.state.base.MainInfoFragment
-import com.example.ui.state.max.interests.BaseStateInterestsFragment
 import com.example.ui.state.max.MaxStateMainInfoFragment
 import com.example.ui.state.max.education.MaxStateEducationFragment
+import com.example.ui.state.max.interests.BaseStateInterestsFragment
 import com.example.ui.state.max.work.MaxStateWorkFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubEventFragment
@@ -80,12 +78,12 @@ import com.example.ui.subevent.users.SubeventUserListFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
 import com.example.ui.userSessions.UserSessionsFragment
-import com.example.ui.userprofile.edit.UserEditFragment
-import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
-import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.userprofile.UserProfileFragment
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment
+import com.example.ui.userprofile.edit.UserEditFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment
+import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
+import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.userprofile.read.contacts.UserProfileContactsFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
@@ -120,13 +118,13 @@ abstract class FragmentBuildersModule {
     abstract fun contributeLoginFragment(): AuthorizationFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeLoginFragmentNew(): AuthorizationFragmentNew
+    abstract fun contributeAccountAuthFragment(): AccountAuthFragment
 
     @ContributesAndroidInjector
     abstract fun contributeLoginEmailFragment(): LoginFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeRegisterEmailFragment(): FinishRegisterNewFragment
+    abstract fun contributeRegisterEmailFragment(): FinishRegisterFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRegisterEmailNewFragment(): RegisterEmailNewFragment
@@ -154,9 +152,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeOrganizationFragment(): OrganizationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeOrganizationEventsFragment(): OrganizationEventsFragment
@@ -300,9 +295,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributePhoneConfirmFragment(): PhoneConfirmFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFinishRegisterFragment(): FinishRegisterFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeInviteRegisterFragment(): InviteRegisterFragment
 
     @ContributesAndroidInjector
@@ -387,7 +379,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeConfirmPhoneBottomSheetFragment(): ConfirmEmailPhoneFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeOrganizationFragmentNew(): OrganizationFragmentNew
+    abstract fun contributeOrganizationFragmentNew(): OrganizationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeChatFragmentNew(): ChatFragmentNew

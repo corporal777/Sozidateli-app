@@ -14,7 +14,6 @@ import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
@@ -25,8 +24,6 @@ class RegisterEmailNewPresenter
 @Inject constructor(
     private val appData: AppData,
     private val authRepository: AuthRepository,
-    private val phoneNumberUtil: PhoneNumberUtil,
-    private val context: Context,
     private val userRepository: UserRepository,
     snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager, appData),
@@ -39,26 +36,18 @@ class RegisterEmailNewPresenter
     private var email: String = ""
     private var password: String = ""
     private var passwordConfirm: String = ""
-    private var isAgree: Boolean = false
+    //private var isAgree: Boolean = false
+    private var isAgree: Boolean = true
     private var isPasswordValid: Boolean = false
     var loginType = "email"
-    var deviceId = appData.deviceId
+    private val deviceId = appData.deviceId
+
     private val deviceModel = getDeviceName()
     private val appVersion = getAppVersion()
     private val appCode = getAppVersionCode()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(
-            email,
-            firstName,
-            lastName,
-            middleName,
-            noMiddleNameChecked,
-            password,
-            passwordConfirm,
-            isAgree
-        )
         performDataChange()
     }
 
@@ -72,26 +61,17 @@ class RegisterEmailNewPresenter
     }
 
     override fun checkPhoneEmailIsUnique(email: String) {
-        compositeDisposable += Completable.create { emitter ->
-            val disposables = CompositeDisposable()
-            disposables += if (loginType == "email") {
-                userRepository.checkEmailPhone(email, null).subscribeSimple(
-                    onError = { emitter.onError(Exception("email")) },
-                    onComplete = { emitter.onComplete() })
-            } else {
-                userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
-                    .subscribeSimple(
-                        onError = { emitter.onError(Exception("phone")) },
-                        onComplete = { emitter.onComplete() })
-            }
-
+        compositeDisposable += if (loginType == "email") {
+            userRepository.checkEmailPhone(email, null)
+        } else {
+            userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
         }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
-                    if (it.message?.contains("email") == true) {
+                    if (loginType == "email") {
                         viewState.showEmailNotUnique(email)
                     } else {
                         viewState.showPhoneNotUnique(email)
@@ -155,42 +135,32 @@ class RegisterEmailNewPresenter
     }
 
     private fun performDataChange() {
-        viewState.enableRegisterBtn(
-            isDataValid(
-                firstName,
-                lastName,
-                email,
-                password,
-                isAgree
-            )
-        )
+        viewState?.apply {
+            enableRegisterBtn(isDataValid(firstName, lastName, email, password, isAgree))
+        }
     }
 
 
     override fun register() {
-        compositeDisposable += authRepository.register(getRegisterBody())
+        viewState.setIgnoreTokenListener(true)
+        compositeDisposable += authRepository.registerUser(getRegisterBody())
             .andThen(Completable.defer {
-                if (loginType == "email") {
-                    authRepository.registerEmailResend(email)
-                } else {
-                    authRepository.registerPhoneResend(
-                        "personal",
-                        validatePhoneBeforeSend(email)
-                    )
-                }
+                if (loginType == "email") authRepository.registerEmailResend(email)
+                else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
             })
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
+                    viewState.setIgnoreTokenListener(false)
                     it.printStackTrace()
                 },
                 onComplete = {
                     viewState.apply {
-                        val phone = if (loginType == "email") ""
-                        else email
-                        val email = if (loginType == "email") email
-                        else ""
+                        setIgnoreTokenListener(false)
+
+                        val phone = if (loginType == "email") "" else email
+                        val email = if (loginType == "email") email else ""
 
                         showFinishRegister(
                             firstName,
@@ -207,10 +177,8 @@ class RegisterEmailNewPresenter
     }
 
     private fun getRegisterBody(): RegisterBody {
-        val midName = if (middleName.isNullOrEmpty())
-            null
-        else
-            FieldDetails(value = middleName.removeAllDoubleSpaces())
+        val midName = if (middleName.isNullOrEmpty()) null
+        else FieldDetails(value = middleName.removeAllDoubleSpaces())
 
         var phoneNumber: ArrayList<FieldDetails>? = null
         var em: FieldDetails? = null
@@ -219,16 +187,14 @@ class RegisterEmailNewPresenter
                 em = FieldDetails(value = email, isVisible = true)
             }
             "phone" -> {
-                phoneNumber = if (email.isNullOrEmpty())
-                    null
-                else
-                    arrayListOf(
-                        FieldDetails(
-                            value = validatePhoneBeforeSend(email),
-                            type = PHONE_PERSONAL,
-                            isVisible = true
-                        )
+                phoneNumber = if (email.isNullOrEmpty()) null
+                else arrayListOf(
+                    FieldDetails(
+                        value = validatePhoneBeforeSend(email),
+                        type = PHONE_PERSONAL,
+                        isVisible = true
                     )
+                )
             }
         }
         return RegisterBody(

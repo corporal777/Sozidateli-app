@@ -1,45 +1,40 @@
 package com.example.ui.userprofile.read.settings
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.util.Linkify
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
-import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.parsePhone
-import com.example.extensions.showChangeEmailCompleteDialog
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.views.*
+import com.example.ui.views.BottomDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.TitleMessageDialog
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
-import com.google.android.material.transition.MaterialFade
-import com.google.android.material.transition.MaterialSharedAxis
 import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsBinding>(canShowAnim = true),
-    UserProfileSettingsContract.View,
-    SimpleTitleToolbar {
+class UserProfileSettingsFragment :
+    BaseFragmentNew<FragmentUserProfileSettingsBinding>(canShowAnim = true),
+    UserProfileSettingsContract.View, ToolbarFragmentNew {
 
     private lateinit var mUser: UserDetail
 
@@ -55,7 +50,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.profile_settings))
+        view.doOnPreDraw { startPostponedEnterTransition() }
         mBinding.apply {
             nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
                 presenter.changeScrollingOffset(scrollY - oldScrollY)
@@ -117,7 +112,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
-        startPostponedEnterTransition()
         user ?: return
         mUser = user
         mBinding.apply {
@@ -131,16 +125,14 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                 else setImage(false)
             }
 
-            val phone =
-                user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
-                    requireContext()
-                )
-
-            tvPhoneMobile.text = phone
-            if (user.shortName == user.id.toString()) {
-                tvShortname.text = "@id" + user.shortName
-            } else {
-                tvShortname.text = "@" + user.shortName
+            tvPhoneMobile.apply {
+                val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
+                text = phone
+            }
+            tvShortname.apply {
+                text = if (user.shortName.isNullOrEmpty() || user.shortName == user.id.toString()){
+                    "@id" + user.id
+                } else "@" + user.shortName
             }
 
             tvEmail.text = if (!user.email?.onConfirmation.isNullOrEmpty()) {
@@ -167,7 +159,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
                     btnNegativeText = getString(R.string.content_description_delete),
                     canShowCancel = true
                 ).setPositiveSelectCallback {
-                    showEmailConfirmation(user.email?.onConfirmation ?: user.email?.value ?: "")
+                    presenter.onShowEmailConfirm(user.email?.onConfirmation ?: user.email?.value ?: "")
                 }.setNegativeSelectCallback {
                     if (user.email?.value == null) {
                         presenter.onDeleteEmail()
@@ -208,7 +200,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun showChangePassword() {
-        val changePasswordDialog = ChangePasswordFragment(false, "")
+        val changePasswordDialog = ChangePasswordFragment(false)
         changePasswordDialog.show(
             requireActivity().supportFragmentManager,
             "change_password_settings"
@@ -216,7 +208,7 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
     }
 
     override fun showChangeShortName(user: UserDetail) {
-        val changeShortNameDialog = ChangeShortNameFragment(user)
+        val changeShortNameDialog = ChangeShortNameFragment(user.id, user.shortName)
         changeShortNameDialog.show(
             requireActivity().supportFragmentManager,
             "change_short_name_settings"
@@ -237,10 +229,6 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
             requireActivity().supportFragmentManager,
             "confirm_email_settings"
         )
-        confirmEmailDialog.setConfirmCallback {
-            presenter.updateEmail(email)
-        }
-
     }
 
     override fun showChangePrivacy() {
@@ -296,9 +284,14 @@ class UserProfileSettingsFragment : BaseFragmentNew<FragmentUserProfileSettingsB
         } else {
             onAction.invoke(false)
         }
-
     }
 
     override fun layout() = R.layout.fragment_user_profile_settings
+    override val title: CharSequence by lazy { getString(R.string.profile_settings) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
 

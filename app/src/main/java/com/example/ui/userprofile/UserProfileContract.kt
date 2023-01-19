@@ -1,5 +1,9 @@
 package com.example.ui.userprofile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.fragment.app.Fragment
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.userprofile.base.BaseUserProfileContract
@@ -31,8 +35,6 @@ interface UserProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showNextScreen()
-
-
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

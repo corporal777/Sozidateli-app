@@ -10,25 +10,12 @@ import com.example.ui.auth.base.BaseAuthContract
 
 interface RegisterEmailNewContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(
-            email: String?,
-            firstName: String?,
-            lastName: String?,
-            middleName: String?,
-            noMiddleNameChecked: Boolean,
-            password: String?,
-            passwordConfirm: String?,
-            isAgree: Boolean
-        )
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableRegisterBtn(isEnable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
-
-
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFinishRegister(
@@ -56,7 +43,7 @@ interface RegisterEmailNewContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showWrongPhoneError(show: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
@@ -64,7 +51,6 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(email: String)
-
     }
 
     interface Presenter : BaseAuthContract.Presenter {

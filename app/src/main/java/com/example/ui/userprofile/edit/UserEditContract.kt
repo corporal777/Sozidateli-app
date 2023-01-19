@@ -15,12 +15,6 @@ interface UserEditContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun showTakePictureChooser()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeUserAvatar(avatar: Bitmap?)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -30,7 +24,10 @@ interface UserEditContract {
         fun setContactsData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateFilesList(files: List<FileModel>?)
+        fun addNewUserFile(file: FileModel)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun deleteUserFile(file: FileModel)
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
@@ -89,21 +86,16 @@ interface UserEditContract {
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
         //main data
 
-        fun onEditAvatarClick()
-        fun onRemoveAvatarClick()
-        fun onTakePhotoFromCameraRequest()
-        fun onTakePhotoFromGalleryRequest()
-
         //personal data
 
         fun onChangeEmailClick()
-        fun onConfirmPhoneClick(phone: String)
+        fun checkPhoneIsUnique(phone: String)
         fun checkPassword(password : String, phone: String)
+        fun onShowPhoneConfirm(phone: String)
 
         //additional data
 
         fun onAddFileClick()
-        fun onEditFileClick(file: FileModel)
         fun onFilePicked(path: String, mimeType: String)
         fun onFileEditCancelClick()
         fun onFileClick(file: FileModel)

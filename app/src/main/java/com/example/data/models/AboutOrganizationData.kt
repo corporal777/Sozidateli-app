@@ -1,4 +1,4 @@
-package com.example.ui.organizations.redesign.data
+package com.example.data.models
 
 import com.example.data.models.EventNew
 import com.example.data.models.OrganizationMemberModel

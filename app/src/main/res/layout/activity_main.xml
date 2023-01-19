@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <com.example.ui.views.CustomAppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
@@ -101,7 +102,6 @@
 
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     <FrameLayout

@@ -1,12 +1,8 @@
 package com.example.ui.main.inApp
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,21 +14,14 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
-import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetInAppNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.notification.NotificationFragmentDirections
-import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
-import com.example.ui.profile.data.ProfileDataContract
-import com.example.ui.profile.shortName.ChangeShortNameFragment
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
-import com.example.ui.userprofile.read.settings.change_email.ChangeEmailPresenter
-import com.example.util.ScrollingChildBehavior
-import com.google.android.gms.common.util.ArrayUtils.contains
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -222,7 +211,7 @@ class InAppNotificationFragment(val inApp: Notification) :
     override fun showAboutOrganization(organizationId: String) {
         findNavController().navigate(
             R.id.organization_fragment_new,
-            OrganizationFragmentNewArgs.Builder(organizationId).build().toBundle()
+            OrganizationFragmentArgs.Builder(organizationId).build().toBundle()
         )
     }
 

@@ -2,39 +2,40 @@ package com.example.holders
 
 import com.example.R
 import com.example.data.models.FileModel
-import com.example.data.models.user.RecommendationFile
+import com.example.databinding.ItemProfileDataEditableFileNewBinding
 import com.example.util.initInput
 import com.example.util.initSwitch
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_editable_file_new.*
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataFileEditableItemNew(
-        id: Long,
-        val file: FileModel,
-        private val onFileClick: (FileModel) -> Unit,
-        private val onEditClick: (FileModel) -> Unit,
-        private val onRemoveClick: (ProfileDataFileEditableItemNew) -> Unit
-) : Item(id) {
+    val file: FileModel,
+    private val onFileClick: (FileModel) -> Unit,
+    private val onRemoveClick: (ProfileDataFileEditableItemNew) -> Unit
+) : BindableItem<ItemProfileDataEditableFileNewBinding>(file.id?.toLong() ?: 0) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            //val fileName = (if (file.name.isNullOrBlank()) file.name else file.desc) ?: "file"
-            val fileName = file.name
+    override fun bind(viewBinding: ItemProfileDataEditableFileNewBinding, position: Int) {
+        viewBinding.apply {
             tvFileName.apply {
-                text = fileName
+                text = file.name
                 isClickable = false
             }
             etFileName.apply {
-                //initInput(file.newName) { file.newName = it.toString() }
                 initInput(file.name) { file.name = it.toString() }
             }
-            scFile.initSwitch(file.showInProfile?: false) { file.showInProfile = it }
-            btnEdit.setOnClickListener { onEditClick(file) }
+            scFile.initSwitch(file.showInProfile ?: false) { file.showInProfile = it }
             btnDelete.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItemNew) }
             tvFileName.setOnClickListener { onFileClick(file) }
         }
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is ProfileDataFileEditableItemNew) return false
+        if (file.id != other.file.id) return false
+        if (file != other.file) return false
+        return true
+    }
+
+
     override fun getLayout() = R.layout.item_profile_data_editable_file_new
+
 }

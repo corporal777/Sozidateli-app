@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserProfileEducationPresenter @Inject constructor(
@@ -16,12 +17,12 @@ class UserProfileEducationPresenter @Inject constructor(
 
     override fun attachView(view: UserProfileEducationContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
 
     override fun changeAppBarElevation(value: Int) {
         mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 }

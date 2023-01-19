@@ -1,8 +1,7 @@
-package com.example.ui.organizations.redesign.items
+package com.example.ui.organizations.detail.items
 
 import androidx.core.view.updatePadding
 import com.example.R
-import com.example.databinding.ItemPartnerBinding
 import com.example.databinding.ItemPartnersTitleBinding
 import com.example.extensions.dp
 import com.xwray.groupie.databinding.BindableItem

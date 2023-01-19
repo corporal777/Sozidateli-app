@@ -1,17 +1,13 @@
 package com.example.ui.profile.shortName
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.UserShortNameBody
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.base.BasePresenter
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.ui.profile.ProfileContract
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
@@ -25,7 +21,21 @@ class ChangeShortNamePresenter
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
     private val authRepository: AuthRepository,
-) : BaseBottomSheetPresenter<ChangeShortNameContract.View>(appData), ChangeShortNameContract.Presenter {
+) : BaseBottomSheetPresenter<ChangeShortNameContract.View>(appData),
+    ChangeShortNameContract.Presenter {
+
+    var userId = ""
+    var userShortName = ""
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        val userShortName = if (!userShortName.isNullOrEmpty()) {
+            if (userShortName == userId) "sozidateli.ru/id$userShortName"
+            else "sozidateli.ru/$userShortName"
+        } else "sozidateli.ru/id$userId"
+
+        viewState.setUserShortName(userShortName)
+    }
 
     override fun checkUserShortNameUnique(short: String) {
         compositeDisposable += userRepository.getUserByShortName(short)
@@ -39,8 +49,11 @@ class ChangeShortNamePresenter
                 })
     }
 
-   override fun updateUserShortName(userId: Int, short: String) {
-        compositeDisposable += userRepository.updateUserShortName(userId, UserShortNameBody(short))
+    override fun updateUserShortName(short: String) {
+        compositeDisposable += userRepository.updateUserShortName(userId.toInt(), UserShortNameBody(short))
+            .doOnSuccess { new ->
+                appData.updateUserNew { this.shortName = new.shortName }
+            }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -50,9 +63,6 @@ class ChangeShortNamePresenter
                 },
                 onSuccess = { new ->
                     viewState.apply {
-                        appData.updateUserNew {
-                            this.shortName = new.shortName
-                        }
                         updateUserShortNameInProfile(new)
                         hideBottomSheetDialog()
                         showUserShortNameSuccessUpdated()

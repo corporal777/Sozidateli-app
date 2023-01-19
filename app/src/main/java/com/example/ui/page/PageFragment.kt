@@ -1,11 +1,9 @@
 package com.example.ui.page
 
-import android.content.Intent
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -13,8 +11,9 @@ import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
 import com.example.holders.DocumentItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
 import com.squareup.picasso.Picasso
@@ -25,7 +24,10 @@ import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, SimpleTitleToolbar {
+class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, ToolbarFragmentNew {
+
+    private lateinit var toolbarContent: ToolbarContent
+    private val args: PageFragmentArgs by navArgs()
 
     @InjectPresenter
     lateinit var presenter: PagePresenter
@@ -40,8 +42,6 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
             dataPageId = pageId
         }
     }
-
-    private val args: PageFragmentArgs by navArgs()
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
@@ -65,7 +65,7 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
         content: String?,
         documents: List<FileModel>?
     ) {
-        setToolbarTitleAndIcon(contentTitle)
+        toolbarContent.setToolbarTitle(contentTitle)
         mBinding.ivLogo.apply {
             clipToOutline = true
             val visible = !logo.isNullOrEmpty()
@@ -97,12 +97,16 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
             ?: emptyList())
     }
 
-    override fun openLinkInBrowser(link: String) {
-        showCustomTabsBrowser(requireContext(), link)
-//        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-//        startActivity(browserIntent)
-    }
+    override fun openLinkInBrowser(link: String) = showCustomTabsBrowser(requireContext(), link)
 
 
     override fun layout() = R.layout.fragment_page
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
+        this.toolbarContent = toolbarContent
+    }
 }

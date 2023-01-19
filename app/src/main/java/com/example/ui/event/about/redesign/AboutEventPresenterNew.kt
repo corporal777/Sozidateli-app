@@ -35,6 +35,7 @@ class AboutEventPresenterNew
 
     lateinit var eventId: String
     private var event: EventInfo? = null
+    private lateinit var mUserEvent: UserEvent
     private var mDy = 0
     private lateinit var aboutEventData: AboutEventData
 
@@ -45,7 +46,7 @@ class AboutEventPresenterNew
 
     override fun attachView(view: AboutEventContractNew.View?) {
         super.attachView(view)
-        viewState.updateAppBarBackgroundColorValue(mDy)
+        //viewState.updateAppBarBackgroundColorValue(mDy)
     }
 
     override fun onFirstViewAttach() {
@@ -280,8 +281,10 @@ class AboutEventPresenterNew
     override fun onActionCancel() {
         compositeDisposable += eventRepository.cancelRegisterToEvent(
             event?.event?.binds?.currentUserRegistration?.id ?: 0
-        ).andThen(eventRepository.getEventDetails(eventId)).performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState).subscribeSimple {
+        ).andThen(eventRepository.getEventDetails(eventId))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
             }

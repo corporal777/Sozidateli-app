@@ -17,6 +17,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog
+import com.example.ui.views.ConfirmCodeDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
 import com.example.util.AuthValidateUtil
@@ -36,10 +37,11 @@ class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding
 
     @Inject
     lateinit var presenterProvider: Provider<RecoveryPasswordPresenter>
+    private var dialog : ConfirmCodeDialog? = null
 
     private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {
-            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_'
+            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_' || it == '+'
         }
     })
 
@@ -53,15 +55,15 @@ class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            btnRecovery.setOnClickListener {
-                presenter.onRecoveryClick()
-                hideKeyboard()
-            }
             etEmail.apply {
                 filters = emailFilter
                 onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }
             }
 
+            btnRecovery.setOnClickListener {
+                presenter.onRecoveryClick()
+                hideKeyboard()
+            }
             ibClose.setOnClickListener { presenter.onCloseClick() }
         }
 
@@ -101,24 +103,24 @@ class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding
                         }
                     }
         } else {
-            val dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.CODE)
-            dialog.setPhoneForCode(email)
-            dialog.setSelectCallback {
-                if (it.type == RegisterDataType.CODE) {
-                    setPassword(it.value)
-                    dialog.hideDialog()
-                }
+            dialog = ConfirmCodeDialog(email, requireContext(), RegisterDataType.PHONE)
+            dialog?.setSendAgainCallback {
+                presenter.sendCodeAgain()
             }
-            dialog.setSendCodeCallback {
-
+            dialog?.setConfirmCallback {
+                setPassword(it)
             }
         }
+    }
+
+    override fun setTimeLeft(seconds: Int) {
+        if (dialog != null) dialog?.setTimeLeft(seconds)
     }
 
     private fun setPassword(code: String) {
         NewPasswordDialog(requireActivity())
                 .setSelectCallback {
-                    presenter.onSetPassword(/*email,*/ code, it)
+                    presenter.onSetPassword(code, it)
                 }
     }
 

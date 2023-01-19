@@ -72,7 +72,7 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
 
         if (::mBinding.isInitialized.not()) {
             mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
-            mBinding.lifecycleOwner = this
+            mBinding.lifecycleOwner = viewLifecycleOwner
         }
         return mBinding.root
     }
@@ -149,13 +149,8 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
         mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitleAndIcon(
-        title: CharSequence,
-        icon: Drawable?,
-        action: (() -> Unit?)?,
-        toolbarTitleAction: (() -> Unit?)?
-    ) {
-        mActivity?.setToolbarTitleAndIcon(title, icon, action, toolbarTitleAction)
+    override fun setIgnoreTokenListener(isIgnore: Boolean) {
+        mActivity?.setIgnoreTokenListener(isIgnore)
     }
 
     override fun navigateUp() {

@@ -57,7 +57,7 @@ class SearchEventPresenter
 
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")
-            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, /*"%"+*/filter.dateStart+","+filter.dateFinish/*+"%"*/)
+            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, filter.dateStart+","+filter.dateFinish)
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
             if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
                 if (filter.fullAddress != null) {

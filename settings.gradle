@@ -14,3 +14,4 @@ include ':app', ':filepicker'
 //    }
 //    return externalModuleDir
 //}
+include ':qrcodegenerator'

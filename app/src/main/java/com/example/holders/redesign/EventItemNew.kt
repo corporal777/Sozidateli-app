@@ -149,10 +149,7 @@ class EventItemNew(
                                         if (userAgreement.isNullOrEmpty()) {
                                             onEventClickListener.onActionRegister(eventId)
                                         } else {
-                                            showAgreementRegisterDialog(
-                                                btnAction.context,
-                                                userAgreement
-                                            )
+                                            showAgreementRegisterDialog(context, userAgreement)
                                         }
                                     }
                                 }

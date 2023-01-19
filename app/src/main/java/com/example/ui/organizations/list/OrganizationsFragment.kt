@@ -12,9 +12,8 @@ import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.organizations.redesign.OrganizationFragmentNew
-import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -108,8 +107,8 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
     override fun showFavoritesEmptyListPlaceholder() {
         organizationSection.update(
             listOf(
-                NoDataItem(
-                    /*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
+                NoEventItem(
+                    getString(R.string.blank_list_error),
                     getString(R.string.organizations_favorites_empty_list_description)
                 )
             )
@@ -120,7 +119,7 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
     override fun showOrganization(organization: OrganizationNew/*Organization*/) {
         findNavController().navigate(
             R.id.organization_fragment_new,
-            OrganizationFragmentNewArgs.Builder(organization.id.toString()).build().toBundle()
+            OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
         )
     }
 

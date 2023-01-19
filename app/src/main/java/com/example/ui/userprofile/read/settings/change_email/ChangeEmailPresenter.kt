@@ -1,10 +1,9 @@
 package com.example.ui.userprofile.read.settings.change_email
 
 import android.app.NotificationManager
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.EmailCodeBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
@@ -12,8 +11,6 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.AuthValidateUtil
-import com.example.util.PHONE_PERSONAL
-import com.example.util.phoneToServer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -49,7 +46,7 @@ class ChangeEmailPresenter
                         viewState.showEmailNotUnique(email)
                     },
                     onComplete = {
-                        viewState.showEmailConfirm(email)
+                        onShowEmailConfirm(email)
                     })
         } else {
             viewState.showEmailNotValid(email)
@@ -57,26 +54,38 @@ class ChangeEmailPresenter
 
     }
 
-
-    override fun updateEmail(email: String) {
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mutableMapOf<String, Any>().apply {
-                put(
-                    UserDetail.USER_EMAIL,
-                    FieldDetails(value = email, isVisible = true, isConfirmed = true)
-                )
-            }
-        )
+    override fun onShowEmailConfirm(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+            .andThen(userRepository.updateUserProfileField(mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))))
+            .doOnSuccess { new -> appData.updateUserNew { this.email = new.email } }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    viewState.showChangeEmailComplete()
-                })
+            .subscribeSimple {
+                viewState.showEmailConfirm(email)
+            }
+    }
+
+
+    override fun updateEmail(email: String) {
+        viewState.showChangeEmailComplete()
+//        compositeDisposable += userRepository.updateUserProfile(
+//            appData.getId(),
+//            mutableMapOf<String, Any>().apply {
+//                put(
+//                    UserDetail.USER_EMAIL,
+//                    FieldDetails(value = email, isVisible = true, isConfirmed = true)
+//                )
+//            }
+//        )
+//            .performOnBackgroundOutOnMain()
+//            .withCustomProgressBarLoadingDialog(viewState)
+//            .subscribeSimple(
+//                onError = {
+//                    onReceiveError(it)
+//                },
+//                onSuccess = {
+//
+//                })
     }
 
 

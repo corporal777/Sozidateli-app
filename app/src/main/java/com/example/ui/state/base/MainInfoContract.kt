@@ -48,10 +48,13 @@ interface MainInfoContract {
     interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation  {
         fun onClickClose()
         fun updateFiles(data: MutableMap<String, Any?>)
-        fun onConfirmPhoneClick(phone: String)
-        fun updateEmail(email: String)
 
         fun checkEmailIsUnique(email: String)
+        fun checkPhoneIsUnique(phone: String)
+
+        fun onShowEmailConfirm(email: String)
+        fun onShowPhoneConfirm(phone: String)
+
 
         fun onTakePhotoFromGalleryClick()
         fun onTakePhotoFromCameraClick()

@@ -1,4 +1,4 @@
-package com.example.ui.organizations.redesign
+package com.example.ui.organizations.detail
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -12,7 +12,7 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.organizations.redesign.data.AboutOrganizationData
+import com.example.data.models.AboutOrganizationData
 import com.example.ui.views.UserSubscribeButton
 import io.reactivex.Maybe
 import io.reactivex.Single

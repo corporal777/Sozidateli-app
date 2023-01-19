@@ -1,9 +1,9 @@
 package com.example.ui.state.max.work
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -12,11 +12,11 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMaxStateWorkBinding
 import com.example.holders.ProfileDataWorkEditGroup
-import com.example.ui.base.BaseFragment
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class MaxStateWorkFragment : BaseFragmentNew<FragmentMaxStateWorkBinding>(),
-    MaxStateWorkContract.View, SimpleTitleToolbar {
+    MaxStateWorkContract.View, ToolbarFragmentNew {
 
     override fun layout(): Int = R.layout.fragment_max_state_work
 
@@ -46,7 +46,6 @@ class MaxStateWorkFragment : BaseFragmentNew<FragmentMaxStateWorkBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle()
         mBinding.recyclerView.apply {
             adapter = this@MaxStateWorkFragment.adapter
             onScrolled { _, _ ->
@@ -94,15 +93,6 @@ class MaxStateWorkFragment : BaseFragmentNew<FragmentMaxStateWorkBinding>(),
         }
     }
 
-    private fun setToolbarTitle() {
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
-        setToolbarTitleAndIcon(
-            getString(R.string.profile_work_experience),
-            actionIcon,
-            action = {
-                presenter.onClickClose()
-            })
-    }
 
     override fun setClickClose(type: Int) {
         when (presenter.screen) {
@@ -117,4 +107,15 @@ class MaxStateWorkFragment : BaseFragmentNew<FragmentMaxStateWorkBinding>(),
         Toast.makeText(requireContext(), message?.let { "$title: $it" }
             ?: title, Toast.LENGTH_SHORT).show()
     }
+
+    override val title: CharSequence by lazy { getString(R.string.profile_work_experience) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    }
+    override fun actionIconClick() {
+        presenter.onClickClose()
+    }
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

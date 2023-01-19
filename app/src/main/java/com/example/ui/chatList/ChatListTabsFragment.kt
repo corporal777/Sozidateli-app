@@ -20,14 +20,17 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.util.smoothScrollToFirstItem
+import com.google.android.material.appbar.AppBarLayout
+import offsetChangedListener
+import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
 class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
     ChatListTabsContract.View {
-
 
     @InjectPresenter
     lateinit var presenter: ChatListTabsPresenter
@@ -38,30 +41,15 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
     @ProvidePresenter
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
 
-    private var isFinishAnimation = true
-    private var onScrollStateChangeListener = object : ChatListFragment.OnChatListScrollingState {
-        override fun onScrollUp(value: Int) = showView(mBinding.clTabs)
-        override fun onScrollDown(value: Int) = hideView(mBinding.clTabs)
-        override fun onScrollOffsetValue(value: Int) = presenter.changeAppBarElevation(value)
-    }
-
-    private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
-        override fun onPageSelected(position: Int) {
-            when (position) {
-                0 -> presenter.onChatsSelected()
-                1 -> presenter.onInvitesSelected()
-            }
-
-            selectTab(position)
+    private val pageChangeListener = onPageChanged { position ->
+        when (position) {
+            0 -> presenter.onChatsSelected()
+            1 -> presenter.onInvitesSelected()
         }
+        selectTab(position)
     }
 
-    private val fragments by lazy {
-        listOf(
-            ChatListFragment(onScrollStateChangeListener),
-            InviteListFragment()
-        )
-    }
+    private val fragments by lazy { listOf(ChatListFragment(), InviteListFragment()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,22 +65,31 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
                 }
                 addOnPageChangeListener(pageChangeListener)
             }
-            ivBack.setOnClickListener { findNavController().navigateUp() }
+
             btnTabChats.setOnClickListener { viewPager.currentItem = 0 }
             btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
+            fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
+            appBarLayout.offsetChangedListener { appBarLayout, i ->
+                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+            }
         }
-
     }
 
     override fun selectTab(position: Int) {
         when (position) {
             0 -> {
-                mBinding.btnTabChats.isSelected = true
-                mBinding.btnTabRequests.isSelected = false
+                mBinding.apply {
+                    if (!fabNewChat.isShown) fabNewChat.show()
+                    btnTabChats.isSelected = true
+                    btnTabRequests.isSelected = false
+                }
             }
             1 -> {
-                mBinding.btnTabRequests.isSelected = true
-                mBinding.btnTabChats.isSelected = false
+                mBinding.apply {
+                    if (fabNewChat.isShown) fabNewChat.hide()
+                    btnTabRequests.isSelected = true
+                    btnTabChats.isSelected = false
+                }
             }
         }
     }
@@ -105,65 +102,74 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
         mBinding.tvChatsBadge.isVisible = count > 0
     }
 
-
-    private fun hideView(animationView: View) {
-        if (animationView == null || animationView.getVisibility() == View.GONE) {
-            return
-        }
-        val animationDown =
-            AnimationUtils.loadAnimation(animationView.getContext(), R.anim.move_up)
-        animationDown.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-                animationView.setVisibility(View.VISIBLE)
-                isFinishAnimation = false
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                animationView.setVisibility(View.GONE)
-                isFinishAnimation = true
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-        if (isFinishAnimation) {
-            animationView.startAnimation(animationDown)
-        }
-    }
-
-    private fun showView(animationView: View) {
-        if (animationView == null || animationView.getVisibility() == View.VISIBLE) {
-            return
-        }
-        val animationUp =
-            AnimationUtils.loadAnimation(animationView.getContext(), R.anim.move_down)
-        animationUp.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-                animationView.setVisibility(View.VISIBLE)
-                isFinishAnimation = false
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                isFinishAnimation = true
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-        if (isFinishAnimation) {
-            animationView.startAnimation(animationUp)
-        }
-    }
-
     fun smoothScrollToFirstItem() {
         if (mBinding.viewPager.currentItem == 0) {
-            (fragments[0] as ChatListFragment).smoothScrollToFirstItem()
+            (fragments[0] as ChatListFragment).smoothScrollToFirstItem(mBinding.appBarLayout)
         } else {
-            (fragments[1] as InviteListFragment).smoothScrollToFirstItem()
+            (fragments[1] as InviteListFragment).smoothScrollToFirstItem(mBinding.appBarLayout)
         }
     }
 
-    override fun setAppBarShadow(value: Float) {
-        mBinding.appBarLayout.changeAppBarElevation(value)
+    override fun openSearch() {
+        findNavController().navigate(R.id.chat_search_fragment)
     }
+
+    private var cashCollapseState: Pair<Int, Int>? = null
+    private fun updateViews(offset: Float) {
+        when {
+            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+        }.apply {
+            when {
+                cashCollapseState != null && cashCollapseState != this -> {
+                    when (first) {
+                        TO_EXPANDED -> {
+                            mBinding.apply {
+                                tvLabelSmall.apply {
+                                    alpha = 1F
+                                    animate().setDuration(500).alpha(0.0f)
+                                    visibility = View.GONE
+                                }
+                                tvLabelLarge.apply {
+                                    visibility = View.VISIBLE
+                                    alpha = 0F
+                                    animate().setDuration(500).alpha(1.0f)
+                                }
+                            }
+                        }
+                        TO_COLLAPSED -> {
+                            mBinding.apply {
+                                tvLabelSmall.apply {
+                                    alpha = 0F
+                                    animate().setDuration(500).alpha(1.0f)
+                                    tvLabelSmall.visibility = View.VISIBLE
+                                }
+                                tvLabelLarge.apply {
+                                    alpha = 1F
+                                    animate().setDuration(500).alpha(0.0f)
+                                    visibility = View.GONE
+                                }
+                            }
+
+                        }
+                    }
+                    cashCollapseState = Pair(first, SWITCHED)
+                }
+                else -> {
+                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val SWITCH_BOUND = 0.3f
+        const val TO_EXPANDED = 0
+        const val TO_COLLAPSED = 1
+        const val WAIT_FOR_SWITCH = 0
+        const val SWITCHED = 1
+    }
+
 
     override fun layout() = R.layout.fragment_chat_list_tabs
 }

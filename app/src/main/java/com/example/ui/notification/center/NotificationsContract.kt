@@ -5,11 +5,18 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.BaseContract
+import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface NotificationsContract {
     interface View : BaseContract.View {
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setNotificationsList()
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setData(notifications: List<Notification?>)
+
+        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        fun showEmptyListPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUrl(url: String)

@@ -1,6 +1,5 @@
 package com.example.ui.profile.data
 
-import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -14,22 +13,20 @@ import com.example.R
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.util.loadBitmap
-import com.example.util.qr_generator.QrCodeGenerator
-import com.example.util.qr_generator.QrData
-import com.example.util.qr_generator.QrErrorCorrectionLevel
-import com.example.util.qr_generator.createQrOptions
-import com.example.util.qr_generator.style.*
-import com.example.util.qr_generator.vector.QrCodeDrawable
-import com.example.util.qr_generator.vector.createQrVectorOptions
-import com.example.util.qr_generator.vector.style.QrVectorBallShape
-import com.example.util.qr_generator.vector.style.QrVectorColor
-import com.example.util.qr_generator.vector.style.QrVectorFrameShape
-import com.example.util.qr_generator.vector.style.QrVectorPixelShape
+import com.example.util.rxtakephoto.RxTakePhoto
 import com.example.util.saveImageToCache
-import com.example.util.saveImageToGallery
+import com.generator.qrcodegenerator.QrCodeGenerator
+import com.generator.qrcodegenerator.QrData
+import com.generator.qrcodegenerator.QrErrorCorrectionLevel
+import com.generator.qrcodegenerator.createQrOptions
+import com.generator.qrcodegenerator.style.*
+import com.generator.qrcodegenerator.vector.QrCodeDrawable
+import com.generator.qrcodegenerator.vector.createQrVectorOptions
+import com.generator.qrcodegenerator.vector.style.QrVectorBallShape
+import com.generator.qrcodegenerator.vector.style.QrVectorColor
+import com.generator.qrcodegenerator.vector.style.QrVectorFrameShape
+import com.generator.qrcodegenerator.vector.style.QrVectorPixelShape
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -41,6 +38,7 @@ class ProfileDataPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
     private val rxPermissions: RxPermissions,
+    private val takePhoto: RxTakePhoto,
     private val appData: AppData,
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
@@ -52,17 +50,18 @@ class ProfileDataPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
+        val userLink = BuildConfig.SHARE_URL + "portal/user/" + userId
+        viewState.setName(userName, userLink)
+
+
         if (context != null) {
-            val userLink = BuildConfig.SHARE_URL + "portal/user/" + userId
             compositeDisposable += getQrCodeBitmapFromDrawable(context!!, userLink, userImageUrl)
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
                     onError = {
                         it.printStackTrace()
-                        viewState.apply {
-                            setName(userName, userLink)
-                            showQrCodeLoadingProgress()
-                        }
+                        viewState.showQrCodeLoadingProgress()
                         compositeDisposable += getQrCodeBitmap(context!!, userLink, userImageUrl)
                             .onErrorResumeNext(getQrCodeBitmapFromUrl(context!!, userCodeUrl))
                             .performOnBackgroundOutOnMain()
@@ -80,11 +79,9 @@ class ProfileDataPresenter
 
                     },
                     onSuccess = {
-                        viewState.apply {
-                            setImage(it)
-                            setName(userName, userLink)
-                        }
-                    })
+                        viewState.setImage(it)
+                    }
+                )
 
         }
 
@@ -111,22 +108,17 @@ class ProfileDataPresenter
     }
 
     override fun saveImageToGalleryClick(context: Context, image: Bitmap) {
-        compositeDisposable += rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .subscribeSimple {
-                if (it) {
-                    compositeDisposable += Completable.fromAction {
-                        saveImageToGallery(context, image, "sozidateli_images")
-                    }
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple {
-                            viewState.showSnackBarMessage(
-                                context.getString(R.string.qr_code_is_saved),
-                                R.drawable.ic_profile_code_save_filled
-                            )
-                        }
-                }
-            }
-
+        compositeDisposable += takePhoto.saveImage(image)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                }, onComplete = {
+                    viewState.showSnackBarMessage(
+                        context.getString(R.string.qr_code_is_saved),
+                        R.drawable.ic_profile_code_save_filled
+                    )
+                })
     }
 
     private fun getQrCodeBitmap(context: Context, link: String, uri: String): Maybe<Bitmap> {
@@ -154,9 +146,12 @@ class ProfileDataPresenter
                         QrColor.Solid(ContextCompat.getColor(context, R.color.qr_code_pixels_color))
                 }
                 shapes {
-                    darkPixel = QrPixelShape.RoundCorners()
-                    ball = QrBallShape.RoundCorners(.30f)
-                    frame = QrFrameShape.RoundCorners(.30f)
+//                    darkPixel = QrPixelShape.RoundCorners()
+//                    ball = QrBallShape.RoundCorners(.30f)
+//                    frame = QrFrameShape.RoundCorners(.30f)
+                    darkPixel = QrPixelShape.Default
+                    ball = QrBallShape.Default
+                    frame = QrFrameShape.Default
                 }
             }
             QrCodeGenerator(context).generateQrCode(data, opt)
@@ -192,9 +187,12 @@ class ProfileDataPresenter
                         .Solid(ContextCompat.getColor(ct, R.color.qr_code_pixels_color))
                 }
                 shapes {
-                    darkPixel = QrVectorPixelShape.RoundCorners(.5f)
-                    ball = QrVectorBallShape.RoundCorners(.30f)
-                    frame = QrVectorFrameShape.RoundCorners(.30f)
+//                    darkPixel = QrVectorPixelShape.RoundCorners(.5f)
+//                    ball = QrVectorBallShape.RoundCorners(.30f)
+//                    frame = QrVectorFrameShape.RoundCorners(.30f)
+                    darkPixel = QrVectorPixelShape.Default
+                    ball = QrVectorBallShape.Default
+                    frame = QrVectorFrameShape.Default
                 }
                 errorCorrectionLevel = QrErrorCorrectionLevel.Medium
             }

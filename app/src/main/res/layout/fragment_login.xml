@@ -127,32 +127,16 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
                 android:visibility="gone"
+                tools:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/llInput" />
 
-            <!--        <androidx.appcompat.widget.AppCompatButton-->
-            <!--            android:id="@+id/ibLogin"-->
-            <!--            android:layout_width="0dp"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_marginStart="@dimen/margin_horizontal_default"-->
-            <!--            android:layout_marginTop="30dp"-->
-            <!--            android:layout_marginEnd="@dimen/margin_horizontal_default"-->
-            <!--            android:background="@drawable/background_action_button_selector"-->
-            <!--            android:minHeight="@dimen/auth_button_min_height"-->
-            <!--            android:text="@string/auth_action_login"-->
-            <!--            android:textAllCaps="false"-->
-            <!--            android:textColor="@color/text_color_action_button"-->
-            <!--            android:textSize="14sp"-->
-            <!--            app:layout_constraintEnd_toEndOf="parent"-->
-            <!--            app:layout_constraintStart_toStartOf="parent"-->
-            <!--            app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword"-->
-            <!--            app:layout_goneMarginBottom="24dp" />-->
 
             <androidx.appcompat.widget.AppCompatButton
                 style="@style/BtnBrownStyle"
-                android:id="@+id/ibLogin"
+                android:id="@+id/btn_login"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,7 +160,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ibLogin"
+                app:layout_constraintTop_toBottomOf="@+id/btn_login"
                 app:layout_constraintVertical_bias="1.0">
 
                 <TextView

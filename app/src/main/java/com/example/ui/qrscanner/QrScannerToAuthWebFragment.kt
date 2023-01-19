@@ -1,26 +1,22 @@
 package com.example.ui.qrscanner
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.*
 import com.example.R
-import com.example.ui.base.BaseFragment
+import com.example.databinding.FragmentAuthWebBinding
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.util.REQUEST_CAMERA
-import com.example.util.REQUIRED_CAMERA_PERMISSIONS
-import kotlinx.android.synthetic.main.fragment_auth_web.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class QrScannerToAuthWebFragment : BaseFragment(), QrScannerToAuthWebContract.View {
+class QrScannerToAuthWebFragment : BaseFragmentNew<FragmentAuthWebBinding>(),
+    QrScannerToAuthWebContract.View {
 
-    private lateinit var codeScanner: CodeScanner
-
+    private var codeScanner: CodeScanner? = null
 
     @InjectPresenter
     lateinit var mPresenter: QrScannerToAuthWebPresenter
@@ -29,76 +25,58 @@ class QrScannerToAuthWebFragment : BaseFragment(), QrScannerToAuthWebContract.Vi
     lateinit var presenterProvider: Provider<QrScannerToAuthWebPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): QrScannerToAuthWebPresenter = presenterProvider.get().apply {
-
-    }
+    fun providePresenter(): QrScannerToAuthWebPresenter = presenterProvider.get()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        codeScanner = CodeScanner(requireActivity(), scannerView)
-        setupScanner()
+        if (codeScanner == null) {
+            codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
+                camera = CodeScanner.CAMERA_BACK
+                formats = CodeScanner.ALL_FORMATS
+                autoFocusMode = AutoFocusMode.SAFE
+                scanMode = ScanMode.CONTINUOUS
+                autoFocusMode = AutoFocusMode.SAFE
+                isAutoFocusEnabled = true
+                decodeCallback = DecodeCallback {
+                    requireActivity().runOnUiThread {
+                        mPresenter.onSuccessScanning(it.text)
+                        stopPreview()
+                    }
+                }
+                errorCallback = ErrorCallback {
+                    requireActivity().runOnUiThread {
+                        mPresenter.onErrorScanning()
+                        stopPreview()
+                    }
+                }
+            }
+        }
 
-        ivClose.setOnClickListener {
+        mBinding.ivClose.setOnClickListener {
             findNavController().navigateUp()
         }
     }
 
-
-    private fun setupScanner() {
-        PermissionsBuilder(REQUEST_CAMERA)
-            .addPermissions(REQUIRED_CAMERA_PERMISSIONS)
-            .setPermissionsGrantedCallback {
-                codeScanner()
-            }.setPermissionsNotGrantedCallback {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    REQUIRED_CAMERA_PERMISSIONS,
-                    REQUEST_CAMERA
-                )
-            }
-            .request()
+    override fun startPreview() {
+        codeScanner?.apply { if (!isPreviewActive) startPreview() }
     }
 
-    private fun codeScanner() {
-        codeScanner.apply {
-            camera = CodeScanner.CAMERA_BACK
-            formats = CodeScanner.ALL_FORMATS
-            autoFocusMode = AutoFocusMode.SAFE
-            scanMode = ScanMode.CONTINUOUS
-            autoFocusMode = AutoFocusMode.SAFE
-            isAutoFocusEnabled = true
-            decodeCallback = DecodeCallback {
-                requireActivity().runOnUiThread {
-                    Log.e("Result", "Camera Result ${it.text}")
-                    mPresenter.onSuccessScanning(it.text)
-                    stopPreview()
-                }
-            }
-            errorCallback = ErrorCallback {
-                requireActivity().runOnUiThread {
-                    mPresenter.onErrorScanning()
-                    Log.e("Result", "Camera error ${it.message}")
-                }
-            }
-            scannerView.setOnClickListener {
-                codeScanner.startPreview()
-            }
-            codeScanner.startPreview()
-        }
-    }
-
-    override fun layout(): Int = R.layout.fragment_auth_web
-
-    override fun goToAuthWebsite(code: String) {
+    override fun showAuthWebsite(code: String) {
         findNavController().navigate(
-            QrScannerToAuthWebFragmentDirections.actionQrScannerFragmentToAuthWebsiteFragment(
-                code
-            )
+            QrScannerToAuthWebFragmentDirections.actionQrScannerFragmentToAuthWebsiteFragment(code)
         )
     }
 
     override fun showErrorScanningMessage() {
         val message = "Не удалось отсканировать"
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {  }
+        MessageDialogWithBrownButton(requireContext(), message, isCancelable = false)
+            .setSelectCallback { startPreview() }
     }
+
+    override fun onPause() {
+        codeScanner?.releaseResources()
+        super.onPause()
+    }
+
+    override fun layout(): Int = R.layout.fragment_auth_web
 }

@@ -5,7 +5,7 @@ import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.util.pagination.PaginationResponse
-import com.google.firebase.iid.InstanceIdResult
+import com.google.firebase.iid.FirebaseInstanceIdReceiver
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -13,9 +13,11 @@ import retrofit2.http.Body
 import retrofit2.http.Path
 import retrofit2.http.Query
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface UserRepository {
+    fun getUser(): Maybe<UserDetail>
     fun getUserShortNew(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserByIdNew(id: String): Maybe<UserDetail>
@@ -29,7 +31,7 @@ interface UserRepository {
     //fun markNotificationsAsRead(ids: List<Int>): Completable
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
-    fun getFcmToken(): Maybe<InstanceIdResult>
+    //fun getFcmToken(): Maybe<InstanceIdResult>
     fun notificationsRegister(token: String): Completable
     fun notificationsUnregister(token: String): Completable
     fun updateUser(data: Map<String, Any?>): Single<User>
@@ -57,8 +59,9 @@ interface UserRepository {
     fun deleteProfile(id: Int): Completable
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
+    fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail>
     fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
-    fun confirmEmailCodeNew(id: Int, body: EmailCodeBody): Completable
+    fun confirmEmailCodeNew(body: EmailCodeBody): Completable
     fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
     fun sendPhoneCode(id: Int, phone: String): Completable
 
@@ -75,6 +78,7 @@ interface UserRepository {
     fun deleteImage(): Completable
     fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel>
     fun changeRecommendedFile(fileId: Int, body: List<MultipartBody.Part?>): Single<ImageModel>
+    fun changeRecommendedFiles(body: RequestBody): Single<List<FileModel>>
     fun deleteRecommendedFile(fileId : Int): Completable
     //fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
     fun deleteProfile(): Completable
@@ -112,4 +116,6 @@ interface UserRepository {
     fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail>
     fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
     fun checkEmailPhone(email: String?, phone: String?): Completable
+
+    fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<SearchUserData?>>
 }

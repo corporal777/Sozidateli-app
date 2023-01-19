@@ -8,46 +8,25 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
+import com.example.databinding.ItemOrganizationBinding
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_organization.*
 import parseColor
 
 class OrganizationItem(
-        private val organization: OrganizationNew/*Organization*/,
+        private val organization: OrganizationNew,
         private val onOrganizationClick: () -> Unit,
         private val onSubscribeClick: (() -> Unit)? = null
-) : Item(organization.id?.toLong()?: 0) {
+) : BindableItem<ItemOrganizationBinding>(organization.id?.toLong()?: 0) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            /*tvOrganizationName.text = organization.name
-            itemView.setOnClickListener { onOrganizationClick.invoke() }
-            btnAction.apply {
-                isVisible = if (onSubscribeClick != null) {
-                    setAction(if (organization.isSubscribed == true) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)
-                    setOnClickListener { onSubscribeClick.invoke() }
-                    true
-                } else {
-                    false
-                }
-            }
-
-            tvOrganizationImageName.apply {
-                text = organization.name
-                clipToOutline = true
-                ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(organization.backgroundColor.parseColor()
-                        ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
-            }
-
-            ivOrganizationImage.apply {
-                clipToOutline = true
-                Picasso.get().load(organization.logo.let { if (it.isNullOrBlank()) null else it }).into(this)
-            }*/
+    override fun bind(viewBinding: ItemOrganizationBinding, position: Int) {
+        viewBinding.apply {
             tvOrganizationName.text = organization.legalInformation?.name?.short
-            itemView.setOnClickListener { onOrganizationClick.invoke() }
+            root.setOnClickListener { onOrganizationClick.invoke() }
             btnAction.apply {
                 isVisible = if (onSubscribeClick != null) {
                     setAction(if (organization.binds?.userFavorite != null) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE)

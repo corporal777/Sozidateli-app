@@ -1,6 +1,7 @@
 package com.example.ui.notification
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,10 +17,11 @@ import com.example.databinding.FragmentNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
@@ -28,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
-    NotificationContract.View, SimpleTitleToolbar {
+    NotificationContract.View, ToolbarFragmentNew {
 
     private var isCanceled = false
     private var isAccepted = false
@@ -48,7 +50,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.notification_label))
         mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
             presenter.changeAppBarElevation(scrollY - oldScrollY)
         }
@@ -222,12 +223,6 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
     }
 
     override fun showErrorDialog(errors: List<String>, projectName: String) {
-//        ProfileDialog(
-//            requireContext(),
-//            projectName,
-//            errors
-//        ).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
-
         mBinding.btnAccept.isEnabled = true
         GetMaxStateDialog(requireContext())
             .setSelectCallback { findNavController().navigate(R.id.userStateFragment) }
@@ -270,4 +265,10 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
     }
 
     override fun layout() = R.layout.fragment_notification
+    override val title: CharSequence by lazy { getString(R.string.notification_label) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

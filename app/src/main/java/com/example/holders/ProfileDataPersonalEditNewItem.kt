@@ -33,17 +33,11 @@ import java.util.*
 class ProfileDataPersonalEditNewItem(
         id: Long,
         context: Context,
-        /*private val name: String?,
-        private val surname: String?,
-        private val middleName: String?,
-        private val noMiddleName: Boolean,*/
         private val gender: ToggleStringModel?,
         private val birthday: String?,
         private val showBirthday: Boolean,
         private val address: UserAddress,
         private val notes: ToggleStringModel?,
-        /*private val canEditName: Boolean,
-        private val fragmentManager: FragmentManager,*/
         private val addInfoClick:() -> Unit
 ) : Item(id) {
 
@@ -75,24 +69,6 @@ class ProfileDataPersonalEditNewItem(
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         this.viewHolder = viewHolder
         viewHolder.apply {
-            /*tilSurname.initNameInput(surname) { mSurname = it.toString() }
-            tilName.initNameInput(mName) { mName = it.toString() }
-            tilMiddleName.initNameInput(mMiddleName) { mMiddleName = it.toString() }
-
-            scNoMiddleName.apply {
-                isChecked = mNoMiddleNameChecked
-                isEnabled = isCanChangeName
-                if (isCanChangeName) {
-                    setOnCheckedChangeListener { _, isChecked ->
-                        mNoMiddleNameChecked = isChecked
-                        etMiddleName.apply {
-                            if (isChecked) etMiddleName.setText("")
-                            tilMiddleName.isEnabled = !isChecked
-                            if (!isEnabled) tilMiddleName.error = null
-                        }
-                    }
-                }
-            }*/
             etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
             tilBirthday.initAsDatePicker(
                     mBirthday?.let { defaultDateFormatter.parse(it) },

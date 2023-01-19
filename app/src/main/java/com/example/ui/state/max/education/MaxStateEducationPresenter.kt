@@ -2,10 +2,7 @@ package com.example.ui.state.max.education
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.AcademicDegreeModel
-import com.example.data.models.EducationModel
-import com.example.data.models.FieldDetails
-import com.example.data.models.ToggleIntModel
+import com.example.data.models.*
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -96,14 +93,25 @@ class MaxStateEducationPresenter
                     viewState.showEmailIsNotUnique(email)
                 },
                 onComplete = {
-                    viewState.showEmailConfirmation(email)
+                    onShowEmailConfirm(email)
                 })
     }
 
-    override fun updateEmail(email: String) {
-        appData.updateUserNew {
-            this.email = FieldDetails(email, null, true, true, false, null)
-        }
-        viewState.showChangeEmailComplete(email)
+
+    override fun onShowEmailConfirm(email: String) {
+        compositeDisposable += userRepository.updateUserProfile(
+            appData.getId(),
+            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
+        ).ignoreElement()
+            .andThen(authRepository.registerEmailResend(email))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                appData.updateUserNew {
+                    this.email = FieldDetails(value = email)
+                }
+                viewState.showEmailConfirmation(email)
+            }
     }
+
 }

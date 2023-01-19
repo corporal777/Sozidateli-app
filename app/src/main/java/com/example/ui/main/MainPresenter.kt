@@ -11,7 +11,6 @@ import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.EmailCodeBody
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.*
@@ -41,6 +40,7 @@ import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -116,9 +116,9 @@ class MainPresenter
     private fun subscribeToTokenUpdates() {
         compositeDisposable += appData.tokenChangeSubject
             .performOnBackgroundOutOnMain()
-            .subscribe { token ->
+            .subscribeSimple { token ->
                 unsubscribeChat()
-                if (!isRegister){
+                if (!isRegister) {
                     if (token.value == null) {
                         isAuthRequired = true
                         viewState.apply {
@@ -134,13 +134,56 @@ class MainPresenter
 
     var isEditingPhone = false
     private fun loadUser() {
+        compositeDisposable += Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += userRepository.getUserShortNew().subscribeSimple(
+                    onError = { emitter.onError(it) },
+                    onSuccess = { user ->
+                        updateUserInShake(user)
+                        disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation()))
+                            .andThen(Completable.defer { checkInternetConnected() })
+                            .doOnComplete { connectToSocket(appData.getId()) }
+                            .andThen(Completable.defer { checkShowGreetings() })
+                            .subscribeSimple(
+                                onError = { emitter.onError(it) },
+                                onComplete = { emitter.onComplete() }
+                            )
+                    })
+            emitter.setDisposable(disposable)
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    isAuthRequired = true
+                    viewState.apply {
+                        hideLoadingDialog()
+                        showLogin()
+                        checkIntent()
+                    }
+                    initInternetConnectionCheck()
+                },
+                onComplete = {
+                    if (!isEditingPhone) {
+                        viewState.apply {
+                            hideLoadingDialog()
+                            showRecommendations()
+                            checkIntent()
+                        }
+                        showNextInapp()
+                        initInternetConnectionCheck()
+                    }
+                    isEditingPhone = false
+                }
+            )
+        /*
         val loadUser = userRepository.getUserShortNew().ignoreElement()
         val inApp = userRepository.getInAppList(
             mapOf(
                 NotificationModel.NOTIFICATION_LIMIT to 50,
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
                 NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to true
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
 //                NotificationModel.NOTIFICATION_IS_IN_APP to 0,
 //                NotificationModel.NOTIFICATION_ACKNOWLEDGED to 0
             )
@@ -178,6 +221,7 @@ class MainPresenter
                 },
                 //onSuccess = {}
             )
+         */
     }
 
     private fun initInternetConnectionCheck() {
@@ -323,7 +367,9 @@ class MainPresenter
 
                         val callback = object : LocationCallback() {
                             override fun onLocationResult(location: LocationResult) {
-                                emitter.onSuccess(location.lastLocation)
+                                location.lastLocation?.let {
+                                    emitter.onSuccess(it)
+                                }
                             }
                         }
                         locationProviderClient.requestLocationUpdates(
@@ -460,58 +506,6 @@ class MainPresenter
         viewState.showInviteRegister(email, code, name, lastName, middleName, invite)
     }
 
-    override fun onHandleAuthLink(emaill: String, code: String) {
-        //if (appData.token != null) return
-        isAuthRequired = true
-        /*authRepository.registerConfirm(email, code)
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.showFinishRegister() }, { viewState.showLogin() })
-                .call(compositeDisposable)*/
-        isRegister = true
-        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = emaill))
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                compositeDisposable += userRepository.getUserShortNew()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        viewState.showFinishRegister(
-                            it.name ?: "",
-                            it.lastName ?: "",
-                            it.middleName?.value,
-                            it.phone?.get(0)?.value,
-                            it.email?.value ?: "",
-                            code,
-                            it.phone?.get(0)?.isConfirmed ?: false,
-                            it.middleName?.value == USER_DATA_EMPTY,
-                            it.state?.nameEdited ?: true
-                        )
-                    }, { viewState.showLogin() })
-                /*try {
-                    appData.getUserNew().apply {
-                        viewState.showFinishRegister(name?: "",
-                                lastName?: "", middleName?.value,
-                                phone?.get(0)?.value, email?.value?: "", code,
-                                phone?.get(0)?.isConfirmed ?: false, middleName?.value == USER_DATA_EMPTY)
-                    }
-                } catch (e: Exception) {
-                    viewState.showLogin()
-                }*/
-                isRegister = false
-            }, {
-                viewState.showLogin()
-                isRegister = false
-            })
-            .call(compositeDisposable)
-
-        /*authRepository.registerData(email, code)
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.showFinishRegister(it.user?.user_name?: "",
-                        it.user?.user_last_name?: "", it.user?.user_middle_name,
-                it.user?.user_phone, it.user?.user_email?: "", code,
-                        it.user?.user_phone_confirmed?: false, it.user?.user_middle_name == USER_DATA_EMPTY) }, { viewState.showLogin() })
-                .call(compositeDisposable)*/
-    }
-
     override fun onHandleRecoverPasswordLink(/*email: String, */code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
             .performOnBackgroundOutOnMain()
@@ -521,41 +515,6 @@ class MainPresenter
             }.call(compositeDisposable)
     }
 
-    override fun onHandleChangeEmailConfirm(code: String, email: String) {
-        //if (isAuthRequired) return
-        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = email))
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                userRepository.getUserShortData()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        appData.updateUserNew {
-                            this.email = it.email
-                        }
-                    }, {})
-                compositeDisposable += userRepository.checkUserProfileSingle()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        if (appData.hasMaxState && appData.hasBaseState) {
-                            viewState.showDialogHasMaxState()
-                        } else if (!appData.hasMaxState && appData.hasBaseState) {
-                            viewState.showDialogHasBaseState()
-                        }
-                    }, {})
-                viewState.showDialogChangeEmailSuccess()
-            }, {
-                userRepository.getUserShortData()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        appData.updateUserNew {
-                            this.email = it.email
-                        }
-                    }, {})
-                viewState.showDialogChangeEmailError()
-            })
-            .call(compositeDisposable)
-    }
 
     override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
         compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
@@ -570,23 +529,13 @@ class MainPresenter
 
     override fun onHandleNotification(notification: RemoteNotification) {
         if (isAuthRequired) return
-//        val eventId = notification.event_id
-//        val organizationId = notification.organization_id
-//        when {
-//            notification.type == TYPE_INVITE -> showNotification(notification.id)
-//            notification.type == TYPE_RATE && eventId != 0 -> viewState.showRating(eventId.toString())
-//            eventId != 0 -> viewState.showEvent(eventId.toString())
-//            organizationId != 0 -> viewState.showOrganization(organizationId.toString())
-//            else -> showNotification(notification.id)
-//        }
-
         showNotification(notification.id)
     }
 
     private fun showNotification(notificationId: Int) {
         compositeDisposable += userRepository.getNotificationDetail(notificationId.toString(), true)
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
     }
 
@@ -651,23 +600,6 @@ class MainPresenter
             }, {
                 it.printStackTrace()
             })
-        /*chatCompositeDisposable += haChat.connect(userId.toString())
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val connected = it == ChatConnectionStatus.CONNECTED
-                    chatHelper.isConnectingToSocket = connected
-                    if (connected) {
-                        EventBus.getDefault().post(OnSocketConnectEvent())
-
-                        if (chatCompositeDisposable.size() == 1) {
-                            subscribeChatNewMessage()
-                            subscribeChatUnreadCount()
-                            subscribeChatRequestsCount()
-                        }
-                    }
-                }, {
-                    it.printStackTrace()
-                })*/
     }
 
     private fun subscribeToNotifications() {
@@ -756,30 +688,6 @@ class MainPresenter
             })
     }
 
-    /*private fun processNewChatMessage(newMessage: NewMessage) {
-        val chatId = newMessage.room
-        val messageId = newMessage.message._id
-        val message = when (newMessage.message.type) {
-            Message.Type.SERVICE -> if (newMessage.message.message == CHAT_SERVICE_MESSAGE_ACCEPT) chatAcceptMessageText else return
-            Message.Type.IMAGE -> photoMessageText
-            else -> newMessage.message.message
-        }
-
-        compositeDisposable += Maybe.fromCallable {
-            newMessage.message.additionalData?.fromJson<ChatMessageAdditionalData>()
-                    ?: throw NullPointerException("Additional data is null")
-        }
-                .onErrorResumeNext(userRepository.getUserByIdNew(newMessage.message.senderKey).map {
-                    ChatMessageAdditionalData(it.id, it.name, it.lastName, it.middleName?.value, it.image?.uri)
-                })
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple { messageData ->
-                    val senderName = "${messageData.name} ${messageData.lastName}${messageData.middleName?.let { if (it == "-") "" else " $it" }
-                            ?: ""}"
-                    val title = "$newMessageTitleText $senderName"
-                    chatHelper.showNotificationIfCan(chatId, messageId, title, message, title, messageData.avatar)
-                }
-    }*/
 
     private fun unsubscribeChat() {
         socket.disconnectFromSocket()
@@ -794,17 +702,14 @@ class MainPresenter
     }
 
     override fun onOpenStartDestination() {
-        viewState.showBackButton(false)
         chatHelper.currentChatId = null
     }
 
     override fun onOpenNotStartDestination() {
-        viewState.showBackButton(true)
         chatHelper.currentChatId = null
     }
 
     override fun onOpenChatDestination(chatId: String?) {
-        viewState.showBackButton(true)
         chatHelper.currentChatId = chatId
     }
 
@@ -849,6 +754,12 @@ class MainPresenter
         isRegister = isIgnore
     }
 
+    override fun onBackClick() {
+        if (!appData.isLoggedOut){
+            viewState.navigateUp()
+        }
+    }
+
     private fun observeDeeplink(url: String, type: AuthType) {
         when (type) {
             AuthType.OTHER_PLATFORM -> {
@@ -863,6 +774,17 @@ class MainPresenter
             }
         }
 
+    }
+
+    private fun getInAppRequest(): Completable {
+        return userRepository.getInAppList(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 50,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )
+        ).doOnSuccess { inappList = LinkedList(it) }.ignoreElement()
     }
 
     companion object {

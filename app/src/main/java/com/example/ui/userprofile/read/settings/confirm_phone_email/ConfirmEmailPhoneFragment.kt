@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
 import androidx.core.text.toSpannable
@@ -27,22 +28,20 @@ class ConfirmEmailPhoneFragment(val phone: String) :
     BaseBottomSheetFragment<BottomSheetConfirmPhoneBinding>(), ConfirmEmailPhoneContract.View {
 
 
+    private val timerEmailMessage by lazy { getString(R.string.auth_register_confirm_email_timer_two) }
+    private val timerPhoneMessage by lazy { getString(R.string.auth_register_confirm_phone_timer) }
+
     private var confirmEmailPhone: () -> Unit = {}
 
     @InjectPresenter(type = PresenterType.WEAK, tag = CONFIRM_PHONE_FRAGMENT_TAG)
-    lateinit var presenterEmail: ConfirmEmailPhonePresenter
+    lateinit var presenter: ConfirmEmailPhonePresenter
 
     @Inject
     lateinit var presenterProviderEmail: Provider<ConfirmEmailPhonePresenter>
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = CONFIRM_PHONE_FRAGMENT_TAG)
     fun providePresenter(): ConfirmEmailPhonePresenter = presenterProviderEmail.get().apply {
-        this.mobilePhone = phone
-        loginType = if (Utils.isPhone(phone) && !Utils.isContainLetters(phone)) {
-            "phone"
-        } else {
-            "email"
-        }
+        initLoginType(phone)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,18 +56,11 @@ class ConfirmEmailPhoneFragment(val phone: String) :
                 setOnClickListener {
                     hideKeyboard(it)
                     (requireActivity() as MainActivity).setIgnoreTokenListener(true)
-                    presenterEmail.confirmEmailPhone(phone, etCode.text.toString())
+                    presenter.confirmEmailPhone(phone, etCode.text.toString())
                 }
             }
-            btnResend.apply {
-                isEnabled = false
-                setOnClickListener {
-                    presenterEmail.sendCode()
-                }
-            }
-            btnClose.setOnClickListener {
-                dismiss()
-            }
+            btnResend.setOnClickListener { presenter.sendCodeAgain() }
+            btnClose.setOnClickListener { dismiss() }
         }
     }
 
@@ -78,7 +70,7 @@ class ConfirmEmailPhoneFragment(val phone: String) :
                 tvBottomSheetLabel.text = getString(R.string.status_profile_confirm_email_title)
                 etCode.setHint(R.string.code_email_input_label)
 
-                tvPhoneDescription.text = getFormattedDescription(
+                tvPhoneDescription.text = getEmailFormattedDescription(
                     getString(R.string.code_email_dialog_text, phone),
                     phone
                 )
@@ -94,16 +86,16 @@ class ConfirmEmailPhoneFragment(val phone: String) :
                 }
             } else {
                 tvBottomSheetLabel.text = getString(R.string.status_profile_title_set_new)
+                btnResend.text = getString(R.string.send_call_again)
                 etCode.setHint(R.string.code_phone_input_label)
                 tvPhoneInformation.isVisible = false
 
-                tvPhoneDescription.text = getFormattedDescription(
-                    getString(R.string.code_phone_dialog_text, phone),
+                tvPhoneDescription.text = getPhoneFormattedDescription(
+                    "Введите последние 4 цифры номера входящего звонка на номер:",
                     phone
                 )
             }
 
-            contentContainer.visibility = View.VISIBLE
             focusOnInput(etCode, true)
         }
     }
@@ -114,16 +106,14 @@ class ConfirmEmailPhoneFragment(val phone: String) :
 
     override fun setTimeLeft(time: Int) {
         val quantity = Utils.timerFormatter(time, requireContext())
+        val visible = time <= 0
+        val desc = if (presenter.loginType == "email")
+            String.format(timerEmailMessage, quantity)
+        else String.format(timerPhoneMessage, quantity)
+
         mBinding.tvTimer.apply {
-            if (time <= 0) {
-                isInvisible = true
-            } else {
-                isInvisible = false
-                text = String.format(
-                    getString(R.string.auth_register_confirm_email_timer_two),
-                    quantity
-                )
-            }
+            isInvisible = visible
+            text = desc
         }
     }
 
@@ -134,19 +124,8 @@ class ConfirmEmailPhoneFragment(val phone: String) :
     }
 
     override fun setCodeError(show: Boolean) {
-        if (show) {
-            mBinding.tilCode.error = getString(R.string.auth_error_code)
-        } else {
-            mBinding.tilCode.error = null
-        }
-    }
-
-    override fun showProgressLoading() {
-        mBinding.progressView.showProgressBar()
-    }
-
-    override fun hideProgressLoading() {
-        mBinding.progressView.hideProgressBar()
+        if (show) mBinding.tilCode.error = getString(R.string.auth_error_code)
+        else mBinding.tilCode.error = null
     }
 
     fun setConfirmCallback(block: () -> Unit): ConfirmEmailPhoneFragment {
@@ -158,7 +137,7 @@ class ConfirmEmailPhoneFragment(val phone: String) :
         const val CONFIRM_PHONE_FRAGMENT_TAG = "confirm_phone_tag"
     }
 
-    private fun getFormattedDescription(text: String, login: String): SpannableString {
+    private fun getEmailFormattedDescription(text: String, login: String): SpannableString {
         return SpannableString(text).apply {
             val font =
                 Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_display_bold.ttf")
@@ -169,6 +148,20 @@ class ConfirmEmailPhoneFragment(val phone: String) :
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
+    }
+
+    private fun getPhoneFormattedDescription(text: String, login: String): SpannableStringBuilder {
+        val phone = SpannableString(login).apply {
+            val font =
+                Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_display_bold.ttf")
+            setSpan(
+                CustomTypefaceSpan("", font),
+                0,
+                login.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return SpannableStringBuilder(text).append("\n").append("\n").append(phone)
     }
 
 

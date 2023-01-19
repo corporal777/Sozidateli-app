@@ -18,5 +18,6 @@ class ToolbarContentView(context: Context) : FrameLayout(context) {
     fun getTitleView(block: TextView.() -> Unit) = block(tvTitle)
     fun getLeftViewContainer(block: ViewGroup.() -> Unit) = block(viewsLeft)
     fun getRightViewContainer(block: ViewGroup.() -> Unit) = block(viewsRight)
+    fun getElevationValue() = Float
 }
 

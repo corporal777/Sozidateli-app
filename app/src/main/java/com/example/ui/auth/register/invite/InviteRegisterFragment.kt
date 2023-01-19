@@ -7,14 +7,12 @@ import android.os.Bundle
 import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.extensions.showChangeEmailCompleteDialog
-import com.example.ui.auth.register.email.finishregister.FinishRegisterFragmentDirections
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_finish_register.*
@@ -30,8 +28,6 @@ import kotlinx.android.synthetic.main.fragment_invite_register.scNoMiddleName
 import kotlinx.android.synthetic.main.fragment_invite_register.tilEmail
 import kotlinx.android.synthetic.main.fragment_invite_register.tilFirstName
 import kotlinx.android.synthetic.main.fragment_invite_register.tilLastName
-import kotlinx.android.synthetic.main.fragment_register_email_new.*
-import kotlinx.android.synthetic.main.fragment_register_email_new.password
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider

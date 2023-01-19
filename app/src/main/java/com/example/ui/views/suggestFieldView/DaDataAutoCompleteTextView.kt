@@ -21,6 +21,7 @@ import javax.inject.Provider
 
 class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoCompleteTextViewContract.View {
 
+
     private val mvpDelegate by lazy { MvpDelegate(this) }
 
     @InjectPresenter

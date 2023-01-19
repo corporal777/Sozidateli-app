@@ -1,5 +1,6 @@
 package com.example.ui.search.user
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
@@ -10,17 +11,23 @@ import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.models.UserDetail.Companion.USER_OFFSET
 import com.example.data.models.UserDetail.Companion.USER_SEARCH
 import com.example.data.models.user.User
+import com.example.extensions.buildListNew
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
 import com.example.ui.views.StateType
+import com.example.util.pagination.flow.PaginationListFlow
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> constructor(
@@ -29,6 +36,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
         private val commonRepository: CommonRepository,
         private val eventRepository: EventRepository
 ) : SearchPresenter<V, UserDetail, SearchFilter.UserNew>(appData), SearchUserContract.Presenter {
+
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         val data = mutableMapOf<String, Any>().apply {
@@ -57,6 +65,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
         compositeDisposable += commonRepository.getInterests()
                 .map { interests ->
                     interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
@@ -166,5 +175,7 @@ abstract class AbstractSearchUserPresenter<V : SearchUserContract.View> construc
 
         private const val SEARCH_AGE_MIN = 14
         private const val SEARCH_AGE_MAX = 150
+
+        const val SEARCH_USER_TYPE = "user"
     }
 }

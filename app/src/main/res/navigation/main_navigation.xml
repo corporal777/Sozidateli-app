@@ -11,6 +11,22 @@
         tools:layout="@layout/fragment_splash" />
 
     <fragment
+        android:id="@+id/account_auth_fragment"
+        android:name="com.example.ui.accountChange.AccountAuthFragment"
+        android:label="Auth">
+
+        <action
+            android:id="@+id/login_to_login_email_action"
+            app:destination="@id/login_fragment" />
+        <action
+            android:id="@+id/authorization_fragment_to_register_email_new_fragment"
+            app:destination="@id/register_email_new_fragment" />
+        <action
+            android:id="@+id/authorization_fragment_to_register_sn_fragment"
+            app:destination="@id/register_sn_fragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/authorization_fragment"
         android:name="com.example.ui.auth.authorization.AuthorizationFragment"
         android:label="Login">
@@ -138,70 +154,10 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/register_email_finish_fragment"
-        android:name="com.example.ui.auth.register.email.finishregister.FinishRegisterFragment"
-        android:label="Register">
-
-        <action
-            android:id="@+id/register_to_mail"
-            app:destination="@+id/recommendations_fragment"
-            app:popUpTo="@id/main_navigation" />
-
-        <action
-            android:id="@+id/email_register_to_phone_confirm_fragment"
-            app:destination="@id/phone_confirm_fragment" />
-
-        <argument
-            android:name="code"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="name"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="lastName"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="email"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="middleName"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="isConfirmed"
-            android:defaultValue="false"
-            app:argType="boolean" />
-
-        <argument
-            android:name="nameEdited"
-            android:defaultValue="false"
-            app:argType="boolean" />
-
-        <argument
-            android:name="isNoMiddleName"
-            android:defaultValue="false"
-            app:argType="boolean" />
-
-    </fragment>
 
     <fragment
-        android:id="@+id/fragment_finish_register_new"
-        android:name="com.example.ui.auth.register.email.finishregister.newbuild.FinishRegisterNewFragment"
+        android:id="@+id/fragment_finish_register"
+        android:name="com.example.ui.auth.register.email.finish.FinishRegisterFragment"
         android:label="Register">
 
         <argument
@@ -255,9 +211,6 @@
         android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment"
         android:label="Register">
 
-        <action
-            android:id="@+id/register_to_finish_register"
-            app:destination="@id/register_email_finish_fragment" />
 
         <action
             android:id="@+id/email_register_to_email_confirm"
@@ -318,9 +271,6 @@
             app:argType="com.example.data.models.SnUser"
             app:nullable="true" />
 
-        <action
-            android:id="@+id/email_confirm_to_finish_register"
-            app:destination="@id/register_email_finish_fragment" />
         <!--app:popUpTo="@id/register_sn_fragment"
         app:popUpToInclusive="true" />-->
 
@@ -603,26 +553,6 @@
         android:name="com.example.ui.profile.favoritesTab.FavoriteTabsFragment"
         android:label="@string/profile_favorite" />
 
-    <fragment
-        android:id="@+id/organization_fragment"
-        android:name="com.example.ui.organizations.OrganizationFragment">
-        <argument
-            android:name="organizationId"
-            app:argType="string"
-            app:nullable="false" />
-
-        <action
-            android:id="@+id/organization_to_organization_events"
-            app:destination="@id/organization_events_fragment" />
-
-        <action
-            android:id="@+id/organization_to_organization_users"
-            app:destination="@id/organization_members_fragment" />
-
-        <action
-            android:id="@+id/organization_to_user"
-            app:destination="@id/user_fragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/organization_events_fragment"
@@ -1424,7 +1354,7 @@
 
         <action
             android:id="@+id/change_account_fragment_to_authFragment"
-            app:destination="@id/auth_fragment_new" />
+            app:destination="@id/account_auth_fragment" />
 
         <action
             android:id="@+id/change_account_fragment_to_loginFragment"
@@ -1446,12 +1376,6 @@
             app:nullable="false" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/auth_fragment_new"
-        android:name="com.example.ui.auth.authorization.AuthorizationFragmentNew"
-        android:label="AuthorizationFragmentNew"
-        tools:layout="@layout/fragment_authorization" />
 
     <dialog
         android:id="@+id/change_password_fragment"
@@ -1494,7 +1418,7 @@
 
     <fragment
         android:id="@+id/organization_fragment_new"
-        android:name="com.example.ui.organizations.redesign.OrganizationFragmentNew">
+        android:name="com.example.ui.organizations.detail.OrganizationFragment">
 
         <argument
             android:name="organizationId"

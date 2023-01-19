@@ -2,7 +2,6 @@ package com.example.repository
 
 import com.example.data.AppData
 import com.example.data.models.ApiResponse
-import com.example.data.models.NewApiResponse
 import com.example.exceptions.NoInternetConnectionException
 import com.example.util.ApiErrorParser
 import com.example.util.pagination.PaginationResponse

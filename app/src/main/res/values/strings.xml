@@ -75,6 +75,7 @@
     <string name="auth_register_confirm_email_message">Всего один шаг отделяет Вас от возможностей портала «Созидатели». Проверьте свою почту, там уже ожидает письмо для завершения регистрации.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки %s</string>
     <string name="auth_register_confirm_email_timer">Повторная отправка возможна\nчерез %s</string>
     <string name="auth_register_confirm_email_timer_two">Повторная отправка возможна через %s</string>
+    <string name="auth_register_confirm_phone_timer">Повторный звонок возможен через %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
     <string name="auth_input_first_name_hint">Укажите Ваше имя</string>
@@ -102,6 +103,7 @@
     <string name="auth_error_email_do_not_match">Эл. адреса не совпадают</string>
     <string name="auth_error_agreement">Согласитесь с условиями</string>
     <string name="auth_error_no_code">Введите код</string>
+    <string name="auth_error_no_call">Введите последние 4 цифры</string>
     <string name="auth_error_code">Неверный код</string>
     <plurals name="seconds_timer">
         <item quantity="zero">%d секунд</item>
@@ -136,6 +138,7 @@
     <string name="notifications_simple_title">Уведомление</string>
     <string name="notifications_acceptable_title">Приглашение</string>
     <string name="notifications_rate_title">Оценка мероприятия</string>
+    <string name="notifications_not_found">Уведомлений нет</string>
 
     <string name="menu_item_chat_label">Чат</string>
     <string name="menu_item_search_label">Поиск</string>
@@ -368,10 +371,12 @@
     <string name="profile_me_events">Мои мероприятия</string>
     <string name="profile_current_event">Текущее мероприятие</string>
     <string name="profile_about_app">О приложении</string>
+    <string name="profile_auth_web">Войти в профиль на сайте</string>
     <string name="profile_setting_chat">Настройки чата</string>
     <string name="profile_banned">Заблокированные</string>
     <string name="profile_auth_to_web_site">Войти в личный кабинет на сайте</string>
     <string name="profile_support">Написать разработчикам</string>
+    <string name="profile_problem">Сообщить о проблеме</string>
     <string name="profile_rate">Оценить приложение</string>
     <string name="profile_logout">Выйти</string>
     <string name="profile_contacts">Контактные данные</string>
@@ -598,7 +603,7 @@
     <string name="qr_scan_not_found_event">По этому коду не найдено ни одного мероприятия</string>
 
     <string name="code_email_input_label"><font size="15">Введите 6 цифр из письма</font></string>
-    <string name="code_phone_input_label"><font size="15">Введите 6 цифр из смс</font></string>
+    <string name="code_phone_input_label"><font size="15">Введите последние 4 цифры</font></string>
     <string name="code_input_label">Ввод кода</string>
     <string name="code_input_hint">Введите код</string>
     <string name="code_input_no_code">Введите код, предоставленный Вам организатором мероприятия</string>
@@ -775,11 +780,13 @@
     <string name="add_email_dialog_text">Для получения важных уведомлений, пожалуйста, укажите Ваш актуальный электронный адрес.</string>
     <string name="code_dialog_title">Пожалуйста, введите код</string>
     <string name="code_phone_dialog_text">На номер %s отправлен код из\u00A06\u00A0цифр. Введите\u00A0его для\u00A0подтверждения.</string>
+    <string name="call_code_phone_dialog_text">Введите последние 4\u00A0цифры\u00A0номера входящего\u00A0звонка.</string>
     <string name="code_email_dialog_text">На почту %s отправлен код из\u00A06\u00A0цифр. Введите\u00A0его для\u00A0подтверждения.</string>
     <string name="code_dialog_text_label">Введите 6 цифр.</string>
     <string name="code_dialog_text_title">На номер отправлено письмо с кодом из 6 цифр. Введите его для подтверждения.</string>
     <string name="code_dialog_text_information">Если Вы не\u00A0нашли письмо с\u00A0кодом в\u00A0папке «Входящие», загляните в\u00A0«Спам». Но если и\u00A0в\u00A0этом случае письмо не\u00A0обнаружено, обратитесь в\u00A0службу поддержки %s</string>
     <string name="send_code_again">Отправить код повторно</string>
+    <string name="send_call_again">Позвонить повторно</string>
     <string name="new_phone_number">Введите новый номер телефона</string>
     <string name="change_status_title">Повышение статуса</string>
     <string name="change_status_description">Повысьте статус профиля до Базового или Максимального и расширьте свои возможности на портале «Созидатели».</string>
@@ -837,7 +844,7 @@
     <string name="program">Программа</string>
     <string name="all_activities">Все события</string>
     <string name="wait_for_accept_title">Ожидает подтверждения</string>
-    <string name="wait_for_accept_text">Для подтверждения перейдите введите код из письма, направленного на указанный e-mail</string>
+    <string name="wait_for_accept_text">Для подтверждения введите код из письма, направленного на указанный e-mail</string>
     <string name="wait_for_accept_positive_button">Отправить письмо повторно</string>
     <string name="change_email_title">Смена основной почты</string>
     <string name="change_email_text">Эта почта является логином, на нее приходят все рассылки и уведомления, связанные с Вашим профилем. Для смены или подтверждения основной почты, пожалуйста, перейдите в настройки аккаунта.</string>
@@ -849,7 +856,7 @@
     <string name="current_login_invalid">Введите правильный текущий логин</string>
     <string name="new_login_invalid">Введите правильный новый логин</string>
     <string name="profile_email_add">Добавить email</string>
-    <string name="confirm_phone_text">Введенный номер %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный номер к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
+    <string name="confirm_phone_text">Введенный номер %s уже подтвержден в другом профиле. Если Вы действительно хотите привязать данный номер к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_phone_positive">Подтвердить</string>
     <string name="confirm_email_text">Введенный e-mail %s уже подтвержден в другом профиле.\nЕсли Вы действительно хотите привязать данный e-mail к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_email_phone_text">Этот номер телефона/e-mail подтвержден другим пользователем. Это Ваша страница?</string>
@@ -955,10 +962,11 @@
     <string name="link_is_copied">Ссылка скопирована.</string>
     <string name="qr_code_is_saved">QR код сохранен.</string>
     <string name="link_open_error">Не удалось открыть страницу</string>
-    <string name="no_active_events_found_title">Активных мероприятий пока нет</string>
+    <string name="no_active_events_found_title">Активных мероприятий\nпока нет</string>
     <string name="incorrect_format_title">Неверный формат!</string>
     <string name="profile_fields_data_label">Данные из профиля пользователя *</string>
-    <string name="register_event_go_to_edit_profile">Данные выше взяты из вашего профиля. Для редактирования, пожалуйста, перейдите в профиль.</string>
+    <string name="register_event_go_to_edit_data">Данные ниже взяты из вашего профиля. Для редактирования, пожалуйста, перейдите в профиль.</string>
+    <string name="register_event_go_to_fill_missing_data">Данные ниже взяты из вашего профиля. Для продолжения, пожалуйста, заполните отсутствующие данные в профиле.</string>
 
 
     <string-array name="custom_months">
@@ -977,5 +985,10 @@
     </string-array>
 
     <string name="lorem_ipsum_dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
+    <string name="yandex_app_metric_key">faf7bdc3-762b-4c6a-8813-a6a8fb26f448</string>
+    <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
+    <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
+    <string name="asset_statements" translatable="false">[{ \"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\" }]</string>
 
 </resources>

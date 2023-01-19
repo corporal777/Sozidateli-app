@@ -1,13 +1,12 @@
-package com.example.ui.auth.register.email.finishregister.newbuild
+package com.example.ui.auth.register.email.finish
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 
-interface FinishRegisterNewContract {
+interface FinishRegisterContract {
     interface View : BaseAuthContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -42,14 +41,12 @@ interface FinishRegisterNewContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setDescriptionText(canShow: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun ignoreTokenListener(ignore: Boolean)
-
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun openHome()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun logout()
+
         @StateStrategyType(SkipStrategy::class)
         fun showEmailPhoneNotUnique(email: String, loginType : String)
 
@@ -65,6 +62,6 @@ interface FinishRegisterNewContract {
         fun onHandleAuthLink()
         fun onNoMiddleNameChecked(checked: Boolean)
         fun checkEmailPhoneUnique()
-        fun logout()
+        fun onCloseClick()
     }
 }

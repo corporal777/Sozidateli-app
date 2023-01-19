@@ -2,8 +2,8 @@ package com.example.ui.profile
 
 import android.content.Intent
 import android.content.Intent.*
-import android.graphics.Bitmap
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -24,26 +24,27 @@ import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.extensions.dp
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
-import com.example.util.copyTextToBuffer
 import com.example.util.firstLetterToUppercase
 import com.example.util.setImage
+import com.shakebugs.shake.Shake
+import com.shakebugs.shake.ShakeScreen
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 
 class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View,
-    SimpleTitleToolbar {
+    ToolbarFragmentNew {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
@@ -53,6 +54,8 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
+
+    private lateinit var toolbarContent: ToolbarContent
 
 
     @ProvidePresenter
@@ -75,22 +78,15 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
             //tvBanned.setOnClickListener { presenter.onBannedClick() }
             tvSettings.setOnClickListener { presenter.onSettingsClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
+            tvProblem.setOnClickListener { Shake.show(ShakeScreen.HOME) }
             tvRate.setOnClickListener { presenter.onRateClick() }
             tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
-            tvLogout.setOnClickListener {
-                (requireActivity() as MainActivity).setIgnoreTokenListener(false)
-                presenter.onLogoutClick()
-            }
-            //tvAuthToWebSite.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
-            tvSessions.setOnClickListener {
-                presenter.onSessionsClick()
-            }
-            tvChangeAccount.setOnClickListener {
-                presenter.onChangeAccountClick()
-            }
-
+            tvLogout.setOnClickListener { presenter.onLogoutClick() }
+            tvSessions.setOnClickListener { presenter.onSessionsClick() }
+            tvChangeAccount.setOnClickListener { presenter.onChangeAccountClick() }
             btnEditProfile.setOnClickListener { presenter.onProfileClick() }
             tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
+            tvScan.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
         }
 
 
@@ -100,13 +96,10 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
 
     override fun setUser(user: UserDetail) {
-        mBinding.ivAvatar.apply {
-            setImage(
-                user.image.uri,
-                error = R.drawable.avatar_placeholder_rectangle,
-                transformations = listOf(RoundedCornersTransformation(10f.dp))
-            )
-        }
+        mBinding.ivAvatar.setImage(
+            image = user.image.uri ?: R.drawable.avatar_placeholder_rectangle,
+            transformations = listOf(RoundedCornersTransformation(10f.dp))
+        )
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -144,50 +137,19 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun setUserLink(user: UserDetail) {
-        val userId = getString(R.string.user_id, user.id.toString())
-        val toolbarTitle: SpannableStringBuilder
-        var shortNameClick: (() -> Unit)? = null
-        if (user.id.toString() == user.shortName) {
+        if (!user.shortName.isNullOrEmpty() && user.id.toString() != user.shortName){
+            toolbarContent.setToolbarTitle(SpannableStringBuilder(user.shortName))
+        }else {
+            val userId = getString(R.string.user_id, user.id.toString())
             val userShortName = SpannableString(getString(R.string.put_user_short_name))
-            val font =
-                Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
-            userShortName.setSpan(
-                CustomTypefaceSpan("", font),
-                0,
-                userShortName.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
+            userShortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
-            userShortName.setSpan(
-                ForegroundColorSpan(expandColor),
-                0,
-                userShortName.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            userShortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
-            userShortName.setSpan(
-                AbsoluteSizeSpan(textSize),
-                0,
-                userShortName.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            toolbarTitle = SpannableStringBuilder(userId + "\n").append(userShortName)
-            shortNameClick = {
-                showChangeUserShortNameDialog(user)
-            }
-        } else {
-            toolbarTitle = SpannableStringBuilder(userId)
+            userShortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            toolbarContent.setToolbarTitle(SpannableStringBuilder(userId + "\n").append(userShortName))
         }
-        val actionIcon =
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
-        setToolbarTitleAndIcon(toolbarTitle, actionIcon, {
-            val link = BuildConfig.SHARE_URL + "portal/user/" + user.id
-            //copyTextToBuffer(requireContext(), link)
-            //showToast(getString(R.string.link_is_copied))
-            presenter.onShowProfileDataBottomSheetDialog(user, requireContext())
-        }, {
-            shortNameClick?.invoke()
-        })
     }
 
 
@@ -219,7 +181,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         )
             .setSelectCallback {
                 if (it) {
-                    showEmailConfirmation(email)
+                    presenter.onShowEmailConfirm(email)
                 }
             }
     }
@@ -231,20 +193,20 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         )
             .setSelectCallback {
                 if (it) {
-                    showPhoneConfirmation(phone)
+                    presenter.onShowPhoneConfirm(phone)
                 }
             }
     }
 
-    private fun showChangeUserShortNameDialog(user: UserDetail) {
-        val changeShortNameDialog = ChangeShortNameFragment(user)
+    override fun showChangeUserShortNameDialog(user: UserDetail) {
+        val changeShortNameDialog = ChangeShortNameFragment(user.id, user.shortName)
         changeShortNameDialog.show(requireActivity().supportFragmentManager, "change_short_name")
         changeShortNameDialog.getUpdatedUserShortName {
             setUserLink(it)
         }
     }
 
-    override fun showProfileDataBottomSheetDialog(user: UserDetail) {
+    override fun showUserProfileLinkDialog(user: UserDetail) {
         val profileDataDialog = ProfileDataFragment(
             user.id,
             user.nameLastName,
@@ -254,22 +216,24 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }
 
+    override fun hideAddPhoneEmailDialog() {
+        dialog.hideDialog()
+    }
+
 
     override fun showPhoneConfirmation(phone: String) {
-        dialog.hideDialog()
         val confirmPhone = ConfirmEmailPhoneFragment(phone)
         confirmPhone.show(requireActivity().supportFragmentManager, "confirm_phone")
         confirmPhone.setConfirmCallback {
-            presenter.onPhoneConfirmed(phone)
+            presenter.onConfirmPhoneSuccess(phone)
         }
     }
 
     override fun showEmailConfirmation(email: String) {
-        dialog.hideDialog()
         val confirmEmail = ConfirmEmailPhoneFragment(email)
         confirmEmail.show(requireActivity().supportFragmentManager, "confirm_email")
         confirmEmail.setConfirmCallback {
-            presenter.onEmailConfirmed(email)
+            codeSuccess()
         }
     }
 
@@ -277,9 +241,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToQrScannerAuthWebsiteFragment())
     }
 
-    override fun codeSuccess() {
-        showUserStateDialog()
-    }
+    override fun codeSuccess() = showUserStateDialog()
 
     override fun showProfile(uid: String) {
         findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
@@ -329,15 +291,17 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun openSupportEmail(uid: String) {
-        val intent = Intent(ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
-        intent.putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
-        intent.putExtra(EXTRA_TEXT, buildEmailText(uid))
-//        if (intent.resolveActivity(requireContext().packageManager) != null) {
-//            startActivity(intent)
-//        }
-        startActivity(intent)
+        try {
+            val intent = Intent(ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
+            intent.putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
+            intent.putExtra(EXTRA_SUBJECT, getString(R.string.support_email_title))
+            intent.putExtra(EXTRA_TEXT, buildEmailText(uid))
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
     private fun buildEmailText(uid: String): String {
@@ -365,4 +329,16 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
 
     override fun layout() = R.layout.fragment_profile
 
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = false
+
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
+    }
+
+    override fun actionIconClick() = presenter.onShowUserProfileLink()
+    override fun toolbarTitleClick() = presenter.onShowChangeUserShortName()
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
+        this.toolbarContent = toolbarContent
+    }
 }

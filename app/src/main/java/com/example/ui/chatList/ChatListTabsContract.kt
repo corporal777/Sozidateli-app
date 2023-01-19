@@ -2,6 +2,7 @@ package com.example.ui.chatList
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 
@@ -16,12 +17,13 @@ interface ChatListTabsContract {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setInvitesCount(count: Int)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setAppBarShadow(value: Float)
+        @StateStrategyType(SkipStrategy::class)
+        fun openSearch()
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onChatsSelected()
         fun onInvitesSelected()
+        fun onFabAddChatClick()
     }
 }

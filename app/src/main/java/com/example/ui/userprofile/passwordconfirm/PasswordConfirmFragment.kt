@@ -1,5 +1,6 @@
 package com.example.ui.userprofile.passwordconfirm
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -8,15 +9,16 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentConfirmPasswordBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(),
-    PasswordConfirmContract.View, SimpleTitleToolbar {
+    PasswordConfirmContract.View, ToolbarFragmentNew {
 
 
     val args: PasswordConfirmFragmentArgs by navArgs()
@@ -36,7 +38,6 @@ class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.status_profile_title_set))
         mBinding.apply {
             etPassword.onTextChanged { tilPassword.error = null }
             btnSave.setOnClickListener {
@@ -60,4 +61,11 @@ class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(
             )
         )
     }
+
+    override val title: CharSequence by lazy { getString(R.string.status_profile_title_set) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

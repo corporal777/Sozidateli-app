@@ -1,18 +1,15 @@
 package com.example.ui.profile
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 
 interface ProfileContract {
     interface View : BaseContract.View {
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(user: UserDetail)
 
@@ -24,6 +21,8 @@ interface ProfileContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showShimmerView()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideShimmerView()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -62,7 +61,6 @@ interface ProfileContract {
         @StateStrategyType(SkipStrategy::class)
         fun codeSuccess()
 
-
         @StateStrategyType(SkipStrategy::class)
         fun showEmailNotUnique(email: String)
 
@@ -73,13 +71,19 @@ interface ProfileContract {
         fun showPhoneConfirmation(phone: String)
 
         @StateStrategyType(SkipStrategy::class)
+        fun hideAddPhoneEmailDialog()
+
+        @StateStrategyType(SkipStrategy::class)
         fun showEmailConfirmation(email: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showQrScannerToAuthWebSite()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showProfileDataBottomSheetDialog(user: UserDetail)
+        fun showUserProfileLinkDialog(user: UserDetail)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChangeUserShortNameDialog(user: UserDetail)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -94,12 +98,16 @@ interface ProfileContract {
         fun onRateClick()
         fun onLogoutClick()
         fun onSettingsClick()
-        fun onEmailConfirmed(email: String)
-        fun onPhoneConfirmed(phone: String)
+
+        fun onShowEmailConfirm(email: String)
+        fun onShowPhoneConfirm(phone: String)
         fun checkEmailIsUnique(email: String)
         fun checkPhoneIsUnique(phone: String)
+        fun onConfirmPhoneSuccess(phone: String)
+
         fun onQrScannerToAuthWebClick()
 
-        fun onShowProfileDataBottomSheetDialog(user: UserDetail, context: Context)
+        fun onShowUserProfileLink()
+        fun onShowChangeUserShortName()
     }
 }

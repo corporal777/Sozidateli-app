@@ -46,8 +46,7 @@ class MaxStateMainInfoEditItem(
     private val image: ImageModel,
     private val emails: List<EmailsModel>,
     private val addInfoClick:() -> Unit,
-    private val enableNextButton:(enable: Boolean) -> Unit,
-    private val onImageClick: (canRemove: Boolean) -> Unit
+    private val enableNextButton:(enable: Boolean) -> Unit
 ) : Item(id) {
 
     private val invalidNumberSecondError =

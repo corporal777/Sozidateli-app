@@ -25,7 +25,22 @@
             tools:src="@tools:sample/backgrounds/scenic" />
 
 
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_corners"
+            android:scaleType="centerCrop"
+            android:transitionName="organization logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivBackground"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+
         <androidx.appcompat.widget.AppCompatTextView
+            fontPath="fonts/sf_pro_display_semibold.ttf"
             android:id="@+id/tvOrganizationImageName"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -41,20 +56,6 @@
             app:layout_constraintTop_toTopOf="@id/ivLogo"
             tools:ignore="ContentDescription"
             tools:text="@tools:sample/full_names" />
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="104dp"
-            android:layout_height="104dp"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/background_corners"
-            android:scaleType="centerCrop"
-            android:transitionName="organization logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivBackground"
-            tools:ignore="ContentDescription"
-            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:letterSpacing="-0.01"

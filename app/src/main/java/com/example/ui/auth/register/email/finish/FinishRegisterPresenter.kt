@@ -1,22 +1,20 @@
-package com.example.ui.auth.register.email.finishregister.newbuild
+package com.example.ui.auth.register.email.finish
 
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.AuthBody
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
-import com.example.data.bodies.LoginModel
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -28,15 +26,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
-class FinishRegisterNewPresenter
+class FinishRegisterPresenter
 @Inject constructor(
     private val appData: AppData,
     private val authRepository: AuthRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val userRepository: UserRepository,
     snAuthManager: SnAuthManager
-) : BaseAuthPresenter<FinishRegisterNewContract.View>(authRepository, snAuthManager, appData),
-    FinishRegisterNewContract.Presenter {
+) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData),
+    FinishRegisterContract.Presenter {
 
     var firstName: String = ""
     var lastName: String = ""
@@ -52,7 +50,7 @@ class FinishRegisterNewPresenter
 
     private val timerCompositeDisposable = CompositeDisposable()
 
-    override fun attachView(view: FinishRegisterNewContract.View?) {
+    override fun attachView(view: FinishRegisterContract.View?) {
         super.attachView(view)
     }
 
@@ -63,44 +61,17 @@ class FinishRegisterNewPresenter
         viewState.apply {
             setData(login, firstName, lastName, middleName)
             enableRegisterBtn(code.length == 6)
-            getData()
         }
         startTimer()
     }
-
-    private fun getData() {
-        viewState.ignoreTokenListener(true)
-        compositeDisposable += getAuthRequest(login)
-            .andThen(userRepository.getUserShortData())
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.ignoreTokenListener(false)
-                },
-                onSuccess = {
-                    firstName = it.name ?: ""
-                    lastName = it.lastName ?: ""
-                    middleName = it.getMiddleName()
-                    viewState.apply {
-                        ignoreTokenListener(false)
-                        setData(login, firstName, lastName, middleName)
-                    }
-                })
-
-    }
-
 
     override fun checkEmailPhoneUnique() {
         loginType = if (Utils.isPhone(login) && !Utils.isContainLetters(login)) "phone"
         else "email"
         if (checkEmailValid()) {
             compositeDisposable += Completable.defer {
-                if (loginType == "email") {
-                    userRepository.checkEmailPhone(login, null)
-                } else {
-                    userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login))
-                }
+                if (loginType == "email") userRepository.checkEmailPhone(login, null)
+                else userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login))
             }
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
@@ -152,28 +123,36 @@ class FinishRegisterNewPresenter
     }
 
     override fun onHandleAuthLink() {
-        viewState.showCustomProgressDialog()
+        viewState.apply {
+            setIgnoreTokenListener(true)
+            showCustomProgressDialog()
+        }
         compositeDisposable += confirmCodeRequest()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(onError = {
-                it.printStackTrace()
-                viewState.apply {
-                    hideCustomProgressDialog()
-                    codeError()
-                }
-            }, onComplete = {
-                userRepository.updateUserProfile(appData.getId(), getUpdateRequestBody())
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({
-                        viewState.apply {
-                            hideCustomProgressDialog()
-                            openHome()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.apply {
+                        hideCustomProgressDialog()
+                        codeError()
+                    }
+                }, onComplete = {
+                    userRepository.updateUserProfile(appData.getId(), getUpdateRequestBody())
+                        .doOnSuccess {
+                            Shake.registerUser(it.id.toString())
+                            updateUserInShake(it)
                         }
-                    }, {
-                        viewState.hideCustomProgressDialog()
-                        onReceiveError(it)
-                    }).call(compositeDisposable)
-            })
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({
+                            viewState.apply {
+                                hideCustomProgressDialog()
+                                openHome()
+                            }
+                        }, {
+                            viewState.hideCustomProgressDialog()
+                            onReceiveError(it)
+                        }).call(compositeDisposable)
+                })
 
     }
 
@@ -196,6 +175,8 @@ class FinishRegisterNewPresenter
 
     override fun onChangeEmailText(email: String) {
         this.login = email
+        loginType = if (Utils.isPhone(login) && !Utils.isContainLetters(login)) "phone"
+        else "email"
         viewState.apply {
             setDescriptionText(false)
             setCanResend(true)
@@ -207,10 +188,20 @@ class FinishRegisterNewPresenter
         viewState.enableMiddleNameInput(!checked)
     }
 
-    override fun logout() {
-        appData.isSubscribedToPush = false
-        appData.logout()
-        viewState.logout()
+
+    override fun onCloseClick() {
+        viewState.setIgnoreTokenListener(true)
+        compositeDisposable += Completable.fromAction {
+            appData.isSubscribedToPush = false
+            appData.logout()
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    setIgnoreTokenListener(false)
+                    logout()
+                }
+            }
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
@@ -237,7 +228,8 @@ class FinishRegisterNewPresenter
             userRepository.confirmEmailCodeNew(EmailCodeBody(code = code, email = login))
         } else {
             authRepository.confirmPhone(
-                ConfirmCodeBody("personal", validatePhoneBeforeSend(login), code))
+                ConfirmCodeBody("personal", validatePhoneBeforeSend(login), code)
+            )
         }
     }
 
@@ -270,16 +262,7 @@ class FinishRegisterNewPresenter
         }
     }
 
-    private fun getAuthRequest(login: String): Completable {
-        return authRepository.authEmailOrPhone(
-            AuthBody(
-                LoginModel(loginType, login ?: ""),
-                LoginModel("temporary", code),
-                deviceId ?: "",
-                deviceModel,
-                appCode,
-                appVersion
-            )
-        )
+    companion object {
+        val TIMER_SECONDS_COUNT = 60
     }
 }

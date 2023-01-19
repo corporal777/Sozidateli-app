@@ -1,4 +1,4 @@
-package com.example.ui.organizations.redesign
+package com.example.ui.organizations.detail
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy

@@ -1,6 +1,7 @@
 package com.example.ui.partner
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -14,9 +15,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.PartnerModel
 import com.example.databinding.FragmentPartnerBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.markWon
 import onScrolled
 import removeUrlUnderline
@@ -24,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContract.View,
-    SimpleTitleToolbar {
+    ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: PartnerPresenter
@@ -39,6 +41,8 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
             dataPartnerId = partnerId
         }
     }
+
+    private lateinit var toolbarContent: ToolbarContent
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,12 +75,12 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
             tvName.apply {
                 isVisible = partner.name?.isNotEmpty() == true
                 text = partner.name
-                setToolbarTitleAndIcon(partner.name ?: "")
+                toolbarContent.setToolbarTitle(partner.name ?: "")
             }
 
             tvDescription.apply {
                 isVisible = !partner.description.isNullOrEmpty()
-                markWon(requireContext()).setMarkdown(this, partner.description?:"")
+                markWon(requireContext()).setMarkdown(this, partner.description ?: "")
                 //text = partner.description
             }
 
@@ -116,4 +120,12 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
     }
 
     override fun layout() = R.layout.fragment_partner
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
+        this.toolbarContent = toolbarContent
+    }
 }

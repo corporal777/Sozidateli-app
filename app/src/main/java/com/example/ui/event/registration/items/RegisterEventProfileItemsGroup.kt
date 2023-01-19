@@ -1,6 +1,5 @@
 package com.example.ui.event.registration.items
 
-import android.util.Log
 import com.example.extensions.findItemBy
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
@@ -11,43 +10,44 @@ class RegisterEventProfileItemsGroup(
     onShowProfileClick: () -> Unit
 ) : NestedGroup() {
 
-    private val mainItem = RegisterEventProfileMainItem(
-        profileForm.user_birthday,
-        profileForm.user_gender,
-        profileForm.address,
-        profileForm.user_notes,
-        profileForm.user_email,
-        profileForm.user_phone,
-        profileForm.user_work_phone,
-        profileForm.user_links,
-        profileForm.user_sites,
-        profileForm.user_public_email,
-        profileForm.user_files
-    )
-
-    private val educationSection = Section()
-
-    private val workSection = Section().apply {
-        setFooter(RegisterEventProfileFooterItem(profileForm.checkProfileFieldsIsValid(profileForm)) {
+    private val headerSection = Section().apply {
+        setHeader(RegisterEventProfileHeaderItem(profileForm.checkProfileFieldsIsValid(profileForm)) {
             onShowProfileClick.invoke()
         })
+        update(listOf(
+            RegisterEventProfileMainItem(
+                profileForm.user_birthday,
+                profileForm.user_gender,
+                profileForm.address,
+                profileForm.user_notes,
+                profileForm.user_email,
+                profileForm.user_phone,
+                profileForm.user_work_phone,
+                profileForm.user_links,
+                profileForm.user_sites,
+                profileForm.user_public_email,
+                profileForm.user_files
+            )
+        ))
     }
+    private val educationSection = Section()
+    private val workSection = Section()
 
     private var oldWork = profileForm.work_experience
     private var oldEducation = profileForm.education
     private var oldProfileForm = profileForm
 
     init {
+        add(headerSection)
         setEducation(profileForm)
         setWork(profileForm)
-        add(mainItem)
         add(educationSection)
         add(workSection)
     }
 
     override fun getGroup(position: Int): Group {
         return when (position) {
-            0 -> mainItem
+            0 -> headerSection
             1 -> educationSection
             2 -> workSection
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
@@ -56,7 +56,7 @@ class RegisterEventProfileItemsGroup(
 
     override fun getPosition(group: Group): Int {
         return when (group) {
-            mainItem -> 0
+            headerSection -> 0
             educationSection -> 1
             workSection -> 2
             else -> -1
@@ -128,7 +128,7 @@ class RegisterEventProfileItemsGroup(
 
     fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
         if (oldProfileForm != profileForm) {
-            mainItem.updateFields(profileForm)
+            headerSection.findItemBy<RegisterEventProfileMainItem> { true }?.updateFields(profileForm)
             oldProfileForm = profileForm
         }
         if (profileForm.education != oldEducation) {
@@ -140,7 +140,7 @@ class RegisterEventProfileItemsGroup(
             oldWork = profileForm.work_experience
         }
         val isValid = profileForm.checkProfileFieldsIsValid(profileForm)
-        workSection.findItemBy<RegisterEventProfileFooterItem> { true }?.updateFooterText(isValid)
+        headerSection.findItemBy<RegisterEventProfileHeaderItem> { true }?.updateFooterText(isValid)
     }
 
     override fun getGroupCount() = 3

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
@@ -13,70 +14,71 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeShortNameFragment(val user: UserDetail) :
+class ChangeShortNameFragment(
+    val id: Int?,
+    val shortName: String?
+) :
     BaseBottomSheetFragment<BottomSheetChangeShortNameBinding>(), ChangeShortNameContract.View {
 
-    private var userShortName = ""
-    private var setUserShortName : (user : UserDetail) -> Unit = {}
+    private var setUserShortName: (user: UserDetail) -> Unit = {}
 
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.WEAK, tag = CHANGE_SHORT_NAME_FRAGMENT_TAG)
     lateinit var presenter: ChangeShortNamePresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ChangeShortNamePresenter>
 
-    @ProvidePresenter
+    @ProvidePresenter(type = PresenterType.WEAK, tag = CHANGE_SHORT_NAME_FRAGMENT_TAG)
     fun providePresenter(): ChangeShortNamePresenter = presenterProvider.get().apply {
-    }
-
-    init {
-        userShortName = if (user.id.toString() == user.shortName){
-            "sozidateli.ru/id" + user.shortName
-        }else {
-            "sozidateli.ru/" + user.shortName
-        }
+        userId = id.toString()
+        userShortName = shortName ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        focusOnInput(mBinding.etShortName, true)
         enableActionButton(false)
         mBinding.apply {
-            tvShortName.text = userShortName
-            if (user.id.toString() != user.shortName){
-                etShortName.setText(user.shortName)
-            }
-            etShortName.apply {
-                onTextChanged {
-                    it?.toString()?.let { text ->
-                        if (text.isNullOrEmpty()){
-                            enableActionButton(false)
-                            tvShortNameInvalidError.isVisible = false
-                        }else {
-                            presenter.checkUserShortNameUnique(text)
-                            enableActionButton(true)
-                        }
+            etShortName.onTextChanged {
+                it?.toString()?.let { text ->
+                    if (text.isNullOrEmpty()) {
+                        enableActionButton(false)
+                        tvShortNameInvalidError.isVisible = false
+                    } else {
+                        presenter.checkUserShortNameUnique(text)
                     }
                 }
             }
             btnSave.setOnClickListener {
-                presenter.updateUserShortName(user.id, etShortName.text.toString())
+                presenter.updateUserShortName(etShortName.text.toString())
             }
+            btnClose.setOnClickListener {
+                dismiss()
+            }
+            focusOnInput(etShortName, true)
         }
     }
 
-    private fun enableActionButton(enable : Boolean){
+    private fun enableActionButton(enable: Boolean) {
         mBinding.btnSave.isEnabled = enable
+    }
+
+    override fun setUserShortName(name: String) {
+        mBinding.apply {
+            tvShortName.text = name
+            if (id.toString() != shortName) etShortName.setText(shortName)
+        }
     }
 
 
     override fun setUserShortNameUnique(isUnique: Boolean) {
         mBinding.tvShortNameInvalidError.apply {
             isVisible = true
-            if (isUnique){
+            if (isUnique) {
+                enableActionButton(true)
                 setTextColor(resources.getColor(R.color.profile_status_complete))
                 text = getString(R.string.short_name_valid_message)
-            }else {
+            } else {
+                enableActionButton(false)
                 setTextColor(resources.getColor(R.color.red_new))
                 text = getString(R.string.short_name_invalid_error)
             }
@@ -94,6 +96,10 @@ class ChangeShortNameFragment(val user: UserDetail) :
 
     override fun updateUserShortNameInProfile(user: UserDetail) {
         setUserShortName.invoke(user)
+    }
+
+    companion object {
+        const val CHANGE_SHORT_NAME_FRAGMENT_TAG = "change_short_name_tag"
     }
 
 

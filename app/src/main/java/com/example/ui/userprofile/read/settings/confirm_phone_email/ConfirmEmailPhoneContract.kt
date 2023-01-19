@@ -18,12 +18,6 @@ interface ConfirmEmailPhoneContract {
         fun setContentType(type : String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showProgressLoading()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideProgressLoading()
-
-        @StateStrategyType(SkipStrategy::class)
         fun setEmailPhoneIsConfirmed()
 
         @StateStrategyType(SkipStrategy::class)
@@ -31,8 +25,7 @@ interface ConfirmEmailPhoneContract {
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
-        fun startTimerForResendCode()
-        fun sendCode()
+        fun sendCodeAgain()
         fun confirmEmailPhone(email : String, code : String)
     }
 }

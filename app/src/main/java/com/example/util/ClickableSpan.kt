@@ -1,13 +1,10 @@
 package com.example.util
 
-import android.content.Context
 import android.text.NoCopySpan
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
-import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.util.qr_generator.style.Color
+import android.widget.TextView
 
 class ClickableSpan(
     private val drawUnderline: Boolean = true,
@@ -23,3 +20,21 @@ class ClickableSpan(
         onClick()
     }
 }
+
+class ClickableSpanNew(
+    private val textView: TextView,
+    private val onClick: () -> Unit
+) : ClickableSpan(), NoCopySpan {
+
+    override fun updateDrawState(ds: TextPaint) {
+        ds.color = ds.linkColor
+        ds.isUnderlineText = false
+        textView.invalidate()
+    }
+
+    override fun onClick(widget: View) {
+        onClick()
+        widget.invalidate()
+    }
+}
+

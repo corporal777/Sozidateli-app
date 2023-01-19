@@ -1,17 +1,117 @@
 package com.example.ui.base.bottomSheet
 
+import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.ApiError
-import com.example.ui.base.BasePresenter
+import com.example.exceptions.NoInternetConnectionException
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import performOnBackgroundOutOnMain
+import retrofit2.HttpException
+import withCheckInternetConnectivity
 
 abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(
     private val appData: AppData
-) : BasePresenter<V>(appData), BaseBottomSheetContract.Presenter {
+) : MvpPresenter<V>(), BaseBottomSheetContract.Presenter {
 
+    protected val compositeDisposable = CompositeDisposable()
+    protected var hasNoConnectionError = false
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+    }
+
+
+    protected open fun onReceiveError(error: Throwable) {
+        error.printStackTrace()
+        viewState.showRequestErrorMessage()
+    }
+
+
+    fun getUserData() = appData.getUserNew()
+
+    fun getHasBase() = appData.hasBaseState
+
+    private fun createOnErrorConsumer(
+        onError: ((Throwable) -> Unit)?,
+        onNoInternetConnectionException: (() -> Unit)?,
+        onApiError: ((ApiError) -> Unit)?
+    ): Consumer<Throwable> {
+        return Consumer {
+            if (onError != null) onError(it)
+            else {
+                if (it is ApiError) {
+                    it.printStackTrace()
+                } else if (it is HttpException) {
+                    it.printStackTrace()
+                }
+            }
+        }
+    }
+
+    fun Completable.subscribeSimple(
+        onError: ((Throwable) -> Unit)? = null,
+        onNoInternetConnectionException: (() -> Unit)? = null,
+        onApiError: ((ApiError) -> Unit)? = null,
+        onComplete: () -> Unit
+    ): Disposable {
+        return subscribe(
+            Action(onComplete),
+            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+        )
+    }
+
+    fun <T> Single<T>.subscribeSimple(
+        onError: ((Throwable) -> Unit)? = null,
+        onNoInternetConnectionException: (() -> Unit)? = null,
+        onApiError: ((ApiError) -> Unit)? = null,
+        onSuccess: (T) -> Unit
+    ): Disposable {
+        return subscribe(
+            Consumer(onSuccess),
+            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+        )
+    }
+
+    fun <T> Maybe<T>.subscribeSimple(
+        onError: ((Throwable) -> Unit)? = null,
+        onNoInternetConnectionException: (() -> Unit)? = null,
+        onApiError: ((ApiError) -> Unit)? = null,
+        onSuccess: (T) -> Unit
+    ): Disposable {
+        return subscribe(
+            Consumer(onSuccess),
+            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+        )
+    }
+
+    fun <T> Observable<T>.subscribeSimple(
+        onError: ((Throwable) -> Unit)? = null,
+        onNoInternetConnectionException: (() -> Unit)? = null,
+        onApiError: ((ApiError) -> Unit)? = null,
+        onNext: (T) -> Unit
+    ): Disposable {
+        return subscribe(
+            Consumer(onNext),
+            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+        )
+    }
+
+
+    fun <T> Flowable<T>.subscribeSimple(
+        onError: ((Throwable) -> Unit)? = null,
+        onNoInternetConnectionException: (() -> Unit)? = null,
+        onApiError: ((ApiError) -> Unit)? = null,
+        onNext: (T) -> Unit
+    ): Disposable {
+        return subscribe(
+            Consumer(onNext),
+            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+        )
+    }
 
 }

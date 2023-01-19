@@ -82,9 +82,6 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         return mBinding.root
     }
 
-    override fun showEnterAnimation() {
-        TODO("Not yet implemented")
-    }
 
     override fun showKeyboard(v: View?) {
         val imm =
@@ -100,9 +97,6 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         }
     }
 
-    override fun showRequestErrorMessage() {
-        mActivity?.showRequestErrorMessage()
-    }
 
     override fun hideBottomSheetDialog() {
         dismiss()
@@ -150,46 +144,12 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         mActivity?.showToast(message)
     }
 
-    override fun showToast(message: Int) {
-
-    }
-
     override fun navigateUp() {
+        mActivity?.navigateUp()
     }
 
-    override fun hideKeyboard() {
-    }
-
-    override fun showKeyboard() {
-    }
-
-    override fun showNoConnectionMessage(show: Boolean) {
-    }
-
-    override fun showEmailErrorMessage() {
-    }
-
-    override fun showPhoneErrorMessage() {
-    }
-
-    override fun showNotificationErrorMessage() {
-    }
-
-    override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-    }
-
-    override fun showErrorMessage(canGoBack: Boolean, message: String) {
-    }
-
-    override fun setAppBarElevation(value: Float) {
-    }
-
-    override fun setToolbarTitleAndIcon(
-        title: CharSequence,
-        icon: Drawable?,
-        action: (() -> Unit?)?,
-        toolbarTitleAction: (() -> Unit?)?
-    ) {
+    override fun showRequestErrorMessage() {
+        mActivity?.showRequestErrorMessage()
     }
 
     override fun onDestroyView() {

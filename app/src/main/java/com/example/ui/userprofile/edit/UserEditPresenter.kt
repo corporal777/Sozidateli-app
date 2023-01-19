@@ -1,42 +1,30 @@
 package com.example.ui.userprofile.edit
 
-import android.graphics.Bitmap
+import android.Manifest
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
+import com.example.R
 import com.example.data.AppData
-import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
-import com.example.data.models.user.User.Companion.FIELD_ATTACHED_FILES
 import com.example.repository.AuthRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
-import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.ui.base.BasePresenter
-import com.example.ui.userSessions.UserSessionsContract
-import com.example.util.AuthValidateUtil
-import com.example.util.IMAGE_MAX_SIZE_AVATAR
-import com.example.util.loadBitmap
-import com.example.util.phoneToServer
-import com.example.util.rxtakephoto.ResultRotation
-import com.example.util.rxtakephoto.RxTakePhoto
-import com.isseiaoki.simplecropview.CropImageView
-import io.reactivex.Completable
-import io.reactivex.Observable
+import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import java.io.File
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -46,8 +34,8 @@ class UserEditPresenter
     private val appData: AppData,
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val rxPermissions: RxPermissions,
     private val commonRepository: CommonRepository,
-    private val takePhoto: RxTakePhoto
 ) : BasePresenter<UserEditContract.View>(appData), UserEditContract.Presenter {
 
     private val compositeFilesDisposable = CompositeDisposable()
@@ -89,6 +77,7 @@ class UserEditPresenter
                                 user.address?.getShortAddress() ?: ""
                             )
                                 .performOnBackgroundOutOnMain()
+                                .withProgressBarLoadingDialog(viewState)
                                 .subscribeSimple(
                                     onError = { t ->
                                         t.printStackTrace()
@@ -173,85 +162,49 @@ class UserEditPresenter
                 true
             }
         } else {
-            val files = data
-            val it = files.first()
-            val mp = mutableListOf<MultipartBody.Part?>()
-            mp.add(textRequestBody(it.name, "name"))
-            mp.add(textRequestBody(it.showInProfile.toString(), "showInProfile"))
-            compositeDisposable += userRepository.changeRecommendedFile(it.id ?: 0, mp)
-                .withCheckInternetConnectivity()
+            compositeFilesDisposable += updatedFilesRequestBody(data)
+                .flatMap { userRepository.changeRecommendedFiles(it) }
+                .doOnSuccess {
+                    it.forEach { res ->
+                        appData.updateUserFiles(res)
+                    }
+                }
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ res ->
-                    appData.updateUserNew {
-                        binds?.recommendationFile?.forEach { file ->
-                            if (file.id == res.id)
-                                file.name = res.name
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribeSimple {
+                    onEditSaveNew(d) {
+                        appData.updateUserNew {
+                            name = it.name
+                            middleName = it.middleName
+                            lastName = it.lastName
+                            birthday = it.birthday
+                            gender = it.gender
+                            notes = it.notes
                         }
+                        true
                     }
-                    if (files.size > 1) {
-                        files.remove(it)
-                        updateFiles(files, d)
-                    } else {
-                        onEditSaveNew(d) {
-                            appData.updateUserNew {
-                                name = it.name
-                                middleName = it.middleName
-                                lastName = it.lastName
-                                birthday = it.birthday
-                                gender = it.gender
-                                notes = it.notes
-                            }
-                            true
-                        }
-                    }
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError()
-                })
+                }
         }
     }
 
     override fun onDeleteFilesClick(data: FileModel) {
         compositeDisposable += userRepository.deleteRecommendedFile(data.id ?: 0)
+            .doOnComplete {
+                val userFiles = mutableListOf<FileModel>()
+                userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
+                val file = userFiles.find { x -> x.id == data.id }
+                if (file != null){
+                    userFiles.remove(file)
+                }
+                appData.getUserNew().binds?.recommendationFile = userFiles
+            }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe {
-                appData.userNewChangeSubject.onNext(appData.getUserNew().apply {
-                    this.binds?.recommendationFile =
-                        this.binds?.recommendationFile?.filter { file -> file.id != data.id }
-                }.asOptional())
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                viewState.deleteUserFile(data)
             }
     }
 
-    override fun onEditAvatarClick() {
-        viewState.showTakePictureChooser()
-    }
-
-    override fun onRemoveAvatarClick() {
-        viewState.changeUserAvatar(null)
-    }
-
-    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
-    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage())
-
-    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
-        compositeDisposable += takePhotoRequest
-            .flatMapSingle {
-                takePhoto.crop(
-                    resultRotation = it,
-                    outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
-                    outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
-                    cropMode = CropImageView.CropMode.SQUARE
-                )
-            }
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.changeUserAvatar(it)
-            }, {
-                it.printStackTrace()
-            })
-    }
 
     override fun onChangeEmailClick() {
         viewState.showChangeEmail()
@@ -259,76 +212,66 @@ class UserEditPresenter
 
     override fun checkPassword(password: String, phone: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
-            .andThen(Completable.defer { userRepository.checkEmailPhone(null, phone) })
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    viewState.apply {
-                        hideEnterPassword()
-                        showPhoneNotUnique(phone)
-                    }
-
+                    viewState.hideEnterPassword()
                 }, onComplete = {
-                    viewState.apply {
-                        hideEnterPassword()
-                        showPhoneConfirm(phone)
-                    }
+                    viewState.hideEnterPassword()
+                    checkPhoneIsUnique(phone)
                 })
     }
 
-    override fun onConfirmPhoneClick(phone: String) {
+    override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     viewState.showPhoneNotUnique(phone)
                 }, onComplete = {
-                    viewState.showPhoneConfirm(phone)
+                    onShowPhoneConfirm(phone)
                 })
     }
 
-    override fun onAddFileClick() {
-        viewState.showFileSelector()
+    override fun onShowPhoneConfirm(phone: String) {
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                viewState.showPhoneConfirm(phone)
+            }
     }
 
-    override fun onEditFileClick(file: FileModel) {
-        isFileEdit = true
-        viewState.saveOnClick(true)
+    override fun onAddFileClick() {
+        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = {
+                if (it) viewState.showFileSelector()
+                else viewState.showToast(R.string.event_register_file_no_permission)
+            })
     }
 
     override fun onFilePicked(path: String, mimeType: String) {
-        val file = File(path)
-        val mp = mutableListOf<MultipartBody.Part?>()
-        mp.add(textRequestBody(appData.getId().toString(), "user"))
-        mp.add(fileRequestBody(file, "file", mimeType))
-        mp.add(textRequestBody(file.name, "name"))
-        compositeDisposable += userRepository.uploadRecommendedFile(mp)
+        compositeDisposable += Single.fromCallable {
+            val file = File(path)
+            mutableListOf<MultipartBody.Part?>().apply {
+                add(textRequestBody(appData.getId().toString(), "user"))
+                add(fileRequestBody(file, "file", mimeType))
+                add(textRequestBody(file.name, "name"))
+            }
+        }
+            .flatMap { f -> userRepository.uploadRecommendedFile(f).map { it.toFileModel() } }
+            .doOnSuccess { newFile ->
+                val userFiles = mutableListOf<FileModel>()
+                userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
+                userFiles.add(newFile)
+                appData.getUserNew().binds?.recommendationFile = userFiles
+            }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-                appData.userNewChangeSubject.onNext(appData.getUserNew().apply {
-                    val rFiles = mutableListOf<FileModel>()
-                    rFiles.addAll(binds?.recommendationFile ?: mutableListOf())
-                    rFiles.add(
-                        FileModel(
-                            id = it.id, user = it.user, mimeType = it.mimeType,
-                            size = it.size, name = it.name, uri = it.uri
-                        )
-                    )
-                    if (BuildConfig.NEW_PROFILE_EDIT) {
-                        viewState.updateFilesList(rFiles)
-                        appData.updateUserNew {
-                            binds?.recommendationFile = rFiles
-                        }
-                    } else {
-                        appData.updateUserNew {
-                            binds?.recommendationFile = rFiles
-                        }
-                    }
-                }.asOptional())
+            .withProgressBarLoadingDialog(viewState)
+            .subscribe({ newFile ->
+                viewState.addNewUserFile(newFile)
             }, {
                 it.printStackTrace()
                 viewState.showUpdateError()
@@ -422,12 +365,30 @@ class UserEditPresenter
         fieldName: String,
         mimeType: String
     ): MultipartBody.Part? {
-        val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
+        file.asRequestBody(mimeType.toMediaTypeOrNull())
+       // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
+        val body = file.asRequestBody(mimeType.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(fieldName, file.name, body)
     }
 
     private fun textRequestBody(text: String?, fieldName: String): MultipartBody.Part? =
         MultipartBody.Part.createFormData(fieldName, text ?: "")
+
+    private fun updatedFilesRequestBody(data: MutableList<FileModel>) : Single<RequestBody>{
+        return Single.fromCallable {
+            MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .apply {
+                    data.forEachIndexed { index, file ->
+                        addFormDataPart("data[$index][id]", file.id.toString())
+                        addFormDataPart("data[$index][name]", file.name?:"")
+                        addFormDataPart("data[$index][showInProfile]", file.showInProfile.toString())
+                    }
+
+                }.build()
+        }
+    }
+
 
     fun canUpdate(can: Boolean) {
         this.withUpdate = can

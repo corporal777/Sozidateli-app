@@ -36,6 +36,6 @@ interface MaxStateEducationContract {
         fun onClickClose()
         fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
         fun checkEmailIsUnique(email: String)
-        fun updateEmail(email: String)
+        fun onShowEmailConfirm(email : String)
     }
 }

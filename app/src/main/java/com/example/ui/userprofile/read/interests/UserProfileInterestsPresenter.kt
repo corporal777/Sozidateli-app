@@ -13,6 +13,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserProfileInterestsPresenter @Inject constructor(
@@ -53,12 +54,12 @@ class UserProfileInterestsPresenter @Inject constructor(
 
     override fun attachView(view: UserProfileInterestsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun changeAppBarElevation(value: Int) {
         mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     private fun groupUserInterests(

@@ -1,7 +1,5 @@
 package com.example.ui.auth.login
 
-import android.content.Context
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
@@ -20,12 +18,12 @@ import com.example.util.Utils.newPhoneValidator
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.getAppVersion
 import com.example.util.getAppVersionCode
+import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -119,7 +117,9 @@ class LoginPresenter
                             .performOnBackgroundOutOnMain()
                             .subscribeSimple(
                                 onError = {},
-                                onComplete = {}
+                                onComplete = {
+                                    Shake.registerUser(appData.getId().toString())
+                                }
                             )
                         // do nothing
                     }
@@ -152,7 +152,7 @@ class LoginPresenter
                         }
                     },
                     onComplete = {
-                        // do nothing
+                        Shake.registerUser(appData.getId().toString())
                     }
                 )
         }

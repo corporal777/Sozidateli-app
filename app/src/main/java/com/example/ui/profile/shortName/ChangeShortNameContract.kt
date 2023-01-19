@@ -9,6 +9,9 @@ import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 interface ChangeShortNameContract {
     interface View : BaseBottomSheetContract.View{
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setUserShortName(name : String)
+
         @StateStrategyType(SkipStrategy::class)
         fun setUserShortNameUnique(isUnique : Boolean)
 
@@ -21,6 +24,6 @@ interface ChangeShortNameContract {
 
     interface Presenter : BaseBottomSheetContract.Presenter {
         fun checkUserShortNameUnique(short: String)
-        fun updateUserShortName(userId : Int, short: String)
+        fun updateUserShortName(short: String)
     }
 }

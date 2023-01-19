@@ -1,35 +1,34 @@
 package com.example.ui.event.list.recommendations
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
 import com.example.extensions.dp
 import com.example.extensions.findItemBy
-import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
-import com.example.util.IS_EXPANDED
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
@@ -87,11 +86,11 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
 //                })
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
-            etSearch.setOnClickListener {
-                presenter.onSearchClick()
+            etSearch.setOnClickListener { presenter.onSearchClick() }
+            appBarLayout.offsetChangedListener { appBarLayout, i ->
+                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
         }
-        initCollapseLabel()
     }
 
     override fun setData(events: List<EventNew?>) {
@@ -127,8 +126,9 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     override fun showEmptyListPlaceholder() {
         dataGroup.update(listOf(
             NoScheduleEventItem(
-                getString(R.string.no_data_found),
                 getString(R.string.no_active_events_found_title),
+                //getString(R.string.no_data_found),
+                //getString(R.string.no_active_events_found_title),
                 padding = 70.dp
             )
         ))
@@ -170,12 +170,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         )
     }
 
-    private fun initCollapseLabel() {
-        mBinding.appBarLayout.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-                updateViews(Math.abs(i / appBarLayout.totalScrollRange.toFloat()))
-            })
-    }
 
     private fun updateViews(offset: Float) {
 
@@ -187,7 +181,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
                 cashCollapseState != null && cashCollapseState != this -> {
                     when (first) {
                         TO_EXPANDED -> {
-                            IS_EXPANDED = true
                             mBinding.apply {
                                 tvLabelSmall.apply {
                                     alpha = 1F
@@ -202,7 +195,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
                             }
                         }
                         TO_COLLAPSED -> {
-                            IS_EXPANDED = false
                             mBinding.apply {
                                 tvLabelSmall.apply {
                                     alpha = 0F

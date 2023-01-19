@@ -40,9 +40,10 @@ interface ChangePhoneContract {
         fun setNewPhoneIsVisible(isVisible: Boolean)
 
         fun updatePhoneData()
-        fun onConfirmPhoneClick(phone : String)
+        fun onShowPhoneConfirm(phone : String)
         fun onSaveNewPhoneClick(phone : String)
 
         fun checkPassword(password : String, phone: String)
+        fun checkPhoneIsUnique(phone : String)
     }
 }

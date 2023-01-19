@@ -1,18 +1,11 @@
-package com.example.ui.organizations.redesign.items
+package com.example.ui.organizations.detail.items
 
-import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.UserDetail
-import com.example.databinding.ItemOrganizationHeaderBinding
 import com.example.databinding.ItemUserBinding
-import com.example.holders.UserItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
-import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.item_user.*
-import setCircleImage
 
 class UserItemNew(
     private val user: Int,

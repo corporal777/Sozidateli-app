@@ -8,14 +8,15 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_registration_field_title.*
 
 class EventRegistrationTitleItem(
-        private val title: String?
+    private val title: String?
 ) : Item(title.hashCode().toLong()) {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
             textContainer.apply {
                 updatePadding(
-                        top = resources.getDimensionPixelSize(R.dimen.event_registration_form_title_margin_top),
-                        bottom = resources.getDimensionPixelSize(R.dimen.event_registration_form_title_margin_bottom)
+                    // top = resources.getDimensionPixelSize(R.dimen.event_registration_form_title_margin_top),
+                    top = resources.getDimensionPixelSize(R.dimen.event_registration_form_title_margin_bottom),
+                    bottom = resources.getDimensionPixelSize(R.dimen.event_registration_form_title_margin_bottom)
                 )
             }
 

@@ -6,53 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--<LinearLayout
-        android:id="@+id/layPhoto"
-        style="@style/Profile.Edit.InputContainer">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Profile.Edit.TextViewTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/profile_photo" />
-
-        <LinearLayout
-            style="@style/Profile.Edit.InputContainer"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp">
-
-            <ImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="104dp"
-                android:layout_height="104dp"
-                android:background="@drawable/background_corners"
-                android:contentDescription="@string/content_description_avatar"
-                tools:src="@drawable/avatar_placeholder_rectangle" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:fontFamily="sans-serif"
-                android:minHeight="32dp"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/user_profile_edit"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/layWorkPhone"
         style="@style/Profile.Edit.InputContainer">

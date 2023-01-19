@@ -1,17 +1,22 @@
 package com.example.ui.accountChange
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.accountChange.items.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -21,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true),
-    ChangeAccountContract.View {
+    ChangeAccountContract.View, ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: ChangeAccountPresenter
@@ -63,12 +68,12 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        startPostponedEnterTransition()
         mBinding.accountsList.apply {
             adapter = groupAdapter
             onScrolled { _, dy ->
                 presenter.changeAppBarElevation(dy)
             }
+            doOnPreDraw { startPostponedEnterTransition() }
         }
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -77,9 +82,6 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
                     presenter.onClickClose()
                 }
             })
-        mBinding.ivBack.setOnClickListener {
-            presenter.onClickClose()
-        }
     }
 
     override fun setAccounts(canShow: Boolean, sessions: List<UserSessionModel>) {
@@ -140,14 +142,18 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
         }
     }
 
-    override fun showBrowser(url: String) {
-        showCustomTabsBrowser(requireContext(), url)
-    }
+    override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun ignoreTokenListener(ignore: Boolean) {
         (requireActivity() as MainActivity).setIgnoreTokenListener(ignore)
     }
 
     override fun layout(): Int = R.layout.fragment_change_account
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

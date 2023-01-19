@@ -1,20 +1,22 @@
-package com.example.ui.auth.register.email.finishregister.newbuild
+package com.example.ui.auth.register.email.finish
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.databinding.FragmentFinishRegisterNewBinding
+import com.example.databinding.FragmentFinishRegisterBinding
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
@@ -24,27 +26,31 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBinding>(),
-    FinishRegisterNewContract.View {
+class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
+    FinishRegisterContract.View {
 
-    private val timerMessage by lazy {
+    private val timerEmailMessage by lazy {
         getString(R.string.auth_register_confirm_email_timer_two)
     }
 
+    private val timerPhoneMessage by lazy {
+        getString(R.string.auth_register_confirm_phone_timer)
+    }
+
     @InjectPresenter
-    lateinit var presenter: FinishRegisterNewPresenter
+    lateinit var presenter: FinishRegisterPresenter
 
     @Inject
-    lateinit var presenterProviderFinish: Provider<FinishRegisterNewPresenter>
+    lateinit var presenterProviderFinish: Provider<FinishRegisterPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): FinishRegisterNewPresenter = presenterProviderFinish.get().apply {
-        val args = requireArguments().let { FinishRegisterNewFragmentArgs.fromBundle(it) }
+    fun providePresenter(): FinishRegisterPresenter = presenterProviderFinish.get().apply {
+        val args = requireArguments().let { FinishRegisterFragmentArgs.fromBundle(it) }
         firstName = args.name
         lastName = args.lastName
         middleName = args.middleName ?: ""
         noMiddleNameChecked = args.isNoMiddleName
-        if (args.email.isNullOrEmpty()){
+        if (args.email.isNullOrEmpty()) {
             login = args.phone ?: ""
             loginType = "phone"
         } else {
@@ -55,8 +61,15 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    presenter.onCloseClick()
+                }
+            })
         mBinding.apply {
-            ivClose.setOnClickListener { findNavController().navigateUp() }
+            ivClose.setOnClickListener { presenter.onCloseClick() }
             scNoMiddleName.initSwitch(presenter.noMiddleNameChecked) {
                 presenter.onNoMiddleNameChecked(it)
             }
@@ -135,15 +148,13 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
             }
             ibCancel.setOnClickListener {
                 hideKeyboard()
-                ignoreTokenListener(true)
-                presenter.logout()
+                presenter.onCloseClick()
             }
             ibRegister.setOnClickListener {
                 hideKeyboard()
                 if (etCode.text?.length != AddPhoneEmailDialog.CODE_SIZE) {
                     tilCode.error = resources.getString(R.string.auth_error_no_code)
                 } else {
-                    ignoreTokenListener(true)
                     presenter.onHandleAuthLink()
                 }
             }
@@ -158,7 +169,6 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
     ) {
         mBinding.apply {
             etEmail.setText(email)
-
             etFirstName.setText(firstName)
             etLastName.setText(lastName)
             if (middleName == "-" || middleName.isNullOrEmpty()) {
@@ -173,11 +183,19 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
 
     override fun setTimeLeft(seconds: Int) {
         val quantity = Utils.timerFormatter(seconds, requireContext())
-        mBinding.tvTimer.text = String.format(timerMessage, quantity)
+        if (presenter.loginType == "email"){
+            mBinding.tvTimer.text = String.format(timerEmailMessage, quantity)
+        }else {
+            mBinding.tvTimer.text = String.format(timerPhoneMessage, quantity)
+        }
     }
 
     override fun setCanResend(canResend: Boolean) {
-        mBinding.btnResend.isEnabled = canResend
+        mBinding.btnResend.apply {
+            isEnabled = canResend
+            text = if (presenter.loginType == "email") getString(R.string.send_code_again)
+            else getString(R.string.send_call_again)
+        }
         mBinding.tvTimer.isVisible = !canResend
     }
 
@@ -198,28 +216,29 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
     }
 
     override fun setDescriptionText(canShow: Boolean) {
-        mBinding.lnText.isVisible = canShow
-        if (canShow) {
-            mBinding.apply {
-                when (presenter.loginType) {
-                    "phone" -> {
-                        tvDescription.isVisible = false
-                        tvText.text = getString(R.string.code_phone_dialog_text, presenter.login)
-                    }
-                    "email" -> {
-                        tvText.text = getString(R.string.code_email_dialog_text, presenter.login)
-                        tvDescription.apply {
-                            isVisible = true
-                            val supportEmail = getString(R.string.support_email)
-                            val message =
-                                getString(R.string.code_dialog_text_information).format(supportEmail)
-                                    .toSpannable()
-                            Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-                            text = message
-                            movementMethod = BetterLinkMovementMethod.getInstance()
-                        }
-                    }
+        val descriptionText = SpannableStringBuilder()
+        mBinding.apply {
+            when (presenter.loginType) {
+                "phone" -> {
+                    etCode.hint = getString(R.string.auth_error_no_call)
+                    descriptionText.append(getString(R.string.call_code_phone_dialog_text))
                 }
+                "email" -> {
+                    etCode.hint = getString(R.string.auth_error_no_code)
+                    val supportEmail = getString(R.string.support_email)
+                    val message =
+                        getString(R.string.code_dialog_text_information).format(supportEmail)
+                            .toSpannable()
+                    Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+                    descriptionText.append(getString(R.string.code_email_dialog_text, presenter.login))
+                        .append("\n")
+                        .append(message)
+                }
+            }
+            tvText.apply {
+                isVisible = canShow
+                text = descriptionText
+                movementMethod = BetterLinkMovementMethod.getInstance()
             }
         }
     }
@@ -251,24 +270,18 @@ class FinishRegisterNewFragment : BaseFragmentNew<FragmentFinishRegisterNewBindi
     }
 
     override fun openHome() {
-        ignoreTokenListener(false)
-        findNavController().navigate(FinishRegisterNewFragmentDirections.registerToMail(true))
+        setIgnoreTokenListener(false)
+        findNavController().navigate(FinishRegisterFragmentDirections.registerToMail(true))
     }
 
     override fun logout() {
-        ignoreTokenListener(false)
-        findNavController().navigate(
-            R.id.register_email_new_fragment, null, NavOptions.Builder()
-                .setPopUpTo(R.id.main_navigation, true)
-                .build()
-        )
+        if (!findNavController().popBackStack(R.id.authorization_fragment, false)) {
+            findNavController().navigate(R.id.authorization_fragment, null, navOptions {
+                popUpTo(R.id.main_navigation) { inclusive = true }
+            })
+        }
     }
 
-    override fun ignoreTokenListener(ignore: Boolean) {
-        (requireActivity() as MainActivity).setIgnoreTokenListener(ignore)
-    }
-
-
-    override fun layout() = R.layout.fragment_finish_register_new
+    override fun layout() = R.layout.fragment_finish_register
 
 }

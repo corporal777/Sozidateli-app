@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.read.contacts
 
 import additionalNumber
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -12,8 +13,9 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileContactsBinding
 import com.example.extensions.parsePhone
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import onScrolled
@@ -21,7 +23,8 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsBinding>(), UserProfileContactsContract.View, SimpleTitleToolbar {
+class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsBinding>(),
+    UserProfileContactsContract.View, ToolbarFragmentNew {
 
     override fun layout() = R.layout.fragment_user_profile_contacts
 
@@ -36,7 +39,6 @@ class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.user_profile_contacts))
         mBinding.apply {
             nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
                 presenter.changeAppBarElevation(scrollY - oldScrollY)
@@ -48,25 +50,41 @@ class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsB
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
 
-        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
+        val phone =
+            user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         mBinding.apply {
             tvPhoneMobile.isVisible = phone != null
             tvPhoneMobileTitle.isVisible = phone != null
-
             tvPhoneMobile.text = phone
+
             val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
             tvPhoneWork.text = workPhone?.value?.parsePhone(requireContext())
+
             tvAdditionalNumber.additionalNumber(workPhone?.additional)
+
             tvEmail.text = (user.email?.value ?: "")
-            tvEmailPublic.text = user.contactInformation.emails?.joinToString("\n") { it.value ?: "" }
-            tvSocialNetworks.text = user.contactInformation.socialLinks?.values?.joinToString("\n") {
-                it.value ?: ""
-            }
-            tvSite.text = user.contactInformation.site?.values?.joinToString("\n") { it.value ?: "" }
+            tvEmailPublic.text =
+                user.contactInformation.emails?.joinToString("\n") { it.value ?: "" }
+
+            tvSocialNetworks.text =
+                if (user.contactInformation.socialLinks?.absent == true) getString(R.string.user_profile_no_social_networks)
+                else user.contactInformation.socialLinks?.values?.joinToString("\n") { it.value ?: "" }
+
+            tvSite.text =
+                if (user.contactInformation.site?.absent == true) getString(R.string.user_profile_no_site)
+                else user.contactInformation.site?.values?.joinToString("\n") { it.value ?: "" }
+
         }
     }
 
     override fun showEdit() {
         findNavController().navigate(UserProfileContactsFragmentDirections.toEdit(UserEditDataType.CONTACTS))
     }
+
+    override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

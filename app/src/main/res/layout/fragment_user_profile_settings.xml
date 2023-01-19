@@ -193,8 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="5dp"
-                    android:text="@string/short_name_label"
-                    android:visibility="gone" />
+                    android:text="@string/short_name_label" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvShortname"
@@ -205,8 +204,7 @@
                     android:gravity="center_vertical"
                     android:minHeight="45dp"
                     android:paddingHorizontal="15dp"
-                    android:text="@string/short_name_label"
-                    android:visibility="gone" />
+                    android:text="@string/short_name_label" />
 
                 <TextView
                     android:id="@+id/tvEditShortName"
@@ -216,11 +214,9 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/custom_text_background_selectable"
-                    android:drawablePadding="10dp"
                     android:text="@string/edit_title"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
-                    android:visibility="gone"
                     tools:ignore="MissingPrefix" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -250,7 +246,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/custom_text_background_selectable"
-                    android:drawablePadding="10dp"
                     android:text="@string/edit_title"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
@@ -284,7 +279,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/custom_text_background_selectable"
-                    android:drawablePadding="10dp"
                     android:text="@string/profile_password_change"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
@@ -341,7 +335,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/custom_text_background_selectable"
-                    android:drawablePadding="10dp"
                     android:text="@string/edit_title"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"

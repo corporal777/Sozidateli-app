@@ -20,6 +20,7 @@ class ChatViewPresenter @Inject constructor(
     private var messagesCount = 0
     private var requestsCount = 0
 
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.hideCounter()

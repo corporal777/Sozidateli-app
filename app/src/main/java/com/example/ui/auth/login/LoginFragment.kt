@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
@@ -58,7 +57,7 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
             }
 
             btnForgotPassword.setOnClickListener { presenter.onClickRecoverPassword() }
-            ibLogin.setOnClickListener {
+            btnLogin.setOnClickListener {
                 hideKeyboard()
                 if (invite != -1) (requireActivity() as MainActivity).setIgnoreDeeplink(true)
                 presenter.onClickLogin(
@@ -80,7 +79,7 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
     }
 
     override fun enableLoginBtn(isEnable: Boolean) {
-        mBinding.ibLogin.isEnabled = isEnable
+        mBinding.btnLogin.isEnabled = isEnable
     }
 
     override fun showEmailRegistration() {

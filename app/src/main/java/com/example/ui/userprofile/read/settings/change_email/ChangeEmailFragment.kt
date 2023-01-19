@@ -72,7 +72,7 @@ class ChangeEmailFragment(
         )
             .setSelectCallback {
                 if (it) {
-                    showEmailConfirm(email)
+                    presenter.onShowEmailConfirm(email)
                 }
             }
     }

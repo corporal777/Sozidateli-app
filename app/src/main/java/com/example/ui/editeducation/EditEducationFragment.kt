@@ -1,7 +1,7 @@
 package com.example.ui.editeducation
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -14,18 +14,19 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentEditEducationFragmentBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseToDate
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.editeducation.EditEducationModel.Companion.ADD_EDUCATION
 import com.example.ui.editeducation.EditEducationModel.Companion.ADD_HIGHT_LEVEL
 import com.example.ui.editeducation.EditEducationModel.Companion.EDUCATION_ITEM
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import onScrolled
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBinding>(),
-    EditEducationContract.View, SimpleTitleToolbar {
+    EditEducationContract.View, ToolbarFragmentNew {
 
     private lateinit var adapter: EditEducationAdapter
     private var birthday: Date? = null
@@ -258,7 +259,6 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.profile_title_education))
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditEducationFragment.adapter
@@ -445,4 +445,10 @@ class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBindi
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
+    override val title: CharSequence by lazy { getString(R.string.profile_title_education) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

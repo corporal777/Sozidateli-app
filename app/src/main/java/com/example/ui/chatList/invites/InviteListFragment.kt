@@ -21,6 +21,7 @@ import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
+import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
@@ -63,7 +64,8 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
-        if (chats.isEmpty()) invitesSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message))))
+        //if (chats.isEmpty()) invitesSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message))))
+        if (chats.isEmpty()) invitesSection.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message), padding = 70.dp)))
         else invitesSection.apply {
             update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list_chat_requests)))
                 .plus(
@@ -88,9 +90,9 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
         findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
     }
 
-    fun smoothScrollToFirstItem() {
+    fun smoothScrollToFirstItem(appBarLayout: AppBarLayout) {
         val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), appBarLayout, 3)
     }
 
     override fun layout() = R.layout.fragment_invite_list

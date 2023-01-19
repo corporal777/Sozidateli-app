@@ -12,6 +12,7 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_list.*
@@ -49,8 +50,10 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
 
     override fun setData(data: List<UserDetail?>) {
         if (data.isEmpty()) {
-            adapter.update(listOf(NoDataItem(/*getString(R.string.empty_list_placeholder_message)*/getString(R.string.blank_list_error),
-                    getString(R.string.user_favorites_empty_list_description))))
+            adapter.update(listOf(
+                NoEventItem(getString(R.string.blank_list_error),
+                    getString(R.string.user_favorites_empty_list_description))
+            ))
         } else {
             adapter.update(data.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)

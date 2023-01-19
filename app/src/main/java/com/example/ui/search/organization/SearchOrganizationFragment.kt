@@ -2,6 +2,7 @@ package com.example.ui.search.organization
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -36,7 +37,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         findNavController().navigate(R.id.organization_fragment_new, bundleOf("organizationId" to organization.id.toString()))
     }
 
-    override fun changeSubscription(organization: OrganizationNew/*Organization*/) {
+    override fun changeSubscription(organization: OrganizationNew) {
         val idLong = organization.id?.toLong()
         adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
     }
@@ -62,7 +63,9 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         return layoutInflater.inflate(R.layout.layout_filter_organization, null).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
-                onTextChanged { filter.address = it.toString() }
+                onTextChanged {
+                    filter.address = it.toString()
+                }
             }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }

@@ -24,6 +24,8 @@ interface AuthRepository {
     fun sendQrCode(body: QrBody):Single<QrAuthResponse>
     fun authWebWithQrCode(body: QrBody):Single<NewAuthResponse>
     fun register(body: RegisterBody): Completable
+    fun registerUser(body: RegisterBody): Completable
+
     /*fun registerConfirm(email: String, code: String, name: String,lastName: String,
                         middleName: String?, phone: String?, newEmail: String? = null, password: String? = null): Completable*/
     fun registerEmailResend(email: String): Completable

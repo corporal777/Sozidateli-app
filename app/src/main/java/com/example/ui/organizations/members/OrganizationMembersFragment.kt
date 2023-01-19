@@ -1,18 +1,18 @@
 package com.example.ui.organizations.members
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationNewMemberModel
 import com.example.databinding.LayoutListBinding
 import com.example.holders.OrganizationUserItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
-import com.example.util.PositionOffsetScrollListener
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
-    OrganizationMembersContract.View, SimpleTitleToolbar {
+    OrganizationMembersContract.View, ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: OrganizationMembersPresenter
@@ -44,7 +44,6 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.organization_members))
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationMembersFragment.adapter
@@ -83,4 +82,10 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
     }
 
     override fun layout() = R.layout.layout_list
+    override val title: CharSequence by lazy { getString(R.string.organization_members) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

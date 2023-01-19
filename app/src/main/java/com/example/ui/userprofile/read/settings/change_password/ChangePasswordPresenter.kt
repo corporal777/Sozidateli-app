@@ -27,53 +27,14 @@ class ChangePasswordPresenter
 ) : BaseBottomSheetPresenter<ChangePasswordContract.View>(appData),
     ChangePasswordContract.Presenter {
 
-    var isRecover = false
-    var isCheck = false
     var recoverCode = ""
+    var fromRecover = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (isRecover && !recoverCode.isNullOrEmpty()) {
-            viewState.setRecoverPassword(recoverCode)
-        }
+        if (fromRecover) viewState.showEnterNewPassword()
     }
 
-
-    override fun onChangePasswordClickConfirm(newPassword: String) {
-        compositeDisposable += userRepository.changePassword(
-            appData.getId(),
-            PasswordBody(newPassword)
-        )
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onComplete = {
-                    viewState.showPasswordSuccessUpdated()
-                })
-    }
-
-    override fun onRecoverPasswordClickConfirm(code: String, newPassword: String) {
-        compositeDisposable += authRepository.recoverPasswordNew(
-            RecoverPasswordBody(
-                "email",
-                code,
-                newPassword
-            )
-        )
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                viewState.apply {
-                    showPasswordSuccessUpdated()
-                    hideBottomSheetDialog()
-                }
-            }, {
-                onReceiveError(it)
-            })
-    }
 
     override fun checkPasswordValid(password: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
@@ -100,6 +61,21 @@ class ChangePasswordPresenter
             )
     }
 
+    override fun onChangePasswordClickConfirm(newPassword: String) {
+        compositeDisposable += if (fromRecover){
+            authRepository.recoverPasswordNew(RecoverPasswordBody("email", recoverCode, newPassword))
+        }else {
+            userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
+        }
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onComplete = { viewState.showPasswordSuccessUpdated() }
+            )
+    }
+
+
     override fun logoutFromAccount() {
         compositeDisposable += userRepository.logout(appData.getId())
             .withDelay(500)
@@ -122,7 +98,6 @@ class ChangePasswordPresenter
             )
     }
 
-    override fun onRecoveryPasswordClick() {
-        viewState.showRecoveryPassword("")
-    }
+    override fun onRecoveryPasswordClick() = viewState.showRecoveryPassword()
+
 }

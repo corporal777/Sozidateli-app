@@ -1,41 +1,29 @@
 package com.example.ui.state.max
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FileModel
-import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
-import com.example.databinding.FragmentMaxStateBinding
 import com.example.databinding.FragmentMaxStateInfoBinding
-import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.MaxStateMainInfoEditItem
-import com.example.holders.ProfileDataAdditionalFilesEditNewGroup
-import com.example.holders.ProfileDataFileEditItem
-import com.example.holders.ProfileDataFileItem
-import com.example.ui.base.BaseFragment
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.SimpleTitleToolbar
-import com.example.util.*
+import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
+import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
@@ -43,34 +31,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
-    MaxStateMainInfoContract.View, SimpleTitleToolbar {
+    MaxStateMainInfoContract.View, ToolbarFragmentNew {
 
-    var mimeTypes = arrayOf("image/*", "application/pdf")
-    private var isUpdateInfo = true
-    private var mainInfoFiles: List<FileModel>? = null
-    private var isFilesValid = false
     private var isOtherInfoValid = false
-    private var filesAddedBefore = false
     private var canUpdateFields = true
 
     override fun layout(): Int = R.layout.fragment_max_state_info
-
-    private val galleryImage =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { uri ->
-            uri?.let {
-                it.data?.data?.let { file ->
-                    val filePath = FileUtils.getPath(requireContext(), file)
-                    val mimeType = FileUtils.getMimeType(requireContext(), file)
-                    if (filePath.isEmpty()) {
-                        val path = UriUtils.pickedExistingPicture(requireContext(), file).path
-                        val type = UriUtils.getMimeType(requireContext(), file) ?: ""
-                        presenter.onFilePicked(path, type)
-                    } else {
-                        presenter.onFilePicked(filePath, mimeType)
-                    }
-                }
-            }
-        }
 
     @InjectPresenter
     lateinit var presenter: MaxStateMainInfoPresenter
@@ -89,7 +55,6 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle()
         mBinding.recyclerView.apply {
             adapter = this@MaxStateMainInfoFragment.adapter
             onScrolled { _, _ ->
@@ -103,8 +68,6 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
 
     override fun setPersonalData(user: UserDetail) {
         if (!isGoToNextStep(user)) {
-            if (canUpdateFields) filesAddedBefore =
-                user.binds?.recommendationFile?.isNotEmpty() ?: false
             val userPhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
             val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
             val dataItem = if (canUpdateFields) MaxStateMainInfoEditItem(
@@ -120,54 +83,9 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
                 { showWhyUserShouldAddDataToNotesField() }, {
                     isOtherInfoValid = it
                     buttonNextEnabled(it)
-                }, {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.photo_alert_title)
-                        .apply {
-                            if (it) {
-                                setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                                    presenter.onRemovePhotoClick()
-                                }
-                            }
-                        }
-                        .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-                        .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-                        .show()
-                }) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
-
-            /*if (!filesAddedBefore) {
-                isFilesValid = user.binds?.recommendationFile?.isNotEmpty()?: false
-                val files = ProfileDataAdditionalFilesEditNewGroup(
-                        2,
-                        requireContext(),
-                        user.binds?.recommendationFile ?: emptyList(),
-                        {
-                            mainInfoFiles = adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
-                                true
-                            }?.getCurrentFilesToSave()
-                            isUpdateInfo = false
-                            presenter.onAddFileClick()
-                        },
-                        { presenter.onFileClick(it) },
-                        { presenter.onEditFileClick(it) },
-                        { data, files ->
-                            mainInfoFiles = files
-                            isUpdateInfo = false
-                            presenter.onSaveAdditionalFilesClick(data)
-                        }, { presenter.onDeleteFilesClick(it) }
-                )
-
-                adapter.update(listOf(dataItem, files))
-                onSaveClick = {
-                    recyclerView.requestFocus()
-                    if (dataItem?.checkDataValid() == true) {
-                        val dataToSave = dataItem.getDataToSave() as MutableMap
-                        val file = files.getCurrentFilesToSave()
-                        presenter.updateFiles(file.toMutableList(), dataToSave)
-                    }
                 }
-            } else {*/
-            isFilesValid = true
+            ) else adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }
+
             adapter.update(listOf(dataItem))
             onSaveClick = {
                 if (dataItem?.workPhoneIsValid() == true) {
@@ -186,16 +104,11 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
                 )
             presenter.isUpdatePhoto = false
         }
-        buttonNextEnabled(isFilesValid)
         canUpdateFields = false
     }
 
-    override fun photoUpdated(photo: ImageModel) {
-        adapter.findItemBy<GroupieViewHolder, MaxStateMainInfoEditItem> { true }?.setImage(photo)
-    }
-
     private fun buttonNextEnabled(enabled: Boolean) {
-        mBinding.btnSave.isEnabled = isFilesValid && isOtherInfoValid
+        mBinding.btnSave.isEnabled = isOtherInfoValid
     }
 
     private fun isGoToNextStep(user: UserDetail): Boolean {
@@ -206,65 +119,7 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
         if (user.contactInformation.site?.values?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
         if (user.notes?.value.isNullOrEmpty()) isGoToNex = false
-        //if (user.image.uri.isNullOrEmpty()) isGoToNex = false
         return isGoToNex
-    }
-
-    override fun updateFilesList(files: List<FileModel>?) {
-        isFilesValid = true
-        files?.forEach {
-            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
-            if (editedName != null)
-                it.name = editedName.name
-            else
-                it.name = it.name
-        }
-        mainInfoFiles = null
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
-            true
-        }?.updateFiles(files ?: emptyList())
-        buttonNextEnabled(isFilesValid)
-    }
-
-    override fun showFileSelector() {
-        PermissionsBuilder(REQUEST_GALLERY)
-            .addPermissions(REQUIRED_GALLERY_PERMISSIONS)
-            .setPermissionsGrantedCallback {
-                val intent = Intent()
-                intent.type = "*/*"
-                intent.action = Intent.ACTION_GET_CONTENT
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-                galleryImage.launch(intent)
-            }
-            .request()
-    }
-
-    override fun downloadFile(file: String) {
-        val uri = Uri.parse(file)
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-        } catch (e: ActivityNotFoundException) {
-            showRequestErrorMessage()
-        }
-    }
-
-    override fun setFileEditData(file: FileModel) {
-        val editItem = ProfileDataFileEditItem(file.name)
-        adapter.update(
-            listOf(
-                editItem,
-                ProfileDataFileItem(file.name ?: "") { presenter.onFileClick(file) },
-            )
-        )
-
-        onSaveClick = {
-            hideKeyboard()
-            presenter.onSaveFileClick(mutableMapOf(User.FIELD_ATTACHED_FILES to file))
-        }
-    }
-
-    override fun saveOnClick(saveOnClick: Boolean) {
-        mBinding.btnSave.isVisible = saveOnClick
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
@@ -313,15 +168,6 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    private fun setToolbarTitle() {
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
-        setToolbarTitleAndIcon(
-            getString(R.string.user_profile_contacts),
-            actionIcon,
-            action = {
-                presenter.onClickClose()
-            })
-    }
 
     override fun setClickClose(type: Int) {
         when (presenter.screen) {
@@ -334,4 +180,13 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
     override fun showChangeEmail() = showChangeEmailDialog(presenter::onChangeEmailConfirm)
 
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
+
+    override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    }
+    override fun actionIconClick() { presenter.onClickClose() }
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -38,7 +38,7 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
     @ProvidePresenter
     fun providePresenter(): AuthWebsitePresenter = presenterProvider.get().apply {
         mArgs.let {
-            this.mToken = it.qrCode
+            token = it.qrCode
         }
     }
 
@@ -61,18 +61,6 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
     }
 
 
-    override fun showSuccessEnterMessage() {
-        val message = "Авторизация прошла успешно"
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
-            showEventList()
-        }
-    }
-
-    override fun showErrorEnterMessage() {
-        val message = "Не удалось подтвердить вход"
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback { }
-    }
-
     override fun showEventList() {
         findNavController().navigate(
             R.id.recommendations_fragment, null, NavOptions.Builder()
@@ -87,12 +75,6 @@ class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), Backg
 
     override fun hideContent() {
         mBinding.clContent.isInvisible = true
-    }
-
-
-    private fun getTokenFromQrCode(str: String): String {
-        val mIndex = StringBuilder(str).indexOf("=")
-        return StringBuilder(str).substring(mIndex + 1)
     }
 
     override fun getFragmentBackgroundDrawable(): Drawable? {

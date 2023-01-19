@@ -1,13 +1,17 @@
 package com.example.ui.userSessions.items
 
+import android.util.Log
 import android.widget.ImageView
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemOtherSessionBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.ui.event.about.redesign.items.EventDetailImageItem
 import com.xwray.groupie.databinding.BindableItem
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 class OtherSessionItem(
@@ -51,7 +55,8 @@ class OtherSessionItem(
         viewBinding.apply {
             tvDeviceName.text = deviceName
             tvDeviceType.text = deviceType
-            tvLocation.text = deviceLocation + " • " + getSessionStatus()
+            //tvLocation.text = deviceLocation + " • " + getSessionStatus()
+            tvLocation.text = deviceLocation + " • " + getSessionDate()
 
             if (session != null)
                 decorDeviceIcon(ivDeviceIcon, session)
@@ -82,7 +87,6 @@ class OtherSessionItem(
     }
 
     private fun getSessionStatus(): String {
-        var status = ""
         val calToday = System.currentTimeMillis().calendar()
         val calSession = if (!session?.sessionEnd.isNullOrEmpty())
             defaultServerDateFormatter.parse(session?.sessionEnd).time.calendar()
@@ -91,7 +95,7 @@ class OtherSessionItem(
         }
         val sessionDay = calSession.get(Calendar.DAY_OF_MONTH)
         val today = calToday.get(Calendar.DAY_OF_MONTH)
-        status = if (today - sessionDay == 1) {
+        val status = if (today - sessionDay == 1) {
             "вчера"
         } else if (today == sessionDay) {
             "сегодня"
@@ -101,6 +105,27 @@ class OtherSessionItem(
                 Calendar.YEAR
             )
         }
+
+        return status
+    }
+
+    private fun getSessionDate(): String {
+        //val format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX")
+        val format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+        val today = LocalDateTime.now()
+        val sessionDate = if (!session?.sessionEnd.isNullOrEmpty()){
+            LocalDateTime.parse(session?.sessionEnd, format)
+        } else if (!session?.sessionStart.isNullOrEmpty()){
+            LocalDateTime.parse(session?.sessionStart, format)
+        } else today
+        val status = if (today.dayOfMonth - sessionDate.dayOfMonth == 1){
+            "вчера"
+        } else if (today.dayOfMonth == sessionDate.dayOfMonth && today.monthValue == sessionDate.monthValue){
+            "сегодня"
+        } else {
+            sessionDate.dayOfMonth.toString() + "." + sessionDate.monthValue.toString() + "." + sessionDate.year
+        }
+
         return status
     }
 

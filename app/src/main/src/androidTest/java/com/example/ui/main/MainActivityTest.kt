@@ -1,4 +1,3 @@
-
 import androidx.test.espresso.DataInteraction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.filters.LargeTest
@@ -42,142 +41,214 @@ class MainActivityTest {
     @Test
     fun mainActivityTest() {
         val appCompatButton = onView(
-allOf(withId(R.id.ibEmail), withText("Зарегистрироваться"),
-childAtPosition(
-allOf(withId(R.id.llEmail),
-childAtPosition(
-withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-2)),
-1)))
+            allOf(
+                withId(R.id.ibEmail), withText("Зарегистрироваться"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.llEmail),
+                        childAtPosition(
+                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                            2
+                        )
+                    ),
+                    1
+                )
+            )
+        )
         appCompatButton.perform(scrollTo(), click())
-        
+
         val textInputEditText = onView(
-allOf(withId(R.id.et_last_name),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_last_name),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_last_name),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_last_name),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText.perform(replaceText("Романов "), closeSoftKeyboard())
-        
+
         val textInputEditText2 = onView(
-allOf(withId(R.id.et_first_name),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_first_name),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_first_name),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_first_name),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText2.perform(replaceText("Роман "), closeSoftKeyboard())
-        
+
         val appCompatCheckBox = onView(
-allOf(withId(R.id.sc_no_middle_name), withText("Нет отчества"),
-childAtPosition(
-allOf(withId(R.id.til_middle_name),
-childAtPosition(
-withId(R.id.ll_input),
-2)),
-1)))
+            allOf(
+                withId(R.id.sc_no_middle_name), withText("Нет отчества"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.til_middle_name),
+                        childAtPosition(
+                            withId(R.id.ll_input),
+                            2
+                        )
+                    ),
+                    1
+                )
+            )
+        )
         appCompatCheckBox.perform(scrollTo(), click())
-        
+
         pressBack()
-        
+
         val textInputEditText3 = onView(
-allOf(withId(R.id.et_email),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_email),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_email),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_email),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText3.perform(replaceText("+779268887766"), closeSoftKeyboard())
-        
+
         val textInputEditText4 = onView(
-allOf(withId(R.id.et_email), withText("+779268887766"),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_email),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_email), withText("+779268887766"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_email),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText4.perform(click())
-        
+
         val textInputEditText5 = onView(
-allOf(withId(R.id.et_email), withText("+779268887766"),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_email),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_email), withText("+779268887766"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_email),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText5.perform(replaceText("+79268887766"))
-        
+
         val textInputEditText6 = onView(
-allOf(withId(R.id.et_email), withText("+79268887766"),
-childAtPosition(
-childAtPosition(
-withId(R.id.til_email),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.et_email), withText("+79268887766"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.til_email),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText6.perform(closeSoftKeyboard())
-        
+
         pressBack()
-        
+
         val textInputEditText7 = onView(
-allOf(withId(R.id.etPassword),
-childAtPosition(
-childAtPosition(
-withId(R.id.tilPassword),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.etPassword),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.tilPassword),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText7.perform(replaceText("Qwerty123"), closeSoftKeyboard())
-        
+
         val textInputEditText8 = onView(
-allOf(withId(R.id.etPasswordConfirm),
-childAtPosition(
-childAtPosition(
-withId(R.id.tilPasswordConfirm),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.etPasswordConfirm),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.tilPasswordConfirm),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText8.perform(replaceText("Qwerty123"), closeSoftKeyboard())
-        
+
         val textInputEditText9 = onView(
-allOf(withId(R.id.etPasswordConfirm), withText("Qwerty123"),
-childAtPosition(
-childAtPosition(
-withId(R.id.tilPasswordConfirm),
-0),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.etPasswordConfirm), withText("Qwerty123"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.tilPasswordConfirm),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         textInputEditText9.perform(pressImeActionButton())
-        
+
         val frameLayout = onView(
-allOf(withId(R.id.flAgree),
-childAtPosition(
-allOf(withId(R.id.llAgree),
-childAtPosition(
-withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-8)),
-0),
-isDisplayed()))
+            allOf(
+                withId(R.id.flAgree),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.llAgree),
+                        childAtPosition(
+                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                            8
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         frameLayout.perform(click())
-        
+
         val appCompatButton2 = onView(
-allOf(withId(R.id.ib_register), withText("Зарегистрироваться"),
-childAtPosition(
-childAtPosition(
-withId(R.id.sv_content),
-0),
-4)))
+            allOf(
+                withId(R.id.ib_register), withText("Зарегистрироваться"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.sv_content),
+                        0
+                    ),
+                    4
+                )
+            )
+        )
         appCompatButton2.perform(scrollTo(), click())
-        }
-    
+    }
+
     private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
+        parentMatcher: Matcher<View>, position: Int
+    ): Matcher<View> {
 
         return object : TypeSafeMatcher<View>() {
             override fun describeTo(description: Description) {
@@ -192,4 +263,4 @@ withId(R.id.sv_content),
             }
         }
     }
-    }
+}

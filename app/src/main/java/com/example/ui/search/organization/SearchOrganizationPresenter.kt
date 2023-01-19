@@ -1,5 +1,6 @@
 package com.example.ui.search.organization
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel

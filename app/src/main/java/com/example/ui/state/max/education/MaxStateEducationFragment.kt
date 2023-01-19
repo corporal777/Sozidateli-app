@@ -1,9 +1,9 @@
 package com.example.ui.state.max.education
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -11,9 +11,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMaxStateEducationBinding
-import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.ProfileDataEducationEditGroupNew
-import com.example.ui.base.BaseFragment
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.work.MaxStateWorkFragmentArgs
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
@@ -21,7 +20,7 @@ import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
@@ -29,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBinding>(),
-    MaxStateEducationContract.View, SimpleTitleToolbar {
+    MaxStateEducationContract.View, ToolbarFragmentNew {
 
     override fun layout(): Int = R.layout.fragment_max_state_education
     private lateinit var dialog: AddPhoneEmailDialog
@@ -51,7 +50,6 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle()
         mBinding.recyclerView.apply {
             adapter = this@MaxStateEducationFragment.adapter
             onScrolled { _, _ ->
@@ -99,6 +97,7 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
             dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
                 .setSelectCallback {
                     presenter.checkEmailIsUnique(it.value)
+                    dialog.hideDialog()
                 }.setNegativeClickCallback { maxActions() }
         }
     }
@@ -128,17 +127,16 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
         )
             .setSelectCallback {
                 if (it) {
-                    showEmailConfirmation(email)
+                    presenter.onShowEmailConfirm(email)
                 }
             }
     }
 
     override fun showEmailConfirmation(email: String) {
-        dialog.hideDialog()
         val confirmEmail = ConfirmEmailPhoneFragment(email)
         confirmEmail.show(requireActivity().supportFragmentManager, "max_state_confirm_email")
         confirmEmail.setConfirmCallback {
-            presenter.updateEmail(email)
+            showChangeEmailComplete(email)
         }
     }
 
@@ -148,15 +146,6 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    private fun setToolbarTitle() {
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
-        setToolbarTitleAndIcon(
-            getString(R.string.profile_title_education),
-            actionIcon,
-            action = {
-                presenter.onClickClose()
-            })
-    }
 
     override fun setClickClose(type: Int) {
         when (presenter.screen) {
@@ -165,4 +154,14 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
             else -> navigateUp()
         }
     }
+
+
+    override val title: CharSequence by lazy { getString(R.string.profile_title_education) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    }
+    override fun actionIconClick() { presenter.onClickClose() }
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -11,9 +11,6 @@ interface ChangePasswordContract {
     interface View : BaseBottomSheetContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setRecoverPassword(code: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEnterNewPassword()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -29,12 +26,11 @@ interface ChangePasswordContract {
         fun showLoginAgainDialog()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRecoveryPassword(email: String)
+        fun showRecoveryPassword()
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
         fun onChangePasswordClickConfirm(newPassword: String)
-        fun onRecoverPasswordClickConfirm(code : String, newPassword: String)
         fun checkPasswordValid(password: String)
         fun logoutFromAccount()
         fun onRecoveryPasswordClick()

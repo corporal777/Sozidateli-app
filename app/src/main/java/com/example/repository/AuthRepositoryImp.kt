@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.util.Log
 import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.api.NewApi
@@ -96,6 +97,13 @@ class AuthRepositoryImp
     override fun register(body: RegisterBody): Completable {
         return newApi.registerEmail(body).doOnSuccess {
             appData.setUserShortNew(it)
+        }.ignoreElement()
+    }
+
+    //+
+    override fun registerUser(body: RegisterBody): Completable {
+        return newApi.registerUser(body).doOnSuccess {
+            appData.saveId(it.id)
         }.ignoreElement()
     }
 

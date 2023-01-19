@@ -164,7 +164,6 @@ object InsetUtil {
 fun ImageView.setImage(
     image: Any?, crossfad: Int? = 500,
     placeholder: Int? = R.drawable.background_image_placeholder,
-    //error: Int? = R.drawable.ic_profile,
     error: Int? = null,
     transformations: List<Transformation>? = null
 ) {

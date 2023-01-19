@@ -1,6 +1,7 @@
 package com.example.ui.search.qr
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -14,13 +15,15 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.example.R
 import com.example.databinding.FragmentQrScannerBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScannerContract.View, SimpleTitleToolbar {
+class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScannerContract.View,
+    ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: QrScannerPresenter
@@ -35,7 +38,6 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.qr_scan_label))
         if (codeScanner == null){
             codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
                 decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
@@ -88,4 +90,10 @@ class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScanner
     }
 
     override fun layout() = R.layout.fragment_qr_scanner
+    override val title: CharSequence by lazy { getString(R.string.qr_scan_label) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -3,25 +3,19 @@ package com.example.ui.event.speakers.list
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentEventSpeakersBinding
-
 import com.example.holders.PlaceholderItem
 import com.example.holders.SpeakerGroup
 import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.util.IS_EXPANDED
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_event_speakers.*
-import kotlinx.android.synthetic.main.fragment_recommendations.*
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -158,7 +158,8 @@ class EventRegistrationPresenter
                         getProfileFormFields(emitter, disposable, registerResult, list)
                     })
             emitter.setDisposable(disposable)
-        }.performOnBackgroundOutOnMain()
+        }
+            .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
                     viewState.hideProgressBarLoadingDialog()

@@ -33,8 +33,7 @@ import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.user.UserFragmentArgs
@@ -697,7 +696,7 @@ class AboutEventFragment : BaseFragment(), AboutEventContract.View, ToolbarFragm
     override fun showOrganization(organization: String) {
         findNavController().navigate(
             R.id.organization_fragment_new,
-            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
+            OrganizationFragmentArgs.Builder(organization).build().toBundle()
         )
     }
 

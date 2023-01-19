@@ -1,9 +1,7 @@
-package com.example.ui.organizations.redesign.items
+package com.example.ui.organizations.detail.items
 
-import android.util.Log
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.databinding.ItemOrganizationHeaderBinding
 import com.example.databinding.ItemOrganizationInfoBinding
 import com.xwray.groupie.databinding.BindableItem
 import removeUrlUnderline

@@ -1,5 +1,7 @@
 package com.example.ui.userprofile
 
+import android.graphics.Bitmap
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
@@ -9,8 +11,10 @@ import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
+import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.subjects.SingleSubject
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -19,14 +23,9 @@ import javax.inject.Inject
 class UserProfilePresenter @Inject constructor(
     val appData: AppData,
     private val userRepository: UserRepository,
-    private val takePhoto: RxTakePhoto
+    private val takePhoto: RxTakePhoto,
 ) : BaseUserProfilePresenter<UserProfileContract.View>(appData),
     UserProfileContract.Presenter {
-
-    override fun onEditAvatarClick() {
-        val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
-        viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -36,6 +35,11 @@ class UserProfilePresenter @Inject constructor(
     override fun attachView(view: UserProfileContract.View?) {
         super.attachView(view)
         viewState.setAppBarElevation(0f)
+    }
+
+    override fun onEditAvatarClick() {
+        val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
+        viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -56,6 +60,9 @@ class UserProfilePresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .withLoadingDialog(viewState)
             .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
                 onSuccess = {
                     compositeDisposable += userRepository.checkUserProfileSingle()
                         .performOnBackgroundOutOnMain()
@@ -63,9 +70,9 @@ class UserProfilePresenter @Inject constructor(
                     updateUserInternal {
                         image = it
                     }
-                }
-            )
+                })
     }
+
 
     override fun onRemovePhotoClick() {
         compositeDisposable += userRepository.deleteImage()

@@ -2,7 +2,6 @@ package com.example.ui.accountChange
 
 import android.app.NotificationManager
 import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.UserDetail
@@ -11,9 +10,9 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BasePresenter
+import com.shakebugs.shake.Shake
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
@@ -46,6 +45,7 @@ class ChangeAccountPresenter
 
     override fun attachView(view: ChangeAccountContract.View?) {
         super.attachView(view)
+        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     override fun onFirstViewAttach() {
@@ -146,20 +146,20 @@ class ChangeAccountPresenter
                 viewState.showCustomProgressDialog()
                 if (!isCurrentUser(session.binds.user.id.toString())) {
                     compositeDisposable += Completable.fromAction {
+                        Shake.unregisterUser()
                         viewState.ignoreTokenListener(false)
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
+                        Shake.registerUser(appData.getId().toString())
                     }.doOnComplete { appData.token = session.sessionUid }
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple {
-                            val m = "Аккаунт сменен"
-                            viewState.showMessage(m)
+                            viewState.showMessage("Аккаунт сменен")
                         }
                 } else {
-                    val m = "Вы уже авторизованы в данном аккаунте"
                     viewState.apply {
-                        showMessage(m)
+                        showMessage("Вы уже авторизованы в данном аккаунте")
                         hideCustomProgressDialog()
                     }
                 }
@@ -228,6 +228,7 @@ class ChangeAccountPresenter
             canShowMenu = false
             userRepository.logout(appData.getId())
                 .doOnComplete {
+                    Shake.unregisterUser()
                     viewState.ignoreTokenListener(true)
                     appData.isSubscribedToPush = false
                     socket.disconnectFromSocket()

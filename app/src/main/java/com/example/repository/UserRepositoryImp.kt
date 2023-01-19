@@ -6,23 +6,15 @@ import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.data.models.user.User
-import com.example.data.models.user.User.Companion.FIELD_USER_IS_IN_FAVORITE
 import com.example.util.pagination.PaginationResponse
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.iid.InstanceIdResult
-import durdinapps.rxfirebase2.RxHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import toBodyPart
-import java.io.File
 import javax.inject.Inject
 
 class UserRepositoryImp
@@ -31,6 +23,10 @@ class UserRepositoryImp
     private val newApi: NewApi,
     private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
+
+    override fun getUser(): Maybe<UserDetail> {
+        return newApi.getUserShort(appData.getId(), emptyList())
+    }
 
     override fun getUserShortData(): Maybe<UserDetail> =
         newApi.getUserShort(
@@ -100,6 +96,10 @@ class UserRepositoryImp
             appData.setUserShortNew(it)
         }
 
+    override fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail> {
+        return newApi.updateProfile(appData.getId(), map)
+    }
+
     override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
         Single.zip(
             updateUserProfile(id, map),
@@ -114,8 +114,8 @@ class UserRepositoryImp
             appData.saveId(it.id)
         }
 
-    override fun confirmEmailCodeNew(id: Int, body: EmailCodeBody): Completable {
-        return newApi.confirmEmailCodeNew(id, body).doOnSuccess {
+    override fun confirmEmailCodeNew(body: EmailCodeBody): Completable {
+        return newApi.confirmEmailCode(appData.getId(), body).doOnSuccess {
             appData.login(it.token)
             appData.saveId(it.id)
         }.ignoreElement()
@@ -169,11 +169,11 @@ class UserRepositoryImp
 
     override fun killUsersDeviceSession(id: Int): Completable = newApi.killUsersDeviceSession(id)
 
-    override fun getFcmToken(): Maybe<InstanceIdResult> {
-        return Maybe.create { emitter ->
-            RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
-        }
-    }
+//    override fun getFcmToken(): Maybe<InstanceIdResult> {
+//        return Maybe.create { emitter ->
+//            RxHandler.assignOnTask(emitter, FirebaseInstanceId.getInstance().instanceId)
+//        }
+//    }
 
     override fun notificationsRegister(token: String): Completable {
         return call(api.notificationsRegister(token))
@@ -229,6 +229,11 @@ class UserRepositoryImp
         body: List<MultipartBody.Part?>
     ): Single<ImageModel> {
         return newApi.changeRecommendedFile(fileId, body)
+    }
+
+    //+
+    override fun changeRecommendedFiles(body: RequestBody): Single<List<FileModel>> {
+        return newApi.changeRecommendedFiles(appData.getId(), body).map { it.data }
     }
 
     override fun deleteRecommendedFile(fileId: Int): Completable {
@@ -477,6 +482,12 @@ class UserRepositoryImp
 
     override fun checkEmailPhone(email: String?, phone: String?): Completable =
         newApi.checkEmailPhone(email, phone)
+
+
+    override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<SearchUserData?>> {
+        return newApi.searchDataNew(map)
+            .map { PaginationResponse(it.users.count, it.users.data) }
+    }
 
     override fun unblockUser(id: Int): Completable {
         TODO("Not yet implemented")

@@ -45,5 +45,4 @@ class ImageViewPresenter
     override fun onBitmapFoundFailed(t: Exception) {
         viewState.apply { showError() }
     }
-
 }

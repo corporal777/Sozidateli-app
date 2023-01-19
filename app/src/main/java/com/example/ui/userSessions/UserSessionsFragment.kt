@@ -1,22 +1,23 @@
 package com.example.ui.userSessions
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
+import androidx.core.view.doOnPreDraw
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userSessions.items.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -25,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
-    UserSessionsContract.View, SimpleTitleToolbar {
+    UserSessionsContract.View, ToolbarFragmentNew {
 
 
     @InjectPresenter
@@ -64,17 +65,12 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getString(R.string.sessions_label)
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
-        setToolbarTitleAndIcon(userId, actionIcon, action = {
-            showSessionInfoDialog()
-        })
-
         mBinding.rvSessions.apply {
             adapter = groupAdapter
             onScrolled { _, _ ->
                 presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
             }
+            doOnPreDraw { startPostponedEnterTransition() }
         }
     }
 
@@ -109,7 +105,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     }
 
     override fun showSessionsLoadingPlaceholder() {
-        startPostponedEnterTransition()
         currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
     }
 
@@ -143,4 +138,14 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     }
 
     override fun layout(): Int = R.layout.fragment_user_sessions
+    override val title: CharSequence by lazy { getString(R.string.sessions_label) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
+    }
+    override fun actionIconClick() {
+        showSessionInfoDialog()
+    }
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

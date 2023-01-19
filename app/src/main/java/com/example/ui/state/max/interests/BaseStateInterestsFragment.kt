@@ -1,9 +1,9 @@
 package com.example.ui.state.max.interests
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,17 +12,16 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.UserInterest
-import com.example.databinding.FragmentBaseStateBinding
 import com.example.databinding.FragmentBaseStateInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestEditItem
 import com.example.holders.ProfileExpandableSubtitleGroup
-import com.example.ui.base.BaseFragment
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -31,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class BaseStateInterestsFragment : BaseFragmentNew<FragmentBaseStateInterestsBinding>(),
-    BaseStateInterestsContract.View, SimpleTitleToolbar {
+    BaseStateInterestsContract.View, ToolbarFragmentNew {
 
     override fun layout(): Int = R.layout.fragment_base_state_interests
 
@@ -62,7 +61,6 @@ class BaseStateInterestsFragment : BaseFragmentNew<FragmentBaseStateInterestsBin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle()
         mBinding.recyclerView.apply {
             adapter = this@BaseStateInterestsFragment.adapter
             onScrolled { _, _ ->
@@ -139,16 +137,6 @@ class BaseStateInterestsFragment : BaseFragmentNew<FragmentBaseStateInterestsBin
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    private fun setToolbarTitle() {
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
-        setToolbarTitleAndIcon(
-            getString(R.string.profile_interests),
-            actionIcon,
-            action = {
-                presenter.onClickClose()
-            })
-    }
-
     override fun setClickClose(type: Int) {
         when (presenter.screen) {
             1 -> findNavController().popBackStack(R.id.profile_fragment, false)
@@ -156,4 +144,18 @@ class BaseStateInterestsFragment : BaseFragmentNew<FragmentBaseStateInterestsBin
             else -> navigateUp()
         }
     }
+
+
+    override val title: CharSequence by lazy { getString(R.string.profile_interests) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    }
+
+    override fun actionIconClick() {
+        presenter.onClickClose()
+    }
+
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

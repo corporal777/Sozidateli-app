@@ -10,7 +10,6 @@ import com.example.R
 import com.example.data.models.FieldDetails
 import com.example.databinding.BottomSheetChangePhoneBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.main.MainActivity
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.SetPasswordDialog
@@ -50,13 +49,15 @@ class ChangePhoneFragment(
                 val phone = etMobilePhone.getFullNumberWithPlus()
                 if (validatePhone(phone)) {
                     hideKeyboard(it)
-                    presenter.onConfirmPhoneClick(phone)
+                    presenter.withUpdate = false
+                    presenter.checkPhoneIsUnique(phone)
                 }
             }
             btnSave.setOnClickListener {
                 val phone = etMobilePhone.getFullNumberWithPlus()
                 if (validatePhone(phone)) {
                     hideKeyboard(it)
+                    presenter.withUpdate = true
                     presenter.onSaveNewPhoneClick(phone)
                 }
             }
@@ -123,21 +124,18 @@ class ChangePhoneFragment(
         )
             .setSelectCallback {
                 if (it) {
-                    showPhoneConfirmation(phone)
+                    presenter.onShowPhoneConfirm(phone)
                 }
             }
     }
 
     override fun showPhoneConfirmation(phone: String) {
-        val confirmEmailPhoneDialog = ConfirmEmailPhoneFragment(phone)
-        confirmEmailPhoneDialog.show(
-            requireActivity().supportFragmentManager,
-            "confirm_phone_dialog"
-        )
-        confirmEmailPhoneDialog.setConfirmCallback {
+        val confirmPhoneDialog = ConfirmEmailPhoneFragment(phone)
+        confirmPhoneDialog.show(requireActivity().supportFragmentManager, "confirm_phone_dialog")
+        confirmPhoneDialog.setConfirmCallback {
             setUserPhoneIsConfirmed(true)
             presenter.isConfirmed = true
-            if (presenter.isWithUpdate()){
+            if (presenter.isWithUpdate()) {
                 presenter.updatePhoneData()
             }
         }
@@ -145,10 +143,10 @@ class ChangePhoneFragment(
 
     private fun validatePhone(phone: String): Boolean {
         var isValid = true
-        if (phone.isNullOrEmpty() || phone.length < 3){
+        if (phone.isNullOrEmpty() || phone.length < 3) {
             mBinding.etMobilePhone.showEmptyError(true)
             isValid = false
-        }else if (!phone.isValidPhoneNumber(requireContext())) {
+        } else if (!phone.isValidPhoneNumber(requireContext())) {
             mBinding.etMobilePhone.showError(true)
             isValid = false
         } else {

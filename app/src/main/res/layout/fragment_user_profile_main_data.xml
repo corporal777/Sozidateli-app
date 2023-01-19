@@ -1,103 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
-            android:visibility="gone"
-            style="@style/ViewDivider.Horizontal"
-            android:id="@+id/divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="15dp"
-            android:layout_width="match_parent"
             app:layout_constraintBottom_toTopOf="@+id/btnEdit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_width="match_parent"
                     android:text="@string/user_profile_birthday" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.User.Data"
-                    android:hint="@string/user_profile_additional_hint"
                     android:id="@+id/tvBirthday"
+                    style="@style/Profile.User.Data"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:hint="@string/user_profile_additional_hint" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/user_profile_gender" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.User.Data"
-                    android:hint="@string/user_profile_additional_hint"
                     android:id="@+id/tvGender"
+                    style="@style/Profile.User.Data"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:hint="@string/user_profile_additional_hint" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/user_profile_address" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.User.Data"
-                    android:hint="@string/user_profile_additional_hint"
                     android:id="@+id/tvAddress"
+                    style="@style/Profile.User.Data"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:hint="@string/user_profile_additional_hint" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/user_profile_additional" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAdditional"
                     style="@style/Profile.User.Data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:hint="@string/user_profile_additional_hint"
-                    android:id="@+id/tvAdditional"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
                     android:maxLines="5" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/user_profile_files" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.User.Data"
-                    android:hint="@string/user_profile_files_hint"
                     android:id="@+id/tvFiles"
+                    style="@style/Profile.User.Data"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:hint="@string/user_profile_files_hint" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -107,8 +99,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
-            android:minHeight="@dimen/auth_button_min_height"
             android:layout_marginBottom="20dp"
+            android:minHeight="@dimen/auth_button_min_height"
             android:text="@string/user_profile_edit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

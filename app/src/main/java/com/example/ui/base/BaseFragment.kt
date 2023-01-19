@@ -140,13 +140,8 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.setAppBarElevation(value)
     }
 
-    override fun setToolbarTitleAndIcon(
-        title: CharSequence,
-        icon: Drawable?,
-        action: (() -> Unit?)?,
-        toolbarTitleAction: (() -> Unit?)?
-    ) {
-        mActivity?.setToolbarTitleAndIcon(title, icon, action, toolbarTitleAction)
+    override fun setIgnoreTokenListener(isIgnore: Boolean) {
+        mActivity?.setIgnoreTokenListener(isIgnore)
     }
 
     override fun showNoConnectionMessage(show: Boolean) {

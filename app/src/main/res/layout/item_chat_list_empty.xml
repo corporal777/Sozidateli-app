@@ -11,14 +11,14 @@
     <!--suppress AndroidUnknownAttribute -->
     <TextView
         android:id="@+id/tvNoChats"
-        fontPath="fonts/Roboto-Bold.ttf"
+        fontPath="fonts/sf_pro_display_bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/chat_list_empty"
-        android:textColor="@color/chat_list_empty"
-        android:textSize="33sp"
+        android:textColor="@color/vk_black"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/btnCreateChat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,15 +26,12 @@
         tools:ignore="MissingPrefix" />
 
     <androidx.appcompat.widget.AppCompatButton
+        style="@style/BtnBrownStyle"
         android:id="@+id/btnCreateChat"
         android:layout_width="0dp"
+        android:minHeight="45dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_corners"
         android:text="@string/chat_list_create_chat"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="17sp"
-        android:theme="@style/ViewBackgroundAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineButtonRight"
         app:layout_constraintStart_toStartOf="@+id/guidelineButtonLeft"

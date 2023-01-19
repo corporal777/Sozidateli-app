@@ -1,6 +1,7 @@
 package com.example.holders
 
-import android.util.Log
+import android.content.Context
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
@@ -13,6 +14,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
+import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import maxLength
@@ -52,7 +54,7 @@ abstract class NotificationItem(
                 ).parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
-                        if (notification.eventId != null){
+                        if (notification.eventId != null) {
                             openEventListener(notification.eventId.toString())
                         }
                         true
@@ -75,11 +77,14 @@ abstract class NotificationItem(
 
         getMessageView(viewHolder).apply {
             isVisible = !notification.message.isNullOrEmpty()
-            val message = notification.message?.parseAsHtml()
-            val ellipsizedMessage = message?.substringToWholeWord(maxLength)
-            text = ellipsizedMessage
-            getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
-            BetterLinkMovementMethod.linkifyHtml(/*Linkify.ALL, */this)
+            //val message = notification.message?.parseAsHtml()
+            //val ellipsizedMessage = message?.substringToWholeWord(maxLength)
+            //text = ellipsizedMessage
+            //getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
+            val note = ellipsizeMarkdownText(context, notification.message)
+            text = note.second
+            getReadMoreView(viewHolder).isVisible = note.first
+            BetterLinkMovementMethod.linkifyHtml(this)
                 .setOnLinkClickListener(onLinkClickListener)
         }
 
@@ -95,7 +100,22 @@ abstract class NotificationItem(
             setOnClickListener { onReadMoreClickListener(this@NotificationItem.notification.id) }
         }
     }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is NotificationItem) return false
+        if (notification != other.notification) return false
+        return true
+    }
+
+
+    private fun ellipsizeMarkdownText(context: Context, message : String?): Pair<Boolean, SpannableStringBuilder> {
+        val spanned = markWon(context).toMarkdown(message?:"")
+        return if (spanned.length > 200){
+            Pair(true, SpannableStringBuilder(spanned.subSequence(0,200)).append('.').append('.').append('.'))
+        } else Pair(false, SpannableStringBuilder(spanned))
+    }
 }
+
 
 typealias OnNotificationReadMoreClickListener = (id: Int) -> Unit
 typealias OnOpenEventListener = (rateId: String) -> Unit

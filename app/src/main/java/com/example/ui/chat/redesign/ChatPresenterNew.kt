@@ -304,11 +304,8 @@ class ChatPresenterNew
     }
 
 
-    override fun onTakePhotoFromCameraRequest() =
-        takePhoto(takePhoto.takeCameraImage().formatImage())
-
-    override fun onTakePhotoFromGalleryRequest() =
-        takePhoto(takePhoto.takeGalleryImage().formatImage())
+    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage().formatImage())
+    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage().formatImage())
 
     private fun Observable<ResultRotation>.formatImage(): Observable<Bitmap>? {
         return flatMapSingle {

@@ -42,6 +42,10 @@ class ToolbarContentActionBar(
 
     override fun getDisplayOptions() = actionBar.displayOptions
 
+    override fun setElevation(elevation: Float) {
+        super.setElevation(elevation)
+    }
+
     override fun setTitle(title: CharSequence?) = customView.getTitleView { text = title }
 
     override fun setTitle(resId: Int) {
@@ -242,5 +246,6 @@ class ToolbarContentActionBar(
         throw UnsupportedOperationException("Do not supported by ToolbarContentActionBar")
     }
 }
+
 
 typealias OnToolbarClickListener = () -> Unit

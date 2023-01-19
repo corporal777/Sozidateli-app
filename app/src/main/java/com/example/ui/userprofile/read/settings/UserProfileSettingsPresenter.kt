@@ -28,8 +28,8 @@ import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
 import withLoadingDialog
-import java.lang.Math.abs
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserProfileSettingsPresenter @Inject constructor(
@@ -81,20 +81,12 @@ class UserProfileSettingsPresenter @Inject constructor(
 
     }
 
-    override fun updateEmail(email: String) {
-        appData.updateUserNew {
-            this.email?.value = email
-            this.email?.isConfirmed = true
-            this.email?.onConfirmation = null
-        }
-    }
-
 
     override fun onDeleteConfirmEmail(email: String) {
         compositeDisposable += authRepository.deleteConfirmEmail(email)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email?.onConfirmation = null
@@ -106,7 +98,7 @@ class UserProfileSettingsPresenter @Inject constructor(
         compositeDisposable += authRepository.registerEmailResend("")
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email?.value = null
@@ -151,14 +143,13 @@ class UserProfileSettingsPresenter @Inject constructor(
         compositeDisposable += userRepository.deleteProfile(appData.getId())
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onComplete = {
-                    appData.isSubscribedToPush = false
-                    socket.disconnectFromSocket()
-                    appData.logout()
-                    notificationManager.cancelAll()
-                }
-            )
+            .subscribeSimple {
+                //Shake.unregisterUser()
+                appData.isSubscribedToPush = false
+                socket.disconnectFromSocket()
+                appData.logout()
+                notificationManager.cancelAll()
+            }
     }
 
     private fun updateUser(data: Map<String, Any?>, onComplete: (UserDetail) -> Unit) {
@@ -173,8 +164,6 @@ class UserProfileSettingsPresenter @Inject constructor(
                 onSuccess = {
                     user.apply {
                         phone = it.phone
-                        /*it.user_status?.let { status -> user_status = status }
-                        it.user_status_detail?.let { details -> user_status_detail = details }*/
                     }
                     appData.updateUserNew(onComplete)
                 })
@@ -184,5 +173,14 @@ class UserProfileSettingsPresenter @Inject constructor(
         viewState.showChangeShortName(user)
     }
 
+
+    override fun onShowEmailConfirm(email: String) {
+        compositeDisposable += authRepository.registerEmailResend(email)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                viewState.showEmailConfirmation(email)
+            }
+    }
 
 }

@@ -145,7 +145,6 @@ class AppData(
         userNewChangeSubject.onNext(newUser.asOptional())
     }
 
-
     fun checkUserState(data: List<UserProfileFields>?) {
         val base = data?.filter { it.requiredFor?.contains("basic") == true }
         val max = data?.filter { it.requiredFor?.contains("maximum") == true }
@@ -203,12 +202,17 @@ class AppData(
     fun getUser(): User = user
         ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
-    fun updateUser(update: User.() -> Unit) {
-        userChangeSubject.onNext(getUser().apply(update).asOptional())
-    }
-
     fun updateUserNew(update: UserDetail.() -> Unit) {
         userNewChangeSubject.onNext(getUserNew().apply(update).asOptional())
+    }
+
+    fun updateUserFiles(newFile : FileModel){
+        this.newUser?.binds?.recommendationFile?.forEach { file ->
+            if (file.id == newFile.id){
+                file.name = newFile.name
+                file.showInProfile = newFile.showInProfile
+            }
+        }
     }
 
     fun login(token: String) {

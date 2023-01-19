@@ -1,79 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/background_user_item">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvOrganizationImageName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/background_organization_logo"
-        android:gravity="center"
-        android:maxLines="3"
-        android:padding="4dp"
-        android:textColor="@android:color/white"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivOrganizationImage"
-        app:layout_constraintEnd_toEndOf="@+id/ivOrganizationImage"
-        app:layout_constraintStart_toStartOf="@+id/ivOrganizationImage"
-        app:layout_constraintTop_toTopOf="@+id/ivOrganizationImage"
-        tools:ignore="ContentDescription"
-        tools:text="@tools:sample/full_names" />
-
-    <TextView
-        android:id="@+id/tvOrganizationName"
-        style="@style/UserItem.Name"
-        fontPaht="fonts/sf_pro_display_semibold.ttf"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="5dp"
-        android:letterSpacing="-0.02"
-        android:maxLines="2"
-        android:textSize="17sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAction"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivOrganizationImage"
-        app:layout_constraintTop_toTopOf="@+id/tvOrganizationImageName"
-        app:layout_constraintVertical_chainStyle="spread_inside"
-        tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/full_names" />
-
-    <ImageView
-        android:id="@+id/ivOrganizationImage"
-        style="@style/UserItem.Avatar"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        android:background="@drawable/background_organization_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars" />
-
-    <com.example.ui.views.UserSubscribeButton
-        android:id="@+id/btnAction"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:background="?attr/selectableItemBackground"
-        android:minHeight="30dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@+id/tvOrganizationImageName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvOrganizationImageName"
-        app:layout_constraintTop_toBottomOf="@+id/tvOrganizationName"
-        app:subscribeAction="unsubscribe" />
+        android:background="@drawable/background_user_item">
 
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:layout_width="0dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tvOrganizationName" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvOrganizationImageName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_organization_logo"
+            android:gravity="center"
+            android:maxLines="3"
+            android:padding="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivOrganizationImage"
+            app:layout_constraintEnd_toEndOf="@+id/ivOrganizationImage"
+            app:layout_constraintStart_toStartOf="@+id/ivOrganizationImage"
+            app:layout_constraintTop_toTopOf="@+id/ivOrganizationImage"
+            tools:ignore="ContentDescription"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/tvOrganizationName"
+            style="@style/UserItem.Name"
+            fontPaht="fonts/sf_pro_display_semibold.ttf"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="5dp"
+            android:letterSpacing="-0.02"
+            android:maxLines="2"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnAction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivOrganizationImage"
+            app:layout_constraintTop_toTopOf="@+id/tvOrganizationImageName"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:ignore="MissingPrefix"
+            tools:text="@tools:sample/full_names" />
+
+        <ImageView
+            android:id="@+id/ivOrganizationImage"
+            style="@style/UserItem.Avatar"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:background="@drawable/background_organization_logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+
+        <com.example.ui.views.UserSubscribeButton
+            android:id="@+id/btnAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:background="?attr/selectableItemBackground"
+            android:minHeight="30dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tvOrganizationImageName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tvOrganizationImageName"
+            app:layout_constraintTop_toBottomOf="@+id/tvOrganizationName"
+            app:subscribeAction="unsubscribe" />
+
+        <View
+            android:id="@+id/divider"
+            style="@style/ViewDivider.Horizontal"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvOrganizationName" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

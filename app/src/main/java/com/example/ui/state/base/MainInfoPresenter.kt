@@ -1,30 +1,28 @@
 package com.example.ui.state.base
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.models.*
+import com.example.data.models.FieldDetails
+import com.example.data.models.ImageModel
+import com.example.data.models.UserDetail
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
-import com.example.ui.userprofile.phoneconfirm.PhoneConfirmPresenter
-import com.example.util.*
+import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.PHONE_PERSONAL
+import com.example.util.Utils
+import com.example.util.phoneToServer
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
-import io.reactivex.Completable
-import io.reactivex.CompletableSource
-import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -72,6 +70,7 @@ class MainInfoPresenter
                             user.address?.getShortAddress() ?: ""
                         )
                             .performOnBackgroundOutOnMain()
+                            .withProgressBarLoadingDialog(viewState)
                             .subscribeSimple(
                                 onError = {
                                     if (!isImageUpdating) viewState.setPersonalData(user)
@@ -81,7 +80,6 @@ class MainInfoPresenter
                                         user.address?.shortAddres = add.data[0].region
                                     if (!isImageUpdating) viewState.setPersonalData(user)
                                     isImageUpdating = false
-
                                 })
                     }
                 })
@@ -118,13 +116,6 @@ class MainInfoPresenter
     }
 
 
-    override fun updateEmail(email: String) {
-        appData.updateUserNew {
-            this.email = FieldDetails(email, null, true, true, false, null)
-        }
-        viewState.showChangeEmailComplete(email)
-    }
-
     override fun checkEmailIsUnique(email: String) {
         compositeDisposable += userRepository.checkEmailPhone(email, null)
             .withCheckInternetConnectivity()
@@ -134,23 +125,60 @@ class MainInfoPresenter
                     viewState.showEmailNotUnique(email)
                 },
                 onComplete = {
-                    viewState.showEmailConfirm(email)
+                    onShowEmailConfirm(email)
                 })
+    }
+
+    override fun onShowEmailConfirm(email: String) {
+        compositeDisposable += userRepository.updateUserProfile(
+            appData.getId(),
+            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
+        ).ignoreElement()
+            .andThen(authRepository.registerEmailResend(email))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                appData.updateUserNew {
+                    this.email = FieldDetails(value = email)
+                }
+                viewState.showEmailConfirm(email)
+            }
     }
 
     fun getEmail() = appData.getUserNew().email
 
-    override fun onConfirmPhoneClick(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .withCheckInternetConnectivity()
+    override fun checkPassword(password: String, phone: String) {
+        compositeDisposable += userRepository.checkPasswordNew(password)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.hideCheckPassword()
+                }, onComplete = {
+                    viewState.apply {
+                        hideCheckPassword()
+                        checkPhoneIsUnique(phone)
+                    }
+                })
+    }
+
+    override fun checkPhoneIsUnique(phone: String) {
+        compositeDisposable += userRepository.checkEmailPhone(null, phone)
+            .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
                     viewState.showPhoneNotUnique(phone)
                 }, onComplete = {
-                    viewState.showPhoneConfirm(phone)
+                    onShowPhoneConfirm(phone)
                 })
+    }
+
+    override fun onShowPhoneConfirm(phone: String) {
+        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                viewState.showPhoneConfirm(phone)
+            }
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -202,25 +230,6 @@ class MainInfoPresenter
                     viewState.photoUpdated(ImageModel(null, null, null, null, null, null))
                 }
             )
-    }
-
-    override fun checkPassword(password: String, phone: String) {
-        compositeDisposable += userRepository.checkPasswordNew(password)
-            .andThen(Completable.defer { userRepository.checkEmailPhone(null, phone) })
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    viewState.apply {
-                        hideCheckPassword()
-                        showPhoneNotUnique(phone)
-                    }
-                }, onComplete = {
-                    viewState.apply {
-                        hideCheckPassword()
-                        showPhoneConfirm(phone)
-                    }
-                })
     }
 
     fun setCanGoNext(can: Boolean) {

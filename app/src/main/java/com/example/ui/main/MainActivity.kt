@@ -11,13 +11,10 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.*
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -33,16 +30,14 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
-import com.example.extensions.dp
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
-import com.example.interfaces.NavBarColorFragment
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.auth.authorization.AuthorizationFragment
@@ -57,13 +52,10 @@ import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
-import com.example.ui.eventTabs.EventTabsFragment
-import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.organizations.OrganizationFragmentArgs
-import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
@@ -72,11 +64,8 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragmentArgs
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.SimpleTitleToolbar
-import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -160,8 +149,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
                         is SplashFragment,
                         is AuthorizationFragment,
-                        is RecommendationsFragment,
-                        is EventTabsFragment -> onOpenStartDestination()
+                        is RecommendationsFragment -> onOpenStartDestination()
                         else -> onOpenNotStartDestination()
                     }
                     onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
@@ -195,15 +183,29 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
                 mBinding.root.background = bg
 
-                if (f is SimpleTitleToolbar) {
-                    mBinding.appBar.visibility = View.VISIBLE
+                if (f is ToolbarFragmentNew) {
+                    mBinding.apply {
+                        f.setupToolbarContent(ToolbarContent(mBinding.toolbarLabel))
+                        appBar.isVisible = true
+                        toolbarLabel.apply {
+                            text = f.title
+                            setOnClickListener {
+                                f.toolbarTitleClick()
+                            }
+                        }
+                        ivAction.apply {
+                            isVisible = !f.actionIconHidden
+                            setImageDrawable(f.actionIcon)
+                            setOnClickListener {
+                                f.actionIconClick()
+                            }
+                        }
+                    }
                 } else {
-                    mBinding.appBar.visibility = View.GONE
+                    mBinding.appBar.isVisible = false
                 }
 
             }
-
-
         }
 
     private val backClick = object : OnBackPressedCallback(true) {
@@ -226,7 +228,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private lateinit var inAppBehavior: BottomSheetBehavior<ConstraintLayout>
 
@@ -239,7 +240,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         //splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        IS_EXPANDED = true
         navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
             navFragmentsLifecycleCallback,
             false
@@ -264,30 +264,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             })
         }
         mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
+            presenter.onBackClick()
         }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
-    }
-
-
-    override fun setSupportActionBar(toolbar: Toolbar?) {
-        throw UnsupportedOperationException("Do not set toolbars, use custom toolbar view instead")
-    }
-
-    override fun getSupportActionBar(): ActionBar? {
-        return super.getSupportActionBar()?.let {
-            if (toolbarContentActionBar == null) {
-                toolbarContentActionBar = ToolbarContentActionBar(this, it)
-            }
-
-            toolbarContentActionBar
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return false
     }
-
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -301,12 +285,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (Intent.ACTION_VIEW == appLinkAction) {
 
             intent.data?.also {
-                val authEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL_EMAIL)
-                val email = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
-                val recoverEmail = it.getQueryParameter(RECOVERY_EMAIL)
-                val changeEmail = it.getQueryParameter(CHANGE_EMAIL)
-                val usip = it.getQueryParameter(USIP)
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
@@ -315,9 +294,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     if (!redirectLink.isNullOrEmpty()) {
                         presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
                     }
-                }
-
-                if (lastPath == PATH_EVENT_MEMBER) {
+                } else if (lastPath == PATH_EVENT_MEMBER) {
                     val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
                     val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                     presenter.onInviteRegister(
@@ -328,57 +305,25 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         "",
                         0
                     )
-                }
-                if (lastPath == PATH_QR) {
+                } else if (lastPath == PATH_QR) {
                     val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
                     if (!code.isNullOrEmpty()) {
                         presenter.openAuthWebsiteFragment(code)
                     }
-                }
-
-                if (paths.contains(PATH_EVENT) && lastPath != null) {
+                } else if (lastPath != null && paths.contains(PATH_EVENT)) {
                     EVENT_ID = lastPath
                     if (lastPath.contains(PATH_HIDDEN)) {
                         presenter.onHandleEventCode(authCode ?: "")
                     } else {
                         presenter.onHandleEvent(lastPath)
                     }
-                } else if (lastPath == PATH_CHANGE_EMAIL) {
-                    /*if (changeEmail != null && authCode != null) {
-                        presenter.onHandleChangeEmailConfirm(changeEmail, authCode)
-                    }*/
-                } else if (authEmail != null && authCode != null) {
-                    //presenter.onHandleAuthLink(authEmail, authCode)
                 } else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
-                    presenter.onHandleRecoverPasswordLink(/*recoverEmail, */authCode)
+                    presenter.onHandleRecoverPasswordLink(authCode)
                 } else if (lastPath == PATH_SN_AUTHORIZATION) {
                     val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
                     if (userId != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
-                } else if (changeEmail != null && authCode != null && lastPath != PGRF) {
-                    if (lastPath == REGISTER_CONFIRM) {
-                        showFinishRegister(
-                            "",
-                            "",
-                            "",
-                            "",
-                            email ?: "",
-                            authCode,
-                            false,
-                            false,
-                            true
-                        )
-                        //presenter.onHandleAuthLink(email?: "", authCode?: "")
-                    } else {
-                        //if (lastPath == PATH_CONFIRM_EMAIL)
-                        presenter.onHandleChangeEmailConfirm(authCode ?: "", email ?: "")
-                        //else presenter.onInviteRegister(changeEmail, authCode)
-                    }
-                } else if (lastPath == REGISTER_CONFIRM) {
-                    presenter.onHandleAuthLink(email ?: "", authCode ?: "")
-                } else if (lastPath == PATH_CONFIRM_EMAIL) {
-                    presenter.onHandleChangeEmailConfirm(authCode ?: "", email ?: "")
                 } else if (lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
 
@@ -491,28 +436,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 //            }
     }
 
-    override fun showDialogChangeEmailSuccess() {
-//        showDialog(getString(R.string.email_change_confirm_success))
-    }
-
-    override fun showDialogChangeEmailError() {
-//        showDialog(getString(R.string.email_change_confirm_error))
-    }
-
-    override fun showDialogHasMaxState() {
-        MessageDialogWithBrownButton(
-            this,
-            getString(R.string.you_got_max_state)
-        ).setSelectCallback {}
-    }
-
-    override fun showDialogHasBaseState() {
-        MessageDialogWithBrownButton(
-            this,
-            getString(R.string.you_got_base_state)
-        ).setSelectCallback {}
-    }
-
     override fun showChat(chatId: String, userName: String) {
         findNavController().navigate(
             R.id.chat_fragment, bundleOf(
@@ -553,35 +476,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun showFinishRegister(
-        name: String,
-        lastName: String,
-        middleName: String?,
-        phone: String?,
-        email: String,
-        code: String,
-        userPhoneConfirmed: Boolean,
-        isNoMiddleName: Boolean,
-        nameEditable: Boolean
-    ) =
-        findNavController().navigate(
-            R.id.register_email_finish_fragment, bundleOf(
-                "code" to code,
-                "name" to name,
-                "lastName" to lastName,
-                "email" to email,
-                "phone" to phone,
-                "middleName" to middleName,
-                "isConfirmed" to userPhoneConfirmed,
-                "isNoMiddleName" to isNoMiddleName,
-                "nameEditable" to nameEditable
-            ), NavOptions.Builder()
-                .setPopUpTo(R.id.main_navigation, true)
-                .build()
-        )
-
     override fun showRecommendations() {
-        if (findNavController().currentDestination?.id != R.id.register_email_finish_fragment) {
+        if (findNavController().currentDestination?.id != R.id.fragment_finish_register) {
             findNavController().navigate(
                 R.id.recommendations_fragment, null, NavOptions.Builder()
                     .setPopUpTo(R.id.main_navigation, true)
@@ -593,12 +489,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
         }
     }
-
-    override fun showEvent() = findNavController().navigate(
-        R.id.event_tabs_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build()
-    )
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
@@ -622,7 +512,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showOrganization(organization: String) {
         findNavController().navigate(
             R.id.organization_fragment_new,
-            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
+            OrganizationFragmentArgs.Builder(organization).build().toBundle()
         )
     }
 
@@ -767,10 +657,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         else inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    override fun showBackButton(show: Boolean) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(show)
-    }
-
     override fun onDestroy() {
         navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(
             navFragmentsLifecycleCallback
@@ -846,38 +732,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
     }
 
-    override fun setToolbarTitleAndIcon(
-        title: CharSequence,
-        icon: Drawable?,
-        action: (() -> Unit?)?,
-        toolbarTitleAction: (() -> Unit?)?
-    ) {
-        mBinding.toolbarLabel.apply {
-            text = title
-            setOnClickListener {
-                toolbarTitleAction?.invoke()
-            }
-        }
-        mBinding.ivAction.apply {
-            isVisible = icon != null
-            setImageDrawable(icon)
-            setOnClickListener {
-                action?.invoke()
-            }
-        }
-    }
-
-
     override fun setAppBarElevation(value: Float) {
         mBinding.appBar.changeAppBarElevation(value)
     }
-
 
     override fun showNotificationErrorMessage() {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
 
-    fun setIgnoreTokenListener(isIgnore: Boolean) {
+    override fun setIgnoreTokenListener(isIgnore: Boolean) {
         presenter.ignoreTokenListener(isIgnore)
     }
 
@@ -984,16 +847,17 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             }
         }
-        mBadgeNotification = mBinding.mainNavBar.getOrCreateBadge(R.id.notification)
-        mBadgeNotification.backgroundColor = Color.RED
-        mBadgeChat = mBinding.mainNavBar.getOrCreateBadge(R.id.chats)
-        mBadgeChat.backgroundColor = Color.RED
+        mBadgeNotification = mBinding.mainNavBar.getOrCreateBadge(R.id.notification).apply {
+            backgroundColor = Color.RED
+        }
+        mBadgeChat = mBinding.mainNavBar.getOrCreateBadge(R.id.chats).apply {
+            backgroundColor = Color.RED
+        }
     }
 
 
     override fun showBadgeNotification(show: Boolean) {
         mBadgeNotification.isVisible = show
-        //showNotificationBadge(show)
     }
 
     override fun showBadgeChat(show: Boolean) {
@@ -1022,14 +886,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     fun showNavBar() {
-        window.navigationBarColor =
-            navBarColorBottomNav
+        window.navigationBarColor = navBarColorBottomNav
         mBinding.navBarContainer.visibility = View.VISIBLE
     }
 
     fun hideNavBar() {
-        window.navigationBarColor =
-            navBarColorDefault
+        window.navigationBarColor = navBarColorDefault
         mBinding.navBarContainer.visibility = View.GONE
     }
 

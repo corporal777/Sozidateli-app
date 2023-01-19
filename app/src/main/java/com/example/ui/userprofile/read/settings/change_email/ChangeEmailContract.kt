@@ -25,6 +25,7 @@ interface ChangeEmailContract {
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
+        fun onShowEmailConfirm(email : String)
         fun checkEmailIsUnique(email: String)
         fun updateEmail(email: String)
 

@@ -19,13 +19,14 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.chatList.contacts.items.UserChatGroup
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
+import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
+class ChatListFragment() :
     BaseFragmentNew<FragmentChatListBinding>(), ChatListContract.View {
 
     @InjectPresenter
@@ -37,20 +38,10 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
     @ProvidePresenter
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
-    private val chatSection by lazy {
-        Section().apply {
-            setHeader(ListSectionNameItem(-300L, getString(R.string.chat_list)))
-        }
-    }
-
+    private val chatSection by lazy { Section() }
     private val favoritesSection by lazy {
         Section().apply {
-            setHeader(
-                ListSectionNameItem(
-                    -200L,
-                    getString(R.string.search_contact_section_favorites)
-                )
-            )
+            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
             setHideWhenEmpty(true)
         }
     }
@@ -72,18 +63,7 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
         mBinding.apply {
             chatList.apply {
                 adapter = this@ChatListFragment.adapter
-                onScrolled { _, dy ->
-                    onScrollState.onScrollOffsetValue(this.computeVerticalScrollOffset())
-                    if (dy <= 0) {
-                        onScrollState.onScrollUp(dy)
-                    } else {
-                        onScrollState.onScrollDown(dy)
-                    }
-                }
-            }
-
-            fabNewChat.apply {
-                setOnClickListener { presenter.onFabAddChatClick() }
+                onScrolled { _, dy -> }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -159,17 +139,10 @@ class ChatListFragment(private val onScrollState: OnChatListScrollingState) :
         findNavController().navigate(R.id.chat_search_fragment)
     }
 
-    fun smoothScrollToFirstItem() {
-        mBinding.fabNewChat.show()
+    fun smoothScrollToFirstItem(appBarLayout: AppBarLayout) {
         val mLayoutManager = mBinding.chatList.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), appBarLayout, 3)
     }
 
     override fun layout() = R.layout.fragment_chat_list
-
-    interface OnChatListScrollingState {
-        fun onScrollUp(value: Int)
-        fun onScrollDown(value: Int)
-        fun onScrollOffsetValue(value: Int)
-    }
 }

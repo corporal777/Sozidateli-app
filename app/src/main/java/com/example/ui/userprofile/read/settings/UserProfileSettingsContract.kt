@@ -44,7 +44,6 @@ interface UserProfileSettingsContract {
         fun onChangeEmailClick()
         fun onDeleteEmail()
         fun onDeleteConfirmEmail(email: String)
-        fun updateEmail(email: String)
 
         fun onChangePrivacyConfirm(hidden: Boolean)
 
@@ -57,5 +56,6 @@ interface UserProfileSettingsContract {
 
 
         fun showChangeShortNameClick()
+        fun onShowEmailConfirm(email : String)
     }
 }

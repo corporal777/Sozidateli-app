@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Ссылка на профиль"
+                android:text="Ссылка на профиль:"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_save" />
@@ -168,7 +168,8 @@
                     android:layout_marginHorizontal="50dp"
                     android:gravity="center"
                     android:letterSpacing="-0.01"
-                    android:maxLines="2"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"

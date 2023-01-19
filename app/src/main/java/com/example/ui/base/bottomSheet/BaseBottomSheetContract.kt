@@ -11,13 +11,25 @@ import com.example.ui.base.BaseContract
 import com.example.ui.views.StateType
 
 interface BaseBottomSheetContract {
-    interface View : BaseContract.View{
+    interface View : MvpView, BaseContract.LoadingView {
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showRequestErrorMessage()
 
         @StateStrategyType(SkipStrategy::class)
         fun showKeyboard(v: android.view.View?)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun hideKeyboard(v: android.view.View?)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideBottomSheetDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showToast(message : String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun navigateUp()
     }
 
 

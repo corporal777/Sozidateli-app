@@ -5,6 +5,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -15,8 +18,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.MaybeSubject
 import io.reactivex.subjects.SingleSubject
 import kotlinx.android.synthetic.main.activity_crop.*
+
 
 class CropActivity : AppCompatActivity() {
 
@@ -29,6 +34,7 @@ class CropActivity : AppCompatActivity() {
     private var outputQuality: Int = 100
 
     private val compositeDisposable = CompositeDisposable()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +66,7 @@ class CropActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener { crop() }
-        btnCancel.setOnClickListener { finish() }
+        btnCancel.setOnClickListener { cancelCrop() }
 
         compositeDisposable += cropView.loadAsCompletable(uri)
                 .subscribe({
@@ -100,6 +106,12 @@ class CropActivity : AppCompatActivity() {
                         })
         )
     }
+    private fun cancelCrop(){
+        flLoading.isVisible = false
+        cropSubject.onError(java.lang.NullPointerException("Cancel crop pressed!"))
+        finish()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

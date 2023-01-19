@@ -1,12 +1,14 @@
 package com.example.ui.qrscanner
 
-import android.app.NotificationManager
+import android.Manifest
+import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.socket.SocketIOManager
-import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
 @InjectViewState
@@ -14,22 +16,34 @@ class QrScannerToAuthWebPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
     private val appData: AppData,
-    private val socket: SocketIOManager,
-    private val notificationManager: NotificationManager,
-    private val authRepository: AuthRepository
+    private val rxPermissions: RxPermissions,
 ) : BasePresenter<QrScannerToAuthWebContract.View>(appData), QrScannerToAuthWebContract.Presenter {
 
 
-    override fun onEnterProfileWebsiteClick() {
-
+    override fun attachView(view: QrScannerToAuthWebContract.View?) {
+        super.attachView(view)
+        compositeDisposable += rxPermissions
+            .request(Manifest.permission.CAMERA)
+            .subscribe({
+                if (it) viewState.startPreview()
+                else viewState.navigateUp()
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun onErrorScanning() {
         viewState.showErrorScanningMessage()
     }
 
-    override fun onSuccessScanning(code : String) {
-        viewState.goToAuthWebsite(code)
+    override fun onSuccessScanning(code: String) {
+        val token =
+            Uri.parse(code).getQueryParameter("code") ?: Uri.parse(code).lastPathSegment ?: ""
+        if (!token.isNullOrEmpty()) {
+            viewState.showAuthWebsite(token)
+        } else {
+            viewState.showErrorScanningMessage()
+        }
     }
 
 

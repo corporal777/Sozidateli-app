@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "966327509048",
+    "project_id": "sozidateli-alpha",
+    "storage_bucket": "sozidateli-alpha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966327509048:android:976cc153c095432b31c6cd",
+        "android_client_info": {
+          "package_name": "ru.houseofapps.sozidateli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966327509048-7hcgkbd1l3mtjsdann8lfbseme60lvfc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVkZjWXrP97BiaYv3xTfBaJqlprfzFE2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966327509048-7hcgkbd1l3mtjsdann8lfbseme60lvfc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

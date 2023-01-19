@@ -81,10 +81,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     }
 
     override fun showAboutEvent(event: String) {
-//        findNavController().navigate(
-//            R.id.about_event_fragment,
-//            AboutEventFragmentArgs.Builder(event, ABOUT_FROM_OTHER).build().toBundle()
-//        )
         findNavController().navigate(
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle())

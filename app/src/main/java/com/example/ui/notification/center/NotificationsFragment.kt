@@ -1,23 +1,24 @@
 package com.example.ui.notification.center
 
-import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
-import com.example.databinding.LayoutListBinding
+import com.example.databinding.FragmentNotificationsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.views.LinearLayoutManagerAccurateOffset
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
@@ -29,7 +30,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), NotificationsContract.View, SimpleTitleToolbar {
+class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(),
+    NotificationsContract.View,
+    ToolbarFragmentNew {
 
 
     @InjectPresenter
@@ -94,16 +97,23 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.notifications_label))
-        mBinding.apply {
-            recyclerView.apply {
-                adapter = this@NotificationsFragment.adapter
-                onScrolled { _, _ ->
-                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-                }
-            }
+        mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+//        mBinding.notificationsList.apply {
+//            layoutManager = LinearLayoutManagerAccurateOffset(requireContext())
+//            adapter = this@NotificationsFragment.adapter
+//            onScrolled { _, _ ->
+//                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+//            }
+//        }
+    }
 
-            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+    override fun setNotificationsList() {
+        mBinding.notificationsList.apply {
+            layoutManager = LinearLayoutManagerAccurateOffset(requireContext())
+            adapter = this@NotificationsFragment.adapter
+            onScrolled { _, _ ->
+                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+            }
         }
     }
 
@@ -111,9 +121,7 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         adapter.update(notifications.map {
             if (it == null) {
                 PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
-            }
-
-            else when (it.type) {
+            } else when (it.type) {
                 Notification.Type.SIMPLE -> SimpleNotificationItem(
                     it,
                     readMoreClickListener,
@@ -151,6 +159,11 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+    override fun showEmptyListPlaceholder() {
+        adapter.update(listOf(NoEventItem(getString(R.string.notifications_not_found))))
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
+
     override fun showNotification(notification: Notification) {
         findNavController().navigate(
             NotificationsFragmentDirections.notificationsCenterToNotification(
@@ -160,15 +173,14 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     }
 
     override fun showAboutEvent(eventId: String) {
-        findNavController().navigate(NotificationsFragmentDirections.notificationToAboutEventFragment(eventId))
+        findNavController().navigate(
+            NotificationsFragmentDirections.notificationToAboutEventFragment(
+                eventId
+            )
+        )
     }
 
-    override fun showUrl(url: String) {
-        showCustomTabsBrowser(requireContext(), url)
-//        startActivity(Intent(Intent.ACTION_VIEW).apply {
-//            data = Uri.parse(url)
-//        })
-    }
+    override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun onNotificationNeedUpdate(id: Int) {
         val idLong = id.toLong()
@@ -186,10 +198,17 @@ class NotificationsFragment : BaseFragmentNew<LayoutListBinding>(), Notification
     }
 
     fun smoothScrollToFirstItem() {
-        val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(),null, 3)
+        val mLayoutManager =
+            mBinding.notificationsList.layoutManager as LinearLayoutManagerAccurateOffset
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 
 
-    override fun layout() = R.layout.layout_list
+    override fun layout() = R.layout.fragment_notifications
+    override val title: CharSequence by lazy { getString(R.string.notifications_label) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

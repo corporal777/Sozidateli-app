@@ -54,15 +54,10 @@ interface BaseContract {
         fun setAppBarElevation(value: Float)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setToolbarTitleAndIcon(
-            title: CharSequence,
-            icon: Drawable? = null,
-            action: (() -> Unit?)? = null,
-            toolbarTitleAction: (() -> Unit?)? = null
-        )
+        fun showEnterAnimation()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEnterAnimation()
+        fun setIgnoreTokenListener(isIgnore: Boolean)
     }
 
     interface LoadingView {
@@ -89,6 +84,7 @@ interface BaseContract {
     }
 
     interface Presenter {
+
     }
 
     interface OnChangeElevation {

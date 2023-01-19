@@ -1,23 +1,21 @@
 package com.example.ui.state.base
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
-import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.holders.MainInfoEditItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
@@ -27,11 +25,9 @@ import com.example.ui.views.RegisterDataType
 import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.suggestFieldView.DaDataUtil
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
-import com.example.util.Utils
 import com.example.util.Utils.maxStateScreen
-import com.example.util.phoneToServer
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onScrolled
@@ -40,7 +36,7 @@ import javax.inject.Provider
 
 
 class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoContract.View,
-    SimpleTitleToolbar {
+    ToolbarFragmentNew {
 
     private lateinit var passwordDialog: SetPasswordDialog
     private lateinit var dialog: AddPhoneEmailDialog
@@ -69,7 +65,6 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitle()
         mBinding.recyclerView.apply {
             adapter = this@MainInfoFragment.adapter
             onScrolled { _, _ ->
@@ -81,7 +76,6 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
     }
 
     override fun setPersonalData(user: UserDetail) {
-        val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
         adapter.update(listOf(
             MainInfoEditItem(
                 1,
@@ -107,11 +101,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
 
         onConfirmClick = {
             presenter.setCanGoNext(false)
-            if (phone?.isConfirmed == true) {
-                showCheckPassword(dataItem.getValidatedPhone())
-            } else {
-                presenter.onConfirmPhoneClick(dataItem.getValidatedPhone())
-            }
+            presenter.checkPhoneIsUnique(dataItem.getValidatedPhone())
         }
         onSaveClick = {
             presenter.setCanGoNext(true)
@@ -185,6 +175,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
                     dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
                         .setSelectCallback {
                             presenter.checkEmailIsUnique(it.value)
+                            dialog.hideDialog()
                         }.setNegativeClickCallback { baseActions() }
                 }
             }
@@ -216,7 +207,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
             getString(R.string.confirm_phone_positive)
         ).setSelectCallback {
             if (it) {
-                showPhoneConfirm(phone)
+                presenter.onShowPhoneConfirm(phone)
             }
         }
     }
@@ -228,7 +219,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
         )
             .setSelectCallback {
                 if (it) {
-                    showEmailConfirm(email)
+                    presenter.onShowEmailConfirm(email)
                 }
             }
     }
@@ -254,11 +245,10 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
     }
 
     override fun showEmailConfirm(email: String) {
-        dialog.hideDialog()
         val confirmPhone = ConfirmEmailPhoneFragment(email)
         confirmPhone.show(requireActivity().supportFragmentManager, "main_info_email_dialog")
         confirmPhone.setConfirmCallback {
-            presenter.updateEmail(email)
+            showChangeEmailComplete(email)
         }
     }
 
@@ -275,16 +265,6 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
     }
 
 
-    private fun setToolbarTitle() {
-        val actionIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
-        setToolbarTitleAndIcon(
-            getString(R.string.user_profile_main_info),
-            actionIcon,
-            action = {
-                presenter.onClickClose()
-            })
-    }
-
     private fun showChangePhoto(change: Boolean) {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.photo_alert_title)
@@ -299,4 +279,17 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
             .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
             .show()
     }
+
+    override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
+    override val actionIconHidden: Boolean = false
+    override val actionIcon: Drawable? by lazy {
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    }
+
+    override fun actionIconClick() {
+        presenter.onClickClose()
+    }
+
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

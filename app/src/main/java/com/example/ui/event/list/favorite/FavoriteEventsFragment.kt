@@ -12,6 +12,7 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.EventListFragment
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -52,8 +53,8 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(listOf(NoDataItem(
-                getString(R.string.empty_list_placeholder_message)/*getString(R.string.blank_list_error)*/,
+        dataGroup.update(listOf(NoEventItem(
+                getString(R.string.empty_list_placeholder_message),
                 getString(R.string.events_favorites_empty_list_description)
         )))
         swipeToRefresh.isRefreshing = false

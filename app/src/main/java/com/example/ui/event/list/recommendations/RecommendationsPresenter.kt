@@ -74,9 +74,7 @@ class RecommendationsPresenter
                 if (it.isEmpty())
                     viewState.showEmptyListPlaceholder()
                 else {
-                    viewState.apply {
-                        setData(it)
-                    }
+                    viewState.setData(it)
                 }
             }
 
@@ -109,7 +107,7 @@ class RecommendationsPresenter
         Log.e("EventsList", "limit: $limit ,offset: $offset")
         return eventRepository.getEventsList(
             mapOf(
-                EVENT_LIMIT to 30,
+                EVENT_LIMIT to limit,
                 EVENT_OFFSET to offset,
                 EVENT_SORT_TYPE to "desc",
                 EVENT_SORT_FIELD to "id",

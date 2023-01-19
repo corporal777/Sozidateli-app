@@ -1,6 +1,5 @@
 package com.example.ui.event.about.redesign
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,6 +7,7 @@ import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -27,7 +27,7 @@ import com.example.ui.event.about.redesign.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
-import com.example.ui.organizations.redesign.OrganizationFragmentNewArgs
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
@@ -90,11 +90,12 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
 
     private val onActionClickListener = object : EventDetailActionItem.OnActionClickListener {
-        override fun onActionRegister() = mPresenter.onGoToEventClick()
+        override fun onActionRegister() { mPresenter.onGoToEventClick() }
         override fun onActionCancel() = mPresenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
         override fun onDeleteSubscribeEvent() = mPresenter.onDeleteEventSubscriptionClick()
+
 
     }
 
@@ -110,13 +111,12 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
             mPresenter.onRemoveFromScheduleClick(subEvent)
     }
 
-    private var actionItem: EventDetailActionItem? = null
     private val customLayoutManager by lazy {
         LinearLayoutManagerAccurateOffset(requireContext())
     }
 
 
-    @SuppressLint("RestrictedApi")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
@@ -139,11 +139,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     }
 
-    @SuppressLint("RestrictedApi")
     override fun setAboutEventContentList() {
-        mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
-            mPresenter.changeAppBarBackgroundColorValue(mBinding.nestedScrollView.computeVerticalScrollOffset())
-        }
         mBinding.eventContentList.apply {
             setItemViewCacheSize(50)
             adapter = groupAdapter
@@ -152,9 +148,10 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                     spanSizeLookup = groupAdapter.spanSizeLookup
                 }
             onScrolled { _, _ ->
-                //mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
+                mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
             }
         }
+
     }
 
     override fun setEventData(eventData: AboutEventData) {
@@ -354,11 +351,57 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     override fun showOrganization(organization: String) {
         findNavController().navigate(
             R.id.organization_fragment_new,
-            OrganizationFragmentNewArgs.Builder(organization).build().toBundle()
+            OrganizationFragmentArgs.Builder(organization).build().toBundle()
         )
     }
 
-    private fun setBlackIcons() {
+    private fun decorEventFavoriteButton(isSubscribed: Boolean) {
+        mBinding.ivAddToFavorite.apply {
+            setActionAlternative(!isSubscribed)
+            setOnClickListener {
+                mPresenter.onAddEventToFavoriteClick()
+            }
+        }
+    }
+
+    override fun showEventAddedToFavoriteMessage() {
+        EventAddedToFavoriteDialog(requireContext())
+    }
+
+    override fun addEventToCalendar(eventData: EventNew?) {
+        if (eventData != null) {
+            try {
+                val startCal =
+                    defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
+                val endCal =
+                    defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
+
+                val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
+                    data = CalendarContract.Events.CONTENT_URI
+                    putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
+                    putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
+                    putExtra(CalendarContract.Events.TITLE, eventData.name)
+                    putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
+                    putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
+                    putExtra(
+                        CalendarContract.Events.AVAILABILITY,
+                        CalendarContract.Events.AVAILABILITY_BUSY
+                    )
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun setBlackIcons(value : Int) {
+        if (abs(value / (1000).toFloat()) < 10){
+            val alpha = abs(value / (1000).toFloat())
+            Log.e("ALPHA", alpha.toString())
+            val alphaColor: Int = ColorUtils.setAlphaComponent(Color.BLACK, alpha.toInt())
+        }
+
         mBinding.apply {
             ivAddToFavorite.imageTintList =
                 ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
@@ -399,48 +442,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     }
 
-
-    private fun decorEventFavoriteButton(isSubscribed: Boolean) {
-        mBinding.ivAddToFavorite.apply {
-            setActionAlternative(!isSubscribed)
-            setOnClickListener {
-                mPresenter.onAddEventToFavoriteClick()
-            }
-        }
-    }
-
-    override fun showEventAddedToFavoriteMessage() {
-        EventAddedToFavoriteDialog(requireContext())
-    }
-
-    override fun addEventToCalendar(eventData: EventNew?) {
-        if (eventData != null) {
-            try {
-                val startCal =
-                    defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
-                val endCal =
-                    defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
-
-                val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
-                    data = CalendarContract.Events.CONTENT_URI
-                    putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
-                    putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
-                    putExtra(CalendarContract.Events.TITLE, eventData.name)
-                    putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
-                    putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
-                    putExtra(
-                        CalendarContract.Events.AVAILABILITY,
-                        CalendarContract.Events.AVAILABILITY_BUSY
-                    )
-                }
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-    }
-
     override fun updateAppBarBackgroundColorValue(value: Int) {
         Log.e("OFFSET", value.toString())
 
@@ -454,7 +455,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                 if (value >= 1450) appBar.changeAppBarElevation(abs(value / 100f))
                 else appBar.changeAppBarElevation(0f)
 
-                if (value >= 740) setBlackIcons()
+                if (value >= 740) setBlackIcons(value)
                 else setWhiteIcons()
             }
         }

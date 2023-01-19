@@ -1,21 +1,18 @@
 package com.example.ui.base
 
-import android.util.Log
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.ApiError
+import com.example.data.models.UserDetail
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.views.StateType
 import com.google.gson.Gson
+import com.shakebugs.shake.Shake
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
-import io.reactivex.observers.DisposableMaybeObserver
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.plugins.RxJavaPlugins
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
@@ -43,6 +40,16 @@ open class BasePresenter<V : BaseContract.View>
 
     protected open fun onReceiveApiError(apiError: ApiError) {
 
+    }
+
+
+    protected open fun updateUserInShake(user : UserDetail) {
+        val metadata: MutableMap<String, String> = HashMap()
+        metadata["first_name"] = user.name?:""
+        metadata["last_name"] = user.lastName?:""
+        metadata["email"] = user.email?.value?:""
+        metadata["phone"] = user.phone?.firstOrNull()?.value?:""
+        Shake.updateUserMetadata(metadata)
     }
 
     fun checkInternetAndRun(onComplete: () -> Unit): Disposable {

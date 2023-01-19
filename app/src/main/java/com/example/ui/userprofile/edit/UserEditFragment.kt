@@ -4,17 +4,14 @@ import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.util.Linkify
-import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,43 +19,41 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
 import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.*
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.ITEM_POSITION
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
-import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_PATH
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.views.*
+import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.InfoDialog
+import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.suggestFieldView.DaDataUtil
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View, SimpleTitleToolbar {
+class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View,
+    ToolbarFragmentNew {
 
     private lateinit var passwordDialog: SetPasswordDialog
 
     var mimeTypes = arrayOf("image/*", "application/pdf")
-    private var isUpdateInfo = true
-    private var mainInfoFiles: List<FileModel>? = null
 
     private lateinit var data: ProfileContactsEditItem
+    private lateinit var toolbarContent: ToolbarContent
 
     override fun layout() = R.layout.fragment_user_edit
 
@@ -103,16 +98,20 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     }
 
     private var onSaveClick: (() -> Unit)? = null
-    private var onConfirmClick: ((phone : String) -> Unit)? = null
+    private var onConfirmClick: ((phone: String) -> Unit)? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentFragmentManager.setFragmentResultListener(FILE_EDIT_CODE, this) {
-                requestKey, result ->
+        parentFragmentManager.setFragmentResultListener(
+            FILE_EDIT_CODE,
+            this
+        ) { requestKey, result ->
         }
-        parentFragmentManager.setFragmentResultListener(DEGREE_EDIT_CODE, this) {
-                requestKey, result ->
+        parentFragmentManager.setFragmentResultListener(
+            DEGREE_EDIT_CODE,
+            this
+        ) { requestKey, result ->
             val degreesLevel = result.getString(DEGREES_LEVEL)
             val sciencesLevel = result.getString(SCIENCES_LEVEL)
             val position = result.getInt(ITEM_POSITION)
@@ -147,78 +146,44 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     }
 
 
-    override fun showTakePictureChooser() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.photo_alert_title)
-            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryRequest() }
-            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraRequest() }
-            .show()
-    }
-
-    override fun changeUserAvatar(avatar: Bitmap?) {
-        adapter.notifyItemChanged(0, avatar.asOptional())
-    }
-
 
     override fun setPersonalData(user: UserDetail, state: String) {
-        if (isUpdateInfo) {
-            val dataItem = ProfileDataPersonalEditNewItem(
-                1,
-                requireContext(),
-                user.gender,
-                user.birthday?.value,
-                user.birthday?.isVisible ?: false,
-                DaDataUtil.formatSavedLocation(requireContext(), user.address),
-                user.notes,
-            ) { showWhyUserShouldAddDataToNotesField() }
+        val dataItem = ProfileDataPersonalEditNewItem(
+            1,
+            requireContext(),
+            user.gender,
+            user.birthday?.value,
+            user.birthday?.isVisible ?: false,
+            DaDataUtil.formatSavedLocation(requireContext(), user.address),
+            user.notes,
+        ) { showWhyUserShouldAddDataToNotesField() }
 
-            val files = ProfileDataAdditionalFilesEditNewGroup(
-                2,
-                requireContext(),
-                user.binds?.recommendationFile ?: emptyList(),
-                {
-                    mainInfoFiles =
-                        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
-                            true
-                        }?.getCurrentFilesToSave()
-                    isUpdateInfo = false
-                    presenter.onAddFileClick()
-                },
-                { presenter.onFileClick(it) },
-                { presenter.onEditFileClick(it) },
-                { data, files ->
-                    mainInfoFiles = files
-                    isUpdateInfo = false
-                }, {
-                    showEditWarning(
-                        presenter.getBaseUserState(),
-                        presenter.getMaxUserState(),
-                        false,
-                        (user.binds?.recommendationFile?.size ?: 0) <= 1
-                    ) {
-                        presenter.onDeleteFilesClick(it)
-                    }
-                })
+        val files = ProfileDataAdditionalFilesEditNewGroup(
+            2,
+            requireContext(),
+            user.binds?.recommendationFile ?: emptyList(),
+            { presenter.onAddFileClick() },
+            { presenter.onFileClick(it) },
+            { presenter.onDeleteFilesClick(it) }
+        )
 
-            adapter.update(listOf(dataItem, files))
+        adapter.update(listOf(dataItem, files))
 
-            onSaveClick = {
-                mBinding.recyclerView.requestFocus()
-                if (dataItem.checkDataValid()) {
-                    showEditWarning(
-                        presenter.getBaseUserState(),
-                        presenter.getMaxUserState(),
-                        dataItem.checkBaseFieldsValid(),
-                        dataItem.checkMaxFieldsValid()
-                    ) {
-                        val dataToSave = dataItem.getDataToSave() as MutableMap
-                        val file = files.getCurrentFilesToSave()
-                        presenter.updateFiles(file.toMutableList(), dataToSave)
-                    }
+        onSaveClick = {
+            mBinding.recyclerView.requestFocus()
+            if (dataItem.checkDataValid()) {
+                showEditWarning(
+                    presenter.getBaseUserState(),
+                    presenter.getMaxUserState(),
+                    dataItem.checkBaseFieldsValid(),
+                    dataItem.checkMaxFieldsValid()
+                ) {
+                    val dataToSave = dataItem.getDataToSave() as MutableMap
+                    val file = files.getCurrentFilesToSave()
+                    presenter.updateFiles(file.toMutableList(), dataToSave)
                 }
             }
         }
-        isUpdateInfo = true
     }
 
     override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
@@ -298,10 +263,15 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
         onSaveClick = {
             presenter.canUpdate(true)
-            if (item.checkDataValid()){
+            if (item.checkDataValid()) {
                 if (userPhone?.isConfirmed == true) {
                     if (item.newPhoneIsConfirmed()) {
-                        showEditWarning(presenter.getBaseUserState(), presenter.getMaxUserState(), item.checkBaseFieldsValid(), item.checkMaxFieldsValid()) {
+                        showEditWarning(
+                            presenter.getBaseUserState(),
+                            presenter.getMaxUserState(),
+                            item.checkBaseFieldsValid(),
+                            item.checkMaxFieldsValid()
+                        ) {
                             presenter.onSaveContactsClick(item.getDataToSave())
                         }
                     } else {
@@ -314,12 +284,8 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
         onConfirmClick = {
             presenter.canUpdate(false)
-            if (userPhone?.isConfirmed == true) {
-                if (item.isNewPhoneIsValid()){
-                    showEnterPassword(item.getValidatedPhone())
-                }
-            }else {
-                presenter.onConfirmPhoneClick(item.getValidatedPhone())
+            if (item.isNewPhoneIsValid()) {
+                presenter.checkPhoneIsUnique(item.getValidatedPhone())
             }
         }
     }
@@ -361,7 +327,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     override fun updatePhoneConfirmation(phone: String) {
         val item = adapter.findItemBy<GroupieViewHolder, ProfileContactsEditItem> { true }
         item?.setPhoneConfirmed(true)
-        if (presenter.isWithUpdate()){
+        if (presenter.isWithUpdate()) {
             presenter.onSaveContactsClick(data.getDataToSave())
         }
     }
@@ -373,7 +339,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         )
             .setSelectCallback {
                 if (it) {
-                    showPhoneConfirm(phone)
+                    presenter.onShowPhoneConfirm(phone)
                 }
             }
     }
@@ -396,16 +362,11 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
 
     override fun showFileSelector() {
-        PermissionsBuilder(REQUEST_GALLERY)
-            .addPermissions(REQUIRED_GALLERY_PERMISSIONS)
-            .setPermissionsGrantedCallback {
-                val intent = Intent()
-                intent.type = "*/*"
-                intent.action = Intent.ACTION_GET_CONTENT
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-                galleryImage.launch(intent)
-            }
-            .request()
+        val intent = Intent()
+        intent.type = "*/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+        galleryImage.launch(intent)
     }
 
     override fun downloadFile(file: String) {
@@ -419,6 +380,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         super.onActivityResult(requestCode, resultCode, result)
+
         if (resultCode == RESULT_OK) {
             if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
                 result?.data?.let {
@@ -430,19 +392,18 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
     }
 
-    override fun updateFilesList(files: List<FileModel>?) {
-        files?.forEach {
-            val editedName = mainInfoFiles?.firstOrNull { edFile -> edFile.uri == it.uri }
-            if (editedName != null)
-                it.name = editedName.name
-            else
-                it.name = it.name
-        }
-        mainInfoFiles = null
+    override fun addNewUserFile(file: FileModel) {
         adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
             true
-        }?.updateFiles(files ?: emptyList())
+        }?.addNewFile(file)
     }
+
+    override fun deleteUserFile(file: FileModel) {
+        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
+            true
+        }?.deleteUserFile(file)
+    }
+
 
     //override fun setMainTitle() = setTitle(getString(R.string.profile_edit_name_and_photo))
     override fun setPersonalTitle() = setTitle(getString(R.string.user_profile_main_info))
@@ -455,7 +416,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     //override fun setAdditionalFilesTitle() = setTitle(getString(R.string.profile_files_title))
 
     private fun setTitle(title: String) {
-        setToolbarTitleAndIcon(title)
+        toolbarContent.setToolbarTitle(title)
     }
 
     override fun navigateUp() {
@@ -468,5 +429,14 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     override fun saveOnClick(saveOnClick: Boolean) {
         mBinding.btnSave.isVisible = saveOnClick
+    }
+
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
+        this.toolbarContent = toolbarContent
     }
 }

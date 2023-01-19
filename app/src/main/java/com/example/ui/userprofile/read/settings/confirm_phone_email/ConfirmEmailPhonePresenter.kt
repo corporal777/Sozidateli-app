@@ -1,13 +1,15 @@
 package com.example.ui.userprofile.read.settings.confirm_phone_email
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.auth.register.email.finishregister.FinishRegisterPresenter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.util.Utils
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -29,49 +31,31 @@ class ConfirmEmailPhonePresenter
     var mobilePhone = ""
     var loginType = ""
 
-    private var isFirstLaunch = true
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += timerCompositeDisposable
-        viewState.showProgressLoading()
-        sendCode()
+        viewState.apply {
+            setContentType(loginType)
+            setButtonSendAgain(false)
+        }
+        startTimer()
     }
 
-    override fun sendCode() {
+    override fun sendCodeAgain() {
         compositeDisposable += if (loginType == "email") {
             authRepository.registerEmailResend(mobilePhone)
         } else {
             authRepository.registerPhoneResend("personal", mobilePhone)
         }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (!isFirstLaunch) it.withCustomProgressBarLoadingDialog(viewState)
-                else it
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+                startTimer()
             }
-            .subscribeSimple(
-                onError = {
-                    startTimerForResendCode()
-                    if (isFirstLaunch) {
-                        viewState.apply {
-                            hideProgressLoading()
-                            setContentType(loginType)
-                        }
-                        isFirstLaunch = false
-                    }
-                },
-                onComplete = {
-                    startTimerForResendCode()
-                    if (isFirstLaunch) {
-                        viewState.apply {
-                            hideProgressLoading()
-                            setContentType(loginType)
-                        }
-                        isFirstLaunch = false
-                    }
-            })
     }
 
-    override fun startTimerForResendCode() {
+
+    private fun startTimer() {
         timerCompositeDisposable.clear()
         timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
             .performOnBackgroundOutOnMain()
@@ -91,13 +75,29 @@ class ConfirmEmailPhonePresenter
     }
 
     override fun confirmEmailPhone(email: String, code: String) {
-        compositeDisposable += if (loginType == "email") {
-            userRepository.confirmEmailCodeNew(
-                appData.getId(),
-                EmailCodeBody(code = code, email = email)
-            )
-        } else {
-            authRepository.confirmPhone(ConfirmCodeBody("personal", email, code))
+        compositeDisposable += Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            if (loginType == "email") {
+                userRepository.confirmEmailCodeNew(EmailCodeBody(code = code, email = email))
+                    .subscribeSimple(
+                        onError = { emitter.onError(it) },
+                        onComplete = {
+                            appData.updateUserNew {
+                                this.email?.value = email
+                                this.email?.isConfirmed = true
+                                this.email?.onConfirmation = null
+                            }
+                            emitter.onComplete()
+                        }
+                    ).call(disposable)
+            } else {
+                authRepository.confirmPhone(ConfirmCodeBody("personal", email, code))
+                    .subscribeSimple(
+                        onError = { emitter.onError(it) },
+                        onComplete = { emitter.onComplete() }
+                    ).call(disposable)
+            }
+            emitter.setDisposable(disposable)
         }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
@@ -105,10 +105,14 @@ class ConfirmEmailPhonePresenter
                 onError = {
                     it.printStackTrace()
                     viewState.setCodeError(true)
-                },
-                onComplete = {
+                }, onComplete = {
                     viewState.setEmailPhoneIsConfirmed()
                 })
     }
 
+    fun initLoginType(email : String){
+        this.mobilePhone = email
+        loginType = if (Utils.isPhone(email) && !Utils.isContainLetters(email)) "phone"
+        else "email"
+    }
 }

@@ -3,241 +3,252 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/profileScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="45dp">
+        android:background="@color/main_background"
+        android:clipToPadding="false"
+        android:paddingBottom="45dp">
 
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/profileScrollView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/main_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_header"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/ivAvatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/background_corners"
+                    android:contentDescription="@string/content_description_avatar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/avatar_placeholder" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:letterSpacing="-0.02"
+                    android:maxLines="2"
+                    android:textColor="@color/profile_name_text"
+                    android:textSize="20sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toTopOf="@id/state_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="@tools:sample/full_names" />
+
+
+                <TextView
+                    android:id="@+id/state_title"
+                    fontPath="fonts/sf_pro_text_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/custom_text_background_selectable"
+                    android:letterSpacing="-0.01"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/state"
+                    android:textColor="@color/main_brown_color_new"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+                    app:layout_constraintStart_toEndOf="@id/ivAvatar"
+                    app:layout_constraintTop_toBottomOf="@id/tvName" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:shimmer_duration="1500"
+                tools:visibility="visible">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <ImageView
-                        android:id="@+id/ivAvatar"
+                    <View
+                        android:id="@+id/ivAvatarView"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_marginStart="@dimen/margin_horizontal_default"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
-                        android:background="@drawable/background_corners"
-                        android:contentDescription="@string/content_description_avatar"
+                        android:background="@drawable/placeholder_background"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:src="@drawable/avatar_placeholder" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvName"
-                        fontPath="fonts/sf_pro_text_bold.ttf"
+                    <View
+                        android:id="@+id/tvNameView"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:letterSpacing="-0.02"
-                        android:maxLines="2"
-                        android:textColor="@color/profile_name_text"
-                        android:textSize="20sp"
-                        app:layout_constrainedWidth="true"
-                        app:layout_constraintBottom_toTopOf="@id/state_title"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="70dp"
+                        android:background="@drawable/placeholder_background"
+                        app:layout_constraintBottom_toTopOf="@id/state_title_view"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-                        app:layout_constraintTop_toTopOf="@+id/ivAvatar"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        tools:text="@tools:sample/full_names" />
+                        app:layout_constraintStart_toEndOf="@+id/ivAvatarView"
+                        app:layout_constraintTop_toTopOf="@+id/ivAvatarView"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
 
-                    <TextView
-                        android:id="@+id/state_title"
-                        fontPath="fonts/sf_pro_text_bold.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/custom_text_background_selectable"
-                        android:letterSpacing="-0.01"
+                    <View
+                        android:id="@+id/state_title_view"
+                        android:layout_width="0dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="50dp"
+                        android:background="@drawable/placeholder_background"
                         android:paddingHorizontal="5dp"
-                        android:text="@string/state"
-                        android:textColor="@color/main_brown_color_new"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
-                        app:layout_constraintStart_toEndOf="@id/ivAvatar"
-                        app:layout_constraintTop_toBottomOf="@id/tvName" />
+                        app:layout_constraintBottom_toBottomOf="@id/ivAvatarView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivAvatarView"
+                        app:layout_constraintTop_toBottomOf="@id/tvNameView" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmer_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:shimmer_duration="1500"
-                    tools:visibility="visible">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-                        <View
-                            android:id="@+id/ivAvatarView"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginStart="@dimen/margin_horizontal_default"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:background="@drawable/placeholder_background"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEditProfile"
+                style="@style/BtnGrayWriteStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginVertical="@dimen/margin_ten"
+                android:minHeight="35dp"
+                android:text="@string/profile_edit"
+                android:textColor="#BE9B72" />
 
-                        <View
-                            android:id="@+id/tvNameView"
-                            android:layout_width="0dp"
-                            android:layout_height="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="70dp"
-                            android:background="@drawable/placeholder_background"
-                            app:layout_constraintBottom_toTopOf="@id/state_title_view"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/ivAvatarView"
-                            app:layout_constraintTop_toTopOf="@+id/ivAvatarView"
-                            app:layout_constraintVertical_chainStyle="packed" />
+            <View
+                style="@style/ViewDivider.Horizontal"
+                android:layout_marginTop="15dp" />
 
 
-                        <View
-                            android:id="@+id/state_title_view"
-                            android:layout_width="0dp"
-                            android:layout_height="10dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="50dp"
-                            android:background="@drawable/placeholder_background"
-                            android:paddingHorizontal="5dp"
-                            app:layout_constraintBottom_toBottomOf="@id/ivAvatarView"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/ivAvatarView"
-                            app:layout_constraintTop_toBottomOf="@id/tvNameView" />
+            <TextView
+                android:id="@+id/tvSettings"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="15dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_settings"
+                app:drawableStartCompat="@drawable/ic_profile_settings_edit" />
+
+            <TextView
+                android:id="@+id/tvFavorite"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_favorite"
+                app:drawableStartCompat="@drawable/ic_profile_favorite_edit" />
 
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvScan"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_auth_web"
+                app:drawableStartCompat="@drawable/ic_profile_open_scan" />
+
+            <TextView
+                android:id="@+id/tvSessions"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/sessions_label"
+                app:drawableStartCompat="@drawable/ic_profile_devices_edit" />
+
+            <View
+                style="@style/ViewDivider.Horizontal"
+                android:layout_marginTop="15dp" />
+
+            <TextView
+                android:id="@+id/tvRate"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="15dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_rate"
+                app:drawableStartCompat="@drawable/ic_profile_rate_edit" />
+
+            <TextView
+                android:id="@+id/tvSupport"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_support"
+                app:drawableStartCompat="@drawable/ic_profile_email_edit" />
+
+            <TextView
+                android:id="@+id/tvProblem"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_problem"
+                app:drawableStartCompat="@drawable/ic_profile_problem" />
+
+            <TextView
+                android:id="@+id/tvAboutApplication"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_about_app"
+                app:drawableStartCompat="@drawable/ic_profile_about_app_edit" />
+
+            <TextView
+                android:id="@+id/tvChangeAccount"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/change_account_label"
+                app:drawableStartCompat="@drawable/ic_profile_change_account_edit" />
+
+            <TextView
+                android:id="@+id/tvLogout"
+                style="@style/Profile.ButtonPages"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/profile_logout"
+                app:drawableStartCompat="@drawable/ic_profile_log_out_edit" />
 
 
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnEditProfile"
-                    style="@style/BtnGrayWriteStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                    android:layout_marginVertical="@dimen/margin_ten"
-                    android:minHeight="35dp"
-                    android:text="@string/profile_edit"
-                    android:textColor="#BE9B72" />
-
-                <View
-                    style="@style/ViewDivider.Horizontal"
-                    android:layout_marginTop="15dp" />
-
-
-                <TextView
-                    android:id="@+id/tvSettings"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="15dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_settings"
-                    app:drawableStartCompat="@drawable/ic_profile_settings_edit" />
-
-                <TextView
-                    android:id="@+id/tvFavorite"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_favorite"
-                    app:drawableStartCompat="@drawable/ic_profile_favorite_edit" />
-
-                <TextView
-                    android:id="@+id/tvSessions"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/sessions_label"
-                    app:drawableStartCompat="@drawable/ic_profile_devices_edit" />
-
-                <View
-                    style="@style/ViewDivider.Horizontal"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/tvRate"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="15dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_rate"
-                    app:drawableStartCompat="@drawable/ic_profile_rate_edit" />
-
-                <TextView
-                    android:id="@+id/tvSupport"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_support"
-                    app:drawableStartCompat="@drawable/ic_profile_email_edit" />
-
-                <TextView
-                    android:id="@+id/tvAboutApplication"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_about_app"
-                    app:drawableStartCompat="@drawable/ic_profile_about_app_edit" />
-
-                <TextView
-                    android:id="@+id/tvChangeAccount"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/change_account_label"
-                    app:drawableStartCompat="@drawable/ic_profile_change_account_edit" />
-
-                <TextView
-                    android:id="@+id/tvLogout"
-                    style="@style/Profile.ButtonPages"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="20dp"
-                    android:drawablePadding="25dp"
-                    android:paddingHorizontal="20dp"
-                    android:text="@string/profile_logout"
-                    app:drawableStartCompat="@drawable/ic_profile_log_out_edit" />
-
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>
 

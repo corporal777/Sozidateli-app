@@ -2,9 +2,9 @@ package com.example.util.pagination.observable
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.paging.PositionalDataSource
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.ConvertedPaginationDataSource
 import io.reactivex.Maybe
 import kotlin.math.min
 
@@ -43,9 +43,10 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         }
         var data = getDataFromResult(result)
         val totalCount = result.totalCount
-        result.data
 
         if (totalCount == null) {
+            callback.onResult(data, startPosition)
+        } else if (data.size < params.requestedLoadSize) {
             callback.onResult(data, startPosition)
         } else {
             var dataPosition = startPosition
@@ -61,7 +62,7 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
                 callback.onResult(data, dataPosition, totalCount)
             } catch (e: Exception) {
                 e.printStackTrace()
-                if (e.message == "List size + position too large, last item in list beyond totalCount."){
+                if (e.message == "List size + position too large, last item in list beyond totalCount.") {
                     callback.onResult(data, dataPosition, data.size)
                 }
             }

@@ -2,11 +2,13 @@ package com.example.ui.event.my.schedule.calendar
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.arellomobile.mvp.MvpView
 import com.example.data.AppData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.ui.views.calendarView.CalendarDay
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
@@ -21,7 +23,7 @@ class CalendarBottomSheetPresenter @Inject constructor(
     private val appData: AppData
 ) : MvpPresenter<CalendarBottomSheetContract.View>(), CalendarBottomSheetContract.Presenter {
 
-    private val compositeDisposable = CompositeDisposable()
+    protected val compositeDisposable = CompositeDisposable()
     var eventDays: List<EventActivityModel> = emptyList()
     var selectedDay: EventScheduleCalendarDay? = null
 

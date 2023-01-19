@@ -3,6 +3,7 @@ package com.example.ui.event.location.map.redesign
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
@@ -14,8 +15,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentMapNewBinding
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -25,7 +27,7 @@ import javax.inject.Provider
 import kotlin.math.roundToInt
 
 class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.View,
-    OnMapReadyCallback, SimpleTitleToolbar {
+    OnMapReadyCallback, ToolbarFragmentNew {
 
     @InjectPresenter
     lateinit var presenter: MapPresenterNew
@@ -47,7 +49,6 @@ class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon("")
         mBinding.scrollContainer.onScrolled { scrollY, oldScrollY, _, _ ->
             presenter.changeAppBarElevation(scrollY - oldScrollY)
         }
@@ -153,5 +154,12 @@ class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.
         private const val ARG_MAP_INFO = "mapInfo"
 
     }
+
+    override val title: CharSequence = ""
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

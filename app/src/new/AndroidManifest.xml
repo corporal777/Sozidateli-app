@@ -4,7 +4,8 @@
 
     <application>
 
-        <activity android:name="com.example.ui.main.MainActivity">
+        <activity android:name="com.example.ui.main.MainActivity"
+            android:exported="true">
 
             <intent-filter
                 android:autoVerify="true"
@@ -26,28 +27,12 @@
 
                 <data
                     android:host="alfa.sozidateli.ru"
-                    android:path="/qr"
+                    android:pathPrefix="/qr"
                     android:scheme="https" />
 
                 <data
                     android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/social"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/portal/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:path="/qr"
-                    android:scheme="https" />
-
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/event"
                     android:scheme="https" />
 
                 <data
@@ -65,6 +50,20 @@
                     android:pathPrefix="/switch-account"
                     android:scheme="https" />
 
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/portal/event"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/qr"
+                    android:scheme="https" />
+
+                <data
+                    android:host="sozidateli.ru"
+                    android:pathPrefix="/event"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 

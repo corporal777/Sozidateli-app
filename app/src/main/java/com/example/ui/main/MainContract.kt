@@ -11,17 +11,12 @@ import com.example.util.OneExecutionByTagStateStrategy
 
 interface MainContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
-        fun showBackButton(show: Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showLogin()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showRecommendations()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showEvent()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showGreetings()
@@ -44,18 +39,6 @@ interface MainContract {
         @StateStrategyType(SkipStrategy::class)
         fun showDialogRecoverPassword(/*email: String,*/ code: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showDialogChangeEmailSuccess()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showDialogHasMaxState()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showDialogHasBaseState()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showDialogChangeEmailError()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun checkIntent()
 
@@ -73,9 +56,6 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
         fun hideErrorMessage()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showFinishRegister(name: String, lastName: String, middleName: String?, phone: String?, email: String, code: String, userPhoneConfirmed: Boolean, isNoMiddleName: Boolean, nameEditable: Boolean)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
@@ -104,9 +84,7 @@ interface MainContract {
         fun onOpenNotStartDestination()
         fun onOpenChatDestination(chatId: String?)
         fun onOpenCheckConnectionDestination(check: Boolean)
-        fun onHandleAuthLink(emaill: String, code: String)
         fun onHandleRecoverPasswordLink(/*email: String,*/ code: String)
-        fun onHandleChangeEmailConfirm(code: String, email: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEventCode(event: String)
         fun onHandleEvent(event: String)
@@ -129,5 +107,7 @@ interface MainContract {
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
         fun openPgrfFromInvite(inviteId: String)
         fun openAuthWebsiteFragment(code : String)
+
+        fun onBackClick()
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ui.event.contacts
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -16,8 +17,9 @@ import com.example.data.models.MapInfo
 import com.example.data.models.Place
 import com.example.databinding.FragmentEventContactsBinding
 import com.example.holders.ProfileFieldTextItem
+import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.toolbar.SimpleTitleToolbar
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.ClickableSpan
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
@@ -32,7 +34,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class EventContactsFragment : BaseFragmentNew<FragmentEventContactsBinding>(),
-    EventContactsContract.View, SimpleTitleToolbar {
+    EventContactsContract.View, ToolbarFragmentNew {
 
     companion object {
         private val MAP_OPTIONS_DEFAULT = GoogleMapOptions()
@@ -72,7 +74,6 @@ class EventContactsFragment : BaseFragmentNew<FragmentEventContactsBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarTitleAndIcon(getString(R.string.user_profile_contacts))
         mBinding.apply {
             recyclerView.apply {
                 adapter = groupAdapter
@@ -230,4 +231,10 @@ class EventContactsFragment : BaseFragmentNew<FragmentEventContactsBinding>(),
     }
 
     override fun layout() = R.layout.fragment_event_contacts
+    override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }
+    override val actionIconHidden: Boolean = true
+    override val actionIcon: Drawable? = null
+    override fun actionIconClick() {}
+    override fun toolbarTitleClick() {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

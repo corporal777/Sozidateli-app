@@ -1,4 +1,4 @@
-package com.example.ui.organizations.redesign
+package com.example.ui.organizations.detail
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -25,7 +25,7 @@ import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
-import com.example.ui.organizations.redesign.items.*
+import com.example.ui.organizations.detail.items.*
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.StateType
 import com.example.ui.views.toolbar.ToolbarContent

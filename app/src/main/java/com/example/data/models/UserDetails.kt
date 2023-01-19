@@ -14,7 +14,7 @@ data class UserDetail(
     var lastName: String? = null,
     @SerializedName("middleName")
     var middleName: FieldDetails? = null,
-    var shortName : String? = null,
+    var shortName: String? = null,
     @SerializedName("createdDate")
     val createdDate: String? = null,
     @SerializedName("modifiedDate")
@@ -46,7 +46,7 @@ data class UserDetail(
     @SerializedName("blockedNotifications")
     val blockedNotifications: BlockedNotifications? = null,
     @SerializedName("qrLink")
-    val qrCodeLink : String? = null
+    val qrCodeLink: String? = null
 
 ) : Parcelable {
 
@@ -73,7 +73,7 @@ data class UserDetail(
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
     }
 
-    fun getUserShortName(){
+    fun getUserShortName() {
 
     }
 
@@ -86,6 +86,9 @@ data class UserDetail(
             else -> UserSubscribeButton.Action.FAVORITE
         }
     }
+
+    fun getSessionsCount(): Int = binds?.deviceSessionsCount ?: 0
+
 
     companion object {
         const val USER_EMAIL = "email"
@@ -164,9 +167,9 @@ data class UserBinds(
     @SerializedName("is-user-in-ban")
     var isUserInBan: BannedUsersModel? = null,
     @SerializedName("sessionsCount")
-    val sessionsCount : Int? = null,
+    val sessionsCount: Int? = null,
     @SerializedName("deviceSessionsCount")
-    val deviceSessionsCount : Int? = null
+    val deviceSessionsCount: Int? = null
 ) : Parcelable
 
 @Parcelize
@@ -239,7 +242,7 @@ data class FileModel(
 
 @Parcelize
 data class UserFiles(
-  val data : List<FileModel>? = null
+    val data: List<FileModel>? = null
 ) : Parcelable
 
 @Parcelize
@@ -409,8 +412,15 @@ data class ImageModel(
     val id: Int? = null,
     val user: Int? = null
 ) : Parcelable {
-    fun toFileModel() : FileModel {
-        return FileModel(id = id, user = user, mimeType = mimeType, size = size, name = name, uri = uri)
+    fun toFileModel(): FileModel {
+        return FileModel(
+            id = id,
+            user = user,
+            mimeType = mimeType,
+            size = size,
+            name = name,
+            uri = uri
+        )
     }
 }
 
@@ -465,7 +475,7 @@ data class FieldListDetails(
 @Parcelize
 data class AcademicDegreeModelNew(
     val id: Int? = null,
-    val user : Int? = null,
+    val user: Int? = null,
     val speciality: EducationLevel? = null,
     val degree: EducationLevel? = null
 ) : Parcelable

@@ -1,29 +1,15 @@
 package com.example.ui.event.registration.items
 
-import android.graphics.Color
-import android.graphics.Typeface
 import android.text.*
 import android.text.method.LinkMovementMethod
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.BackgroundColorSpan
-import android.text.style.DynamicDrawableSpan
-import android.text.style.ForegroundColorSpan
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.databinding.Bindable
 import com.example.R
 import com.example.databinding.ItemRegisterEventProfileFooterBinding
-import com.example.databinding.ItemRegisterEventProfileMainBinding
-import com.example.holders.registerEvent.EventRegistrationTitleItem
-import com.example.ui.views.expandableTextView.CustomTypefaceSpan
-import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
-import com.example.util.firstLetterToUppercase
 import com.xwray.groupie.databinding.BindableItem
 
-class RegisterEventProfileFooterItem(
+class RegisterEventProfileHeaderItem(
     isValid: Boolean,
     val onGoToProfileClick: () -> Unit
 ) : BindableItem<ItemRegisterEventProfileFooterBinding>() {
@@ -73,7 +59,7 @@ class RegisterEventProfileFooterItem(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
-        if (other !is RegisterEventProfileFooterItem) return false
+        if (other !is RegisterEventProfileHeaderItem) return false
         if (fieldsIsValid != other.fieldsIsValid) return false
         return true
     }

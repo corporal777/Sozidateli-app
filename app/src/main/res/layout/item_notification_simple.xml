@@ -31,7 +31,7 @@
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
         android:ellipsize="end"
-        android:maxLength="200"
+        android:maxLines="6"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -40,7 +40,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:layout_goneMarginBottom="10dp"
         tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@string/lorem_ipsum_dolor" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReadMore"

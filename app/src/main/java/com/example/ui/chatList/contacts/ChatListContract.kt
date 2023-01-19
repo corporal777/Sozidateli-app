@@ -33,7 +33,6 @@ interface ChatListContract {
     interface Presenter : BaseContract.Presenter {
         fun onChatClick(userChat: UserChat)
         fun onUserClick(uid: Int, userName: String, avatar : String?, chatRoomWithMe: ChatRoomWithMeModel?)
-        fun onFabAddChatClick()
         fun onEmptyChatsButtonAddChatClick()
         fun onItemTake(position: Int)
         fun onRefreshRequest()

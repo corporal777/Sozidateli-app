@@ -1,12 +1,10 @@
-package com.example.ui.organizations.redesign.items
+package com.example.ui.organizations.detail.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventUserFavorite
-import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.databinding.ItemOrganizationHeaderBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage

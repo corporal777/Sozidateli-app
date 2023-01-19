@@ -12,11 +12,13 @@ import android.view.View
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetProfileDataBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.views.CustomSnackBar
 import com.example.util.copyTextToBuffer
 import com.example.util.setImage
@@ -33,14 +35,14 @@ class ProfileDataFragment(
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
 
-    @InjectPresenter
+    @InjectPresenter(type = PresenterType.WEAK, tag = PROFILE_DATA_FRAGMENT_TAG)
     lateinit var presenter: ProfileDataPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ProfileDataPresenter>
 
 
-    @ProvidePresenter
+    @ProvidePresenter(type = PresenterType.WEAK, tag = PROFILE_DATA_FRAGMENT_TAG)
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
         userId = user
         userName = name
@@ -75,7 +77,8 @@ class ProfileDataFragment(
     override fun setName(userName: String, userLink: String) {
         mBinding.apply {
             tvUserName.text = userName
-            tvLink.text = userLink
+            //tvLink.text = userLink
+            tvLink.text = StringBuilder(userLink).substring(8, userLink.length)
             clCopy.setOnClickListener {
                 copyTextToBuffer(requireContext(), userLink)
                 showSnackBarMessage(
@@ -140,6 +143,11 @@ class ProfileDataFragment(
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+
+    companion object {
+        const val PROFILE_DATA_FRAGMENT_TAG = "profile_data_tag"
     }
 
 

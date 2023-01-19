@@ -1,19 +1,15 @@
 package com.example.ui.event.about.redesign.items
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import android.view.ViewTreeObserver
 import android.widget.Button
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
-import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
 import com.example.extensions.dateFormatterShortDayFullMothShortYear
 import com.example.extensions.defaultServerDateFormatter
@@ -24,7 +20,6 @@ import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
 import java.util.*
-import kotlin.math.acos
 
 
 class EventDetailActionItem(
@@ -127,15 +122,15 @@ class EventDetailActionItem(
         var clickAction: (() -> Unit)? = null
         var visibility = true
         var mTextSize = 17f
+        val userAgreement = eventData?.userAgreement?.uri
+        val eventRegistrationState = eventData?.binds?.eventRegistrationState
 
-        val userAgreement = eventNew?.userAgreement?.uri
-        val eventRegistrationState = eventNew?.binds?.eventRegistrationState
         when (status) {
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
             Event.Status.RUNNING,
             Event.Status.FINISHED,
-            Event.Status.APPROVED-> {
+            Event.Status.APPROVED -> {
                 if (eventRegistrationState != null) {
                     val actions = eventRegistrationState.availableActions ?: arrayListOf("")
                     if (eventRegistrationState.prohibitions?.registrationClosed == false) {

@@ -80,14 +80,12 @@ class ProfileContactsEditItem(
     } ?: emptyList())
         .map { it.copy() }
         .let {
-            if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
-            else it
+            it.ifEmpty { it.plus(UserDataSite(value = "", showInProfile = false)) }
         }
         .toMutableList()
     private var mNoSite = site?.absent ?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent ?: false//user_social_links_absent
 
-    private var mShowEmail = showEmail
     private var mSocialNetworks = (socialNetworks?.values?.map {
         UserDataSocialLink(
             value = it.value ?: "",
@@ -96,8 +94,7 @@ class ProfileContactsEditItem(
     } ?: emptyList())
         .map { it.copy() }
         .let {
-            if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
-            else it
+            it.ifEmpty { it.plus(UserDataSocialLink(value = "", showInProfile = false)) }
         }
         .toMutableList()
 
@@ -324,8 +321,7 @@ class ProfileContactsEditItem(
         viewHolder.llEmails.addView(binding.root)
     }
 
-    private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
-        var csn = sn
+    private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, socialNetwork: UserDataSocialLink) {
         val binding = ItemProfileSocialNetworkBinding.inflate(
             LayoutInflater.from(context),
             viewHolder.llSocialNetworks,
@@ -338,22 +334,21 @@ class ProfileContactsEditItem(
                 }
             })
             inputType = InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-            initInput(csn.value) { csn.value = it?.toString() ?: "" }
+            initInput(socialNetwork.value) { socialNetwork.value = it?.toString() ?: "" }
         }
         binding.scNetwork.apply {
-            isVisible = sn.value.isNotEmpty()
-            initSwitch(csn.showInProfile) { csn.showInProfile = it }
+            isVisible = socialNetwork.value.isNotEmpty()
+            initSwitch(socialNetwork.showInProfile) { socialNetwork.showInProfile = it }
         }
         binding.btnDelete.setOnClickListener {
-            if (mSocialNetworks.remove(csn)) {
-                if (mSocialNetworks.isEmpty()) {
-                    csn = UserDataSocialLink(value = "", showInProfile = false)
-                    mSocialNetworks.add(csn)
-                    binding.etSn.text?.clear()
-                } else {
-                    viewHolder.llSocialNetworks.removeView(it.parent as View)
+            binding.etSn.text?.clear()
+            if (mSocialNetworks.size < 2){
+                socialNetwork.value = ""
+            }else {
+                if (mSocialNetworks.remove(socialNetwork)){
+                    viewHolder.llSocialNetworks.removeView(binding.root)
+                    viewHolder.networksError.visibility = View.GONE
                 }
-                viewHolder.networksError.visibility = View.GONE
             }
         }
 
@@ -384,18 +379,16 @@ class ProfileContactsEditItem(
         }
 
         binding.btnDelete.setOnClickListener {
-            if (mSite.remove(site)) {
-                if (mSite.isEmpty()) {
-                    site.value = ""
-                    mSite.add(site)
-                    binding.etSn.text?.clear()
-                } else {
-                    viewHolder.llSites.removeView(it.parent as View)
+            binding.etSn.text?.clear()
+            if (mSite.size < 2){
+                site.value = ""
+            }else {
+                if (mSite.remove(site)) {
+                    viewHolder.llSites.removeView(binding.root)
+                    viewHolder.sitesError.visibility = View.GONE
                 }
-                viewHolder.sitesError.visibility = View.GONE
             }
         }
-
         viewHolder.llSites.addView(binding.root)
     }
 
@@ -527,10 +520,8 @@ class ProfileContactsEditItem(
             val siteUpdate = if (mNoSite) arrayListOf()
             else mSite
 
-
             val networkUpdate = if (mNoNetworks) arrayListOf()
             else mSocialNetworks
-
 
             val contactEmails = mutableListOf<EmailsModel>()
             publicEmails.forEach {

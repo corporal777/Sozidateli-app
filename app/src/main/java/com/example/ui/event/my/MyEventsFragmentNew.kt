@@ -5,28 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.InterestNew
+import com.example.data.models.MyEventsFilter
+import com.example.data.models.SearchFilter
 import com.example.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
-import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.IS_EXPANDED
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
@@ -417,7 +416,6 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
                 cashCollapseState != null && cashCollapseState != this -> {
                     when (first) {
                         TO_EXPANDED -> {
-                            IS_EXPANDED = true
                             mBinding.apply {
                                 tvLabelLarge.apply {
                                     visibility = View.VISIBLE
@@ -427,7 +425,6 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
                             }
                         }
                         TO_COLLAPSED -> {
-                            IS_EXPANDED = false
                             mBinding.apply {
                                 tvLabelLarge.apply {
                                     alpha = 1F
