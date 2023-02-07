@@ -46,9 +46,11 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
         if (totalCount == null) {
             callback.onResult(data, startPosition)
-        } else if (data.size < params.requestedLoadSize) {
+        }
+        else if (data.size < params.requestedLoadSize) {
             callback.onResult(data, startPosition)
-        } else {
+        }
+        else {
             var dataPosition = startPosition
             if (data.isEmpty() && totalCount > 0) {
                 dataPosition = totalCount - min(params.requestedLoadSize, totalCount)

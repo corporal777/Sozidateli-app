@@ -34,7 +34,7 @@
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_organization_address"
+            android:hint="@string/search_filter_address_new"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:minHeight="48dp"
@@ -53,7 +53,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etInn"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_inn"
+            android:hint="@string/search_filter_inn_ogrn"
             android:inputType="number" />
     </com.example.ui.views.CustomTextInputLayout>
 </LinearLayout>

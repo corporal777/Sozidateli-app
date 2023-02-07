@@ -33,7 +33,7 @@ class ClickableSpanNew(
     }
 
     override fun onClick(widget: View) {
-        onClick()
+        onClick.invoke()
         widget.invalidate()
     }
 }

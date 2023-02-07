@@ -50,7 +50,7 @@ class NotificationsPresenter
         )
     }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = true)
+        .buildList(enablePlaceholders = false)
     //.buildListNew(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
@@ -115,9 +115,15 @@ class NotificationsPresenter
     override fun onNotificationAcceptClick(notification: Notification) {
         //updateNotification(userRepository.notificationsInviteAccept(notification.id), notification.id)
         when (notification.notificationMainType) {
-            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> approvePgrf(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> approveAssistance(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> approveOrgMember(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
+                approvePgrf(notification.entity?.id ?: 0)
+            }
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
+                approveAssistance(notification.entity?.id ?: 0)
+            }
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
+                approveOrgMember(notification.entity?.id ?: 0)
+            }
         }
     }
 
@@ -141,10 +147,18 @@ class NotificationsPresenter
     override fun onNotificationCancelClick(notification: Notification) {
         //updateNotification(userRepository.notificationsInviteDecline(notification.id), notification.id)
         when (notification.notificationMainType) {
-            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> declinePgrf(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> declineAssistance(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> declineOrgMember(notification.id)
-            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> cancelEvMember(notification.id)
+            NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
+                declinePgrf(notification.entity?.id ?: 0)
+            }
+            NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
+                declineAssistance(notification.entity?.id ?: 0)
+            }
+            NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
+                declineOrgMember(notification.entity?.id ?: 0)
+            }
+            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
+                cancelEvMember(notification.entity?.id ?: 0)
+            }
         }
     }
 
@@ -200,13 +214,14 @@ class NotificationsPresenter
             .andThen(request)
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(onError = {
-                blockInvalidation = false
-                onReceiveError(it)
-            }, onComplete = {
-                blockInvalidation = false
-                pagination.invalidate()
-                notificationManager.cancel(notificationId)
-            })
+            .subscribeSimple(
+                onError = {
+                    blockInvalidation = false
+                    onReceiveError(it)
+                }, onComplete = {
+                    blockInvalidation = false
+                    pagination.invalidate()
+                    notificationManager.cancel(notificationId)
+                })
     }
 }

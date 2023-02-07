@@ -3,6 +3,7 @@ package com.example.ui.search.user
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchFilter
+import com.example.data.models.SearchUserData
 import com.example.data.models.UserDetail
 import com.example.data.models.user.User
 import com.example.ui.search.SearchContract

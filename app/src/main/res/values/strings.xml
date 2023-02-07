@@ -233,10 +233,12 @@
     <string name="search_users">Пользователи</string>
     <string name="search_input_hint">Поиск мероприятий, организаций или пользователей</string>
     <string name="search_filter_address">Область, край или город</string>
+    <string name="search_filter_address_new">Регион / Город</string>
     <string name="search_filter_region">Введите регион и/или населенный пункт</string>
     <string name="search_filter_organization_address">Адрес</string>
     <string name="search_filter_organization_name">Название организации</string>
     <string name="search_filter_inn">ИНН</string>
+    <string name="search_filter_inn_ogrn">ИНН / ОГРН</string>
     <string name="search_filter_type">Тип</string>
     <string name="search_filter_subscription">Подписка</string>
     <string name="search_filters">Фильтры</string>
@@ -247,6 +249,7 @@
     <string name="search_filter_specialization">Специализация</string>
     <string name="search_filter_user_theme">Интересующая тема</string>
     <string name="search_filter_theme">Тематика мероприятия</string>
+    <string name="search_filter_theme_short">Тематика</string>
     <string name="search_filter_registration">Регистрация</string>
     <string name="search_filter_user_name">Имя</string>
     <string name="search_filter_age">Возраст</string>
@@ -968,6 +971,10 @@
     <string name="register_event_go_to_edit_data">Данные ниже взяты из вашего профиля. Для редактирования, пожалуйста, перейдите в профиль.</string>
     <string name="register_event_go_to_fill_missing_data">Данные ниже взяты из вашего профиля. Для продолжения, пожалуйста, заполните отсутствующие данные в профиле.</string>
 
+    <string name="decline_text_for_notification">Приглашение было принято. Для изменения решения нажмите отклонить.</string>
+    <string name="read_all">Прочитать всё</string>
+    <string name="unread_notifications">Непрочитанные</string>
+
 
     <string-array name="custom_months">
         <item>Январь</item>
@@ -990,5 +997,6 @@
     <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
     <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
     <string name="asset_statements" translatable="false">[{ \"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\" }]</string>
+
 
 </resources>

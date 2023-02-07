@@ -279,7 +279,7 @@ interface NewApi {
     fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
 
     @GET("v1/user/password/recover/send")
-    fun sendEmailRecovery(@Query("type") type: String, @Query("value") value: String): Completable
+    fun sendEmailRecovery(@Query("type") type: String, @Query("value") value: String): Maybe<RecoverPasswordResponse>
 
     @GET("v1/user/password/recover/check")
     fun checkPasswordRecover(@Query("type") type: String, @Query("code") code: String): Completable
@@ -384,6 +384,9 @@ interface NewApi {
 
     @PATCH("v1/user-notification/{id}/acknowledge")
     fun markAsRead(@Path("id") notificationId: String): Completable
+
+    @PATCH("v1/user-notification/{id}/mark-as-read")
+    fun markAllNotificationsAsRead(@Path("id") userId: String): Completable
 
     @GET("v1/user-external-invite/assistance/{id}")
     fun getInviteAssistanceDetail(@Path("id") assistanceId: String): Single<InviteDetail>

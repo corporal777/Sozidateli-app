@@ -34,7 +34,6 @@ class EditEducationPresenter
             .subscribe({
                 val user = it.value ?: throw RuntimeException("Edit null user")
                 viewState.apply {
-                    Log.e("EDUCATION", it.value.educationLevelList.toString())
                     setEducationData(user)
                 }
             }, {

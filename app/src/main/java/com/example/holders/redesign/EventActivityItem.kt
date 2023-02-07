@@ -1,20 +1,29 @@
 package com.example.holders.redesign
 
+import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableStringBuilder
+import android.text.style.URLSpan
+import android.util.Log
 import android.util.TypedValue
 import android.widget.CompoundButton
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
+import androidx.core.text.getSpans
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
+import com.example.databinding.ItemLectureBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToIntervalNew
 import com.example.ui.views.TagChipNew
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.util.URLSpanNoUnderline
+import com.example.util.markWon
 import com.example.util.weak
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_lecture.*
@@ -26,23 +35,16 @@ class EventActivityItem(
     private val selectedTags: List<Tag>?,
     clickListener: OnEventActivityClickListener?,
     private val canShow: Boolean,
-) : Item(subEvent.id?.toLong() ?: 0) {
+) : BindableItem<ItemLectureBinding>(subEvent.id?.toLong() ?: 0) {
 
     private val mClickListener by weak(clickListener)
-    private var mIsCollapsed = true
-    private val mTime = subEvent.holdingDate?.from
-        .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
-    private var fullDescription = ""
+    private val mTime = subEvent.holdingDate?.from.formatToIntervalNew(
+        subEvent.holdingDate?.to,
+        defaultServerDateTimeFormatter,
+        true
+    )
 
     private var canShowButton = false
-
-    private val listener by lazy {
-        object : CustomExpandableTextView.TextStateListener {
-            override fun onChangeState(isCollapsed: Boolean) {
-                mIsCollapsed = isCollapsed
-            }
-        }
-    }
 
     init {
         canShowButton = canShow
@@ -51,11 +53,11 @@ class EventActivityItem(
         if (today > subEventDate) {
             canShowButton = false
         }
-        fullDescription = StringBuilder(subEvent.description).toString()
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemLectureBinding, position: Int) {
+        viewBinding.apply {
+            cardActivity.setOnClickListener { mClickListener?.onSubEventClick(eventId, subEvent) }
             tvLectureTime.text = mTime
             tvLectureName.text = subEvent.title
 
@@ -64,63 +66,11 @@ class EventActivityItem(
                 tvLectureAuditory.text = subEvent.binds?.auditorium?.name
             }
 
-//            val textView = TextView(viewHolder.root.context)
-//            markWon(textView.context).setMarkdown(textView, fullDescription)
-
-            var isAdded = false
-            if (!isAdded) {
-                isAdded = true
-
-                val expandableTextView =
-                    CustomExpandableTextView(viewHolder.root.context, listener, mIsCollapsed)
-                expandableTextView.apply {
-                    firstText = fullDescription
-                    //originalText = SpannableStringBuilder().append(textView.text)
-                    maxLines = 100
-                    limitedMaxLines = 5
-                    typeface =
-                        Typeface.createFromAsset(context.assets, "fonts/sf_pro_display_regular.OTF")
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                    expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
-                }
-                desc_container.apply {
-                    removeAllViews()
-                    addView(expandableTextView, 0)
-                }
+            tvLectureDesc.apply {
+                originalText = getMarkdownFormattedText(root.context, subEvent.description)
+                limitedMaxLines = 5
+                expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
             }
-
-//            if (!fullDescription.isNullOrEmpty()) {
-////                if (fullDescription.length > 225) {
-////                    val shortDescription = StringBuilder(
-////                        fullDescription.substring(0, 224).replace("\n", " ")
-////                    ).append("...")
-////                        .toString()
-////
-////                    if (isExpanded) {
-////                        tvShowMore.isVisible = false
-////                        tvLectureDesc.text = fullDescription
-////                    } else {
-////                        tvShowMore.isVisible = true
-////                        tvLectureDesc.text = shortDescription
-////                    }
-////
-////                    tvShowMore.setOnClickListener {
-////                        tvLectureDesc.apply {
-////                            isExpanded = true
-////                            alpha = 0F
-////                            animate().setDuration(500).alpha(1.0f)
-////                            text = fullDescription
-////                            tvShowMore.isVisible = false
-////                        }
-////                    }
-////
-////
-////                } else {
-////                    tvShowMore.isVisible = false
-////                    tvLectureDesc.text = fullDescription
-////                }
-//
-//            }
 
 
             decorActionButton(canShowButton, btnAddToTimetable, subEvent)
@@ -149,11 +99,10 @@ class EventActivityItem(
                 }
             }
 
-            cardActivity.setOnClickListener {
-                mClickListener?.onSubEventClick(eventId, subEvent)
-            }
+
         }
     }
+
 
     private fun decorActionButton(
         canShow: Boolean,
@@ -190,17 +139,32 @@ class EventActivityItem(
         return true
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewHolder, position, payloads)
+    override fun bind(viewBinding: ItemLectureBinding, position: Int, payloads: MutableList<Any>?) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventActivityModel) {
-                decorActionButton(canShowButton, viewHolder.btnAddToTimetable, payload)
+                decorActionButton(canShowButton, viewBinding.btnAddToTimetable, payload)
             }
         }
-
     }
 
+
+    private fun getMarkdownFormattedText(
+        context: Context,
+        description: String?
+    ): SpannableStringBuilder {
+        val spanned = markWon(context).toMarkdown(description ?: "")
+        return SpannableStringBuilder(spanned).apply {
+            val urls = getSpans<URLSpan>()
+            urls.forEach {
+                val start = getSpanStart(it)
+                val end = getSpanEnd(it)
+                removeSpan(it)
+                set(start..end, URLSpanNoUnderline(it.url))
+            }
+        }
+    }
 
     override fun getLayout(): Int = R.layout.item_lecture
 

@@ -3,13 +3,12 @@ package com.example.ui.chat
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
-import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
+import com.example.data.models.ChatModel.Companion.CHAT_BINDS
 import com.example.data.socket.SocketIOManager
-import com.example.events.OnSocketConnectEvent
 import com.example.extensions.*
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
@@ -17,29 +16,30 @@ import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
 import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.convertBitmapToFile
+import com.example.util.pagination.observable.PaginationList
+import com.example.util.pagination.PaginationResponse
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.applyErrorHandler
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
-import io.reactivex.*
+import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
+import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
-import java.lang.StringBuilder
+import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 @InjectViewState
 class ChatPresenter
@@ -55,118 +55,119 @@ class ChatPresenter
 ) : BasePresenter<ChatContract.View>(appData), ChatContract.Presenter {
 
     lateinit var chatId: String
-    var userAvatar: String? = null
-    var userName: String? = null
-    private var allMessages: /*MutableList*/MutableSet<Message> = /*mutableListOf()*/mutableSetOf()
+    var userAvatar: String = ""
+    var userName: String = ""
+    private var allMessages: MutableSet<Message> = mutableSetOf()
     var messagesSize = 0
     var isUpdateAfterMessage = false
-
-    private var chat: UserChat? = null
-
-    private var isChatHasMessages = false
-    private var isChatScrolledToBottom = false
-    private var isMessagesInitialLoad = false
-    private var lastUnreadMessageId: String? = null
-    private var isCanShowUnreadMessagesItem = true
-    private var scrollPosition = 0
-    private var scrollOffset = 0
-
-    private var newMessagesMessage: ChatMessage.NewMessages? = null
-    private val timerCompositeDisposable = CompositeDisposable()
+    private var isFirstLaunch = true
     private var firstMessageWasRead = false
+    private var isCanShowUnreadMessagesItem = true
+    private var isEventChat = false
+    private var userId = ""
+
+    private val pagination: PaginationDataSourceFactory<MessageModel> =
+        PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<MessageModel>
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        EventBus.getDefault().register(this)
-
-        userAvatar?.let { viewState.setUserAvatar(it) }
-        userName?.let { viewState.setTitle(initUserName(it)) }
-
+        viewState.apply {
+            setUserNameAvatar(userAvatar, userName)
+        }
+        initChat()
+        getChatMessages()
+        subscribeChatSocketMessages()
         subscribeToChatEvents()
-
-        compositeDisposable += getChat()
-            .flatMap {
-                chatRepository.getChatMessages(
-                    mapOf(
-                        MessageModel.MESSAGES_CHAT to chatId,
-                        MessageModel.MESSAGES_ACKNOWLEDGED_BY to appData.getId(),
-                        MessageModel.MESSAGES_LIMIT to 1,
-                        MessageModel.MESSAGES_ACKNOWLEDGED_STATE to 0
-                    )
-                )
-            }.withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = { new ->
-                    //banListener()
-                    if (new.totalCount == 0) {
-                        getAllMessages()
-                    } else {
-                        viewState.showProgressLoadingDisplay()
-                        prepareListOfMessages(true,new)
-                        subscribeToSocket()
-
-                        timerCompositeDisposable  += Observable.interval(2000, TimeUnit.MILLISECONDS)
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                if (it <= 0){
-                                    viewState.hideProgressLoadingDisplay()
-                                    timerCompositeDisposable.clear()
-                                }
-                            }, {
-                                viewState.hideProgressLoadingDisplay()
-                                it.printStackTrace()
-                                timerCompositeDisposable.clear()
-                            })
-                    }
-                })
-
     }
 
-    private fun getAllMessages() {
-        compositeDisposable += chatRepository.getChatMessages(
-            mapOf(
-                MessageModel.MESSAGES_SORT_TYPE to "desc",
-                MessageModel.MESSAGES_CHAT to chatId, MessageModel.MESSAGES_LIMIT to 40
-            )
-        )
-            .withCheckInternetConnectivity()
+    override fun attachView(view: ChatContract.View?) {
+        super.attachView(view)
+        viewState.cancelNotificationByChatId(chatId)
+    }
+
+    private fun getChatMessages() {
+        paginationList = pagination.applyErrorHandler {
+            if (it.cause is UnknownHostException)
+                hasNoConnectionError = true
+        }.buildList(enablePlaceholders = false)
+
+        compositeDisposable += Observable.create(paginationList)
+            .flatMapMaybe {
+                prepareListOfMessages(it)
+            }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                if (it.data.isNullOrEmpty()) {
-                    hasPrevious = false
+                viewState.apply {
+                    updateMessages(isFirstLaunch, it)
+                    if (isFirstLaunch) {
+                        scrollListToPosition(0, false)
+                        isFirstLaunch = false
+                    }
                 }
-                prepareListOfMessages(true, it)
-                subscribeToSocket()
             }
     }
 
-    private fun subscribeToSocket() {
+    private fun subscribeChatSocketMessages() {
         compositeDisposable += socket.connectToChat(chatId)
             .andThen(socket.subscribeToChatUpdate())
+            .flatMapMaybe { prepareListOfMessages(it.data) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { socketData ->
-                if (!hasPrevious) {
-                    prepareListOfMessages(true, socketData)
+                if (!isFirstLaunch) {
+                    viewState.apply {
+                        updateMessages(true, socketData)
+                        scrollListToPosition(0, true)
+                    }
                 }
             }
     }
 
-    private var canScroll = 0
-    private fun prepareListOfMessages(show : Boolean, it: ApiNewResponse<List<MessageModel>>) {
-        compositeDisposable += Maybe.fromCallable {
-            messagesSize = it.totalCount ?: 0
-            val result = it.data.filter { x -> x.chat.toString() == chatId }.map { m ->
+    private fun subscribeToChatEvents() {
+        compositeDisposable += socket.subscribeToBannedList(chatId)
+            .flatMap { socket.subscribeToInviteChange(chatId) }
+            .subscribeSimple {
+                if (it == chatId) initChat()
+            }
+    }
+
+    override fun onChatMessageOnScreen(message: Message) {
+        if (!message.wasRead) {
+            compositeDisposable += chatRepository.markMessageAsRead(message._id.toInt())
+                .performOnBackgroundOutOnMain()
+                .subscribe({
+                    if (!firstMessageWasRead) {
+                        val timerDisposable = CompositeDisposable()
+                        timerDisposable += Observable.interval(10000, TimeUnit.MILLISECONDS)
+                            .performOnBackgroundOutOnMain()
+                            .subscribe({
+                                if (it <= 0) {
+                                    viewState.removeUnreadMessageLabel()
+                                    firstMessageWasRead = true
+                                    timerDisposable.clear()
+                                }
+                            }, {
+                                timerDisposable.clear()
+                                it.printStackTrace()
+                            })
+                    }
+
+                }, {
+                    it.printStackTrace()
+                })
+        }
+    }
+
+    private fun prepareListOfMessages(it: List<MessageModel>): Maybe<List<ChatMessage>> {
+        return Maybe.fromCallable {
+            val result = it.filter { x -> x.chat.toString() == chatId }.map { m ->
                 Message(
                     m.id.toString(),
                     if (m.file != null) Message.MessageType.IMAGE else Message.MessageType.TEXT,
                     m.chat.toString(),
-                    if (m.file != null) m.file.uri ?: "" else m.message
-                        ?: "",
+                    if (m.file != null) m.file.uri ?: "" else m.message ?: "",
                     m.createdBy.toString(),
                     m.createdDate?.parseToLong(defaultServerDateTimeFormatter) ?: 0,
                     0,
@@ -175,200 +176,11 @@ class ChatPresenter
                     null
                 )
             }
-            allMessages.addAll(result)
-            if (canScroll < 2) {
-                canScroll += 1
-                isMessagesInitialLoad = false
-            }
-            filterByDate()
-            val lastUnreadIndex = findLastUnreadMessageIndex(allMessages.toMutableList())
-            val chatMessages = createChatMessages(allMessages.toMutableList())
-                .addDates()
-                .addUnreadMessagesItem(lastUnreadIndex)
-            Pair(chatMessages, lastUnreadIndex)
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.updateMessages(show, it.first)
-                scrollOnChatMessagesUpdate(it.second)
-                isMessagesInitialLoad = true
-            }
-
-
-    }
-
-    /*private fun banListener() {
-        compositeDisposable += socket.subscribeToBannedList(chatId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    Log.ERROR
-                }
-    }*/
-
-    private fun subscribeToChatEvents() {
-        val processEvent = { f: Flowable<String> ->
-            f.flatMapSingle { if (it == chatId) getChat() else Single.never() }
-                .performOnBackgroundOutOnMain()
-                .subscribe({}, {})
-        }
-
-        compositeDisposable += processEvent(socket.subscribeToBannedList(chatId))
-        compositeDisposable += processEvent(socket.subscribeToInviteChange(chatId))
-    }
-
-    private fun getChat() = chatRepository.getChatById(
-        chatId,
-        mapOf(ChatModel.CHAT_BINDS to "users,event,bans,last-unread-message,last-message")
-    )
-        .observeOn(AndroidSchedulers.mainThread())
-        .flatMap {
-            Completable.fromAction {
-                val user = if (it.isEventChat()) {
-                    val img = it.binds?.event?.image
-                    UserDetail(
-                        it.binds?.event?.id ?: 0,
-                        it.binds?.event?.name,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        ContactInformationModel(null, null, null),
-                        null,
-                        ImageModel(
-                            img?.mimeType,
-                            img?.size,
-                            it.binds?.lastMessage?.event?.url ?: img?.uri,
-                            img?.name,
-                            1,
-                            null
-                        ),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        false
-                    )
-                } else {
-                    it.binds?.users?.first { us -> us.id != appData.getId() }!!
-                }
-                this.chat = UserChat(
-                    it.id, /*it.binds?.users?.first { us -> us.id != appData.getId() }!!*/
-                    user,
-                    it.createdDate
-                        ?: "",
-                    it.binds?.lastUnreadMessage?.message,
-                    it.binds?.lastUnreadMessage?.createdDate,
-                    if (it.binds?.lastUnreadMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                    if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastUnreadMessage?.acknowledge?.get(
-                        0
-                    )?.user else 0,
-                    null,
-                    it.binds?.lastUnreadMessage?.id.toString(),
-                    false,
-                    it.isInInvites(appData.getId()),
-                    it.isWaitForAcceptInvites(appData.getId()),
-                    it.isBannedByRecipient(appData.getId()),
-                    it.isBannedByYou(appData.getId()),
-                    it.isEventChat(),
-                    it.binds?.event?.id.toString(),
-                    0
-                )
-
-                val me = it.users?.firstOrNull { us -> us.user == appData.getId() }
-                val opponent = it.users?.firstOrNull { us -> us.user != appData.getId() }
-                isUpdateAfterMessage = me?.status == "basic" && opponent?.status == "basic"
-
-                viewState.apply {
-                    when {
-                        it.isEventChat() -> viewState.hideKeyboard()
-                        it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
-                        it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
-                        it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName) }
-                        it.isWaitForAcceptInvites(appData.getId()) -> disableMessaging { showWaitForInviteAccept() }
-                        else -> {
-                            showChatInput(false)
-                            focusOnInput(false)
-                        }
-                    }
-
-                    val avatarFromChat = if (it.isEventChat()) {
-                        it.binds?.lastMessage?.event?.url ?: it.binds?.event?.image?.uri
-                    } else {
-                        it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
-                    }
-                    //val avatarFromChat = it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
-                    if (userAvatar != avatarFromChat && avatarFromChat != null) {
-                        userAvatar = avatarFromChat
-                        setUserAvatar(avatarFromChat)
-                    }
-
-                    val name = if (it.isEventChat()) {
-                        it.binds?.event?.name ?: ""
-                    } else {
-                        it.binds?.users?.first { us -> us.id != appData.getId() }?.nameLastName
-                            ?: ""
-                    }
-                    //val name = it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName?: ""
-                    if (userName != name) {
-                        userName = name
-                        setTitle(initUserName(name))
-                    }
-
-                    isChatHasMessages = it.binds?.lastUnreadMessage != null
-                }
-            }
-                .andThen(Single.just(it))
-        }
-        .observeOn(Schedulers.io())
-
-    private fun disableMessaging(action: () -> Unit) {
-        action()
-        isCanShowUnreadMessagesItem = false
-        viewState.hideKeyboard()
-    }
-
-    private fun createChatMessages(messages: List<Message>): List<ChatMessage> {
-        val userId = appData.getUserNew().id.toString()
-        return messages.mapNotNull {
-            when (it.type) {
-                Message.MessageType.SERVICE -> {
-                    if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
-                        ChatMessage.Accept(it)
-                    } else {
-                        null
-                    }
-                }
-                else -> ChatMessage.Personal(it, it.isUserMessage(userId))
-            }
+            allMessages.apply { addAll(result) }
+            createChatMessages(allMessages.toMutableList()).addDates()
         }
     }
 
-    private fun findLastUnreadMessageIndex(messages: List<Message>): Int {
-        return if (isCanShowUnreadMessagesItem) {
-            if (lastUnreadMessageId == null && !isMessagesInitialLoad) {
-                val userId = appData.getUserNew().id.toString()
-                lastUnreadMessageId = messages.findLast { message ->
-                    message.type != Message.MessageType.SERVICE
-                            && !message.isUserMessage(userId)
-                            && !message.wasRead
-                }?._id
-            }
-            lastUnreadMessageId?.let { id ->
-                messages.indexOfFirst { message -> message._id == id }.plus(1)
-            }
-                ?: LAST_UNREAD_INDEX_INVALID
-        } else LAST_UNREAD_INDEX_INVALID
-    }
 
     private fun List<ChatMessage>.addDates(): List<ChatMessage> {
         val list = toMutableList()
@@ -398,246 +210,53 @@ class ChatPresenter
         return list
     }
 
-    private fun List<ChatMessage>.addUnreadMessagesItem(index: Int): List<ChatMessage> {
-        return if (index != LAST_UNREAD_INDEX_INVALID) toMutableList().apply {
-            newMessagesMessage = ChatMessage.NewMessages(index).apply {
-                add(index, this)
-            }
-        }
-        else this
-    }
-
-    private fun scrollOnChatMessagesUpdate(lastUnreadIndex: Int) {
-        var forceScrollToBottom = false
-        if (!isMessagesInitialLoad) {
-            if (lastUnreadIndex != LAST_UNREAD_INDEX_INVALID) {
-                viewState.scrollToMessagesUnreadItem(lastUnreadIndex)
-                return
+    private fun createChatMessages(messages: MutableList<Message>): List<ChatMessage> {
+        val userId = appData.getUserNew().id.toString()
+        val formattedMessages = arrayListOf<ChatMessage>()
+        messages.sortedByDescending { x -> x.createdAt }.forEach {
+            if (it.type == Message.MessageType.SERVICE && it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
+                if (it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
+                    formattedMessages.add(ChatMessage.Accept(it))
+                }
             } else {
-                forceScrollToBottom = true
+                formattedMessages.add(ChatMessage.Personal(it, it.isUserMessage(userId)))
             }
         }
 
-        viewState.checkScrollPosition()
-        if (isChatScrolledToBottom || forceScrollToBottom) {
-            viewState.scrollToBottomPosition(isMessagesInitialLoad)
-        }
-    }
-
-    override fun attachView(view: ChatContract.View?) {
-        super.attachView(view)
-        viewState.cancelNotificationByChatId(chatId)
-        chatHelper.currentChatId = chatId
-
-//        if (scrolledView.add(view.hashCode()) && scrollPosition != 0 && scrollOffset != 0)
-        viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
-    }
-
-    override fun detachView(view: ChatContract.View?) {
-        view?.hideKeyboard()
-        super.detachView(view)
-        chatHelper.currentChatId = null
-    }
-
-    override fun onSendTextMessageClick(message: String) {
-        sendMessage(message, Message.MessageType.TEXT)
-    }
-
-    override fun onImageClick(url: String, imageView: ImageView) {
-        viewState.openImageFullScreen(url, imageView)
-    }
-
-    private fun sendMessage(message: String, type: Message.MessageType) {
-        viewState.apply { clearMessageInput() }
-
-        val reloadChat = !isChatHasMessages
-        if (reloadChat) viewState.showLoadingDialog()
-
-        //TODO fix this
-        compositeDisposable += Single.fromCallable {
-            //MessageBodyNew(chatId.toInt(), message)
-            MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .apply {
-                    addFormDataPart("chat", chatId)
-                    addFormDataPart("message", message)
-                }.build()
-        }.flatMap {
-            //chatRepository.sendChatMessageNew(it)
-            chatRepository.sendChatMessage(it)
-        }
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    if (reloadChat) viewState.hideLoadingDialog()
-                    onReceiveError(it)
-                    updateChatAfterFirstMessage()
-                },
-                onSuccess = {
-                    if (reloadChat) viewState.hideLoadingDialog()
-                    updateChatAfterFirstMessage()
-                }
-            )
-    }
-
-    private var hasPrevious = true
-    private var isCallingPrevious = false
-    override fun onLoadPreviousMessagesRequest(messageId: Int?) {
-        if (hasPrevious && !isCallingPrevious) {
-            isCallingPrevious = true
-            compositeDisposable += chatRepository.getChatMessages(
-                mutableMapOf<String, Any>().apply {
-                    put(MessageModel.MESSAGES_SORT_TYPE, "desc")
-                    if (messageId != null) put(MessageModel.MESSAGES_START_FROM, messageId)
-                    put(MessageModel.MESSAGES_CHAT, chatId)
-                    put(MessageModel.MESSAGES_LIMIT, 40)
-                }
-            )
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    hasPrevious = it.totalCount != 0
-                    isCallingPrevious = false
-                    prepareListOfMessages(false,it)
-                }
-        }
-    }
-
-    private var hasNext = true
-    private var isCallingNext = false
-    override fun onLoadNextMessagesRequest(messageId: Int?) {
-        if (hasNext && !isCallingNext) {
-            isCallingNext = true
-            compositeDisposable += chatRepository.getChatMessages(
-                mutableMapOf<String, Any>().apply {
-                    put(MessageModel.MESSAGES_SORT_TYPE, "desc")
-                    if (messageId != null) put(MessageModel.MESSAGES_ENDS_BY, messageId)
-                    put(MessageModel.MESSAGES_CHAT, chatId)
-                    put(MessageModel.MESSAGES_LIMIT, 40)
-                }
-            )
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    hasNext = it.totalCount != 0
-                    isCallingNext = false
-                    prepareListOfMessages(false,it)
-                }
-        }
-    }
-
-    private fun filterByDate() {
-        val sorted = allMessages.sortedByDescending { it.createdAt }
-        allMessages = sorted.toMutableSet()
-        //allMessages.sortByDescending { it.createdAt }
-    }
-
-    override fun onChatMessageOnScreen(message: Message) {
-        if (!message.wasRead) {
-            compositeDisposable += chatRepository.markMessageAsRead(message._id.toInt())
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    if (!firstMessageWasRead){
-                        val timerDisposable = CompositeDisposable()
-                        timerDisposable += Observable.interval(10000, TimeUnit.MILLISECONDS)
-                            .performOnBackgroundOutOnMain()
-                            .subscribe({
-                                if (it <= 0){
-                                    if (isCanShowUnreadMessagesItem) {
-                                        isCanShowUnreadMessagesItem = false
-                                        newMessagesMessage?.let { mes ->
-                                            viewState.removeChatMessage(mes)
-                                        }
-                                    }
-                                    firstMessageWasRead = true
-                                    timerDisposable.clear()
-                                }
-                            }, {
-                                timerDisposable.clear()
-                                it.printStackTrace()
-                            })
-                    }
-
-                }, {
-
-                })
-        }
-    }
-
-
-    override fun onChatScrollChange(isBottomPosition: Boolean) {
-        isChatScrolledToBottom = isBottomPosition
-    }
-
-    override fun onScrollChange(position: Int, offset: Int) {
-        scrollPosition = position
-        scrollOffset = offset
-    }
-
-    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage())
-    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage())
-
-    private fun buildImageBodyPart(fileName: String, bitmap: Bitmap): MultipartBody.Part {
-        val leftImageFile = convertBitmapToFile(context, fileName, bitmap)
-        val reqFile = RequestBody.create("image/*".toMediaTypeOrNull(), leftImageFile)
-        return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
-    }
-
-
-    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
-        compositeDisposable += takePhotoRequest
-            .flatMapSingle {
-                takePhoto.crop(
-                    resultRotation = it,
-                    outputMaxWidth = IMAGE_MAX_SIZE_CHAT,
-                    outputMaxHeight = IMAGE_MAX_SIZE_CHAT,
-                    cropMode = CropImageView.CropMode.FREE
+        if (isCanShowUnreadMessagesItem) {
+            if (messages.filter { x -> !x.wasRead }.isNotEmpty()){
+                val index = messages.indexOfLast { x -> !x.wasRead }
+                formattedMessages.add(
+                    index + 1,
+                    ChatMessage.NewMessages(messages.filter { x -> !x.wasRead }.size)
                 )
             }
-            .subscribe({
-                val reloadChat = !isChatHasMessages
-                if (reloadChat) viewState.showLoadingDialog()
+            isCanShowUnreadMessagesItem = false
+        }
 
-                compositeDisposable += Single.fromCallable {
-                    MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .apply {
-                            addFormDataPart("chat", chatId)
-                            val leftImageFile = convertBitmapToFile(context, "temp_file.png", it)
-
-                            val reqFile =
-                                RequestBody.create("image/jpeg".toMediaTypeOrNull(), leftImageFile)
-                            addFormDataPart("file", "temp_file.png", reqFile)
-                        }.build()
-                }.flatMap {
-                    chatRepository.sendChatMessage(it)
-                }
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeSimple(
-                        onError = {
-                            if (reloadChat) viewState.hideLoadingDialog()
-                            onReceiveError(it)
-                            updateChatAfterFirstMessage()
-                        },
-                        onSuccess = {
-                            if (reloadChat) viewState.hideLoadingDialog()
-                            updateChatAfterFirstMessage()
-                        }
-                    )
-            }, {
-
-            })
+        return formattedMessages
     }
 
-    private fun updateChatAfterFirstMessage() {
-        if (isUpdateAfterMessage) compositeDisposable += getChat().performOnBackgroundOutOnMain()
-            .subscribeSimple(onError = null, onSuccess = {})
+
+    private fun getPaginationRequest(
+        limit: Int,
+        offset: Int
+    ): Maybe<PaginationResponse<MessageModel>> {
+        return chatRepository.getChatMessagesPagination(
+            mapOf(
+                MessageModel.MESSAGES_CHAT to chatId,
+                MessageModel.MESSAGES_ACKNOWLEDGED_BY to appData.getId(),
+                MessageModel.MESSAGES_LIMIT to 40,
+                MessageModel.MESSAGES_OFFSET to offset,
+                MessageModel.MESSAGES_SORT_TYPE to "desc"
+            )
+        )
     }
 
     override fun onAcceptChatClick() {
         compositeDisposable += chatRepository.acceptChat(chatId.toInt())
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribe({ viewState.showChatInput(true) }, {})
     }
 
@@ -648,14 +267,144 @@ class ChatPresenter
     override fun onBlockChatConfirm() {
         compositeDisposable += chatRepository.chatBann(CreateChatBody(chatId.toInt()))
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribe({
                 viewState.navigateUp()
             }, { it.printStackTrace() })
     }
 
-    override fun onInputShowAnimationFinish() {
-        viewState.focusOnInput(true)
+    override fun onSendTextMessageClick(message: String) {
+        viewState.apply { clearMessageInput() }
+
+        compositeDisposable += Single.fromCallable {
+            MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .apply {
+                    addFormDataPart("chat", chatId)
+                    addFormDataPart("message", message)
+                }.build()
+        }.flatMap {
+            chatRepository.sendChatMessage(it)
+        }
+            .withCheckInternetConnectivity()
+            .flatMapMaybe { prepareListOfMessages(listOf(it)) }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    viewState.apply {
+                        updateMessages(true, it)
+                        scrollListToPosition(0, true)
+                    }
+                }
+            )
+    }
+
+
+    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage().formatImage())
+    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage().formatImage())
+
+    private fun Observable<ResultRotation>.formatImage(): Observable<Bitmap>? {
+        return flatMapSingle {
+            takePhoto.crop(
+                resultRotation = it,
+                outputMaxWidth = IMAGE_MAX_SIZE_CHAT,
+                outputMaxHeight = IMAGE_MAX_SIZE_CHAT,
+                cropMode = CropImageView.CropMode.FREE
+            )
+        }
+    }
+
+    private fun takePhoto(takePhotoRequest: Observable<Bitmap>?) {
+        if (takePhotoRequest != null) {
+            compositeDisposable += takePhotoRequest
+                .flatMapSingle {
+                    val body = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .apply {
+                            addFormDataPart("chat", chatId)
+                            val leftImageFile = convertBitmapToFile(context, "temp_file.png", it)
+
+                            val reqFile =
+                                RequestBody.create("image/jpeg".toMediaTypeOrNull(), leftImageFile)
+                            addFormDataPart("file", "temp_file.png", reqFile)
+                        }.build()
+                    Single.just(body)
+                }
+                .flatMapSingle { chatRepository.sendChatMessage(it) }
+                .flatMapMaybe { prepareListOfMessages(listOf(it)) }
+                .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribeSimple(
+                    onError = {
+                        onReceiveError(it)
+                    },
+                    onNext = {
+                        viewState.apply {
+                            updateMessages(true, it)
+                            scrollListToPosition(0, true)
+                        }
+                    }
+                )
+        }
+    }
+
+
+    private fun initChat() {
+        compositeDisposable += chatRepository.getChatById(
+            chatId,
+            mapOf(CHAT_BINDS to "users,event,bans,last-unread-message,last-message")
+        )
+            .doOnSuccess {
+                if (it.isEventChat()){
+                    isEventChat = true
+                    userId = it.binds?.event?.id.toString()
+                }else {
+                    isEventChat = false
+                    userId = it.users?.first { us -> us.user != appData.getId() }?.user.toString()
+                }
+            }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val avatarFromChat = if (it.isEventChat()) {
+                    it.binds?.lastMessage?.event?.url ?: it.binds?.event?.image?.uri
+                } else {
+                    it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
+                }
+                if (userAvatar != avatarFromChat && avatarFromChat != null) {
+                    userAvatar = avatarFromChat
+                    viewState.setUserNameAvatar(avatarFromChat, userName)
+                }
+                viewState.apply {
+                    when {
+                        it.isEventChat() -> { hideKeyboard() }
+                        it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
+                        it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
+                        it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName) }
+                        it.isWaitForAcceptInvites(appData.getId()) -> disableMessaging { showWaitForInviteAccept() }
+                        else -> {
+                            showChatInput(false)
+                            focusOnInput(false)
+                        }
+                    }
+                }
+            }
+    }
+
+    override fun onUserClick() {
+        if (isEventChat){
+            viewState.showEvent(userId)
+        }else {
+            viewState.showUser(userId)
+        }
+    }
+
+    private fun disableMessaging(action: () -> Unit) {
+        action()
+        isCanShowUnreadMessagesItem = false
+        viewState.hideKeyboard()
     }
 
     override fun onMessageInput(message: String) {
@@ -665,18 +414,9 @@ class ChatPresenter
         }
     }
 
-
-    override fun onUserClick() {
-
-        if (chat?.isEventChat != true) {
-            chat?.user?.id?.let {
-                viewState.showUser(it)
-            }
-        } else {
-            chat?.eventId?.let {
-                viewState.showEvent(it)
-            }
-        }
+    override fun detachView(view: ChatContract.View?) {
+        view?.hideKeyboard()
+        super.detachView(view)
     }
 
     override fun onDestroy() {
@@ -687,34 +427,8 @@ class ChatPresenter
                 EventBus.getDefault().unregister(this)
                 super.onDestroy()
             }
-//        super.onDestroy()
-//        socket.disconnectFromChat(chatId)
-//        socket.stopListenChatUpdate()
-//        //socket.disconnectFromSocket()
-//        EventBus.getDefault().unregister(this)
     }
 
-    @Subscribe
-    fun onSocketConnect(event: OnSocketConnectEvent) {
-        //TODO fix this
-        //haChat.loadNextMessages(chatId, CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT, true)
-    }
-
-    companion object {
-        private const val CHAT_MESSAGE_LIST_PAGE_SIZE_LIMIT = 50
-        private const val LAST_UNREAD_INDEX_INVALID = -1
-    }
-
-    private fun initUserName(name: String): String {
-        var str = ""
-        str = if (name.length > 18) {
-            StringBuilder(
-                name.substring(0, 18).replace("\n", " ")
-            ).append("...")
-                .toString()
-        } else {
-            name
-        }
-        return str
-    }
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
 }
+

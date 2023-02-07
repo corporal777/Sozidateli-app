@@ -595,6 +595,24 @@
     </fragment>
 
     <fragment
+        android:id="@+id/notifications_list_fragment"
+        android:name="com.example.ui.notification.center.redesign.NotificationsListFragment"
+        android:label="@string/notifications_label">
+
+        <action
+            android:id="@+id/notifications_center_to_notification"
+            app:destination="@id/notification_fragment" />
+
+        <action
+            android:id="@+id/notifications_center_to_event_rating"
+            app:destination="@id/event_rating_fragment" />
+
+        <action
+            android:id="@+id/notification_to_about_event_fragment"
+            app:destination="@id/about_event_fragment_new" />
+    </fragment>
+
+    <fragment
         android:id="@+id/notification_fragment"
         android:name="com.example.ui.notification.NotificationFragment">
 
@@ -633,49 +651,14 @@
         android:label="@string/chat_list"
         tools:layout="@layout/fragment_chat_list">
         <action
-            android:id="@+id/chat_list_to_chat"
-            app:destination="@id/chat_fragment" />
-        <action
             android:id="@+id/action_chat_list_fragment_to_chat_search_fragment"
             app:destination="@id/chat_search_fragment" />
     </fragment>
 
+
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.example.ui.chat.ChatFragment"
-        android:label="{label}"
-        tools:layout="@layout/fragment_chat">
-        <argument
-            android:name="label"
-            app:argType="string" />
-        <argument
-            android:name="chatId"
-            app:argType="string" />
-        <argument
-            android:name="userAvatar"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_chat_fragment_to_user_fragment"
-            app:destination="@id/user_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:launchSingleTop="true"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
-
-        <!--            app:enterAnim="@anim/profile_enter"-->
-        <!--            app:exitAnim="@anim/profile_exit"-->
-        <!--            -->
-        <!--            app:popEnterAnim="@anim/profile_popup_enter"-->
-        <!--            app:popExitAnim="@anim/profile_popup_exit" -->
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/chat_fragment_new"
-        android:name="com.example.ui.chat.redesign.ChatFragmentNew"
         tools:layout="@layout/fragment_chat">
         <argument
             android:name="name"

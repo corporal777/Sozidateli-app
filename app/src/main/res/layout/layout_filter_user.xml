@@ -19,7 +19,7 @@
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_region"
+            android:hint="@string/search_filter_address_new"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:minHeight="48dp"
@@ -37,7 +37,7 @@
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvTheme"
             style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_user_theme"
+            android:hint="@string/search_filter_theme_short"
             android:paddingStart="@dimen/background_input_padding"
             android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>

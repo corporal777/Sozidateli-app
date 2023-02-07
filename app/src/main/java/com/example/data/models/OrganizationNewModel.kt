@@ -52,6 +52,13 @@ data class OrganizationNew(
         const val ORGANIZATION_ADDRESS_INDEX = "addressIndex"
         const val ORGANIZATION_ADDRESS_COUNTRY = "addressCountry"
         const val ORGANIZATION_ADDRESS_STREET = "addressStreet"
+        const val ORGANIZATION_ADDRESS_FEDERAL = "addressFederal"
+        const val ORGANIZATION_ADDRESS_REGION = "addressRegion"
+        const val ORGANIZATION_ADDRESS_AREA = "addressArea"
+        const val ORGANIZATION_ADDRESS_CITY = "addressCity"
+        const val ORGANIZATION_ADDRESS_SETTLEMENT = "addressSettlement"
+        const val ORGANIZATION_ADDRESS_HOUSE = "addressHouse"
+        const val ORGANIZATION_ADDRESS_FLAT = "addressFlat"
         const val ORGANIZATION_LEGAL_INFORMATION_INN = "legalInformationInn"
     }
 }

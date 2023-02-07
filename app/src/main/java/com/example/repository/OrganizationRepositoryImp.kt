@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class OrganizationRepositoryImp
 @Inject constructor(
-        private val api: Api,
-        private val newApi: NewApi,
-        appData: AppData
+    private val api: Api,
+    private val newApi: NewApi,
+    appData: AppData
 ) : ApiRepository(appData), OrganizationRepository {
 
 
@@ -40,33 +40,47 @@ class OrganizationRepositoryImp
 
     override fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNewMemberModel>> {
         return newApi.getOrganizationMembers(map)
-                .map {
-                    PaginationResponse(it.totalCount, it.data)
-                }
+            .map {
+                PaginationResponse(it.totalCount, it.data)
+            }
     }
 
     override fun getOrganizationMembersWithoutPagination(map: Map<String, Any>): Maybe<List<OrganizationMemberModel>> =
         newApi.getOrganizationMembersWithoutPagination(map)
-                .map { it.data }
+            .map { it.data }
 
     override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
         return newApi.searchOrganizations(map)
-                .map {
-                    PaginationResponse(it.totalCount, it.data?: arrayListOf())
-                }
+            .map {
+                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
+            }
     }
 
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
-        return newApi.getOrganizationDetails(organizationId, "rights,leader,member,user,userFavorite")
+        return newApi.getOrganizationDetails(
+            organizationId,
+            "rights,leader,member,user,userFavorite"
+        )
     }
 
     override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
         return newApi.getFavoritesList(map)
-                .map {
-                    it.data.forEach { org ->
-                        org.entity?.model?.binds = OrganizationBindsModel(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
-                    }
-                    PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+            .map {
+                it.data.forEach { org ->
+                    org.entity?.model?.binds = OrganizationBindsModel(
+                        userFavorite = EventUserFavorite(
+                            org.id?.toLong(),
+                            org.user
+                        )
+                    )
                 }
+                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+            }
+    }
+
+    //+
+    override fun searchOrganizationsNew(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+        return newApi.searchDataNew(map)
+            .map { PaginationResponse(it.organizations.count, it.organizations.data) }
     }
 }

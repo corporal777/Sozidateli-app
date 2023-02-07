@@ -129,22 +129,22 @@ class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(),
                     readClickListener,
                     openEventListener
                 )
-//                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
-//                    it,
-//                    readMoreClickListener,
-//                    linkClickListener,
-//                    acceptClickListener,
-//                    changeDecisionClickListener,
-//                    openEventListener,
-//                    readListener,
-//                )
-                Notification.Type.ACCEPTABLE -> SimpleNotificationItem(
+                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
                     it,
                     readMoreClickListener,
                     linkClickListener,
-                    readClickListener,
-                    openEventListener
+                    acceptClickListener,
+                    changeDecisionClickListener,
+                    openEventListener,
+                    readListener,
                 )
+//                Notification.Type.ACCEPTABLE -> SimpleNotificationItem(
+//                    it,
+//                    readMoreClickListener,
+//                    linkClickListener,
+//                    readClickListener,
+//                    openEventListener
+//                )
                 Notification.Type.RATE -> RateNotificationItem(
                     it,
                     readMoreClickListener,

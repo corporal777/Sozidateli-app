@@ -169,6 +169,8 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
 
     companion object {
         const val CODE_SIZE = 6
+        const val EMAIL_CODE_SIZE = 6
+        const val PHONE_CODE_SIZE = 4
     }
 }
 

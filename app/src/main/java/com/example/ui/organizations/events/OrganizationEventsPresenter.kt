@@ -3,7 +3,6 @@ package com.example.ui.organizations.events
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.di.Connectivity
 import com.example.repository.EventRepository

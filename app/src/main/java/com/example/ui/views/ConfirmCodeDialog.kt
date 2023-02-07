@@ -105,4 +105,12 @@ class ConfirmCodeDialog(val email: String, val context: Context, val type: Regis
         clickSendAgain = block
         return this
     }
+
+    fun hideDialog(){
+        mAlertDialog.dismiss()
+    }
+
+    fun showDialog(){
+        mAlertDialog.show()
+    }
 }

@@ -6,6 +6,7 @@ import com.example.data.models.user.User
 import com.example.data.models.user.UserResp
 import com.example.ui.snAuth.SnAuth
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.Path
@@ -34,7 +35,7 @@ interface AuthRepository {
     //fun registerSnResend(email: String, token: String): Completable
 
     //fun sendRecoveryEmail(email: String): Completable
-    fun sendRecoveryEmail(type: String, email: String): Completable
+    fun sendRecoveryEmail(type: String, email: String): Maybe<RecoverPasswordResponse>
     //fun checkRecoveryCode(email: String, code: String): Completable
     //fun setPassword(email: String, code: String, password: String): Completable
 

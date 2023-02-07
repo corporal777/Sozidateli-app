@@ -107,6 +107,7 @@ interface UserRepository {
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
     fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
     fun markAsRead(notificationId: String): Completable
+    fun markAllNotificationsAsRead(): Completable
     fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable
     fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable
     fun approvePgrf(pgrfId: String): Completable
@@ -117,5 +118,5 @@ interface UserRepository {
     fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
     fun checkEmailPhone(email: String?, phone: String?): Completable
 
-    fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<SearchUserData?>>
+    fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
 }

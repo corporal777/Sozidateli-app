@@ -55,6 +55,7 @@ import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
+import com.example.ui.notification.center.redesign.NotificationsListFragment
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
@@ -161,6 +162,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     is ChatListTabsFragment,
                     is ProfileFragment,
                     is MyScheduleEventsFragment,
+                    is NotificationsListFragment,
                     is NotificationsFragment -> showNavBar()
                     else -> hideNavBar()
                 }
@@ -289,12 +291,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
+                //catch path auth
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
                     val redirectLink = it.getQueryParameter("redirect") ?: ""
                     if (!redirectLink.isNullOrEmpty()) {
                         presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
                     }
-                } else if (lastPath == PATH_EVENT_MEMBER) {
+                }
+                //catch path event member
+                else if (lastPath == PATH_EVENT_MEMBER) {
                     val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
                     val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                     presenter.onInviteRegister(
@@ -305,26 +310,40 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         "",
                         0
                     )
-                } else if (lastPath == PATH_QR) {
+                }
+                //catch path qr code
+                else if (lastPath == PATH_QR) {
                     val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
                     if (!code.isNullOrEmpty()) {
                         presenter.openAuthWebsiteFragment(code)
                     }
-                } else if (lastPath != null && paths.contains(PATH_EVENT)) {
+                }
+                //catch path event
+                else if (lastPath != null && paths.contains(PATH_EVENT)) {
                     EVENT_ID = lastPath
                     if (lastPath.contains(PATH_HIDDEN)) {
                         presenter.onHandleEventCode(authCode ?: "")
                     } else {
                         presenter.onHandleEvent(lastPath)
                     }
-                } else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
-                    presenter.onHandleRecoverPasswordLink(authCode)
-                } else if (lastPath == PATH_SN_AUTHORIZATION) {
+                }
+                //catch path password recovery
+                else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
+                    val indexLastPath = paths.indexOf(lastPath)
+                    val userId = if (indexLastPath > 0){
+                        paths[indexLastPath - 1]
+                    } else ""
+                    presenter.onHandleRecoverPasswordLink(userId, authCode)
+                }
+                //catch path sn authorization
+                else if (lastPath == PATH_SN_AUTHORIZATION) {
                     val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
                     if (userId != null && authCode != null) {
                         presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
-                } else if (lastPath == LINKED_REGISTER) {
+                }
+                //catch path linked register
+                else if (lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
 
                     val text = String(base, StandardCharsets.UTF_8)
@@ -337,7 +356,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         if (json["middleName"].toString() != "null") json["middleName"].toString() else "",
                         0
                     )
-                } else if (lastPath == PGRF) {
+                }
+                //catch path pgrf
+                else if (lastPath == PGRF) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
@@ -427,8 +448,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         handleIntent(intent)
     }
 
-    override fun showDialogRecoverPassword(/*email: String,*/ code: String) {
-        val changePasswordDialog = ChangePasswordFragment(true, code)
+    override fun showDialogRecoverPassword(userId: String, code: String) {
+        val changePasswordDialog = ChangePasswordFragment(true, code, userId)
         changePasswordDialog.show(supportFragmentManager, "change_password_dialog")
 //        NewPasswordDialog(this)
 //            .setSelectCallback {
@@ -439,7 +460,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showChat(chatId: String, userName: String) {
         findNavController().navigate(
             R.id.chat_fragment, bundleOf(
-                FIELD_LABEL to userName,
+                FIELD_NAME to userName,
                 FIELD_CHAT_ID to chatId
             )
         )
@@ -830,7 +851,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     true
                 }
                 R.id.notification -> {
-                    findNavController(R.id.navHostFragment).navigate(R.id.notifications_fragment)
+                    //findNavController(R.id.navHostFragment).navigate(R.id.notifications_fragment)
+                    findNavController(R.id.navHostFragment).navigate(R.id.notifications_list_fragment)
                     true
                 }
                 R.id.profile -> {
@@ -856,12 +878,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
 
-    override fun showBadgeNotification(show: Boolean) {
-        mBadgeNotification.isVisible = show
+    override fun showBadgeNotification(count: Int) {
+        mBadgeNotification.isVisible = count > 0
+        mBadgeNotification.number = count
     }
 
-    override fun showBadgeChat(show: Boolean) {
-        mBadgeChat.isVisible = show
+    override fun showBadgeChat(count: Int) {
+        mBadgeChat.isVisible = count > 0
+        mBadgeChat.number = count
     }
 
 

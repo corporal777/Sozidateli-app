@@ -521,4 +521,9 @@ class EventRepositoryImp
 
     override fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>> =
         newApi.getTags(map).map { it.data }
+
+    override fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+        return newApi.searchDataNew(map)
+            .map { PaginationResponse(it.events.count, it.events.data) }
+    }
 }

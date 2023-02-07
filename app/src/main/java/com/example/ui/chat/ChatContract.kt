@@ -1,6 +1,5 @@
 package com.example.ui.chat
 
-import android.widget.ImageView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
@@ -9,9 +8,22 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.Message
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import com.example.util.pagination.PaginationListGroupAdapter
 
 interface ChatContract {
     interface View : BaseContract.View {
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun updateMessages(showAnim : Boolean, messages: List<ChatMessage>)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setUserNameAvatar(url: String, name : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun scrollListToPosition(position: Int, smooth : Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun removeUnreadMessageLabel()
+
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showChatInput(animate: Boolean)
 
@@ -27,6 +39,12 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showWaitForInviteAccept()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun focusOnInput(showKeyboard: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChatBlockConfirmation()
+
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
         fun showSendGroup()
 
@@ -34,74 +52,29 @@ interface ChatContract {
         fun showAttachGroup()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun focusOnInput(showKeyboard: Boolean)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updateMessages(showAnim : Boolean, messages: List<ChatMessage>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearMessageInput()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollToBottomPosition(smooth: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun scrollToMessagesUnreadItem(position: Int)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun openImageFullScreen(url: String, imageView: ImageView)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun cancelNotificationByChatId(chatId: String)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setUserAvatar(url: String)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setTitle(title: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun removeChatMessage(message: ChatMessage)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun checkScrollPosition()
-
         @StateStrategyType(SkipStrategy::class)
-        fun scrollToPositionWithOffset(position: Int, offset: Int)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showChatBlockConfirmation()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showUser(uid: Int)
+        fun showUser(userId: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEvent(event: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showProgressLoadingDisplay()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideProgressLoadingDisplay()
     }
 
-    interface Presenter : BaseContract.Presenter {
-        fun onSendTextMessageClick(message: String)
-        fun onChatScrollChange(isBottomPosition: Boolean)
-        fun onScrollChange(position: Int, offset: Int)
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onChatMessageOnScreen(message: Message)
-        fun onImageClick(url: String, imageView: ImageView)
-        fun onTakePhotoFromCameraRequest()
-        fun onTakePhotoFromGalleryRequest()
-        fun onLoadPreviousMessagesRequest(messageId: Int?)
-        fun onLoadNextMessagesRequest(messageId: Int?)
-
         fun onAcceptChatClick()
         fun onBlockChatClick()
         fun onBlockChatConfirm()
 
-        fun onInputShowAnimationFinish()
         fun onMessageInput(message: String)
+        fun onSendTextMessageClick(message: String)
+
+        fun onTakePhotoFromCameraRequest()
+        fun onTakePhotoFromGalleryRequest()
 
         fun onUserClick()
     }

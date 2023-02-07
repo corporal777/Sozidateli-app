@@ -28,6 +28,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
+import kotlinx.coroutines.processNextEventInCurrentThread
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withLoadingDialog
@@ -37,34 +38,54 @@ import javax.inject.Inject
 @InjectViewState
 class SearchEventPresenter
 @Inject constructor(
-        private val eventData: UserEventData,
-        private val eventRepository: EventRepository,
-        private val userRepository: UserRepository,
-        private val commonRepository: CommonRepository,
-        private val appData: AppData
-) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData), SearchEventContract.Presenter {
+    private val eventData: UserEventData,
+    private val eventRepository: EventRepository,
+    private val userRepository: UserRepository,
+    private val commonRepository: CommonRepository,
+    private val appData: AppData
+) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData),
+    SearchEventContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
+        /*
         val data = mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
             put(EventNew.EVENT_SORT_TYPE, "desc")
-            put(EventNew.EVENT_SORT_FIELD, "id",)
+            put(EventNew.EVENT_SORT_FIELD, "id")
             put(EventNew.EVENT_STATUS, "approved,registration,registrationFinished,running")
             put(EventNew.EVENT_PUBLIC, "true")
-            put(EventNew.EVENT_BINDS, "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState")
+            put(
+                EventNew.EVENT_BINDS,
+                "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"
+            )
 
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
-            if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%"+filter.name+"%")
-            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, filter.dateStart+","+filter.dateFinish)
+            if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%" + filter.name + "%")
+            if (filter.dateStart != null) put(
+                EventNew.EVENT_START_DATE,
+                filter.dateStart + "," + filter.dateFinish
+            )
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
             if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
                 if (filter.fullAddress != null) {
-                    if (filter.fullAddress?.country != null) put(EventNew.EVENT_ADDRESS_COUNTRY, filter.fullAddress?.country!!)
-                    if (filter.fullAddress?.city != null) put(EventNew.EVENT_ADDRESS_CITY, filter.fullAddress?.city!!)
-                    if (filter.fullAddress?.region != null) put(EventNew.EVENT_ADDRESS_REGION, filter.fullAddress?.region!!)
-                    if (filter.fullAddress?.street != null) put(EventNew.EVENT_ADDRESS_STREET, filter.fullAddress?.street!!)
+                    if (filter.fullAddress?.country != null) put(
+                        EventNew.EVENT_ADDRESS_COUNTRY,
+                        filter.fullAddress?.country!!
+                    )
+                    if (filter.fullAddress?.city != null) put(
+                        EventNew.EVENT_ADDRESS_CITY,
+                        filter.fullAddress?.city!!
+                    )
+                    if (filter.fullAddress?.region != null) put(
+                        EventNew.EVENT_ADDRESS_REGION,
+                        filter.fullAddress?.region!!
+                    )
+                    if (filter.fullAddress?.street != null) put(
+                        EventNew.EVENT_ADDRESS_STREET,
+                        filter.fullAddress?.street!!
+                    )
 
                 } else {
 
@@ -74,6 +95,10 @@ class SearchEventPresenter
             if (category != null) put(EventNew.EVENT_CATEGORY, category)
         }
         eventRepository.getEventsList(data)
+        */
+
+        val data = buildNewFilters(limit, offset)
+        eventRepository.searchEventsNew(data)
     }
 
     private var isCommonDataLoaded = false
@@ -83,43 +108,31 @@ class SearchEventPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         val loadInterests = userRepository.getInterestsList(null)
-                .map { interests ->
-                    interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
-                }
-        compositeDisposable += Maybe.zip(loadInterests, eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)),
-                BiFunction<Map<InterestNew, List<InterestNew>>, List<NewEventFormat>, Unit> { interests, formats ->
-            this.interests = interests
-            this.formats = formats
-        })
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onError = {
-                            isCommonDataLoaded = true
-                            onReceiveError(it)
-                        },
-                        onSuccess = {
-                            isCommonDataLoaded = true
-                        })
+            .map { interests ->
+                interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
+            }
+        compositeDisposable += Maybe.zip(loadInterests,
+            eventRepository.getEventFormatsList(
+                mapOf(
+                    EventNew.EVENT_LIMIT to 100,
+                    EventNew.EVENT_OFFSET to 0
+                )
+            ),
+            BiFunction<Map<InterestNew, List<InterestNew>>, List<NewEventFormat>, Unit> { interests, formats ->
+                this.interests = interests
+                this.formats = formats
+            })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    isCommonDataLoaded = true
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    isCommonDataLoaded = true
+                })
     }
 
-    private fun groupUserInterests(
-            userInterests: List<Int>?,
-            interests: List<InterestNew>?
-    ): Map<InterestNew, MutableList<InterestNew>> {
-        val groups = mutableMapOf<InterestNew, MutableList<InterestNew>>()
-        val headers = interests?.filter { it.parent == 0 }
-        headers?.forEach {
-            val parent = interests.filter { parent -> parent.parent == it.id }
-            parent.let { it1 ->
-                userInterests?.forEach { usIn ->
-                    val isUserInterest = it1.find { it2 -> it2.id == usIn }
-                    if (isUserInterest != null)
-                        groups.getOrPut(it) { mutableListOf() }.add(isUserInterest)
-                }
-            }
-        }
-        return groups
-    }
 
     override fun onResume(searchInterface: SearchInterface) {
         super.onResume(searchInterface)
@@ -136,32 +149,15 @@ class SearchEventPresenter
     override fun onActionRegister(event: String) = viewState.showEventRequest(event)
 
     override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt()?: 0)
-                .andThen(eventRepository.getEventDetails(event))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    pagination.invalidate()
-                }
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
+            .andThen(eventRepository.getEventDetails(event))
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                pagination.invalidate()
+            }
     }
 
-    override fun onActionWriteToOrganization(emails: List<EventPhoneModel>) {
-        if (!emails.isNullOrEmpty()) viewState.showWriteToOrganizationEmails(emails)
-    }
-
-    override fun onWriteToOrganizationEmailChosen(email: EventPhoneModel) {
-        viewState.showWriteToOrganization(email)
-    }
-
-    override fun onActionShowEvent(event: String) {
-        compositeDisposable += eventRepository.addEventToCalendar(EventCalendarBody(appData.getId(), EventCalendarBodyEntity(CALENDAR_EVENT, event.toInt())))
-                .andThen(userRepository.getUserShortNew().ignoreElement().onErrorComplete())
-                .andThen(eventData.load(event))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple { viewState.selectEvent() }
-    }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
@@ -180,36 +176,74 @@ class SearchEventPresenter
         if (isCommonDataLoaded) showFilter()
         else {
             compositeDisposable += Completable.complete()
-                    .timeout(3, TimeUnit.SECONDS)
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribe({
-                        showFilter()
-                    }, {
-                        showFilter()
-                    })
+                .timeout(3, TimeUnit.SECONDS)
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribe({
+                    showFilter()
+                }, {
+                    showFilter()
+                })
         }
-    }
-
-    private fun buildFilter(): Map<String, Any> = mutableMapOf<String, Any>().apply {
-        put(FILTER_SHOW_CANCELED, true)
-        //if (searchText.isNotEmpty()) put(FILTER_CONTENT, searchText)
-        val address = filter.address
-        if (!address.isNullOrEmpty()) put(FILTER_ADDRESS, address)
-        /*val name = filter.name
-        if (!name.isNullOrEmpty()) put(FILTER_NAME, name)*/
-        val registration = filter.registration
-        if (registration != null) put(FILTER_REGISTRATION, registration)
-        /*val dateStart = filter.dateStart
-        if (dateStart != null) put(FILTER_DATE_START, dateStart)*/
-        val dateFinish = filter.dateFinish
-        if (dateFinish != null) put(FILTER_DATE_FINISH, dateFinish)
-        /*val category = filter.spec ?: filter.theme
-        if (category != null) put(FILTER_CATEGORY, category)*/
-        /*val format = filter.format
-        if (format != null) put(FILTER_FORMAT, format)*/
     }
 
     override fun createFilter() = SearchFilter.EventNew()
     override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
+
+    private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
+        return mutableMapOf<String, Any>().apply {
+            put(EventNew.EVENT_LIMIT, limit)
+            put(EventNew.EVENT_OFFSET, offset)
+
+            put(SEARCH_EVENT_TYPE, true)
+            put(
+                SEARCH_EVENT_BINDS,
+                "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"
+            )
+            if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
+
+            if (!filter.name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%" + filter.name + "%")
+
+            if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
+
+            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, filter.dateStart + "," + filter.dateFinish)
+
+            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
+                if (filter.fullAddress != null) {
+                    if (filter.fullAddress?.country != null) put(
+                        EventNew.EVENT_ADDRESS_COUNTRY,
+                        filter.fullAddress?.country!!
+                    )
+                    if (filter.fullAddress?.city != null) put(
+                        EventNew.EVENT_ADDRESS_CITY,
+                        filter.fullAddress?.city!!
+                    )
+                    if (filter.fullAddress?.region != null) put(
+                        EventNew.EVENT_ADDRESS_REGION,
+                        filter.fullAddress?.region!!
+                    )
+                    if (filter.fullAddress?.street != null) put(
+                        EventNew.EVENT_ADDRESS_STREET,
+                        filter.fullAddress?.street!!
+                    )
+                }
+            }
+
+//            val interests = filter.spec ?: filter.theme
+//            if (interests != null) put(SEARCH_EVENT_INTERESTS, interests)
+            val topicCategory = filter.theme
+            if (topicCategory != null) put(SEARCH_EVENT_TOPIC_CATEGORY, topicCategory)
+            val topicSubcategory = filter.spec
+            if (topicSubcategory != null) put(SEARCH_EVENT_TOPIC_SUBCATEGORY, topicSubcategory)
+        }
+    }
+
+    companion object {
+        private const val SEARCH_EVENT_TYPE = "event"
+        private const val SEARCH_EVENT_NAME = "eventName"
+        private const val SEARCH_EVENT_INTERESTS = "interests"
+        private const val SEARCH_EVENT_TOPIC_CATEGORY = "topicCategory"
+        private const val SEARCH_EVENT_TOPIC_SUBCATEGORY = "topicSubcategories"
+        private const val SEARCH_EVENT_BINDS = "eventBinds"
+    }
 }

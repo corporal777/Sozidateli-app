@@ -17,13 +17,16 @@ interface RecoveryPasswordContract {
         fun showEmailError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showRecoveryNotification(email: String)
+        fun showRecoveryNotification(email: String, userId : String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showWrongEmailError()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setTimeLeft(seconds: Int)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showPasswordSuccessUpdated()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -31,7 +34,7 @@ interface RecoveryPasswordContract {
         fun onChangeEmailText(email: String)
         fun onUserUnderstand()
         fun onCloseClick()
-        fun onSetPassword(code: String, password: String)
+        fun onSetPassword(code: String, password: String, userId: String)
         fun sendCodeAgain()
     }
 }

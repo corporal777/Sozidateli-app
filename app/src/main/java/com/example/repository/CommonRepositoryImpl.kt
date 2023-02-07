@@ -19,7 +19,7 @@ class CommonRepositoryImpl
         private val newApi: NewApi
 ) : ApiRepository(appData), CommonRepository {
 
-    override fun getInterests(): Maybe<List</*Interest*/InterestNew>> {
+    override fun getInterests(): Maybe<List<InterestNew>> {
         val cachedInterests = appData.interestsNew
         return if (cachedInterests.isNullOrEmpty()) newApi.getInterestsList(200, null)
                 .map {interests ->

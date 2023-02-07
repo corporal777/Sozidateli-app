@@ -1,7 +1,6 @@
 package com.example.di
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDialog
 import com.example.App
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.views.accountView.AccountView

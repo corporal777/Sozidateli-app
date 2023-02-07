@@ -12,24 +12,12 @@ interface SearchEventContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganizationEmails(emails: List<EventPhoneModel/*EmailAffiliation*/>)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showWriteToOrganization(email: EventPhoneModel/*EmailAffiliation*/)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun selectEvent()
     }
 
     interface Presenter : SearchContract.Presenter<EventNew/*Event*/> {
         fun onActionRegister(event: String)
         fun onActionCancel(event: String, registrationId: String?)
-        fun onActionWriteToOrganization(emails: List<EventPhoneModel/*EmailAffiliation*/>)
-        fun onActionShowEvent(event: String)
         fun onShowEventClick(event: String)
         fun onShowFormatClick(format: Int)
-        fun onWriteToOrganizationEmailChosen(email: EventPhoneModel/*EmailAffiliation*/)
     }
 }

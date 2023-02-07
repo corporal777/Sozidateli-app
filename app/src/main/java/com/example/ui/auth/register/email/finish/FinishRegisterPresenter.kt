@@ -12,6 +12,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
+import com.example.ui.views.AddPhoneEmailDialog
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.shakebugs.shake.Shake
@@ -60,7 +61,8 @@ class FinishRegisterPresenter
         compositeDisposable += timerCompositeDisposable
         viewState.apply {
             setData(login, firstName, lastName, middleName)
-            enableRegisterBtn(code.length == 6)
+            if (loginType == "email") enableRegisterBtn(code.length == 6)
+            else enableRegisterBtn(code.length == 4)
         }
         startTimer()
     }
@@ -158,7 +160,8 @@ class FinishRegisterPresenter
 
     override fun onChangeCodeText(code: String) {
         this.code = code
-        viewState.enableRegisterBtn(code.length == 6)
+        if (loginType == "email") viewState.enableRegisterBtn(code.length == 6)
+        else viewState.enableRegisterBtn(code.length == 4)
     }
 
     override fun onChangeNameText(name: String) {
@@ -221,6 +224,11 @@ class FinishRegisterPresenter
             }
         }
         return isValid
+    }
+
+    fun isConfirmCodeValid(codeLength: Int): Boolean {
+        return if (loginType == "email")  codeLength == AddPhoneEmailDialog.EMAIL_CODE_SIZE
+        else codeLength == AddPhoneEmailDialog.PHONE_CODE_SIZE
     }
 
     private fun confirmCodeRequest(): Completable {

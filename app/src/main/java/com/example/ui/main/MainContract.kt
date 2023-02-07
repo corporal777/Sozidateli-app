@@ -37,7 +37,7 @@ interface MainContract {
         fun showRating(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showDialogRecoverPassword(/*email: String,*/ code: String)
+        fun showDialogRecoverPassword(userId: String, code: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun checkIntent()
@@ -64,10 +64,10 @@ interface MainContract {
         fun showAuthWebsiteFragment(code : String)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun showBadgeNotification(show : Boolean)
+        fun showBadgeNotification(count : Int)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun showBadgeChat(show : Boolean)
+        fun showBadgeChat(count : Int)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun setMainTheme()
@@ -84,14 +84,14 @@ interface MainContract {
         fun onOpenNotStartDestination()
         fun onOpenChatDestination(chatId: String?)
         fun onOpenCheckConnectionDestination(check: Boolean)
-        fun onHandleRecoverPasswordLink(/*email: String,*/ code: String)
+        fun onHandleRecoverPasswordLink(userId: String, code: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEventCode(event: String)
         fun onHandleEvent(event: String)
         fun onHandleAuthToOtherPlatform(url: String, type : AuthType)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
-        fun onSetPassword(/*email: String, */code: String, password: String)
+
 
         fun onInappHidden()
         fun onInappAcceptClick(inapp: Notification)

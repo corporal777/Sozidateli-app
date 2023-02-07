@@ -117,60 +117,24 @@
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@id/desc_container" />
+                    app:layout_constraintTop_toTopOf="@id/tvLectureDesc" />
 
-                <LinearLayout
-                    android:layout_marginVertical="15dp"
-                    android:layout_marginHorizontal="15dp"
-                    android:id="@+id/desc_container"
+
+                <com.example.ui.views.expandableTextView.CustomExpandableTextView
+                    android:id="@+id/tvLectureDesc"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginVertical="15dp"
+                    android:maxLines="25"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/listTags">
-
-
-                </LinearLayout>
-
-                <!--                <com.example.ui.views.expandableTextView.CustomExpandableTextView-->
-                <!--                    android:id="@+id/tvLectureDesc"-->
-                <!--                    fontPath="fonts/sf_pro_display_regular.OTF"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginHorizontal="15dp"-->
-                <!--                    android:layout_marginVertical="15dp"-->
-                <!--                    android:maxLines="25"-->
-                <!--                    android:textSize="14sp"-->
-                <!--                    app:expandAction="еще"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@id/listTags"-->
-                <!--                    app:limitedMaxLines="5"-->
-                <!--                    app:originalText="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля" />-->
-
-
-<!--                <TextView-->
-<!--                    android:id="@+id/tvShowMore"-->
-<!--                    fontPath="fonts/sf_pro_text_bold.ttf"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:layout_marginTop="57dp"-->
-<!--                    android:layout_marginEnd="30dp"-->
-<!--                    android:background="@drawable/custom_text_background_selectable"-->
-<!--                    android:letterSpacing="-0.02"-->
-<!--                    android:paddingHorizontal="10dp"-->
-<!--                    android:paddingVertical="5dp"-->
-<!--                    android:text="@string/yet_btn_text"-->
-<!--                    android:textColor="#C3996C"-->
-<!--                    android:textSize="15sp"-->
-<!--                    android:visibility="gone"-->
-<!--                    app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/divider" />-->
+                    app:layout_constraintTop_toBottomOf="@id/listTags"
+                    app:limitedMaxLines="5"
+                    tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля" />
 
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -191,7 +155,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/desc_container" />
+                    app:layout_constraintTop_toBottomOf="@id/tvLectureDesc"
+                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

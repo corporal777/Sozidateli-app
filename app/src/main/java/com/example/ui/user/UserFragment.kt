@@ -192,7 +192,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         val gender = user.gender
         val birthday = user.birthday?.value?.formatToDefaultDate()
         val city = user.address?.shortAddres ?: user.address?.city
-        val socialNetworks = user.contactInformation.socialLinks?.values
+        val socialNetworks = user.contactInformation.socialLinks
         return ProfileExpandableTitleGroup(
             getString(R.string.profile_title_general_info),
             onExpandChange = onItemExpandChange
@@ -370,18 +370,20 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
 
     override fun showUserHiddenDialog() {
         val message = "Данный профиль недоступен"
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
+        MessageDialogWithBrownButton(requireContext(), message, false).setSelectCallback {
             findNavController().navigateUp()
         }
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
-        findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
-            setUserAvatar(userAvatar)
-        })
+        if (!findNavController().popBackStack(R.id.chat_fragment, false)){
+            findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
+                setUserAvatar(userAvatar)
+            })
+        }
     }
 
-    override fun showOrganization(organization: /*Organization*/OrganizationNew) {
+    override fun showOrganization(organization: OrganizationNew) {
         findNavController().navigate(UserFragmentDirections.userToOrganization(organization.id.toString()))
     }
 

@@ -18,9 +18,7 @@ import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.flow.PaginationDataSourceFactoryNew
 import com.example.util.pagination.flow.PaginationListFlow
-import com.example.util.pagination.flow.applyErrorHandler
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.BackpressureStrategy

@@ -124,13 +124,8 @@ class ChatListFragment() :
     }
 
     override fun openChat(chatId: Int, userName: String, avatar: String?) {
-//        findNavController().navigate(
-//            R.id.chat_fragment,
-//            bundleOf("label" to userName, "chatId" to chatId.toString())
-//        )
-
         findNavController().navigate(
-            R.id.chat_fragment_new,
+            R.id.chat_fragment,
             bundleOf("name" to userName, "chatId" to chatId.toString(), "userAvatar" to avatar)
         )
     }

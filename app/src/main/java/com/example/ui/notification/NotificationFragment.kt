@@ -22,6 +22,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
@@ -66,13 +67,12 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
             }
 
             tvMessage.apply {
-                text = notification.message?.parseAsHtml()
+                markWon(requireContext()).setMarkdown(this, notification.message?:"")
+                //text = notification.message?.parseAsHtml()
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
                         if (url.contains("https") || url.contains("http")) {
-                            val i = Intent(Intent.ACTION_VIEW)
-                            i.data = Uri.parse(url)
-                            startActivity(i)
+                            showUrl(url)
                         } else if (url.contains("organization")) {
                             val organizationId = url.replace("organization", "").replace("/", "")
                             findNavController().navigate(

@@ -84,13 +84,11 @@ class ChangePhonePresenter
     override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
             .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    viewState.showPhoneNotUnique(phone)
-                },
-                onComplete = {
-                    onShowPhoneConfirm(phone)
-                })
+                onError = { viewState.showPhoneNotUnique(phone) },
+                onComplete = { onShowPhoneConfirm(phone) }
+            )
     }
 
     override fun onShowPhoneConfirm(phone: String) {

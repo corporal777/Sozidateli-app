@@ -48,7 +48,8 @@ class ConfirmEmailPhoneFragment(val phone: String) :
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             etCode.onTextChanged {
-                setCodeError(it.toString().length != 6)
+                if (presenter.loginType == "email") setCodeError(it.toString().length != 6)
+                else setCodeError(it.toString().length != 4)
                 btnConfirm.isEnabled = !it.isNullOrEmpty()
             }
             btnConfirm.apply {
@@ -140,7 +141,10 @@ class ConfirmEmailPhoneFragment(val phone: String) :
     private fun getEmailFormattedDescription(text: String, login: String): SpannableString {
         return SpannableString(text).apply {
             val font =
-                Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_display_bold.ttf")
+                Typeface.createFromAsset(
+                    requireContext().assets,
+                    "fonts/sf_pro_display_bold.ttf"
+                )
             setSpan(
                 CustomTypefaceSpan("", font),
                 9,
@@ -150,10 +154,16 @@ class ConfirmEmailPhoneFragment(val phone: String) :
         }
     }
 
-    private fun getPhoneFormattedDescription(text: String, login: String): SpannableStringBuilder {
+    private fun getPhoneFormattedDescription(
+        text: String,
+        login: String
+    ): SpannableStringBuilder {
         val phone = SpannableString(login).apply {
             val font =
-                Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_display_bold.ttf")
+                Typeface.createFromAsset(
+                    requireContext().assets,
+                    "fonts/sf_pro_display_bold.ttf"
+                )
             setSpan(
                 CustomTypefaceSpan("", font),
                 0,

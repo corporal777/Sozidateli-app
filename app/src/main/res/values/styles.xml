@@ -611,6 +611,30 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Notification.TitleNew">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display_semibold.ttf</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:textColor">@color/vk_black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Notification.MessageNew">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textColor">@color/vk_black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="Notification.Action">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -926,6 +950,19 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
         <item name="android:background">@drawable/custom_btn_write_speaker_selectable</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="BtnCircleStrokeStyle">
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:textColor">#BE9B72</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:minHeight">25dp</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
+        <item name="android:background">@drawable/custom_btn_add_favorites_selectable</item>
         <item name="android:textAllCaps">false</item>
     </style>
 

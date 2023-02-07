@@ -1,5 +1,6 @@
 package com.example.ui.auth.recoveryPassword
 
+import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -57,8 +58,9 @@ class RecoveryPasswordPresenter
                             onReceiveError(it)
                         }
                     },
-                    onComplete = {
-                        viewState.showRecoveryNotification(email)
+                    onSuccess = {
+                        viewState.showRecoveryNotification(email, it.userId)
+                        if (loginType != "email") startTimer()
                     }
                 )
         } else {
@@ -67,13 +69,8 @@ class RecoveryPasswordPresenter
     }
 
     override fun sendCodeAgain() {
-        compositeDisposable += Completable.defer {
-            if (loginType == "email") authRepository.registerEmailResend(email)
-            else authRepository.registerPhoneResend(
-                "personal",
-                Utils.validatePhoneBeforeSend(email)
-            )
-        }
+        val phone = Utils.validatePhoneBeforeSend(email)
+        compositeDisposable += authRepository.sendRecoveryEmail(loginType, phone)
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribe({
@@ -104,7 +101,6 @@ class RecoveryPasswordPresenter
     }
 
 
-
     private fun isDataValid(): Boolean {
         return if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
             loginType = "phone"
@@ -113,7 +109,6 @@ class RecoveryPasswordPresenter
             loginType = "email"
             AuthValidateUtil.isValidEmail(email)
         }
-        //return AuthValidateUtil.isValidEmail(email)
     }
 
     override fun onUserUnderstand() {
@@ -123,11 +118,30 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onSetPassword(code: String, password: String) {
-        authRepository.recoverPasswordNew(RecoverPasswordBody("phone", code, password))
+    override fun onSetPassword(code: String, password: String, userId: String) {
+        viewState.setIgnoreTokenListener(true)
+        authRepository.recoverPasswordNew(
+            RecoverPasswordBody(
+                "phone",
+                code,
+                password,
+                userId
+            )
+        )
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({}, { }).call(compositeDisposable)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                    viewState.setIgnoreTokenListener(false)
+                }, onComplete = {
+                    viewState.apply {
+                        setIgnoreTokenListener(false)
+                        showPasswordSuccessUpdated()
+                        navigateUp()
+                    }
+                }
+            ).call(compositeDisposable)
     }
 
     private fun performDataChange() = viewState.enableRecoveryBtn(isDataValid())

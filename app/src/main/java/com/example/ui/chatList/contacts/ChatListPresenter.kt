@@ -62,7 +62,7 @@ class ChatListPresenter
             val items = prepareListOfChats(response.data)
             PaginationResponse(response.totalCount, items)
         }
-    }.applyErrorHandler { viewState.showRequestErrorMessage() }.buildList(enablePlaceholders = true)
+    }.applyErrorHandler { viewState.showRequestErrorMessage() }.buildList(enablePlaceholders = false)
 
 
     private var firstLaunch = true
@@ -72,7 +72,7 @@ class ChatListPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         EventBus.getDefault().register(this)
-        viewState.setChatsData(List(20) { null }, emptyList())
+        viewState.setChatsData(List(10) { null }, emptyList())
         subscribeChatSocketMessages()
         compositeDisposable += Observable.create(chatsPagination)
             .subscribeSimple(

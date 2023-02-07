@@ -3,8 +3,6 @@ package com.example.ui.chat
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.text.style.ImageSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -13,13 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
-import androidx.core.view.doOnLayout
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.isVisible
 import androidx.navigation.ActivityNavigatorExtras
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.*
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -28,34 +22,27 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.arellomobile.mvp.presenter.ProvidePresenterTag
 import com.example.R
 import com.example.data.models.ChatMessage
-import com.example.data.models.Message.MessageType
+import com.example.data.models.Message
 import com.example.databinding.FragmentChatBinding
-import com.example.extensions.dp
+import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.old.AboutEventFragmentArgs
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.views.CustomProgressBar
-import com.example.ui.views.toolbar.ToolbarContentActionBar
-import com.example.util.PositionOffsetScrollListener
+import com.example.ui.user.UserFragmentArgs
 import com.example.util.SimpleTextWatcher
-import com.example.util.StayBottomOnLayoutChangeUtil
-import com.example.util.pagination.PaginationScrollListener
+import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.*
-
-import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, ToolbarFragment {
+class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
+
+    private var animCounter = 0
 
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
@@ -73,129 +60,148 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         val presenter = this
         requireArguments().let { ChatFragmentArgs.fromBundle(it) }.apply {
             presenter.chatId = chatId
-            presenter.userAvatar = userAvatar
+            presenter.userAvatar = userAvatar ?: ""
+            presenter.userName = name
         }
     }
 
-    override val title = ""
 
     val chatId: String?
         get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
 
-    private val chatAdapter = GroupAdapter<GroupieViewHolder>()
-
     private val imageClickListener = { url: String, imageView: ImageView ->
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            requireActivity(),
-            Pair(imageView, imageView.transitionName)
-        )
+        val opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), Pair(imageView, imageView.transitionName))
 
         findNavController().navigate(
             R.id.image_view_activity,
             ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build()
                 .toBundle(),
             null,
-            ActivityNavigatorExtras(options)
+            ActivityNavigatorExtras(opt)
         )
     }
 
-    private val bottomScroller by lazy { StayBottomOnLayoutChangeUtil() }
-
-    private lateinit var toolbarContentActionBar: ToolbarContentActionBar
-
-    val imageSpan by lazy {
-        ContextCompat.getDrawable(requireContext(), R.drawable.ic_chat_user_expand)?.let {
-            it.setBounds(0, 0, 12.dp, 12.dp)
-            ImageSpan(it, ImageSpan.ALIGN_BASELINE)
+    private val chatAdapter by lazy {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            add(chatSection)
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    presenter.onItemTake(position)
+                }
+            })
         }
     }
 
+    private val chatSection by lazy { Section() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
-        setHasOptionsMenu(true)
         mBinding.apply {
-            btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
-            btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
-            btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
-
             rvChat.apply {
                 adapter = chatAdapter
                 (itemAnimator as SimpleItemAnimator).apply {
                     supportsChangeAnimations = false
                     changeDuration = 0
                 }
-                //itemAnimator = null
-
-                addOnScrollListener(PaginationScrollListener(10,
-                    {
-                        if (adapter?.itemCount != 0) {
-                            val id = if (chatAdapter.getItem(
-                                    (adapter?.itemCount ?: 1) - 2
-                                ) is ChatUnreadLabelItem
-                            ) {
-                                (chatAdapter.getItem(
-                                    (adapter?.itemCount ?: 1) - 3
-                                ) as ChatMessageItem).message.message._id.toInt()
-                            } else {
-                                (chatAdapter.getItem(
-                                    (adapter?.itemCount ?: 1) - 2
-                                ) as ChatMessageItem).message.message._id.toInt()
-                            }
-                            presenter.onLoadNextMessagesRequest(id)
-                        }
-                        //presenter.onLoadPreviousMessagesRequest()
-                    },
-                    {
-                        if (adapter?.itemCount != 0) {
-                            presenter.onLoadPreviousMessagesRequest((chatAdapter.getItem(0) as ChatMessageItem).message.message._id.toInt())
-                        }
-                        //presenter.onLoadNextMessagesRequest()
-                    }, { scroll ->
-
-                    }
-                ))
-                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-                    presenter.onScrollChange(position, offset)
-                })
-                bottomScroller.setupWithRecyclerView(this)
-
                 doOnNextLayout { startPostponedEnterTransition() }
             }
-
             etMessage.apply {
                 addTextChangedListener(SimpleTextWatcher().setAfterTextChangeRunnable {
-                    presenter.onMessageInput(
-                        it.toString()
-                    )
+                    presenter.onMessageInput(it.toString())
                 })
             }
-        }
-
-        mBinding.tvUserName.setOnClickListener {
-            presenter.onUserClick()
-        }
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
+            btnSend.setOnClickListener { presenter.onSendTextMessageClick(etMessage.text.toString()) }
+            btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
+            btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
+            ivAvatar.setOnClickListener { presenter.onUserClick() }
         }
     }
 
-    override fun clearMessageInput() = mBinding.etMessage.text.clear()
+    override fun updateMessages(showAnim: Boolean, messages: List<ChatMessage>) {
+        chatSection.update(messages.map {
+            if (animCounter < 8) {
+                animCounter++
+            }
+            when (it) {
+                is ChatMessage.NewMessages -> {
+                    ChatUnreadLabelItem(it.count)
+                }
+                is ChatMessage.Personal -> {
+                    val item = when (it.message.type) {
+                        Message.MessageType.IMAGE -> ChatMessageImageItem(it, imageClickListener)
+                        else -> ChatMessageTextItem(it)
+                    }
+
+                    item.apply {
+                        onBindListener = { presenter.onChatMessageOnScreen(message.message) }
+                    }
+                }
+                is ChatMessage.Date -> ChatDateItem(it.date)
+                is ChatMessage.Accept -> ChatAcceptItem {
+                    it.message.let { message ->
+                        presenter.onChatMessageOnScreen(message)
+                    }
+                }
+            }
+        })
+    }
+
+    override fun removeUnreadMessageLabel() {
+        val unreadLabelItem = chatSection.findItemBy<ChatUnreadLabelItem> { true }
+        if (unreadLabelItem != null) {
+            chatSection.remove(unreadLabelItem)
+        }
+        val acceptLabelItem = chatSection.findItemBy<ChatAcceptItem> { true }
+        if (acceptLabelItem != null) {
+            chatSection.remove(acceptLabelItem)
+        }
+    }
+
+
+    override fun scrollListToPosition(position: Int, smooth: Boolean) {
+        if (smooth) {
+            mBinding.rvChat.smoothScrollToPosition(position)
+        } else {
+            mBinding.rvChat.scrollToPosition(0)
+        }
+    }
+
+    override fun setUserNameAvatar(url: String, name: String) {
+        mBinding.ivAvatar.apply {
+            setCircleAvatar(url)
+        }
+        mBinding.tvUserName.text = name
+    }
+
+    override fun showUser(userId: String) {
+        findNavController().navigate(
+            R.id.user_fragment,
+            UserFragmentArgs.Builder(userId).build().toBundle()
+        )
+    }
+
+    override fun showEvent(event: String) {
+        findNavController().navigate(
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
+    }
 
     override fun showChatInput(animate: Boolean) {
-        if (animate) {
-            val transition = AutoTransition().apply {
-                addListener(object : TransitionListenerAdapter() {
-                    override fun onTransitionEnd(transition: Transition) {
-                        presenter.onInputShowAnimationFinish()
-                    }
-                })
-            }
-            TransitionManager.beginDelayedTransition(mBinding.root, transition)
-        }
-
         mBinding.inputContainer.visibility = View.VISIBLE
         mBinding.actionContainer.visibility = View.GONE
+    }
+
+    override fun showChatConfirm(userName: String?) {
+        showActionView(R.layout.layout_chat_action_confirmation, true) {
+            tvNeedConfirm.text = userName
+                ?.takeIf { it.isNotBlank() }
+                ?.let { getString(R.string.chat_need_confirm_user_name, it) }
+                ?: getString(R.string.chat_need_confirm)
+
+            btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
+            btnBlock.setOnClickListener { presenter.onBlockChatClick() }
+        }
     }
 
     override fun showYouBanUser() {
@@ -234,15 +240,14 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         }
     }
 
-    override fun showChatConfirm(userName: String?) {
-        showActionView(R.layout.layout_chat_action_confirmation, true) {
-            tvNeedConfirm.text = userName
-                ?.takeIf { it.isNotBlank() }
-                ?.let { getString(R.string.chat_need_confirm_user_name, it) }
-                ?: getString(R.string.chat_need_confirm)
-
-            btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
-            btnBlock.setOnClickListener { presenter.onBlockChatClick() }
+    override fun focusOnInput(showKeyboard: Boolean) {
+        mBinding.etMessage.apply {
+            post {
+                showSoftInputOnFocus = showKeyboard
+                requestFocus()
+                showSoftInputOnFocus = true
+                if (showKeyboard) showKeyboard(this)
+            }
         }
     }
 
@@ -261,23 +266,13 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         mBinding.inputContainer.visibility = View.GONE
     }
 
+
     override fun showChatBlockConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.user_ban_confirmation_title)
             .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
             .setNegativeButton(R.string.cancel, null)
             .show()
-    }
-
-    override fun focusOnInput(showKeyboard: Boolean) {
-        mBinding.etMessage.apply {
-            post {
-                showSoftInputOnFocus = showKeyboard
-                requestFocus()
-                showSoftInputOnFocus = true
-                if (showKeyboard) showKeyboard(this)
-            }
-        }
     }
 
     override fun showSendGroup() {
@@ -300,6 +295,13 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         mBinding.sendGroup.visibility = View.GONE
     }
 
+    override fun clearMessageInput() = mBinding.etMessage.text.clear()
+    override fun cancelNotificationByChatId(chatId: String) {
+        val notificationManager =
+            activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(chatId.hashCode())
+    }
+
     private fun getInputActionTransition(): Transition {
         return TransitionSet().apply {
             ordering = TransitionSet.ORDERING_SEQUENTIAL
@@ -310,152 +312,5 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View, 
         }
     }
 
-    override fun updateMessages(showAnim: Boolean, messages: List<ChatMessage>) {
-        chatAdapter.update(messages.map {
-            when (it) {
-                is ChatMessage.Personal -> {
-                    val item = when (it.message.type) {
-                        MessageType.IMAGE -> ChatMessageImageItem(it, imageClickListener)
-                        else -> ChatMessageTextItem(it)
-                    }
-
-                    item.apply {
-                        onBindListener = { presenter.onChatMessageOnScreen(message.message) }
-                    }
-                }
-                is ChatMessage.NewMessages -> {
-                    ChatUnreadLabelItem(it.count)
-                }
-                is ChatMessage.Date -> ChatDateItem(it.date)
-                is ChatMessage.Accept -> ChatAcceptItem {
-                    it.message.let { message ->
-                        presenter.onChatMessageOnScreen(
-                            message
-                        )
-                    }
-                }
-            }
-        })
-    }
-
-    override fun removeChatMessage(message: ChatMessage) {
-        for (i in 0 until chatAdapter.itemCount) {
-            val item = chatAdapter.getItem(i)
-            if (checkItemIsSameMessage(message, item)) {
-                chatAdapter.remove(item)
-                break
-            }
-        }
-    }
-
-    private fun checkItemIsSameMessage(message: ChatMessage, item: Item<*>): Boolean {
-        return when (item) {
-            is ChatMessageItem -> item.message == message
-            is ChatUnreadLabelItem -> message is ChatMessage.NewMessages
-            else -> false
-        }
-    }
-
-    override fun cancelNotificationByChatId(chatId: String) {
-        val notificationManager =
-            activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(chatId.hashCode())
-    }
-
-    override fun scrollToBottomPosition(smooth: Boolean) = scrollToPosition(0, smooth)
-
-    override fun scrollToMessagesUnreadItem(position: Int) {
-        val height = mBinding.rvChat.height
-        scrollToPositionWithOffset(position, height - height / 4)
-    }
-
-    private fun scrollToPosition(pos: Int, smooth: Boolean) {
-        if (pos < 0) return
-        if (smooth) mBinding.rvChat?.smoothScrollToPosition(pos)
-        else mBinding.rvChat?.layoutManager?.scrollToPosition(pos)
-    }
-
-    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        bottomScroller.isEnabled = false
-        (mBinding.rvChat.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-            position,
-            offset
-        )
-        bottomScroller.isEnabled = true
-    }
-
-    override fun checkScrollPosition() {
-        presenter.onChatScrollChange(isChatScrolledToBottom())
-    }
-
-    private fun isChatScrolledToBottom(): Boolean {
-        return (mBinding.rvChat.layoutManager as LinearLayoutManager).let {
-            if (it.reverseLayout) it.findFirstCompletelyVisibleItemPosition() == 0
-            else it.findLastCompletelyVisibleItemPosition() == mBinding.rvChat.adapter?.itemCount?.minus(
-                1
-            )
-        }
-    }
-
-    override fun openImageFullScreen(url: String, imageView: ImageView) {
-        val transitionName = imageView.transitionName
-        findNavController().navigate(
-            R.id.image_view_activity,
-            ImageViewActivityArgs.Builder(url, null, null, transitionName).build().toBundle(),
-            null,
-            FragmentNavigatorExtras(imageView to transitionName)
-        )
-    }
-
-    override fun showUser(uid: Int) {
-        findNavController().navigate(ChatFragmentDirections.actionChatFragmentToUserFragment(uid.toString()))
-    }
-
-    override fun showEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
-        )
-    }
-
-    override fun showProgressLoadingDisplay() {
-        val mProgressView = CustomProgressBar(requireContext())
-        mProgressView.setSize(35.dp)
-        mProgressView.setProgressColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.main_brown_color_new
-            )
-        )
-        mBinding.loadingContainer.isVisible = true
-        mBinding.progressViewContainer.addView(mProgressView, 0)
-    }
-
-    override fun hideProgressLoadingDisplay() {
-        mBinding.loadingContainer.isVisible = false
-        mBinding.progressViewContainer.removeAllViews()
-    }
-
-    override fun setUserAvatar(url: String) {
-        mBinding.ivAvatar.apply {
-            setCircleAvatar(url)
-            isEnabled = false
-            isClickable = false
-        }
-    }
-
-    override fun setTitle(title: String) {
-        mBinding.tvUserName.text = title
-    }
-
-
-    override fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-        super.setupToolbarContent(toolbarContentActionBar)
-    }
-
-    override fun hideKeyboard() {
-        super.hideKeyboard(mBinding.etMessage)
-    }
-
-    override fun layout() = R.layout.fragment_chat
+    override fun layout(): Int = R.layout.fragment_chat
 }

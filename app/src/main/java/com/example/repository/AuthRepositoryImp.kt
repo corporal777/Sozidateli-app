@@ -23,6 +23,7 @@ import com.vk.sdk.api.VKResponse
 import com.vk.sdk.api.model.VKUsersArray
 import getStringOrNull
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.json.JSONObject
@@ -137,7 +138,7 @@ class AuthRepositoryImp
         return callAuthCompletable(api.sendEmailRecovery(email))
     }*/
 
-    override fun sendRecoveryEmail(type: String, email: String): Completable {
+    override fun sendRecoveryEmail(type: String, email: String): Maybe<RecoverPasswordResponse> {
         return newApi.sendEmailRecovery(type, email)
     }
 

@@ -242,38 +242,25 @@ private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable
     return Completable.complete()
         //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete {
-            baseView.showLoadingDialog()
-        }
-        .doOnDispose {
-            baseView.hideLoadingDialog()
-        }
+        .doOnComplete { baseView.showLoadingDialog() }
+        .doOnDispose { baseView.hideLoadingDialog() }
         .subscribe()
 }
 
 private fun getLoadingProgressBarDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
-        //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete {
-            baseView.showProgressBarLoadingDialog()
-        }
-        .doOnDispose {
-            baseView.hideProgressBarLoadingDialog()
-        }
+        .doOnComplete { baseView.showProgressBarLoadingDialog() }
+        .doOnDispose { baseView.hideProgressBarLoadingDialog() }
         .subscribe()
 }
 
 private fun getCustomLoadingProgressBarDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
-        //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete {
-            baseView.showCustomProgressDialog()
-        }
-        .doOnDispose {
-            baseView.hideCustomProgressDialog()
-        }
+        //.doOnSubscribe { baseView.showCustomProgressDialog() }
+        .doOnComplete { baseView.showCustomProgressDialog() }
+        .doOnDispose { baseView.hideCustomProgressDialog() }
         .subscribe()
 }
 

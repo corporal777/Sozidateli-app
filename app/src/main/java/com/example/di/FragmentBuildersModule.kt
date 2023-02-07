@@ -15,7 +15,6 @@ import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.banned.BannedFragment
 import com.example.ui.chat.ChatFragment
-import com.example.ui.chat.redesign.ChatFragmentNew
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
@@ -46,6 +45,7 @@ import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
+import com.example.ui.notification.center.redesign.NotificationsListFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
@@ -112,7 +112,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeInvitesListFragment(): InviteListFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFirsFragment(): ChatFragment
+    abstract fun contributeChatFragment(): ChatFragment
 
     @ContributesAndroidInjector
     abstract fun contributeLoginFragment(): AuthorizationFragment
@@ -203,6 +203,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNotificationsListFragment(): NotificationsListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationFragment(): NotificationFragment
@@ -380,9 +383,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeOrganizationFragmentNew(): OrganizationFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeChatFragmentNew(): ChatFragmentNew
 
     @ContributesAndroidInjector
     abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment

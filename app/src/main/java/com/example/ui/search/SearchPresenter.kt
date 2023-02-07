@@ -2,12 +2,8 @@ package com.example.ui.search
 
 import com.example.data.AppData
 import com.example.data.models.SearchFilter
-import com.example.data.models.SearchUserData
-import com.example.data.models.UserDetail
 import com.example.extensions.buildList
 import com.example.ui.base.BasePresenter
-import com.example.ui.search.user.AbstractSearchUserPresenter
-import com.example.util.pagination.flow.PaginationListFlow
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler

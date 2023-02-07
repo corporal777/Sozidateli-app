@@ -65,7 +65,14 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
 
     override fun setInvitesData(chats: List<UserChat?>) {
         //if (chats.isEmpty()) invitesSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message))))
-        if (chats.isEmpty()) invitesSection.update(listOf(NoScheduleEventItem(getString(R.string.empty_list_placeholder_message), padding = 70.dp)))
+        if (chats.isEmpty()) invitesSection.update(
+            listOf(
+                NoScheduleEventItem(
+                    getString(R.string.empty_list_placeholder_message),
+                    padding = 70.dp
+                )
+            )
+        )
         else invitesSection.apply {
             update(listOf(ListSectionNameItem(-300L, getString(R.string.chat_list_chat_requests)))
                 .plus(
@@ -87,7 +94,10 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
     }
 
     override fun openChat(chatId: Int, userName: String) {
-        findNavController().navigate(R.id.chat_fragment, bundleOf("label" to userName, "chatId" to chatId.toString()))
+        findNavController().navigate(
+            R.id.chat_fragment,
+            bundleOf("name" to userName, "chatId" to chatId.toString())
+        )
     }
 
     fun smoothScrollToFirstItem(appBarLayout: AppBarLayout) {

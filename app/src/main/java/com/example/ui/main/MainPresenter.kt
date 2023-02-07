@@ -93,17 +93,17 @@ class MainPresenter
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
-                viewState.showBadgeNotification(it > 0)
+                viewState.showBadgeNotification(it)
             }, {
-                viewState.showBadgeNotification(false)
+                viewState.showBadgeNotification(0)
             })
 
         compositeDisposable += appData.chatMessageCountSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
-                viewState.showBadgeChat(it > 0)
+                viewState.showBadgeChat(it)
             }, {
-                viewState.showBadgeChat(false)
+                viewState.showBadgeChat(0)
             })
 
 
@@ -506,12 +506,11 @@ class MainPresenter
         viewState.showInviteRegister(email, code, name, lastName, middleName, invite)
     }
 
-    override fun onHandleRecoverPasswordLink(/*email: String, */code: String) {
+    override fun onHandleRecoverPasswordLink(userId: String, code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe {
-                viewState.showDialogRecoverPassword(/*email,*/ code)
+            .subscribeSimple {
+                viewState.showDialogRecoverPassword(userId, code)
             }.call(compositeDisposable)
     }
 
@@ -566,18 +565,6 @@ class MainPresenter
             isFromQr = true
             viewState.showLogin()
         }
-    }
-
-    override fun onSetPassword(/*email: String, */code: String, password: String) {
-        authRepository.recoverPasswordNew(RecoverPasswordBody("email", code, password))
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribe({
-
-            }, {
-                viewState.showDialogRecoverPassword(/*email,*/ code)
-            })
-            .call(compositeDisposable)
     }
 
 

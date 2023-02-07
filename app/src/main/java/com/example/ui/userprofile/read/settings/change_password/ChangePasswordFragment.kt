@@ -19,8 +19,11 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangePasswordFragment(val isRecover : Boolean, val code: String = "")
-    : BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
+class ChangePasswordFragment(
+    private val isRecover: Boolean,
+    val code: String = "",
+    val id: String = ""
+) : BaseBottomSheetFragment<BottomSheetChangePasswordBinding>(),
     ChangePasswordContract.View {
 
     private var passwordIsCorrect: () -> Unit = {}
@@ -35,6 +38,7 @@ class ChangePasswordFragment(val isRecover : Boolean, val code: String = "")
     fun providePresenter(): ChangePasswordPresenter = presenterProvider.get().apply {
         recoverCode = code
         fromRecover = isRecover
+        userId = id
     }
 
 
@@ -128,6 +132,7 @@ class ChangePasswordFragment(val isRecover : Boolean, val code: String = "")
     enum class ChangePasswordType {
         RECOVER, CHANGE
     }
+
     override fun layout(): Int = R.layout.bottom_sheet_change_password
 
 }

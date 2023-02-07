@@ -29,6 +29,7 @@ class ChangePasswordPresenter
 
     var recoverCode = ""
     var fromRecover = false
+    var userId = appData.getId().toString()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -63,7 +64,8 @@ class ChangePasswordPresenter
 
     override fun onChangePasswordClickConfirm(newPassword: String) {
         compositeDisposable += if (fromRecover){
-            authRepository.recoverPasswordNew(RecoverPasswordBody("email", recoverCode, newPassword))
+            authRepository.recoverPasswordNew(
+                RecoverPasswordBody("email", recoverCode, newPassword, userId))
         }else {
             userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
         }

@@ -29,13 +29,8 @@ import javax.inject.Provider
 class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     FinishRegisterContract.View {
 
-    private val timerEmailMessage by lazy {
-        getString(R.string.auth_register_confirm_email_timer_two)
-    }
-
-    private val timerPhoneMessage by lazy {
-        getString(R.string.auth_register_confirm_phone_timer)
-    }
+    private val timerEmailMessage by lazy { getString(R.string.auth_register_confirm_email_timer_two) }
+    private val timerPhoneMessage by lazy { getString(R.string.auth_register_confirm_phone_timer) }
 
     @InjectPresenter
     lateinit var presenter: FinishRegisterPresenter
@@ -152,11 +147,9 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
             }
             ibRegister.setOnClickListener {
                 hideKeyboard()
-                if (etCode.text?.length != AddPhoneEmailDialog.CODE_SIZE) {
-                    tilCode.error = resources.getString(R.string.auth_error_no_code)
-                } else {
+                if (presenter.isConfirmCodeValid(etCode.text?.length ?: 0)) {
                     presenter.onHandleAuthLink()
-                }
+                } else tilCode.error = resources.getString(R.string.auth_error_no_code)
             }
         }
     }
@@ -183,9 +176,9 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
 
     override fun setTimeLeft(seconds: Int) {
         val quantity = Utils.timerFormatter(seconds, requireContext())
-        if (presenter.loginType == "email"){
+        if (presenter.loginType == "email") {
             mBinding.tvTimer.text = String.format(timerEmailMessage, quantity)
-        }else {
+        } else {
             mBinding.tvTimer.text = String.format(timerPhoneMessage, quantity)
         }
     }
@@ -230,7 +223,12 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                         getString(R.string.code_dialog_text_information).format(supportEmail)
                             .toSpannable()
                     Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-                    descriptionText.append(getString(R.string.code_email_dialog_text, presenter.login))
+                    descriptionText.append(
+                        getString(
+                            R.string.code_email_dialog_text,
+                            presenter.login
+                        )
+                    )
                         .append("\n")
                         .append(message)
                 }

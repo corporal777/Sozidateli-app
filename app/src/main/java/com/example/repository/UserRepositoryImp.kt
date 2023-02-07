@@ -456,6 +456,9 @@ class UserRepositoryImp
     override fun markAsRead(notificationId: String): Completable =
         newApi.markAsRead(notificationId)
 
+    override fun markAllNotificationsAsRead(): Completable =
+        newApi.markAllNotificationsAsRead(appData.getId().toString())
+
     override fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable =
         newApi.approveOrgMember(orgMemberId, body)
 
@@ -484,9 +487,10 @@ class UserRepositoryImp
         newApi.checkEmailPhone(email, phone)
 
 
-    override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<SearchUserData?>> {
+    override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return newApi.searchDataNew(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
+            //.map { it.users }
     }
 
     override fun unblockUser(id: Int): Completable {

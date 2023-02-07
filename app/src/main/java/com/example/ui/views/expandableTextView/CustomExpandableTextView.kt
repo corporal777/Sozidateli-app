@@ -12,9 +12,11 @@ import android.text.*
 import android.text.Layout.Alignment.ALIGN_NORMAL
 import android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils.TruncateAt.END
+import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -22,84 +24,60 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
+import com.example.extensions.dp
 import com.example.util.ClickableSpan
+import com.example.util.ClickableSpanNew
 import com.example.util.markWon
 import kotlin.math.abs
 
 
 @SuppressLint("ViewConstructor")
-class CustomExpandableTextView @JvmOverloads constructor(
-    context: Context,
-    listener: TextStateListener,
-    var collapsed: Boolean,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-) : AppCompatTextView(context, attrs, defStyleAttr) {
+class CustomExpandableTextView : AppCompatTextView {
 
-    private val click = ClickableSpan(drawUnderline = false) {
-        toggle()
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        obtainAttributes(attrs)
     }
 
-    var mListener: TextStateListener? = null
-    var firstText: String = ""
-        set(value) {
-            this.isVisible = false
-            markWon(context).setMarkdown(this, value)
-            originalText = this.text
-        }
+    @SuppressLint("Recycle")
+    private fun obtainAttributes(attrs: AttributeSet?) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView)
+        val originalText = a.getText(R.styleable.ExpandableTextView_originalText)
+        val expandActionText = a.getText(R.styleable.ExpandableTextView_expandAction)
+    }
+
+    private val click = ClickableSpanNew(this) { toggle() }
+
+    private var oldTextWidth = 0
+    private var animator: Animator? = null
+    private var expandActionSpannable = SpannableString("")
+    private var expandActionStaticLayout: StaticLayout? = null
+    private var collapsedDisplayedText: CharSequence? = null
 
     var originalText: CharSequence = ""
         set(value) {
-            this.isVisible = true
             field = value
-            updateCollapsedDisplayedText(collapsed, ctaChanged = false)
+            updateCollapsedDisplayedText(ctaChanged = false)
             this.postInvalidate()
         }
 
     var expandAction: CharSequence = ""
         set(value) {
             field = value
-            val ellipsis = Typography.ellipsis
-            val start = ellipsis.toString().length
-
-            expandActionSpannable = SpannableString("$ellipsis $value")
+            expandActionSpannable = SpannableString(value)
             val expandColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
-            expandActionSpannable.setSpan(
-                ForegroundColorSpan(expandColor),
-                start,
-                expandActionSpannable.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            val font: Typeface =
-                Typeface.createFromAsset(context.assets, "fonts/sf_pro_text_bold.ttf")
-            expandActionSpannable.setSpan(
-                CustomTypefaceSpan(
-                    "",
-                    font
-                ),
-                start,
-                expandActionSpannable.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            val textSize =
-                resources.getDimensionPixelSize(R.dimen.sub_event_description_show_more_text_size)
-            expandActionSpannable.setSpan(
-                AbsoluteSizeSpan(textSize),
-                start,
-                expandActionSpannable.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            expandActionSpannable.setSpan(
-                click, start,
-                expandActionSpannable.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            updateCollapsedDisplayedText(collapsed, ctaChanged = true)
+            expandActionSpannable.setSpan(ForegroundColorSpan(expandColor), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            val font: Typeface = Typeface.createFromAsset(context.assets, "fonts/sf_pro_text_bold.ttf")
+            expandActionSpannable.setSpan(CustomTypefaceSpan("", font), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            val textSize = resources.getDimensionPixelSize(R.dimen.sub_event_description_show_more_text_size)
+            expandActionSpannable.setSpan(AbsoluteSizeSpan(textSize), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            expandActionSpannable.setSpan(click, 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+
     var limitedMaxLines: Int = 3
         set(value) {
             check(maxLines == -1 || value <= maxLines) {
@@ -109,23 +87,13 @@ class CustomExpandableTextView @JvmOverloads constructor(
                 """.trimIndent()
             }
             field = value
-            updateCollapsedDisplayedText(collapsed, ctaChanged = false)
         }
 
-    //    var collapsed = true
-//        private set
-    val expanded get() = !collapsed
 
-    private var oldTextWidth = 0
-    private var animator: Animator? = null
-    private var expandActionSpannable = SpannableString("")
-    private var expandActionStaticLayout: StaticLayout? = null
-    private var collapsedDisplayedText: CharSequence? = null
 
     init {
-
-        mListener = listener
         ellipsize = END
+        movementMethod = LinkMovementMethod.getInstance()
         check(maxLines == -1 || limitedMaxLines <= maxLines) {
             """
                 maxLines ($maxLines) must be greater than or equal to limitedMaxLines ($limitedMaxLines).
@@ -143,7 +111,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
             return
         }
         oldTextWidth = textWidth
-        updateCollapsedDisplayedText(collapsed, ctaChanged = true, textWidth)
+        updateCollapsedDisplayedText(ctaChanged = true, textWidth)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
@@ -155,7 +123,7 @@ class CustomExpandableTextView @JvmOverloads constructor(
             """.trimIndent()
         }
         super.setMaxLines(maxLines)
-        updateCollapsedDisplayedText(collapsed, ctaChanged = false)
+        updateCollapsedDisplayedText(ctaChanged = false)
     }
 
     override fun onDetachedFromWindow() {
@@ -188,14 +156,11 @@ class CustomExpandableTextView @JvmOverloads constructor(
                 addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationStart(animation: Animator?) {
                         super.onAnimationStart(animation)
-                        collapsed = !collapsed
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
-                        //markWon(context).setMarkdown(this@CustomExpandableTextView, originalText.toString())
                         text = originalText
-                        mListener?.onChangeState(collapsed)
                         val params = layoutParams
                         layoutParams.height = WRAP_CONTENT
                         layoutParams = params
@@ -219,36 +184,23 @@ class CustomExpandableTextView @JvmOverloads constructor(
             if (defaultEllipsisStart == -1) {
                 return truncatedTextWithoutCta
             }
-            val defaultEllipsisEnd = defaultEllipsisStart + 1
-            val span = SpannableStringBuilder()
-                .append(textWithoutCta)
-                .replace(defaultEllipsisStart, defaultEllipsisEnd, expandActionStaticLayout!!.text)
-            //.replace(defaultEllipsisStart, defaultEllipsisEnd, "")
-            return maybeRemoveEndingCharacters(staticLayout, span)
-        } else {
-            return originalText
-        }
+
+            return SpannableStringBuilder(textWithoutCta).append(expandActionSpannable)
+        } else return originalText
     }
 
 
     private fun updateCollapsedDisplayedText(
-        collapsed: Boolean,
         ctaChanged: Boolean,
         textWidth: Int = measuredWidth - compoundPaddingStart - compoundPaddingEnd,
     ) {
         if (textWidth <= 0) return
         val collapsedStaticLayout = getStaticLayout(limitedMaxLines, originalText, textWidth)
-        if (ctaChanged)
-            expandActionStaticLayout = getStaticLayout(1, expandActionSpannable, textWidth)
-        collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
+        if (ctaChanged) expandActionStaticLayout =
+            getStaticLayout(1, expandActionSpannable, textWidth)
 
-//        if (collapsed) {
-//            markWon(context).setMarkdown(this, collapsedDisplayedText.toString())
-//            this.text = SpannableStringBuilder().append(this.text).append(expandActionSpannable)
-//        } else {
-//            markWon(context).setMarkdown(this, originalText)
-//        }
-        text = if (collapsed) collapsedDisplayedText else originalText
+        collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
+        text = collapsedDisplayedText
     }
 
 
@@ -282,39 +234,6 @@ class CustomExpandableTextView @JvmOverloads constructor(
         }
     }
 
-    private fun maybeRemoveEndingCharacters(
-        staticLayout: StaticLayout,
-        span: SpannableStringBuilder,
-    ): SpannableStringBuilder {
-        val textWidth = staticLayout.width
-        val dynamicLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            DynamicLayout.Builder.obtain(span, paint, textWidth)
-                .setAlignment(ALIGN_NORMAL)
-                .setIncludePad(false)
-                .setLineSpacing(lineSpacingExtra, lineSpacingMultiplier)
-                .build()
-        } else {
-            @Suppress("DEPRECATION")
-            DynamicLayout(
-                span,
-                span,
-                paint,
-                textWidth,
-                ALIGN_NORMAL,
-                lineSpacingMultiplier,
-                lineSpacingExtra,
-                false
-            )
-        }
-
-        val ctaIndex = span.indexOf(expandActionStaticLayout!!.text.toString())
-        var removingCharIndex = ctaIndex - 1
-        while (removingCharIndex >= 0 && dynamicLayout.lineCount > limitedMaxLines) {
-            span.delete(removingCharIndex, removingCharIndex + 1)
-            removingCharIndex--
-        }
-        return span
-    }
 
     interface TextStateListener {
         fun onChangeState(isCollapsed: Boolean)

@@ -2,11 +2,14 @@ package com.example.holders
 
 import android.content.Context
 import android.text.SpannableStringBuilder
+import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
+import androidx.core.text.getSpans
 import androidx.core.text.parseAsHtml
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
@@ -14,6 +17,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.extensions.substringToWholeWord
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
+import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -110,9 +114,19 @@ abstract class NotificationItem(
 
     private fun ellipsizeMarkdownText(context: Context, message : String?): Pair<Boolean, SpannableStringBuilder> {
         val spanned = markWon(context).toMarkdown(message?:"")
-        return if (spanned.length > 200){
+        val ellipsizedSpan =  if (spanned.length > 200){
             Pair(true, SpannableStringBuilder(spanned.subSequence(0,200)).append('.').append('.').append('.'))
         } else Pair(false, SpannableStringBuilder(spanned))
+        ellipsizedSpan.second.apply {
+            val urls = getSpans<URLSpan>()
+            urls.forEach {
+                val start = getSpanStart(it)
+                val end = getSpanEnd(it)
+                removeSpan(it)
+                set(start..end, URLSpanNoUnderline(it.url))
+            }
+        }
+        return ellipsizedSpan
     }
 }
 

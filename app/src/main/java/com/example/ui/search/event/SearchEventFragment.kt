@@ -1,36 +1,24 @@
 package com.example.ui.search.event
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
-import com.example.data.models.EventPhoneModel
 import com.example.data.models.SearchFilter
-import com.example.extensions.getAffiliationString
-import com.example.holders.EventStatusItem
+import com.example.databinding.LayoutFilterEventBinding
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
-import com.example.holders.redesign.SearchItemLabel
-import com.example.ui.event.about.old.AboutEventFragmentArgs
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_OTHER
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
 import com.xwray.groupie.Group
-import com.xwray.groupie.Section
 import initDropDownView
-import kotlinx.android.synthetic.main.layout_filter_event.view.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -53,31 +41,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
-        //override fun onShowFilterClick(format: Int) = presenter.onShowFormatClick(format)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-    }
-
-    override fun showWriteToOrganizationEmails(emails: List<EventPhoneModel>) {
-        AlertDialog.Builder(requireContext())
-            .setItems(
-                emails.map { it.getAffiliationString(underlinedEmail = true) }
-                    .toTypedArray()
-            ) { dialog, which ->
-                val email = emails[which]
-                presenter.onWriteToOrganizationEmailChosen(email)
-                dialog.dismiss()
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
-
-    override fun showWriteToOrganization(email: EventPhoneModel) {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email.value))
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
     }
 
     override fun showAboutEvent(event: String) {
@@ -93,13 +57,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         )
     }
 
-    override fun selectEvent() {
-        findNavController().navigate(
-            R.id.event_tabs_fragment, null, NavOptions.Builder()
-                .setPopUpTo(R.id.main_navigation, true)
-                .build()
-        )
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,9 +86,9 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         }
     }
 
-    @SuppressLint("InflateParams")
+
     override fun createFilterView(filter: SearchFilter.EventNew): View {
-        return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
+        return LayoutFilterEventBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
                 onTextChanged {
@@ -140,7 +97,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 }
                 onDataSelectedListener = {
                     filter.fullAddress = it
-                    x
                 }
             }
             initTextFilter(etName, filter.name) { filter.name = it }
@@ -182,12 +138,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                     { filter.format = it }
                 )
             }
-        }
+        }.root
     }
 
 
     override fun clearFilterView(filterView: View) {
-        filterView.apply {
+        LayoutFilterEventBinding.bind(filterView).apply {
             etAddress.text = null
             etName.text = null
             etStart.text = null

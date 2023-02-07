@@ -33,7 +33,7 @@
         <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_address"
+            android:hint="@string/search_filter_address_new"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:paddingStart="@dimen/background_input_padding"

@@ -3,6 +3,7 @@ package com.example.ui.search.organization
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -11,6 +12,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
+import com.example.databinding.LayoutFilterEventBinding
+import com.example.databinding.LayoutFilterOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
@@ -47,7 +50,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     }
 
 
-    override fun createItem(itemData: OrganizationNew/*Organization*/?): Group {
+    override fun createItem(itemData: OrganizationNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
         else {
             OrganizationItem(
@@ -58,9 +61,8 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         }
     }
 
-    @SuppressLint("InflateParams")
-    override fun createFilterView(filter: SearchFilter.OrganizationNew/*Organization*/): View {
-        return layoutInflater.inflate(R.layout.layout_filter_organization, null).apply {
+    override fun createFilterView(filter: SearchFilter.OrganizationNew): View {
+        return LayoutFilterOrganizationBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)
                 onTextChanged {
@@ -69,11 +71,11 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
             }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }
-        }
+        }.root
     }
 
     override fun clearFilterView(filterView: View) {
-        filterView.apply {
+        LayoutFilterOrganizationBinding.bind(filterView).apply {
             etAddress.text = null
             etOrganizationName.text = null
             etInn.text = null

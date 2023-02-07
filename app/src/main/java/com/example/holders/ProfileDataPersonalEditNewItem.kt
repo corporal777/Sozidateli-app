@@ -1,91 +1,70 @@
 package com.example.holders
 
 import android.content.Context
-import android.text.util.Linkify
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.text.toSpannable
+import android.util.Log
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.FieldDetails
 import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
+import com.example.databinding.ItemProfileDataEditPersonalNewBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.util.*
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.databinding.BindableItem
 import initAsDatePicker
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etBirthday
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etCity
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.scGender
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilBirthday
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tvGender
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
 import java.util.*
 
 class ProfileDataPersonalEditNewItem(
-        id: Long,
-        context: Context,
-        private val gender: ToggleStringModel?,
-        private val birthday: String?,
-        private val showBirthday: Boolean,
-        private val address: UserAddress,
-        private val notes: ToggleStringModel?,
-        private val addInfoClick:() -> Unit
-) : Item(id) {
+    id: Long,
+    context: Context,
+    private val gender: ToggleStringModel?,
+    private val birthday: String?,
+    private val showBirthday: Boolean,
+    private val address: UserAddress,
+    private val notes: ToggleStringModel?,
+    private val addInfoClick: () -> Unit
+) : BindableItem<ItemProfileDataEditPersonalNewBinding>(id) {
 
     private val genderMale = context.getString(R.string.profile_gender_male)
     private val genderFemale = context.getString(R.string.profile_gender_female)
     private val emptyInputError = context.getString(R.string.profile_edit_empty_field_error)
 
-    /*private var mName = name
-    private var mSurname = surname
-    private var mMiddleName = middleName*/
-
     private var mGender = gender?.value?.firstLetterToUppercase()
-    private var mGenderShow = gender?.showInProfile?: true
-    var mBirthday = birthday?.formatToDefaultDate()
+    private var mGenderShow = gender?.showInProfile ?: true
+    private var mBirthday = birthday?.formatToDefaultDate()
     private var mShowBirthday = showBirthday
     private var mAddress = address
-    private var mAddressShow = address.showInProfile?: true
+    private var mAddressShow = address.showInProfile ?: true
     private var mNotes = notes?.value
-    private var mNotesShow = notes?.showInProfile?: true
+    private var mNotesShow = notes?.showInProfile ?: true
 
     //private var mNoMiddleNameChecked = noMiddleName
 
     //private val isCanChangeName = !canEditName
 
-    private lateinit var viewHolder: GroupieViewHolder
+    private lateinit var viewBinding: ItemProfileDataEditPersonalNewBinding
 
-    override fun getLayout() = R.layout.item_profile_data_edit_personal_new
-
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        this.viewHolder = viewHolder
-        viewHolder.apply {
-            etBirthday?.initInput(mBirthday) { mBirthday = it.toString() }
+    override fun bind(viewBinding: ItemProfileDataEditPersonalNewBinding, position: Int) {
+        this@ProfileDataPersonalEditNewItem.viewBinding = viewBinding
+        viewBinding.apply {
+            etBirthday.initInput(mBirthday) { mBirthday = it.toString() }
+            val date = if (!mBirthday.isNullOrBlank()) defaultDateFormatter.parse(mBirthday)
+            else null
             tilBirthday.initAsDatePicker(
-                    mBirthday?.let { defaultDateFormatter.parse(it) },
-                    maxDate = Calendar.getInstance().apply {
-                        add(Calendar.YEAR, -14)
-                    }
-                            .time
+                //mBirthday?.let { defaultDateFormatter.parse(it) },
+                startDate = date,
+                maxDate = Calendar.getInstance().apply {
+                    add(Calendar.YEAR, -14)
+                }.time
             ) { year, month, day ->
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
             }
 
-            /*etBirthday.setOnClickListener {
-                fragmentManager.showDatePicker(mBirthday?: "",
-                        onDateSelected = { date ->
-                            etBirthday.setText(longToDate(date))
-                        })
-            }*/
 
             etCity.apply {
                 setTextWithoutSearch(mAddress.address)
@@ -105,7 +84,13 @@ class ProfileDataPersonalEditNewItem(
 
             tvGender.apply {
                 keyListener = null
-                setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, mutableListOf(genderMale, genderFemale)))
+                setAdapter(
+                    NoFilterArrayAdapter(
+                        context,
+                        android.R.layout.simple_list_item_1,
+                        mutableListOf(genderMale, genderFemale)
+                    )
+                )
                 mGender = setGender()
                 initInput(mGender) { mGender = it.toString() }
             }
@@ -117,44 +102,10 @@ class ProfileDataPersonalEditNewItem(
             btnAddInfo.setOnClickListener {
                 addInfoClick()
             }
+
         }
     }
 
-    /*private fun TextInputLayout.initNameInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
-        editText?.setText(text)
-        error = null
-        isEnabled = true
-        if (isCanChangeName) {
-            editText?.isEnabled = true
-            editText?.onTextChanged {
-                if (it?.isNotEmpty() == true) error = null
-                onTextChanged(it)
-            }
-            setEndIconDrawable(0)
-        } else {
-            editText?.isEnabled = false
-            setEndIconDrawable(R.drawable.ic_information)
-            setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
-            setEndIconOnClickListener { showDisabledMainInputInfo(context) }
-        }
-    }
-
-    private fun showDisabledMainInputInfo(context: Context) {
-        val supportEmail = context.getString(R.string.support_email)
-        val message = context.getString(R.string.profile_edit_name_disabled_message).format(supportEmail).toSpannable()
-        Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-
-        AlertDialog.Builder(context)
-                .setTitle(R.string.profile_edit_name_disabled_title)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, null)
-                .show()
-                .apply {
-                    findViewById<TextView>(android.R.id.message)?.let {
-                        it.movementMethod = BetterLinkMovementMethod.getInstance()
-                    }
-                }
-    }*/
 
     fun checkDataValid(): Boolean {
         var isValid = true
@@ -186,32 +137,33 @@ class ProfileDataPersonalEditNewItem(
 
     fun checkBaseFieldsValid(): Boolean {
         var isValid = false
-        //if (mSurname.isNullOrEmpty()) isValid = true
-        //if (mName.isNullOrEmpty()) isValid = true
-        //if (!mNoMiddleNameChecked && mMiddleName.isNullOrEmpty()) isValid = true
         if (mGender.isNullOrEmpty()) isValid = true
         if (mBirthday.isNullOrEmpty()) isValid = true
-        if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) isValid = true
+        if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) isValid =
+            true
         return isValid
     }
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            /*if (isCanChangeName) {
-                if (name != mName) put(UserDetail.USER_NAME, mName)
-                if (surname != mSurname) put(UserDetail.USER_LAST_NAME, mSurname)
-                val middleName = if (mNoMiddleNameChecked) USER_DATA_EMPTY else mMiddleName
-                if (this@ProfileDataPersonalEditNewItem.middleName != middleName) put(UserDetail.USER_MIDDLE_NAME, FieldDetails(value = middleName, absent = mNoMiddleNameChecked))
-            }*/
-            if (gender?.value != mGender || gender?.showInProfile != mGenderShow) put(UserDetail.USER_GENDER, ToggleStringModel(getGender(), mGenderShow))
+            if (gender?.value != mGender || gender?.showInProfile != mGenderShow) put(
+                UserDetail.USER_GENDER,
+                ToggleStringModel(getGender(), mGenderShow)
+            )
             mBirthday?.formatToDefaultServerDate()?.let {
-                if (birthday != it) put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
+                if (birthday != it) put(
+                    UserDetail.USER_BIRTHDAY,
+                    FieldDetails(value = it, isVisible = mShowBirthday)
+                )
             }
             if (address != mAddress) {
                 mAddress.showInProfile = mAddressShow
                 put(UserDetail.USER_ADDRESS, mAddress)
             }
-            if (notes?.value != mNotes || notes?.showInProfile != mNotesShow) put(UserDetail.USER_NOTES, ToggleStringModel(mNotes, mNotesShow))
+            if (notes?.value != mNotes || notes?.showInProfile != mNotesShow) put(
+                UserDetail.USER_NOTES,
+                ToggleStringModel(mNotes, mNotesShow)
+            )
         }
     }
 
@@ -230,4 +182,6 @@ class ProfileDataPersonalEditNewItem(
             else -> ""
         }
     }
+
+    override fun getLayout() = R.layout.item_profile_data_edit_personal_new
 }

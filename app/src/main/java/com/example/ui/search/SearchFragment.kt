@@ -1,21 +1,19 @@
 package com.example.ui.search
 
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
+import com.example.databinding.LayoutFilterBinding
 import com.example.databinding.LayoutListSearchBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
-import com.example.holders.NoDataItem
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -68,7 +66,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            mBinding.searchList.apply {
+        mBinding.searchList.apply {
             adapter = this@SearchFragment.adapter
         }
         mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -86,32 +84,27 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                 )
             )
         } else {
-            Log.e("SearchEventsList", "start")
-            Log.e("SearchEventsList", "size: " + data.size)
             adapter.update(data.map(::createItem))
-            Log.e("SearchEventsList", "finish")
         }
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showFilter(filter: F) {
         val filterContainer =
-            (layoutInflater.inflate(R.layout.layout_filter, null) as ViewGroup).apply {
-                findViewById<ViewGroup>(R.id.flFilters).apply {
+            LayoutFilterBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
+                flFilters.apply {
                     val filterView = createFilterView(filter)
                     this@SearchFragment.filterView = filterView
                     addView(filterView)
                 }
-
-                findViewById<View>(R.id.btnApply).setOnClickListener { presenter.onFilterApplyClick() }
-                findViewById<View>(R.id.btnClear).setOnClickListener { presenter.onFilterClearClick() }
-                findViewById<View>(R.id.btnClose).setOnClickListener { filterDialog?.dismiss() }
+                btnApply.setOnClickListener { presenter.onFilterApplyClick() }
+                btnClear.setOnClickListener { presenter.onFilterClearClick() }
+                btnClose.setOnClickListener { filterDialog?.dismiss() }
             }
-
         filterDialog = BottomSheetDialog(requireContext())
             .apply {
-                setContentView(filterContainer)
-                val behavior = BottomSheetBehavior.from(filterContainer.parent as View)
+                setContentView(filterContainer.root)
+                val behavior = BottomSheetBehavior.from(filterContainer.root.parent as View)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
                 setOnDismissListener { presenter.onFilterCancel() }
                 show()

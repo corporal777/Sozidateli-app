@@ -96,4 +96,7 @@ interface EventRepository {
     fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>>
     fun getEventActivityDetail(activityId: String): Single<EventActivityModel>
     fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>>
+
+    //+
+    fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
 }
