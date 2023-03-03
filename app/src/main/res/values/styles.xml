@@ -612,7 +612,6 @@
     </style>
 
     <style name="Notification.TitleNew">
-        <item name="android:letterSpacing">-0.01</item>
         <item name="fontPath">fonts/sf_pro_display_semibold.ttf</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -723,6 +722,25 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:textColor">@color/text_color_custom_tab</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">13sp</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:minHeight">34dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="CustomTabNew">
+        <item name="android:elevation">2dp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textColor">@color/vk_black</item>
+        <item name="android:background">@drawable/background_custom_tab_left_selector_new</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textSize">13sp</item>

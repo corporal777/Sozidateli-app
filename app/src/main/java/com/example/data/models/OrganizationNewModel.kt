@@ -60,6 +60,8 @@ data class OrganizationNew(
         const val ORGANIZATION_ADDRESS_HOUSE = "addressHouse"
         const val ORGANIZATION_ADDRESS_FLAT = "addressFlat"
         const val ORGANIZATION_LEGAL_INFORMATION_INN = "legalInformationInn"
+        const val ORGANIZATION_STATUS = "status"
+        const val ORGANIZATION_IS_SPECIAL = "isSpecial"
     }
 }
 

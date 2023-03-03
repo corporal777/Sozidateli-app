@@ -13,11 +13,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RegisterEventProfileWorkItem(
+    val itemId : Long,
     val isRequired: Boolean,
     val workExperienceAbsent: Boolean,
     val withTitle: Boolean,
     val work: WorkExperience?
-) : BindableItem<ItemRegisterEventProfileWorkBinding>() {
+) : BindableItem<ItemRegisterEventProfileWorkBinding>(itemId) {
 
     private var years = ""
 

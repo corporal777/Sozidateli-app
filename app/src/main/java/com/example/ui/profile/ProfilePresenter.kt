@@ -47,12 +47,12 @@ class ProfilePresenter
         super.onFirstViewAttach()
         viewState.setAppBarElevation(0f)
         compositeDisposable += userRepository.getUserShortNew()
+            .doOnSuccess { getAdditionalData() }
             .performOnBackgroundOutOnMain()
             .withShimmerLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    getAdditionalData()
                     viewState.apply {
                         setUser(it)
                         setUserLink(it)

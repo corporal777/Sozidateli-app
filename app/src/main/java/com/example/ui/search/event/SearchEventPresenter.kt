@@ -17,9 +17,12 @@ import com.example.data.models.Event.Companion.FILTER_FORMAT
 import com.example.data.models.Event.Companion.FILTER_NAME
 import com.example.data.models.Event.Companion.FILTER_REGISTRATION
 import com.example.data.models.Event.Companion.FILTER_SHOW_CANCELED
+import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_IS_SPECIAL
+import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_STATUS
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
+import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
@@ -41,6 +44,7 @@ class SearchEventPresenter
     private val eventData: UserEventData,
     private val eventRepository: EventRepository,
     private val userRepository: UserRepository,
+    private val organizationRepository: OrganizationRepository,
     private val commonRepository: CommonRepository,
     private val appData: AppData
 ) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData),
@@ -104,33 +108,31 @@ class SearchEventPresenter
     private var isCommonDataLoaded = false
     private var interests: Map<InterestNew, List<InterestNew>>? = null
     private var formats: List<NewEventFormat>? = null
+    private var organizations: List<OrganizationNew?>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        val loadOrganizations = organizationRepository.getOrganizationsWithActiveEvents()
         val loadInterests = userRepository.getInterestsList(null)
-            .map { interests ->
-                interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
-            }
-        compositeDisposable += Maybe.zip(loadInterests,
-            eventRepository.getEventFormatsList(
-                mapOf(
-                    EventNew.EVENT_LIMIT to 100,
-                    EventNew.EVENT_OFFSET to 0
-                )
-            ),
-            BiFunction<Map<InterestNew, List<InterestNew>>, List<NewEventFormat>, Unit> { interests, formats ->
-                this.interests = interests
-                this.formats = formats
-            })
+            .map { i -> i.data.groupByNotNull { child -> i.data.firstOrNull { it.id == child.parent } } }
+        val loadEventFormats = eventRepository.getEventFormatsList(
+            mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
+        )
+
+        compositeDisposable += Maybe.zip(
+            loadInterests,
+            loadEventFormats,
+            loadOrganizations
+        ) { interests, formats, organizations ->
+            this.interests = interests
+            this.formats = formats
+            this.organizations = organizations
+        }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    isCommonDataLoaded = true
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    isCommonDataLoaded = true
-                })
+                onError = { isCommonDataLoaded = true },
+                onSuccess = { isCommonDataLoaded = true }
+            )
     }
 
 
@@ -161,16 +163,12 @@ class SearchEventPresenter
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
-    override fun onShowFormatClick(format: Int) {
-        filter.format = format
-        tmpFilter.format = format
-        pagination.invalidateFromStart()
-    }
 
     override fun onShowFilterRequest() {
         val showFilter = {
             tmpFilter.interests = this.interests
             tmpFilter.formats = this.formats
+            tmpFilter.organizations = this.organizations
             super.onShowFilterRequest()
         }
         if (isCommonDataLoaded) showFilter()
@@ -201,12 +199,14 @@ class SearchEventPresenter
                 "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"
             )
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
-
             if (!filter.name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%" + filter.name + "%")
-
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
+            if (filter.org != null) put(SEARCH_EVENT_ORGANIZATION, filter.org.toString())
 
-            if (filter.dateStart != null) put(EventNew.EVENT_START_DATE, filter.dateStart + "," + filter.dateFinish)
+            if (filter.dateStart != null) put(
+                EventNew.EVENT_START_DATE,
+                filter.dateStart + "," + filter.dateFinish
+            )
 
             if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
                 if (filter.fullAddress != null) {
@@ -245,5 +245,6 @@ class SearchEventPresenter
         private const val SEARCH_EVENT_TOPIC_CATEGORY = "topicCategory"
         private const val SEARCH_EVENT_TOPIC_SUBCATEGORY = "topicSubcategories"
         private const val SEARCH_EVENT_BINDS = "eventBinds"
+        private const val SEARCH_EVENT_ORGANIZATION = "organization"
     }
 }

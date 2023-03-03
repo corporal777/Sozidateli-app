@@ -185,7 +185,7 @@ class NotificationPresenter
     private fun cancelEvMember(id: Int) {
        // updateNotificationInvite(
         cancelNotificationInvite(
-            userRepository.cancelEvMember(
+            userRepository.cancelEventMember(
                 id.toString(),
                 CancelBody(appData.getId())
             ), id

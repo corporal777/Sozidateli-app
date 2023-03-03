@@ -2,6 +2,7 @@ package com.example.ui.auth.register.email.finish
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
@@ -45,13 +46,11 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
         lastName = args.lastName
         middleName = args.middleName ?: ""
         noMiddleNameChecked = args.isNoMiddleName
-        if (args.email.isNullOrEmpty()) {
-            login = args.phone ?: ""
+        login = args.email
+
+        if (Utils.isPhone(login) && !Utils.isContainLetters(login))
             loginType = "phone"
-        } else {
-            login = args.email
-            loginType = "email"
-        }
+        else loginType = "email"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,7 +99,7 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 }
             }
             etEmail.apply {
-                filters = getEmailFilter()
+                //filters = getEmailFilter()
                 onTextChanged {
                     tilEmail.error = null
                     it?.toString()?.let { text -> presenter.onChangeEmailText(text) }
@@ -208,37 +207,35 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
         mBinding.tilCode.error = getString(R.string.auth_error_code)
     }
 
-    override fun setDescriptionText(canShow: Boolean) {
-        val descriptionText = SpannableStringBuilder()
-        mBinding.apply {
-            when (presenter.loginType) {
-                "phone" -> {
-                    etCode.hint = getString(R.string.auth_error_no_call)
-                    descriptionText.append(getString(R.string.call_code_phone_dialog_text))
-                }
-                "email" -> {
-                    etCode.hint = getString(R.string.auth_error_no_code)
-                    val supportEmail = getString(R.string.support_email)
-                    val message =
-                        getString(R.string.code_dialog_text_information).format(supportEmail)
-                            .toSpannable()
-                    Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-                    descriptionText.append(
-                        getString(
-                            R.string.code_email_dialog_text,
-                            presenter.login
-                        )
-                    )
-                        .append("\n")
-                        .append(message)
-                }
+    override fun setDescriptionText(loginType: String, login: String) {
+        when (loginType) {
+            "phone" -> {
+                mBinding.etCode.hint = getString(R.string.auth_error_no_call)
+                mBinding.tvText.text = getString(R.string.call_code_phone_dialog_text)
             }
-            tvText.apply {
-                isVisible = canShow
-                text = descriptionText
-                movementMethod = BetterLinkMovementMethod.getInstance()
+            "email" -> {
+                mBinding.etCode.hint = getString(R.string.auth_error_no_code)
+
+                val supportEmail = getString(R.string.support_email)
+                val message = getString(R.string.code_dialog_text_information).format(supportEmail).toSpannable()
+                Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+
+                val descriptionText = SpannableStringBuilder(
+                    getString(R.string.code_email_dialog_text, login)
+                )
+                    .append("\n")
+                    .append(message)
+
+                mBinding.tvText.apply {
+                    text = descriptionText
+                    movementMethod = BetterLinkMovementMethod.getInstance()
+                }
             }
         }
+
+    }
+    override fun showHideDescriptionText(canShow: Boolean) {
+        mBinding.tvText.isVisible = canShow
     }
 
     override fun showWrongEmailError(canShow: Boolean) {

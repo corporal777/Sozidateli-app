@@ -103,7 +103,6 @@ class EventRegistrationPresenter
         viewState.apply {
             updateAppBarBackgroundColorValue(mDy)
             enableActionButton(true)
-            setRecyclerViewContent()
         }
 
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
@@ -615,7 +614,7 @@ class EventRegistrationPresenter
 
             eventRepository.loadEventFormResult(prefilledFieldsId.toString())
                 .map { data ->
-                    prepareProfileFieldsData(data).apply {
+                    data.toProfileFieldsFormResult().apply {
                         setFieldsIsChosen(options, this)
                     }
                 }
@@ -627,11 +626,6 @@ class EventRegistrationPresenter
                             f.description, f.parameters?.options, null, null, null
                         )
                     }
-
-                    if (isFirstLaunch) {
-                        viewState.setProfileFields(it)
-                        isFirstLaunch = false
-                    }
                     Maybe.just(EventRegisterFieldData.Prefilled(field, it))
                 }
         } else {
@@ -639,72 +633,7 @@ class EventRegistrationPresenter
         }
     }
 
-    private fun prepareProfileFieldsData(data: ProfileFieldsData): ProfileFieldsFormResult {
-        val fields = data.fields
 
-        return ProfileFieldsFormResult(
-            fieldsIsRequired = data.isRequired,
-            user_birthday = ProfileFieldString(data.isRequired, false, false, fields.user_birthday),
-            user_gender = ProfileFieldString(data.isRequired, false, false, fields.user_gender),
-            user_notes = ProfileFieldString(data.isRequired, false, false, fields.user_notes),
-            user_phone = ProfileFieldString(data.isRequired, false, false, fields.user_phone),
-            user_work_phone = ProfileFieldString(
-                data.isRequired,
-                false,
-                fields.work_phone_absent,
-                fields.user_work_phone
-            ),
-            user_email = ProfileFieldString(data.isRequired, false, false, fields.user_email),
-            address = ProfileFieldString(
-                data.isRequired,
-                false,
-                false,
-                fields.address?.fullValue ?: fields.address?.getShortAddress()
-            ),
-            educationLevel = ProfileFieldEducationLevel(data.isRequired, fields.educationLevel),
-            education = ProfileFieldEducation(data.isRequired, false, fields.education),
-            academic_degree = ProfileFieldAcademicDegree(
-                data.isRequired,
-                false,
-                fields.academic_degree
-            ),
-            work_experience = ProfileFieldWorkExperience(
-                data.isRequired,
-                false,
-                fields.work_experience_absent,
-                fields.work_experience
-            ),
-            user_links = ProfileFieldString(
-                data.isRequired,
-                false,
-                fields.social_links_absent,
-                fields.contactInformation?.socialLinks?.values?.joinToString("\n") {
-                    it.value ?: ""
-                }),
-            user_sites = ProfileFieldString(
-                data.isRequired,
-                false,
-                fields.site_absent,
-                fields.contactInformation?.site?.values?.joinToString("\n") {
-                    it.value ?: ""
-                }),
-            user_public_email = ProfileFieldString(
-                data.isRequired,
-                false,
-                false,
-                fields.contactInformation?.emails?.joinToString("\n") {
-                    it.value ?: ""
-                }),
-            user_files = ProfileFieldString(
-                data.isRequired,
-                false,
-                false,
-                fields.recommendationFile?.joinToString("\n") {
-                    it.name ?: ""
-                }
-            )
-        )
-    }
 
     companion object {
         private const val API_ERROR_ALREADY_APPROVED = "Registration is approved before"

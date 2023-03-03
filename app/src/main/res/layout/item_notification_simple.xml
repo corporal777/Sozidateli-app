@@ -31,7 +31,7 @@
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
         android:ellipsize="end"
-        android:maxLines="6"
+        tools:maxLength="240"
         app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

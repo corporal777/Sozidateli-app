@@ -3,130 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/root"
+    <RelativeLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="MissingPrefix">
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_bottom_sheet_label"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/in_app_notification_fragment_margin_top"
-            android:background="@drawable/background_bottom_sheet"
-            android:paddingBottom="10dp"
-            tools:ignore="MissingPrefix">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="30dp"
-                android:layout_height="4dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/bottom_sheet_top"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bottom_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/view">
-
-                <TextView
-                    android:id="@+id/tvTitle"
-                    style="@style/Notification.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:lineSpacingExtra="@dimen/lines_space"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingPrefix"
-                    tools:text="Отлично! Ваша заявка на участие в мероприятии" />
+            android:layout_alignTop="@id/view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:letterSpacing="-0.02"
+            android:text="@string/unread_notifications_label"
+            android:textSize="16sp" />
 
 
-                <TextView
-                    android:id="@+id/tvDate"
-                    style="@style/Notification.Date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tvTitle"
-                    tools:ignore="MissingPrefix"
-                    tools:text="@tools:sample/date/ddmmyy" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="5dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="30dp"
+            android:minHeight="30dp"
+            android:src="@drawable/ic_close" />
 
 
-                <androidx.core.widget.NestedScrollView
-                    android:id="@+id/scroll_view_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    app:layout_constraintBottom_toTopOf="@id/tvActionText"
-                    app:layout_constraintTop_toBottomOf="@id/tvDate">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvMessage"
-                            style="@style/Notification.Message"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            tools:text="@string/lorem_ipsum_dolor" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/in_app_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_bottom_sheet_label"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:descendantFocusability="beforeDescendants"
+            android:paddingBottom="60dp"
+            tools:listitem="@layout/item_notification_accept_new" />
 
 
-                    </LinearLayout>
-                </androidx.core.widget.NestedScrollView>
-
-                <TextView
-                    android:id="@+id/tvActionText"
-                    style="@style/Notification.Action"
-                    fontPath="fonts/sf_pro_text_semibold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toTopOf="@id/btn_accept"
-                    app:layout_constraintTop_toBottomOf="@id/scroll_view_text"
-                    tools:text="@string/notifications_state_accepted"
-                    tools:visibility="visible" />
-
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_accept"
-                    style="@style/BtnBrownStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                    android:layout_marginTop="10dp"
-                    android:minHeight="45dp"
-                    android:text="@string/accept"
-                    app:layout_constraintBottom_toTopOf="@id/btn_cancel"
-                    app:layout_constraintTop_toBottomOf="@id/tvActionText" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_cancel"
-                    style="@style/BtnBrownStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:minHeight="45dp"
-                    android:text="@string/cancel"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btn_accept" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </RelativeLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
+    </RelativeLayout>
 </layout>

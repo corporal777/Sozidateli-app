@@ -39,7 +39,10 @@ interface FinishRegisterContract {
         fun showWrongEmailError(canShow : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setDescriptionText(canShow: Boolean)
+        fun setDescriptionText(loginType: String, login : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showHideDescriptionText(canShow: Boolean)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun openHome()

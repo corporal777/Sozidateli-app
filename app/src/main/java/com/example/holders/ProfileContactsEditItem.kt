@@ -115,6 +115,7 @@ class ProfileContactsEditItem(
         viewHolder.apply {
             tilMobilePhone.apply { error = null }
             etMobilePhone.apply {
+                filters = getPhoneFilter()
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
                     if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error =
@@ -144,6 +145,7 @@ class ProfileContactsEditItem(
             }
 
             etWorkPhone.apply {
+                filters = getPhoneFilter()
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
                     if (it?.isNotEmpty() == true && tilWorkPhone.error != null) tilWorkPhone.error =
@@ -162,6 +164,7 @@ class ProfileContactsEditItem(
                 checkPhone()
             }
             etAdditionalNumber.apply {
+                filters = getPhoneFilter()
                 initInput(mAdditionalPhone) {
                     mAdditionalPhone = it.toString()
                 }

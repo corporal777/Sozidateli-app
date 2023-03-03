@@ -26,6 +26,7 @@ data class Notification(
     val organization: Int
 ) : Parcelable {
 
+
     enum class Type {
         SIMPLE, ACCEPTABLE, RATE
     }

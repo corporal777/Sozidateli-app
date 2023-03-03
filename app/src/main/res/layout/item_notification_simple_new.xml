@@ -5,6 +5,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_simple_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
@@ -30,7 +31,6 @@
         <TextView
             android:id="@+id/tvTitle"
             style="@style/Notification.TitleNew"
-            android:lineSpacingExtra="@dimen/lines_space"
             android:text="@string/notifications_simple_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

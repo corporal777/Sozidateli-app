@@ -49,6 +49,9 @@ interface MainContract {
         fun showInApp(inapp: Notification)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showInAppNew(listInApp: List<Notification>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideInApp()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")

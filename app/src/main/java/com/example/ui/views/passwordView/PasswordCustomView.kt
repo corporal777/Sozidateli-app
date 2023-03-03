@@ -11,10 +11,12 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.example.R
 import com.example.util.ClickableSpan
+import com.example.util.ClickableSpanNew
 import com.google.android.material.textfield.TextInputEditText
 import java.util.regex.Pattern
 
@@ -111,16 +113,17 @@ class PasswordCustomView : FrameLayout {
     }
 
     private fun setAgreeText() {
-        val agreementText =
-            SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
-                val linkStart = 11
-                val linkEnd = length
-                setSpan(ClickableSpan(drawUnderline = false) {
-                    onClickAgreeHyperlink()
-                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
-
         tvAgree.apply {
+            val agreementText =
+                SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
+                    val linkStart = 11
+                    val linkEnd = length
+                    setSpan(ClickableSpanNew(tvAgree) {
+                        onClickAgreeHyperlink()
+                    }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+
+            highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
             text = agreementText
             movementMethod = LinkMovementMethod.getInstance()
         }
@@ -134,11 +137,6 @@ class PasswordCustomView : FrameLayout {
         cbAgree.setOnCheckedChangeListener { _, isChecked -> onAgreeChangedSelection(isChecked) }
     }
 
-    private fun validatePasswordNew(password: String?){
-        if ((password?.length ?: 0) >= PASSWORD_MIN_LENGTH) {
-
-        }
-    }
 
     private fun validatePassword(password: String?) {
         var isValid = true

@@ -28,7 +28,6 @@
         <TextView
             android:id="@+id/tvTitle"
             style="@style/Notification.TitleNew"
-            android:lineSpacingExtra="@dimen/lines_space"
             android:text="@string/notifications_simple_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

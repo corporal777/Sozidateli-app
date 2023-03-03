@@ -22,7 +22,6 @@ interface RegisterEmailNewContract {
             name: String,
             lastName: String,
             middleName: String?,
-            phone: String?,
             email: String,
             code: String,
             isNoMiddleName: Boolean

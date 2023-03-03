@@ -10,18 +10,18 @@ import com.example.util.ClickableSpanNew
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventProfileHeaderItem(
-    isValid: Boolean,
-    val onGoToProfileClick: () -> Unit
-) : BindableItem<ItemRegisterEventProfileFooterBinding>() {
+    val itemId : Long,
+    val isValid: Boolean,
+    val onProfileClick: () -> Unit
+) : BindableItem<ItemRegisterEventProfileFooterBinding>(itemId) {
 
-    private var fieldsIsValid = isValid
     private lateinit var mBinding: ItemRegisterEventProfileFooterBinding
 
     override fun bind(viewBinding: ItemRegisterEventProfileFooterBinding, position: Int) {
         viewBinding.apply {
             mBinding = this
             tvAction.apply {
-                decorTextColor(this, fieldsIsValid)
+                decorTextColor(this, isValid)
             }
         }
     }
@@ -31,7 +31,7 @@ class RegisterEventProfileHeaderItem(
             val footerText: SpannableString
             val footerTextColor : Int
             val clickableSpan = ClickableSpanNew(this) {
-                onGoToProfileClick.invoke()
+                onProfileClick.invoke()
             }
             if (isValid) {
                 footerTextColor = ContextCompat.getColor(context, R.color.register_event_go_to_profile_text_color)
@@ -58,21 +58,11 @@ class RegisterEventProfileHeaderItem(
     }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
-        if (this === other) return true
         if (other !is RegisterEventProfileHeaderItem) return false
-        if (fieldsIsValid != other.fieldsIsValid) return false
+        if (isValid != other.isValid) return false
         return true
     }
 
-
-    fun updateFooterText(payload: Boolean) {
-        if (payload != fieldsIsValid) {
-            fieldsIsValid = payload
-            if (this::mBinding.isInitialized){
-                decorTextColor(mBinding.tvAction, fieldsIsValid)
-            }
-        }
-    }
 
     override fun getLayout(): Int = R.layout.item_register_event_profile_footer
 }

@@ -34,6 +34,7 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
+import com.example.databinding.LayoutBottomNavBadgeBinding
 import com.example.databinding.LayoutNoInternetBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
@@ -52,6 +53,7 @@ import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
+import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
@@ -69,6 +71,7 @@ import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
@@ -103,10 +106,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navBarColorBottomNav by lazy {
         ContextCompat.getColor(this, R.color.bottom_navigation_view_background_color)
     }
-
-
-    private lateinit var mBadgeNotification: BadgeDrawable
-    private lateinit var mBadgeChat: BadgeDrawable
 
 
     private val navFragmentsLifecycleCallback =
@@ -330,7 +329,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path password recovery
                 else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
                     val indexLastPath = paths.indexOf(lastPath)
-                    val userId = if (indexLastPath > 0){
+                    val userId = if (indexLastPath > 0) {
                         paths[indexLastPath - 1]
                     } else ""
                     presenter.onHandleRecoverPasswordLink(userId, authCode)
@@ -554,16 +553,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
 
+    override fun showInAppNew(listInApp: List<Notification>) {
+        val inAppNotification = InAppNotificationFragment(listInApp)
+        inAppNotification.show(supportFragmentManager, "inAppDialog")
+    }
+
     override fun showInApp(inapp: Notification) {
-
-//        val inAppNotification = InAppNotificationFragment(inapp)
-//        inAppNotification.show(supportFragmentManager, "inAppDialog")
-//        inAppNotification.setSimpleActionCallback {
-//            inAppNotification.dismiss()
-//            presenter.onInappHidden()
-//        }
-
-
         supportFragmentManager.beginTransaction()
             .replace(mBinding.include.flNotificationContainer.id, createNotificationFragment(inapp))
             .commitNowAllowingStateLoss()
@@ -869,23 +864,53 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
             }
         }
-        mBadgeNotification = mBinding.mainNavBar.getOrCreateBadge(R.id.notification).apply {
-            backgroundColor = Color.RED
-        }
-        mBadgeChat = mBinding.mainNavBar.getOrCreateBadge(R.id.chats).apply {
-            backgroundColor = Color.RED
-        }
     }
 
 
     override fun showBadgeNotification(count: Int) {
-        mBadgeNotification.isVisible = count > 0
-        mBadgeNotification.number = count
+//        mBinding.mainNavBar.getOrCreateBadge(R.id.notification).apply {
+//            backgroundColor = Color.RED
+//            isVisible = count > 0
+//            maxCharacterCount = 3
+//            number = count
+//        }
+        mBinding.mainNavBar.setBadge(R.id.notification, count)
     }
 
     override fun showBadgeChat(count: Int) {
-        mBadgeChat.isVisible = count > 0
-        mBadgeChat.number = count
+//        mBinding.mainNavBar.getOrCreateBadge(R.id.chats).apply {
+//            backgroundColor = Color.RED
+//            isVisible = count > 0
+//            number = if (count > 99) +99
+//            else count
+//        }
+        mBinding.mainNavBar.setBadge(R.id.chats, count)
+    }
+
+    private fun BottomNavigationView.setBadge(tabResId: Int, badgeValue: Int) {
+        getOrCreateBadge(this, tabResId)?.let { badge ->
+            badge.clBadge.isVisible = badgeValue > 0
+            badge.tvBadge.text = if (badgeValue > 99) "99"
+            else badgeValue.toString()
+        }
+    }
+
+    private fun getOrCreateBadge(bottomBar: View, tabResId: Int): LayoutBottomNavBadgeBinding? {
+        val parentView = bottomBar.findViewById<ViewGroup>(tabResId)
+        var binding: LayoutBottomNavBadgeBinding? = null
+        parentView?.let {
+            if (parentView.findViewById<ViewGroup>(R.id.clBadge) == null) {
+                binding = LayoutBottomNavBadgeBinding.inflate(
+                    LayoutInflater.from(parentView.context),
+                    parentView,
+                    true
+                )
+            } else {
+                val badgeCl = parentView.findViewById<ViewGroup>(R.id.clBadge)
+                binding = LayoutBottomNavBadgeBinding.bind(badgeCl)
+            }
+        }
+        return binding
     }
 
 

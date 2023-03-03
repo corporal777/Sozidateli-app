@@ -1,11 +1,19 @@
 package com.example.ui.notification.center.redesign.items
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
@@ -14,10 +22,13 @@ import androidx.core.text.parseAsHtml
 import androidx.core.text.set
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
 import com.example.data.models.Notification
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
+import com.example.holders.OnOpenEventListener
+import com.example.util.ClickableSpanNew
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
@@ -28,12 +39,12 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import removeUrlUnderline
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 abstract class NotificationItemNew<T : ViewDataBinding>(
     private val context: Context,
     private val notification: Notification,
-    private val onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-    private val openEventListener: OnOpenEventListener
+    private val listener : OnNotificationActionListener
 ) : BindableItem<T>(notification.id.toLong()) {
 
     abstract fun getTitleView(viewBinding: T): TextView
@@ -62,18 +73,21 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         }
         getTitleView(viewBinding).apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
-                text = context.resources.getString(
-                    R.string.notification_event_title,
-                    "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>"
-                ).parseAsHtml()
-                BetterLinkMovementMethod.linkifyHtml(this)
-                    .setOnLinkClickListener { _, url ->
-                        if (notification.eventId != null) {
-                            openEventListener(notification.eventId.toString())
-                        }
-                        true
-                    }
-                removeUrlUnderline()
+                text = getNotificationTitle(this)
+                highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+                movementMethod = LinkMovementMethod.getInstance()
+//                text = context.resources.getString(
+//                    R.string.notification_event_title,
+//                    "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>"
+//                ).parseAsHtml()
+//                BetterLinkMovementMethod.linkifyHtml(this)
+//                    .setOnLinkClickListener { _, url ->
+//                        if (notification.eventId != null) {
+//                            listener.onOpenEventClickListener(notification.eventId.toString())
+//                        }
+//                        true
+//                    }
+//                removeUrlUnderline()
             } else {
                 if (notification.notificationMainType.contentEquals(resources.getString(R.string.notifications_simple_title))) {
                     text = resources.getString(R.string.notifications_simple_title)
@@ -93,7 +107,10 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
             isVisible = !notification.message.isNullOrEmpty()
             text = actualMessage
             BetterLinkMovementMethod.linkifyHtml(this)
-                .setOnLinkClickListener(onLinkClickListener)
+                .setOnLinkClickListener { textView, url ->
+                    listener.onLinkClickListener(url)
+                    true
+                }
         }
 
         getReadMoreView(viewBinding).apply {
@@ -127,6 +144,7 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         if (notification != other.notification) return false
         return true
     }
+
 
 
     private fun isMessageTooLong(context: Context, message: String?): Boolean {
@@ -175,7 +193,28 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
             }
         }
     }
+
+    private fun getNotificationTitle(textView : TextView): SpannableStringBuilder {
+        val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
+        val clickableSpan = ClickableSpanNew(textView) {
+            if (notification.eventId != null) {
+                listener.onOpenEventClickListener(notification.eventId.toString())
+            }
+        }
+        val eventNameColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
+        val eventName = SpannableString(notification.eventInfo?.name).apply {
+            setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            setSpan(ForegroundColorSpan(eventNameColor), 0, length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+        return notificationTitle.append("\n").append(eventName)
+    }
+
+    interface OnNotificationActionListener {
+        fun onReadClickListener(id: Int)
+        fun onReadListener(id: Int)
+        fun onRateClickListener(rateId: String)
+        fun onLinkClickListener(url: String)
+        fun onOpenEventClickListener(eventId: String)
+        fun onAcceptClickListener(notification: Notification, isAccept: Boolean)
+    }
 }
-
-
-typealias OnOpenEventListener = (rateId: String) -> Unit

@@ -22,7 +22,6 @@ interface UserRepository {
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserByIdNew(id: String): Maybe<UserDetail>
     fun getUserByShortName(name: String): Maybe<UserDetail>
-    fun updateUserShortName(id: Int, data: UserShortNameBody): Maybe<UserDetail>
     //fun getUserShort(): Maybe<UserShort>
     //fun getUserFull(): Maybe<User>
     //fun getLastNotification(): Single<List<Notification>>
@@ -115,7 +114,12 @@ interface UserRepository {
     fun approveAssistance(assistanceId: String): Completable
     fun declineAssistance(assistanceId: String): Completable
     fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail>
-    fun cancelEvMember(evMemberId: String, body: CancelBody): Completable
+
+    fun cancelEventMember(evMemberId: String, body: CancelBody): Completable
+    fun approveEventMember(memberId : String) : Completable
+    fun declineEventMember(memberId : String) : Completable
+
+
     fun checkEmailPhone(email: String?, phone: String?): Completable
 
     fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>

@@ -13,6 +13,7 @@ import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationAcceptNewBinding
 import com.example.holders.OnNotificationAcceptClickListener
 import com.example.holders.OnNotificationReadClickListener
+import com.example.holders.OnOpenEventListener
 import com.example.ui.views.CtpDialog
 import com.example.util.ClickableSpanNew
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -20,14 +21,11 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 class AcceptNotificationItemNew(
     private val context: Context,
     private val notification: Notification,
-    onLinkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-    private val acceptClickListener: OnNotificationAcceptClickListener,
-    private val openEventListener: OnOpenEventListener
+    private val listener : OnNotificationActionListener
 ) : NotificationItemNew<ItemNotificationAcceptNewBinding>(
     context,
     notification,
-    onLinkClickListener,
-    openEventListener
+    listener
 ) {
 
     override fun bind(viewBinding: ItemNotificationAcceptNewBinding, position: Int) {
@@ -38,11 +36,11 @@ class AcceptNotificationItemNew(
                     lnDecline.isVisible = false
                     btnAccept.apply {
                         isVisible = true
-                        setOnClickListener { acceptClickListener(notification, true) }
+                        setOnClickListener { listener.onAcceptClickListener(notification, true) }
                     }
                     btnCancel.apply {
                         isVisible = true
-                        setOnClickListener { acceptClickListener(notification, false) }
+                        setOnClickListener { listener.onAcceptClickListener(notification, false) }
                     }
                 }
                 Notification.AcceptState.DISABLED -> {
@@ -69,7 +67,9 @@ class AcceptNotificationItemNew(
                     btnAccept.isVisible = false
                     lnDecline.isVisible = true
                     tvDecline.apply {
-                        text = "Приглашение было отклонено"
+                        highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+                        text = getAcceptedText(this)
+                        movementMethod = LinkMovementMethod.getInstance()
                     }
                 }
             }
@@ -88,6 +88,17 @@ class AcceptNotificationItemNew(
         }
         return SpannableString(textView.context.getString(R.string.decline_text_for_notification)).apply {
             val linkStart = length - 10
+            val linkEnd = length - 1
+            setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+    }
+
+    private fun getAcceptedText(textView: TextView): SpannableString {
+        val clickableSpan = ClickableSpanNew(textView) {
+            listener.onAcceptClickListener(notification, true)
+        }
+        return SpannableString(textView.context.getString(R.string.accept_text_for_notification)).apply {
+            val linkStart = length - 8
             val linkEnd = length - 1
             setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         }

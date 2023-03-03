@@ -176,19 +176,14 @@
             app:nullable="false" />
 
         <argument
-            android:name="email"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
             android:name="middleName"
             app:argType="string"
             app:nullable="true" />
+
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="false" />
 
         <argument
             android:name="isConfirmed"

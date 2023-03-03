@@ -16,9 +16,7 @@ sealed class EventRegisterFieldData<T>(
         value: ProfileFieldsFormResult?,
     ) :
         EventRegisterFieldData<ProfileFieldsFormResult>(field, value) {
-        override fun isValid() =
-            if (value != null) value!!.checkProfileFieldsIsValid(value!!) else true
-
+        override fun isValid() = if (value != null) value!!.checkProfileFieldsIsValid(value!!) else true
         override fun hasForm() = value != null
     }
 

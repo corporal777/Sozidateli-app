@@ -84,7 +84,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 }
             }
             etEmail.apply {
-                filters = getEmailFilter()
+                //filters = getEmailFilter()
                 onTextChanged {
                     it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) }
                 }
@@ -190,7 +190,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         name: String,
         lastName: String,
         middleName: String?,
-        phone: String?,
         email: String,
         code: String,
         isNoMiddleName: Boolean
@@ -201,7 +200,6 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 "name" to name,
                 "lastName" to lastName,
                 "email" to email,
-                "phone" to phone,
                 "middleName" to middleName,
                 "isNoMiddleName" to isNoMiddleName,
             ), NavOptions.Builder()

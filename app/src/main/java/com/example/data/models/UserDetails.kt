@@ -97,6 +97,7 @@ data class UserDetail(
         const val USER_MIDDLE_NAME = "middleName"
         const val USER_PHONE = "phone"
         const val USER_STATE = "state"
+        const val USER_SHORT_NAME = "shortName"
 
         const val BLOCK_EVENT = "blockEvent"
         const val BLOCK_ORG = "blockOrg"
@@ -340,7 +341,7 @@ data class CommonModel(
 @Parcelize
 data class UserState(
     @SerializedName("nameEdited")
-    val nameEdited: Boolean? = null,
+    var nameEdited: Boolean? = null,
     @SerializedName("isHidden")
     var isHidden: String? = null,
     @SerializedName("isBlocked")

@@ -5,9 +5,10 @@ import com.example.databinding.ItemRegisterEventProfileAcademicDegreeBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventAcademicDegreeItem(
+    val itemId : Long,
     val academicDegree: String?,
     val academicSpeciality: String?
-) : BindableItem<ItemRegisterEventProfileAcademicDegreeBinding>() {
+) : BindableItem<ItemRegisterEventProfileAcademicDegreeBinding>(itemId) {
 
 
     override fun bind(viewBinding: ItemRegisterEventProfileAcademicDegreeBinding, position: Int) {

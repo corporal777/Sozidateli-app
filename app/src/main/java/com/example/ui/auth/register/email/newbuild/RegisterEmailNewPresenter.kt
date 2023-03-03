@@ -159,14 +159,10 @@ class RegisterEmailNewPresenter
                     viewState.apply {
                         setIgnoreTokenListener(false)
 
-                        val phone = if (loginType == "email") "" else email
-                        val email = if (loginType == "email") email else ""
-
                         showFinishRegister(
                             firstName,
                             lastName,
                             middleName,
-                            phone,
                             email,
                             "code",
                             noMiddleNameChecked

@@ -8,11 +8,12 @@ import com.example.ui.event.about.redesign.items.EventDetailActionItem
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventProfileEducationLevelItem(
+    val itemId : Long,
     val educationLevel: String?,
     val isRequired: Boolean,
     val educationIsNull: Boolean,
     val isAcademicDegreeNull: Boolean
-) : BindableItem<ItemRegisterEventProfileEducationLevelBinding>() {
+) : BindableItem<ItemRegisterEventProfileEducationLevelBinding>(itemId) {
 
     override fun bind(viewBinding: ItemRegisterEventProfileEducationLevelBinding, position: Int) {
         viewBinding.apply {

@@ -20,6 +20,7 @@ import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPRO
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
 import com.example.databinding.FragmentRequestBinding
+import com.example.extensions.findGroupBy
 import com.example.extensions.forEachGroups
 import com.example.extensions.setRequired
 import com.example.holders.ActionButtonItem
@@ -35,6 +36,7 @@ import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onBackPressedCallback
 import onScrolled
 import java.util.*
 import javax.inject.Inject
@@ -59,7 +61,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     private val headerSection = Section()
     private val fieldsDataSection = Section()
-    private val adapter by lazy {
+    private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
             add(headerSection)
             add(fieldsDataSection)
@@ -70,7 +72,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             presenter.onRegisterClick()
         }
     }
-    private lateinit var profileItemsGroup: RegisterEventProfileItemsGroup
 
     private val personalDataFileClickListener: OnPersonalDataFileClickListener =
         { presenter.onPersonalDataFileClick(it) }
@@ -78,35 +79,28 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         { presenter.onDataChange(it) }
 
     private var bottomDialog: Dialog? = null
-
-    private val customLayoutManager by lazy {
-        LinearLayoutManagerAccurateOffset(requireContext())
-    }
+    private val customLayoutManager by lazy { LinearLayoutManagerAccurateOffset(requireContext()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    hideKeyboard()
-                    presenter.onBackClick()
-                }
-            })
-        mBinding.ivBack.setOnClickListener {
+        onBackPressedCallback(true){
             hideKeyboard()
             presenter.onBackClick()
         }
-    }
-
-    override fun setRecyclerViewContent() {
-        mBinding.recyclerView.apply {
-            layoutManager = customLayoutManager
-            adapter = this@EventRegistrationFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarBackground(this.computeVerticalScrollOffset())
+        mBinding.apply {
+            recyclerView.apply {
+                layoutManager = customLayoutManager
+                adapter = groupAdapter
+                onScrolled { _, _ ->
+                    presenter.changeAppBarBackground(this.computeVerticalScrollOffset())
+                }
+            }
+            ivBack.setOnClickListener {
+                hideKeyboard()
+                presenter.onBackClick()
             }
         }
+
     }
 
 
@@ -124,16 +118,9 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     }
 
 
-    override fun setProfileFields(profileForm: ProfileFieldsFormResult) {
-        if (!this::profileItemsGroup.isInitialized) {
-            profileItemsGroup = RegisterEventProfileItemsGroup(profileForm) {
-                showEditProfile()
-            }
-        }
-    }
-
     override fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
-        profileItemsGroup.updateProfileFields(profileForm)
+        fieldsDataSection.findGroupBy<RegisterEventProfileItemsGroup> { true }
+            ?.updateProfileFields(profileForm)
     }
 
     override fun setFormFields(
@@ -150,9 +137,8 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             update(fieldsData.map {
                 when (it) {
                     is EventRegisterFieldData.Prefilled -> {
-                        if (this@EventRegistrationFragment::profileItemsGroup.isInitialized) {
-                            profileItemsGroup
-                        } else return
+                        if (it.value != null) RegisterEventProfileItemsGroup(it.value!!) { showEditProfile() }
+                        else null
                     }
                     is EventRegisterFieldData.String ->
                         RegisterEventStringItem(
@@ -263,11 +249,8 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             "Закрыть",
             true
         ).setSelectCallback { state ->
-            if (state) {
-                presenter.saveEventFormResultDraft()
-            } else {
-                findNavController().navigateUp()
-            }
+            if (state) presenter.saveEventFormResultDraft()
+            else findNavController().navigateUp()
         }
     }
 
@@ -280,11 +263,8 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
             "Начать заново",
             false
         ).setSelectCallback { state ->
-            if (state) {
-                presenter.initFormResultData(result.event, result.getSortedDraftFields())
-            } else {
-                presenter.initFormResultData(result.event, result.getSortedFields())
-            }
+            if (state) presenter.initFormResultData(result.event, result.getSortedDraftFields())
+            else presenter.initFormResultData(result.event, result.getSortedFields())
         }
     }
 
@@ -328,9 +308,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }.show()
     }
 
-    override fun openUrl(url: String) {
-        showCustomTabsBrowser(requireContext(), url)
-    }
+    override fun openUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun openFileSelector() {
         startActivityForResult(
@@ -342,7 +320,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     }
 
     override fun updateFileField(fieldId: String) {
-        adapter.forEachGroups {
+        groupAdapter.forEachGroups {
             val fileGroup = if (it is NestedGroup) findEventRegistrationFileGroup(it, fieldId)
             else null
             if (fileGroup != null) {

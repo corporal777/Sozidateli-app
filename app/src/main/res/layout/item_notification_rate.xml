@@ -32,7 +32,7 @@
         android:id="@+id/tvMessage"
         style="@style/Notification.Message"
         android:ellipsize="end"
-        android:maxLength="200"
+        tools:maxLength="240"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

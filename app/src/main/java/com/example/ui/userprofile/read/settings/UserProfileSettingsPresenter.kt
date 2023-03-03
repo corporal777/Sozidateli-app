@@ -1,33 +1,20 @@
 package com.example.ui.userprofile.read.settings
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.PasswordBody
-import com.example.data.bodies.UserShortNameBody
-import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
-import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.data.models.UserDetail.Companion.USER_STATE
 import com.example.data.models.UserState
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
-import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
-import com.example.util.phoneToServer
-import com.google.gson.Gson
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
-import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
 

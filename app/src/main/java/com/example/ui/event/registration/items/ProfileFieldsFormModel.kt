@@ -11,7 +11,28 @@ data class ProfileFieldsData(
     val user: Int,
     val isRequired: Boolean,
     val fields: ProfileFieldsFormModel
-) : Parcelable
+) : Parcelable {
+    fun toProfileFieldsFormResult(): ProfileFieldsFormResult {
+        return ProfileFieldsFormResult(
+            fieldsIsRequired = isRequired,
+            user_birthday = ProfileFieldString(isRequired, false, false, fields.user_birthday),
+            user_gender = ProfileFieldString(isRequired, false, false, fields.user_gender),
+            user_notes = ProfileFieldString(isRequired, false, false, fields.user_notes),
+            user_phone = ProfileFieldString(isRequired, false, false, fields.user_phone),
+            user_work_phone = ProfileFieldString(isRequired, false, fields.work_phone_absent, fields.user_work_phone),
+            user_email = ProfileFieldString(isRequired, false, false, fields.user_email),
+            address = ProfileFieldString(isRequired, false, false, fields.address?.fullValue ?: fields.address?.getShortAddress()),
+            educationLevel = ProfileFieldEducationLevel(isRequired, fields.educationLevel),
+            education = ProfileFieldEducation(isRequired, false, fields.education),
+            academic_degree = ProfileFieldAcademicDegree(isRequired, false, fields.academic_degree),
+            work_experience = ProfileFieldWorkExperience(isRequired, false, fields.work_experience_absent, fields.work_experience),
+            user_links = ProfileFieldString(isRequired, false, fields.social_links_absent, fields.contactInformation?.socialLinks?.values?.joinToString("\n") { it.value ?: "" }),
+            user_sites = ProfileFieldString(isRequired, false, fields.site_absent, fields.contactInformation?.site?.values?.joinToString("\n") { it.value ?: "" }),
+            user_public_email = ProfileFieldString(isRequired, false, false, fields.contactInformation?.emails?.joinToString("\n") { it.value ?: "" }),
+            user_files = ProfileFieldString(isRequired, false, false, fields.recommendationFile?.joinToString("\n") { it.name ?: "" })
+        )
+    }
+}
 
 @Parcelize
 data class ProfileFieldsFormModel(
@@ -29,7 +50,7 @@ data class ProfileFieldsFormModel(
     val educationLevel: EducationLevel? = null,
     val education: List<EducationModel>? = null,
     @SerializedName("academic-degree")
-    val academic_degree: List<AcademicDegreeModelNew>? = null,
+    val academic_degree: List<PrefilledFormAcademicDegree>? = null,
     @SerializedName("work-experience")
     val work_experience: List<WorkExperience>? = null,
     val recommendationFile: List<FileModel>? = null,
@@ -44,7 +65,7 @@ data class ProfileFieldsFormModel(
 ) : Parcelable
 
 data class ProfileFieldsFormResult(
-    val fieldsIsRequired : Boolean,
+    val fieldsIsRequired: Boolean,
     var user_birthday: ProfileFieldString,
     var user_gender: ProfileFieldString,
     var user_notes: ProfileFieldString,
@@ -196,7 +217,7 @@ data class ProfileFieldEducation(
 data class ProfileFieldAcademicDegree(
     var isRequired: Boolean,
     var isChosen: Boolean,
-    var value: List<AcademicDegreeModelNew>? = null
+    var value: List<PrefilledFormAcademicDegree>? = null
 )
 
 data class ProfileFieldWorkExperience(
@@ -205,4 +226,12 @@ data class ProfileFieldWorkExperience(
     var isAbsent: Boolean,
     var value: List<WorkExperience>? = null
 )
+
+@Parcelize
+data class PrefilledFormAcademicDegree(
+    val id: Int? = null,
+    val user: Int? = null,
+    val speciality: String? = null,
+    val degree: String? = null
+) : Parcelable
 

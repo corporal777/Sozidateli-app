@@ -68,7 +68,7 @@ class RxTakePhoto(
         )
     }
 
-    fun crop(
+    private fun crop(
         uri: Uri,
         rotation: Int = 0,
         outputMaxWidth: Int = 0,

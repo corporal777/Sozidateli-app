@@ -9,15 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
-            android:text="@string/profile_fields_data_label"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_action"
@@ -25,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="5dp"
             tools:text="@string/register_event_go_to_edit_data"
             android:textColor="@color/register_event_go_to_profile_text_color"

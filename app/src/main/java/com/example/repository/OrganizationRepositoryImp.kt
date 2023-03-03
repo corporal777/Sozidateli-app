@@ -83,4 +83,9 @@ class OrganizationRepositoryImp
         return newApi.searchDataNew(map)
             .map { PaginationResponse(it.organizations.count, it.organizations.data) }
     }
+
+    override fun getOrganizationsWithActiveEvents(): Maybe<List<OrganizationNew>> {
+        return newApi.getOrganizationsWithActiveEvents()
+            .map { it.data }
+    }
 }

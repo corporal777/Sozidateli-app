@@ -61,6 +61,7 @@ class FinishRegisterPresenter
         compositeDisposable += timerCompositeDisposable
         viewState.apply {
             setData(login, firstName, lastName, middleName)
+            setDescriptionText(loginType, login)
             if (loginType == "email") enableRegisterBtn(code.length == 6)
             else enableRegisterBtn(code.length == 4)
         }
@@ -76,6 +77,7 @@ class FinishRegisterPresenter
                 else userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login))
             }
                 .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
                         it.printStackTrace()
@@ -93,7 +95,7 @@ class FinishRegisterPresenter
         viewState.apply {
             setCanResend(false)
             setTimeLeft(FinishRegisterPresenter.TIMER_SECONDS_COUNT)
-            setDescriptionText(true)
+            showHideDescriptionText(true)
         }
 
         timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
@@ -119,9 +121,14 @@ class FinishRegisterPresenter
         }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                startTimer()
-            }, { it.printStackTrace() })
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onComplete = {
+                    viewState.setDescriptionText(loginType, login)
+                    startTimer()
+                }
+            )
+
     }
 
     override fun onHandleAuthLink() {
@@ -181,7 +188,7 @@ class FinishRegisterPresenter
         loginType = if (Utils.isPhone(login) && !Utils.isContainLetters(login)) "phone"
         else "email"
         viewState.apply {
-            setDescriptionText(false)
+            showHideDescriptionText(false)
             setCanResend(true)
         }
     }
@@ -227,7 +234,7 @@ class FinishRegisterPresenter
     }
 
     fun isConfirmCodeValid(codeLength: Int): Boolean {
-        return if (loginType == "email")  codeLength == AddPhoneEmailDialog.EMAIL_CODE_SIZE
+        return if (loginType == "email") codeLength == AddPhoneEmailDialog.EMAIL_CODE_SIZE
         else codeLength == AddPhoneEmailDialog.PHONE_CODE_SIZE
     }
 

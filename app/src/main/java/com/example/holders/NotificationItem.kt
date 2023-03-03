@@ -85,9 +85,9 @@ abstract class NotificationItem(
             //val ellipsizedMessage = message?.substringToWholeWord(maxLength)
             //text = ellipsizedMessage
             //getReadMoreView(viewHolder).isVisible = ellipsizedMessage != message
-            val note = ellipsizeMarkdownText(context, notification.message)
-            text = note.second
-            getReadMoreView(viewHolder).isVisible = note.first
+            val message = ellipsizeMarkdownText(context, notification.message)
+            text = message.second
+            getReadMoreView(viewHolder).isVisible = message.first
             BetterLinkMovementMethod.linkifyHtml(this)
                 .setOnLinkClickListener(onLinkClickListener)
         }
@@ -114,8 +114,8 @@ abstract class NotificationItem(
 
     private fun ellipsizeMarkdownText(context: Context, message : String?): Pair<Boolean, SpannableStringBuilder> {
         val spanned = markWon(context).toMarkdown(message?:"")
-        val ellipsizedSpan =  if (spanned.length > 200){
-            Pair(true, SpannableStringBuilder(spanned.subSequence(0,200)).append('.').append('.').append('.'))
+        val ellipsizedSpan =  if (spanned.length > 240){
+            Pair(true, SpannableStringBuilder(spanned.subSequence(0,240)).append('.').append('.').append('.'))
         } else Pair(false, SpannableStringBuilder(spanned))
         ellipsizedSpan.second.apply {
             val urls = getSpans<URLSpan>()

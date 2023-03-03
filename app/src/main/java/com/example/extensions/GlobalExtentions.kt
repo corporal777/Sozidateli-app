@@ -23,6 +23,7 @@ import android.view.animation.AnimationUtils
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -585,4 +587,17 @@ fun String?.parseColor(): Int? {
     } catch (e: IllegalArgumentException) {
         null
     }
+}
+
+fun Fragment.onBackPressedCallback(
+    enabled: Boolean,
+    onBackClick: () -> Unit
+) {
+    requireActivity().onBackPressedDispatcher.addCallback(
+        viewLifecycleOwner,
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                onBackClick.invoke()
+            }
+        })
 }

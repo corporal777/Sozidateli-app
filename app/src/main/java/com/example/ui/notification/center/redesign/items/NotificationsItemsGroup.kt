@@ -3,10 +3,7 @@ package com.example.ui.notification.center.redesign.items
 import android.content.Context
 import com.example.data.models.EventNew
 import com.example.data.models.Notification
-import com.example.holders.OnNotificationAcceptClickListener
-import com.example.holders.OnNotificationRateClickListener
-import com.example.holders.OnNotificationReadClickListener
-import com.example.holders.PlaceholderItem
+import com.example.holders.*
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventItemNew
 import com.xwray.groupie.Group
@@ -18,11 +15,7 @@ class NotificationsItemsGroup(
     val context: Context,
     val date: String,
     val list: List<Notification>,
-    linkClickListener: BetterLinkMovementMethod.OnLinkClickListener,
-    readClickListener: OnNotificationReadClickListener,
-    openEventListener: OnOpenEventListener,
-    acceptClickListener: OnNotificationAcceptClickListener,
-    rateClickListener: OnNotificationRateClickListener
+    listener: NotificationItemNew.OnNotificationActionListener,
 ) : NestedGroup() {
 
     private val dateItem = NotificationsDateItem(date)
@@ -36,23 +29,17 @@ class NotificationsItemsGroup(
                     Notification.Type.SIMPLE -> SimpleNotificationItemNew(
                         context,
                         it,
-                        linkClickListener,
-                        readClickListener,
-                        openEventListener
+                        listener
                     )
                     Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
                         context,
                         it,
-                        linkClickListener,
-                        acceptClickListener,
-                        openEventListener
+                        listener
                     )
                     Notification.Type.RATE -> RateNotificationItemNew(
                         context,
                         it,
-                        linkClickListener,
-                        rateClickListener,
-                        openEventListener
+                        listener
                     )
                 }
             })

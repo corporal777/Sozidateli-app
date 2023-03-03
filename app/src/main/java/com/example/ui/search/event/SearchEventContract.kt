@@ -18,6 +18,5 @@ interface SearchEventContract {
         fun onActionRegister(event: String)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-        fun onShowFormatClick(format: Int)
     }
 }

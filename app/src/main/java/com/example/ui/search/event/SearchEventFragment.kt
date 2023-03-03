@@ -1,15 +1,16 @@
 package com.example.ui.search.event
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.EventNew
-import com.example.data.models.SearchFilter
+import com.example.data.models.*
 import com.example.databinding.LayoutFilterEventBinding
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
@@ -103,6 +104,11 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
             initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
 
+            val organizations = filter.organizations
+            initOrganizations(filter.org, tilOrganization, tvOrganization, organizations) {
+                filter.org = it
+            }
+
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
                 tilTheme.isVisible = false
@@ -141,16 +147,43 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         }.root
     }
 
+    private fun initOrganizations(
+        selectedOrganizationId : Long?,
+        inputLayout: View,
+        textView: AutoCompleteTextView,
+        organizations: List<OrganizationNew?>?,
+        onOrgChange: (organization: Long?) -> Unit
+    ) {
+        if (organizations.isNullOrEmpty()) {
+            textView.isEnabled = false
+            textView.text = null
+            inputLayout.isEnabled = false
+        } else {
+            val selected = organizations.find { x -> x?.id == selectedOrganizationId }
+            initDropDownView(
+                textView,
+                organizations,
+                selected?.legalInformation?.name?.short,
+                null,
+                transformKey = { it?.legalInformation?.name?.short ?: "" },
+                findValue = { it?.id },
+                onVariantChange = { onOrgChange(it) })
+            textView.isEnabled = true
+            inputLayout.isEnabled = true
+        }
+    }
+
 
     override fun clearFilterView(filterView: View) {
         LayoutFilterEventBinding.bind(filterView).apply {
-            etAddress.text = null
             etName.text = null
-            etStart.text = null
-            etFinish.text = null
+            etAddress.text = null
+            tvFormat.text = null
+            tvOrganization.text = null
             tvTheme.text = null
             tvSpec.text = null
-            tvFormat.text = null
+            etStart.text = null
+            etFinish.text = null
         }
     }
 

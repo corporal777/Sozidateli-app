@@ -75,7 +75,8 @@ class MainPresenter
     private var isAuthRequired = false
     private var isFromQr = false
     private var canShowBrowser = false
-    private var inappList: Deque</*RemoteNotification*/NotificationModel>? = null
+    private var inappList: Deque<NotificationModel>? = null
+    private val inAppListNew = arrayListOf<Notification>()
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true
@@ -84,11 +85,8 @@ class MainPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         appData.deviceId = UUID.randomUUID().toString()
-        if (!appData.isStoriesShown) {
-            viewState.showStories()
-        } else {
-            onStoriesComplete()
-        }
+        if (!appData.isStoriesShown) viewState.showStories()
+        else onStoriesComplete()
 
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
@@ -137,18 +135,18 @@ class MainPresenter
         compositeDisposable += Completable.create { emitter ->
             val disposable = CompositeDisposable()
             disposable += userRepository.getUserShortNew().subscribeSimple(
-                    onError = { emitter.onError(it) },
-                    onSuccess = { user ->
-                        updateUserInShake(user)
-                        disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation()))
-                            .andThen(Completable.defer { checkInternetConnected() })
-                            .doOnComplete { connectToSocket(appData.getId()) }
-                            .andThen(Completable.defer { checkShowGreetings() })
-                            .subscribeSimple(
-                                onError = { emitter.onError(it) },
-                                onComplete = { emitter.onComplete() }
-                            )
-                    })
+                onError = { emitter.onError(it) },
+                onSuccess = { user ->
+                    updateUserInShake(user)
+                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
+                        .andThen(Completable.defer { checkInternetConnected() })
+                        .doOnComplete { connectToSocket(appData.getId()) }
+                        .andThen(Completable.defer { checkShowGreetings() })
+                        .subscribeSimple(
+                            onError = { emitter.onError(it) },
+                            onComplete = { emitter.onComplete() }
+                        )
+                })
             emitter.setDisposable(disposable)
         }
             .performOnBackgroundOutOnMain()
@@ -170,7 +168,7 @@ class MainPresenter
                             showRecommendations()
                             checkIntent()
                         }
-                        showNextInapp()
+                        showNextInApp()
                         initInternetConnectionCheck()
                     }
                     isEditingPhone = false
@@ -408,16 +406,20 @@ class MainPresenter
         return distance[0] <= EVENT_AREA_DISTANCE
     }
 
-    private fun showNextInapp() {
-        inappList?.pollFirst()?.let {
-            val notification = Notification.fromRemoteNotification(it)
-            viewState.showInApp(notification)
-            onInappOkClick(notification)
+    private fun showNextInApp() {
+        if (!inAppListNew.isNullOrEmpty()) {
+            viewState.showInAppNew(inAppListNew)
         }
+
+//        inappList?.pollFirst()?.let {
+//            val notification = Notification.fromRemoteNotification(it)
+//            viewState.showInApp(notification)
+//            onInappOkClick(notification)
+//        }
     }
 
     override fun onInappHidden() {
-        showNextInapp()
+        showNextInApp()
     }
 
     override fun onInappAcceptClick(inapp: Notification) {
@@ -742,7 +744,7 @@ class MainPresenter
     }
 
     override fun onBackClick() {
-        if (!appData.isLoggedOut){
+        if (!appData.isLoggedOut) {
             viewState.navigateUp()
         }
     }
@@ -770,8 +772,22 @@ class MainPresenter
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
                 NotificationModel.NOTIFICATION_IS_IN_APP to true,
                 NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+                //NotificationModel.NOTIFICATION_ACKNOWLEDGED to true
             )
-        ).doOnSuccess { inappList = LinkedList(it) }.ignoreElement()
+        ).doOnSuccess {
+            inappList = LinkedList(it)
+            inAppListNew.addAll(it.map { n ->
+                Notification.fromRemoteNotification(n)
+            })
+        }.ignoreElement()
+    }
+
+    private fun getAdditionalData(): Completable {
+        return Single.merge(
+            userRepository.getEducationLevel(),
+            userRepository.getSpeciality(),
+            userRepository.getAcademicDegrees()
+        ).ignoreElements()
     }
 
     companion object {

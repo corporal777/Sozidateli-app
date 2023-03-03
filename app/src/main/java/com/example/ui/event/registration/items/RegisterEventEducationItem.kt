@@ -12,11 +12,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RegisterEventEducationItem(
+    val itemId : Long,
     val educationOrganization : String?,
     val educationSpeciality : String?,
     val educationBegin : String?,
     val educationEnd: String?
-) : BindableItem<ItemRegisterEventProfileEducationBinding>() {
+) : BindableItem<ItemRegisterEventProfileEducationBinding>(itemId) {
 
 
     override fun bind(viewBinding: ItemRegisterEventProfileEducationBinding, position: Int) {

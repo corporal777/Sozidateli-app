@@ -132,7 +132,7 @@
     <string name="notifications_cancel">Отклонить</string>
     <string name="notifications_state_accepted">Принято</string>
     <string name="notifications_state_cancelled">Отклонено</string>
-    <string name="notifications_state_disabled">Приглашение было отозвано</string>
+    <string name="notifications_state_disabled">Приглашение было отозвано организаторами.</string>
     <string name="notifications_change_decision">Изменить решение?</string>
     <string name="notifications_rate_event">Оценить мероприятие</string>
     <string name="notifications_simple_title">Уведомление</string>
@@ -758,6 +758,7 @@
     <string name="phone">Телефон</string>
     <string name="tags">Теги</string>
     <string name="notification_event_title">Сообщение от организаторов мероприятия: %s</string>
+    <string name="notification_event_title_new">Сообщение от организаторов мероприятия:</string>
     <string name="yes_delete">Да, хочу удалить</string>
     <string name="work_experience_data_delete_text">Все данные об опыте работы будут удалены.</string>
     <string name="work_experience_data_delete_title">Вы действительно хотите удалить данные?</string>
@@ -972,6 +973,7 @@
     <string name="register_event_go_to_fill_missing_data">Данные ниже взяты из вашего профиля. Для продолжения, пожалуйста, заполните отсутствующие данные в профиле.</string>
 
     <string name="decline_text_for_notification">Приглашение было принято. Для изменения решения нажмите отклонить.</string>
+    <string name="accept_text_for_notification">Приглашение было отклонено. Для изменения решения нажмите принять.</string>
     <string name="read_all">Прочитать всё</string>
     <string name="unread_notifications">Непрочитанные</string>
 
@@ -997,6 +999,7 @@
     <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
     <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
     <string name="asset_statements" translatable="false">[{ \"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\" }]</string>
+    <string name="unread_notifications_label">Непросмотренные уведомления</string>
 
 
 </resources>

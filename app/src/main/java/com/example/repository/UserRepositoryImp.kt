@@ -82,10 +82,6 @@ class UserRepositoryImp
         return newApi.getUserByShortName(name)
     }
 
-    override fun updateUserShortName(id: Int, data: UserShortNameBody): Maybe<UserDetail> {
-        return newApi.updateUserShortName(id, data)
-    }
-
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
         newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
             appData.checkUserState(state.fields)
@@ -480,8 +476,16 @@ class UserRepositoryImp
     override fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail> =
         newApi.getInviteAssistanceDetail(assistanceId)
 
-    override fun cancelEvMember(evMemberId: String, body: CancelBody): Completable =
+    override fun cancelEventMember(evMemberId: String, body: CancelBody): Completable =
         newApi.cancelEvMember(evMemberId, body)
+
+    override fun approveEventMember(memberId: String): Completable {
+        return newApi.approveEventMember(memberId)
+    }
+
+    override fun declineEventMember(memberId: String): Completable {
+        return newApi.declineEventMember(memberId)
+    }
 
     override fun checkEmailPhone(email: String?, phone: String?): Completable =
         newApi.checkEmailPhone(email, phone)

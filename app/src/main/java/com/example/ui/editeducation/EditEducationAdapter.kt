@@ -116,7 +116,9 @@ class EditEducationAdapter(
                     getItem(holder.adapterPosition).academicDegrees?.degree = it?.id
                 }
 
-                val sciencesList = getItem(holder.adapterPosition).availableSciences as ArrayList
+                val sciencesList = arrayListOf<EducationLevelNew>().apply {
+                    addAll(getItem(holder.adapterPosition).availableSciences?: emptyList())
+                }
                 if (!sciencesList.isNullOrEmpty()) {
                     sciencesList.add(0, EducationLevelNew(777, "Не выбрано", 777))
                 }

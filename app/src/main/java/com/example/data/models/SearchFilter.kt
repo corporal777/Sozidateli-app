@@ -53,10 +53,12 @@ sealed class SearchFilter : Serializable {
         var theme: Int? = null,
         var spec: Int? = null,
         var format: Int? = null,
+        var org: Long? = null,
         var fullAddress: NewUserAddress? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
         var formats: List<NewEventFormat>? = null
+        var organizations : List<com.example.data.models.OrganizationNew?>? = null
     }
 
     data class User(

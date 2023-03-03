@@ -33,10 +33,6 @@ interface NewApi {
     fun getUserByShortName(@Query("shortName") shortName: String): Maybe<UserDetail>
 
     //+
-    @PATCH("v1/user/{id}")
-    fun updateUserShortName(@Path("id") id: Int, @Body body: UserShortNameBody): Maybe<UserDetail>
-
-    //+
     @POST("v1/user")
     fun registerUser(@Body body: RegisterBody): Single<NewAuthResponse>
 
@@ -376,6 +372,9 @@ interface NewApi {
         @Query("binds") binds: String
     ): Single<EventActivityModel>
 
+    //++
+    fun registerFcmToken() : Completable
+
     @GET("v1/user-notification/{id}")
     fun getNotificationDetail(
         @Path("id") notificationId: String,
@@ -411,6 +410,12 @@ interface NewApi {
 
     @PATCH("v1/event-member/{id}/cancel")
     fun cancelEvMember(@Path("id") evMemberId: String, @Body body: CancelBody): Completable
+
+    @PATCH("v1/event-member/{id}/approve")
+    fun approveEventMember(@Path("id") memberId: String) : Completable
+
+    @PATCH("v1/event-member/{id}/decline")
+    fun declineEventMember(@Path("id") memberId: String) : Completable
 
     @PATCH("v1/user-external-invite/pgrf/{id}/rebase")
     fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody): Completable
@@ -466,4 +471,7 @@ interface NewApi {
 
     @GET("v1/search")
     fun searchDataNew(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
+
+    @GET("v1/organization/active-events")
+    fun getOrganizationsWithActiveEvents(): Maybe<SearchResponseData<OrganizationNew>>
 }

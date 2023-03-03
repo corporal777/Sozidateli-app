@@ -1,44 +1,34 @@
 package com.example.ui.notification.center.redesign
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.MyEventsFilter
 import com.example.data.models.Notification
-import com.example.databinding.FragmentNotificationsBinding
 import com.example.databinding.FragmentNotificationsListBinding
-import com.example.databinding.FragmentNotificationsListBindingImpl
 import com.example.extensions.findItemBy
-import com.example.holders.*
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.notification.center.NotificationsContract
 import com.example.ui.notification.center.NotificationsFragmentDirections
-import com.example.ui.notification.center.NotificationsPresenter
-import com.example.ui.notification.center.redesign.items.AcceptNotificationItemNew
+import com.example.ui.notification.center.redesign.items.NotificationItemNew
 import com.example.ui.notification.center.redesign.items.NotificationsItemsGroup
-import com.example.ui.notification.center.redesign.items.RateNotificationItemNew
-import com.example.ui.notification.center.redesign.items.SimpleNotificationItemNew
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
-import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.abs
 
 class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBinding>(),
     NotificationsListContract.View {
@@ -53,33 +43,33 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     @ProvidePresenter
     fun providePresenter(): NotificationsListPresenter = presenterProvider.get()
 
-    private val readClickListener: OnNotificationReadClickListener =
-        { presenter.onNotificationReadClick(it) }
 
-    private val acceptClickListener: OnNotificationAcceptClickListener = { notification, isAccept ->
-        presenter.apply {
-            if (isAccept) onNotificationAcceptClick(notification)
-            else onNotificationCancelClick(notification)
+    private val onNotificationListener = object : NotificationItemNew.OnNotificationActionListener {
+
+        override fun onOpenEventClickListener(eventId: String) = showAboutEvent(eventId)
+        override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
+        override fun onRateClickListener(rateId: String) = presenter.onNotificationRateClick(rateId)
+
+        override fun onReadListener(id: Int) {
+            if (mBinding.notificationsList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                //presenter.onNotificationRead(id)
+            }
         }
-    }
 
-    private val rateClickListener: OnNotificationRateClickListener =
-        { presenter.onNotificationRateClick(it) }
-
-    private val openEventListener: OnOpenEventListener = {
-        showAboutEvent(it)
-    }
-
-    private val linkClickListener = BetterLinkMovementMethod.OnLinkClickListener { _, url ->
-        if (url.contains("/organization/")) {
-            findNavController().navigate(
-                R.id.organization_fragment_new,
-                bundleOf("organizationId" to Uri.parse(url).lastPathSegment)
-            )
-        } else {
-            presenter.onNotificationUrlClick(url)
+        override fun onLinkClickListener(url: String) {
+            if (url.contains("/organization/")) {
+                showAboutOrganization(Uri.parse(url).lastPathSegment)
+            } else presenter.onNotificationUrlClick(url)
         }
-        true
+
+
+        override fun onAcceptClickListener(notification: Notification, isAccept: Boolean) {
+            presenter.apply {
+                if (isAccept) onNotificationAcceptClick(notification)
+                else onNotificationCancelClick(notification)
+            }
+        }
+
     }
 
     private val groupAdapter by lazy {
@@ -117,11 +107,12 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
             alpha = if (enabled) 1.0f
             else 0.5f
         }
+        mBinding.btnReadAll.isVisible = enabled
     }
 
     override fun setData(notifications: List<Notification?>) {
         groupAdapter.update(notifications.map {
-            PlaceholderItem(PlaceholderItem.Type.NOTIFICATION)
+            PlaceholderItem(PlaceholderItem.Type.NOTIFICATIONS_LIST)
         })
         mBinding.swipeToRefresh.isRefreshing = false
     }
@@ -133,11 +124,7 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
                 requireContext(),
                 it.key,
                 it.value,
-                linkClickListener,
-                readClickListener,
-                openEventListener,
-                acceptClickListener,
-                rateClickListener
+                onNotificationListener
             )
         })
     }
@@ -156,6 +143,13 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         )
     }
 
+    private fun showAboutOrganization(id: String?) {
+        findNavController().navigate(
+            R.id.organization_fragment_new,
+            bundleOf("organizationId" to id)
+        )
+    }
+
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun onNotificationNeedUpdate(id: Int) {
@@ -170,6 +164,25 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         val mLayoutManager =
             mBinding.notificationsList.layoutManager as LinearLayoutManagerAccurateOffset
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
+    }
+
+
+    private fun getFirstVisibleItem(): Int {
+        var position = 0
+        mBinding.notificationsList.apply {
+            val layoutManager = this.layoutManager as LinearLayoutManager
+            position = layoutManager.findFirstCompletelyVisibleItemPosition()
+        }
+        return position
+    }
+
+    private fun getLastVisibleItem(): Int {
+        var position = 0
+        mBinding.notificationsList.apply {
+            val layoutManager = this.layoutManager as LinearLayoutManager
+            position = layoutManager.findLastCompletelyVisibleItemPosition()
+        }
+        return position + 1
     }
 
 

@@ -37,7 +37,6 @@ class NotificationsListPresenter
     private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
     private var showOnlyNotRead = false
-    private var withLoading = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotificationsList(buildParams(limit, offset))
@@ -47,8 +46,6 @@ class NotificationsListPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(List(20) { null })
-
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -72,25 +69,21 @@ class NotificationsListPresenter
     }
 
     private fun loadNotifications() {
+        viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
             .map {
                 notifications = it
                 it.groupBy { x -> x.date?.split(" ")?.get(0) }
             }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (withLoading) {
-                    withLoading = false
-                    it.withCustomProgressBarLoadingDialog(viewState)
-                } else it
-            }
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onNext = {
                     if (!it.isNullOrEmpty()) viewState.setDataNew(it)
                     else viewState.showEmptyListPlaceholder()
 
-                    viewState.setNotReadButtonEnabled(!notifications.filter { x -> x?.wasRead == false }.isNullOrEmpty())
+                    viewState.setNotReadButtonEnabled(!notifications.filter { x -> x?.wasRead == false }
+                        .isNullOrEmpty())
                 })
     }
 
@@ -118,7 +111,14 @@ class NotificationsListPresenter
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
                 approveOrgMember(notification.entity?.id ?: 0)
             }
+            NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
+                approveEventMember(notification.entity?.id ?: 0)
+            }
         }
+    }
+
+    private fun approveEventMember(id: Int) {
+        updateNotification(userRepository.approveEventMember(id.toString()), id)
     }
 
     private fun approveOrgMember(id: Int) {
@@ -151,7 +151,7 @@ class NotificationsListPresenter
                 declineOrgMember(notification.entity?.id ?: 0)
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
-                cancelEvMember(notification.entity?.id ?: 0)
+                declineEventMember(notification.entity?.id ?: 0)
             }
         }
     }
@@ -173,9 +173,13 @@ class NotificationsListPresenter
         updateNotification(userRepository.declineAssistance(id.toString()), id)
     }
 
+    private fun declineEventMember(id: Int) {
+        updateNotification(userRepository.declineEventMember(id.toString()), id)
+    }
+
     private fun cancelEvMember(id: Int) {
         updateNotification(
-            userRepository.cancelEvMember(
+            userRepository.cancelEventMember(
                 id.toString(),
                 CancelBody(appData.getId())
             ), id
@@ -185,6 +189,23 @@ class NotificationsListPresenter
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
+    }
+
+    fun onNotificationRead(id: Int) {
+        compositeDisposable += Completable.fromAction { blockInvalidation = true }
+            .andThen(userRepository.markAsRead(id.toString()))
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    blockInvalidation = false
+                    it.printStackTrace()
+                },
+                onComplete = {
+                    blockInvalidation = false
+                    pagination.invalidate()
+                    notificationManager.cancel(id)
+                })
+
     }
 
     override fun onReadAllNotificationsClick() {
@@ -217,7 +238,6 @@ class NotificationsListPresenter
 
     override fun showOnlyNotRead(show: Boolean) {
         this.showOnlyNotRead = show
-        withLoading = true
         loadNotifications()
         //pagination.invalidate()
     }

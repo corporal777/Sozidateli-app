@@ -13,15 +13,8 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventRegistrationContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setRecyclerViewContent()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setFormHeader(event: EventRegistration)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setProfileFields(profileForm : ProfileFieldsFormResult)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateProfileFields(profileForm : ProfileFieldsFormResult)

@@ -75,3 +75,11 @@ inline fun <reified I : Group> Group.forEachGroupsPos(selector: (I, position: In
         if (item is I) selector(item, i)
     }
 }
+
+fun Section.updateItem(item: Item<*>){
+    update(listOf(item))
+}
+
+fun Section.updateGroup(item: NestedGroup){
+    update(listOf(item))
+}

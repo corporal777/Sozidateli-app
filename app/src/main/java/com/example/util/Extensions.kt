@@ -511,4 +511,12 @@ fun getNameFilter(): Array<InputFilter> {
     })
 }
 
+fun getPhoneFilter(): Array<InputFilter> {
+    return arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filter {
+            it.isDigit() || it == '+'
+        }
+    })
+}
+
 

@@ -3,7 +3,7 @@ package com.example.ui.profile.shortName
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.UserShortNameBody
+import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -50,7 +50,7 @@ class ChangeShortNamePresenter
     }
 
     override fun updateUserShortName(short: String) {
-        compositeDisposable += userRepository.updateUserShortName(userId.toInt(), UserShortNameBody(short))
+        compositeDisposable += userRepository.updateUserProfileField(mapOf(UserDetail.USER_SHORT_NAME to short))
             .doOnSuccess { new ->
                 appData.updateUserNew { this.shortName = new.shortName }
             }

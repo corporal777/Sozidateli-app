@@ -24,7 +24,8 @@ data class AboutEventData(
             members.addAll(list.filter { x -> x.isLead == false }
                 .sortedBy { x -> x.binds?.user?.fullName })
             this.showMoreSpeakers = list.size > 5
-            this.speakers = members.subList(0, 5)
+            if (members.size > 5) speakers = members.subList(0, 5)
+            else speakers = members
         }
     }
 
