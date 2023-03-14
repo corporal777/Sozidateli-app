@@ -1,8 +1,7 @@
-package com.example.ui.views.suggestFieldView
+package com.example.ui.views.suggestFieldView.address
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -10,16 +9,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
-import com.example.data.models.DaDataItem
 import com.example.data.models.NewUserAddress
 import com.example.util.SimpleTextWatcher
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView, DaDataAutoCompleteTextViewContract.View {
+class DaDataAutoCompleteTextView : AppCompatAutoCompleteTextView,
+    DaDataAutoCompleteTextViewContract.View {
 
 
     private val mvpDelegate by lazy { MvpDelegate(this) }

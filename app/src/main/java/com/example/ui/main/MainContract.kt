@@ -80,6 +80,9 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBrowser(url : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUpdateApp(isRequired : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

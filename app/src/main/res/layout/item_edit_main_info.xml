@@ -215,7 +215,7 @@
             android:layout_height="wrap_content"
             app:endIconMode="none">
 
-            <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+            <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
                 android:id="@+id/etCity"
                 style="@style/Profile.Edit.Input.SingleLine"
                 android:hint="@string/profile_city"

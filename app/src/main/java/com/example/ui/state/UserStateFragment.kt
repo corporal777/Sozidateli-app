@@ -2,6 +2,7 @@ package com.example.ui.state
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,6 +18,7 @@ import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.google.android.material.tabs.TabLayoutMediator
+import onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -35,19 +37,16 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startPostponedEnterTransition()
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    presenter.onClickClose()
-                }
-            })
+        onBackPressedCallback(true){
+            presenter.onClickClose()
+        }
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {
 
         val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
+
             when (it) {
                 UserState.BASE ->
                     findNavController().navigate(
@@ -58,31 +57,13 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
                     val base = states.firstOrNull { st -> st.state == UserState.BASE }
                     if (base?.isDone == true)
                         when (Utils.maxStateScreen(presenter.getUserData())) {
-                            MaxStateScreenType.BASE ->
-                                findNavController().navigate(
-                                    UserStateFragmentDirections.actionUserStateFragmentToMaxStateMainInfoFragment()
-                                        .setScreen(2)
-                                )
-                            MaxStateScreenType.INTERESTS ->
-                                findNavController().navigate(
-                                    UserStateFragmentDirections.actionUserStateFragmentToBaseStateInterestsFragment()
-                                        .setScreen(2)
-                                )
-                            MaxStateScreenType.WORK ->
-                                findNavController().navigate(
-                                    UserStateFragmentDirections.actionUserStateFragmentToMaxStateWorkFragment()
-                                        .setScreen(2)
-                                )
-                            MaxStateScreenType.EDUCATION ->
-                                findNavController().navigate(
-                                    UserStateFragmentDirections.actionUserStateFragmentToMaxStateEducationFragment()
-                                        .setScreen(2)
-                                )
+                            MaxStateScreenType.BASE -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateMainInfoFragment().setScreen(2))
+                            MaxStateScreenType.INTERESTS -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToBaseStateInterestsFragment().setScreen(2))
+                            MaxStateScreenType.WORK -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateWorkFragment().setScreen(2))
+                            MaxStateScreenType.EDUCATION -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateEducationFragment().setScreen(2))
+                            MaxStateScreenType.DONE -> presenter.onClickClose()
                         }
-                    else findNavController().navigate(
-                        UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment()
-                            .setType(it).setScreen(2)
-                    )
+                    else findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment().setType(it).setScreen(2))
                 }
             }
         }

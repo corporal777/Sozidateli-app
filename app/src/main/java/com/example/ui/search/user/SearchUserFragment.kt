@@ -18,6 +18,7 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
+import initDropDownView
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -64,43 +65,79 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
 
 
     override fun createFilterView(filter: SearchFilter.UserNew): View {
-        return LayoutFilterUserBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
-            etAddress.apply {
-                setTextWithoutSearch(filter.address)
-                onTextChanged { filter.address = it.toString() }
-                onDataSelectedListener = {
-                    filter.index = it.index
-                    filter.country = it.country
-                    filter.federal = it.federal
-                    filter.region = it.region
-                    filter.area = it.area
-                    filter.city = it.city
-                    filter.settlement = it.settlement
-                    filter.street = it.street
-                    filter.house = it.house
-                    filter.flat = it.flat
+        return LayoutFilterUserBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+            .apply {
+                etAddress.apply {
+                    setTextWithoutSearch(filter.address)
+                    onTextChanged { filter.address = it.toString() }
+                    onDataSelectedListener = {
+                        filter.index = it.index
+                        filter.country = it.country
+                        filter.federal = it.federal
+                        filter.region = it.region
+                        filter.area = it.area
+                        filter.city = it.city
+                        filter.settlement = it.settlement
+                        filter.street = it.street
+                        filter.house = it.house
+                        filter.flat = it.flat
+                    }
                 }
-            }
-            val interests = filter.interests
-            if (interests.isNullOrEmpty()) {
-                tilTheme.isVisible = false
-                tilSpec.isVisible = false
-            } else {
-                initInterests(
-                    interests,
-                    tvTheme,
-                    tilSpec,
-                    tvSpec,
-                    filter.theme,
-                    filter.spec
-                ) { theme, spec ->
-                    filter.theme = theme
-                    filter.spec = spec
+                val interests = filter.interests
+                if (interests.isNullOrEmpty()) {
+                    tilTheme.isVisible = false
+                    tilSpec.isVisible = false
+                } else {
+                    initInterests(
+                        interests,
+                        tvTheme,
+                        tilSpec,
+                        tvSpec,
+                        filter.theme,
+                        filter.spec
+                    ) { theme, spec ->
+                        filter.theme = theme
+                        filter.spec = spec
+                    }
+                    tilTheme.isVisible = true
+                    tilSpec.isVisible = true
                 }
-                tilTheme.isVisible = true
-                tilSpec.isVisible = true
-            }
-        }.root
+
+                initAgeFrom(filter, this)
+                initAgeTo(filter, this)
+            }.root
+    }
+
+
+    private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
+            initDropDownView(
+                tvAgeFrom,
+                presenter.getAgesList(null),
+                presenter.getAgesList(null).find { it.toInt() == filter.ageFrom },
+                null,
+                { it },
+                { it },
+                {
+                    filter.ageFrom = it?.toInt()
+                    initAgeTo(filter, binding)
+                }
+            )
+        }
+    }
+
+    private fun initAgeTo(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
+            initDropDownView(
+                tvAgeTo,
+                presenter.getAgesList(filter.ageFrom),
+                presenter.getAgesList(filter.ageFrom).find { it.toInt() == filter.ageTo },
+                null,
+                { it },
+                { it },
+                { filter.ageTo = it?.toInt() }
+            )
+        }
     }
 
     override fun clearFilterView(filterView: View) {
@@ -108,6 +145,8 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
             etAddress.text = null
             tvTheme.text = null
             tvSpec.text = null
+            tvAgeFrom.text = null
+            tvAgeTo.text = null
         }
     }
 }

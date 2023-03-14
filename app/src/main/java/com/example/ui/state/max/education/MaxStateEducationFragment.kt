@@ -103,7 +103,7 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
     }
 
     private fun maxActionWithSuccess() {
-        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
+        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state), false)
             .setSelectCallback {
                 maxActions()
             }
@@ -117,7 +117,7 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
     }
 
     override fun showChangeEmailComplete(email: String) {
-        maxActions()
+        maxActionWithSuccess()
     }
 
     override fun showEmailIsNotUnique(email: String) {

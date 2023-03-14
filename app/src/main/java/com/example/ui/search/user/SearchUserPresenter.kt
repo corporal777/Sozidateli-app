@@ -51,46 +51,46 @@ class SearchUserPresenter
 
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-       /*
-       val data = mutableMapOf<String, Any>().apply {
-            put(USER_LIMIT, limit)
-            put(USER_OFFSET, offset)
-            put(USER_BINDS, "userFavorite")
-//            val address = filter.address
-//            if (!address.isNullOrEmpty()) put(USER_ADDRESS_STREET, address)
+        /*
+        val data = mutableMapOf<String, Any>().apply {
+             put(USER_LIMIT, limit)
+             put(USER_OFFSET, offset)
+             put(USER_BINDS, "userFavorite")
+ //            val address = filter.address
+ //            if (!address.isNullOrEmpty()) put(USER_ADDRESS_STREET, address)
 
-            if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
-            val interest = filter.spec ?: filter.theme
-            if (interest != null) put(FILTER_INTEREST, interest)
+             if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
+             val interest = filter.spec ?: filter.theme
+             if (interest != null) put(FILTER_INTEREST, interest)
 
-            //new address filters
-            val index = filter.index
-            if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
-            val country = filter.country
-            if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
-            val federal = filter.federal
-            if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
-            val region = filter.region
-            if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
-            val area = filter.area
-            if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
-            val city = filter.city
-            if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
-            val settlement = filter.settlement
-            if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
-            val street = filter.street
-            if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
-            val house = filter.house
-            if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
-            val flat = filter.flat
-            if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
+             //new address filters
+             val index = filter.index
+             if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
+             val country = filter.country
+             if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
+             val federal = filter.federal
+             if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
+             val region = filter.region
+             if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
+             val area = filter.area
+             if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
+             val city = filter.city
+             if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
+             val settlement = filter.settlement
+             if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
+             val street = filter.street
+             if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
+             val house = filter.house
+             if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
+             val flat = filter.flat
+             if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
 
-        }
-        userRepository.getUsers(data).doOnSuccess {
-            val uid = appData.getId()
-            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
-        }
-        */
+         }
+         userRepository.getUsers(data).doOnSuccess {
+             val uid = appData.getId()
+             it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
+         }
+         */
 
         val data = buildFilterNew(limit, offset)
         userRepository.searchUsersNew(data).doOnSuccess {
@@ -181,6 +181,10 @@ class SearchUserPresenter
             val interest = filter.spec ?: filter.theme
             if (interest != null) put(FILTER_INTEREST, interest)
 
+            //new age filter
+            if (filter.ageFrom != null) put(SEARCH_AGE_FROM, filter.ageFrom!!)
+            if (filter.ageTo != null) put(SEARCH_AGE_TO, filter.ageTo!!)
+
             //new binds filter
             put(SEARCH_USER_BINDS, "userFavorite")
             put(SEARCH_USER_TYPE, true)
@@ -209,6 +213,16 @@ class SearchUserPresenter
         }
     }
 
+    fun getAgesList(ageFrom: Int?): List<String> {
+        return arrayListOf<String>().apply {
+            if (ageFrom == null) {
+                for (i in 14 until 81) add(i.toString())
+            } else {
+                for (i in ageFrom until 81) add(i.toString())
+            }
+        }
+    }
+
     companion object {
         private const val FILTER_NAME = "user_fio"
         private const val FILTER_ADDRESS = "user_address"
@@ -218,8 +232,8 @@ class SearchUserPresenter
         private const val FILTER_INTEREST = "interests"
         private const val FILTER_AGE = "user_age"
 
-        private const val SEARCH_AGE_MIN = 14
-        private const val SEARCH_AGE_MAX = 150
+        private const val SEARCH_AGE_FROM = "ageFrom"
+        private const val SEARCH_AGE_TO = "ageTo"
 
         private const val SEARCH_USER_TYPE = "user"
         private const val SEARCH_USER_BINDS = "userBinds"

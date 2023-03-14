@@ -32,13 +32,23 @@ class EventDetailActionItem(
     val backgroundColor: String? = eventData?.binds?.organization?.backgroundColor?.value
     val logo: String? = eventData?.image?.uri
 
-    val eventFormat = EventFormat(
-        name = if (!eventData?.binds?.format?.name.isNullOrEmpty()) {
-            eventData?.binds?.format?.name ?: ""
-        } else {
-            eventData?.format?.name ?: ""
-        }
-    )
+//    val eventFormat =
+//
+//        EventFormat(
+//            name = if (!eventData?.binds?.format?.name.isNullOrEmpty()) {
+//                eventData?.binds?.format?.name ?: ""
+//            } else {
+//                eventData?.format?.name ?: ""
+//            }
+//        )
+
+    val eventFormat =
+        if (eventData?.format?.value == null && !eventData?.format?.custom.isNullOrEmpty()) {
+            EventFormat(name = eventData?.format?.custom ?: "")
+        } else EventFormat(
+            id = eventData?.binds?.format?.id ?: 0,
+            name = eventData?.binds?.format?.name ?: ""
+        )
 
     private var eventDate = ""
     private var canShowDate = false

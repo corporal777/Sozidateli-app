@@ -1,8 +1,8 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
-import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.accountChange.AccountAuthFragment
+import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.confirm.EmailConfirmFragment
@@ -46,10 +46,10 @@ import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.notification.center.redesign.NotificationsListFragment
+import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
-import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
@@ -386,5 +386,4 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment
-
 }

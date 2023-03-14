@@ -156,4 +156,6 @@
 
 
     <dimen name="profile_qr_code_image_size">235dp</dimen>
+
+    <dimen name="update_app_image">250dp</dimen>
 </resources>

@@ -48,4 +48,6 @@ interface AuthRepository {
     fun recoverPasswordNew(body: RecoverPasswordBody): Completable
     fun rebaseInvite(id: Int, body: RebaseInviteBody): Completable
     fun deleteConfirmEmail(email: String): Completable
+
+    fun checkAppUpdate(appVersion : String): Maybe<AppUpdateModel>
 }

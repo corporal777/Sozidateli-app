@@ -3,15 +3,8 @@ package com.example.data.models
 import java.io.Serializable
 
 sealed class SearchFilter : Serializable {
-    data class Organization(
-        var address: String? = null,
-        var name: String? = null,
-        var inn: String? = null,
-        var type: String? = null,
-        var subscription: Boolean? = null
-    ) : SearchFilter()
 
-    data class OrganizationNew(
+    data class Organization(
         var address: String? = null,
         var name: String? = null,
         var inn: String? = null,
@@ -30,19 +23,6 @@ sealed class SearchFilter : Serializable {
         var flat: String? = null
     ) : SearchFilter()
 
-    data class Event(
-        var address: String? = null,
-        var name: String? = null,
-        var dateStart: String? = null,
-        var dateFinish: String? = null,
-        var registration: String? = null,
-        var theme: Int? = null,
-        var spec: Int? = null,
-        var format: Int? = null
-    ) : SearchFilter() {
-        var interests: Map<Interest, List<Interest>>? = null
-        var formats: List<EventFormat>? = null
-    }
 
     data class EventNew(
         var address: String? = null,
@@ -53,32 +33,40 @@ sealed class SearchFilter : Serializable {
         var theme: Int? = null,
         var spec: Int? = null,
         var format: Int? = null,
-        var org: Long? = null,
+        var customFormat: String? = null,
+        var organizationId: Long? = null,
+        var organizationName: String? = null,
         var fullAddress: NewUserAddress? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
         var formats: List<NewEventFormat>? = null
-        var organizations : List<com.example.data.models.OrganizationNew?>? = null
-    }
+        var organizations : List<OrganizationNew>? = null
 
-    data class User(
-        var name: String? = null,
-        var address: String? = null,
-        var email: String? = null,
-        var phone: String? = null,
-        var theme: Int? = null,
-        var spec: Int? = null,
-        var ageFrom: Int? = null,
-        var ageTo: Int? = null,
-        var favorites: Boolean? = null
-    ) : SearchFilter() {
-        var interests: Map<Interest, List<Interest>>? = null
+        fun getFormatName() : String? {
+            val format = if (format != null){
+                formats?.find { it.id == format }?.name
+            } else if (!customFormat.isNullOrBlank()){
+                //"Искать «" + customFormat + "»"
+                 customFormat
+            } else null
+            return format
+        }
 
-        companion object {
-            const val AGE_MIN = 14
-            const val AGE_MAX = 80
+        fun getOrgName() : String?{
+            if (organizationId != null){
+                return organizations?.find { it.id == organizationId }?.legalInformation?.name?.short
+            } else if (!organizationName.isNullOrBlank()){
+                return organizationName
+            } else return null
+//            if (organizationId == null && !organizationName.isNullOrBlank()){
+//                return "Искать «" + organizationName + "»"
+//            }
+//            else if (organizationId != null && !organizationName.isNullOrBlank()){
+//                return organizationName
+//            } else return null
         }
     }
+
 
     data class UserNew(
         var name: String? = null,

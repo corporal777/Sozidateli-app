@@ -129,17 +129,11 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
     }
 
     private fun showAccountActionDialog(session: UserSessionModel) {
-        val dialog = ChangeAccountBottomDialog(session)
-        dialog.show(requireActivity().supportFragmentManager, "dialog")
-        dialog.setLogoutCallback { s ->
-            presenter.logoutFromAccount(s)
-        }
-        dialog.setLogoutAndKillCallback { s ->
-            presenter.logoutFromAccountAndKill(s)
-        }
-        dialog.setKillCallback { s ->
-            presenter.killSession(s)
-        }
+        ChangeAccountBottomDialog(requireContext(), session).apply {
+            setLogoutCallback { s -> presenter.logoutFromAccount(s) }
+            setLogoutAndKillCallback { s -> presenter.logoutFromAccountAndKill(s) }
+            setKillCallback { s -> presenter.killSession(s) }
+        }.show()
     }
 
     override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)

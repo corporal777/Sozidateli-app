@@ -32,6 +32,8 @@
     <dimen name="profile_qr_code_image_size">200dp</dimen>
 
     <dimen name="in_app_notification_fragment_margin_top">50dp</dimen>
+
+    <dimen name="update_app_image">250dp</dimen>
     <!--  new margins  -->
 
 </resources>

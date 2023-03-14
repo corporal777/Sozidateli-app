@@ -3,7 +3,6 @@ package com.example.ui.userprofile.edit
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +33,7 @@ import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.TitleMessageDialog
-import com.example.ui.views.suggestFieldView.DaDataUtil
+import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.vincent.filepicker.Constant

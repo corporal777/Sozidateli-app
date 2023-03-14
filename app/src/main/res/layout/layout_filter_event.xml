@@ -30,72 +30,12 @@
         android:layout_marginTop="24dp"
         app:endIconMode="none">
 
-        <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+        <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address_new"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilFormat"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvFormat"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_format"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilOrganization"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvOrganization"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/profile_work_organization"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilTheme"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvTheme"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_theme"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilSpec"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvSpec"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_specialization"
             android:paddingStart="@dimen/background_input_padding"
             android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>
@@ -153,4 +93,68 @@
             </com.example.ui.views.CustomTextInputLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilFormat"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvFormat"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_format"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+
+    </com.example.ui.views.CustomTextInputLayout>
+
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilOrganization"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvOrganization"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/profile_work_organization"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilTheme"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvTheme"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_theme"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilSpec"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvSpec"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_specialization"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+
 </LinearLayout>

@@ -52,7 +52,7 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
         override fun onReadListener(id: Int) {
             if (mBinding.notificationsList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                //presenter.onNotificationRead(id)
+                presenter.onNotificationRead(id)
             }
         }
 

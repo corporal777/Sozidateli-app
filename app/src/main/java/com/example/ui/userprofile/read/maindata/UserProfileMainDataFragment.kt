@@ -17,7 +17,7 @@ import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragmentNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.suggestFieldView.DaDataUtil
+import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE

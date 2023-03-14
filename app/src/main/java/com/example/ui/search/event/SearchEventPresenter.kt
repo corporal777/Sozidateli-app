@@ -107,8 +107,8 @@ class SearchEventPresenter
 
     private var isCommonDataLoaded = false
     private var interests: Map<InterestNew, List<InterestNew>>? = null
-    private var formats: List<NewEventFormat>? = null
-    private var organizations: List<OrganizationNew?>? = null
+    private var formats: ArrayList<NewEventFormat> = arrayListOf()
+    private var organizations: List<OrganizationNew>? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -125,7 +125,12 @@ class SearchEventPresenter
             loadOrganizations
         ) { interests, formats, organizations ->
             this.interests = interests
-            this.formats = formats
+            this.formats.apply {
+                if (!formats.isNullOrEmpty()) {
+                    addAll(formats)
+                    //add(NewEventFormat(777, "Другое", 0))
+                }
+            }
             this.organizations = organizations
         }
             .performOnBackgroundOutOnMain()
@@ -198,10 +203,16 @@ class SearchEventPresenter
                 SEARCH_EVENT_BINDS,
                 "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"
             )
-            if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
+            //if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
+            if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
+
             if (!filter.name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%" + filter.name + "%")
+
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
-            if (filter.org != null) put(SEARCH_EVENT_ORGANIZATION, filter.org.toString())
+            if (filter.format == null && !filter.customFormat.isNullOrBlank()) put(SEARCH_EVENT_FORMAT_CUSTOM, filter.customFormat!!)
+
+            if (filter.organizationId != null) put(SEARCH_EVENT_ORGANIZATION, filter.organizationId!!)
+            if (filter.organizationId == null && !filter.organizationName.isNullOrBlank()) put(SEARCH_ORG_NAME, filter.organizationName!!)
 
             if (filter.dateStart != null) put(
                 EventNew.EVENT_START_DATE,
@@ -246,5 +257,7 @@ class SearchEventPresenter
         private const val SEARCH_EVENT_TOPIC_SUBCATEGORY = "topicSubcategories"
         private const val SEARCH_EVENT_BINDS = "eventBinds"
         private const val SEARCH_EVENT_ORGANIZATION = "organization"
+        private const val SEARCH_EVENT_FORMAT_CUSTOM = "formatCustom"
+        private const val SEARCH_ORG_NAME = "orgName"
     }
 }

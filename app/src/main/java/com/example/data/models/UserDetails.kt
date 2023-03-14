@@ -73,8 +73,22 @@ data class UserDetail(
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
     }
 
-    fun getUserShortName() {
+    fun isHasInterests(): Boolean {
+        var isHas = false
+        if (!interests.isNullOrEmpty()){
+            isHas = interests?.firstOrNull() != null
+        } else isHas = false
+        return isHas
+    }
 
+    fun getUserInterests(): List<Int> {
+        var userInterests = listOf<Int>()
+        if (!interests.isNullOrEmpty()){
+            if (interests?.firstOrNull() != null){
+                userInterests = interests?: emptyList()
+            }
+        }
+        return userInterests
     }
 
     fun getUserSubscribeAction(): UserSubscribeButton.Action? {

@@ -29,9 +29,6 @@ interface EventListContract {
         fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showSearch(format: Int)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showRegistrationFieldsRequest(fields: List<String>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -46,7 +43,6 @@ interface EventListContract {
         fun onActionRegister(event: String)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-        fun onShowFilterClick(format: Int)
 
         fun onShowEditProfileClick()
     }

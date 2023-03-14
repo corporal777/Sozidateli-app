@@ -193,7 +193,7 @@ class UserEditPresenter
                 val userFiles = mutableListOf<FileModel>()
                 userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
                 val file = userFiles.find { x -> x.id == data.id }
-                if (file != null){
+                if (file != null) {
                     userFiles.remove(file)
                 }
                 appData.getUserNew().binds?.recommendationFile = userFiles
@@ -247,9 +247,9 @@ class UserEditPresenter
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onNext = {
-                if (it) viewState.showFileSelector()
-                else viewState.showToast(R.string.event_register_file_no_permission)
-            })
+                    if (it) viewState.showFileSelector()
+                    else viewState.showToast(R.string.event_register_file_no_permission)
+                })
     }
 
     override fun onFilePicked(path: String, mimeType: String) {
@@ -299,7 +299,7 @@ class UserEditPresenter
         compositeDisposable += userRepository.getInterestsList(null)
             .map { groupUserInterests(user, it.data) }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribe({
                 viewState.setInterestsData(it)
                 isInterestsLoaded = true
@@ -312,13 +312,13 @@ class UserEditPresenter
         user: UserDetail,
         interests: List<InterestNew>?
     ): Map<InterestNew, List<UserInterest>> {
-        val userInterests = user.interests?.map { it } ?: emptyList()
+        val userInterests = user.getUserInterests()
         val groups = mutableMapOf<InterestNew, MutableList<UserInterest>>()
         interests?.forEach { interest ->
             val parent = interests.find { parent -> parent.id == interest.parent }
             parent?.let {
-                val isUserInterest =
-                    userInterests.find { userInterest -> userInterest == interest.id } != null
+                val isUserInterest = userInterests.find { userInterest -> userInterest == interest.id } != null
+
                 groups.getOrPut(parent) { mutableListOf() }
                     .add(UserInterest(interest, isUserInterest))
             }
@@ -366,7 +366,7 @@ class UserEditPresenter
         mimeType: String
     ): MultipartBody.Part? {
         file.asRequestBody(mimeType.toMediaTypeOrNull())
-       // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
+        // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
         val body = file.asRequestBody(mimeType.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(fieldName, file.name, body)
     }
@@ -374,15 +374,18 @@ class UserEditPresenter
     private fun textRequestBody(text: String?, fieldName: String): MultipartBody.Part? =
         MultipartBody.Part.createFormData(fieldName, text ?: "")
 
-    private fun updatedFilesRequestBody(data: MutableList<FileModel>) : Single<RequestBody>{
+    private fun updatedFilesRequestBody(data: MutableList<FileModel>): Single<RequestBody> {
         return Single.fromCallable {
             MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .apply {
                     data.forEachIndexed { index, file ->
                         addFormDataPart("data[$index][id]", file.id.toString())
-                        addFormDataPart("data[$index][name]", file.name?:"")
-                        addFormDataPart("data[$index][showInProfile]", file.showInProfile.toString())
+                        addFormDataPart("data[$index][name]", file.name ?: "")
+                        addFormDataPart(
+                            "data[$index][showInProfile]",
+                            file.showInProfile.toString()
+                        )
                     }
 
                 }.build()

@@ -24,7 +24,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/>(), SearchOrganizationContract.View {
+class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, OrganizationNew, SearchFilter.Organization>(), SearchOrganizationContract.View {
 
     @InjectPresenter
     override lateinit var presenter: SearchOrganizationPresenter
@@ -61,7 +61,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         }
     }
 
-    override fun createFilterView(filter: SearchFilter.OrganizationNew): View {
+    override fun createFilterView(filter: SearchFilter.Organization): View {
         return LayoutFilterOrganizationBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
             etAddress.apply {
                 setTextWithoutSearch(filter.address)

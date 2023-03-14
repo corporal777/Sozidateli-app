@@ -474,4 +474,8 @@ interface NewApi {
 
     @GET("v1/organization/active-events")
     fun getOrganizationsWithActiveEvents(): Maybe<SearchResponseData<OrganizationNew>>
+
+    @GET("v1/app-version/check")
+    fun checkAppVersion(@Query("version") version: String, @Query("os") os: String
+    ): Maybe<AppUpdateModel>
 }

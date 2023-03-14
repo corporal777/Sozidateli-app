@@ -1,7 +1,6 @@
-package com.example.ui.views.suggestFieldView
+package com.example.ui.views.suggestFieldView.address
 
 import android.content.Context
-import com.example.data.models.DaDataItem
 import com.example.data.models.NewUserAddress
 import com.example.data.models.UserAddress
 import org.json.JSONException
@@ -17,7 +16,7 @@ object DaDataUtil {
         val jObject = getLocationJson(context)
         data.forEach {
             it.lat = it.lat
-            it.fullValue = formatParam(it.fullValue, jObject)?: ""
+            it.fullValue = formatParam(it.fullValue, jObject) ?: ""
             it.index = formatParam(it.index, jObject)
             it.country = formatParam(it.country, jObject)
             it.federal = formatParam(it.federal, jObject)

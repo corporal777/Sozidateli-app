@@ -38,7 +38,7 @@ class SearchOrganizationPresenter
     private val appData: AppData,
     private val organizationRepository: OrganizationRepository,
     private val eventRepository: EventRepository
-) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew, SearchFilter.OrganizationNew>(
+) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew, SearchFilter.Organization>(
     appData
 ), SearchOrganizationContract.Presenter {
 
@@ -117,7 +117,7 @@ class SearchOrganizationPresenter
             put(ORGANIZATION_LIMIT, limit)
             put(ORGANIZATION_OFFSET, offset)
 
-            if (searchText.isNotEmpty()) put(ORGANIZATION_SEARCH, "$searchText%")
+            if (searchText.isNotEmpty()) put(ORGANIZATION_SEARCH, searchText)
 
             val name = filter.name
             if (!name.isNullOrEmpty()) put(ORGANIZATION_SEARCH_NAME, "$name%")
@@ -157,8 +157,8 @@ class SearchOrganizationPresenter
             if (!flat.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FLAT, flat)
         }
 
-    override fun createFilter() = SearchFilter.OrganizationNew()
-    override fun copyFilter(filter: SearchFilter.OrganizationNew) = filter.copy()
+    override fun createFilter() = SearchFilter.Organization()
+    override fun copyFilter(filter: SearchFilter.Organization) = filter.copy()
 
     companion object {
         private const val FILTER_CONTENT = "content"

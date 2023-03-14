@@ -15,7 +15,7 @@ interface RecommendationsContract {
     interface View : BaseContract.View{
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setData(events: List<EventNew/*Event*/?>)
+        fun setData(events: List<EventNew?>, isNeedUpdateApp : Boolean?)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()

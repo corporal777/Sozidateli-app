@@ -248,4 +248,8 @@ class AuthRepositoryImp
 
     override fun deleteConfirmEmail(email: String): Completable =
             newApi.deleteConfirmEmail(appData.getId(), email)
+
+    override fun checkAppUpdate(appVersion: String): Maybe<AppUpdateModel> {
+        return newApi.checkAppVersion(appVersion, "android")
+    }
 }

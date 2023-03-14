@@ -8,16 +8,16 @@ import com.example.data.models.SearchFilter
 import com.example.ui.search.SearchContract
 
 interface SearchOrganizationContract {
-    interface View : SearchContract.View<OrganizationNew/*Organization*/, SearchFilter.OrganizationNew/*Organization*/> {
+    interface View : SearchContract.View<OrganizationNew, SearchFilter.Organization> {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showOrganization(organization: OrganizationNew/*Organization*/)
+        fun showOrganization(organization: OrganizationNew)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeSubscription(organization: OrganizationNew/*Organization*/)
+        fun changeSubscription(organization: OrganizationNew)
     }
 
-    interface Presenter : SearchContract.Presenter<OrganizationNew/*Organization*/> {
-        fun onOrganizationClick(organization: OrganizationNew/*Organization*/)
-        fun onOrganizationSubscriptionClick(organization: OrganizationNew/*Organization*/)
+    interface Presenter : SearchContract.Presenter<OrganizationNew> {
+        fun onOrganizationClick(organization: OrganizationNew)
+        fun onOrganizationSubscriptionClick(organization: OrganizationNew)
     }
 }

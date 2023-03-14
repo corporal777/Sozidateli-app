@@ -24,9 +24,8 @@ import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.suggestFieldView.DaDataUtil
+import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

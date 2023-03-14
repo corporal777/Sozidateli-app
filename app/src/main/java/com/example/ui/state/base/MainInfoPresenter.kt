@@ -42,6 +42,7 @@ class MainInfoPresenter
     var isImageUpdating = false
     private var mDy = 0f
     private var canGoNext = false
+    private var isFirstLaunch = true
 
     override fun attachView(view: MainInfoContract.View?) {
         super.attachView(view)
@@ -70,7 +71,12 @@ class MainInfoPresenter
                             user.address?.getShortAddress() ?: ""
                         )
                             .performOnBackgroundOutOnMain()
-                            .withProgressBarLoadingDialog(viewState)
+                            .let { single ->
+                                if (isFirstLaunch){
+                                    isFirstLaunch = false
+                                    single.withProgressBarLoadingDialog(viewState)
+                                } else single
+                            }
                             .subscribeSimple(
                                 onError = {
                                     if (!isImageUpdating) viewState.setPersonalData(user)
@@ -120,6 +126,7 @@ class MainInfoPresenter
         compositeDisposable += userRepository.checkEmailPhone(email, null)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     viewState.showEmailNotUnique(email)

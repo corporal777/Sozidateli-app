@@ -87,6 +87,7 @@ class MaxStateEducationPresenter
     override fun checkEmailIsUnique(email: String) {
         compositeDisposable += userRepository.checkEmailPhone(email, null)
             .withCheckInternetConnectivity()
+            .withCustomProgressBarLoadingDialog(viewState)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

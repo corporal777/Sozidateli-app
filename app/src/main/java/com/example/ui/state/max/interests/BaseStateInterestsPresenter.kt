@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -26,6 +27,7 @@ class BaseStateInterestsPresenter
     private var isInterestsLoaded = false
     private var mDy = 0f
 
+    private var isFirstLaunch = true
 
     override fun attachView(view: BaseStateInterestsContract.View?) {
         super.attachView(view)
@@ -58,7 +60,12 @@ class BaseStateInterestsPresenter
         compositeDisposable += userRepository.getInterestsList(null)
             .map { groupUserInterests(user, it.data) }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .let {
+                if (isFirstLaunch){
+                    isFirstLaunch = false
+                    it.withProgressBarLoadingDialog(viewState)
+                } else it
+            }
             .subscribe({
                 viewState.setInterestsData(it)
                 isInterestsLoaded = true
@@ -71,7 +78,7 @@ class BaseStateInterestsPresenter
         user: UserDetail,
         interests: List<InterestNew>?
     ): Map<InterestNew, List<UserInterest>> {
-        val userInterests = user.interests?.map { it } ?: emptyList()
+        val userInterests = user.getUserInterests()
         val groups = mutableMapOf<InterestNew, MutableList<UserInterest>>()
         interests?.forEach { interest ->
             val parent = interests.find { parent -> parent.id == interest.parent }
@@ -90,7 +97,6 @@ class BaseStateInterestsPresenter
     }
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
-        viewState.showLoadingDialog()
         updateUser(
             userRepository.updateProfile(
                 appData.getId(),

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         app:endIconMode="none">
 
-        <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+        <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address_new"
@@ -26,6 +26,45 @@
             android:paddingStart="@dimen/background_input_padding"
             android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilAgeFrom"
+            style="@style/Profile.Edit.InputLayout.DropDown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvAgeFrom"
+                style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                android:hint="@string/search_filter_age_from"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilAgeTo"
+            style="@style/Profile.Edit.InputLayout.DropDown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvAgeTo"
+                style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                android:hint="@string/search_filter_age_to"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilTheme"
@@ -56,4 +95,6 @@
             android:paddingStart="@dimen/background_input_padding"
             android:paddingEnd="@dimen/background_input_padding" />
     </com.example.ui.views.CustomTextInputLayout>
+
+
 </LinearLayout>

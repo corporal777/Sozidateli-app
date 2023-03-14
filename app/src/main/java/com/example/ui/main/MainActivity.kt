@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -68,9 +67,9 @@ import com.example.ui.stories.StoriesFragment
 import com.example.ui.tags.TagsFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
-import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -211,20 +210,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val backClick = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-
-            val fr = navHostFragment.childFragmentManager.fragments[0]
-            val navContr = findNavController(R.id.navHostFragment)
-            if (fr is ProfileFragment || fr is MyEventsFragmentNew || fr is NotificationsFragment || fr is ChatListTabsFragment) {
-                navContr.popBackStack(R.id.recommendations_fragment, false)
-            } else if (fr is TagsFragment) {
-                fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
-            } else if (fr is AllActivitiesFragment) {
-                fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
-                navContr.navigateUp()
-            } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
-                finish()
-            } else {
-                navContr.navigateUp()
+            val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
+            if (fr != null) {
+                val navContr = findNavController(R.id.navHostFragment)
+                if (fr is ProfileFragment || fr is MyEventsFragmentNew || fr is NotificationsFragment || fr is ChatListTabsFragment) {
+                    navContr.popBackStack(R.id.recommendations_fragment, false)
+                } else if (fr is TagsFragment) {
+                    fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
+                } else if (fr is AllActivitiesFragment) {
+                    fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
+                    navContr.navigateUp()
+                } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
+                    finish()
+                } else navContr.navigateUp()
             }
         }
     }
@@ -552,6 +550,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
+
+    override fun showUpdateApp(isRequired: Boolean) {
+        UpdateAppBottomSheet(this, isRequired).show()
+        if (isRequired) mBinding.include.inappDim.setBackgroundResource(R.color.main_background)
+    }
 
     override fun showInAppNew(listInApp: List<Notification>) {
         val inAppNotification = InAppNotificationFragment(listInApp)

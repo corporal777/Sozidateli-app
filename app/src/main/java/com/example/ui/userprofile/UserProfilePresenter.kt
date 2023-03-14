@@ -2,6 +2,7 @@ package com.example.ui.userprofile
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
@@ -95,8 +96,7 @@ class UserProfilePresenter @Inject constructor(
     override fun onContactsClick() = viewState.showContacts()
 
     override fun onInterestsClick() {
-
-        if (user.interests.isNullOrEmpty()) {
+        if (!user.isHasInterests()) {
             viewState.showEdit()
         } else {
             viewState.showInterests()

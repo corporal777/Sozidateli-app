@@ -6,7 +6,9 @@ import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.notifications.NotificationsView
-import com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+import com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
+import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
+import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -36,6 +38,10 @@ interface AppComponent {
     fun inject(view: AccountView)
 
     fun inject(view: DaDataAutoCompleteTextView)
+
+    fun inject(view: EventFormatBottomSheet)
+
+    fun inject(view: EventOrgBottomSheet)
 
     fun inject(view: NotificationsView)
 

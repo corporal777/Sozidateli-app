@@ -1,4 +1,4 @@
-package com.example.ui.views.suggestFieldView
+package com.example.ui.views.suggestFieldView.address
 
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy

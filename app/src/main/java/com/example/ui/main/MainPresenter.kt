@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
@@ -39,6 +40,7 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import java.util.*
@@ -103,12 +105,21 @@ class MainPresenter
             }, {
                 viewState.showBadgeChat(0)
             })
-
-
     }
 
     override fun onStoriesComplete() {
+        checkAppUpdate()
         subscribeToTokenUpdates()
+    }
+
+    private fun checkAppUpdate(){
+        compositeDisposable += authRepository.checkAppUpdate(BuildConfig.VERSION_NAME)
+            //.withDelay(1000)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                appData.isNeedUpdateApp = true
+                viewState.showUpdateApp(!it.permitted)
+            }
     }
 
     private fun subscribeToTokenUpdates() {
@@ -138,7 +149,13 @@ class MainPresenter
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     updateUserInShake(user)
-                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
+                    disposable += Completable.merge(
+                        listOf(
+                            getInAppRequest(),
+                            checkUserLocation(),
+                            getAdditionalData()
+                        )
+                    )
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket(appData.getId()) }
                         .andThen(Completable.defer { checkShowGreetings() })

@@ -1,18 +1,13 @@
 package com.example.ui.event.list
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
-import androidx.appcompat.app.AlertDialog
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
-import com.example.data.models.*
-import com.example.extensions.getAffiliationString
+import com.example.data.models.EventNew
 import com.example.holders.EventDataListItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -21,7 +16,6 @@ import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
-import com.example.ui.search.tabs.SearchTabsFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
 import com.example.ui.views.StateType
@@ -150,13 +144,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
         )
     }
 
-    override fun showSearch(format: Int) {
-        val filter = SearchFilter.Event().apply { this.format = format }
-        findNavController().navigate(
-            R.id.search_tabs_fragment,
-            SearchTabsFragmentArgs.Builder(filter).build().toBundle()
-        )
-    }
 
     override fun showRegistrationFieldsRequest(fields: List<String>) {
         EventRegistrationProfileFieldsDialog(requireContext(), fields) {

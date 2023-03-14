@@ -1,6 +1,7 @@
 package com.example.ui.accountChange.items
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
+import com.example.databinding.BottomSheetUpdateAppBinding
 import com.example.databinding.DialogChangeAccountBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -20,34 +22,18 @@ import com.google.type.Color
 import kotlinx.android.synthetic.main.popup_menu.*
 
 class ChangeAccountBottomDialog(
+    context: Context,
     val session: UserSessionModel
-) : BottomSheetDialogFragment() {
+) : BottomSheetDialog(context, R.style.TransparentBottomSheetDialogTheme) {
 
-    private var _binding: DialogChangeAccountBinding? = null
-    private val mBinding get() = _binding!!
-
+    private val mBinding = DialogChangeAccountBinding.inflate(LayoutInflater.from(context))
 
     private var onLogoutClick: (session : UserSessionModel) -> Unit = {}
     private var onLogoutAndKillClick: (session: UserSessionModel) -> Unit = {}
     private var onKillClick: (session: UserSessionModel) -> Unit = {}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = DialogChangeAccountBinding.inflate(inflater, container, false)
-        return mBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    init {
+        setContentView(mBinding.root)
         if (session.isLogged){
             mBinding.tvKill.isVisible = false
             mBinding.tvLogoutAndKill.isVisible = true
@@ -74,6 +60,7 @@ class ChangeAccountBottomDialog(
         }
     }
 
+
     fun setLogoutCallback(block: (session : UserSessionModel) -> Unit): ChangeAccountBottomDialog {
         onLogoutClick = block
         return this
@@ -88,10 +75,4 @@ class ChangeAccountBottomDialog(
         onKillClick = block
         return this
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }

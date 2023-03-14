@@ -97,6 +97,7 @@ class AppData(
     var hasBaseState = false
     var hasMaxState = false
     var defaultEvent: Int? = null
+    var isNeedUpdateApp = false
 
     val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
     val userNewChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())

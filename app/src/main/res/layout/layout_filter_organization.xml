@@ -31,7 +31,7 @@
         android:layout_marginTop="24dp"
         app:endIconMode="none">
 
-        <com.example.ui.views.suggestFieldView.DaDataAutoCompleteTextView
+        <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
             android:id="@+id/etAddress"
             style="@style/Profile.Edit.Input.SingleLine"
             android:hint="@string/search_filter_address_new"

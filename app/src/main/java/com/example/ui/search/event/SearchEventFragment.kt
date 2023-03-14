@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,6 +19,10 @@ import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
+import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
+import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
+import com.example.util.initInput
+import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
 import initDropDownView
 import onTextChanged
@@ -41,6 +46,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionRegister(event: String) = presenter.onActionRegister(event)
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
+
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
@@ -48,7 +54,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
             R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle())
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
     }
 
     override fun showEventRequest(event: String) {
@@ -89,26 +96,121 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     override fun createFilterView(filter: SearchFilter.EventNew): View {
-        return LayoutFilterEventBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
-            etAddress.apply {
-                setTextWithoutSearch(filter.address)
-                onTextChanged {
-                    filter.address = it.toString()
-                    filter.fullAddress = null
+        return LayoutFilterEventBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+            .apply {
+                etAddress.apply {
+                    setTextWithoutSearch(filter.address)
+                    onTextChanged {
+                        filter.address = it.toString()
+                        filter.fullAddress = null
+                    }
+                    onDataSelectedListener = {
+                        filter.fullAddress = it
+                    }
                 }
-                onDataSelectedListener = {
-                    filter.fullAddress = it
+                initFormats(filter, tilFormat, tvFormat)
+                initOrganizations(filter, tilOrganization, tvOrganization)
+                initEventInterests(filter, this)
+
+                initTextFilter(etName, filter.name) { filter.name = it }
+                initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
+                initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
+            }.root
+    }
+
+    private fun initFormats(
+        filter: SearchFilter.EventNew,
+        inputLayout: TextInputLayout,
+        textView: AutoCompleteTextView,
+    ) {
+        textView.apply {
+            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                EventFormatBottomSheet(requireContext(), filter.formats)
+                    .setFormatSelectedCallback {
+                        filter.format = it?.id
+                        filter.customFormat = it?.name
+                        this.setText(filter.getFormatName())
+                    }
+                    .show()
+            }
+            initInput(filter.getFormatName()) {
+                if (it.isNullOrBlank()) {
+                    filter.format = null
+                    filter.customFormat = null
                 }
             }
-            initTextFilter(etName, filter.name) { filter.name = it }
-            initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
-            initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
+        }
 
-            val organizations = filter.organizations
-            initOrganizations(filter.org, tilOrganization, tvOrganization, organizations) {
-                filter.org = it
+//        if (formats.isNullOrEmpty()) {
+//            inputLayout.isVisible = false
+//        } else {
+//            inputLayout.isVisible = true
+//            initDropDownView(
+//                textView,
+//                formats,
+//                formats.find { it.id == format }?.name,
+//                null,
+//                { it.name ?: "" },
+//                { it?.id },
+//                { onFormatChange(it) }
+//            )
+//        }
+    }
+
+    private fun initOrganizations(
+        filter: SearchFilter.EventNew,
+        inputLayout: TextInputLayout,
+        textView: AutoCompleteTextView,
+    ) {
+        textView.apply {
+            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                EventOrgBottomSheet(requireContext(), filter.organizations)
+                    .setOrganizationSelectedCallback {
+                        filter.organizationId = it?.id
+                        filter.organizationName = it?.legalInformation?.name?.short
+                        this.setText(filter.getOrgName())
+                    }
+                    .show()
             }
+            initInput(filter.getOrgName()) {
+                if (it.isNullOrBlank()) {
+                    filter.organizationId = null
+                    filter.organizationName = null
+                }
+            }
+        }
 
+//        if (organizations.isNullOrEmpty()) {
+//            textView.isEnabled = false
+//            textView.text = null
+//            inputLayout.isEnabled = false
+//        } else {
+//            val selected = organizations.find { x -> x?.id == selectedOrganizationId }
+//            initDropDownView(
+//                textView,
+//                organizations,
+//                selected?.legalInformation?.name?.short,
+//                null,
+//                transformKey = { it?.legalInformation?.name?.short ?: "" },
+//                findValue = { it?.id },
+//                onVariantChange = { onOrgChange(it) })
+//            textView.isEnabled = true
+//            inputLayout.isEnabled = true
+//        }
+    }
+
+    private fun initEventInterests(filter: SearchFilter.EventNew, binding: LayoutFilterEventBinding){
+        binding.apply {
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
                 tilTheme.isVisible = false
@@ -128,48 +230,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
                 tilTheme.isVisible = true
                 tilSpec.isVisible = true
             }
-
-            val formats = filter.formats
-            if (formats.isNullOrEmpty()) {
-                tilFormat.isVisible = false
-            } else {
-                tilFormat.isVisible = true
-                initDropDownView(
-                    tvFormat,
-                    formats,
-                    formats.find { it.id == filter.format }?.name,
-                    null,
-                    { it.name ?: "" },
-                    { it?.id },
-                    { filter.format = it }
-                )
-            }
-        }.root
-    }
-
-    private fun initOrganizations(
-        selectedOrganizationId : Long?,
-        inputLayout: View,
-        textView: AutoCompleteTextView,
-        organizations: List<OrganizationNew?>?,
-        onOrgChange: (organization: Long?) -> Unit
-    ) {
-        if (organizations.isNullOrEmpty()) {
-            textView.isEnabled = false
-            textView.text = null
-            inputLayout.isEnabled = false
-        } else {
-            val selected = organizations.find { x -> x?.id == selectedOrganizationId }
-            initDropDownView(
-                textView,
-                organizations,
-                selected?.legalInformation?.name?.short,
-                null,
-                transformKey = { it?.legalInformation?.name?.short ?: "" },
-                findValue = { it?.id },
-                onVariantChange = { onOrgChange(it) })
-            textView.isEnabled = true
-            inputLayout.isEnabled = true
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.ui.event.list.recommendations
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.EventNew
@@ -14,6 +15,7 @@ import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.di.Connectivity
 import com.example.extensions.buildListNew
+import com.example.repository.AuthRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -38,6 +40,7 @@ class RecommendationsPresenter
     eventData: UserEventData,
     private val eventRepository: EventRepository,
     userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     @Connectivity val connectivity: Observable<Boolean>
 ) : BasePresenter<RecommendationsContract.View>(appData), RecommendationsContract.Presenter {
 
@@ -59,7 +62,7 @@ class RecommendationsPresenter
     }
 
     private fun getEventsList() {
-        viewState.setData(List(10) { null })
+        viewState.setData(List(10) { null }, null)
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
                 hasNoConnectionError = true
@@ -72,7 +75,7 @@ class RecommendationsPresenter
                 if (it.isEmpty())
                     viewState.showEmptyListPlaceholder()
                 else {
-                    viewState.setData(it)
+                    viewState.setData(it, appData.isNeedUpdateApp)
                 }
             }
 

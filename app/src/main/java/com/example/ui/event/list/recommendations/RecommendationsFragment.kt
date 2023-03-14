@@ -1,28 +1,24 @@
 package com.example.ui.event.list.recommendations
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
-import com.example.extensions.dp
-import com.example.extensions.findItemBy
-import com.example.holders.PlaceholderItem
+import com.example.extensions.*
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
-import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import offsetChangedListener
@@ -93,45 +89,53 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         }
     }
 
-    override fun setData(events: List<EventNew?>) {
-        dataGroup.update(events.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            //else EventGroupNew(
-            else EventItemNew(
-                it,
-                it.id.toString(),
-                it.state,
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.backgroundColor?.value,
-                it.image?.uri,
-                it.binds?.eventRegistrationState,
-                it.userAgreement?.uri,
-                it.binds?.currentUserRegistration?.id.toString(),
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.holdingDate?.to,
-                onEventClickListener,
-            )
-        })
+    override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
+        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
+        if (group == null){
+            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
+        } else group.updateItems(events, isNeedUpdateApp)
+
+//        dataGroup.update(events.map {
+//            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
+//            //else EventGroupNew(
+//            else EventItemNew(
+//                it,
+//                it.id.toString(),
+//                it.state,
+//                it.status?.value,
+//                it.binds?.currentUserRegistration?.status?.value,
+//                it.backgroundColor?.value,
+//                it.image?.uri,
+//                it.binds?.eventRegistrationState,
+//                it.userAgreement?.uri,
+//                it.binds?.currentUserRegistration?.id.toString(),
+//                it.name,
+//                it.address?.getShortAddress(),
+//                it.holdingDate?.from,
+//                it.holdingDate?.to,
+//                onEventClickListener,
+//            )
+//        })
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun updateActionButton(event: EventNew?) {
-        val id = event?.id?.toLong()
-        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
+        dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
+//        val id = event?.id?.toLong()
+//        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(listOf(
-            NoScheduleEventItem(
-                getString(R.string.no_active_events_found_title),
-                //getString(R.string.no_data_found),
-                //getString(R.string.no_active_events_found_title),
-                padding = 70.dp
+        dataGroup.update(
+            listOf(
+                NoScheduleEventItem(
+                    getString(R.string.no_active_events_found_title),
+                    //getString(R.string.no_data_found),
+                    //getString(R.string.no_active_events_found_title),
+                    padding = 70.dp
+                )
             )
-        ))
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
