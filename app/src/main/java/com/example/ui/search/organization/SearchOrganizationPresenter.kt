@@ -43,7 +43,7 @@ class SearchOrganizationPresenter
 ), SearchOrganizationContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-
+        /*
         organizationRepository.searchOrganizations(
             mutableMapOf<String, Any>().apply {
                 put(ORGANIZATION_LIMIT, limit)
@@ -64,9 +64,10 @@ class SearchOrganizationPresenter
 
         )
 
+         */
 
-//        val data = buildFilterNew(limit, offset)
-//        organizationRepository.searchOrganizationsNew(data)
+        val data = buildFilterNew(limit, offset)
+        organizationRepository.searchOrganizationsNew(data)
     }
 
     override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {

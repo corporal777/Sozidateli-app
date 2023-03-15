@@ -88,31 +88,10 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
-//        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
-//        if (group == null)
-//            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
-//        else group.updateItems(events, isNeedUpdateApp)
-
-        dataGroup.update(events.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(
-                it,
-                it.id.toString(),
-                it.state,
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.backgroundColor?.value,
-                it.image?.uri,
-                it.binds?.eventRegistrationState,
-                it.userAgreement?.uri,
-                it.binds?.currentUserRegistration?.id.toString(),
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.holdingDate?.to,
-                onEventClickListener,
-            )
-        })
+        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
+        if (group == null)
+            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
+        else group.updateItems(events, isNeedUpdateApp)
 
         mBinding.swipeToRefresh.isRefreshing = false
     }

@@ -28,7 +28,6 @@
     </com.example.ui.views.CustomTextInputLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/ln_age_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -83,31 +83,36 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
                         filter.flat = it.flat
                     }
                 }
-                val interests = filter.interests
-                if (interests.isNullOrEmpty()) {
-                    tilTheme.isVisible = false
-                    tilSpec.isVisible = false
-                } else {
-                    initInterests(
-                        interests,
-                        tvTheme,
-                        tilSpec,
-                        tvSpec,
-                        filter.theme,
-                        filter.spec
-                    ) { theme, spec ->
-                        filter.theme = theme
-                        filter.spec = spec
-                    }
-                    tilTheme.isVisible = true
-                    tilSpec.isVisible = true
-                }
 
-                //initAgeFrom(filter, this)
-                //initAgeTo(filter, this)
+                initUserInterests(filter, this)
+                initAgeFrom(filter, this)
+                initAgeTo(filter, this)
             }.root
     }
 
+    private fun initUserInterests(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
+            val interests = filter.interests
+            if (interests.isNullOrEmpty()) {
+                tilTheme.isVisible = false
+                tilSpec.isVisible = false
+            } else {
+                initInterests(
+                    interests,
+                    tvTheme,
+                    tilSpec,
+                    tvSpec,
+                    filter.theme,
+                    filter.spec
+                ) { theme, spec ->
+                    filter.theme = theme
+                    filter.spec = spec
+                }
+                tilTheme.isVisible = true
+                tilSpec.isVisible = true
+            }
+        }
+    }
 
     private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
         binding.apply {

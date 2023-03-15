@@ -51,7 +51,7 @@ class SearchUserPresenter
 
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-
+        /*
         val data = mutableMapOf<String, Any>().apply {
              put(USER_LIMIT, limit)
              put(USER_OFFSET, offset)
@@ -90,13 +90,14 @@ class SearchUserPresenter
              val uid = appData.getId()
              it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
          }
+         */
 
 
-//        val data = buildFilterNew(limit, offset)
-//        userRepository.searchUsersNew(data).doOnSuccess {
-//            val uid = appData.getId()
-//            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
-//        }
+        val data = buildFilterNew(limit, offset)
+        userRepository.searchUsersNew(data).doOnSuccess {
+            val uid = appData.getId()
+            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
+        }
     }
 
 

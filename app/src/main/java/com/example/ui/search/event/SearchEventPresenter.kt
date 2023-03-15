@@ -52,7 +52,7 @@ class SearchEventPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
-
+        /*
         val data = mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
@@ -99,10 +99,11 @@ class SearchEventPresenter
             if (category != null) put(EventNew.EVENT_CATEGORY, category)
         }
         eventRepository.getEventsList(data)
+         */
 
 
-//        val data = buildNewFilters(limit, offset)
-//        eventRepository.searchEventsNew(data)
+        val data = buildNewFilters(limit, offset)
+        eventRepository.searchEventsNew(data)
     }
 
     private var isCommonDataLoaded = false
@@ -119,29 +120,18 @@ class SearchEventPresenter
             mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
         )
 
-        compositeDisposable +=
-//            Maybe.zip(
-//                loadInterests,
-//                loadEventFormats,
-//                loadOrganizations
-//            ) { interests, formats, organizations ->
-//                this.interests = interests
-//                this.formats.apply {
-//                    if (!formats.isNullOrEmpty()) {
-//                        addAll(formats)
-//                    }
-//                }
-//                this.organizations = organizations
-//            }
-        Maybe.zip(loadInterests, loadEventFormats) { interests, formats ->
+        compositeDisposable += Maybe.zip(loadInterests, loadEventFormats, loadOrganizations) { interests, formats, organizations ->
             this.interests = interests
-            this.formats.addAll(formats)
+            this.formats.apply {
+                if (!formats.isNullOrEmpty()) addAll(formats)
+            }
+            this.organizations = organizations
         }
             .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                    onError = { isCommonDataLoaded = true },
-                    onSuccess = { isCommonDataLoaded = true }
-                )
+            .subscribeSimple(
+                onError = { isCommonDataLoaded = true },
+                onSuccess = { isCommonDataLoaded = true }
+            )
     }
 
 

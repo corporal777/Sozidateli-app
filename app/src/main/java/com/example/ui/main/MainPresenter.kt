@@ -108,17 +108,17 @@ class MainPresenter
     }
 
     override fun onStoriesComplete() {
-        //checkAppUpdate()
+        checkAppUpdate()
         subscribeToTokenUpdates()
     }
 
-    private fun checkAppUpdate(){
+    private fun checkAppUpdate() {
         compositeDisposable += authRepository.checkAppUpdate(BuildConfig.VERSION_NAME)
             //.withDelay(1000)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                appData.isNeedUpdateApp = true
-                viewState.showUpdateApp(!it.permitted)
+                appData.isNeedUpdateApp = it.hasUpdate()
+                if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
             }
     }
 
