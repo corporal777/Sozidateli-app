@@ -108,7 +108,7 @@ class MainPresenter
     }
 
     override fun onStoriesComplete() {
-        checkAppUpdate()
+        //checkAppUpdate()
         subscribeToTokenUpdates()
     }
 

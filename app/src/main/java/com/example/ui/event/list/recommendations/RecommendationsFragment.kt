@@ -10,6 +10,7 @@ import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
 import com.example.extensions.*
+import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
@@ -77,9 +78,6 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.apply {
             eventsList.apply {
                 adapter = this@RecommendationsFragment.adapter
-//                addOnScrollListener(PositionOffsetScrollListener { position, offset ->
-//                    presenter.onScrollChange(position, offset)
-//                })
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
@@ -90,50 +88,44 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     }
 
     override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
-        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
-        if (group == null){
-            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
-        } else group.updateItems(events, isNeedUpdateApp)
+//        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
+//        if (group == null)
+//            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
+//        else group.updateItems(events, isNeedUpdateApp)
 
-//        dataGroup.update(events.map {
-//            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-//            //else EventGroupNew(
-//            else EventItemNew(
-//                it,
-//                it.id.toString(),
-//                it.state,
-//                it.status?.value,
-//                it.binds?.currentUserRegistration?.status?.value,
-//                it.backgroundColor?.value,
-//                it.image?.uri,
-//                it.binds?.eventRegistrationState,
-//                it.userAgreement?.uri,
-//                it.binds?.currentUserRegistration?.id.toString(),
-//                it.name,
-//                it.address?.getShortAddress(),
-//                it.holdingDate?.from,
-//                it.holdingDate?.to,
-//                onEventClickListener,
-//            )
-//        })
+        dataGroup.update(events.map {
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
+            else EventItemNew(
+                it,
+                it.id.toString(),
+                it.state,
+                it.status?.value,
+                it.binds?.currentUserRegistration?.status?.value,
+                it.backgroundColor?.value,
+                it.image?.uri,
+                it.binds?.eventRegistrationState,
+                it.userAgreement?.uri,
+                it.binds?.currentUserRegistration?.id.toString(),
+                it.name,
+                it.address?.getShortAddress(),
+                it.holdingDate?.from,
+                it.holdingDate?.to,
+                onEventClickListener,
+            )
+        })
+
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun updateActionButton(event: EventNew?) {
         dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
-//        val id = event?.id?.toLong()
-//        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(
-            listOf(
-                NoScheduleEventItem(
-                    getString(R.string.no_active_events_found_title),
-                    //getString(R.string.no_data_found),
-                    //getString(R.string.no_active_events_found_title),
-                    padding = 70.dp
-                )
+        dataGroup.updateItem(
+            NoScheduleEventItem(
+                getString(R.string.no_active_events_found_title),
+                padding = 70.dp
             )
         )
         mBinding.swipeToRefresh.isRefreshing = false

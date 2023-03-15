@@ -103,8 +103,8 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
                     tilSpec.isVisible = true
                 }
 
-                initAgeFrom(filter, this)
-                initAgeTo(filter, this)
+                //initAgeFrom(filter, this)
+                //initAgeTo(filter, this)
             }.root
     }
 

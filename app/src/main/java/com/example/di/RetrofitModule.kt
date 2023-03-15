@@ -124,7 +124,7 @@ class RetrofitModule {
 
         clientBuilder.addInterceptor(authInterceptor)
 
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             val logInterceptor = HttpLoggingInterceptor { message ->
                 //Timber.tag("API_T").d(message)
                 Log.e("REQUEST INFO", message)

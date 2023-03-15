@@ -123,43 +123,43 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         inputLayout: TextInputLayout,
         textView: AutoCompleteTextView,
     ) {
-        textView.apply {
-            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
-            isCursorVisible = false
-            isFocusable = false
-            isFocusableInTouchMode = false
-
-            setOnClickListener {
-                EventFormatBottomSheet(requireContext(), filter.formats)
-                    .setFormatSelectedCallback {
-                        filter.format = it?.id
-                        filter.customFormat = it?.name
-                        this.setText(filter.getFormatName())
-                    }
-                    .show()
-            }
-            initInput(filter.getFormatName()) {
-                if (it.isNullOrBlank()) {
-                    filter.format = null
-                    filter.customFormat = null
-                }
-            }
-        }
-
-//        if (formats.isNullOrEmpty()) {
-//            inputLayout.isVisible = false
-//        } else {
-//            inputLayout.isVisible = true
-//            initDropDownView(
-//                textView,
-//                formats,
-//                formats.find { it.id == format }?.name,
-//                null,
-//                { it.name ?: "" },
-//                { it?.id },
-//                { onFormatChange(it) }
-//            )
+//        textView.apply {
+//            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+//            isCursorVisible = false
+//            isFocusable = false
+//            isFocusableInTouchMode = false
+//
+//            setOnClickListener {
+//                EventFormatBottomSheet(requireContext(), filter.formats)
+//                    .setFormatSelectedCallback {
+//                        filter.format = it?.id
+//                        filter.customFormat = it?.name
+//                        this.setText(filter.getFormatName())
+//                    }
+//                    .show()
+//            }
+//            initInput(filter.getFormatName()) {
+//                if (it.isNullOrBlank()) {
+//                    filter.format = null
+//                    filter.customFormat = null
+//                }
+//            }
 //        }
+
+        if (filter.formats.isNullOrEmpty()) {
+            inputLayout.isVisible = false
+        } else {
+            inputLayout.isVisible = true
+            initDropDownView(
+                textView,
+                filter.formats!!,
+                filter.formats!!.find { it.id == filter.format }?.name,
+                null,
+                { it.name ?: "" },
+                { it?.id },
+                { filter.format = it }
+            )
+        }
     }
 
     private fun initOrganizations(
@@ -167,46 +167,46 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         inputLayout: TextInputLayout,
         textView: AutoCompleteTextView,
     ) {
-        textView.apply {
-            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
-            isCursorVisible = false
-            isFocusable = false
-            isFocusableInTouchMode = false
-
-            setOnClickListener {
-                EventOrgBottomSheet(requireContext(), filter.organizations)
-                    .setOrganizationSelectedCallback {
-                        filter.organizationId = it?.id
-                        filter.organizationName = it?.legalInformation?.name?.short
-                        this.setText(filter.getOrgName())
-                    }
-                    .show()
-            }
-            initInput(filter.getOrgName()) {
-                if (it.isNullOrBlank()) {
-                    filter.organizationId = null
-                    filter.organizationName = null
-                }
-            }
-        }
-
-//        if (organizations.isNullOrEmpty()) {
-//            textView.isEnabled = false
-//            textView.text = null
-//            inputLayout.isEnabled = false
-//        } else {
-//            val selected = organizations.find { x -> x?.id == selectedOrganizationId }
-//            initDropDownView(
-//                textView,
-//                organizations,
-//                selected?.legalInformation?.name?.short,
-//                null,
-//                transformKey = { it?.legalInformation?.name?.short ?: "" },
-//                findValue = { it?.id },
-//                onVariantChange = { onOrgChange(it) })
-//            textView.isEnabled = true
-//            inputLayout.isEnabled = true
+//        textView.apply {
+//            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+//            isCursorVisible = false
+//            isFocusable = false
+//            isFocusableInTouchMode = false
+//
+//            setOnClickListener {
+//                EventOrgBottomSheet(requireContext(), filter.organizations)
+//                    .setOrganizationSelectedCallback {
+//                        filter.organizationId = it?.id
+//                        filter.organizationName = it?.legalInformation?.name?.short
+//                        this.setText(filter.getOrgName())
+//                    }
+//                    .show()
+//            }
+//            initInput(filter.getOrgName()) {
+//                if (it.isNullOrBlank()) {
+//                    filter.organizationId = null
+//                    filter.organizationName = null
+//                }
+//            }
 //        }
+
+        if (filter.organizations.isNullOrEmpty()) {
+            textView.isEnabled = false
+            textView.text = null
+            inputLayout.isVisible = false
+        } else {
+            val selected = filter.organizations!!.find { x -> x.id == filter.organizationId }
+            initDropDownView(
+                textView,
+                filter.organizations!!,
+                selected?.legalInformation?.name?.short,
+                null,
+                transformKey = { it?.legalInformation?.name?.short ?: "" },
+                findValue = { it?.id },
+                onVariantChange = { filter.organizationId })
+            textView.isEnabled = true
+            inputLayout.isVisible = true
+        }
     }
 
     private fun initEventInterests(filter: SearchFilter.EventNew, binding: LayoutFilterEventBinding){

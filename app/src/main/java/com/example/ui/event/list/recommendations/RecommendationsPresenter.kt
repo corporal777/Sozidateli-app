@@ -58,38 +58,17 @@ class RecommendationsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getEventsList()
-    }
-
-    private fun getEventsList() {
         viewState.setData(List(10) { null }, null)
         paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException)
-                hasNoConnectionError = true
-        }
-            .buildListNew(enablePlaceholders = false)
+            if (it.cause is UnknownHostException) hasNoConnectionError = true
+        }.buildListNew(enablePlaceholders = false)
 
         compositeDisposable += Flowable.create(paginationList, BackpressureStrategy.BUFFER)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it.isEmpty())
-                    viewState.showEmptyListPlaceholder()
-                else {
-                    viewState.setData(it, appData.isNeedUpdateApp)
-                }
+                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
+                else viewState.setData(it, appData.isNeedUpdateApp)
             }
-
-//        compositeDisposable += Observable.create(paginationList)
-//            .performOnBackgroundOutOnMain()
-//            .subscribeSimple {
-//                if (it.isEmpty())
-//                    viewState.showEmptyListPlaceholder()
-//                else {
-//                    viewState.apply {
-//                        setData(it)
-//                    }
-//                }
-//            }
 
         compositeDisposable += connectivity
             .performOnBackgroundOutOnMain()
@@ -100,6 +79,7 @@ class RecommendationsPresenter
                 }
             }
     }
+
 
     private fun getPaginationRequest(
         limit: Int,
