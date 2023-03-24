@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class AppUpdateModel(
     val permitted: Boolean,
     val outdated: Boolean,
-    val status: UpdateStatus
+    val status: UpdateStatus,
+    var isAvailable : Boolean = true
 ) {
     enum class UpdateStatus {
         @SerializedName("actual")

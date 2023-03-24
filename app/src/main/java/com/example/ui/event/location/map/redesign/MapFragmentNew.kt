@@ -3,11 +3,11 @@ package com.example.ui.event.location.map.redesign
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -15,7 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentMapNewBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.gms.maps.*
@@ -27,7 +27,7 @@ import javax.inject.Provider
 import kotlin.math.roundToInt
 
 class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.View,
-    OnMapReadyCallback, ToolbarFragmentNew {
+    OnMapReadyCallback, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: MapPresenterNew
@@ -49,9 +49,6 @@ class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.scrollContainer.onScrolled { scrollY, oldScrollY, _, _ ->
-            presenter.changeAppBarElevation(scrollY - oldScrollY)
-        }
     }
 
     private lateinit var googleMap: GoogleMap
@@ -156,10 +153,16 @@ class MapFragmentNew : BaseFragmentNew<FragmentMapNewBinding>(), MapContractNew.
     }
 
     override val title: CharSequence = ""
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.scrollContainer.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

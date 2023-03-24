@@ -4,7 +4,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemRegisterEventProfileEducationLevelBinding
-import com.example.ui.event.about.redesign.items.EventDetailActionItem
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventProfileEducationLevelItem(

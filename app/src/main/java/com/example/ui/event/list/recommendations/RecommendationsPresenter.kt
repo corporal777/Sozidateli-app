@@ -14,6 +14,7 @@ import com.example.data.models.EventNew.Companion.EVENT_SORT_FIELD
 import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.di.Connectivity
+import com.example.extensions.buildList
 import com.example.extensions.buildListNew
 import com.example.repository.AuthRepository
 import com.example.repository.EventRepository
@@ -22,6 +23,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.flow.PaginationListFlow
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -44,9 +46,8 @@ class RecommendationsPresenter
     @Connectivity val connectivity: Observable<Boolean>
 ) : BasePresenter<RecommendationsContract.View>(appData), RecommendationsContract.Presenter {
 
-    private val pagination: PaginationDataSourceFactory<EventNew?> =
-        PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationListFlow<EventNew?>
+    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
+    private lateinit var paginationList: PaginationList<EventNew?>
     private var isFirstAttach = true
 
 
@@ -61,9 +62,9 @@ class RecommendationsPresenter
         viewState.setData(List(10) { null }, null)
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildListNew(enablePlaceholders = false)
+        }.buildList(enablePlaceholders = false)
 
-        compositeDisposable += Flowable.create(paginationList, BackpressureStrategy.BUFFER)
+        compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()

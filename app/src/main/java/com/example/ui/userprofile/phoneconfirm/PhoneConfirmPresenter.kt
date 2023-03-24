@@ -1,28 +1,19 @@
 package com.example.ui.userprofile.phoneconfirm
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.PhoneCodeBody
 import com.example.data.models.ApiError
-import com.example.data.models.FieldDetails
-import com.example.data.models.UserDetail
-import com.example.data.models.asOptional
-import com.example.data.models.user.User
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_OTHER
-import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
 import com.example.util.PHONE_PERSONAL
 import com.example.util.TimerFormatter
 import com.example.util.phoneToServer
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -51,7 +42,6 @@ class PhoneConfirmPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         viewState.setPhone(phone)
         compositeDisposable += timerCompositeDisposable
         compositeDisposable += smsCompositeDisposable

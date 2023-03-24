@@ -29,7 +29,6 @@ class ChangeAccountPresenter
 ) : BasePresenter<ChangeAccountContract.View>(appData), ChangeAccountContract.Presenter {
 
     var mDeviceId = appData.deviceId ?: ""
-    private var mDy = 0
     private val loggedSessions = arrayListOf<UserSessionModel>()
     private val unLoggedSessions = arrayListOf<UserSessionModel>()
     private var canShowMenu = true
@@ -38,20 +37,10 @@ class ChangeAccountPresenter
     var authType = AuthType.NONE
     var isFromDeeplink = false
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
-
-    override fun attachView(view: ChangeAccountContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         currentUserId = appData.getId().toString()
-        viewState.setAppBarElevation(0f)
         loadData()
     }
 

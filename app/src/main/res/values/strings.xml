@@ -317,6 +317,7 @@
     <string name="photo_alert_title">Открыть камеру или галерею?</string>
     <string name="photo_alert_camera">Камера</string>
     <string name="photo_alert_gallery">Галерея</string>
+    <string name="file_alert_gallery">Файлы</string>
     <string name="photo_alert_remove">Удалить</string>
 
     <string name="welcome_greeting_message">Здравствуйте, %s</string>
@@ -475,7 +476,7 @@
     <string name="profile_edit_change_photo">Изменить фото</string>
     <string name="profile_edit_remove_photo">Удалить фото</string>
     <string name="profile_edit_user_surname">Укажите Вашу фамилию</string>
-    <string name="profile_edit_user_name">Укажите Ваше имя"</string>
+    <string name="profile_edit_user_name">Укажите Ваше имя</string>
     <string name="profile_edit_user_middle_name">Укажите Ваше отчество</string>
     <string name="profile_edit_user_no_middle_name">Нет отчества</string>
     <string name="profile_edit_empty_field_error">Необходимо заполнить поле</string>
@@ -998,8 +999,22 @@
     <string name="yandex_app_metric_key">faf7bdc3-762b-4c6a-8813-a6a8fb26f448</string>
     <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
     <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
-    <string name="asset_statements" translatable="false">[{ \"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\" }]</string>
+
+
     <string name="unread_notifications_label">Непросмотренные уведомления</string>
+    <string name="system_notifications">Системные уведомления</string>
+    <string name="system_notifications_short">Системные</string>
+    <string name="my_projects">Мои проекты</string>
+    <string name="events">Мероприятия</string>
+    <string name="estimates_rf">Оценки.рф</string>
+    <string name="organizer">Организатор</string>
+    <string name="change_user_name_label">Изменение Ф. И. О. пользователя</string>
+    <string name="change_user_name_description">Пожалуйста, обратите внимание, что изменение фамилии, имени или отчества, возможно только один раз. Для последующих изменений вам будет предложено обратиться в техническую поддержку.</string>
+    <string name="edit_name_title">Редактировать Ф. И. О.</string>
+    <string name="auth_error_no_middle_name">Введите отчество</string>
 
 
+    <string name="asset_statements">
+      [{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]
+    </string>
 </resources>

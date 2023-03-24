@@ -26,7 +26,6 @@ class PasswordConfirmPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
     }
 
     override fun onClickConfirmPassword(password: String) {

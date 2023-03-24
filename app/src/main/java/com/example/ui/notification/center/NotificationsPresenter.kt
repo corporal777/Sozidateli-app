@@ -1,7 +1,6 @@
 package com.example.ui.notification.center
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
@@ -20,9 +19,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class NotificationsPresenter
@@ -36,7 +33,6 @@ class NotificationsPresenter
     private var firstLaunch = true
     private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
-    private var mDy = 0f
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getNotificationsList(
@@ -56,7 +52,6 @@ class NotificationsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            setAppBarElevation(mDy)
             setNotificationsList()
             setData(List(20) { null })
         }
@@ -97,15 +92,10 @@ class NotificationsPresenter
 
     override fun attachView(view: NotificationsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
         if (firstLaunch) firstLaunch = false
         else pagination.invalidate()
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onNotificationUrlClick(url: String) = viewState.showUrl(url)
     override fun onItemTake(position: Int) = pagination.onItemTake(position)

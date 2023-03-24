@@ -1,33 +1,17 @@
 package com.example.ui.state.max
 
-import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.data.AppData
-import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
+import com.example.data.models.FieldDetails
+import com.example.data.models.UserDetail
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.state.base.MainInfoContract
 import com.example.util.AuthValidateUtil
-import com.example.util.IMAGE_MAX_SIZE_AVATAR
-import com.example.util.rxtakephoto.ResultRotation
-import com.isseiaoki.simplecropview.CropImageView
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import java.io.File
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class MaxStateMainInfoPresenter
@@ -38,21 +22,10 @@ class MaxStateMainInfoPresenter
 
     var screen: Int = 1
     var isUpdatePhoto = false
-    private var mDy = 0f
 
-    override fun attachView(view: MaxStateMainInfoContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(mDy)
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({

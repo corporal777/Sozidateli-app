@@ -1,20 +1,9 @@
 package com.example.ui.userprofile
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.Settings
-import android.util.Log
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.browser.customtabs.CustomTabsClient.getPackageName
-import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -24,7 +13,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileBinding
 import com.example.extensions.dp
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
 import com.example.ui.views.toolbar.ToolbarContent
@@ -34,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
-    UserProfileContract.View, ToolbarFragmentNew {
+    UserProfileContract.View, ToolbarFragment {
 
 
     override fun layout() = R.layout.fragment_user_profile
@@ -123,9 +112,7 @@ class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -23,7 +23,7 @@ interface SubEventContract {
         fun showEventErrorMessageDialog(withResult : Boolean, id : String, message : String)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onSpeakerClick(speaker: MemberModel)
 //        fun onSpeakerChangeSubscriptionClick(speaker: MemberModel)
 //        fun onSubeventChangeSubscriptionClick(subevent: EventActivityModel)

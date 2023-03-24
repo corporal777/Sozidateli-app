@@ -21,7 +21,7 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType

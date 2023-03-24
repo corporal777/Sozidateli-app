@@ -16,9 +16,8 @@ import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.items.EventDetailActivitiesItem
-import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
-import com.example.ui.event.activities.items.NoSubEventItem
+import com.example.ui.event.about.items.EventDetailActivitiesItem
+import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.speakers.member.items.UserSpeakerMainInfoItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog

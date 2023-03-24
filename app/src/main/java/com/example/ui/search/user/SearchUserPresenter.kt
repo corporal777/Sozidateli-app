@@ -189,6 +189,7 @@ class SearchUserPresenter
             //new binds filter
             put(SEARCH_USER_BINDS, "userFavorite")
             put(SEARCH_USER_TYPE, true)
+
             //new address filters
             val index = filter.index
             if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)

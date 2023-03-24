@@ -13,7 +13,7 @@ import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -58,7 +58,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         add(dataGroup)
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
-                presenter.onItemTake(position)
+                if (position > 0) presenter.onItemTake(position - 1)
             }
         })
     }

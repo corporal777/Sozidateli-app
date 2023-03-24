@@ -131,7 +131,7 @@ abstract class EventScheduleFragment<P : EventSchedulePresenter> : BaseFragment(
     }
 
     override fun showAllTags() {
-        findNavController().navigate(R.id.event_tags_fragment)
+
     }
 
     override fun showDataFormCacheMessage(cacheDate: String) {

@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import com.example.data.models.EventActivityModel
 import com.example.extensions.findItemBy

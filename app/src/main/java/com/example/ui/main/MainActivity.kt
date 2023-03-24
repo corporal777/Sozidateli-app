@@ -10,15 +10,13 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.*
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
-import androidx.core.view.doOnLayout
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -37,15 +35,15 @@ import com.example.databinding.LayoutBottomNavBadgeBinding
 import com.example.databinding.LayoutNoInternetBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNew
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragmentNew
@@ -53,7 +51,6 @@ import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
-import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.NotificationFragmentArgs
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.notification.center.redesign.NotificationsListFragment
@@ -68,11 +65,12 @@ import com.example.ui.tags.TagsFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.UpdateAppBottomSheet
+import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import getFragmentLifecycleCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
@@ -98,173 +96,115 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         chatAcceptMessageText = getString(R.string.chat_accepted)
     }
 
-    private val navBarColorDefault by lazy {
-        ContextCompat.getColor(this, R.color.main_background)
-    }
+    private val navBarColorDefault by lazy { ContextCompat.getColor(this, R.color.main_background) }
+    private val navBarColorBottomNav by lazy { ContextCompat.getColor(this, R.color.bottom_navigation_view_background_color) }
 
-    private val navBarColorBottomNav by lazy {
-        ContextCompat.getColor(this, R.color.bottom_navigation_view_background_color)
-    }
-
-
-    private val navFragmentsLifecycleCallback =
-        object : FragmentManager.FragmentLifecycleCallbacks() {
-
-            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
-                super.onFragmentStopped(fm, f)
-                if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
-                    cancelWindowTransparency()
-                }
-                if (f is StoriesFragment) {
-                    cancelWindowTransparency()
-                    presenter.onStoriesComplete()
-                }
-                if (f is MyEventsFragmentNew) {
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-                }
+    private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
+        onFragmentStopped = { },
+        onFragmentStarted = { f ->
+            if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                setWindowTransparency()
+            } else if (f is StoriesFragment) {
+                doEdgeWindow()
+            } else if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
+                cancelWindowTransparency()
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+            } else {
+                cancelWindowTransparency()
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             }
-
-            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-                super.onFragmentStarted(fm, f)
-                if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
-                    setWindowTransparency()
-                }
-                if (f is StoriesFragment) {
-                    doEdgeWindow()
-                }
-                if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-                }
-            }
-
-            override fun onFragmentViewCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                v: View,
-                savedInstanceState: Bundle?
-            ) {
-                presenter.apply {
-                    when (f) {
-                        is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
-                        is SplashFragment,
-                        is AuthorizationFragment,
-                        is RecommendationsFragment -> onOpenStartDestination()
-                        else -> onOpenNotStartDestination()
-                    }
-                    onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
-                }
-
+        },
+        onViewCreated = { f ->
+            presenter.apply {
                 when (f) {
-                    is RecommendationsFragment,
-                    is MyEventsFragmentNew,
-                    is ChatListTabsFragment,
-                    is ProfileFragment,
-                    is MyScheduleEventsFragment,
-                    is NotificationsListFragment,
-                    is NotificationsFragment -> showNavBar()
-                    else -> hideNavBar()
+                    is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
+                    is SplashFragment,
+                    is AuthorizationFragment,
+                    is RecommendationsFragment -> onOpenStartDestination()
+                    else -> onOpenNotStartDestination()
                 }
-
-                setupNavBarItems(f)
-
-                val isLightStatus: Boolean
-                val bg: Drawable?
-                if (f is BackgroundImageFragment) {
-                    bg = f.getFragmentBackgroundDrawable()
-                    isLightStatus = f.isLightStatus
-                } else {
-                    bg = null
-                    isLightStatus = true
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    window.decorView.systemUiVisibility =
-                        if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
-                }
-
-                mBinding.root.background = bg
-
-                if (f is ToolbarFragmentNew) {
-                    mBinding.apply {
-                        f.setupToolbarContent(ToolbarContent(mBinding.toolbarLabel))
-                        appBar.isVisible = true
-                        toolbarLabel.apply {
-                            text = f.title
-                            setOnClickListener {
-                                f.toolbarTitleClick()
-                            }
-                        }
-                        ivAction.apply {
-                            isVisible = !f.actionIconHidden
-                            setImageDrawable(f.actionIcon)
-                            setOnClickListener {
-                                f.actionIconClick()
-                            }
-                        }
-                    }
-                } else {
-                    mBinding.appBar.isVisible = false
-                }
-
+                onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
             }
+
+            when (f) {
+                is RecommendationsFragment,
+                is MyEventsFragmentNew,
+                is ChatListTabsFragment,
+                is ProfileFragment,
+                is MyScheduleEventsFragment,
+                is NotificationsListFragment,
+                is NotificationsFragment -> showNavBar()
+                else -> hideNavBar()
+            }
+
+            setupNavBarItems(f)
+
+            val isLightStatus: Boolean
+            val bg: Drawable?
+            if (f is BackgroundImageFragment) {
+                bg = f.getFragmentBackgroundDrawable()
+                isLightStatus = f.isLightStatus
+            } else {
+                bg = null
+                isLightStatus = true
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility =
+                    if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+            }
+
+            mBinding.root.background = bg
+
+            if (f is ToolbarFragment) {
+                mBinding.run {
+                    appBar.isVisible = true
+                    toolbar.apply {
+                        toolbarLabel.text = f.title
+                        f.setupToolbarContent(ToolbarContent(toolbarLabel, toolbarContainer))
+                        f.actionIconContainer(toolbarContainer.apply { removeAllViews() })
+                    }
+                    getBehavior()?.setScrollChangeCallback { presenter.changeScrollingOffset(it) }
+                }
+            } else mBinding.appBar.isVisible = false
         }
+    )
+
 
     private val backClick = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
+            val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+            val fr = navHost.childFragmentManager.fragments.firstOrNull()
+            //val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
             if (fr != null) {
-                val navContr = findNavController(R.id.navHostFragment)
                 if (fr is ProfileFragment || fr is MyEventsFragmentNew || fr is NotificationsFragment || fr is ChatListTabsFragment) {
-                    navContr.popBackStack(R.id.recommendations_fragment, false)
-                } else if (fr is TagsFragment) {
-                    fr.setFragmentResult("tags_fragment", bundleOf("tags" to fr.getTags()))
+                    findNavController().popBackStack(R.id.recommendations_fragment, false)
                 } else if (fr is AllActivitiesFragment) {
                     fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
-                    navContr.navigateUp()
+                    findNavController().navigateUp()
                 } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
                     finish()
-                } else navContr.navigateUp()
+                } else findNavController().navigateUp()
             }
         }
     }
 
 
-    private lateinit var inAppBehavior: BottomSheetBehavior<ConstraintLayout>
-
     private var noInternetDialog: BottomSheetDialog? = null
-
     private lateinit var splashScreen: SplashScreen
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        //splashScreen = installSplashScreen()
+        splashScreen = installSplashScreen().apply {
+            setKeepVisibleCondition { true }
+        }
         super.onCreate(savedInstanceState)
 
-        navHostFragment.childFragmentManager.registerFragmentLifecycleCallbacks(
-            navFragmentsLifecycleCallback,
-            false
-        )
+        registerFragmentLifecycleCallback()
         onBackPressedDispatcher.addCallback(this, backClick)
         setupMainNavBar()
         subscribeOnNotificationChanel()
-        inAppBehavior = ScrollingChildBehavior.from(mBinding.include.inappContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_HIDDEN -> {
-                            dimContent(false)
-                            presenter.onInappHidden()
-                        }
-                        else -> dimContent(true)
-                    }
-                }
-            })
-        }
-        mBinding.ivBack.setOnClickListener {
-            presenter.onBackClick()
-        }
+        mBinding.toolbar.ivBack.setOnClickListener { presenter.onBackClick() }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
@@ -272,12 +212,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         return false
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
+    override fun hideSplashScreen() {
+        splashScreen.setKeepVisibleCondition { false }
     }
 
-    private fun handleIntent(intent: Intent) {
+
+    override fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents(intent)) return
 
         val appLinkAction = intent.action
@@ -448,10 +388,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showDialogRecoverPassword(userId: String, code: String) {
         val changePasswordDialog = ChangePasswordFragment(true, code, userId)
         changePasswordDialog.show(supportFragmentManager, "change_password_dialog")
-//        NewPasswordDialog(this)
-//            .setSelectCallback {
-//                presenter.onSetPassword(/*email,*/ code, it)
-//            }
     }
 
     override fun showChat(chatId: String, userName: String) {
@@ -552,69 +488,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     override fun showUpdateApp(isRequired: Boolean) {
-        UpdateAppBottomSheet(this, isRequired).show()
+        UpdateAppBottomSheet(this, isRequired)
+            .setDismissCallback { presenter.startUpdateTimer() }
+            .show()
         if (isRequired) mBinding.include.inappDim.setBackgroundResource(R.color.main_background)
     }
 
     override fun showInAppNew(listInApp: List<Notification>) {
         val inAppNotification = InAppNotificationFragment(listInApp)
         inAppNotification.show(supportFragmentManager, "inAppDialog")
-    }
-
-    override fun showInApp(inapp: Notification) {
-        supportFragmentManager.beginTransaction()
-            .replace(mBinding.include.flNotificationContainer.id, createNotificationFragment(inapp))
-            .commitNowAllowingStateLoss()
-
-        when (inapp.type) {
-            Notification.Type.SIMPLE -> {
-                mBinding.include.btnPositive.apply {
-                    isVisible = true
-                    text = getString(R.string.ok)
-                    setOnClickListener {
-                        presenter.onInappOkClick(inapp)
-                    }
-                }
-                mBinding.include.btnNegative.apply {
-                    isVisible = false
-                }
-            }
-            Notification.Type.ACCEPTABLE -> {
-                mBinding.include.btnPositive.apply {
-                    isVisible = true
-                    text = getString(R.string.notifications_accept)
-                    setOnClickListener { presenter.onInappAcceptClick(inapp) }
-                }
-                mBinding.include.btnNegative.apply {
-                    isVisible = true
-                    text = getString(R.string.notifications_cancel)
-                    setOnClickListener { presenter.onInappCancelClick(inapp) }
-                }
-            }
-            Notification.Type.RATE -> {
-
-            }
-        }
-
-        mBinding.include.llButtons.doOnLayout {
-            mBinding.include.flNotificationContainer.updatePadding(bottom = mBinding.include.llButtons.height - mBinding.include.llButtons.paddingTop / 2)
-        }
-
-        inAppBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hideInApp() {
-        inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    private fun createNotificationFragment(inapp: Notification): NotificationFragment {
-        return NotificationFragment().apply {
-            arguments = NotificationFragmentArgs.Builder(inapp).build().toBundle()
-        }
-    }
-
-    private fun dimContent(dim: Boolean) {
-        mBinding.include.inappDim.setBackgroundResource(if (dim) R.color.dim else 0)
     }
 
     @SuppressLint("InflateParams")
@@ -671,15 +553,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
-    override fun onBackPressed() {
-        if (inAppBehavior.state == BottomSheetBehavior.STATE_HIDDEN) super.onBackPressed()
-        else inAppBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
     override fun onDestroy() {
-        navHostFragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(
-            navFragmentsLifecycleCallback
-        )
+        unregisterFragmentLifecycleCallback()
         super.onDestroy()
     }
 
@@ -768,8 +643,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private fun setupMainNavBar() {
-        val navController = findNavController(R.id.navHostFragment)
-        mBinding.mainNavBar.setupWithNavController(navController)
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        //val navController = findNavController(navHost)
+        mBinding.mainNavBar.setupWithNavController(navHost.navController)
         mBinding.mainNavBar.setOnItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
@@ -821,13 +698,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.mainNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    if (!findNavController(R.id.navHostFragment).popBackStack(
-                            R.id.recommendations_fragment,
-                            false
-                        )
-                    ) {
-                        findNavController(R.id.navHostFragment).navigate(R.id.recommendations_fragment,
-                            null,
+                    if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
+                        findNavController().navigate(R.id.recommendations_fragment, null,
                             navOptions {
                                 popUpTo(R.id.main_navigation) { inclusive = true }
                             })
@@ -835,36 +707,25 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     true
                 }
                 R.id.my_events -> {
-                    if (!findNavController(R.id.navHostFragment).popBackStack(
-                            R.id.my_events_fragment_new,
-                            false
-                        )
-                    ) {
-                        findNavController(R.id.navHostFragment).navigate(R.id.my_events_fragment_new)
+                    if (!findNavController().popBackStack(R.id.my_events_fragment_new, false)) {
+                        findNavController().navigate(R.id.my_events_fragment_new)
                     }
                     true
                 }
                 R.id.chats -> {
-                    findNavController(R.id.navHostFragment).navigate(R.id.chat_list_tabs_fragment)
+                    findNavController().navigate(R.id.chat_list_tabs_fragment)
                     true
                 }
                 R.id.notification -> {
                     //findNavController(R.id.navHostFragment).navigate(R.id.notifications_fragment)
-                    findNavController(R.id.navHostFragment).navigate(R.id.notifications_list_fragment)
+                    findNavController().navigate(R.id.notifications_list_fragment)
                     true
                 }
                 R.id.profile -> {
-                    findNavController(R.id.navHostFragment).navigate(R.id.profile_fragment)
+                    findNavController().navigate(R.id.profile_fragment)
                     true
                 }
                 else -> false
-            }
-        }
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.splash_fragment -> {
-                    hideNavBar()
-                }
             }
         }
     }
@@ -890,31 +751,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.mainNavBar.setBadge(R.id.chats, count)
     }
 
-    private fun BottomNavigationView.setBadge(tabResId: Int, badgeValue: Int) {
-        getOrCreateBadge(this, tabResId)?.let { badge ->
-            badge.clBadge.isVisible = badgeValue > 0
-            badge.tvBadge.text = if (badgeValue > 99) "99"
-            else badgeValue.toString()
-        }
-    }
 
-    private fun getOrCreateBadge(bottomBar: View, tabResId: Int): LayoutBottomNavBadgeBinding? {
-        val parentView = bottomBar.findViewById<ViewGroup>(tabResId)
-        var binding: LayoutBottomNavBadgeBinding? = null
-        parentView?.let {
-            if (parentView.findViewById<ViewGroup>(R.id.clBadge) == null) {
-                binding = LayoutBottomNavBadgeBinding.inflate(
-                    LayoutInflater.from(parentView.context),
-                    parentView,
-                    true
-                )
-            } else {
-                val badgeCl = parentView.findViewById<ViewGroup>(R.id.clBadge)
-                binding = LayoutBottomNavBadgeBinding.bind(badgeCl)
-            }
-        }
-        return binding
-    }
 
 
     private fun setupNavBarItems(f: Fragment) {
@@ -957,24 +794,34 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         return mBinding.flLoading
     }
 
-    override fun showProgressView() {
-        mBinding.progressView.showProgressBar()
-    }
-
-    override fun hideProgressView() {
-        mBinding.progressView.hideProgressBar()
-    }
-
-
-    override fun showBrowser(url: String) {
-        showCustomTabsBrowser(this, url)
-    }
+    override fun showProgressView() = mBinding.progressView.showProgressBar()
+    override fun hideProgressView() = mBinding.progressView.hideProgressBar()
+    override fun showBrowser(url: String) = showCustomTabsBrowser(this, url)
 
     override fun layout() = R.layout.activity_main
 
     override fun setMainTheme() {
-        window.navigationBarColor =
-            navBarColorDefault
+        window.navigationBarColor = navBarColorDefault
         setTheme(R.style.AppTheme)
+    }
+
+    private fun registerFragmentLifecycleCallback() {
+        val fr = (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
+        fr.childFragmentManager.registerFragmentLifecycleCallbacks(
+            navFragmentsLifecycleCallback,
+            false
+        )
+    }
+
+    private fun unregisterFragmentLifecycleCallback() {
+        val fr = (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
+        fr.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
+    }
+
+    private fun getBehavior(): CustomAppBarLayoutBehavior? {
+        val param = mBinding.navHostFragment.layoutParams as CoordinatorLayout.LayoutParams
+        if (param.behavior is CustomAppBarLayoutBehavior) {
+            return param.behavior as CustomAppBarLayoutBehavior
+        } else return null
     }
 }

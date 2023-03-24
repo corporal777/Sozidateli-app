@@ -1,11 +1,12 @@
 package com.example.ui.userprofile.read.maindata
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.text.parseAsHtml
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,7 +16,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
@@ -28,7 +29,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataBinding>(),
-    UserProfileMainDataContract.View, ToolbarFragmentNew {
+    UserProfileMainDataContract.View, ToolbarFragment {
 
     override fun layout() = R.layout.fragment_user_profile_main_data
 
@@ -44,9 +45,6 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            nestedScrollView.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
-                presenter.changeAppBarElevation(scrollY - oldScrollY)
-            }
             btnEdit.setOnClickListener(presenter::onEditClick)
         }
     }
@@ -103,9 +101,15 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
 
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.nestedScrollView.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

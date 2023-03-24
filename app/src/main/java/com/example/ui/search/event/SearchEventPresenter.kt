@@ -116,9 +116,11 @@ class SearchEventPresenter
         val loadOrganizations = organizationRepository.getOrganizationsWithActiveEvents()
         val loadInterests = userRepository.getInterestsList(null)
             .map { i -> i.data.groupByNotNull { child -> i.data.firstOrNull { it.id == child.parent } } }
-        val loadEventFormats = eventRepository.getEventFormatsList(
-            mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
-        )
+//        val loadEventFormats = eventRepository.getEventFormatsList(
+//            mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
+//        )
+
+        val loadEventFormats = eventRepository.getActiveEventFormatsList()
 
         compositeDisposable += Maybe.zip(loadInterests, loadEventFormats, loadOrganizations) { interests, formats, organizations ->
             this.interests = interests
@@ -204,10 +206,8 @@ class SearchEventPresenter
             if (!filter.name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%" + filter.name + "%")
 
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
-            if (filter.format == null && !filter.customFormat.isNullOrBlank()) put(
-                SEARCH_EVENT_FORMAT_CUSTOM,
-                filter.customFormat!!
-            )
+            if (filter.format == null && !filter.customFormat.isNullOrBlank())
+                put(SEARCH_EVENT_FORMAT_CUSTOM, filter.customFormat!!)
 
             if (filter.organizationId != null) put(
                 SEARCH_EVENT_ORGANIZATION,

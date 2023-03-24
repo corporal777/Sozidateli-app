@@ -1,8 +1,8 @@
 package com.example.ui.organizations.detail
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -18,14 +18,14 @@ import com.example.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.organizations.detail.items.*
 import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
-import com.example.ui.organizations.detail.items.*
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.StateType
 import com.example.ui.views.toolbar.ToolbarContent
@@ -37,7 +37,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
-    OrganizationContract.View, ToolbarFragmentNew {
+    OrganizationContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: OrganizationPresenter
@@ -119,9 +119,6 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
         mBinding.apply {
             rvOrganization.apply {
                 adapter = groupAdapter
-                onScrolled { _, _ ->
-                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-                }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -271,10 +268,16 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
 
     override fun layout(): Int = R.layout.fragment_organization
     override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() { }
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.rvOrganization.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
+    }
+
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

@@ -21,7 +21,7 @@ interface MaxStateWorkContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setClickClose(type : Int)
     }
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onClickClose()
         fun onSaveWorkClick(data: WorkExperienceServerModel)
     }

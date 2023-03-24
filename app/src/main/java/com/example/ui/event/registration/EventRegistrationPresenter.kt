@@ -108,8 +108,7 @@ class EventRegistrationPresenter
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
             .doOnSuccess {
                 approvingMode = it.state?.registration?.approvingMode
-                val form =
-                    it.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
+                val form = it.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
                 eventData = getEventData(form, it)
                 formId = form?.id ?: 0
                 formFields.addAll(mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED }))

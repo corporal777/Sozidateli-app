@@ -20,7 +20,7 @@ interface OrganizationMembersContract {
         fun showCurrentUser(userId: String)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onMemberClick(member: OrganizationNewMemberModel)
         fun onRefreshRequest()
     }

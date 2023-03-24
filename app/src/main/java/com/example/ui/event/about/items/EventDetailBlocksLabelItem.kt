@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import androidx.core.view.updatePadding
 import com.example.R

@@ -36,6 +36,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,5 +121,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
+
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
     </application>
 </manifest>

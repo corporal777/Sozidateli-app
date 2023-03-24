@@ -1,10 +1,9 @@
 package com.example.ui.notification.center
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -14,7 +13,7 @@ import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
@@ -30,9 +29,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(),
-    NotificationsContract.View,
-    ToolbarFragmentNew {
+class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(), NotificationsContract.View, ToolbarFragment {
 
 
     @InjectPresenter
@@ -111,9 +108,6 @@ class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(),
         mBinding.notificationsList.apply {
             layoutManager = LinearLayoutManagerAccurateOffset(requireContext())
             adapter = this@NotificationsFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
         }
     }
 
@@ -206,9 +200,16 @@ class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(),
 
     override fun layout() = R.layout.fragment_notifications
     override val title: CharSequence by lazy { getString(R.string.notifications_label) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.notificationsList.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ ->
+                scroll.invoke(this.computeVerticalScrollOffset())
+            }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

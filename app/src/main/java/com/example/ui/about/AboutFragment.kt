@@ -1,15 +1,15 @@
 package com.example.ui.about
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.util.Linkify.WEB_URLS
 import android.view.View
+import android.view.ViewGroup
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.databinding.FragmentAboutBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(true), AboutContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
 
     @InjectPresenter
@@ -44,13 +44,8 @@ class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(true), AboutContract
 
     override fun layout() = R.layout.fragment_about
 
-    override val title: CharSequence by lazy {
-        getString(R.string.profile_about_app)
-    }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override val title: CharSequence by lazy { getString(R.string.profile_about_app) }
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

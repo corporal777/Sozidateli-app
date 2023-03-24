@@ -32,7 +32,7 @@ interface MaxStateEducationContract {
         @StateStrategyType(SkipStrategy::class)
         fun showEmailConfirmation(email: String)
     }
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onClickClose()
         fun onSaveEducationClick(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?)
         fun checkEmailIsUnique(email: String)

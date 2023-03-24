@@ -1,9 +1,10 @@
 package com.example.ui.partner
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
@@ -15,7 +16,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.PartnerModel
 import com.example.databinding.FragmentPartnerBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.views.toolbar.ToolbarContent
@@ -26,7 +27,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: PartnerPresenter
@@ -46,9 +47,6 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.scrollContainer.onScrolled { scrollY, oldScrollY, scrollX, oldScrollX ->
-            presenter.changeAppBarElevation(scrollY - oldScrollY)
-        }
     }
 
     override fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?) {
@@ -121,10 +119,17 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
 
     override fun layout() = R.layout.fragment_partner
     override val title: CharSequence = ""
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.scrollContainer.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }

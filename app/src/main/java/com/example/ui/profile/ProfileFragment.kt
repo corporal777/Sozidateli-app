@@ -1,9 +1,9 @@
 package com.example.ui.profile
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -20,11 +21,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.MyEventsFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.extensions.dp
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.profile.data.ProfileDataFragment
@@ -33,6 +33,7 @@ import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmail
 import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils
 import com.example.util.firstLetterToUppercase
 import com.example.util.setImage
@@ -43,8 +44,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContract.View,
-    ToolbarFragmentNew {
+class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragment,
+    ProfileContract.View {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
@@ -72,9 +73,9 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            profileScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
-                presenter.changeScrollingOffset(scrollY - oldScrollY)
-            }
+//            profileScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
+//                presenter.changeScrollingOffset(scrollY - oldScrollY)
+//            }
             //tvBanned.setOnClickListener { presenter.onBannedClick() }
             tvSettings.setOnClickListener { presenter.onSettingsClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
@@ -137,18 +138,23 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     }
 
     override fun setUserLink(user: UserDetail) {
-        if (!user.shortName.isNullOrEmpty() && user.id.toString() != user.shortName){
-            toolbarContent.setToolbarTitle(SpannableStringBuilder(user.shortName))
-        }else {
+        var userShortName = SpannableStringBuilder()
+        if (!user.shortName.isNullOrEmpty() && user.id.toString() != user.shortName) {
+            userShortName = SpannableStringBuilder(user.shortName)
+        } else {
             val userId = getString(R.string.user_id, user.id.toString())
-            val userShortName = SpannableString(getString(R.string.put_user_short_name))
+            val shortName = SpannableString(getString(R.string.put_user_short_name))
             val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
-            userShortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            shortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
-            userShortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            shortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
-            userShortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            toolbarContent.setToolbarTitle(SpannableStringBuilder(userId + "\n").append(userShortName))
+            shortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            userShortName = SpannableStringBuilder(userId + "\n").append(userShortName)
+        }
+        toolbarContent.setToolbarTitle(userShortName)
+        toolbarContent.getToolbarTitleView().setOnClickListener {
+            presenter.onShowChangeUserShortName()
         }
     }
 
@@ -270,10 +276,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
         findNavController().navigate(ProfileFragmentDirections.profileToFavorite())
     }
 
-    override fun showEvents() {
-        findNavController().navigate(ProfileFragmentDirections.profileToMyEvents(MyEventsFilter.NONE))
-    }
-
     override fun showAboutApp() {
         findNavController().navigate(ProfileFragmentDirections.profileToAbout())
     }
@@ -330,14 +332,24 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ProfileContra
     override fun layout() = R.layout.fragment_profile
 
     override val title: CharSequence = ""
-    override val actionIconHidden: Boolean = false
 
-    override val actionIcon: Drawable? by lazy {
-        ContextCompat.getDrawable(requireContext(), R.drawable.ic_profile_link_edit)
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.profileScrollView.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
     }
 
-    override fun actionIconClick() = presenter.onShowUserProfileLink()
-    override fun toolbarTitleClick() = presenter.onShowChangeUserShortName()
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            addView(ToolbarIconView(context).apply {
+                setImageAsIcon(R.drawable.ic_profile_link_edit)
+                setOnClickListener { presenter.onShowUserProfileLink() }
+            })
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }

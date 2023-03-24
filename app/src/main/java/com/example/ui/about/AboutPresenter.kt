@@ -13,7 +13,7 @@ class AboutPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
+
     }
 
     override fun attachView(view: AboutContract.View?) {

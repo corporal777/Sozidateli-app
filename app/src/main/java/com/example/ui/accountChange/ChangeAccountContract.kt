@@ -34,7 +34,7 @@ interface ChangeAccountContract {
         fun ignoreTokenListener(ignore : Boolean)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun logoutFromAccount(session: UserSessionModel)
         fun switchAccount(session: UserSessionModel)
         fun authToAccountClick()

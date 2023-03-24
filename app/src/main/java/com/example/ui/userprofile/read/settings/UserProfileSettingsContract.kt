@@ -20,6 +20,9 @@ interface UserProfileSettingsContract {
         fun showChangePassword()
 
         @StateStrategyType(SkipStrategy::class)
+        fun showChangeName(user : UserDetail)
+
+        @StateStrategyType(SkipStrategy::class)
         fun showChangeShortName(user : UserDetail)
 
         @StateStrategyType(SkipStrategy::class)
@@ -55,6 +58,7 @@ interface UserProfileSettingsContract {
         fun onDeleteProfileConfirm()
 
 
+        fun showChangeNameClick()
         fun showChangeShortNameClick()
         fun onShowEmailConfirm(email : String)
     }

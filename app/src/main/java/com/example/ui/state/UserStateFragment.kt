@@ -1,18 +1,16 @@
 package com.example.ui.state
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentUserStateBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.max.MaxStateScreenType
 import com.example.ui.views.toolbar.ToolbarContent
@@ -23,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserStateContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -90,9 +88,7 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
 
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

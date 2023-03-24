@@ -1,9 +1,7 @@
 package com.example.ui.userprofile.edit
 
 import android.Manifest
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -22,11 +20,9 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import withProgressBarLoadingDialog
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserEditPresenter
@@ -44,23 +40,11 @@ class UserEditPresenter
 
     private var isFileEdit = false
     private var isInterestsLoaded = false
-    private var mDy = 0f
     private var withUpdate = true
 
-    override fun attachView(view: UserEditContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(mDy)
-    }
-
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(

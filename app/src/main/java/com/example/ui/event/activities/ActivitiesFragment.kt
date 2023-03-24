@@ -22,13 +22,11 @@ import com.example.data.models.Tag
 import com.example.databinding.FragmentActivitysBinding
 import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
-import com.example.holders.NoDataItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
-import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput

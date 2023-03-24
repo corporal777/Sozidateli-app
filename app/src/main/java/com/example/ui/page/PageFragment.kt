@@ -1,8 +1,9 @@
 package com.example.ui.page
 
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -11,7 +12,7 @@ import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
 import com.example.holders.DocumentItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.markWon
@@ -24,7 +25,7 @@ import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, ToolbarFragmentNew {
+class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, ToolbarFragment {
 
     private lateinit var toolbarContent: ToolbarContent
     private val args: PageFragmentArgs by navArgs()
@@ -50,9 +51,6 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
         mBinding.apply {
             recyclerView.apply {
                 adapter = groupAdapter
-            }
-            scrollContainer.onScrolled { scrollY, oldScrollY, _, _ ->
-                presenter.changeAppBarElevation(scrollY - oldScrollY)
             }
         }
 
@@ -102,11 +100,17 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
 
     override fun layout() = R.layout.fragment_page
     override val title: CharSequence = ""
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
+    }
+
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.scrollContainer.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
     }
 }

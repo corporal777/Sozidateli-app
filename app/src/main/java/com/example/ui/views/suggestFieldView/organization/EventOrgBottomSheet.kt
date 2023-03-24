@@ -81,7 +81,7 @@ class EventOrgBottomSheet(
     override fun setOrganizations(list: List<OrganizationNew>) {
         groupAdapter.apply {
             update(list.map {
-                EventFormatItem(
+                EventOrgItem(
                     it.id,
                     it.legalInformation?.name?.short
                 ) { org ->

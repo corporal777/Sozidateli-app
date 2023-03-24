@@ -51,9 +51,6 @@ interface BaseContract {
         fun showErrorMessage(canGoBack: Boolean, message: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setAppBarElevation(value: Float)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showEnterAnimation()
 
         @StateStrategyType(SkipStrategy::class)

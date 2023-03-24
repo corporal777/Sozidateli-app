@@ -62,6 +62,7 @@ interface EventRepository {
     fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
     fun getOrganizationEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
+    fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
     fun getEventDetails(eventId: String): Maybe<EventInfo>
     fun getEventMember(memberId : String) : Maybe<MemberModel>
     fun getEventDetailsNew(eventId: String): Single<EventNew>

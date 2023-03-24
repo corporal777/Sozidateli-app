@@ -18,9 +18,8 @@ import com.example.data.models.Place
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.NavBarColorFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.old.AboutEventFragmentArgs
-import com.example.ui.event.about.redesign.AboutEventFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNew.Companion.ABOUT_FROM_EVENT
+import com.example.ui.event.about.AboutEventFragmentNew
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.EventLocationFragmentArgs
 import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
@@ -118,7 +117,7 @@ class EventTabsFragment : BaseFragment(), EventTabsContract.View,
 
     override fun showAboutTab(eventId: String) = selectTab(
         R.id.about_event,
-        AboutEventFragmentArgs.Builder(eventId, ABOUT_FROM_EVENT).build().toBundle()
+        AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
     )
 
     override fun showMapTab(eventName: String, mapInfo: MapInfo?, places: Array<Place>?) =

@@ -83,7 +83,7 @@ interface UserEditContract {
         fun showPhoneNotUnique(phone: String)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         //main data
 
         //personal data

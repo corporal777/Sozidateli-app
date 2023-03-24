@@ -5,14 +5,12 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.MapInfo
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.location.map.MapContract
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import withLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class MapPresenterNew
@@ -25,11 +23,9 @@ class MapPresenterNew
 
     private var mapInitializeDisposable: Disposable? = null
     private var isMapContentSet = false
-    private var mDy = 0f
 
     override fun attachView(view: MapContractNew.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
         viewState.setDescription(mapInfo?.title, mapInfo?.description)
 
         val lat = mapInfo?.lat
@@ -44,11 +40,6 @@ class MapPresenterNew
         } else {
             viewState.showContent()
         }
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy += abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
     }
 
     override fun onMapReady() {

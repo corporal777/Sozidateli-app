@@ -2,21 +2,17 @@ package com.example.ui.organizations.members
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationNewMemberModel
 import com.example.extensions.buildList
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.user.UserContract
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class OrganizationMembersPresenter
@@ -27,8 +23,6 @@ class OrganizationMembersPresenter
     OrganizationMembersContract.Presenter {
 
     lateinit var organizationId: String
-    private var mDy = 0f
-
 
     val pagination = PaginationDataSourceFactory { limit, offset ->
         organizationRepository.getOrganizationMembers(
@@ -42,7 +36,6 @@ class OrganizationMembersPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         compositeDisposable += Observable.create(pagination)
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -56,12 +49,6 @@ class OrganizationMembersPresenter
 
     override fun attachView(view: OrganizationMembersContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
     }
 
 

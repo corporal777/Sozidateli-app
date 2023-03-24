@@ -2,15 +2,16 @@ package com.example.ui.event.list
 
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.UserProfileFields
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -18,7 +19,6 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import java.net.UnknownHostException
-import kotlin.math.abs
 
 abstract class EventListPresenter<V : EventListContract.View>(
         private val appData: AppData,
@@ -30,7 +30,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     private var scrollPosition = 0
     private var scrollOffset = 0
-    private var mDy = 0f
 
     private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
     private lateinit var paginationList: PaginationList<EventNew?>
@@ -39,7 +38,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         viewState.setData(List(10) { null })
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException)
@@ -80,16 +78,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun attachView(view: V?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
         viewState.scrollToPositionWithOffset(scrollPosition, scrollOffset)
         if (isFirstAttach) isFirstAttach = false
         else pagination.invalidate()
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onActionRegister(event: String) {
         viewState.showEventRequest(event)

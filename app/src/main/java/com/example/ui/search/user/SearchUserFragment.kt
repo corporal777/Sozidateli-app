@@ -69,19 +69,11 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
             .apply {
                 etAddress.apply {
                     setTextWithoutSearch(filter.address)
-                    onTextChanged { filter.address = it.toString() }
-                    onDataSelectedListener = {
-                        filter.index = it.index
-                        filter.country = it.country
-                        filter.federal = it.federal
-                        filter.region = it.region
-                        filter.area = it.area
-                        filter.city = it.city
-                        filter.settlement = it.settlement
-                        filter.street = it.street
-                        filter.house = it.house
-                        filter.flat = it.flat
+                    onTextChanged {
+                        filter.address = it.toString()
+                        if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
                     }
+                    onDataSelectedListener = { filter.setAddressFilter(it) }
                 }
 
                 initUserInterests(filter, this)

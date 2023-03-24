@@ -1,8 +1,8 @@
 package com.example.ui.banned
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -12,7 +12,7 @@ import com.example.databinding.LayoutListBinding
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarContent
@@ -22,8 +22,7 @@ import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View,
-    ToolbarFragmentNew {
+class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: BannedPresenter
@@ -51,9 +50,7 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@BannedFragment.adapter
-                onScrolled { dx, dy ->
-                    presenter.changeScrollingOffset(this.computeVerticalScrollOffset())
-                }
+
             }
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -88,9 +85,14 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
 
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.profile_banned) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.recyclerView.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

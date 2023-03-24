@@ -10,9 +10,6 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
-import com.example.util.PHONE_PERSONAL
-import com.example.util.Utils
-import com.example.util.phoneToServer
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
@@ -24,7 +21,6 @@ import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 
 @InjectViewState
@@ -40,23 +36,12 @@ class MainInfoPresenter
     var screen: Int = 1
     var isUpdatePhoto = false
     var isImageUpdating = false
-    private var mDy = 0f
     private var canGoNext = false
     private var isFirstLaunch = true
 
-    override fun attachView(view: MainInfoContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(mDy)
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(

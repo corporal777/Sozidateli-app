@@ -1,11 +1,10 @@
 package com.example.ui.notification
 
-import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.text.parseAsHtml
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -17,7 +16,7 @@ import com.example.databinding.FragmentNotificationBinding
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
@@ -31,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
-    NotificationContract.View, ToolbarFragmentNew {
+    NotificationContract.View, ToolbarFragment {
 
     private var isCanceled = false
     private var isAccepted = false
@@ -51,9 +50,7 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
-            presenter.changeAppBarElevation(scrollY - oldScrollY)
-        }
+
     }
 
     override fun setData(notification: Notification) {
@@ -266,9 +263,15 @@ class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
 
     override fun layout() = R.layout.fragment_notification
     override val title: CharSequence by lazy { getString(R.string.notification_label) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.nestedScrollView.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

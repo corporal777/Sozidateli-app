@@ -19,7 +19,8 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                app:contentScrim="@color/white"
+                android:layout_height="70dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                 <androidx.appcompat.widget.Toolbar
@@ -65,31 +66,11 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/toolbar_label"
                             app:layout_constraintTop_toTopOf="parent" />
-
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
-            <androidx.appcompat.widget.AppCompatToggleButton
-                android:id="@+id/btn_show_not_read"
-                fontPath="fonts/sf_pro_text_semibold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="15dp"
-                android:alpha="0.5"
-                android:background="@drawable/background_tag_new"
-                android:paddingHorizontal="15dp"
-                android:singleLine="true"
-                android:textAllCaps="false"
-                android:textColor="@color/text_color_tag_new"
-                android:textOff="@string/unread_notifications"
-                android:textOn="@string/unread_notifications"
-                android:textSize="15sp"
-                app:layout_collapseMode="none"
-                android:layout_marginBottom="10dp" />
-
         </com.google.android.material.appbar.AppBarLayout>
 
 

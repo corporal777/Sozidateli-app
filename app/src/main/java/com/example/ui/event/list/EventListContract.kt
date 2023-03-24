@@ -14,7 +14,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface EventListContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setData(events: List<EventNew/*Event*/?>)
+        fun setData(events: List<EventNew?>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder()
@@ -35,7 +35,7 @@ interface EventListContract {
         fun showEditProfile(id: String)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
 
         fun onScrollChange(position: Int, offset: Int)
         fun onRefreshRequest()

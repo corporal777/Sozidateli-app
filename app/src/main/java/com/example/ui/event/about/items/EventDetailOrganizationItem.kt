@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible

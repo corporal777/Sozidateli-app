@@ -1,8 +1,8 @@
 package com.example.ui.organizations.members
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -10,7 +10,7 @@ import com.example.R
 import com.example.data.models.OrganizationNewMemberModel
 import com.example.databinding.LayoutListBinding
 import com.example.holders.OrganizationUserItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
-    OrganizationMembersContract.View, ToolbarFragmentNew {
+    OrganizationMembersContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: OrganizationMembersPresenter
@@ -47,9 +47,6 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationMembersFragment.adapter
-                onScrolled { _, _ ->
-                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-                }
             }
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -83,9 +80,14 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
 
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_members) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.recyclerView.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
+    }
+
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

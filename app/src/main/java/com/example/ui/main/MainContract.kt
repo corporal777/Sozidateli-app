@@ -46,13 +46,7 @@ interface MainContract {
         fun showStories()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showInApp(inapp: Notification)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showInAppNew(listInApp: List<Notification>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideInApp()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
         fun showErrorMessage(message: String)
@@ -83,6 +77,12 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUpdateApp(isRequired : Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideSplashScreen()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setAppBarElevation(value: Float)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -98,11 +98,6 @@ interface MainContract {
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
 
-
-        fun onInappHidden()
-        fun onInappAcceptClick(inapp: Notification)
-        fun onInappCancelClick(inapp: Notification)
-        fun onInappOkClick(inapp: Notification)
 
         fun onRetryConnectionClick()
 

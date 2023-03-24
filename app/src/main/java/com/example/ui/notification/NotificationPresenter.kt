@@ -1,24 +1,20 @@
 package com.example.ui.notification
 
 import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.CancelBody
 import com.example.data.bodies.DeclineBody
-import com.example.data.models.InviteDetail
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 
@@ -32,11 +28,9 @@ class NotificationPresenter
 ) : BasePresenter<NotificationContract.View>(appData), NotificationContract.Presenter {
 
     lateinit var notification: Notification
-    private var mDy = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         compositeDisposable += userRepository.getNotificationDetail(notification.id.toString(), true)
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
@@ -71,15 +65,6 @@ class NotificationPresenter
             )
     }
 
-    override fun attachView(view: NotificationContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
-    }
 
     override fun onNotificationUrlClick(url: String) {
         viewState.showUrl(url)

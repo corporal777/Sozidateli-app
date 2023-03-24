@@ -3,6 +3,7 @@ package com.example.ui.main
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationManager
+import android.content.Context
 import android.location.Location
 import android.net.Uri
 import android.os.Looper
@@ -24,18 +25,22 @@ import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.accountChange.data.AuthType
+import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
 import com.example.ui.base.BasePresenter
 import com.example.util.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
@@ -46,6 +51,7 @@ import withProgressBarLoadingDialog
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class MainPresenter
@@ -61,7 +67,8 @@ class MainPresenter
     private val notificationManager: NotificationManager,
     private val connectivityProvider: ConnectivityProvider,
     private val eventRepository: EventRepository,
-    private val socket: SocketIOManager
+    private val socket: SocketIOManager,
+    private val context: Context,
 ) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
 
     private var isRegister = false
@@ -73,6 +80,7 @@ class MainPresenter
     private val errorMessageDisposable = CompositeDisposable().apply {
         compositeDisposable += this
     }
+    private val timerCompositeDisposable = CompositeDisposable()
 
     private var isAuthRequired = false
     private var isFromQr = false
@@ -84,41 +92,46 @@ class MainPresenter
     private var isInternetConnected = true
     var isSplashShown = true
 
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        compositeDisposable += timerCompositeDisposable
+
         appData.deviceId = UUID.randomUUID().toString()
-        if (!appData.isStoriesShown) viewState.showStories()
-        else onStoriesComplete()
+        if (!appData.isStoriesShown) {
+            viewState.hideSplashScreen()
+            viewState.showStories()
+        } else onStoriesComplete()
 
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.showBadgeNotification(it)
-            }, {
-                viewState.showBadgeNotification(0)
-            })
+            .subscribe(
+                { viewState.showBadgeNotification(it) },
+                { viewState.showBadgeNotification(0) }
+            )
 
         compositeDisposable += appData.chatMessageCountSubject
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                viewState.showBadgeChat(it)
-            }, {
-                viewState.showBadgeChat(0)
-            })
+            .subscribe(
+                { viewState.showBadgeChat(it) },
+                { viewState.showBadgeChat(0) }
+            )
     }
 
     override fun onStoriesComplete() {
-        checkAppUpdate()
         subscribeToTokenUpdates()
+        checkAppUpdate()
     }
 
     private fun checkAppUpdate() {
         compositeDisposable += authRepository.checkAppUpdate(BuildConfig.VERSION_NAME)
-            //.withDelay(1000)
+            .flatMap { checkAppUpdateAvailable(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                appData.isNeedUpdateApp = it.hasUpdate()
-                if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
+                if (it.isAvailable){
+                    appData.isNeedUpdateApp = it.hasUpdate()
+                    if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
+                }
             }
     }
 
@@ -131,12 +144,12 @@ class MainPresenter
                     if (token.value == null) {
                         isAuthRequired = true
                         viewState.apply {
+                            hideSplashScreen()
                             showLogin()
                             checkIntent()
                         }
-                    } else {
-                        loadUser()
-                    }
+
+                    } else loadUser()
                 }
             }
     }
@@ -150,11 +163,7 @@ class MainPresenter
                 onSuccess = { user ->
                     updateUserInShake(user)
                     disposable += Completable.merge(
-                        listOf(
-                            getInAppRequest(),
-                            checkUserLocation(),
-                            getAdditionalData()
-                        )
+                        listOf(getInAppRequest(), checkUserLocation(), getAdditionalData())
                     )
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket(appData.getId()) }
@@ -170,6 +179,7 @@ class MainPresenter
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
+                    viewState.hideSplashScreen()
                     isAuthRequired = true
                     viewState.apply {
                         hideLoadingDialog()
@@ -179,6 +189,7 @@ class MainPresenter
                     initInternetConnectionCheck()
                 },
                 onComplete = {
+                    viewState.hideSplashScreen()
                     if (!isEditingPhone) {
                         viewState.apply {
                             hideLoadingDialog()
@@ -427,40 +438,11 @@ class MainPresenter
         if (!inAppListNew.isNullOrEmpty()) {
             viewState.showInAppNew(inAppListNew)
         }
-
 //        inappList?.pollFirst()?.let {
 //            val notification = Notification.fromRemoteNotification(it)
 //            viewState.showInApp(notification)
 //            onInappOkClick(notification)
 //        }
-    }
-
-    override fun onInappHidden() {
-        showNextInApp()
-    }
-
-    override fun onInappAcceptClick(inapp: Notification) {
-        updateNotificationInvite(userRepository.notificationsInviteAccept(inapp.id), inapp.id)
-    }
-
-    override fun onInappCancelClick(inapp: Notification) {
-        updateNotificationInvite(userRepository.notificationsInviteDecline(inapp.id), inapp.id)
-    }
-
-    private fun updateNotificationInvite(request: Completable, notificationId: Int) {
-        compositeDisposable += request
-            .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
-            .subscribeSimple {
-                notificationManager.cancel(notificationId)
-                viewState.hideInApp()
-            }
-    }
-
-    override fun onInappOkClick(inapp: Notification) {
-        //updateNotificationInvite(userRepository.markAsRead(inapp.id.toString()), inapp.id)
-        //userRepository.markAsRead(id.toString())
-        viewState.hideInApp()
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -766,6 +748,17 @@ class MainPresenter
         }
     }
 
+    fun startUpdateTimer() {
+        timerCompositeDisposable.clear()
+        timerCompositeDisposable += Observable.timer(48, TimeUnit.HOURS)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                Log.e("UPDATE APP TIME", it.toString())
+                timerCompositeDisposable.clear()
+                checkAppUpdate()
+            }
+    }
+
     private fun observeDeeplink(url: String, type: AuthType) {
         when (type) {
             AuthType.OTHER_PLATFORM -> {
@@ -779,7 +772,6 @@ class MainPresenter
             else -> {
             }
         }
-
     }
 
     private fun getInAppRequest(): Completable {
@@ -805,6 +797,21 @@ class MainPresenter
             userRepository.getSpeciality(),
             userRepository.getAcademicDegrees()
         ).ignoreElements()
+    }
+
+    fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
+
+    private fun checkAppUpdateAvailable(update : AppUpdateModel): Maybe<AppUpdateModel> {
+        return Maybe.create { emitter ->
+            val appUpdateManager = AppUpdateManagerFactory.create(context)
+            appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
+                update.isAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                emitter.onSuccess(update)
+            }
+            appUpdateManager.appUpdateInfo.addOnFailureListener {
+                emitter.onSuccess(update)
+            }
+        }
     }
 
     companion object {

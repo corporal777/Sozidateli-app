@@ -45,7 +45,7 @@ interface MainInfoContract {
         @StateStrategyType(SkipStrategy::class)
         fun hideCheckPassword()
     }
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation  {
+    interface Presenter : BaseContract.Presenter  {
         fun onClickClose()
         fun updateFiles(data: MutableMap<String, Any?>)
 

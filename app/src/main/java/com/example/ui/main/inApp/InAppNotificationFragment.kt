@@ -23,7 +23,7 @@ import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.findItemBy
 import com.example.extensions.parseAndFormat
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.notification.center.redesign.items.AcceptNotificationItemNew
 import com.example.ui.notification.center.redesign.items.NotificationItemNew
 import com.example.ui.notification.center.redesign.items.RateNotificationItemNew

@@ -29,7 +29,7 @@ interface MaxStateMainInfoContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setClickClose(type : Int)
     }
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onClickClose()
         fun updateFiles(data: MutableMap<String, Any?>)
         fun onChangeEmailClick()

@@ -1,8 +1,5 @@
 package com.example.ui.userprofile
 
-import android.graphics.Bitmap
-import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
@@ -12,10 +9,8 @@ import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.SingleSubject
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
@@ -30,12 +25,10 @@ class UserProfilePresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
     }
 
     override fun attachView(view: UserProfileContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(0f)
     }
 
     override fun onEditAvatarClick() {

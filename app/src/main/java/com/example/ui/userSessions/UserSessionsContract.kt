@@ -35,7 +35,7 @@ interface UserSessionsContract {
         fun hideSessionsActionButton()
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun killAllSessionsClick()
         fun killUsersDeviceSessionClick(id: Int)
         fun showSessionClick(session: UserSessionModel)

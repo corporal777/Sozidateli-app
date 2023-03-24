@@ -1,8 +1,8 @@
 package com.example.ui.subevent
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -15,9 +15,9 @@ import com.example.databinding.FragmentSubeventBinding
 import com.example.extensions.findItemBy
 import com.example.holders.SpeakerGroup
 import com.example.holders.SubeventInfoItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.items.EventDetailBlocksLabelItem
+import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
@@ -28,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: SubEventPresenter
@@ -62,9 +62,6 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         mBinding.apply {
             contentList.apply {
                 adapter = groupAdapter
-                onScrolled { _, dy ->
-                    presenter.changeAppBarElevation(dy)
-                }
             }
         }
     }
@@ -113,9 +110,17 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
 
     override fun layout() = R.layout.fragment_subevent
     override val title: CharSequence by lazy { getString(R.string.event) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.contentList.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, dy ->
+                scroll.invoke(computeVerticalScrollOffset())
+            }
+        }
+    }
+
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -3,7 +3,6 @@ package com.example.ui.state
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.ui.base.BasePresenter
-import com.example.ui.users.favorite.FavoriteUsersContract
 import javax.inject.Inject
 
 @InjectViewState
@@ -14,12 +13,10 @@ class UserStatePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
     }
 
     override fun attachView(view: UserStateContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(0f)
         viewState.setStatesUI(arrayListOf(StateItemModel(UserState.BASE, appData.hasBaseState), StateItemModel(UserState.MAX, appData.hasMaxState)))
     }
 

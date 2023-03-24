@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.extensions.dp
 import com.google.android.material.textfield.TextInputLayout
@@ -22,6 +23,13 @@ class CustomTextInputLayout : TextInputLayout {
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
+
+
+    fun showError(text : CharSequence?){
+        isErrorEnabled = !text.isNullOrBlank()
+        error = text
+    }
+
 
     override fun setErrorEnabled(enabled: Boolean) {
         super.setErrorEnabled(enabled)

@@ -38,9 +38,6 @@ interface ProfileContract {
         fun showFavorites()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEvents()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutApp()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -89,7 +86,6 @@ interface ProfileContract {
     interface Presenter : BaseContract.Presenter {
         fun onProfileClick()
         fun onFavoritesClick()
-        fun onEventsClick()
         fun onSessionsClick()
         fun onChangeAccountClick()
         fun onAboutApplicationClick()

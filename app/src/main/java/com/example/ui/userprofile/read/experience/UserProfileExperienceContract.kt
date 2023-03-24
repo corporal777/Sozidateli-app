@@ -12,7 +12,7 @@ interface UserProfileExperienceContract {
         fun showEdit()
     }
 
-    interface Presenter : BaseUserProfileContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseUserProfileContract.Presenter {
         fun onEditClick()
     }
 }

@@ -8,7 +8,6 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -18,10 +17,6 @@ class EnterCodePresenter
     appData: AppData
 ) : BasePresenter<EnterCodeContract.View>(appData), EnterCodeContract.Presenter {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
-    }
 
     override fun onSearchClick(code: String) {
         compositeDisposable += eventRepository.getEventsList(

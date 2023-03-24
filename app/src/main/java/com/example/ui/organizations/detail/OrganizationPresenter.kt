@@ -12,7 +12,6 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.data.models.AboutOrganizationData
 import com.example.ui.views.UserSubscribeButton
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -21,7 +20,6 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 
 @InjectViewState
@@ -35,24 +33,16 @@ class OrganizationPresenter
 ) : BasePresenter<OrganizationContract.View>(appData), OrganizationContract.Presenter {
 
     lateinit var organizationId: String
-    private var mDy = 0f
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadData(true)
-        viewState.setAppBarElevation(mDy)
     }
 
     override fun attachView(view: OrganizationContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     private fun loadData(withLoading: Boolean) {
         compositeDisposable += organizationDataRequest()

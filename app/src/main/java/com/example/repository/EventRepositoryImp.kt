@@ -350,6 +350,10 @@ class EventRepositoryImp
             Maybe.just(eventFormats)
     }
 
+    override fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>> {
+        return newApi.getActiveEventFormatsList().map { it.data }
+    }
+
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         newApi.getEventDetails(
             eventId,

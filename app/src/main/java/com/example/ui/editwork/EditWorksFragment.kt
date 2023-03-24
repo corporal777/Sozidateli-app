@@ -1,8 +1,8 @@
 package com.example.ui.editwork
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -13,7 +13,7 @@ import com.example.data.models.WorkExperienceModel
 import com.example.data.models.WorkExperienceServerModel
 import com.example.databinding.FragmentEditWorkFragmentBinding
 import com.example.databinding.ItemProfileDataEditNoWorkNewBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.editwork.EditWorksModel.Companion.ADD_WORK
 import com.example.ui.editwork.EditWorksModel.Companion.HAS_WORK
@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
-    EditWorksContract.View, ToolbarFragmentNew {
+    EditWorksContract.View, ToolbarFragment {
 
     private lateinit var adapter: EditWorksAdapter
     private var birthday: String? = ""
@@ -61,9 +61,6 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
         mBinding.apply {
             rvInterests.apply {
                 adapter = this@EditWorksFragment.adapter
-                onScrolled { dx, dy ->
-                    presenter.changeAppBarElevation(dy)
-                }
             }
             btnEdit.setOnClickListener {
                 val currentList = adapter.currentList.toMutableList()
@@ -276,9 +273,14 @@ class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
     }
 
     override val title: CharSequence by lazy { getString(R.string.profile_work_experience) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.rvInterests.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

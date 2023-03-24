@@ -21,7 +21,21 @@ sealed class SearchFilter : Serializable {
         var street: String? = null,
         var house: String? = null,
         var flat: String? = null
-    ) : SearchFilter()
+    ) : SearchFilter() {
+
+        fun setAddressFilter(address: NewUserAddress?) {
+            index = address?.index
+            country = address?.country
+            federal = address?.federal
+            region = address?.region
+            area = address?.area
+            city = address?.city
+            settlement = address?.settlement
+            street = address?.street
+            house = address?.house
+            flat = address?.flat
+        }
+    }
 
 
     data class EventNew(
@@ -40,22 +54,20 @@ sealed class SearchFilter : Serializable {
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
         var formats: List<NewEventFormat>? = null
-        var organizations : List<OrganizationNew>? = null
+        var organizations: List<OrganizationNew>? = null
 
-        fun getFormatName() : String? {
-            val format = if (format != null){
-                formats?.find { it.id == format }?.name
-            } else if (!customFormat.isNullOrBlank()){
-                //"Искать «" + customFormat + "»"
-                 customFormat
-            } else null
+        fun getFormatName(): String? {
+            val format =
+                if (format != null) formats?.find { it.id == format }?.name
+                else if (!customFormat.isNullOrBlank()) customFormat
+                else null
             return format
         }
 
-        fun getOrgName() : String?{
-            if (organizationId != null){
+        fun getOrgName(): String? {
+            if (organizationId != null) {
                 return organizations?.find { it.id == organizationId }?.legalInformation?.name?.short
-            } else if (!organizationName.isNullOrBlank()){
+            } else if (!organizationName.isNullOrBlank()) {
                 return organizationName
             } else return null
 //            if (organizationId == null && !organizationName.isNullOrBlank()){
@@ -91,6 +103,19 @@ sealed class SearchFilter : Serializable {
         var flat: String? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
+
+        fun setAddressFilter(address: NewUserAddress?) {
+            index = address?.index
+            country = address?.country
+            federal = address?.federal
+            region = address?.region
+            area = address?.area
+            city = address?.city
+            settlement = address?.settlement
+            street = address?.street
+            house = address?.house
+            flat = address?.flat
+        }
 
         companion object {
             const val AGE_MIN = 14

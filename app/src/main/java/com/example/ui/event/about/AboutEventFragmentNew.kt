@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign
+package com.example.ui.event.about
 
 import android.content.Intent
 import android.graphics.Color
@@ -23,7 +23,7 @@ import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.items.*
+import com.example.ui.event.about.items.*
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
@@ -112,14 +112,23 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     private val customLayoutManager by lazy {
-        LinearLayoutManagerAccurateOffset(requireContext())
+        GridLayoutManagerAccurateOffset(requireContext(), groupAdapter.spanCount).apply {
+            spanSizeLookup = groupAdapter.spanSizeLookup
+        }
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
+            eventContentList.apply {
+                setItemViewCacheSize(50)
+                adapter = groupAdapter
+                layoutManager = customLayoutManager
+                onScrolled { _, _ ->
+                    mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
+                }
+            }
+
             ivShare.setOnClickListener(mPresenter::onShareClick)
             ivBack.setOnClickListener(findNavController()::navigateUp)
             btnAddToCalendar.setOnClickListener {
@@ -139,20 +148,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     }
 
-    override fun setAboutEventContentList() {
-        mBinding.eventContentList.apply {
-            setItemViewCacheSize(50)
-            adapter = groupAdapter
-            layoutManager =
-                GridLayoutManagerAccurateOffset(requireContext(), groupAdapter.spanCount).apply {
-                    spanSizeLookup = groupAdapter.spanSizeLookup
-                }
-            onScrolled { _, _ ->
-                mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
-            }
-        }
-
-    }
 
     override fun setEventData(eventData: AboutEventData) {
         decorEventFavoriteButton(eventData.event.binds?.userFavorite != null)
@@ -274,8 +269,9 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     override fun showEventActivities(eventId: String, listTags: List<NewTags>) {
         findNavController().navigate(
-            AboutEventFragmentNewDirections
-                .actionAboutEventFragmentToActivitiesFragment(eventId.toInt())
+            AboutEventFragmentNewDirections.actionAboutEventFragmentToActivitiesFragment(
+                eventId.toInt()
+            )
                 .setTags(listTags.toTypedArray())
         )
     }
@@ -289,7 +285,9 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     override fun showMap(mapInfo: MapInfo?) {
         findNavController().navigate(
-            AboutEventFragmentNewDirections.actionAboutEventFragmentNewToMapFragmentNew(mapInfo)
+            AboutEventFragmentNewDirections.actionAboutEventFragmentNewToMapFragmentNew(
+                mapInfo
+            )
         )
     }
 
@@ -396,12 +394,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     private fun setBlackIcons(value : Int) {
-        if (abs(value / (1000).toFloat()) < 10){
-            val alpha = abs(value / (1000).toFloat())
-            Log.e("ALPHA", alpha.toString())
-            val alphaColor: Int = ColorUtils.setAlphaComponent(Color.BLACK, alpha.toInt())
-        }
-
         mBinding.apply {
             ivAddToFavorite.imageTintList =
                 ContextCompat.getColorStateList(requireContext(), R.color.vk_black)

@@ -1,5 +1,6 @@
 package com.example.ui.base
 
+import android.content.Intent
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject

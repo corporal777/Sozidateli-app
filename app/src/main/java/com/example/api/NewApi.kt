@@ -201,6 +201,9 @@ interface NewApi {
     @GET("v1/event-format")
     fun getEventFormatsList(@QueryMap map: Map<String, Any>): Maybe<EventFormatsModel>
 
+    @GET("v1/event-format/active")
+    fun getActiveEventFormatsList(): Maybe<EventFormatsModel>
+
     //+
     @GET("v1/user/{id}/profile-state")
     fun checkUserProfile(@Path("id") organizationId: String): Maybe<UserProfileFieldsModel>

@@ -6,13 +6,11 @@ import com.example.data.models.*
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.state.max.MaxStateMainInfoContract
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class MaxStateEducationPresenter
@@ -23,21 +21,15 @@ class MaxStateEducationPresenter
 ) : BasePresenter<MaxStateEducationContract.View>(appData), MaxStateEducationContract.Presenter {
 
     var screen: Int = 1
-    private var mDy = 0f
 
     override fun attachView(view: MaxStateEducationContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
+
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({

@@ -1,5 +1,6 @@
 package com.example.ui.views.suggestFieldView.format
 
+import android.util.Log
 import androidx.annotation.ArrayRes
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -26,8 +27,8 @@ class EventFormatBottomSheetPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (listFormats.isNullOrEmpty()) {
-            compositeDisposable += eventRepository.getEventFormatsList(mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0))
+        if (listFormats.isNullOrEmpty() || listFormats.size == 1) {
+            compositeDisposable += eventRepository.getActiveEventFormatsList()
                 .doOnSuccess { listFormats.addAll(it) }
                 .performOnBackgroundOutOnMain()
                 .subscribeBy {
@@ -62,7 +63,7 @@ class EventFormatBottomSheetPresenter @Inject constructor(
     }
 
     private fun getCustomFormat(format : String?): NewEventFormat {
-        return NewEventFormat(null, format, 0)
+        return NewEventFormat(null, format, 0, true)
     }
 
     override fun onDestroy() {

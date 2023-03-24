@@ -2,18 +2,14 @@ package com.example.ui.userprofile.read.interests
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Interest
+import com.example.data.models.InterestNew
 import com.example.data.models.UserDetail
-import com.example.data.models.*
-import com.example.data.models.user.User
-import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserProfileInterestsPresenter @Inject constructor(
@@ -21,8 +17,6 @@ class UserProfileInterestsPresenter @Inject constructor(
     private val userRepository: UserRepository
 ) : BaseUserProfilePresenter<UserProfileInterestsContract.View>(appData),
     UserProfileInterestsContract.Presenter {
-
-    private var mDy = 0
 
     override fun onUserUpdated(user: UserDetail?) {
         val userInterests = user?.interests
@@ -50,16 +44,6 @@ class UserProfileInterestsPresenter @Inject constructor(
             }, {
                 it.printStackTrace()
             })
-    }
-
-    override fun attachView(view: UserProfileInterestsContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
     }
 
     private fun groupUserInterests(

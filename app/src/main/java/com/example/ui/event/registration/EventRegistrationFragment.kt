@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
@@ -27,7 +28,7 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.items.*
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
@@ -83,7 +84,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onBackPressedCallback(true){
+        onBackPressedCallback(true) {
             hideKeyboard()
             presenter.onBackClick()
         }
@@ -113,6 +114,7 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
                 event.registrationHeadline,
                 event.registrationSubtitle,
                 event.conferenceStart,
+                event.conferenceFinish
             )
         )
     }
@@ -311,12 +313,23 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     override fun openUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun openFileSelector() {
-        startActivityForResult(
-            Intent()
-                .setType("*/*")
-                .setAction(Intent.ACTION_OPEN_DOCUMENT)
-                .addCategory(Intent.CATEGORY_OPENABLE), REQUEST_CODE_FILE
-        )
+        val intent = Intent().apply {
+            type = "*/*"
+            action = Intent.ACTION_OPEN_DOCUMENT
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        AlertDialog.Builder(requireContext())
+            .setTitle("Открыть файлы или галерею?")
+            .setPositiveButton(R.string.file_alert_gallery) { _, _ ->
+                startActivityForResult(intent, REQUEST_CODE_FILE)
+            }
+            .setNegativeButton(R.string.photo_alert_gallery) { _, _ ->
+                startActivityForResult(
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*")),
+                    REQUEST_CODE_FILE
+                )
+            }
+            .show()
     }
 
     override fun updateFileField(fieldId: String) {
@@ -356,9 +369,8 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         super.onActivityResult(requestCode, resultCode, result)
         if (requestCode == REQUEST_CODE_FILE) {
-            val url = if (resultCode == RESULT_OK) {
-                result?.data
-            } else null
+            val url = if (resultCode == RESULT_OK) result?.data
+            else null
 
             if (url != null) presenter.onFileSelected(url)
             else presenter.onFileSelectionCancel()

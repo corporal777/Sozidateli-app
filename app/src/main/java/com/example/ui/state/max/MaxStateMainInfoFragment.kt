@@ -1,10 +1,9 @@
 package com.example.ui.state.max
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -16,11 +15,12 @@ import com.example.extensions.findItemBy
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.extensions.showChangeEmailDialog
 import com.example.holders.MaxStateMainInfoEditItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.InfoDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import com.example.util.Utils
@@ -31,7 +31,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
-    MaxStateMainInfoContract.View, ToolbarFragmentNew {
+    MaxStateMainInfoContract.View, ToolbarFragment {
 
     private var isOtherInfoValid = false
     private var canUpdateFields = true
@@ -57,9 +57,6 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
         super.onViewCreated(view, savedInstanceState)
         mBinding.recyclerView.apply {
             adapter = this@MaxStateMainInfoFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
         }
 
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
@@ -182,11 +179,23 @@ class MaxStateMainInfoFragment : BaseFragmentNew<FragmentMaxStateInfoBinding>(),
     override fun showChangeEmailComplete(email: String) = showChangeEmailCompleteDialog(email)
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }
-    override val actionIconHidden: Boolean = false
-    override val actionIcon: Drawable? by lazy {
-        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            addView(ToolbarIconView(context, 40).apply {
+                setImageAsIcon(R.drawable.ic_close_new)
+                setOnClickListener { presenter.onClickClose() }
+            })
+        }
     }
-    override fun actionIconClick() { presenter.onClickClose() }
-    override fun toolbarTitleClick() {}
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.recyclerView.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ ->
+              scroll.invoke(this.computeVerticalScrollOffset())
+            }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -1,8 +1,8 @@
 package com.example.ui.userprofile.phoneconfirm
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -10,7 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentConfirmPhoneBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
@@ -19,7 +19,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class PhoneConfirmFragment : BaseFragmentNew<FragmentConfirmPhoneBinding>(),
-    PhoneConfirmContract.View, ToolbarFragmentNew {
+    PhoneConfirmContract.View, ToolbarFragment {
 
     override fun layout() = R.layout.fragment_confirm_phone
 
@@ -91,9 +91,7 @@ class PhoneConfirmFragment : BaseFragmentNew<FragmentConfirmPhoneBinding>(),
     }
 
     override val title: CharSequence by lazy { getString(R.string.status_profile_title_set) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

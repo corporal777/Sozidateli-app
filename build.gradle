@@ -15,6 +15,7 @@ buildscript {
         jcenter()
         mavenCentral()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -33,7 +34,8 @@ buildscript {
 
 
 plugins {
-    id "org.sonarqube" version "2.7"
+    //id "org.sonarqube" version "2.7"
+    id "org.sonarqube" version "3.2.0"
     //id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
 }
 

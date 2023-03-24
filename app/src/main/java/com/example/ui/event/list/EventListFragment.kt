@@ -13,8 +13,9 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
@@ -70,9 +71,6 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             addOnScrollListener(PositionOffsetScrollListener { position, offset ->
                 presenter.onScrollChange(position, offset)
             })
-            onScrolled { dx, dy ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
         }
 
         swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -158,6 +156,7 @@ abstract class EventListFragment<P : EventListContract.Presenter> : BaseFragment
             UserFragmentArgs.Builder(id).build().toBundle()
         )
     }
+
 
     override fun layout() = R.layout.layout_list
 }

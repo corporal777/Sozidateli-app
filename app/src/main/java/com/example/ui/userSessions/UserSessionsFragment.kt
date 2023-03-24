@@ -1,9 +1,8 @@
 package com.example.ui.userSessions
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
+import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -12,12 +11,13 @@ import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userSessions.items.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -26,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
-    UserSessionsContract.View, ToolbarFragmentNew {
+    UserSessionsContract.View, ToolbarFragment {
 
 
     @InjectPresenter
@@ -67,9 +67,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
         super.onViewCreated(view, savedInstanceState)
         mBinding.rvSessions.apply {
             adapter = groupAdapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
             doOnPreDraw { startPostponedEnterTransition() }
         }
     }
@@ -139,13 +136,21 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
 
     override fun layout(): Int = R.layout.fragment_user_sessions
     override val title: CharSequence by lazy { getString(R.string.sessions_label) }
-    override val actionIconHidden: Boolean = false
-    override val actionIcon: Drawable? by lazy {
-        ContextCompat.getDrawable(requireContext(), R.drawable.ic_about_session)
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            addView(ToolbarIconView(context).apply {
+                setImageAsIcon(R.drawable.ic_about_session)
+                setOnClickListener { showSessionInfoDialog() }
+            })
+        }
     }
-    override fun actionIconClick() {
-        showSessionInfoDialog()
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.rvSessions.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
     }
-    override fun toolbarTitleClick() {}
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

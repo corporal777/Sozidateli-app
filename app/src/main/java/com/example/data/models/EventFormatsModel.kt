@@ -14,5 +14,6 @@ data class EventFormatsModel(
 data class NewEventFormat(
     val id: Int? = null,
     val name: String? = null,
-    val order: Int? = null
+    val order: Int? = null,
+    val hasMask : Boolean = false
 ) : Parcelable

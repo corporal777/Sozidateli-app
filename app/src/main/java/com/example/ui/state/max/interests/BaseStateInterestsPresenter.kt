@@ -11,10 +11,8 @@ import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class BaseStateInterestsPresenter
@@ -25,23 +23,16 @@ class BaseStateInterestsPresenter
 
     var screen: Int = 1
     private var isInterestsLoaded = false
-    private var mDy = 0f
 
     private var isFirstLaunch = true
 
     override fun attachView(view: BaseStateInterestsContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(mDy)
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(mDy)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({

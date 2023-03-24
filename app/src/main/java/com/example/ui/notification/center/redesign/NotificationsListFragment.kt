@@ -14,16 +14,20 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationsListBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.center.NotificationsFragmentDirections
 import com.example.ui.notification.center.redesign.items.NotificationItemNew
 import com.example.ui.notification.center.redesign.items.NotificationsItemsGroup
+import com.example.ui.notification.center.redesign.items.NotificationsTagsItem
+import com.example.ui.notification.center.redesign.types.NotificationTypeFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import onScrolled
@@ -72,8 +76,13 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
     }
 
+    private val tagsSection = Section()
+    private val notificationsSection = Section()
+
     private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            add(tagsSection)
+            add(notificationsSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     if (position > 0) presenter.onItemTake(position - 1)
@@ -89,29 +98,28 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
             notificationsList.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = groupAdapter
-                onScrolled { _, _ -> }
             }
             btnReadAll.setOnClickListener {
                 presenter.onReadAllNotificationsClick()
             }
-            btnShowNotRead.setOnCheckedChangeListener { _, isChecked ->
-                presenter.showOnlyNotRead(isChecked)
-            }
+//            btnShowNotRead.setOnCheckedChangeListener { _, isChecked ->
+//                //presenter.showOnlyNotRead(isChecked)
+//            }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
     override fun setNotReadButtonEnabled(enabled: Boolean) {
-        mBinding.btnShowNotRead.apply {
-            isEnabled = enabled
-            alpha = if (enabled) 1.0f
-            else 0.5f
-        }
+//        mBinding.btnShowNotRead.apply {
+//            isEnabled = enabled
+//            alpha = if (enabled) 1.0f
+//            else 0.5f
+//        }
         mBinding.btnReadAll.isVisible = enabled
     }
 
     override fun setData(notifications: List<Notification?>) {
-        groupAdapter.update(notifications.map {
+        notificationsSection.update(notifications.map {
             PlaceholderItem(PlaceholderItem.Type.NOTIFICATIONS_LIST)
         })
         mBinding.swipeToRefresh.isRefreshing = false
@@ -119,7 +127,10 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
     override fun setDataNew(notifications: Map<String, List<Notification>>) {
         mBinding.swipeToRefresh.isRefreshing = false
-        groupAdapter.update(notifications.map {
+        if (tagsSection.itemCount == 0)
+            tagsSection.updateItem(NotificationsTagsItem { showNotificationsType(it) })
+
+        notificationsSection.update(notifications.map {
             NotificationsItemsGroup(
                 requireContext(),
                 it.key,
@@ -130,7 +141,7 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     override fun showEmptyListPlaceholder() {
-        groupAdapter.update(listOf(NoEventItem(getString(R.string.notifications_not_found))))
+        notificationsSection.updateItem(NoEventItem(getString(R.string.notifications_not_found)))
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
@@ -150,41 +161,33 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         )
     }
 
+    private fun showNotificationsType(type: NotificationType) {
+        findNavController().navigate(
+            R.id.notification_type_fragment,
+            NotificationTypeFragmentArgs.Builder(type).build().toBundle()
+        )
+    }
+
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun onNotificationNeedUpdate(id: Int) {
         val idLong = id.toLong()
-        groupAdapter.findItemBy { item: Item -> item.id == idLong }?.apply {
+        notificationsSection.findItemBy { item: Item -> item.id == idLong }?.apply {
             notifyChanged()
         }
     }
 
 
     fun smoothScrollToFirstItem() {
+
         val mLayoutManager =
             mBinding.notificationsList.layoutManager as LinearLayoutManagerAccurateOffset
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 
-
-    private fun getFirstVisibleItem(): Int {
-        var position = 0
-        mBinding.notificationsList.apply {
-            val layoutManager = this.layoutManager as LinearLayoutManager
-            position = layoutManager.findFirstCompletelyVisibleItemPosition()
-        }
-        return position
-    }
-
-    private fun getLastVisibleItem(): Int {
-        var position = 0
-        mBinding.notificationsList.apply {
-            val layoutManager = this.layoutManager as LinearLayoutManager
-            position = layoutManager.findLastCompletelyVisibleItemPosition()
-        }
-        return position + 1
-    }
-
-
     override fun layout() = R.layout.fragment_notifications_list
+}
+
+enum class NotificationType {
+    SYSTEM, PROJECTS, EVENTS, ESTIMATES, ORGANIZER
 }

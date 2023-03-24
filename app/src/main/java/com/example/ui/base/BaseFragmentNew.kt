@@ -145,10 +145,6 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
         mActivity?.showKeyboard(view)
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mActivity?.setAppBarElevation(value)
-    }
-
     override fun setIgnoreTokenListener(isIgnore: Boolean) {
         mActivity?.setIgnoreTokenListener(isIgnore)
     }

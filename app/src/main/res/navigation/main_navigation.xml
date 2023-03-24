@@ -292,13 +292,6 @@
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
             app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
-        <action
-            android:id="@+id/recommendations_fragment_to_my_events_fragment"
-            app:destination="@id/my_events_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
 
         <action
             android:id="@+id/recommendations_fragment_to_chat_list_tabs_fragment"
@@ -334,23 +327,6 @@
             app:popExitAnim="@anim/slide_from_right_popup_exit" />
     </fragment>
 
-    <fragment
-        android:id="@+id/my_events_fragment"
-        android:name="com.example.ui.event.list.my.MyEventsFragment">
-
-        <argument
-            android:name="filter"
-            app:argType="com.example.data.models.MyEventsFilter"
-            app:nullable="false" />
-
-        <action
-            android:id="@+id/my_events_fragment_to_self"
-            app:destination="@id/my_events_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
-    </fragment>
 
     <fragment
         android:id="@+id/request_fragment"
@@ -465,14 +441,6 @@
         <action
             android:id="@+id/profile_to_user"
             app:destination="@+id/user_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
-
-        <action
-            android:id="@+id/profile_to_my_events"
-            app:destination="@+id/my_events_fragment"
             app:enterAnim="@anim/slide_from_right_enter"
             app:exitAnim="@anim/slide_from_right_exit"
             app:popEnterAnim="@anim/slide_from_right_popup_enter"
@@ -858,9 +826,6 @@
             android:id="@+id/qr_scanner_to_enter_code"
             app:destination="@id/enter_event_code_fragment" />
 
-        <action
-            android:id="@+id/qr_scanner_to_about_event_fragment"
-            app:destination="@id/about_event_fragment" />
 
         <action
             android:id="@+id/qr_scanner_to_about_event_fragment_new"
@@ -882,22 +847,6 @@
         android:id="@+id/stories_fragment"
         android:name="com.example.ui.stories.StoriesFragment" />
 
-    <fragment
-        android:id="@+id/about_event_fragment"
-        android:name="com.example.ui.event.about.old.AboutEventFragment"
-        tools:layout="@layout/fragment_about_event">
-        <argument
-            android:name="eventId"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="screenType"
-            app:argType="integer" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
-            app:destination="@id/activitiesFragment" />
-
-    </fragment>
 
     <fragment
         android:id="@+id/speakers_list_fragment"
@@ -948,50 +897,6 @@
         android:id="@+id/agreement_fragment"
         android:name="com.example.ui.agreement.UserAgreementFragment" />
 
-    <fragment
-        android:id="@+id/contacts_fragment"
-        android:name="com.example.ui.event.contacts.EventContactsFragment">
-
-        <argument
-            android:name="eventName"
-            app:argType="string" />
-
-        <argument
-            android:name="phones"
-            app:argType="com.example.data.models.EventPhoneModel[]" />
-
-        <argument
-            android:name="emails"
-            app:argType="com.example.data.models.EventPhoneModel[]" />
-
-        <argument
-            android:name="webLinks"
-            app:argType="string[]" />
-
-        <argument
-            android:name="socialLinks"
-            app:argType="string[]" />
-
-        <argument
-            android:name="address"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="place"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="mapInfo"
-            app:argType="com.example.data.models.MapInfo"
-            app:nullable="true" />
-
-        <argument
-            android:name="places"
-            app:argType="com.example.data.models.Place[]"
-            app:nullable="true" />
-    </fragment>
 
     <fragment
         android:id="@+id/event_location_fragment"
@@ -1013,15 +918,6 @@
             app:nullable="true" />
     </fragment>
 
-    <fragment
-        android:id="@+id/event_tags_fragment"
-        android:name="com.example.ui.tags.TagsFragment">
-        <argument
-            android:name="tags"
-            android:defaultValue="@null"
-            app:argType="com.example.data.models.NewTags[]"
-            app:nullable="true" />
-    </fragment>
 
     <fragment
         android:id="@+id/favorite_subevents_fragment"
@@ -1201,9 +1097,6 @@
         <action
             android:id="@+id/action_activitiesFragment_to_allActivitiesFragment"
             app:destination="@id/allActivitiesFragment" />
-        <action
-            android:id="@+id/action_activitiesFragment_to_event_tags_fragment"
-            app:destination="@id/event_tags_fragment" />
     </fragment>
     <fragment
         android:id="@+id/allActivitiesFragment"
@@ -1274,7 +1167,7 @@
 
     <fragment
         android:id="@+id/about_event_fragment_new"
-        android:name="com.example.ui.event.about.redesign.AboutEventFragmentNew"
+        android:name="com.example.ui.event.about.AboutEventFragmentNew"
         tools:layout="@layout/fragment_about_event_new">
         <argument
             android:name="eventId"
@@ -1402,5 +1295,17 @@
             android:name="organizationId"
             app:argType="string"
             app:nullable="false" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/notification_type_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.NotificationTypeFragment">
+
+        <argument
+            android:name="notificationType"
+            app:argType="com.example.ui.notification.center.redesign.NotificationType"
+            app:nullable="false" />
+
     </fragment>
 </navigation>

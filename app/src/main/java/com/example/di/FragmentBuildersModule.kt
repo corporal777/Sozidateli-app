@@ -20,14 +20,11 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.editeducation.EditEducationFragment
 import com.example.ui.editwork.EditWorksFragment
-import com.example.ui.event.about.old.AboutEventFragment
-import com.example.ui.event.about.redesign.AboutEventFragmentNew
+import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.allactivities.AllActivitiesFragment
-import com.example.ui.event.contacts.EventContactsFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
-import com.example.ui.event.list.my.MyEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
@@ -46,6 +43,7 @@ import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.notification.center.redesign.NotificationsListFragment
+import com.example.ui.notification.center.redesign.types.NotificationTypeFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
@@ -91,6 +89,7 @@ import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
+import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
@@ -137,9 +136,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeRecommendationsFragment(): RecommendationsFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMyEventsFragment(): MyEventsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeProfileFragment(): ProfileFragment
@@ -271,9 +267,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributePageFragment(): PageFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeEventContactsFragment(): EventContactsFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeStoriesFragment(): StoriesFragment
 
     @ContributesAndroidInjector
@@ -346,9 +339,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeUserSpeakerFragment(): UserSpeakerFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeAboutEventFragmentNew(): AboutEventFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeMapFragmentNew(): MapFragmentNew
 
     @ContributesAndroidInjector
@@ -370,6 +360,9 @@ abstract class FragmentBuildersModule {
     abstract fun contributeChangeShortNameFragment(): ChangeShortNameFragment
 
     @ContributesAndroidInjector
+    abstract fun contributeChangeNameFragment(): ChangeNameFragment
+
+    @ContributesAndroidInjector
     abstract fun contributeProfileDataFragment(): ProfileDataFragment
 
     @ContributesAndroidInjector
@@ -386,4 +379,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNotificationTypeFragment(): NotificationTypeFragment
 }

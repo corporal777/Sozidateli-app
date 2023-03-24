@@ -1,15 +1,15 @@
 package com.example.ui.userprofile.passwordconfirm
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentConfirmPasswordBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment.Companion.FROM_PROFILE
 import com.example.ui.views.toolbar.ToolbarContent
@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(),
-    PasswordConfirmContract.View, ToolbarFragmentNew {
+    PasswordConfirmContract.View, ToolbarFragment {
 
 
     val args: PasswordConfirmFragmentArgs by navArgs()
@@ -63,9 +63,7 @@ class PasswordConfirmFragment : BaseFragmentNew<FragmentConfirmPasswordBinding>(
     }
 
     override val title: CharSequence by lazy { getString(R.string.status_profile_title_set) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -1,8 +1,8 @@
 package com.example.ui.profile.favoritesTab
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -12,7 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationsFilter
 import com.example.databinding.FragmentFavoriteBinding
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
@@ -23,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), FavoriteContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: FavoritePresenter
@@ -84,9 +84,7 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
 
     override fun layout() = R.layout.fragment_favorite
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

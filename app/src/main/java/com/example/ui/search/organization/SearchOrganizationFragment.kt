@@ -67,7 +67,9 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
                 setTextWithoutSearch(filter.address)
                 onTextChanged {
                     filter.address = it.toString()
+                    if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
                 }
+                onDataSelectedListener = { filter.setAddressFilter(it) }
             }
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }

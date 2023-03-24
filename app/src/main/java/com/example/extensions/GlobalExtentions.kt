@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.InputFilter
@@ -18,7 +19,6 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -188,6 +188,33 @@ fun NestedScrollView.onScrolled(onScrolled: (scrollY: Int, oldScrollY: Int, scro
         }
     setOnScrollChangeListener(listener)
     return listener
+}
+
+fun getFragmentLifecycleCallback(
+    onFragmentStarted: (f: Fragment) -> Unit?,
+    onFragmentStopped: (f: Fragment) -> Unit?,
+    onViewCreated: (f: Fragment) -> Unit,
+): FragmentManager.FragmentLifecycleCallbacks {
+    val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
+
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+            onViewCreated(f)
+        }
+
+        override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+            super.onFragmentStarted(fm, f)
+            onFragmentStarted(f)
+        }
+
+        override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+            super.onFragmentStopped(fm, f)
+            onFragmentStopped(f)
+        }
+
+
+    }
+    return callback
 }
 
 

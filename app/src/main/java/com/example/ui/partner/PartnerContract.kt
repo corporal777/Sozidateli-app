@@ -12,5 +12,5 @@ interface PartnerContract {
         fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation
+    interface Presenter : BaseContract.Presenter
 }

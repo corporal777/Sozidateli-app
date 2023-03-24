@@ -3,12 +3,11 @@ package com.example.ui.userprofile.edit
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -16,12 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.FileModel
+import com.example.data.models.InterestNew
+import com.example.data.models.UserDetail
+import com.example.data.models.UserInterest
 import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.holders.*
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
@@ -35,16 +37,20 @@ import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.*
+import com.example.util.FileUtils
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
+import com.example.util.UriUtils
 import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import onBackPressedCallback
 import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     private lateinit var passwordDialog: SetPasswordDialog
 
@@ -124,22 +130,13 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    hideKeyboard()
-                    presenter.onNavigateUpRequest()
-                }
-            })
-
+        onBackPressedCallback(true){
+            hideKeyboard()
+            presenter.onNavigateUpRequest()
+        }
         mBinding.recyclerView.apply {
             adapter = this@UserEditFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
         }
-
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
@@ -430,10 +427,16 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     }
 
     override val title: CharSequence = ""
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.recyclerView.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ ->
+               scroll.invoke(this.computeVerticalScrollOffset())
+            }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }

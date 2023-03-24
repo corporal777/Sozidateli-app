@@ -23,10 +23,8 @@ import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
-import com.example.ui.event.about.redesign.items.EventDetailActivitiesItem
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.subevent.SubEventFragmentArgs
-import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.event.my.schedule.items.*
 import com.example.ui.views.dialogs_new.CustomProgressDialog
@@ -36,7 +34,6 @@ import com.example.util.SearchInput
 import com.example.util.getMonthName
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onPageChanged

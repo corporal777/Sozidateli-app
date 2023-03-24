@@ -1,10 +1,9 @@
 package com.example.ui.state.base
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -14,7 +13,7 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
 import com.example.holders.MainInfoEditItem
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.UserState
 import com.example.ui.state.max.MaxStateScreenType
@@ -26,6 +25,7 @@ import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -35,7 +35,7 @@ import javax.inject.Provider
 
 
 class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoContract.View,
-    ToolbarFragmentNew {
+    ToolbarFragment {
 
     private lateinit var passwordDialog: SetPasswordDialog
     private lateinit var dialog: AddPhoneEmailDialog
@@ -66,9 +66,6 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
         super.onViewCreated(view, savedInstanceState)
         mBinding.recyclerView.apply {
             adapter = this@MainInfoFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-            }
         }
 
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
@@ -280,15 +277,21 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
-    override val actionIconHidden: Boolean = false
-    override val actionIcon: Drawable? by lazy {
-        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_new)
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            addView(ToolbarIconView(context).apply {
+                setImageAsIcon(R.drawable.ic_close_new)
+                setOnClickListener { presenter.onClickClose() }
+            })
+        }
     }
 
-    override fun actionIconClick() {
-        presenter.onClickClose()
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.recyclerView.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
     }
 
-    override fun toolbarTitleClick() {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

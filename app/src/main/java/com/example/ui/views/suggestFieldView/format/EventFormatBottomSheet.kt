@@ -83,7 +83,8 @@ class EventFormatBottomSheet(
             update(list.map {
                 EventFormatItem(
                     it.id?.toLong(),
-                    it.name
+                    it.name,
+                    it.hasMask
                 ) { format ->
                     presenter.onFormatSelected(format)
                 }

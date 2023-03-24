@@ -1,11 +1,12 @@
 package com.example.ui.subevent
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
-import com.example.data.models.*
+import com.example.data.models.Event
+import com.example.data.models.EventActivityModel
+import com.example.data.models.MemberModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -19,7 +20,6 @@ import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class SubEventPresenter @Inject constructor(
@@ -32,12 +32,10 @@ class SubEventPresenter @Inject constructor(
     lateinit var eventId: String
 
     private var firstLoading = true
-    private var mDy = 0
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         getSubEventData()
     }
 
@@ -75,15 +73,6 @@ class SubEventPresenter @Inject constructor(
 
     }
 
-    override fun attachView(view: SubEventContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
 
     override fun onSpeakerClick(speaker: MemberModel) {
         viewState.showSpeakerProfile(speaker)

@@ -16,7 +16,6 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserProfileSettingsPresenter @Inject constructor(
@@ -28,22 +27,6 @@ class UserProfileSettingsPresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData),
     UserProfileSettingsContract.Presenter {
 
-    private var mDy = 0
-
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
-    }
-
-    override fun attachView(view: UserProfileSettingsContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
-
-    fun changeScrollingOffset(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
 
     override fun onChangePhoneClick() {
         viewState.showPhoneEdit(appData.getUserNew().phone?.firstOrNull { it.type == PHONE_PERSONAL })
@@ -154,6 +137,10 @@ class UserProfileSettingsPresenter @Inject constructor(
                     }
                     appData.updateUserNew(onComplete)
                 })
+    }
+
+    override fun showChangeNameClick() {
+        viewState.showChangeName(user)
     }
 
     override fun showChangeShortNameClick() {

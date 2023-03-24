@@ -1,8 +1,8 @@
 package com.example.ui.userprofile.read.interests
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -14,7 +14,7 @@ import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
-    UserProfileInterestsContract.View, ToolbarFragmentNew {
+    UserProfileInterestsContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -54,9 +54,6 @@ class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterest
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             rvInterests.adapter = adapter
-            rvInterests.onScrolled { dx, dy ->
-                presenter.changeAppBarElevation(dy)
-            }
             btnEdit.setOnClickListener(presenter::onEditClick)
         }
     }
@@ -88,9 +85,14 @@ class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterest
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_interests) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.rvInterests.apply {
+            scroll.invoke(this.computeVerticalScrollOffset())
+            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+        }
+    }
+
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

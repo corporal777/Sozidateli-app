@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign
+package com.example.ui.event.about
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -11,7 +11,7 @@ import com.example.data.models.*
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.about.redesign.items.AboutEventData
+import com.example.ui.event.about.items.AboutEventData
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -51,10 +51,8 @@ class AboutEventPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.apply {
-            updateAppBarBackgroundColorValue(mDy)
-            setAboutEventContentList()
-        }
+        viewState.updateAppBarBackgroundColorValue(mDy)
+
         val userEventInfo = userEventData.userEvent?.eventInfo
         val eventInfoMaybe =
             if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)

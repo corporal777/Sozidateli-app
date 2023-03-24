@@ -8,7 +8,6 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -18,11 +17,8 @@ class EditWorksPresenter
     private val userRepository: UserRepository
 ) : BasePresenter<EditWorksContract.View>(appData), EditWorksContract.Presenter {
 
-    private var mDy = 0
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
@@ -38,12 +34,6 @@ class EditWorksPresenter
 
     override fun attachView(view: EditWorksContract.View?) {
         super.attachView(view)
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(Math.abs(mDy / 10f))
     }
 
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {

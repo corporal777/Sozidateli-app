@@ -136,10 +136,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.navigateUp()
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mActivity?.setAppBarElevation(value)
-    }
-
     override fun setIgnoreTokenListener(isIgnore: Boolean) {
         mActivity?.setIgnoreTokenListener(isIgnore)
     }

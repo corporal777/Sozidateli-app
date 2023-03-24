@@ -1,20 +1,13 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
-import android.util.Log
-import android.view.View
-import androidx.annotation.RequiresApi
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
 import parseColor
 
 class EventDetailImageItem(

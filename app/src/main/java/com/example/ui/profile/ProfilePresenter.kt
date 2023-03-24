@@ -41,11 +41,8 @@ class ProfilePresenter
     private val authRepository: AuthRepository,
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
-    private var mDy = 0
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
         compositeDisposable += userRepository.getUserShortNew()
             .doOnSuccess { getAdditionalData() }
             .performOnBackgroundOutOnMain()
@@ -67,10 +64,7 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.apply {
-            setAppBarElevation(abs(mDy / 10f))
-            setUserState(appData.hasBaseState, appData.hasMaxState)
-        }
+        viewState.setUserState(appData.hasBaseState, appData.hasMaxState)
         compositeDisposable += getUserRequest()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -85,16 +79,11 @@ class ProfilePresenter
                 })
     }
 
-    fun changeScrollingOffset(value: Int) {
-        mDy += value
-        viewState.setAppBarElevation(abs(mDy / 10f))
-    }
 
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
 
     override fun onFavoritesClick() = viewState.showFavorites()
 
-    override fun onEventsClick() = viewState.showEvents()
 
     override fun onAboutApplicationClick() = viewState.showAboutApp()
 

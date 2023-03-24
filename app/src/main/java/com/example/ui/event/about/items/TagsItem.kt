@@ -1,19 +1,15 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Tag
 import com.example.databinding.ItemEventDetailTagsBlockBinding
 import com.example.ui.views.TagChipNew
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
 
 class TagsItem (
     private val listTags : List<Tag>,

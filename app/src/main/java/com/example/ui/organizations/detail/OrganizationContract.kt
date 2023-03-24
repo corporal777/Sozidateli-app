@@ -51,7 +51,7 @@ interface OrganizationContract {
         fun showEventRequest(event: String)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
 
         fun onShowMoreEventsClick()
         fun onShowMoreUsersClick()

@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import com.example.data.models.*
 
@@ -19,10 +19,8 @@ data class AboutEventData(
         val list = event.binds?.member?.filter { it.role == "speaker" }
         if (!list.isNullOrEmpty()) {
             val members = arrayListOf<MemberModel>()
-            members.addAll(list.filter { x -> x.isLead == true }
-                .sortedBy { x -> x.binds?.user?.fullName })
-            members.addAll(list.filter { x -> x.isLead == false }
-                .sortedBy { x -> x.binds?.user?.fullName })
+            members.addAll(list.filter { x -> x.isLead == true }.sortedBy { x -> x.binds?.user?.fullName })
+            members.addAll(list.filter { x -> x.isLead == false }.sortedBy { x -> x.binds?.user?.fullName })
             this.showMoreSpeakers = list.size > 5
             if (members.size > 5) speakers = members.subList(0, 5)
             else speakers = members

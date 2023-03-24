@@ -1,6 +1,5 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
-import com.example.data.models.MemberModel
 import com.example.data.models.OrganizationNew
 import com.example.data.models.PageModel
 import com.example.holders.redesign.*

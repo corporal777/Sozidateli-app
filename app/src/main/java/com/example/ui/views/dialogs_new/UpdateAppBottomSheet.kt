@@ -23,6 +23,7 @@ class UpdateAppBottomSheet(
 
     private val mBinding = BottomSheetUpdateAppBinding.inflate(LayoutInflater.from(context))
     private var onActionClick: () -> Unit = {}
+    private var onDismissClick: () -> Unit = {}
 
     init {
         mDialog.apply {
@@ -46,6 +47,9 @@ class UpdateAppBottomSheet(
                     if (!isRequired) mDialog.dismiss()
                 }
             }
+        }
+        if (!isRequired) {
+            mDialog.setOnDismissListener { onDismissClick.invoke() }
         }
     }
 
@@ -73,6 +77,11 @@ class UpdateAppBottomSheet(
 
     fun setUpdateClickCallback(block: () -> Unit): UpdateAppBottomSheet {
         onActionClick = block
+        return this
+    }
+
+    fun setDismissCallback(block: () -> Unit): UpdateAppBottomSheet {
+        onDismissClick = block
         return this
     }
 }

@@ -1,22 +1,16 @@
 package com.example.ui.userSessions
 
-import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.UserSessionModel
-import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.profile.ProfileContract
 import com.example.ui.userSessions.items.SessionsAction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserSessionsPresenter
@@ -30,22 +24,11 @@ class UserSessionsPresenter
     private val allOtherSessions = arrayListOf<UserSessionModel>()
     private val shortAllOtherSessions = arrayListOf<UserSessionModel>()
     private var actionType = SessionsAction.HIDDEN
-    private var mDy = 0f
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showSessionsLoadingPlaceholder()
         getUserSessionsData()
-    }
-
-    override fun attachView(view: UserSessionsContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarElevation(mDy)
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarElevation(mDy)
     }
 
     private fun getUserSessionsData() {

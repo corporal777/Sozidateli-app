@@ -1,9 +1,10 @@
 package com.example.ui.userprofile.read.settings
 
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnPreDraw
@@ -15,10 +16,11 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.parsePhone
-import com.example.interfaces.ToolbarFragmentNew
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
+import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
@@ -34,7 +36,7 @@ import javax.inject.Provider
 
 class UserProfileSettingsFragment :
     BaseFragmentNew<FragmentUserProfileSettingsBinding>(canShowAnim = true),
-    UserProfileSettingsContract.View, ToolbarFragmentNew {
+    UserProfileSettingsContract.View, ToolbarFragment {
 
     private lateinit var mUser: UserDetail
 
@@ -52,19 +54,11 @@ class UserProfileSettingsFragment :
         super.onViewCreated(view, savedInstanceState)
         view.doOnPreDraw { startPostponedEnterTransition() }
         mBinding.apply {
-            nestedScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
-                presenter.changeScrollingOffset(scrollY - oldScrollY)
+            tvEditName.setOnClickListener {
+                if (presenter.getUserData().state?.nameEdited == true) showDisabledMainInputInfo()
+                else presenter.showChangeNameClick()
             }
 
-            ivInfoName.setOnClickListener {
-                showDisabledMainInputInfo()
-            }
-            ivInfoLastName.setOnClickListener {
-                showDisabledMainInputInfo()
-            }
-            ivInfoMiddleName.setOnClickListener {
-                showDisabledMainInputInfo()
-            }
             tvEditPhone.setOnClickListener(presenter::onChangePhoneClick)
             tvEditPassword.setOnClickListener(presenter::onChangePasswordClick)
             btnDeleteProfile.setOnClickListener(presenter::onDeleteProfileClick)
@@ -119,11 +113,12 @@ class UserProfileSettingsFragment :
             tvUserLastName.text = user.lastName
             tvUserMiddleName.text = user.getMiddleName()
 
-            ivNoMiddleName.apply {
-                isEnabled = false
-                if (user.middleName?.absent == true || user.middleName?.value == "-") setImage(true)
-                else setImage(false)
-            }
+            scNoMiddleName.isChecked = user.middleName?.absent == true || user.middleName?.value == "-"
+//            ivNoMiddleName.apply {
+//                isEnabled = false
+//                if (user.middleName?.absent == true || user.middleName?.value == "-") setImage(true)
+//                else setImage(false)
+//            }
 
             tvPhoneMobile.apply {
                 val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
@@ -204,6 +199,14 @@ class UserProfileSettingsFragment :
         changePasswordDialog.show(
             requireActivity().supportFragmentManager,
             "change_password_settings"
+        )
+    }
+
+    override fun showChangeName(user: UserDetail) {
+        val changeNameDialog = ChangeNameFragment(user)
+        changeNameDialog.show(
+            requireActivity().supportFragmentManager,
+            "change_name_settings"
         )
     }
 
@@ -288,10 +291,16 @@ class UserProfileSettingsFragment :
 
     override fun layout() = R.layout.fragment_user_profile_settings
     override val title: CharSequence by lazy { getString(R.string.profile_settings) }
-    override val actionIconHidden: Boolean = true
-    override val actionIcon: Drawable? = null
-    override fun actionIconClick() {}
-    override fun toolbarTitleClick() {}
+    override fun actionIconContainer(view: ViewGroup) {}
+
+    @SuppressLint("RestrictedApi")
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        mBinding.nestedScrollView.apply {
+            scroll.invoke(computeVerticalScrollOffset())
+            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+        }
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
 

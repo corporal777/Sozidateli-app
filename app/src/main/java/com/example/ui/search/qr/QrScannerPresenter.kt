@@ -2,16 +2,13 @@ package com.example.ui.search.qr
 
 import android.Manifest
 import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withProgressBarLoadingDialog
@@ -27,7 +24,6 @@ class QrScannerPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setAppBarElevation(0f)
     }
 
     override fun attachView(view: QrScannerContract.View?) {

@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign.items
+package com.example.ui.event.about.items
 
 import android.content.Context
 import android.view.ViewTreeObserver
@@ -42,7 +42,7 @@ class EventDetailActionItem(
 //            }
 //        )
 
-    val eventFormat =
+    private val eventFormat =
         if (eventData?.format?.value == null && !eventData?.format?.custom.isNullOrEmpty()) {
             EventFormat(name = eventData?.format?.custom ?: "")
         } else EventFormat(

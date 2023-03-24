@@ -1,4 +1,4 @@
-package com.example.ui.event.about.redesign
+package com.example.ui.event.about
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
@@ -6,14 +6,10 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
-import com.example.ui.event.about.redesign.items.AboutEventData
+import com.example.ui.event.about.items.AboutEventData
 
 interface AboutEventContractNew {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAboutEventContentList()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEventData(eventData: AboutEventData)
 

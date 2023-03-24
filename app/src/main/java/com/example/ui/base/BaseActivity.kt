@@ -1,15 +1,22 @@
 package com.example.ui.base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.core.view.isVisible
+import com.example.R
 import com.example.databinding.ActivityMainBinding
+import com.example.databinding.LayoutBottomNavBadgeBinding
 import com.example.ui.views.dialogs_new.CustomProgressDialog
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.view.*
@@ -32,6 +39,39 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
+
+    fun BottomNavigationView.setBadge(tabResId: Int, badgeValue: Int) {
+        getOrCreateBadge(this, tabResId)?.let { badge ->
+            badge.clBadge.isVisible = badgeValue > 0
+            badge.tvBadge.text = if (badgeValue > 99) "99"
+            else badgeValue.toString()
+        }
+    }
+
+    private fun getOrCreateBadge(bottomBar: View, tabResId: Int): LayoutBottomNavBadgeBinding? {
+        val parentView = bottomBar.findViewById<ViewGroup>(tabResId)
+        var binding: LayoutBottomNavBadgeBinding? = null
+        parentView?.let {
+            if (parentView.findViewById<ViewGroup>(R.id.clBadge) == null) {
+                binding = LayoutBottomNavBadgeBinding.inflate(
+                    LayoutInflater.from(parentView.context),
+                    parentView,
+                    true
+                )
+            } else {
+                val badgeCl = parentView.findViewById<ViewGroup>(R.id.clBadge)
+                binding = LayoutBottomNavBadgeBinding.bind(badgeCl)
+            }
+        }
+        return binding
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    abstract fun handleIntent(intent: Intent)
 
     override fun showEnterAnimation() {
     }

@@ -26,11 +26,11 @@ class TagsFragment : BaseFragment(), TagsContract.View {
 
     @ProvidePresenter
     fun providePresenter(): TagsPresenter = presenterProvider.get().apply {
-        eventId = TagsFragmentArgs.fromBundle(requireArguments()).tags?.map {
-            val t = Tag.EventTag(it.id, it.name)
-            t.isSelected = it.isSelected
-            t
-        }
+//        eventId = TagsFragmentArgs.fromBundle(requireArguments()).tags?.map {
+//            val t = Tag.EventTag(it.id, it.name)
+//            t.isSelected = it.isSelected
+//            t
+//        }
     }
 
     override fun setData(tags: List<Tag>) {

@@ -27,7 +27,7 @@ import com.example.databinding.FragmentChatBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.redesign.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.util.SimpleTextWatcher

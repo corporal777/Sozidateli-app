@@ -34,7 +34,7 @@ interface NotificationsContract {
         fun showAboutEvent(eventId: String)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
         fun onItemTake(position: Int)
         fun onRefreshRequest()
