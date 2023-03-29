@@ -96,11 +96,6 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
             }
         }
         adapter.submitList(states)
-        /*viewPager.clipToPadding = false
-        viewPager.setPadding(50, 0, 50, 0)
-        viewPager.setPageTransformer(MarginPageTransformer(20))
-        viewPager.offscreenPageLimit = 3
-        viewPager.clipChildren = false*/
         mBinding.apply {
             viewPager.adapter = adapter
             TabLayoutMediator(tabs, viewPager) { tab, position ->
@@ -119,9 +114,6 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        scroll.invoke(0)
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

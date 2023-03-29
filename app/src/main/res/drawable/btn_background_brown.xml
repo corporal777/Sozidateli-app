@@ -3,7 +3,7 @@
     <item android:state_enabled="false">
         <shape>
             <solid android:color="@color/action_button_register_background_disabled" />
-            <corners android:radius="8dp" />
+            <corners android:radius="6dp" />
         </shape>
     </item>
     <item>
@@ -11,7 +11,7 @@
             <item>
                 <shape>
                     <solid android:color="#C3996C" />
-                    <corners android:radius="8dp" />
+                    <corners android:radius="6dp" />
                 </shape>
             </item>
         </layer-list>
