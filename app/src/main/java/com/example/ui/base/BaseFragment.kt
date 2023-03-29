@@ -2,7 +2,6 @@ package com.example.ui.base
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
-import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
@@ -185,22 +184,22 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
                                 when (Utils.maxStateScreen(user)) {
                                     MaxStateScreenType.BASE ->
                                         findNavController().navigate(
-                                            R.id.maxStateMainInfoFragment,
+                                            R.id.maxStatusContactsFragment,
                                             bundleOf("screen" to 1)
                                         )
                                     MaxStateScreenType.INTERESTS ->
                                         findNavController().navigate(
-                                            R.id.baseStateInterestsFragment,
-                                            bundleOf("screen" to 1)
-                                        )
-                                    MaxStateScreenType.WORK ->
-                                        findNavController().navigate(
-                                            R.id.maxStateWorkFragment,
+                                            R.id.maxStatusInterestsFragment,
                                             bundleOf("screen" to 1)
                                         )
                                     MaxStateScreenType.EDUCATION ->
                                         findNavController().navigate(
-                                            R.id.maxStateEducationFragment,
+                                            R.id.maxStatusEducationFragment,
+                                            bundleOf("screen" to 1)
+                                        )
+                                    MaxStateScreenType.WORK ->
+                                        findNavController().navigate(
+                                            R.id.maxStatusWorkFragment,
                                             bundleOf("screen" to 1)
                                         )
                                 }

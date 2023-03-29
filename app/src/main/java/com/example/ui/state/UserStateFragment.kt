@@ -12,7 +12,11 @@ import com.example.R
 import com.example.databinding.FragmentUserStateBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.state.maxNew.MaxStateScreenType
+import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
+import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
+import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
+import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.google.android.material.tabs.TabLayoutMediator
@@ -35,16 +39,14 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startPostponedEnterTransition()
-        onBackPressedCallback(true){
+        onBackPressedCallback(true) {
             presenter.onClickClose()
         }
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {
-
         val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
-
             when (it) {
                 UserState.BASE ->
                     findNavController().navigate(
@@ -55,13 +57,41 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
                     val base = states.firstOrNull { st -> st.state == UserState.BASE }
                     if (base?.isDone == true)
                         when (Utils.maxStateScreen(presenter.getUserData())) {
-                            MaxStateScreenType.BASE -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateMainInfoFragment().setScreen(2))
-                            MaxStateScreenType.INTERESTS -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToBaseStateInterestsFragment().setScreen(2))
-                            MaxStateScreenType.WORK -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateWorkFragment().setScreen(2))
-                            MaxStateScreenType.EDUCATION -> findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMaxStateEducationFragment().setScreen(2))
+                            MaxStateScreenType.BASE -> {
+                                findNavController().navigate(
+                                    R.id.maxStatusContactsFragment,
+                                    MaxStatusContactsFragmentArgs.Builder().setScreen(2).build()
+                                        .toBundle()
+                                )
+                            }
+                            MaxStateScreenType.INTERESTS -> {
+                                findNavController().navigate(
+                                    R.id.maxStatusInterestsFragment,
+                                    MaxStatusInterestsFragmentArgs.Builder().setScreen(2).build()
+                                        .toBundle()
+                                )
+                            }
+                            MaxStateScreenType.EDUCATION -> {
+                                findNavController().navigate(
+                                    R.id.maxStatusEducationFragment,
+                                    MaxStatusEducationFragmentArgs.Builder().setScreen(2).build()
+                                        .toBundle()
+                                )
+                            }
+
+                            MaxStateScreenType.WORK -> {
+                                findNavController().navigate(
+                                    R.id.maxStatusWorkFragment,
+                                    MaxStatusWorkFragmentArgs.Builder().setScreen(2).build()
+                                        .toBundle()
+                                )
+                            }
                             MaxStateScreenType.DONE -> presenter.onClickClose()
                         }
-                    else findNavController().navigate(UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment().setType(it).setScreen(2))
+                    else findNavController().navigate(
+                        UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment()
+                            .setType(it).setScreen(2)
+                    )
                 }
             }
         }
@@ -89,6 +119,9 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        scroll.invoke(0)
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

@@ -136,15 +136,6 @@ class AppData(
         chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
     }
 
-    fun updatePhone(phone: String) {
-        this.newUser?.phone?.forEach {
-            if (it.type == PHONE_PERSONAL) {
-                it.value = phone
-                it.isConfirmed = true
-            }
-        }
-        userNewChangeSubject.onNext(newUser.asOptional())
-    }
 
     fun checkUserState(data: List<UserProfileFields>?) {
         val base = data?.filter { it.requiredFor?.contains("basic") == true }

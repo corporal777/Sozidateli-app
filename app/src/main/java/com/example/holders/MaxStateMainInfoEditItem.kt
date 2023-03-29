@@ -43,7 +43,6 @@ class MaxStateMainInfoEditItem(
     private val socialNetworks: LinksModel?,
     private val site: LinksModel?,
     private val notes: ToggleStringModel?,
-    private val image: ImageModel,
     private val emails: List<EmailsModel>,
     private val addInfoClick:() -> Unit,
     private val enableNextButton:(enable: Boolean) -> Unit
@@ -72,8 +71,6 @@ class MaxStateMainInfoEditItem(
     private var mNoSite = site?.absent?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
     private var mNoWorkPhone = workPhone?.absent?: false//user_work_phone_absent
-    private var mImage = image
-    private val isImageVisible = (image.uri == null) || (image.uri == "")
 
     private var mSocialNetworks = (socialNetworks?.values?.map { UserDataSocialLink(value = it.value?: "", showInProfile = it.showInProfile?: false) } ?: emptyList())
         .map { it.copy() }
@@ -179,28 +176,9 @@ class MaxStateMainInfoEditItem(
                     addInfoClick()
                 }
             }
-            /*layPhoto.isVisible = isImageVisible
-            if (isImageVisible) {
-                setAvatar()
-                btnEdit.setOnClickListener {
-                    onImageClick(mImage.uri != null)
-                }
-            }*/
         }
     }
 
-    /*private fun setAvatar() {
-        this.viewHolder.ivAvatar.apply {
-            val avatarUrl = mImage.uri?.takeIf { it.isNotBlank() }
-            clipToOutline = true
-            transitionName = avatarUrl
-            Picasso.get()
-                    .load(avatarUrl)
-                    .placeholder(R.drawable.avatar_placeholder_rectangle)
-                    .error(R.drawable.avatar_placeholder_rectangle)
-                    .into(this)
-        }
-    }*/
 
     private fun checkPhone() {
         viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
@@ -385,29 +363,21 @@ class MaxStateMainInfoEditItem(
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
                 socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks), emails = emails))
 
-            /*when {
-                isUpdateSites && isUpdateLinks -> {
-                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
-                            socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks), emails = emails))
-                }
-                !isUpdateSites && isUpdateLinks -> {
-                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks),
-                    emails = emails))
-                }
-                isUpdateSites && !isUpdateLinks -> {
-                    put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite),
-                    emails = emails))
-                }
-            }*/
 
             if (notes?.value != mNotes || notes?.showInProfile != mNotesShow) put(UserDetail.USER_NOTES, ToggleStringModel(mNotes, mNotesShow))
         }
     }
 
-    fun setImage(image: ImageModel) {
-        mImage = image
-        checkDataValid()
-        //setAvatar()
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is MaxStateMainInfoEditItem) return false
+        if (mobilePhone != other.mobilePhone) return false
+        if (workPhone != other.workPhone) return false
+        if (socialNetworks != other.socialNetworks) return false
+        if (site != other.site) return false
+        if (notes != other.notes) return false
+        if (emails != other.emails) return false
+        return true
+
     }
 
     override fun getLayout(): Int = R.layout.item_max_state_main_info

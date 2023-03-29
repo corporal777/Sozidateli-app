@@ -16,7 +16,11 @@ import com.example.holders.MainInfoEditItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.state.UserState
-import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.state.maxNew.MaxStateScreenType
+import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
+import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
+import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
+import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
@@ -126,23 +130,23 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
                 when (maxStateScreen(presenter.getUserData())) {
                     MaxStateScreenType.BASE ->
                         findNavController().navigate(
-                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateMainInfoFragment()
-                                .setScreen(presenter.screen)
+                            R.id.maxStatusContactsFragment,
+                            MaxStatusContactsFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
                         )
                     MaxStateScreenType.INTERESTS ->
                         findNavController().navigate(
-                            MainInfoFragmentDirections.actionMainInfoFragmentToBaseStateInterestsFragment()
-                                .setScreen(presenter.screen)
-                        )
-                    MaxStateScreenType.WORK ->
-                        findNavController().navigate(
-                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateWorkFragment()
-                                .setScreen(presenter.screen)
+                            R.id.maxStatusInterestsFragment,
+                            MaxStatusInterestsFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
                         )
                     MaxStateScreenType.EDUCATION ->
                         findNavController().navigate(
-                            MainInfoFragmentDirections.actionMainInfoFragmentToMaxStateEducationFragment()
-                                .setScreen(presenter.screen)
+                            R.id.maxStatusEducationFragment,
+                            MaxStatusEducationFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
+                        )
+                    MaxStateScreenType.WORK ->
+                        findNavController().navigate(
+                            R.id.maxStatusWorkFragment,
+                            MaxStatusWorkFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
                         )
                     MaxStateScreenType.DONE -> {
                         MessageDialogWithBrownButton(

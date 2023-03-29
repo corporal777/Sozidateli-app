@@ -25,11 +25,9 @@ class SessionBottomSheet(
 
     init {
         if (session != null) {
-            deviceIp = if (!session.ipAddress.isNullOrEmpty()) {
-                session.ipAddress
-            } else {
-                "IP адрес не определен"
-            }
+            deviceIp = if (!session.ipAddress.isNullOrEmpty()) session.ipAddress
+            else "IP адрес не определен"
+
             deviceLocation =
                 if (session.location.isNullOrEmpty() || session.location.contains("Location not defined")) {
                     "Не определено"

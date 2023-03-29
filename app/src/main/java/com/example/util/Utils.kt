@@ -3,10 +3,9 @@ package com.example.util
 import android.content.Context
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.ui.state.max.MaxStateScreenType
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import com.example.data.models.UserProfileFieldsModel
+import com.example.ui.state.maxNew.MaxStateScreenType
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
@@ -118,11 +117,11 @@ object Utils {
             val minute = ceil((time - seconds).toDouble() / 60).toInt()
 
             val m = context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
-            val s = if (seconds > 0){
+            val s = if (seconds > 0) {
                 " " + context.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
             } else ""
             remainTime = m + s
-        } else  {
+        } else {
             remainTime = context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
         }
         return remainTime
@@ -142,6 +141,22 @@ object Utils {
         else if (!user.isHasInterests()) MaxStateScreenType.INTERESTS
         else if (isWork == true) MaxStateScreenType.WORK
         else if (user.binds?.education.isNullOrEmpty()) MaxStateScreenType.EDUCATION
+        else MaxStateScreenType.DONE
+    }
+
+    fun maxStateScreenNew(state: UserProfileFieldsModel): MaxStateScreenType {
+        val workPhone = state.fields?.find { it.name == "workPhone" }?.filled ?: false
+        val contacts = state.fields?.find { it.name == "contactInformation" }?.filled ?: false
+        val notes = state.fields?.find { it.name == "notes" }?.filled ?: false
+
+        val interests = state.fields?.find { it.name == "userInterest" }?.filled ?: false
+        val workExperience = state.fields?.find { it.name == "userWorkExperience" }?.filled ?: false
+        val education = state.fields?.find { it.name == "userEducation" }?.filled ?: false
+
+        return if (!workPhone || !contacts || !notes) MaxStateScreenType.BASE
+        else if (!interests) MaxStateScreenType.INTERESTS
+        else if (!education) MaxStateScreenType.EDUCATION
+        else if (!workExperience) MaxStateScreenType.WORK
         else MaxStateScreenType.DONE
     }
 }

@@ -21,6 +21,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
@@ -31,7 +32,6 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.UserDetail
-import com.example.databinding.LayoutBottomNavBadgeBinding
 import com.example.databinding.LayoutNoInternetBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
@@ -59,16 +59,14 @@ import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
-import com.example.ui.state.max.MaxStateScreenType
+import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
-import com.example.ui.tags.TagsFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import getFragmentLifecycleCallback
 import kotlinx.android.synthetic.main.activity_main.*
@@ -598,22 +596,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                             when (Utils.maxStateScreen(presenter.getUserData())) {
                                 MaxStateScreenType.BASE ->
                                     findNavController().navigate(
-                                        R.id.maxStateMainInfoFragment,
+                                        R.id.maxStatusContactsFragment,
                                         bundleOf("screen" to 1)
                                     )
                                 MaxStateScreenType.INTERESTS ->
                                     findNavController().navigate(
-                                        R.id.baseStateInterestsFragment,
-                                        bundleOf("screen" to 1)
-                                    )
-                                MaxStateScreenType.WORK ->
-                                    findNavController().navigate(
-                                        R.id.maxStateWorkFragment,
+                                        R.id.maxStatusInterestsFragment,
                                         bundleOf("screen" to 1)
                                     )
                                 MaxStateScreenType.EDUCATION ->
                                     findNavController().navigate(
-                                        R.id.maxStateEducationFragment,
+                                        R.id.maxStatusEducationFragment,
+                                        bundleOf("screen" to 1)
+                                    )
+                                MaxStateScreenType.WORK ->
+                                    findNavController().navigate(
+                                        R.id.maxStatusWorkFragment,
                                         bundleOf("screen" to 1)
                                     )
                             }

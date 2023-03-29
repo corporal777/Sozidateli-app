@@ -29,7 +29,6 @@ import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment
-import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeItem
 import com.example.ui.event.location.map.MapFragment
 import com.example.ui.event.location.map.redesign.MapFragmentNew
 import com.example.ui.event.my.MyEventsFragmentNew
@@ -68,10 +67,10 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserStateFragment
 import com.example.ui.state.base.MainInfoFragment
-import com.example.ui.state.max.MaxStateMainInfoFragment
-import com.example.ui.state.max.education.MaxStateEducationFragment
-import com.example.ui.state.max.interests.BaseStateInterestsFragment
-import com.example.ui.state.max.work.MaxStateWorkFragment
+import com.example.ui.state.maxNew.education.MaxStatusEducationFragment
+import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragment
+import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragment
+import com.example.ui.state.maxNew.work.MaxStatusWorkFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubEventFragment
 import com.example.ui.subevent.users.SubeventUserListFragment
@@ -308,18 +307,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeMainInfoFragment(): MainInfoFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeBaseStateInterestsFragment(): BaseStateInterestsFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMaxStateMainInfoFragment(): MaxStateMainInfoFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMaxStateWorkFragment(): MaxStateWorkFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMaxStateEducationFragment(): MaxStateEducationFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeActivitiesFragment(): ActivitiesFragment
 
     @ContributesAndroidInjector
@@ -387,4 +374,16 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeNotificationTypeFragment(): NotificationTypeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStatusMainInfoFragment(): MaxStatusContactsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStatusInterestsFragment(): MaxStatusInterestsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStatusWorkFragment(): MaxStatusWorkFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMaxStatusEducationFragment(): MaxStatusEducationFragment
 }

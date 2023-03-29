@@ -490,18 +490,8 @@
         <action
             android:id="@+id/action_profile_fragment_to_mainInfoFragment"
             app:destination="@id/mainInfoFragment" />
-        <action
-            android:id="@+id/action_profile_fragment_to_maxStateMainInfoFragment"
-            app:destination="@id/maxStateMainInfoFragment" />
-        <action
-            android:id="@+id/action_profile_fragment_to_baseStateInterestsFragment"
-            app:destination="@id/baseStateInterestsFragment" />
-        <action
-            android:id="@+id/action_profile_fragment_to_maxStateWorkFragment"
-            app:destination="@id/maxStateWorkFragment" />
-        <action
-            android:id="@+id/action_profile_fragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
+
+
         <action
             android:id="@+id/action_profile_fragment_to_qrScannerAuthWebsiteFragment"
             app:destination="@id/qrScannerToAuthWebSiteFragment" />
@@ -975,18 +965,7 @@
         <action
             android:id="@+id/action_userStateFragment_to_mainInfoFragment"
             app:destination="@id/mainInfoFragment" />
-        <action
-            android:id="@+id/action_userStateFragment_to_maxStateMainInfoFragment"
-            app:destination="@id/maxStateMainInfoFragment" />
-        <action
-            android:id="@+id/action_userStateFragment_to_baseStateInterestsFragment"
-            app:destination="@id/baseStateInterestsFragment" />
-        <action
-            android:id="@+id/action_userStateFragment_to_maxStateWorkFragment"
-            app:destination="@id/maxStateWorkFragment" />
-        <action
-            android:id="@+id/action_userStateFragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
+
     </fragment>
 
     <fragment
@@ -1001,85 +980,54 @@
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_mainInfoFragment_to_baseStateInterestsFragment"
-            app:destination="@id/baseStateInterestsFragment" />
+
         <action
             android:id="@+id/action_mainInfoFragment_to_password_confirm_fragment"
             app:destination="@id/password_confirm_fragment" />
-        <action
-            android:id="@+id/action_mainInfoFragment_to_maxStateMainInfoFragment"
-            app:destination="@id/maxStateMainInfoFragment" />
-        <action
-            android:id="@+id/action_mainInfoFragment_to_maxStateWorkFragment"
-            app:destination="@id/maxStateWorkFragment" />
-        <action
-            android:id="@+id/action_mainInfoFragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/baseStateInterestsFragment"
-        android:name="com.example.ui.state.max.interests.BaseStateInterestsFragment"
-        android:label="BaseStateInterestsFragment">
 
+
+    <fragment
+        android:id="@+id/maxStatusContactsFragment"
+        android:name="com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragment"
+        android:label="MaxStatusContactsFragment">
         <argument
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_baseStateInterestsFragment_to_maxStateMainInfoFragment"
-            app:destination="@id/maxStateMainInfoFragment" />
-        <action
-            android:id="@+id/action_baseStateInterestsFragment_to_maxStateWorkFragment"
-            app:destination="@id/maxStateWorkFragment" />
-        <action
-            android:id="@+id/action_baseStateInterestsFragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/maxStateMainInfoFragment"
-        android:name="com.example.ui.state.max.MaxStateMainInfoFragment"
-        android:label="MaxStateMainInfoFragment">
+        android:id="@+id/maxStatusEducationFragment"
+        android:name="com.example.ui.state.maxNew.education.MaxStatusEducationFragment"
+        android:label="MaxStatusEducationFragment">
         <argument
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_maxStateMainInfoFragment_to_baseStateInterestsFragment"
-            app:destination="@id/baseStateInterestsFragment" />
-        <action
-            android:id="@+id/action_maxStateMainInfoFragment_to_maxStateWorkFragment"
-            app:destination="@id/maxStateWorkFragment" />
-        <action
-            android:id="@+id/action_maxStateMainInfoFragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/maxStateWorkFragment"
-        android:name="com.example.ui.state.max.work.MaxStateWorkFragment"
-        android:label="MaxStateWorkFragment">
 
+    <fragment
+        android:id="@+id/maxStatusInterestsFragment"
+        android:name="com.example.ui.state.maxNew.interests.MaxStatusInterestsFragment"
+        android:label="MaxStatusInterestsFragment">
         <argument
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_maxStateWorkFragment_to_maxStateEducationFragment"
-            app:destination="@id/maxStateEducationFragment" />
-
     </fragment>
 
     <fragment
-        android:id="@+id/maxStateEducationFragment"
-        android:name="com.example.ui.state.max.education.MaxStateEducationFragment"
-        android:label="MaxStateEducationFragment">
-
+        android:id="@+id/maxStatusWorkFragment"
+        android:name="com.example.ui.state.maxNew.work.MaxStatusWorkFragment"
+        android:label="MaxStatusWorkFragment">
         <argument
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-
     </fragment>
+
+
     <fragment
         android:id="@+id/activitiesFragment"
         android:name="com.example.ui.event.activities.ActivitiesFragment"
