@@ -71,7 +71,7 @@ class MainPresenter
     private val context: Context,
 ) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
 
-    private var isRegister = false
+    private var isIgnoreToken = false
     lateinit var newMessageTitleText: String
     lateinit var photoMessageText: String
     lateinit var chatAcceptMessageText: String
@@ -125,13 +125,11 @@ class MainPresenter
 
     private fun checkAppUpdate() {
         compositeDisposable += authRepository.checkAppUpdate(BuildConfig.VERSION_NAME)
-            .flatMap { checkAppUpdateAvailable(it) }
+            //.flatMap { checkAppUpdateAvailable(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it.isAvailable){
-                    appData.isNeedUpdateApp = it.hasUpdate()
-                    if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
-                }
+                appData.isNeedUpdateApp = it.hasUpdate()
+                if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
             }
     }
 
@@ -140,7 +138,7 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 unsubscribeChat()
-                if (!isRegister) {
+                if (!isIgnoreToken) {
                     if (token.value == null) {
                         isAuthRequired = true
                         viewState.apply {
@@ -162,9 +160,7 @@ class MainPresenter
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     updateUserInShake(user)
-                    disposable += Completable.merge(
-                        listOf(getInAppRequest(), checkUserLocation(), getAdditionalData())
-                    )
+                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket(appData.getId()) }
                         .andThen(Completable.defer { checkShowGreetings() })
@@ -739,18 +735,18 @@ class MainPresenter
     }
 
     fun ignoreTokenListener(isIgnore: Boolean) {
-        isRegister = isIgnore
+        isIgnoreToken = isIgnore
     }
 
     override fun onBackClick() {
-        if (!appData.isLoggedOut) {
-            viewState.navigateUp()
-        }
+        if (!appData.isLoggedOut) viewState.navigateUp()
     }
 
     fun startUpdateTimer() {
         timerCompositeDisposable.clear()
-        timerCompositeDisposable += Observable.timer(48, TimeUnit.HOURS)
+        timerCompositeDisposable +=
+            //Observable.timer(48, TimeUnit.HOURS)
+            Observable.timer(10, TimeUnit.MINUTES)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 Log.e("UPDATE APP TIME", it.toString())

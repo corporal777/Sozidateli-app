@@ -66,7 +66,7 @@ class ActivitiesPresenter
                     findDay()
                 }
                 invalidateData()
-                viewState.setSchemeButton(userEvent.eventInfo.event.destinationScheme)
+                viewState.setSchemeButton(userEvent.isHasBuildingScheme())
             }
     }
 
@@ -254,6 +254,9 @@ class ActivitiesPresenter
             viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
         }
     }
+
+    override fun onSchemeClick() = viewState.showScheme(eventId)
+
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(

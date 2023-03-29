@@ -382,12 +382,6 @@ class EventRepositoryImp
             "user,user.userFavorite,user.chat-room-with-me,activities,activity.userCalendar"
         )
 
-    override fun getEventDetailsNew(eventId: String): Single<EventNew> =
-        newApi.getEventDetailsNew(
-            eventId,
-            "rights,organization,tag,page,activity,user-registration,user-form-result,form,partner,member,member.user,userFavorite,auditorium,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state"
-        )
-
     override fun createEventSubscription(eventId: Int): Completable =
         newApi.createEventSubscription(EventSubscriptionRequest(eventId))
 

@@ -24,6 +24,7 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.items.*
+import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs

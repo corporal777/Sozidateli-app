@@ -28,6 +28,8 @@ import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
+import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment
+import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeItem
 import com.example.ui.event.location.map.MapFragment
 import com.example.ui.event.location.map.redesign.MapFragmentNew
 import com.example.ui.event.my.MyEventsFragmentNew
@@ -376,6 +378,9 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeOrganizationFragmentNew(): OrganizationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeDestinationSchemeFragment(): DestinationSchemeFragment
 
     @ContributesAndroidInjector
     abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment

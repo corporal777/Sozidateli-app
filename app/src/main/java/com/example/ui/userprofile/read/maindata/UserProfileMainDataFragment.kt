@@ -22,6 +22,7 @@ import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
+import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onScrolled
 import setOnClickListener
@@ -55,12 +56,11 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
 
         mBinding.apply {
             tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
-
             tvGender.text = setGender(user)
 
-            tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject)
-                ?: DaDataUtil.formatParam(user.address?.country, jObject)
-
+//            tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject)
+//                ?: DaDataUtil.formatParam(user.address?.country, jObject)
+            tvAddress.text = user.address?.fullValue ?: user.address?.shortAddres
             tvAdditional.text = user.notes?.value
 
             var filesText = ""
@@ -71,9 +71,7 @@ class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataB
         }
         BetterLinkMovementMethod.linkifyHtml(mBinding.tvFiles)
             .setOnLinkClickListener { _, url ->
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
+                showCustomTabsBrowser(requireContext(), url)
                 true
             }
     }

@@ -1,51 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/margin_horizontal_default"
-    android:layout_marginEnd="@dimen/margin_horizontal_default">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default">
 
-        <ImageView
-            android:id="@+id/ivScheme"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:transitionName="image"
-            tools:ignore="ContentDescription"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvDescriptionTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_padding_start"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/profile_padding_start"
-            android:textAllCaps="true"
-            android:textSize="17sp"
-            tools:ignore="MissingPrefix"
-            tools:text="1 этаж" />
+            <ImageView
+                android:id="@+id/ivScheme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:transitionName="image"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
-        <TextView
-            android:id="@+id/tvDescription"
-            fontPath="fonts/Roboto-Light.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_padding_start"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/profile_padding_start"
-            android:layout_marginBottom="@dimen/building_scheme_bottom_gradient_height"
-            android:autoLink="all"
-            android:textSize="16sp"
-            tools:ignore="MissingPrefix"
-            tools:text="@tools:sample/lorem/random" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+            <TextView
+                android:textColor="@color/main_brown_color_new"
+                fontPath="fonts/sf_pro_display_semibold.ttf"
+                android:layout_below="@id/ivScheme"
+                android:id="@+id/tvDescriptionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/profile_padding_start"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/profile_padding_start"
+                android:textAllCaps="true"
+                android:textSize="17sp"
+                tools:ignore="MissingPrefix"
+                tools:text="1 этаж" />
+
+            <TextView
+                fontPath="fonts/sf_pro_display.OTF"
+                android:layout_below="@id/tvDescriptionTitle"
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/profile_padding_start"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/profile_padding_start"
+                android:layout_marginBottom="@dimen/building_scheme_bottom_gradient_height"
+                android:autoLink="all"
+                android:textSize="16sp"
+                tools:ignore="MissingPrefix"
+                tools:text="@tools:sample/lorem/random" />
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

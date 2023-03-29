@@ -6,13 +6,16 @@ import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
@@ -41,6 +44,8 @@ import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import onTextChanged
 import java.io.*
 import java.util.*
@@ -170,6 +175,9 @@ fun ImageView.setImage(
     val resImage: Any = image ?: ""
     when (resImage) {
         is Int -> load(resImage) {
+            setParams(crossfad, placeholder, error, transformations)
+        }
+        is Uri -> load(resImage) {
             setParams(crossfad, placeholder, error, transformations)
         }
         is String ->
@@ -458,6 +466,74 @@ fun saveImageToCache(context: Context, image: Bitmap): Uri? {
         e.printStackTrace()
     }
     return uri
+}
+
+
+fun pdfToBitmap(url: String, context: Context, index : Int) : Bitmap? {
+    val client = OkHttpClient()
+    val request = Request.Builder().url(url)
+        .addHeader("Content-Type", "application/json")
+        .build()
+
+    val response = client.newCall(request).execute()
+    val inputStream: InputStream? = response.body?.byteStream()
+    val bytes = inputStream?.readBytes()
+
+    val imagesFolder = File(context.cacheDir, "pdf")
+    try {
+        imagesFolder.mkdirs()
+        val pdfFile = File(imagesFolder, "pdf_image-$index.png")
+        bytes?.let { pdfFile.writeBytes(it) }
+
+        val pfd = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+        val renderer = PdfRenderer(pfd)
+
+        val page = renderer.openPage(0)
+        val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_4444)
+        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+        page.close()
+        renderer.close()
+        return bitmap
+    } catch (e: IOException) {
+        e.printStackTrace()
+        return null
+    }
+}
+
+fun pdfToUri(url: String, context: Context, index : Int): Uri? {
+    val client = OkHttpClient()
+    val request = Request.Builder().url(url)
+        .addHeader("Content-Type", "application/json")
+        .build()
+
+    val response = client.newCall(request).execute()
+    val inputStream: InputStream? = response.body?.byteStream()
+    val bytes = inputStream?.readBytes()
+
+    val imagesFolder = File(context.cacheDir, "pdf")
+    try {
+        imagesFolder.mkdirs()
+        val pdfFile = File(imagesFolder, "pdf_image-$index.png")
+        bytes?.let { pdfFile.writeBytes(it) }
+
+        val pfd = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+        val renderer = PdfRenderer(pfd)
+
+        val page = renderer.openPage(0)
+        val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_4444)
+        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+        page.close()
+        renderer.close()
+
+        val stream = FileOutputStream(pdfFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        stream.flush()
+        stream.close()
+        return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", pdfFile)
+    } catch (e: IOException) {
+        e.printStackTrace()
+        return null
+    }
 }
 
 fun copyTextToBuffer(context: Context, link: String) {

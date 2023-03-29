@@ -124,12 +124,9 @@ class SearchOrganizationPresenter
             if (!name.isNullOrEmpty()) put(ORGANIZATION_SEARCH_NAME, "$name%")
 
             val inn = filter.inn
-            if (!inn.isNullOrEmpty()){
-                if (inn.length == 10){
-                    put(ORGANIZATION_SEARCH_INN, inn)
-                }else if (inn.length == 13){
-                    put(ORGANIZATION_SEARCH_OGRN, inn)
-                }
+            if (!inn.isNullOrEmpty()) {
+                if (inn.length > 10) put(ORGANIZATION_SEARCH_OGRN, inn)
+                else put(ORGANIZATION_SEARCH_INN, inn)
             }
 
             put(ORGANIZATION_SEARCH_BINDS, "userFavorite")

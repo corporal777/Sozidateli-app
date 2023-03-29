@@ -1308,4 +1308,14 @@
             app:nullable="false" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/destination_scheme_fragment"
+        android:name="com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment"
+        tools:layout="@layout/fragment_destination_scheme">
+        <argument
+            android:name="eventId"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
 </navigation>

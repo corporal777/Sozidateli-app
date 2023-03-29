@@ -3,6 +3,7 @@ package com.example.ui.image
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -103,7 +104,7 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
         if (url.isBlank()) {
             presenter.onBitmapFoundFailed(RuntimeException("url is empty"))
         } else {
-            Picasso.get().load(url).into(dummyTarget)
+            Picasso.get().load(Uri.parse(url)).into(dummyTarget)
         }
     }
 

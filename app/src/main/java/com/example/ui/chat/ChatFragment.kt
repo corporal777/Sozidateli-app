@@ -30,6 +30,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.dialogs_new.BlockingChatDialog
 import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar
@@ -268,11 +269,14 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
 
 
     override fun showChatBlockConfirmation() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.user_ban_confirmation_title)
-            .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockChatConfirm() }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        BlockingChatDialog(
+            context = requireContext(),
+            title = null,
+            message = getString(R.string.user_ban_confirmation_title),
+            btnPositiveText = getString(R.string.yes),
+            btnNegativeText = getString(R.string.no),
+            canCancel = true
+        ).setSelectCallback { presenter.onBlockChatConfirm() }
     }
 
     override fun showSendGroup() {

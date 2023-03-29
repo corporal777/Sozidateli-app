@@ -101,9 +101,7 @@ class MaxStateEducationFragment : BaseFragmentNew<FragmentMaxStateEducationBindi
 
     private fun maxActionWithSuccess() {
         MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state), false)
-            .setSelectCallback {
-                maxActions()
-            }
+            .setSelectCallback { maxActions() }
     }
 
     private fun maxActions() {

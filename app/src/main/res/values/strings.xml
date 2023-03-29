@@ -749,6 +749,7 @@
     <string name="file_name">Имя файла</string>
     <string name="academic_degree">Ученые степни</string>
     <string name="yes">Да</string>
+    <string name="no">Нет</string>
     <string name="nope">Отмена</string>
     <string name="change_degree_text">Данный уровень образования не подразумевает наличия учёной степени.\n\nИнформация об учёной степени будет удалена. Вы уверены?</string>
     <string name="cancel_invite_text">Чтобы отклонить приглашение, обратитесь в службу технической поддержки: %s</string>

@@ -1,5 +1,6 @@
 package com.example.ui.auth.login
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
@@ -24,14 +25,13 @@ import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class LoginPresenter
 @Inject constructor(
     private val authRepository: AuthRepository,
-    private val phoneNumberUtil: PhoneNumberUtil,
-    private val userRepository: UserRepository,
     private val appData: AppData,
     snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager, appData),
@@ -52,9 +52,7 @@ class LoginPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState?.apply {
-            setLoginAndPassword(login, password)
-        }
+        viewState.setLoginAndPassword(login, password)
     }
 
     override fun onClickBack() = viewState.navigateUp()
@@ -77,83 +75,40 @@ class LoginPresenter
     }
 
     override fun onClickLogin(login: String, password: String, invite: Int) {
-        viewState.showCustomProgressDialog()
         val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
+        viewState.showCustomProgressDialog()
         if (invite != -1) {
-            compositeDisposable += authRepository.authEmailOrPhoneWithResult(
-                AuthBody(
-                    LoginModel(loginType, validatedLogin),
-                    LoginModel("common", password),
-                    deviceId?:"",
-                    deviceModel,
-                    appCode,
-                    appVersion
-                )
-            )
+            compositeDisposable += authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
+                .flatMapCompletable { authRepository.rebaseInvite(invite, RebaseInviteBody(it.id ?: 0, it.token ?: "")) }
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                //.withLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
-                        viewState.hideCustomProgressDialog()
                         it.printStackTrace()
-                        val hasApiError = (it as? ApiError)
-                            ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-
-                        if (hasApiError == true) {
-                            viewState.showWrongPasswordError()
-                        } else {
-                            onReceiveError(it)
+                        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+                        viewState.apply {
+                            hideCustomProgressDialog()
+                            if (hasApiError == true) showWrongPasswordError()
+                            else onReceiveError(it)
                         }
                     },
-                    onSuccess = {
-                        compositeDisposable += authRepository.rebaseInvite(
-                            invite, RebaseInviteBody(
-                                it.id
-                                    ?: 0, it.token ?: ""
-                            )
-                        )
-                            .withCheckInternetConnectivity()
-                            .performOnBackgroundOutOnMain()
-                            .subscribeSimple(
-                                onError = {},
-                                onComplete = {
-                                    Shake.registerUser(appData.getId().toString())
-                                }
-                            )
-                        // do nothing
-                    }
+                    onComplete = { Shake.registerUser(appData.getId().toString()) }
                 )
         } else {
-            compositeDisposable += authRepository.authEmailOrPhone(
-                AuthBody(
-                    LoginModel(loginType, validatedLogin),
-                    LoginModel("common", password),
-                    deviceId?:"",
-                    deviceModel,
-                    appCode,
-                    appVersion
-                )
-            )
+            compositeDisposable += authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                //.withLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
-                        viewState.hideCustomProgressDialog()
                         it.printStackTrace()
-                        val hasApiError = (it as? ApiError)
-                            ?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-
-                        if (hasApiError == true) {
-                            viewState.showWrongPasswordError()
-                        } else {
-                            onReceiveError(it)
+                        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+                        viewState.apply {
+                            hideCustomProgressDialog()
+                            if (hasApiError == true) showWrongPasswordError()
+                            else onReceiveError(it)
                         }
                     },
-                    onComplete = {
-                        Shake.registerUser(appData.getId().toString())
-                    }
+                    onComplete = { Shake.registerUser(appData.getId().toString()) }
                 )
         }
     }
@@ -176,7 +131,14 @@ class LoginPresenter
         viewState.showSnRegistration(snUser)
     }
 
-    private fun String.isValidPhoneNumber(): Boolean {
-        return isValidPhoneNumber(phoneNumberUtil)
+    private fun getLoginBody(login: String): AuthBody {
+        return AuthBody(
+            LoginModel(loginType, login),
+            LoginModel("common", password),
+            deviceId?:"",
+            deviceModel,
+            appCode,
+            appVersion
+        )
     }
 }

@@ -46,14 +46,16 @@ class ProfileDataPresenter
     var userImageUrl = ""
     var userCodeUrl = ""
     var userName = ""
+    var userShortName = ""
     var context: Context? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        val userLink = BuildConfig.SHARE_URL + "portal/user/" + userId
+        val userLink =
+            if (userShortName.isNullOrEmpty()) BuildConfig.SHARE_URL + "portal/user/" + userId
+            else BuildConfig.SHARE_URL + "portal/user/" + userShortName
         viewState.setName(userName, userLink)
-
 
         if (context != null) {
             compositeDisposable += getQrCodeBitmapFromDrawable(context!!, userLink, userImageUrl)

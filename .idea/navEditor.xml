@@ -93,11 +93,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_activitiesFragment_to_event_tags_fragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -305,6 +300,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="destination_scheme_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="editDegreeFragment">
                     <value>
                       <LayoutPositions>
@@ -435,18 +442,6 @@
                               </value>
                             </entry>
                           </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="event_tags_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="6894" />
-                            <option name="y" value="4246" />
-                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

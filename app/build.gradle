@@ -24,8 +24,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 63
-        versionName "1.0.37"
+        versionCode 64
+        versionName "1.0.38"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
     }
@@ -275,7 +275,7 @@ dependencies {
     implementation 'io.michaelrocks:libphonenumber-android:8.12.13'
     implementation 'com.hbb20:ccp:2.4.5'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
     //markwon
     implementation "io.noties.markwon:core:$markwon_version"

@@ -27,6 +27,7 @@ import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
+import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
@@ -135,7 +136,8 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                                 changeDay(now)
                             }
                         }
-                    } catch (e: Exception) { }
+                    } catch (e: Exception) {
+                    }
                 }
                 onScrollStateChanged { _, newState ->
                     mCanChangeDay =
@@ -181,12 +183,12 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     }
 
 
-    override fun setSchemeButton(scheme: List<String>?) {
+    override fun setSchemeButton(show: Boolean) {
         mBinding.apply {
             btnGoToScheme.apply {
-                isVisible = !scheme.isNullOrEmpty()
+                isVisible = show
                 setOnClickListener {
-
+                    presenter.onSchemeClick()
                 }
             }
         }
@@ -308,6 +310,12 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     override fun showSubEvent(eventId: String, subEventId: String) {
         val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
         findNavController().navigate(R.id.subEvent_fragment, args)
+    }
+
+
+    override fun showScheme(eventId: String) {
+        val args = DestinationSchemeFragmentArgs.Builder(eventId).build().toBundle()
+        findNavController().navigate(R.id.destination_scheme_fragment, args)
     }
 
     override fun updateSubEvent(subEvent: EventActivityModel) {

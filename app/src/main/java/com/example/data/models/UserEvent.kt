@@ -18,4 +18,8 @@ data class UserEvent(
 
     @Ignore
     var isDataFromLocalStorage: Boolean = false
+
+    fun isHasBuildingScheme(): Boolean {
+        return !eventInfo.event.binds?.destinationScheme.isNullOrEmpty()
+    }
 }

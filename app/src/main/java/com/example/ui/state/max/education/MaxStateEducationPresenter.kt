@@ -27,7 +27,6 @@ class MaxStateEducationPresenter
 
     }
 
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userNewChangeSubject

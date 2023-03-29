@@ -40,7 +40,10 @@ interface ActivitiesContract {
         fun updateSubEvent(subEvent: EventActivityModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSchemeButton(scheme: List<String>?)
+        fun setSchemeButton(show: Boolean)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showScheme(eventId: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -48,6 +51,7 @@ interface ActivitiesContract {
         fun onTagSelectedListChange()
 
         fun onSubEventClick(subEvent: EventActivityModel)
+        fun onSchemeClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
 

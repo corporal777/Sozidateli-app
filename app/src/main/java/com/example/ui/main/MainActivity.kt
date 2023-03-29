@@ -115,6 +115,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             }
         },
+        onFragmentDestroyed = { f ->
+            if (f is StoriesFragment) presenter.onStoriesComplete()
+        },
         onViewCreated = { f ->
             presenter.apply {
                 when (f) {
@@ -420,8 +423,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
     override fun showLogin() {
-        val navContr = findNavController(R.id.navHostFragment)
-        if (navContr.currentDestination?.id != R.id.authorization_fragment) {
+        if (findNavController().currentDestination?.id != R.id.authorization_fragment) {
             findNavController().navigate(
                 R.id.authorization_fragment, null, NavOptions.Builder()
                     .setPopUpTo(R.id.main_navigation, true)

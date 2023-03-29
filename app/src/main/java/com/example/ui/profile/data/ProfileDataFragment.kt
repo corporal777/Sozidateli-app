@@ -32,6 +32,7 @@ class ProfileDataFragment(
     val name : String,
     val imageUrl : String?,
     val codeUrl : String?,
+    val shortName : String?
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
 
@@ -46,6 +47,7 @@ class ProfileDataFragment(
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
         userId = user
         userName = name
+        userShortName = shortName?:""
         userImageUrl = imageUrl?:""
         userCodeUrl = codeUrl?:""
         context = requireContext()

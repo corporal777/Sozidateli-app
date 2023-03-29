@@ -9,8 +9,11 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -34,6 +37,7 @@ import com.example.ui.views.*
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
+import com.example.util.ClickableSpanNew
 import com.example.util.Utils
 import com.example.util.firstLetterToUppercase
 import com.example.util.setImage
@@ -143,18 +147,24 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
             userShortName = SpannableStringBuilder(user.shortName)
         } else {
             val userId = getString(R.string.user_id, user.id.toString())
-            val shortName = SpannableString(getString(R.string.put_user_short_name))
-            val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
-            shortName.setSpan(CustomTypefaceSpan("", font), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
-            shortName.setSpan(ForegroundColorSpan(expandColor), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
-            shortName.setSpan(AbsoluteSizeSpan(textSize), 0, userShortName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            userShortName = SpannableStringBuilder(userId + "\n").append(userShortName)
+            SpannableString(getString(R.string.put_user_short_name)).apply {
+                val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
+                setSpan(CustomTypefaceSpan("", font), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
+                setSpan(ForegroundColorSpan(expandColor), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
+                setSpan(AbsoluteSizeSpan(textSize), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val clickableSpan = ClickableSpanNew(toolbarContent.getToolbarTitleView()) {
+                    presenter.onShowChangeUserShortName()
+                }
+                setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                userShortName = SpannableStringBuilder(userId + "\n").append(this)
+            }
         }
-        toolbarContent.setToolbarTitle(userShortName)
-        toolbarContent.getToolbarTitleView().setOnClickListener {
-            presenter.onShowChangeUserShortName()
+        toolbarContent.getToolbarTitleView().apply {
+            highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+            movementMethod = LinkMovementMethod.getInstance()
+            text = userShortName
         }
     }
 
@@ -218,6 +228,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
             user.nameLastName,
             user.image.uri,
             user.qrCodeLink,
+            user.shortName
         )
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }

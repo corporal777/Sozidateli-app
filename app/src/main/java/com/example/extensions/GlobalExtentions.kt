@@ -193,9 +193,15 @@ fun NestedScrollView.onScrolled(onScrolled: (scrollY: Int, oldScrollY: Int, scro
 fun getFragmentLifecycleCallback(
     onFragmentStarted: (f: Fragment) -> Unit?,
     onFragmentStopped: (f: Fragment) -> Unit?,
+    onFragmentDestroyed:(f: Fragment) -> Unit?,
     onViewCreated: (f: Fragment) -> Unit,
 ): FragmentManager.FragmentLifecycleCallbacks {
     val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
+
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentDestroyed(fm, f)
+            onFragmentDestroyed(f)
+        }
 
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)

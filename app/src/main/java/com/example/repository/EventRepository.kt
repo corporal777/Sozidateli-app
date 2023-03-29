@@ -65,7 +65,6 @@ interface EventRepository {
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
     fun getEventDetails(eventId: String): Maybe<EventInfo>
     fun getEventMember(memberId : String) : Maybe<MemberModel>
-    fun getEventDetailsNew(eventId: String): Single<EventNew>
     fun createEventSubscription(eventId: Int) : Completable
     fun deleteEventSubscription(eventId : Int) : Completable
     fun getEventDetailForRegister(eventId: String): Maybe<EventNew>

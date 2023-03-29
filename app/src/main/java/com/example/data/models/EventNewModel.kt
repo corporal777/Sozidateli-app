@@ -54,7 +54,7 @@ data class EventNew(
     var binds: EventBindsModel? = null,
     var userRegistration: Event.RegistrationStatus? = null,
     @SerializedName("destination-scheme")
-    val destinationScheme : List<String>? = null
+    val destinationScheme: List<String>? = null
 ) : Parcelable {
 
     companion object {
@@ -169,7 +169,9 @@ data class EventBindsModel(
     val isUserSubscribed: Boolean,
     @SerializedName("event-subscribe")
     val eventSubscribe: EventSubscriptionResponse? = null,
-    val format : NewEventFormat? = null
+    val format: NewEventFormat? = null,
+    @SerializedName("destination-scheme")
+    val destinationScheme: List<DestinationSchemeModel>? = null
 ) : Parcelable {
 
     fun getFirstActionStartDate(): String? {
@@ -229,7 +231,7 @@ data class EventFormModel(
     val subtitle: String? = null,
     val draft: EventFormDraftModel? = null,
     val type: Type? = null,
-    val background : BackgroundType,
+    val background: BackgroundType,
     val files: List<FileModel>? = null,
     val fields: List<EventRegisterFields>? = null
 ) : Parcelable {
@@ -241,9 +243,10 @@ data class EventFormModel(
         RATING
     }
 
-    enum class BackgroundType{
+    enum class BackgroundType {
         @SerializedName("event")
         EVENT,
+
         @SerializedName("organization")
         ORGANIZATION
     }
@@ -351,11 +354,25 @@ data class EventAuditoriumModel(
     val name: String? = null
 ) : Parcelable
 
-data class TestModel(
+@Parcelize
+data class DestinationSchemeModel(
     val id: Int,
-    val name: String,
-    val uri: String
-)
+    val createdDate: String,
+    val event: Int,
+    val title: String?,
+    val description: String?,
+    val file: ImageModel
+) : Parcelable {
+    fun toPlace(): Place {
+        return Place(
+            id.toString(),
+            event.toString(),
+            title,
+            file.uri,
+            description
+        )
+    }
+}
 
 
 @Parcelize
@@ -370,8 +387,8 @@ data class MemberModel(
     val role: String? = null,
     val status: String? = null,
     val description: String? = null,
-    val isLead : Boolean? = null,
-    val isNewUser : Boolean? = null,
+    val isLead: Boolean? = null,
+    val isNewUser: Boolean? = null,
     @SerializedName("organizationAndPosition")
     val organizationAndPosition: String? = null,
     val binds: MemberBindsModel? = null
@@ -394,7 +411,7 @@ data class MemberBindsModel(
     @SerializedName("userFavorite")
     var userFavorite: /*List<*/EventUserFavorite/*>*/? = null,
     @SerializedName("activities")
-    val activities : List<EventActivityModel>? = null
+    val activities: List<EventActivityModel>? = null
 ) : Parcelable
 
 @Parcelize
@@ -440,7 +457,7 @@ data class EventActivityModel(
     val member: List<EventActivityMember>? = null,
     val binds: EventActivityBinds? = null,
     var mNoEvent: Boolean = false,
-    var mIsEmpty : Boolean = false
+    var mIsEmpty: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -453,7 +470,7 @@ data class EventActivityBinds(
     @SerializedName("userFavorite")
     var userFavorite: /*List<*/EventUserFavorite/*>*/? = null,
     var auditorium: EventAuditoriumModel? = null,
-    val users : List<UserDetail>? = null
+    val users: List<UserDetail>? = null
 ) : Parcelable
 
 @Parcelize
