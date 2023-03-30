@@ -1,5 +1,6 @@
 package com.example.ui.search.user
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
@@ -26,6 +27,7 @@ import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
+import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
@@ -170,6 +172,7 @@ class SearchUserPresenter
 
     override fun createFilter() = SearchFilter.UserNew()
     override fun copyFilter(filter: SearchFilter.UserNew) = filter.copy()
+    override fun isHasFilter(): Boolean = filter.isHasFilter()
 
 
     private fun buildFilterNew(limit: Int, offset: Int): MutableMap<String, Any> {

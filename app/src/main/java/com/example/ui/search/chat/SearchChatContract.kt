@@ -30,6 +30,9 @@ interface SearchChatContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFilter(filter: SearchFilter.UserNew)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setFiltersChosen(isChosen : Boolean)
+
         @StateStrategyType(SkipStrategy::class)
         fun changeAppBarElevation(value : Float)
     }

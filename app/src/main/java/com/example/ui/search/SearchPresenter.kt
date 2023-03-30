@@ -12,7 +12,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 
-abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter>(appData: AppData) : BasePresenter<V>(appData), SearchContract.Presenter<I> {
+abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilter>(appData: AppData) :
+    BasePresenter<V>(appData), SearchContract.Presenter<I> {
 
     private lateinit var paginationList: PaginationList<I?>
     private lateinit var searchInterface: SearchInterface
@@ -36,6 +37,7 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
             showFilterCallback = { onShowFilterRequest() }
             onSearchTextChange(searchText)
         }
+        viewState.setHasFilter()
     }
 
     override fun onItemTake(position: Int) {
@@ -85,8 +87,8 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         if (searchDisposable.size() == 0) {
             viewState.setData(List(20) { null })
             searchDisposable += Observable.create(paginationList)
-                    .performOnBackgroundOutOnMain()
-                    .subscribeSimple { onDataLoaded(it) }
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple { onDataLoaded(it) }
         }
     }
 

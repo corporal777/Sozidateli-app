@@ -2,6 +2,7 @@ package com.example.ui.search.tabs
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
@@ -23,6 +24,7 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.views.toolbar.ToolbarButton
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
+import onPageChanged
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -44,7 +46,6 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
         }
     }
 
-    private var toolbarContentActionBar: ToolbarContentActionBar? = null
 
     private val searchInterface = SearchInterface()
 
@@ -55,14 +56,12 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
             SearchUserFragment()
         )
     }
-
-    private val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
-        override fun onPageSelected(position: Int) {
-            presenter.currentPosition = position
-            selectTab(position)
-            setupQrScannerButton(position)
-        }
+    private val pageChangeListener = onPageChanged { position ->
+        presenter.currentPosition = position
+        selectTab(position)
+        setupQrScannerButton(position)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,6 +120,13 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
             btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
         }
 
+    }
+
+    fun setFiltersChosen(isHas : Boolean){
+        mBinding.btnFilter.apply {
+            if (isHas) setImageResource(R.drawable.ic_filters_selected)
+            else setImageResource(R.drawable.ic_filters_new)
+        }
     }
 
     private fun selectTab(position: Int) {

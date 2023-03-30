@@ -27,7 +27,7 @@ import javax.inject.Provider
 class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, OrganizationNew, SearchFilter.Organization>(), SearchOrganizationContract.View {
 
     @InjectPresenter
-    override lateinit var presenter: SearchOrganizationPresenter
+    override lateinit var searchPresenter: SearchOrganizationPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchOrganizationPresenter>
@@ -55,8 +55,8 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         else {
             OrganizationItem(
                 itemData,
-                { presenter.onOrganizationClick(itemData) },
-                { presenter.onOrganizationSubscriptionClick(itemData) }
+                { searchPresenter.onOrganizationClick(itemData) },
+                { searchPresenter.onOrganizationSubscriptionClick(itemData) }
             )
         }
     }

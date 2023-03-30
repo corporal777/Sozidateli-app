@@ -8,4 +8,5 @@ interface AppPrefs {
     var isStoriesShown: Boolean
     var uniqueDeviceId: String?
     var attemptsOfChangePassword: Int
+    var updateTime : Long
 }

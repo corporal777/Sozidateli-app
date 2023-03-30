@@ -59,6 +59,7 @@ class EventOrgBottomSheet(
         }
 
         mBinding.apply {
+            tvBottomSheetLabel.text = context.getString(R.string.profile_work_organization)
             ivBack.setOnClickListener { dismiss() }
             btnClear.apply {
                 btnClear.isVisible = !etSearch.text.isNullOrEmpty()

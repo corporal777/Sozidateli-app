@@ -24,6 +24,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_bottom_sheet_label"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:text="@string/email"
+            android:textSize="17sp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clSearch"
             android:layout_width="match_parent"

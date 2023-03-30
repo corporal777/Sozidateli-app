@@ -16,6 +16,7 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -31,7 +32,7 @@ import onTextChanged
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
     BaseFragmentNew<LayoutListSearchBinding>(), SearchContract.View<I, F> {
 
-    abstract var presenter: P
+    abstract var searchPresenter: P
 
     private var filterDialog: BottomSheetDialog? = null
     private var filterView: View? = null
@@ -45,7 +46,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    presenter.onItemTake(position)
+                    searchPresenter.onItemTake(position)
                 }
             })
         }
@@ -54,13 +55,18 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     override fun onResume() {
         super.onResume()
         (this as? SearchInterfaceProvider)?.apply {
-            presenter.onResume(provideSearchInterface())
+            searchPresenter.onResume(provideSearchInterface())
             return
         }
-
         (parentFragment as? SearchInterfaceProvider)?.apply {
-            presenter.onResume(provideSearchInterface())
+            searchPresenter.onResume(provideSearchInterface())
             return
+        }
+    }
+
+    override fun setHasFilter() {
+        (parentFragment as? SearchTabsFragment)?.apply {
+            setFiltersChosen(searchPresenter.isHasFilter())
         }
     }
 
@@ -69,7 +75,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         mBinding.searchList.apply {
             adapter = this@SearchFragment.adapter
         }
-        mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        mBinding.swipeToRefresh.setOnRefreshListener { searchPresenter.onRefreshRequest() }
 
     }
 
@@ -97,8 +103,11 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                     this@SearchFragment.filterView = filterView
                     addView(filterView)
                 }
-                btnApply.setOnClickListener { presenter.onFilterApplyClick() }
-                btnClear.setOnClickListener { presenter.onFilterClearClick() }
+                btnApply.setOnClickListener {
+                    searchPresenter.onFilterApplyClick()
+                    setHasFilter()
+                }
+                btnClear.setOnClickListener { searchPresenter.onFilterClearClick() }
                 btnClose.setOnClickListener { filterDialog?.dismiss() }
             }
         filterDialog = BottomSheetDialog(requireContext())
@@ -106,7 +115,7 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
                 setContentView(filterContainer.root)
                 val behavior = BottomSheetBehavior.from(filterContainer.root.parent as View)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                setOnDismissListener { presenter.onFilterCancel() }
+                setOnDismissListener { searchPresenter.onFilterCancel() }
                 show()
             }
     }

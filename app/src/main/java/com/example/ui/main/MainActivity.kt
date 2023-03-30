@@ -489,7 +489,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showUpdateApp(isRequired: Boolean) {
         UpdateAppBottomSheet(this, isRequired)
-            .setDismissCallback { presenter.startUpdateTimer() }
+            .setDismissCallback { presenter.startUpdateTimer(null, isRequired) }
             .show()
         if (isRequired) mBinding.include.inappDim.setBackgroundResource(R.color.main_background)
     }

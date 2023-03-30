@@ -6,10 +6,22 @@ import com.example.data.prefs.AppPrefs
 import com.example.util.PHONE_PERSONAL
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 class AppData(
     private val appPrefs: AppPrefs
 ) {
+
+    var updateTime: Long = appPrefs.updateTime
+        set(value) {
+            field = value
+            appPrefs.updateTime = value
+        }
+
+    fun getUpdateMinutes(): Long {
+        return if (updateTime <= 0) 0
+        else TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - updateTime)
+    }
 
     var deviceId: String? = appPrefs.uniqueDeviceId
         set(value) {
@@ -198,9 +210,9 @@ class AppData(
         userNewChangeSubject.onNext(getUserNew().apply(update).asOptional())
     }
 
-    fun updateUserFiles(newFile : FileModel){
+    fun updateUserFiles(newFile: FileModel) {
         this.newUser?.binds?.recommendationFile?.forEach { file ->
-            if (file.id == newFile.id){
+            if (file.id == newFile.id) {
                 file.name = newFile.name
                 file.showInProfile = newFile.showInProfile
             }

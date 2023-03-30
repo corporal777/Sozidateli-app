@@ -27,7 +27,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     SearchUserContract.View {
 
     @InjectPresenter
-    override lateinit var presenter: SearchUserPresenter
+    override lateinit var searchPresenter: SearchUserPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchUserPresenter>
@@ -43,9 +43,9 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
             itemData.nameLastName,
             itemData.address?.city,
             itemData.image?.uri,
-            { presenter.onUserClick(itemData) },
+            { searchPresenter.onUserClick(itemData) },
             itemData.getUserSubscribeAction(),
-            { presenter.onUserActionCLick(itemData) })
+            { searchPresenter.onUserActionCLick(itemData) })
     }
 
 
@@ -110,8 +110,8 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
         binding.apply {
             initDropDownView(
                 tvAgeFrom,
-                presenter.getAgesList(null),
-                presenter.getAgesList(null).find { it.toInt() == filter.ageFrom },
+                searchPresenter.getAgesList(null),
+                searchPresenter.getAgesList(null).find { it.toInt() == filter.ageFrom },
                 null,
                 { it },
                 { it },
@@ -127,8 +127,8 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
         binding.apply {
             initDropDownView(
                 tvAgeTo,
-                presenter.getAgesList(filter.ageFrom),
-                presenter.getAgesList(filter.ageFrom).find { it.toInt() == filter.ageTo },
+                searchPresenter.getAgesList(filter.ageFrom),
+                searchPresenter.getAgesList(filter.ageFrom).find { it.toInt() == filter.ageTo },
                 null,
                 { it },
                 { it },

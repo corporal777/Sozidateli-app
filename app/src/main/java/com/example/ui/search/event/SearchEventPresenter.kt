@@ -188,6 +188,7 @@ class SearchEventPresenter
 
     override fun createFilter() = SearchFilter.EventNew()
     override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
+    override fun isHasFilter(): Boolean = filter.isHasFilter()
 
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {

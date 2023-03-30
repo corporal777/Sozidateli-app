@@ -8,8 +8,6 @@ sealed class SearchFilter : Serializable {
         var address: String? = null,
         var name: String? = null,
         var inn: String? = null,
-        var type: String? = null,
-        var subscription: Boolean? = null,
 
         var index: String? = null,
         var country: String? = null,
@@ -22,6 +20,10 @@ sealed class SearchFilter : Serializable {
         var house: String? = null,
         var flat: String? = null
     ) : SearchFilter() {
+
+        fun isHasFilter(): Boolean {
+            return (!address.isNullOrEmpty() || !name.isNullOrEmpty() || !inn.isNullOrEmpty())
+        }
 
         fun setAddressFilter(address: NewUserAddress?) {
             index = address?.index
@@ -56,12 +58,17 @@ sealed class SearchFilter : Serializable {
         var formats: List<NewEventFormat>? = null
         var organizations: List<OrganizationNew>? = null
 
+        fun isHasFilter(): Boolean {
+            return (!address.isNullOrEmpty() || !name.isNullOrEmpty()
+                    || !dateStart.isNullOrEmpty() || !dateFinish.isNullOrEmpty()
+                    || theme != null || spec != null || !customFormat.isNullOrEmpty()
+                    || format != null || organizationId != null || organizationName != null)
+        }
+
         fun getFormatName(): String? {
-            val format =
-                if (format != null) formats?.find { it.id == format }?.name
-                else if (!customFormat.isNullOrBlank()) customFormat
-                else null
-            return format
+            return if (this.format != null) formats?.find { it.id == this.format }?.name
+            else if (!customFormat.isNullOrBlank()) customFormat
+            else null
         }
 
         fun getOrgName(): String? {
@@ -70,26 +77,16 @@ sealed class SearchFilter : Serializable {
             } else if (!organizationName.isNullOrBlank()) {
                 return organizationName
             } else return null
-//            if (organizationId == null && !organizationName.isNullOrBlank()){
-//                return "Искать «" + organizationName + "»"
-//            }
-//            else if (organizationId != null && !organizationName.isNullOrBlank()){
-//                return organizationName
-//            } else return null
         }
     }
 
 
     data class UserNew(
-        var name: String? = null,
         var address: String? = null,
-        var email: String? = null,
-        var phone: String? = null,
         var theme: Int? = null,
         var spec: Int? = null,
         var ageFrom: Int? = null,
         var ageTo: Int? = null,
-        var favorites: Boolean? = null,
 
         var index: String? = null,
         var country: String? = null,
@@ -103,6 +100,10 @@ sealed class SearchFilter : Serializable {
         var flat: String? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
+
+        fun isHasFilter(): Boolean {
+            return (!address.isNullOrEmpty() || ageFrom != null || ageTo != null || theme != null || spec != null)
+        }
 
         fun setAddressFilter(address: NewUserAddress?) {
             index = address?.index

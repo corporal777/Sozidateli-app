@@ -157,6 +157,7 @@ class SearchOrganizationPresenter
 
     override fun createFilter() = SearchFilter.Organization()
     override fun copyFilter(filter: SearchFilter.Organization) = filter.copy()
+    override fun isHasFilter(): Boolean = filter.isHasFilter()
 
     companion object {
         private const val FILTER_CONTENT = "content"

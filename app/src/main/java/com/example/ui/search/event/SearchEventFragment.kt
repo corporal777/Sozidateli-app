@@ -33,7 +33,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     SearchEventContract.View {
 
     @InjectPresenter
-    override lateinit var presenter: SearchEventPresenter
+    override lateinit var searchPresenter: SearchEventPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchEventPresenter>
@@ -43,11 +43,11 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
+        override fun onActionRegister(event: String) = searchPresenter.onActionRegister(event)
         override fun onActionCancel(event: String, registrationId: String?) =
-            presenter.onActionCancel(event, registrationId)
+            searchPresenter.onActionCancel(event, registrationId)
 
-        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
+        override fun onShowEventClick(view: View, event: String) = searchPresenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 

@@ -1,6 +1,7 @@
 package com.example.ui.search
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchFilter
 import com.example.ui.base.BaseContract
@@ -20,6 +21,9 @@ interface SearchContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun clearFilter()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun setHasFilter()
     }
 
     interface Presenter<I> : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
@@ -28,5 +32,6 @@ interface SearchContract {
         fun onFilterClearClick()
         fun onFilterCancel()
         fun onRefreshRequest()
+        fun isHasFilter() : Boolean
     }
 }

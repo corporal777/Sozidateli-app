@@ -61,6 +61,14 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
             prefs.edit().putInt(USER_ATTEMPTS, value).commit()
         }
 
+    override var updateTime: Long
+        get() = prefs.getLong(UPDATE_TIME, 0)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putLong(UPDATE_TIME, value).commit()
+        }
+
+
 
     companion object {
         const val SELECTED_EVENT = "selected_event"
@@ -70,5 +78,6 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
         const val FCM_TOKEN_SENT = "fcm_token_sent"
         const val USER_ID = "user_id"
         const val STORIES = "stories"
+        const val UPDATE_TIME = "update"
     }
 }

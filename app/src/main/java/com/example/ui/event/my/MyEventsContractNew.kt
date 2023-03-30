@@ -23,6 +23,9 @@ interface MyEventsContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFilters()
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setFiltersChosen(isChosen : Boolean)
+
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder(isFirst : Boolean)
 

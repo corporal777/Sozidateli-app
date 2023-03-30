@@ -170,22 +170,33 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
             }
     }
 
+    override fun setFiltersChosen(isChosen: Boolean) {
+        mBinding.btnFilter.apply {
+            if (isChosen) setImageResource(R.drawable.ic_filters_selected)
+            else setImageResource(R.drawable.ic_filters_new)
+        }
+    }
+
     override fun showEmptyListPlaceholder(isFirst: Boolean) {
-        if (isFirst){
+        if (isFirst) {
             eventsSection.update(
-                listOf(NoScheduleEventItem(
-                    getString(R.string.no_event_schedule_you_have),
-                    getString(R.string.choose_event_and_do_request),
-                    60.dp
-                ))
+                listOf(
+                    NoScheduleEventItem(
+                        getString(R.string.no_event_schedule_you_have),
+                        getString(R.string.choose_event_and_do_request),
+                        60.dp
+                    )
+                )
             )
-        }else {
+        } else {
             eventsSection.update(
-                listOf(NoScheduleEventItem(
-                    getString(R.string.no_data_found),
-                    getString(R.string.no_event_with_params_title),
-                    60.dp
-                ))
+                listOf(
+                    NoScheduleEventItem(
+                        getString(R.string.no_data_found),
+                        getString(R.string.no_event_with_params_title),
+                        60.dp
+                    )
+                )
             )
         }
 

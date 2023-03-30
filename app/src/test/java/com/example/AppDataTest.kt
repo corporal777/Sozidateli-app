@@ -16,6 +16,7 @@ class AppDataTest {
             override var isStoriesShown: Boolean = false
             override var uniqueDeviceId: String? = ""
             override var attemptsOfChangePassword: Int = 0
+            override var updateTime: Long = 0
         })
     }
 

@@ -59,6 +59,7 @@ class EventFormatBottomSheet(
         }
 
         mBinding.apply {
+            tvBottomSheetLabel.text = context.getString(R.string.search_filter_format)
             ivBack.setOnClickListener { dismiss() }
             btnClear.apply {
                 btnClear.isVisible = !etSearch.text.isNullOrEmpty()

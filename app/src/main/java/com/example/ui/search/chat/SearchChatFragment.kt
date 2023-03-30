@@ -171,6 +171,13 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
         )
     }
 
+    override fun setFiltersChosen(isChosen: Boolean) {
+        mBinding.btnFilter.apply {
+            if (isChosen) setImageResource(R.drawable.ic_filters_selected)
+            else setImageResource(R.drawable.ic_filters_new)
+        }
+    }
+
     override fun showFilter(filter: SearchFilter.UserNew) {
         val filterContainer =
             (layoutInflater.inflate(R.layout.layout_filter, null) as ViewGroup).apply {

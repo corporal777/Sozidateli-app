@@ -70,7 +70,10 @@ class SearchChatPresenter
         }
     }
     override fun onFilterClick() = viewState.showFilter(filter)
-    override fun onFilterApplyClick() = initData()
+    override fun onFilterApplyClick() {
+        initData()
+        viewState.setFiltersChosen(filter.isHasFilter())
+    }
     override fun onRefreshRequest() = paginationList.invalidate()
     override fun onSearchTextChange(text: String) {
         mSearchText = text

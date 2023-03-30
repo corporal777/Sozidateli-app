@@ -129,7 +129,20 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 appData.isNeedUpdateApp = it.hasUpdate()
-                if (it.hasUpdate()) viewState.showUpdateApp(it.isUpdateRequired())
+                if (it.hasUpdate()) {
+                    if (it.isUpdateRequired()) viewState.showUpdateApp(it.isUpdateRequired())
+                    else {
+                        val minutes = appData.getUpdateMinutes()
+                        if (BuildConfig.DEBUG && (minutes in 1..9)) {
+                            startUpdateTimer(minutes, it.isUpdateRequired())
+                        } else if (!BuildConfig.DEBUG && (minutes in 1..2879)) {
+                            startUpdateTimer(minutes, it.isUpdateRequired())
+                        } else {
+                            appData.updateTime = System.currentTimeMillis()
+                            viewState.showUpdateApp(it.isUpdateRequired())
+                        }
+                    }
+                }
             }
     }
 
@@ -160,7 +173,13 @@ class MainPresenter
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     updateUserInShake(user)
-                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
+                    disposable += Completable.merge(
+                        listOf(
+                            getInAppRequest(),
+                            checkUserLocation(),
+                            getAdditionalData()
+                        )
+                    )
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket(appData.getId()) }
                         .andThen(Completable.defer { checkShowGreetings() })
@@ -742,16 +761,28 @@ class MainPresenter
         if (!appData.isLoggedOut) viewState.navigateUp()
     }
 
-    fun startUpdateTimer() {
+    fun startUpdateTimer(time: Long?, isRequired: Boolean) {
+        var counter = time ?: 0
+
         timerCompositeDisposable.clear()
-        timerCompositeDisposable +=
-            //Observable.timer(48, TimeUnit.HOURS)
-            Observable.timer(10, TimeUnit.MINUTES)
+        timerCompositeDisposable += Observable.interval(1, TimeUnit.MINUTES)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                Log.e("UPDATE APP TIME", it.toString())
-                timerCompositeDisposable.clear()
-                checkAppUpdate()
+                counter += 1
+                Log.e("UPDATE APP TIME", counter.toString())
+                if (BuildConfig.DEBUG) {
+                    if (counter >= 10) {
+                        appData.updateTime = System.currentTimeMillis()
+                        timerCompositeDisposable.clear()
+                        viewState.showUpdateApp(isRequired)
+                    }
+                } else {
+                    if (counter >= 2879) {
+                        appData.updateTime = System.currentTimeMillis()
+                        timerCompositeDisposable.clear()
+                        viewState.showUpdateApp(isRequired)
+                    }
+                }
             }
     }
 
@@ -797,11 +828,12 @@ class MainPresenter
 
     fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
 
-    private fun checkAppUpdateAvailable(update : AppUpdateModel): Maybe<AppUpdateModel> {
+    private fun checkAppUpdateAvailable(update: AppUpdateModel): Maybe<AppUpdateModel> {
         return Maybe.create { emitter ->
             val appUpdateManager = AppUpdateManagerFactory.create(context)
             appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-                update.isAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                update.isAvailable =
+                    appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 emitter.onSuccess(update)
             }
             appUpdateManager.appUpdateInfo.addOnFailureListener {

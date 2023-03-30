@@ -156,6 +156,7 @@ class MyEventsPresenterNew
 
     override fun updateData() {
         getEventsData(false, PROGRESS_LOADING)
+        viewState.setFiltersChosen(mSearchFilter.isHasFilter())
     }
 
     override fun setEventStateFilter(isChecked: Boolean, filter: MyEventsFilter) {
