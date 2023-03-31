@@ -17,7 +17,7 @@ import java.util.*
 class OtherSessionItem(
     val session: UserSessionModel?,
     val onSessionClick: (session: UserSessionModel) -> Unit
-) : BindableItem<ItemOtherSessionBinding>() {
+) : BindableItem<ItemOtherSessionBinding>(session?.sessionId?:0) {
 
 
     private var deviceName = ""
@@ -133,7 +133,6 @@ class OtherSessionItem(
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is OtherSessionItem) return false
         if (session != other.session) return false
-        if (session?.sessionId != other.session?.sessionId) return false
         return true
     }
 

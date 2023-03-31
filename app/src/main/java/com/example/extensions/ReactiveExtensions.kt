@@ -1,5 +1,6 @@
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.base.BaseContract
+import com.example.ui.profile.ProfileContract
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -91,6 +92,30 @@ fun <T> Observable<T>.performOnBackground(): Observable<T> {
  * */
 fun <T> Observable<T>.performOnMain(): Observable<T> {
     return this.subscribeOn(AndroidSchedulers.mainThread())
+}
+
+fun <T> Maybe<T>.withShimmerLoading(baseView: BaseContract.LoadingView): Maybe<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete {
+            baseView.showShimmerLoading()
+        }
+        .doOnDispose {
+            baseView.hideShimmerLoading()
+        }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideShimmerLoading()
+        else loadingDisposable.dispose()
+    }
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideShimmerLoading()
+        else loadingDisposable.dispose()
+    }
+    return this.doFinally(actionHide)
+        .doOnDispose(actionHide)
+        .doOnSuccess(actionConsumer())
+        .doOnError(actionConsumer())
 }
 
 fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completable {

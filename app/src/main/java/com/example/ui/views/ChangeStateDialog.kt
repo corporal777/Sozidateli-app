@@ -1,8 +1,10 @@
 package com.example.ui.views
 
 import android.app.Activity
+import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -10,21 +12,16 @@ import com.example.R
 import com.example.databinding.DialogChangeStateBinding
 import com.example.util.ClickableSpan
 
-class ChangeStateDialog(val activity: Activity, val type: StateType) {
+class ChangeStateDialog(val context: Context, val type: StateType) {
 
     private var onChangeState: (isAccept: Boolean) -> Unit = {}
 
     private var onClick: (state: ClickType) -> Unit = {}
 
-    var binding : DialogChangeStateBinding = DataBindingUtil.inflate(
-            activity.layoutInflater,
-            R.layout.dialog_change_state,
-            null,
-            false
-    )
+    private var binding = DialogChangeStateBinding.inflate(LayoutInflater.from(context))
 
     private lateinit var alertDialog: AlertDialog
-    val builder = AlertDialog.Builder(activity)
+    val builder = AlertDialog.Builder(context)
 
     init {
         builder.setView(binding.root)
@@ -32,13 +29,13 @@ class ChangeStateDialog(val activity: Activity, val type: StateType) {
         when(type) {
             StateType.SUCCESS -> {
                 binding.tvTitle.isVisible = true
-                binding.tvMessage.text = activity.resources.getString(R.string.change_status_description)
-                binding.btnPositive.text = activity.resources.getString(R.string.change_status_button)
+                binding.tvMessage.text = context.getString(R.string.change_status_description)
+                binding.btnPositive.text = context.getString(R.string.change_status_button)
             }
             StateType.BASE -> {
                 binding.tvTitle.isVisible = false
-                binding.btnPositive.text = activity.resources.getString(R.string.get_base)
-                binding.tvMessage.text = SpannableString(activity.resources.getString(R.string.title_get_base)).apply {
+                binding.btnPositive.text = context.getString(R.string.get_base)
+                binding.tvMessage.text = SpannableString(context.getString(R.string.title_get_base)).apply {
                     val linkStart = 84
                     val linkEnd = length
                     setSpan(ClickableSpan {
@@ -53,8 +50,8 @@ class ChangeStateDialog(val activity: Activity, val type: StateType) {
             }
             StateType.MAX -> {
                 binding.tvTitle.isVisible = false
-                binding.btnPositive.text = activity.resources.getString(R.string.get_max)
-                binding.tvMessage.text = SpannableString(activity.resources.getString(R.string.title_get_max)).apply {
+                binding.btnPositive.text = context.getString(R.string.get_max)
+                binding.tvMessage.text = SpannableString(context.getString(R.string.title_get_max)).apply {
                     val linkStart = 89
                     val linkEnd = length
                     setSpan(ClickableSpan {
@@ -69,8 +66,8 @@ class ChangeStateDialog(val activity: Activity, val type: StateType) {
             }
             else -> {
                 binding.tvTitle.isVisible = false
-                binding.tvMessage.text = activity.resources.getString(R.string.edit_status_description)
-                binding.btnPositive.text = activity.resources.getString(R.string.change_status_button)
+                binding.tvMessage.text = context.getString(R.string.edit_status_description)
+                binding.btnPositive.text = context.getString(R.string.change_status_button)
             }
         }
         binding.btnPositive.setOnClickListener {

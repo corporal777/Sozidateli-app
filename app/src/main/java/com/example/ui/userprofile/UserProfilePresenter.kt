@@ -89,13 +89,9 @@ class UserProfilePresenter @Inject constructor(
     override fun onContactsClick() = viewState.showContacts()
 
     override fun onInterestsClick() {
-        if (!user.isHasInterests()) {
-            viewState.showEdit()
-        } else {
-            viewState.showInterests()
+        if (!user.isHasInterests()) viewState.showEdit()
+        else viewState.showInterests()
             //viewState.showNextScreen()
-        }
-
     }
 
     override fun onEducationClick() = viewState.showEducation()

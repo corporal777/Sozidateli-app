@@ -115,6 +115,7 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
             btnAttachGallery.setOnClickListener { presenter.onTakePhotoFromGalleryRequest() }
             btnAttachPhoto.setOnClickListener { presenter.onTakePhotoFromCameraRequest() }
             ivAvatar.setOnClickListener { presenter.onUserClick() }
+            ivBack.setOnClickListener { findNavController().navigateUp() }
         }
     }
 

@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ChangeEmailFragment(
-    val email: String
+    val email: String?
 ) : BaseBottomSheetFragment<BottomSheetChangeEmailBinding>(),
     ChangeEmailContract.View {
 
@@ -29,7 +29,7 @@ class ChangeEmailFragment(
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = CHANGE_EMAIL_FRAGMENT_TAG)
     fun providePresenter(): ChangeEmailPresenter = presenterProvider.get().apply {
-        this.currentEmail = email
+        this.currentEmail = email?:""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

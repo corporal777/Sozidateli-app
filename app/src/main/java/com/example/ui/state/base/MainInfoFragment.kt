@@ -172,7 +172,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
                 if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
                     baseActionsWithSuccess()
                 } else {
-                    dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
+                    dialog = AddPhoneEmailDialog(requireContext(), RegisterDataType.EMAIL)
                         .setSelectCallback {
                             presenter.checkEmailIsUnique(it.value)
                             dialog.hideDialog()

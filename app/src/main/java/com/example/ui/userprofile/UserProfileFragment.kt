@@ -102,12 +102,7 @@ class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
-
-    }
-
-    override fun showNextScreen() {
-        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
+        findNavController().navigate(UserProfileFragmentDirections.profileToEdit(UserEditDataType.INTERESTS))
 
     }
 

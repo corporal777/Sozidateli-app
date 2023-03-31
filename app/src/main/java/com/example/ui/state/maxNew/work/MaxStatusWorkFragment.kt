@@ -51,7 +51,7 @@ class MaxStatusWorkFragment : BaseMaxStateFragment<MaxStatusWorkPresenter>(),
     }
 
     override fun showAddEmailDialog() {
-        dialog = AddPhoneEmailDialog(requireActivity(), RegisterDataType.EMAIL)
+        dialog = AddPhoneEmailDialog(requireContext(), RegisterDataType.EMAIL)
             .setSelectCallback {
                 presenter.checkEmailIsUnique(it.value)
             }.setNegativeClickCallback { presenter.onClickClose() }

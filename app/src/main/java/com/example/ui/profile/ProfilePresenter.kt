@@ -27,6 +27,7 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
+import withShimmerLoading
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -78,24 +79,6 @@ class ProfilePresenter
                     }
                 })
     }
-
-
-    override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
-
-    override fun onFavoritesClick() = viewState.showFavorites()
-
-
-    override fun onAboutApplicationClick() = viewState.showAboutApp()
-
-    override fun onBannedClick() = viewState.showBanned()
-
-    override fun onSupportClick() = viewState.openSupportEmail(appData.getId().toString())
-
-    override fun onRateClick() = viewState.openPlayMarket()
-
-    override fun onSessionsClick() = viewState.showSessions()
-    override fun onChangeAccountClick() = viewState.showChangeAccount()
-
 
     override fun onLogoutClick() {
         viewState.setIgnoreTokenListener(false)
@@ -219,9 +202,22 @@ class ProfilePresenter
     }
 
 
-    override fun onQrScannerToAuthWebClick() {
-        viewState.showQrScannerToAuthWebSite()
-    }
+    override fun onQrScannerToAuthWebClick() = viewState.showQrScannerToAuthWebSite()
+    override fun onSettingsClick() = viewState.showSettings()
+    override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
+
+    override fun onFavoritesClick() = viewState.showFavorites()
+
+
+    override fun onAboutApplicationClick() = viewState.showAboutApp()
+
+
+    override fun onSupportClick() = viewState.openSupportEmail(appData.getId().toString())
+
+    override fun onRateClick() = viewState.openPlayMarket()
+
+    override fun onSessionsClick() = viewState.showSessions()
+    override fun onChangeAccountClick() = viewState.showChangeAccount()
 
     override fun onShowUserProfileLink() {
         compositeDisposable += getUserRequest()
@@ -247,36 +243,9 @@ class ProfilePresenter
                 })
     }
 
-    override fun onSettingsClick() {
-        viewState.showSettings()
-    }
 
     private fun getUserRequest(): Maybe<UserDetail> {
         return Maybe.defer { Maybe.just(appData.getUserNew()) }
             .onErrorResumeNext(userRepository.getUserShortNew())
-    }
-
-    private fun <T> Maybe<T>.withShimmerLoading(baseView: ProfileContract.View): Maybe<T> {
-        val loadingDisposable = Completable.complete()
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnComplete {
-                baseView.showShimmerView()
-            }
-            .doOnDispose {
-                baseView.hideShimmerView()
-            }
-            .subscribe()
-        val actionHide = Action {
-            if (loadingDisposable.isDisposed) baseView.hideShimmerView()
-            else loadingDisposable.dispose()
-        }
-        fun <T> actionConsumer() = Consumer<T> {
-            if (loadingDisposable.isDisposed) baseView.hideShimmerView()
-            else loadingDisposable.dispose()
-        }
-        return this.doFinally(actionHide)
-            .doOnDispose(actionHide)
-            .doOnSuccess(actionConsumer())
-            .doOnError(actionConsumer())
     }
 }

@@ -145,12 +145,6 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.rvSessions.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

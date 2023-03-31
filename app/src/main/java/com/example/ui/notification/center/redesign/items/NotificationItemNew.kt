@@ -28,6 +28,7 @@ import com.example.data.models.Notification
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.holders.OnOpenEventListener
+import com.example.ui.views.CustomSpannableString
 import com.example.util.ClickableSpanNew
 import com.example.util.DATE_TIME_FORMAT_DEFAULT_FULL_MONTH
 import com.example.util.URLSpanNoUnderline
@@ -60,9 +61,8 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     private var actualMessage = SpannableStringBuilder()
 
     init {
-        actualMessage = if (isMessageLong) {
-            shortMessage
-        } else fullMessage
+        actualMessage = if (isMessageLong) shortMessage
+        else fullMessage
     }
 
 
@@ -157,7 +157,7 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     }
 
     private fun ellipsizeMarkdownText(context: Context, message: String?): SpannableStringBuilder {
-        if (message.isNullOrEmpty() || !isMessageLong) {
+        if (message.isNullOrBlank() || !isMessageLong) {
             return SpannableStringBuilder("")
         } else {
             val spanned = markWon(context).toMarkdown(message)
@@ -178,7 +178,7 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     }
 
     private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder {
-        return if (message.isNullOrEmpty()) {
+        return if (message.isNullOrBlank()) {
             SpannableStringBuilder("")
         } else {
             val spanned = markWon(context).toMarkdown(message ?: "")
@@ -196,15 +196,13 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
 
     private fun getNotificationTitle(textView : TextView): SpannableStringBuilder {
         val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
-        val clickableSpan = ClickableSpanNew(textView) {
-            if (notification.eventId != null) {
-                listener.onOpenEventClickListener(notification.eventId.toString())
+        val eventName = CustomSpannableString(notification.eventInfo?.name).apply {
+            setClickSpan(textView){
+                if (notification.eventId != null) {
+                    listener.onOpenEventClickListener(notification.eventId.toString())
+                }
             }
-        }
-        val eventNameColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
-        val eventName = SpannableString(notification.eventInfo?.name).apply {
-            setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            setSpan(ForegroundColorSpan(eventNameColor), 0, length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            setColorSpan(R.color.main_brown_color_new, textView.context)
         }
         return notificationTitle.append("\n").append(eventName)
     }

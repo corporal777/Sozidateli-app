@@ -1,5 +1,6 @@
 package com.example.data
 
+import com.example.BuildConfig
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
@@ -19,9 +20,22 @@ class AppData(
         }
 
     fun getUpdateMinutes(): Long {
-        return if (updateTime <= 0) 0
+        return if (updateTime <= 0) updateTime
         else TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - updateTime)
     }
+
+    fun isTimeToUpdate(): Boolean {
+        var isTimeToUpdate = false
+        if (updateTime <= 0) isTimeToUpdate = true
+        else {
+            val seconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - updateTime)
+            if (BuildConfig.DEBUG && (seconds in 1..600)) isTimeToUpdate = false
+            else if (!BuildConfig.DEBUG && (seconds in 1..172800)) isTimeToUpdate = false
+            else isTimeToUpdate = true
+        }
+        return isTimeToUpdate
+    }
+
 
     var deviceId: String? = appPrefs.uniqueDeviceId
         set(value) {

@@ -11,7 +11,7 @@ class CurrentSessionItem(
     val session: UserSessionModel,
     val onKillSessions: () -> Unit,
     val onShowSession: (session: UserSessionModel) -> Unit
-) : BindableItem<ItemCurrentSessionBinding>() {
+) : BindableItem<ItemCurrentSessionBinding>(session.sessionId) {
 
     private var deviceName = ""
     private var deviceType = ""

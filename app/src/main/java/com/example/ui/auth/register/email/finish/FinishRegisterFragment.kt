@@ -2,7 +2,6 @@ package com.example.ui.auth.register.email.finish
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -18,7 +16,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterBinding
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod

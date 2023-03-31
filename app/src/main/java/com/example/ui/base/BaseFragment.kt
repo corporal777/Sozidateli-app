@@ -115,6 +115,9 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.hideCustomProgressDialog()
     }
 
+    override fun showShimmerLoading() {}
+    override fun hideShimmerLoading() {}
+
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
     }
@@ -166,7 +169,7 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateDialog(requireActivity(), type)
+        ChangeStateDialog(requireContext(), type)
             .setClickCallback {
                 when (it) {
                     ClickType.INFO -> {

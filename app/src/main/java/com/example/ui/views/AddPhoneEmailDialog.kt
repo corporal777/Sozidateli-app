@@ -1,7 +1,9 @@
 package com.example.ui.views
 
 import android.app.Activity
+import android.content.Context
 import android.content.res.ColorStateList
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -20,25 +22,19 @@ import kotlinx.android.synthetic.main.fragment_finish_register.*
 import performOnBackgroundOutOnMain
 import java.util.concurrent.TimeUnit
 
-class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
+class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
 
     private var onSelect: (result: PhoneEmailResult) -> Unit = {}
     private var onSendCode: () -> Unit = {}
     private var onNegativeClick: () -> Unit = {}
     private val timerCompositeDisposable = CompositeDisposable()
-    private val timerMessage by lazy {
-        activity.resources.getString(R.string.auth_register_confirm_email_timer_two)
-    }
+    private val timerMessage by lazy { context.getString(R.string.auth_register_confirm_email_timer_two) }
 
-    var binding : DialogAddPhoneEmailBinding = DataBindingUtil.inflate(
-            activity.layoutInflater,
-            R.layout.dialog_add_phone_email,
-            null,
-            false
-    )
+
+    private val binding = DialogAddPhoneEmailBinding.inflate(LayoutInflater.from(context))
 
     private lateinit var alertDialog: AlertDialog
-    val builder = AlertDialog.Builder(activity)
+    val builder = AlertDialog.Builder(context)
 
     init {
         builder.setView(binding.root)
@@ -49,7 +45,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
         binding.tvCode.apply {
             setTextColor(ColorStateList(
                     arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
-                    intArrayOf(ContextCompat.getColor(activity, R.color.colorAccent), ContextCompat.getColor(activity, R.color.action_button_disabled_text_color))
+                    intArrayOf(ContextCompat.getColor(context, R.color.colorAccent), ContextCompat.getColor(context, R.color.action_button_disabled_text_color))
             ))
             setOnClickListener {
                 onSendCode()
@@ -82,27 +78,27 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
     private fun setData(phone: String?) {
         when (type) {
             RegisterDataType.EMAIL -> {
-                binding.tvTitle.text = activity.resources.getString(R.string.add_email_dialog_title)
-                binding.tvMessage.text = activity.resources.getString(R.string.add_email_dialog_text)
+                binding.tvTitle.text = context.getString(R.string.add_email_dialog_title)
+                binding.tvMessage.text = context.getString(R.string.add_email_dialog_text)
                 binding.etLogin.setHint(R.string.email)
                 binding.tvCode.isVisible = false
             }
             RegisterDataType.PHONE -> {
-                binding.tvTitle.text = activity.resources.getString(R.string.add_phone_dialog_title)
-                binding.tvMessage.text = activity.resources.getString(R.string.add_phone_dialog_text)
+                binding.tvTitle.text = context.getString(R.string.add_phone_dialog_title)
+                binding.tvMessage.text = context.getString(R.string.add_phone_dialog_text)
                 binding.etLogin.setHint(R.string.search_filter_phone)
                 binding.tvCode.isVisible = false
             }
             RegisterDataType.CODE -> {
                 startTimer()
-                binding.tvTitle.text = activity.resources.getString(R.string.code_dialog_title)
-                binding.tvMessage.text = activity.resources.getString(R.string.code_phone_dialog_text, phone)
+                binding.tvTitle.text = context.getString(R.string.code_dialog_title)
+                binding.tvMessage.text = context.getString(R.string.code_phone_dialog_text, phone)
                 binding.etLogin.setHint(R.string.enter_code_btn_text)
                 binding.tvCode.isVisible = true
             }
             RegisterDataType.CHANGE_PHONE -> {
-                binding.tvTitle.text = activity.resources.getString(R.string.new_phone_number)
-                binding.tvMessage.text = activity.resources.getString(R.string.add_phone_dialog_text)
+                binding.tvTitle.text = context.getString(R.string.new_phone_number)
+                binding.tvMessage.text = context.getString(R.string.add_phone_dialog_text)
                 binding.etLogin.setHint(R.string.search_filter_phone)
                 binding.tvCode.isVisible = false
             }
@@ -158,7 +154,7 @@ class AddPhoneEmailDialog(val activity: Activity, val type: RegisterDataType) {
 
     fun setTimeLeft(seconds: Int) {
         //val quantity = activity.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
-        val quantity = timerFormatter(seconds, activity)
+        val quantity = timerFormatter(seconds, context)
         binding.tvTimer.text = String.format(timerMessage, quantity)
     }
 

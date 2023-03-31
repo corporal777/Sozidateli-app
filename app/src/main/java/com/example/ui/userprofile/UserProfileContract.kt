@@ -32,9 +32,6 @@ interface UserProfileContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEdit()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showNextScreen()
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

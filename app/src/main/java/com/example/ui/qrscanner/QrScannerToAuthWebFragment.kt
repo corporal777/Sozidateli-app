@@ -9,6 +9,8 @@ import com.budiyev.android.codescanner.*
 import com.example.R
 import com.example.databinding.FragmentAuthWebBinding
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.qrscanner.auth.AuthWebsiteFragment
+import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import javax.inject.Inject
 import javax.inject.Provider
@@ -63,7 +65,8 @@ class QrScannerToAuthWebFragment : BaseFragmentNew<FragmentAuthWebBinding>(),
 
     override fun showAuthWebsite(code: String) {
         findNavController().navigate(
-            QrScannerToAuthWebFragmentDirections.actionQrScannerFragmentToAuthWebsiteFragment(code)
+            R.id.authWebsiteFragment,
+            AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
         )
     }
 

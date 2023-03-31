@@ -110,23 +110,6 @@ object Utils {
             context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
         } else context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
 
-    fun timerFormatterNew(time: Int, context: Context): String {
-        var remainTime = ""
-        if (time > 59) {
-            val seconds = time - 60
-            val minute = ceil((time - seconds).toDouble() / 60).toInt()
-
-            val m = context.resources.getQuantityString(R.plurals.minutes_timer, minute, minute)
-            val s = if (seconds > 0) {
-                " " + context.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
-            } else ""
-            remainTime = m + s
-        } else {
-            remainTime = context.resources.getQuantityString(R.plurals.seconds_timer, time, time)
-        }
-        return remainTime
-    }
-
 
     fun maxStateScreen(user: UserDetail): MaxStateScreenType {
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }

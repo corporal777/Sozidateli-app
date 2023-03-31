@@ -20,12 +20,6 @@ interface ProfileContract {
         fun setUserLink(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showShimmerView()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideShimmerView()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChangeOrAddNewAccount(description : Int, icon : Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -35,13 +29,14 @@ interface ProfileContract {
         fun showChangeAccount()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showStates()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFavorites()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutApp()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showBanned()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openSupportEmail(uid: String)
@@ -89,7 +84,6 @@ interface ProfileContract {
         fun onSessionsClick()
         fun onChangeAccountClick()
         fun onAboutApplicationClick()
-        fun onBannedClick()
         fun onSupportClick()
         fun onRateClick()
         fun onLogoutClick()

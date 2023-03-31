@@ -177,12 +177,7 @@ class UserProfileSettingsFragment :
         MessageDialogWithBrownButton(requireContext(), message)
     }
 
-    override fun showChangeEmail() {
-        val changeEmailDialog = ChangeEmailFragment("")
-        changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
-    }
-
-    override fun showNewChangeEmail(email: String) {
+    override fun showChangeEmail(email: String?) {
         val changeEmailDialog = ChangeEmailFragment(email)
         changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
     }

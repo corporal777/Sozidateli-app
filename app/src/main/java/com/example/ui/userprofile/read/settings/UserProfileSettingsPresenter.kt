@@ -11,6 +11,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.util.PHONE_PERSONAL
+import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -38,17 +39,12 @@ class UserProfileSettingsPresenter @Inject constructor(
 
 
     override fun onChangeEmailClick() {
-        val email = appData.getUserNew().email
-        if (email?.value.isNullOrEmpty() && email?.onConfirmation.isNullOrEmpty()) {
-            viewState.showChangeEmail()
-        } else {
-            if (!email?.value.isNullOrEmpty()) {
-                viewState.showNewChangeEmail(email?.value ?: "")
-            } else {
-                viewState.showNewChangeEmail(email?.onConfirmation ?: "")
+        compositeDisposable += Maybe.defer { Maybe.just(appData.getUserNew()) }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val email = it.email?.value ?: it.email?.onConfirmation
+                viewState.showChangeEmail(email)
             }
-        }
-
     }
 
 
@@ -75,7 +71,7 @@ class UserProfileSettingsPresenter @Inject constructor(
                     this.email?.isConfirmed = null
                     this.email?.onConfirmation = null
                 }
-                viewState.showChangeEmail()
+                viewState.showChangeEmail(null)
             }
     }
 

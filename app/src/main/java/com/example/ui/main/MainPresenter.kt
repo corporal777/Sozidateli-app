@@ -132,15 +132,10 @@ class MainPresenter
                 if (it.hasUpdate()) {
                     if (it.isUpdateRequired()) viewState.showUpdateApp(it.isUpdateRequired())
                     else {
-                        val minutes = appData.getUpdateMinutes()
-                        if (BuildConfig.DEBUG && (minutes in 1..9)) {
-                            startUpdateTimer(minutes, it.isUpdateRequired())
-                        } else if (!BuildConfig.DEBUG && (minutes in 1..2879)) {
-                            startUpdateTimer(minutes, it.isUpdateRequired())
-                        } else {
+                        if (appData.isTimeToUpdate()) {
                             appData.updateTime = System.currentTimeMillis()
                             viewState.showUpdateApp(it.isUpdateRequired())
-                        }
+                        } else startUpdateTimer(appData.getUpdateMinutes(), it.isUpdateRequired())
                     }
                 }
             }
@@ -762,8 +757,7 @@ class MainPresenter
     }
 
     fun startUpdateTimer(time: Long?, isRequired: Boolean) {
-        var counter = time ?: 0
-
+        var counter = time?:0
         timerCompositeDisposable.clear()
         timerCompositeDisposable += Observable.interval(1, TimeUnit.MINUTES)
             .performOnBackgroundOutOnMain()
@@ -773,14 +767,14 @@ class MainPresenter
                 if (BuildConfig.DEBUG) {
                     if (counter >= 10) {
                         appData.updateTime = System.currentTimeMillis()
-                        timerCompositeDisposable.clear()
                         viewState.showUpdateApp(isRequired)
+                        timerCompositeDisposable.clear()
                     }
                 } else {
                     if (counter >= 2879) {
                         appData.updateTime = System.currentTimeMillis()
-                        timerCompositeDisposable.clear()
                         viewState.showUpdateApp(isRequired)
+                        timerCompositeDisposable.clear()
                     }
                 }
             }

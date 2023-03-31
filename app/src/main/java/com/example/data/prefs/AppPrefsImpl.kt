@@ -78,6 +78,6 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
         const val FCM_TOKEN_SENT = "fcm_token_sent"
         const val USER_ID = "user_id"
         const val STORIES = "stories"
-        const val UPDATE_TIME = "update"
+        const val UPDATE_TIME = "update_time"
     }
 }

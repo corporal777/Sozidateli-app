@@ -128,6 +128,9 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
         mActivity?.hideCustomProgressDialog()
     }
 
+    override fun showShimmerLoading() {}
+    override fun hideShimmerLoading() {}
+
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
     }
@@ -179,7 +182,7 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateDialog(requireActivity(), type)
+        ChangeStateDialog(requireContext(), type)
             .setClickCallback {
                 when (it) {
                     ClickType.INFO -> {

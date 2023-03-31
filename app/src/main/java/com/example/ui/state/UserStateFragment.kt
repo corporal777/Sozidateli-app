@@ -12,6 +12,8 @@ import com.example.R
 import com.example.databinding.FragmentUserStateBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.state.base.MainInfoFragment
+import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
@@ -48,11 +50,12 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
         val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
             when (it) {
-                UserState.BASE ->
+                UserState.BASE ->{
                     findNavController().navigate(
-                        UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment()
-                            .setType(it).setScreen(2)
+                        R.id.mainInfoFragment,
+                        MainInfoFragmentArgs.Builder().setType(it).setScreen(2).build().toBundle()
                     )
+                }
                 UserState.MAX -> {
                     val base = states.firstOrNull { st -> st.state == UserState.BASE }
                     if (base?.isDone == true)
@@ -88,10 +91,12 @@ class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserS
                             }
                             MaxStateScreenType.DONE -> presenter.onClickClose()
                         }
-                    else findNavController().navigate(
-                        UserStateFragmentDirections.actionUserStateFragmentToMainInfoFragment()
-                            .setType(it).setScreen(2)
-                    )
+                    else {
+                        findNavController().navigate(
+                            R.id.mainInfoFragment,
+                            MainInfoFragmentArgs.Builder().setType(it).setScreen(2).build().toBundle()
+                        )
+                    }
                 }
             }
         }

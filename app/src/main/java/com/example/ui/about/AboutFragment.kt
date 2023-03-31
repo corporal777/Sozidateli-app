@@ -46,6 +46,6 @@ class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(true), AboutContract
 
     override val title: CharSequence by lazy { getString(R.string.profile_about_app) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

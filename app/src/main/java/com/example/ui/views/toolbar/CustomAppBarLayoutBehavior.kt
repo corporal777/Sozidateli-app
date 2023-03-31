@@ -41,6 +41,7 @@ class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
                     else {
                         val scrollView = rootView?.allViews?.find { x -> x is RecyclerView || x is NestedScrollView || x is ScrollView }
                         if (scrollView != null) findView(scrollView)
+                        else onScrollChange.invoke(0)
                     }
                 }
             }

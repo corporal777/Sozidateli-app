@@ -28,6 +28,8 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.accountChange.ChangeAccountFragment
+import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.profile.data.ProfileDataFragment
@@ -77,26 +79,18 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-//            profileScrollView.onScrolled { scrollY, oldScrollY, _, _ ->
-//                presenter.changeScrollingOffset(scrollY - oldScrollY)
-//            }
-            //tvBanned.setOnClickListener { presenter.onBannedClick() }
-            tvSettings.setOnClickListener { presenter.onSettingsClick() }
-            tvSupport.setOnClickListener { presenter.onSupportClick() }
-            tvProblem.setOnClickListener { Shake.show(ShakeScreen.HOME) }
-            tvRate.setOnClickListener { presenter.onRateClick() }
-            tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
-            tvLogout.setOnClickListener { presenter.onLogoutClick() }
-            tvSessions.setOnClickListener { presenter.onSessionsClick() }
-            tvChangeAccount.setOnClickListener { presenter.onChangeAccountClick() }
             btnEditProfile.setOnClickListener { presenter.onProfileClick() }
+            tvSettings.setOnClickListener { presenter.onSettingsClick() }
             tvFavorite.setOnClickListener { presenter.onFavoritesClick() }
             tvScan.setOnClickListener { presenter.onQrScannerToAuthWebClick() }
+            tvSessions.setOnClickListener { presenter.onSessionsClick() }
+            tvRate.setOnClickListener { presenter.onRateClick() }
+            tvSupport.setOnClickListener { presenter.onSupportClick() }
+            tvProblem.setOnClickListener { Shake.show(ShakeScreen.HOME) }
+            tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
+            tvChangeAccount.setOnClickListener { presenter.onChangeAccountClick() }
+            tvLogout.setOnClickListener { presenter.onLogoutClick() }
         }
-
-
-        //tvSettings.isVisible = BuildConfig.NEW_PROFILE_EDIT
-        //showUserStateDialog()
     }
 
 
@@ -109,7 +103,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
 
         if (isShowPopup && !::dialog.isInitialized) {
             dialog = AddPhoneEmailDialog(
-                requireActivity(),
+                requireContext(),
                 if (user.email?.value != null) RegisterDataType.PHONE else RegisterDataType.EMAIL
             )
                 .setSelectCallback {
@@ -135,9 +129,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
         }
         mBinding.stateTitle.apply {
             text = newState
-            setOnClickListener {
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-            }
+            setOnClickListener { showStates() }
         }
     }
 
@@ -147,17 +139,13 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
             userShortName = SpannableStringBuilder(user.shortName)
         } else {
             val userId = getString(R.string.user_id, user.id.toString())
-            SpannableString(getString(R.string.put_user_short_name)).apply {
-                val font = Typeface.createFromAsset(requireContext().assets, "fonts/sf_pro_text_medium.ttf")
-                setSpan(CustomTypefaceSpan("", font), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val expandColor = ContextCompat.getColor(requireContext(), R.color.main_brown_color_new)
-                setSpan(ForegroundColorSpan(expandColor), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val textSize = resources.getDimensionPixelSize(R.dimen.user_short_name_text_size)
-                setSpan(AbsoluteSizeSpan(textSize), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val clickableSpan = ClickableSpanNew(toolbarContent.getToolbarTitleView()) {
+            CustomSpannableString(getString(R.string.put_user_short_name)).apply {
+                setColorSpan(R.color.main_brown_color_new, requireContext())
+                setTextSizeSpan(R.dimen.user_short_name_text_size, requireContext())
+                setFontSpan("fonts/sf_pro_text_medium.ttf", requireContext())
+                setClickSize(toolbarContent.getToolbarTitleView()){
                     presenter.onShowChangeUserShortName()
                 }
-                setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 userShortName = SpannableStringBuilder(userId + "\n").append(this)
             }
         }
@@ -165,21 +153,6 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
             highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
             movementMethod = LinkMovementMethod.getInstance()
             text = userShortName
-        }
-    }
-
-
-    override fun showShimmerView() {
-        mBinding.apply {
-            shimmerView.isVisible = true
-            clHeader.isVisible = false
-        }
-    }
-
-    override fun hideShimmerView() {
-        mBinding.apply {
-            shimmerView.isVisible = false
-            clHeader.isVisible = true
         }
     }
 
@@ -254,54 +227,49 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
         }
     }
 
-    override fun showQrScannerToAuthWebSite() {
-        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToQrScannerAuthWebsiteFragment())
-    }
 
     override fun codeSuccess() = showUserStateDialog()
 
-    override fun showProfile(uid: String) {
-        findNavController().navigate(ProfileFragmentDirections.profileToUserProfile())
-    }
-
-    override fun showChangeAccount() {
-        findNavController().navigate(
-            ProfileFragmentDirections.profileToChangeAccount(
-                "",
-                AuthType.NONE,
-                false
-            )
-        )
-    }
-
     private fun showUserStateDialog() {
-        ChangeStateDialog(requireActivity(), StateType.SUCCESS)
+        ChangeStateDialog(requireContext(), StateType.SUCCESS)
             .setClickCallback {
-                if (it == ClickType.INFO) {
-                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserStateFragment())
-                }
+                if (it == ClickType.INFO) showStates()
             }
     }
 
+    override fun showProfile(uid: String) {
+        findNavController().navigate(R.id.user_profile_fragment)
+    }
+
+    override fun showStates() {
+        findNavController().navigate(R.id.userStateFragment)
+    }
+
+    override fun showChangeAccount() {
+        val args = ChangeAccountFragmentArgs.Builder("", AuthType.NONE, false).build().toBundle()
+        findNavController().navigate(R.id.change_account_fragment, args)
+    }
+
     override fun showFavorites() {
-        findNavController().navigate(ProfileFragmentDirections.profileToFavorite())
+        findNavController().navigate(R.id.favorite_fragment)
     }
 
-    override fun showAboutApp() {
-        findNavController().navigate(ProfileFragmentDirections.profileToAbout())
-    }
-
-    override fun showBanned() {
-        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToBannedFragment())
-    }
-
-    override fun showSettings() {
-        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserProfileSettingsFragment())
+    override fun showQrScannerToAuthWebSite() {
+        findNavController().navigate(R.id.qrScannerToAuthWebSiteFragment)
     }
 
     override fun showSessions() {
-        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToUserSessionsFragment())
+        findNavController().navigate(R.id.user_sessions_fragment)
     }
+
+    override fun showAboutApp() {
+        findNavController().navigate(R.id.about_fragment)
+    }
+
+    override fun showSettings() {
+        findNavController().navigate(R.id.user_profile_settings_fragment)
+    }
+
 
     override fun openSupportEmail(uid: String) {
         try {
@@ -340,18 +308,23 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
         }
     }
 
-    override fun layout() = R.layout.fragment_profile
-
-    override val title: CharSequence = ""
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.profileScrollView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
+    override fun showShimmerLoading() {
+        mBinding.apply {
+            shimmerView.isVisible = true
+            clHeader.isVisible = false
         }
     }
 
+    override fun hideShimmerLoading()  {
+        mBinding.apply {
+            shimmerView.isVisible = false
+            clHeader.isVisible = true
+        }
+    }
+
+    override fun layout() = R.layout.fragment_profile
+    override val title: CharSequence = ""
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun actionIconContainer(view: ViewGroup) {
         view.apply {
             addView(ToolbarIconView(context).apply {

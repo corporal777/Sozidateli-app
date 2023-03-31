@@ -11,7 +11,7 @@ interface UserProfileSettingsContract {
     interface View : BaseUserProfileContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmail()
+        fun showChangeEmail(email : String?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
@@ -36,9 +36,6 @@ interface UserProfileSettingsContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEmailConfirmation(email : String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showNewChangeEmail(email: String)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {

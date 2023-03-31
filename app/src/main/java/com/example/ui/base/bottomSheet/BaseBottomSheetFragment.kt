@@ -140,6 +140,9 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         mActivity?.hideCustomProgressDialog()
     }
 
+    override fun showShimmerLoading() {}
+    override fun hideShimmerLoading() {}
+
     override fun showToast(message: String) {
         mActivity?.showToast(message)
     }

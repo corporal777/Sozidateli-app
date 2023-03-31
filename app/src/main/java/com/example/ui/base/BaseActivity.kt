@@ -131,6 +131,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         mProgressDialog.hideDialog()
     }
 
+    override fun showShimmerLoading() {}
+    override fun hideShimmerLoading() {}
+
     override fun hideKeyboard() {
         hideKeyboard(currentFocus)
     }

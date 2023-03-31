@@ -78,6 +78,12 @@ interface BaseContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showShimmerLoading()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideShimmerLoading()
     }
 
     interface Presenter {
