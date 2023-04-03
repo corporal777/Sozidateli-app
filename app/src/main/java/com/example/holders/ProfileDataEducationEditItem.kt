@@ -21,15 +21,15 @@ import kotlinx.android.synthetic.main.item_profile_data_edit_education.tilStart
 import java.util.*
 
 class ProfileDataEducationEditItem(
-        id: Int?,
-        start: String?,
-        finish: String?,
-        organization: String?,
-        speciality: String?,
-        birthday: FieldDetails?,
-        showInProfile: Boolean?,
-        private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit,
-        private val isDataValid: (isValid: Boolean) -> Unit
+    id: Int?,
+    start: String?,
+    finish: String?,
+    organization: String?,
+    speciality: String?,
+    birthday: FieldDetails?,
+    showInProfile: Boolean?,
+    private val onRemoveClickListener: (ProfileDataEducationEditItem) -> Unit,
+    private val isDataValid: (isValid: Boolean) -> Unit
 ) : Item() {
 
     var isDeleteVisible = true
@@ -46,7 +46,7 @@ class ProfileDataEducationEditItem(
         private set
     var isNotFinished = mFinish == null
         private set
-    var mShowInProfile = showInProfile?: false
+    var mShowInProfile = showInProfile ?: false
         private set
 
     private var isDateCheckboxWasSet = false
@@ -57,7 +57,11 @@ class ProfileDataEducationEditItem(
         viewHolder.apply {
             val startDate = mStart?.parseToDate(defaultServerDateFormatter)
             etStart.setText(startDate?.let { formatDateYear(it).capitalize() })
-            tilStart.initAsMonthYearPicker(startDate, minDate = birthday, maxDate = now) { year, month, day ->
+            tilStart.initAsMonthYearPicker(
+                startDate,
+                minDate = birthday,
+                maxDate = now
+            ) { year, month, day ->
                 tilStart.error = null
                 mStart = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
@@ -67,7 +71,11 @@ class ProfileDataEducationEditItem(
 
             val finishDate = mFinish?.parseToDate(defaultServerDateFormatter)
             etFinish.setText(finishDate?.let { formatDateYear(it).capitalize() })
-            tilFinish.initAsMonthYearPicker(finishDate, minDate = birthday, maxDate = now) { year, month, day ->
+            tilFinish.initAsMonthYearPicker(
+                finishDate,
+                minDate = birthday,
+                maxDate = now
+            ) { year, month, day ->
                 tilFinish.error = null
                 mFinish = formatDate(DATE_FORMAT_SERVER_TIMESTAMP, year, month, day)
                 isDateValid(viewHolder)
@@ -109,8 +117,9 @@ class ProfileDataEducationEditItem(
 
     private fun isDateValid(viewHolder: GroupieViewHolder) {
         if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {
-            if (validateEndDate(mStart?: "", mFinish?: "")) {
-                viewHolder.tilFinish.error = viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
+            if (validateEndDate(mStart ?: "", mFinish ?: "")) {
+                viewHolder.tilFinish.error =
+                    viewHolder.tilFinish.context.getString(R.string.user_education_end_date_error)
             } else {
                 viewHolder.tilFinish.error = null
             }
@@ -128,13 +137,13 @@ class ProfileDataEducationEditItem(
                     error = resources.getString(R.string.profile_education_finish_error)
                 }
                 if (!isOrganizationValid()) tilInstitution.apply {
-                    error = if ((mInstitution?.length?: 0) < 4 && (mInstitution?.length?: 0) > 0)
+                    error = if ((mInstitution?.length ?: 0) < 4 && (mInstitution?.length ?: 0) > 0)
                         resources.getString(R.string.ten_letters_error)
                     else
                         resources.getString(R.string.profile_educate_institution_empty_error)
                 }
                 if (!isSpecialityValid()) tilSpeciality.apply {
-                    error = if ((mSpeciality?.length?: 0) < 4 && (mSpeciality?.length?: 0) > 0)
+                    error = if ((mSpeciality?.length ?: 0) < 4 && (mSpeciality?.length ?: 0) > 0)
                         resources.getString(R.string.five_letters_error)
                     else
                         resources.getString(R.string.enter_specialty)
@@ -167,19 +176,23 @@ class ProfileDataEducationEditItem(
                 val finishDate = finish.parseToDate(defaultServerDateFormatter)?.calendar()
                 val startDate = start.parseToDate(defaultServerDateFormatter)?.calendar()
                 if (finishDate == null || startDate == null) false
-                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(startDate)
+                else startDate.timeInMillis < finishDate.timeInMillis || finishDate.isSameMonth(
+                    startDate
+                )
             }
         }
     }
 
     private fun isOrganizationValid(): Boolean {
-        return (mInstitution?.length?: 0) >= 4
+        return (mInstitution?.length ?: 0) >= 4
         //!mInstitution.isNullOrBlank()
     }
+
     private fun isSpecialityValid(): Boolean {
-        return (mSpeciality?.length?: 0) >= 4
+        return (mSpeciality?.length ?: 0) >= 4
         //!mSpeciality.isNullOrBlank()
     }
+
     fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isSpecialityValid()
 
     override fun getLayout() = R.layout.item_profile_data_edit_education

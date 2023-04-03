@@ -1002,6 +1002,7 @@
         android:label="EditEducationFragment"
         tools:layout="@layout/fragment_edit_education_fragment" />
 
+
     <fragment
         android:id="@+id/qrScannerToAuthWebSiteFragment"
         android:name="com.example.ui.qrscanner.QrScannerToAuthWebFragment"

@@ -6,6 +6,8 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.extensions.updateGroup
 import com.example.holders.ProfileDataEducationEditGroupNew
+import com.example.ui.editeducation.items.UserEducationGroup
+import com.example.ui.editeducation.items.UserEducationLevelGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import javax.inject.Inject
@@ -33,25 +35,34 @@ class MaxStatusEducationFragment : BaseMaxStateFragment<MaxStatusEducationPresen
             if (user.binds?.academicDegree?.size == 1 && user.binds?.academicDegree?.get(0)?.degree == null)
                 null else user.binds?.academicDegree
 
-        val dataItem = ProfileDataEducationEditGroupNew(
+
+        val levelItem = UserEducationLevelGroup(
             requireContext(),
-            user.birthday,
             user.educationLevel,
             user.educationLevelList ?: emptyList(),
             user.academicDegrees ?: emptyList(),
             user.speciality ?: emptyList(),
-            user.binds?.education ?: emptyList(),
             academicDegree ?: emptyList()
-        ) { isEnable -> buttonNextEnabled(isEnable) }
+        )
 
-        contentSection.updateGroup(dataItem)
+        val educationItem = UserEducationGroup(
+            requireContext(),
+            user.birthday,
+            user.binds?.education ?: emptyList()
+        ).apply { setSelectedLevel(levelItem.getSelectedLevel()) }
+
+        levelItem.selectedLevel = { educationItem.setSelectedLevel(it) }
+        levelItem.enableNextButton = { buttonNextEnabled(it && educationItem.isDataValid()) }
+        educationItem.enableNextButton = { buttonNextEnabled(levelItem.isDataValid() && it) }
+
+        contentSection.update(listOf(levelItem, educationItem))
 
         onSaveClick = {
-            if (dataItem.checkDataValid()) {
+            if (levelItem.checkDataValid() && educationItem.checkDataValid()){
                 presenter.onSaveEducationClick(
-                    dataItem.getEducationLevelToSave(),
-                    dataItem.getEducationsToSave(),
-                    dataItem.getDegreeToSave()
+                    levelItem.getEducationLevelToSave(),
+                    educationItem.getEducationsToSave(),
+                    levelItem.getDegreeToSave()
                 )
             }
         }

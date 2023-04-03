@@ -1,60 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Profile.Edit.InputContainer">
+<layout>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Profile.Edit.TextViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profile_education_level"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/Profile.Edit.InputContainer">
 
-    <!--<com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilEducationLevel"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_education_level" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvEducationLevel"
             style="@style/Profile.Edit.Input.SingleLine"
             android:layout_marginBottom="0dp"
+            android:background="@drawable/background_input_focused"
             android:cursorVisible="false"
+            android:drawableEnd="@drawable/ic_arrow_bottom"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:gravity="center_vertical"
             android:hint="@string/profile_education_level"
             android:paddingStart="14dp"
             android:paddingEnd="14dp" />
 
-    </com.example.ui.views.CustomTextInputLayout>-->
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scAcadDegry"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/profile_education_academic_degree" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvEducationLevel"
-        style="@style/Profile.Edit.Input.SingleLine"
-        android:layout_marginBottom="0dp"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:background="@drawable/background_input_focused"
-        android:drawableEnd="@drawable/ic_arrow_bottom"
-        android:gravity="center_vertical"
-        android:focusableInTouchMode="false"
-        android:hint="@string/profile_education_level"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp" />
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scEducation"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/scAcadDegry"
-        style="@style/Profile.Edit.Switch"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/profile_education_academic_degree" />
+        <View
+            style="@style/ViewDivider.Horizontal"
+            android:layout_marginTop="16dp" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/scEducation"
-        style="@style/Profile.Edit.Switch"
-        android:text="@string/profile_show_in_profile" />
-
-    <View
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+    </LinearLayout>
+</layout>

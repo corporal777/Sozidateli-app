@@ -17,6 +17,7 @@ class EditWorksPresenter
     private val userRepository: UserRepository
 ) : BasePresenter<EditWorksContract.View>(appData), EditWorksContract.Presenter {
 
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.userNewChangeSubject

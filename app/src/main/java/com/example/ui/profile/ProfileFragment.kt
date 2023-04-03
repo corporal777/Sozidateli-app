@@ -143,7 +143,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
                 setColorSpan(R.color.main_brown_color_new, requireContext())
                 setTextSizeSpan(R.dimen.user_short_name_text_size, requireContext())
                 setFontSpan("fonts/sf_pro_text_medium.ttf", requireContext())
-                setClickSize(toolbarContent.getToolbarTitleView()){
+                setClickSpan(toolbarContent.getToolbarTitleView()){
                     presenter.onShowChangeUserShortName()
                 }
                 userShortName = SpannableStringBuilder(userId + "\n").append(this)

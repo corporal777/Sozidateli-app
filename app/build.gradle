@@ -220,6 +220,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
+
     // dagger 2
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
@@ -262,7 +263,7 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'io.coil-kt:coil:1.1.1'
     implementation 'com.github.Commit451.coil-transformations:transformations:1.0.0'
-    implementation 'com.github.ZieIony.carbon:carbon:3e929fcff4'
+//    implementation 'com.github.ZieIony.carbon:carbon:3e929fcff4'
 
     // leakcanary
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

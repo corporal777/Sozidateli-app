@@ -9,78 +9,80 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <carbon.widget.ConstraintLayout
-            android:background="@drawable/background_sessions_corners"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="10dp"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="67dp"
+            android:layout_height="67dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_app_logo_square" />
+
+        <TextView
+            android:id="@+id/tv_update"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="Обновите приложение"
+            android:textColor="@color/vk_black"
+            android:textSize="15.5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_logo"
+            app:layout_constraintTop_toTopOf="@id/iv_logo" />
+
+        <TextView
+            android:id="@+id/tv_update_title"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="4dp"
+            android:text="Доступна новая версия приложения.\nНажмите ниже, чтобы обновить."
+            android:textColor="@color/vk_black"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/tv_update" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAddToTimetable"
+            style="@style/BtnGreenStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            app:carbon_cornerRadius="12dp"
-            app:carbon_elevation="12dp"
-            app:carbon_elevationShadowColor="#677378"
+            android:minHeight="40dp"
+            android:paddingHorizontal="30dp"
+            android:text="Обновить"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_update_title" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_logo"
-                android:layout_width="67dp"
-                android:layout_height="67dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="25dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_app_logo_square" />
+<!--        <carbon.widget.ConstraintLayout-->
+<!--            android:background="@drawable/background_sessions_corners"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginHorizontal="15dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            app:carbon_cornerRadius="12dp"-->
+<!--            app:carbon_elevation="12dp"-->
+<!--            app:carbon_elevationShadowColor="#677378"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
 
-            <TextView
-                android:id="@+id/tv_update"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:text="Обновите приложение"
-                android:textColor="@color/vk_black"
-                android:textSize="15.5sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_logo"
-                app:layout_constraintTop_toTopOf="@id/iv_logo" />
-
-            <TextView
-                android:id="@+id/tv_update_title"
-                fontPath="fonts/sf_pro_display.OTF"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="5dp"
-                android:includeFontPadding="false"
-                android:lineSpacingExtra="4dp"
-                android:text="Доступна новая версия приложения.\nНажмите ниже, чтобы обновить."
-                android:textColor="@color/vk_black"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_logo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_logo"
-                app:layout_constraintTop_toBottomOf="@id/tv_update" />
+<!--            -->
 
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAddToTimetable"
-                style="@style/BtnGreenStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:minHeight="40dp"
-                android:paddingHorizontal="30dp"
-                android:text="Обновить"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_update_title" />
-
-
-        </carbon.widget.ConstraintLayout>
+<!--        </carbon.widget.ConstraintLayout>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

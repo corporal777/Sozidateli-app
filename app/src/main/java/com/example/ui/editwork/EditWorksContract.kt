@@ -15,6 +15,9 @@ interface EditWorksContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun buttonSaveEnabled(enable : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

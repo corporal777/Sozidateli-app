@@ -15,6 +15,7 @@ class ButtonAddMore : Item {
     private val text: String
     private val onClickListener: () -> Unit
     private var isButtonVisible = View.GONE
+    private var isButtonEnabled = true
 
     constructor(text: String, onClickListener: () -> Unit) : super() {
         this.text = text
@@ -37,13 +38,18 @@ class ButtonAddMore : Item {
                 setOnClickListener(onClickListener)
             }
             btnEdit.visibility = isButtonVisible
-            btnEdit.isEnabled = true
+            btnEdit.isEnabled = isButtonEnabled
             divider.isVisible = false
         }
     }
 
     fun setButtonVisibility(visibility: Int) {
         isButtonVisible = visibility
+        notifyChanged()
+    }
+
+    fun setButtonEnabled(enabled : Boolean){
+        isButtonEnabled = enabled
         notifyChanged()
     }
 

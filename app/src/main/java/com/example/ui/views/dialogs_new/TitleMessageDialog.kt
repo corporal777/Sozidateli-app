@@ -20,7 +20,7 @@ import com.example.util.ClickableSpan
 
 class TitleMessageDialog(
     val context: Context,
-    val title: String,
+    val title: String?,
     val message: String,
     val btnPositiveText: String = "",
     val btnNegativeText: String = "",

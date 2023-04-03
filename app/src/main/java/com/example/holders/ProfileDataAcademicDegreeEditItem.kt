@@ -5,6 +5,7 @@ import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
 import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
@@ -13,14 +14,14 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
 
 class ProfileDataAcademicDegreeEditItem(
-        id: Int?,
-        degreesLevel: String?,
-        sciencesLevel: String?,
-        private val availableDegrees: List<EducationLevel>,
-        private val availableSciences: List<EducationLevel>,
-        private val showInProfile: Boolean?,
-        private val onRemoveClickListener: (ProfileDataAcademicDegreeEditItem) -> Unit
-) : Item() {
+    id: Int?,
+    private val degreesLevel: String?,
+    private val sciencesLevel: String?,
+    private val availableDegrees: List<EducationLevel>,
+    private val availableSciences: List<EducationLevel>,
+    private val showInProfile: Boolean?,
+    private val onRemoveClickListener: (ProfileDataAcademicDegreeEditItem) -> Unit
+) : Item(id?.toLong() ?: 0) {
 
     var isDeleteVisible = true
 
@@ -33,7 +34,7 @@ class ProfileDataAcademicDegreeEditItem(
     var mSciencesLevel = sciencesLevel
         private set
 
-    var mShowInProfile = showInProfile?: false
+    var mShowInProfile = showInProfile ?: false
         private set
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -72,9 +73,21 @@ class ProfileDataAcademicDegreeEditItem(
         }
     }
 
-    private fun setupDropDown(textView: AutoCompleteTextView, textInputLayout: TextInputLayout, variants: List<EducationLevel>, initialVariant: String?, onSelect: (EducationLevel?) -> Unit) {
+    private fun setupDropDown(
+        textView: AutoCompleteTextView,
+        textInputLayout: TextInputLayout,
+        variants: List<EducationLevel>,
+        initialVariant: String?,
+        onSelect: (EducationLevel?) -> Unit
+    ) {
         textView.apply {
-            setAdapter(NoFilterArrayAdapter(context, android.R.layout.simple_list_item_1, variants.map { item -> item.name }.toTypedArray()))
+            setAdapter(
+                NoFilterArrayAdapter(
+                    context,
+                    android.R.layout.simple_list_item_1,
+                    variants.map { item -> item.name }.toTypedArray()
+                )
+            )
             setText(initialVariant)
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 textInputLayout.error = null
@@ -86,6 +99,25 @@ class ProfileDataAcademicDegreeEditItem(
     private fun isDegreeValid(): Boolean = !mDegreesLevel.isNullOrEmpty()
     private fun isSciencesValid(): Boolean = !mSciencesLevel.isNullOrEmpty()
     fun isDataValid() = isDegreeValid() && isSciencesValid()
+
+    fun getDataToSave(): AcademicDegreeModel {
+        return AcademicDegreeModel(
+            id = mId,
+            speciality = availableSciences.firstOrNull { degree -> degree.name == mSciencesLevel }?.id,
+            degree = availableDegrees.firstOrNull { degree -> degree.name == mDegreesLevel }?.id,
+            showInProfile = mShowInProfile
+        )
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is ProfileDataAcademicDegreeEditItem) return false
+        if (degreesLevel != other.degreesLevel) return false
+        if (sciencesLevel != other.sciencesLevel) return false
+        if (availableDegrees != other.availableDegrees) return false
+        if (availableSciences != other.availableSciences) return false
+        if (showInProfile != other.showInProfile) return false
+        return true
+    }
 
     override fun getLayout() = R.layout.item_profile_data_edit_academic_degree
 }

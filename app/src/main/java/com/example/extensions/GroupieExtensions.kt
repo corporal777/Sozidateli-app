@@ -77,8 +77,9 @@ inline fun <reified I : Group> Group.forEachGroupsPos(selector: (I, position: In
 }
 
 
-fun Section.updateItem(item: Item<*>){
-    update(listOf(item))
+fun Section.updateItem(item: Item<*>?){
+    if (item == null) update(emptyList())
+    else update(listOf(item))
 }
 
 fun Section.updateGroup(item: NestedGroup){

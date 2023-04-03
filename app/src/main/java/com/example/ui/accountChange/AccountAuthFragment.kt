@@ -13,6 +13,7 @@ import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.auth.authorization.AuthorizationContract
 import com.example.ui.auth.authorization.AuthorizationFragmentDirections
 import com.example.ui.auth.authorization.AuthorizationPresenter
+import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragmentNew
 import com.example.util.AuthBackground
 import javax.inject.Inject
@@ -42,11 +43,14 @@ class AccountAuthFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
     }
 
     override fun showLogin() {
-        findNavController().navigate(AuthorizationFragmentDirections.loginToLoginEmailAction(""))
+        findNavController().navigate(
+            R.id.login_fragment,
+            LoginFragmentArgs.Builder("").build().toBundle()
+        )
     }
 
     override fun showEmailRegistration() {
-        findNavController().navigate(AuthorizationFragmentDirections.authorizationFragmentToRegisterEmailNewFragment())
+        findNavController().navigate(R.id.register_email_new_fragment)
     }
 
     override fun showSnRegistration(snUser: SnUser) {

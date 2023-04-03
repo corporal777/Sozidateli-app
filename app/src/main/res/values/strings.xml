@@ -1018,4 +1018,5 @@
     <string name="asset_statements">
       [{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]
     </string>
+    <string name="no_education">Нет образования</string>
 </resources>

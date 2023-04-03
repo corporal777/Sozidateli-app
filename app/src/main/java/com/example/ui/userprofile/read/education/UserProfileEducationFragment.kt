@@ -9,6 +9,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
+import com.example.extensions.updateItem
+import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataEducationItem
 import com.example.holders.ProfileDataEducationLevelItem
 import com.example.interfaces.ToolbarFragment
@@ -54,32 +56,28 @@ class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterest
         val education = user.binds?.education ?: emptyList()
 
         val educationGroup = Section().apply {
-            if (educationLevel != null) setHeader(
-                ProfileDataEducationLevelItem(
-                    educationLevel, academicDegrees,
-                    user.academicDegrees ?: emptyList(), user.speciality ?: emptyList()
+            if (educationLevel == null && education.isNullOrEmpty()) {
+                updateItem(EmptyItem(getString(R.string.no_education)))
+            } else {
+                if (educationLevel != null) setHeader(
+                    ProfileDataEducationLevelItem(
+                        educationLevel, academicDegrees,
+                        user.academicDegrees ?: emptyList(), user.speciality ?: emptyList()
+                    )
                 )
-            )
-            addAll(education.map { ProfileDataEducationItem(it) })
+                addAll(education.map { ProfileDataEducationItem(it) })
+            }
         }
 
         adapter.update(listOf(educationGroup))
     }
 
     override fun showEdit() {
-        //findNavController().navigate(UserProfileEducationFragmentDirections.toEdit(UserEditDataType.EDUCATION))
         findNavController().navigate(R.id.editEducationFragment)
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_education) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.rvInterests.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
-
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

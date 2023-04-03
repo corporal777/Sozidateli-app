@@ -1,32 +1,43 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.example.R
+import com.example.databinding.DialogClearDegreeBinding
+import com.example.databinding.DialogTitleMessageBinding
 
 class ClearDegreeDialog(val context: Context) {
 
     private var onSelect: (isAgree: Boolean) -> Unit = {}
 
-    private val layout = LayoutInflater.from(context).inflate(R.layout.dialog_clear_degree, null)
+    private var mBinding = DialogClearDegreeBinding.inflate(LayoutInflater.from(context))
 
-    private lateinit var alertDialog: AlertDialog
-    val builder = AlertDialog.Builder(context)
+    private lateinit var mAlertDialog: AlertDialog
+    private val mBuilder = AlertDialog.Builder(context)
 
     init {
-        builder.setView(layout)
-        layout.findViewById<Button>(R.id.btnPositive).setOnClickListener {
-            onSelect.invoke(true)
-            alertDialog.dismiss()
+        mBuilder.setView(mBinding.root)
+        mBinding.apply {
+            btnPositive.setOnClickListener {
+                onSelect.invoke(true)
+                mAlertDialog.dismiss()
+            }
+            btnNegative.setOnClickListener {
+                onSelect.invoke(false)
+                mAlertDialog.dismiss()
+            }
         }
-        layout.findViewById<Button>(R.id.btnNegative).setOnClickListener {
-            onSelect.invoke(false)
-            alertDialog.dismiss()
-        }
-        alertDialog = builder.create()
-        alertDialog.show()
+
+        mAlertDialog = mBuilder.create()
+        val back = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(back, 10)
+        mAlertDialog.window?.setBackgroundDrawable(inset)
+        mAlertDialog.show()
     }
 
     fun setSelectCallback(block: (isAgree: Boolean) -> Unit): ClearDegreeDialog {
