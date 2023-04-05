@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.InterestNew
 import com.example.data.models.UserDetail
 import com.example.data.models.UserInterest
+import com.example.repository.AuthRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
@@ -19,9 +20,9 @@ import javax.inject.Inject
 class MaxStatusInterestsPresenter
 @Inject constructor(
     val appData: AppData,
-    private val eventRepository: EventRepository,
     private val userRepository: UserRepository,
-) : BaseMaxStatePresenter<MaxStatusInterestsContract.View>(appData, userRepository),
+    private val authRepository: AuthRepository
+) : BaseMaxStatePresenter<MaxStatusInterestsContract.View>(appData, userRepository, authRepository),
     MaxStatusInterestsContract.Presenter {
 
     private var isFirstLaunch = true
@@ -89,9 +90,10 @@ class MaxStatusInterestsPresenter
             }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                checkNextScreen()
-            }
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { checkNextScreen() }
+            )
     }
 
 }

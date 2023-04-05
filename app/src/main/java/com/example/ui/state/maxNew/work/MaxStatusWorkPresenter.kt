@@ -19,10 +19,9 @@ import javax.inject.Inject
 class MaxStatusWorkPresenter
 @Inject constructor(
     val appData: AppData,
-    private val eventRepository: EventRepository,
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository
-) : BaseMaxStatePresenter<MaxStatusWorkContract.View>(appData, userRepository),
+) : BaseMaxStatePresenter<MaxStatusWorkContract.View>(appData, userRepository, authRepository),
     MaxStatusWorkContract.Presenter {
 
     private var isFirstLaunch = true
@@ -53,40 +52,10 @@ class MaxStatusWorkPresenter
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribe({
-                if (appData.getUserNew().email?.value != null && appData.getUserNew().email?.isConfirmed != null) {
-                    checkNextScreen()
-                } else viewState.showAddEmailDialog()
+                checkNextScreen()
             }, {
                 it.printStackTrace()
                 viewState.showUpdateError(it.message)
             })
     }
-
-    override fun checkEmailIsUnique(email: String) {
-        compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withCustomProgressBarLoadingDialog(viewState)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { viewState.showEmailIsNotUnique(email) },
-                onComplete = { onShowEmailConfirm(email) }
-            )
-    }
-
-    override fun onShowEmailConfirm(email: String) {
-        viewState.hideAddEmailDialog()
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-        ).ignoreElement()
-            .andThen(authRepository.registerEmailResend(email))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                appData.updateUserNew {
-                    this.email = FieldDetails(value = email)
-                }
-                viewState.showEmailConfirmation(email)
-            }
-    }
-
 }

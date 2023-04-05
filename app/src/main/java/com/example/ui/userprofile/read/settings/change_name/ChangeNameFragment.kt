@@ -59,8 +59,10 @@ class ChangeNameFragment(private val user: UserDetail) :
             scNoMiddleName.isChecked = isMiddleNameAbsent
 //            if (isMiddleNameAbsent) etMiddleName.isEnabled = false
 //            else etMiddleName.setText(middleName)
+            if (!isMiddleNameAbsent){
+                if (!middleName.isNullOrBlank() && middleName != "-") etMiddleName.setText(middleName)
+            }
 
-            if (!middleName.isNullOrBlank() && middleName != "-") etMiddleName.setText(middleName)
         }
     }
 

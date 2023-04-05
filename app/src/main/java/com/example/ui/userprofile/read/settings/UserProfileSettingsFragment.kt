@@ -111,21 +111,24 @@ class UserProfileSettingsFragment :
         mBinding.apply {
             tvUserName.text = user.name
             tvUserLastName.text = user.lastName
-            tvUserMiddleName.text = user.getMiddleName()
 
-            scNoMiddleName.isChecked = user.middleName?.absent == true || user.middleName?.value == "-"
-//            ivNoMiddleName.apply {
-//                isEnabled = false
-//                if (user.middleName?.absent == true || user.middleName?.value == "-") setImage(true)
-//                else setImage(false)
-//            }
+            if (user.middleName?.absent == true || (user.middleName?.value == "-" || user.middleName?.value.isNullOrBlank())) {
+                scNoMiddleName.isChecked = true
+                tvUserMiddleName.text = ""
+            } else {
+                scNoMiddleName.isChecked = false
+                tvUserMiddleName.text = user.getMiddleName() ?: getString(R.string.user_profile_additional_hint)
+            }
 
             tvPhoneMobile.apply {
-                val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
+                val phone =
+                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
+                        requireContext()
+                    )
                 text = phone
             }
             tvShortname.apply {
-                text = if (user.shortName.isNullOrEmpty() || user.shortName == user.id.toString()){
+                text = if (user.shortName.isNullOrEmpty() || user.shortName == user.id.toString()) {
                     "@id" + user.id
                 } else "@" + user.shortName
             }
@@ -154,7 +157,9 @@ class UserProfileSettingsFragment :
                     btnNegativeText = getString(R.string.content_description_delete),
                     canShowCancel = true
                 ).setPositiveSelectCallback {
-                    presenter.onShowEmailConfirm(user.email?.onConfirmation ?: user.email?.value ?: "")
+                    presenter.onShowEmailConfirm(
+                        user.email?.onConfirmation ?: user.email?.value ?: ""
+                    )
                 }.setNegativeSelectCallback {
                     if (user.email?.value == null) {
                         presenter.onDeleteEmail()

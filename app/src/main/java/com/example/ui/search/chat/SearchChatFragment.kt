@@ -1,6 +1,7 @@
 package com.example.ui.search.chat
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
@@ -14,6 +15,7 @@ import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatSearchBinding
+import com.example.databinding.LayoutFilterUserBinding
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -204,12 +206,26 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
     }
 
     private fun createFilterView(filter: SearchFilter.UserNew): View {
-        return layoutInflater.inflate(R.layout.layout_filter_user, null).apply {
-            etAddress.apply {
-                setTextWithoutSearch(filter.address)
-                onTextChanged { filter.address = it.toString() }
-            }
+        return LayoutFilterUserBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+            .apply {
+                etAddress.apply {
+                    setTextWithoutSearch(filter.address)
+                    onTextChanged {
+                        filter.address = it.toString()
+                        if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
+                    }
+                    onDataSelectedListener = { filter.setAddressFilter(it) }
+                }
 
+                initUserInterests(filter, this)
+                lnAgeFilter.isVisible = false
+                //initAgeFrom(filter, this)
+                //initAgeTo(filter, this)
+            }.root
+    }
+
+    private fun initUserInterests(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
                 tilTheme.isVisible = false
@@ -232,6 +248,36 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
         }
     }
 
+    private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
+            initDropDownView(
+                tvAgeFrom,
+                presenter.getAgesList(null),
+                presenter.getAgesList(null).find { it.toInt() == filter.ageFrom },
+                null,
+                { it },
+                { it },
+                {
+                    filter.ageFrom = it?.toInt()
+                    initAgeTo(filter, binding)
+                }
+            )
+        }
+    }
+
+    private fun initAgeTo(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+        binding.apply {
+            initDropDownView(
+                tvAgeTo,
+                presenter.getAgesList(filter.ageFrom),
+                presenter.getAgesList(filter.ageFrom).find { it.toInt() == filter.ageTo },
+                null,
+                { it },
+                { it },
+                { filter.ageTo = it?.toInt() }
+            )
+        }
+    }
 
     private fun initInterests(
         interests: Map<InterestNew, List<InterestNew>>,
@@ -298,15 +344,20 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
         }
     }
 
+
     private fun findInterest(id: Int?, interests: Collection<InterestNew>): InterestNew? {
         return id?.let { interests.find { it.id == id } }
     }
 
     private fun clearFilterView() {
-        filterView?.apply {
-            etAddress.text = null
-            tvTheme.text = null
-            tvSpec.text = null
+        filterView?.let {
+            LayoutFilterUserBinding.bind(it).apply {
+                etAddress.text = null
+                tvTheme.text = null
+                tvSpec.text = null
+                tvAgeFrom.text = null
+                tvAgeTo.text = null
+            }
         }
     }
 

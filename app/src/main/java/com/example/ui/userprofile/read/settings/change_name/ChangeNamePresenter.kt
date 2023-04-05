@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_LAST_NAME
 import com.example.data.models.UserDetail.Companion.USER_NAME
@@ -45,22 +46,24 @@ class ChangeNamePresenter
     }
 
     override fun onSaveNameClick() {
-        Log.e("NAME", firstName)
-        Log.e("LAST NAME", lastName)
-        Log.e("MIDDLE NAME", middleName)
-        Log.e("MIDDLE NAME HAS", isMiddleNameAbsent.toString())
-
         if (isDataValid()) {
             compositeDisposable += userRepository.updateUserProfileField(
                 mutableMapOf<String, Any?>().apply {
                     if (firstName != userDetail.name) put(USER_NAME, firstName)
                     if (lastName != userDetail.lastName) put(USER_LAST_NAME, lastName)
+                    if (middleName != userDetail.middleName?.value && isMiddleNameAbsent != userDetail.middleName?.absent) {
+                        put(
+                            UserDetail.USER_MIDDLE_NAME,
+                            FieldDetails(value = middleName, absent = isMiddleNameAbsent)
+                        )
+                    }
                 }
             )
                 .doOnSuccess { new ->
                     appData.updateUserNew {
                         this.name = new.name
                         this.lastName = new.lastName
+                        this.middleName = new.middleName
                     }
                 }
                 .performOnBackgroundOutOnMain()

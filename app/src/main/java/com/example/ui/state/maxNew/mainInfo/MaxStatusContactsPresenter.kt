@@ -2,6 +2,7 @@ package com.example.ui.state.maxNew.mainInfo
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -15,7 +16,8 @@ class MaxStatusContactsPresenter
 @Inject constructor(
     val appData: AppData,
     private val userRepository: UserRepository,
-) : BaseMaxStatePresenter<MaxStatusContactsContract.View>(appData, userRepository),
+    private val authRepository: AuthRepository
+) : BaseMaxStatePresenter<MaxStatusContactsContract.View>(appData, userRepository, authRepository),
     MaxStatusContactsContract.Presenter {
 
     private var isFirstLaunch = true

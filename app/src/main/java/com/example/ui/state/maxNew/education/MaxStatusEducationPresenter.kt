@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
 import com.example.data.models.ToggleIntModel
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
@@ -18,7 +19,8 @@ class MaxStatusEducationPresenter
 @Inject constructor(
     val appData: AppData,
     private val userRepository: UserRepository,
-) : BaseMaxStatePresenter<MaxStatusEducationContract.View>(appData, userRepository),
+    private val authRepository: AuthRepository
+) : BaseMaxStatePresenter<MaxStatusEducationContract.View>(appData, userRepository, authRepository),
     MaxStatusEducationContract.Presenter {
 
     private var isFirstLaunch = true

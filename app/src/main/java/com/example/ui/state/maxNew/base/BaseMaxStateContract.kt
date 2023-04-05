@@ -22,10 +22,27 @@ interface BaseMaxStateContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun buttonNextEnabled(enabled: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAddEmailDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideAddEmailDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailIsNotUnique(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEmailConfirmation(email: String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onShowMaxStateDone()
         fun onClickClose()
+
+        fun checkEmailIsUnique(email: String)
+        fun onShowEmailConfirm(email : String)
+
+        fun checkUserEmail()
     }
 }
