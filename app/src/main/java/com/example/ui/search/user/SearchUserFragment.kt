@@ -12,11 +12,17 @@ import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.SearchUserData
 import com.example.data.models.UserDetail
+import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.databinding.LayoutFilterUserBinding
+import com.example.databinding.LayoutFilterUserSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
+import com.example.ui.search.event.SearchEventPresenter
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
+import com.example.util.initInput
 import com.xwray.groupie.Group
 import initDropDownView
 import onTextChanged
@@ -65,16 +71,19 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
 
 
     override fun createFilterView(filter: SearchFilter.UserNew): View {
-        return LayoutFilterUserBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        return LayoutFilterUserSearchBinding.inflate(LayoutInflater.from(requireContext()), null, false)
             .apply {
-                etAddress.apply {
-                    setTextWithoutSearch(filter.address)
-                    onTextChanged {
-                        filter.address = it.toString()
-                        if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
-                    }
-                    onDataSelectedListener = { filter.setAddressFilter(it) }
-                }
+//                etAddress.apply {
+//                    setTextWithoutSearch(filter.address)
+//                    onTextChanged {
+//                        filter.address = it.toString()
+//                        if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
+//                    }
+//                    onDataSelectedListener = { filter.setAddressFilter(it) }
+//                }
+
+                initRegions(filter, tvRegion, tilRegion, tilTown)
+                initTowns(filter, tvTown, tilTown)
 
                 initUserInterests(filter, this)
                 initAgeFrom(filter, this)
@@ -82,7 +91,8 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
             }.root
     }
 
-    private fun initUserInterests(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+
+    private fun initUserInterests(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
         binding.apply {
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
@@ -106,7 +116,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
         }
     }
 
-    private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+    private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
         binding.apply {
             initDropDownView(
                 tvAgeFrom,
@@ -123,7 +133,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
         }
     }
 
-    private fun initAgeTo(filter: SearchFilter.UserNew, binding: LayoutFilterUserBinding) {
+    private fun initAgeTo(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
         binding.apply {
             initDropDownView(
                 tvAgeTo,
@@ -138,8 +148,10 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     }
 
     override fun clearFilterView(filterView: View) {
-        LayoutFilterUserBinding.bind(filterView).apply {
-            etAddress.text = null
+        LayoutFilterUserSearchBinding.bind(filterView).apply {
+            //etAddress.text = null
+            tvRegion.text = null
+            tvTown.text = null
             tvTheme.text = null
             tvSpec.text = null
             tvAgeFrom.text = null

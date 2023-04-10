@@ -481,4 +481,18 @@ interface NewApi {
     @GET("v1/app-version/check")
     fun checkAppVersion(@Query("version") version: String, @Query("os") os: String
     ): Maybe<AppUpdateModel>
+
+
+    //+
+    @GET("v1/address/regions")
+    fun getRegions(): Maybe<List<String>>
+
+    @GET("v1/address/cities-events")
+    fun getEventsTowns(@Query("query") region: String): Maybe<List<SearchTown>>
+
+    @GET("v1/address/cities-users")
+    fun getUsersTowns(@Query("query") region: String): Maybe<List<SearchTown>>
+
+    @GET("v1/address/cities-orgs")
+    fun getOrganizationsTowns(@Query("query") region: String): Maybe<List<SearchTown>>
 }

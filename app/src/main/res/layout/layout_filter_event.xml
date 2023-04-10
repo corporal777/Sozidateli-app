@@ -112,21 +112,6 @@
 
 
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilOrganization"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvOrganization"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/profile_work_organization"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilTheme"
         style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"

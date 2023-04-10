@@ -9,6 +9,8 @@ import com.example.ui.views.notifications.NotificationsView
 import com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -42,6 +44,10 @@ interface AppComponent {
     fun inject(view: EventFormatBottomSheet)
 
     fun inject(view: EventOrgBottomSheet)
+
+    fun inject(view: SearchRegionBottomSheet)
+
+    fun inject(view: SearchTownBottomSheet)
 
     fun inject(view: NotificationsView)
 

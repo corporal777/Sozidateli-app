@@ -1,18 +1,17 @@
 package com.example.ui.search.event
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
-import com.example.databinding.LayoutFilterEventBinding
+import com.example.data.models.EventNew
+import com.example.data.models.SearchFilter
+import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
@@ -24,8 +23,6 @@ import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
-import initDropDownView
-import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -47,7 +44,9 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onActionCancel(event: String, registrationId: String?) =
             searchPresenter.onActionCancel(event, registrationId)
 
-        override fun onShowEventClick(view: View, event: String) = searchPresenter.onShowEventClick(event)
+        override fun onShowEventClick(view: View, event: String) =
+            searchPresenter.onShowEventClick(event)
+
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
@@ -96,27 +95,37 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     override fun createFilterView(filter: SearchFilter.EventNew): View {
-        return LayoutFilterEventBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        return LayoutFilterEventSearchBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            null,
+            false
+        )
             .apply {
-                etAddress.apply {
-                    setTextWithoutSearch(filter.address)
-                    onTextChanged {
-                        filter.address = it.toString()
-                        filter.fullAddress = null
-                    }
-                    onDataSelectedListener = {
-                        filter.fullAddress = it
-                    }
-                }
+//                etAddress.apply {
+//                    setTextWithoutSearch(filter.address)
+//                    onTextChanged {
+//                        filter.address = it.toString()
+//                        filter.fullAddress = null
+//                    }
+//                    onDataSelectedListener = {
+//                        filter.fullAddress = it
+//                    }
+//                }
+                initTextFilter(etName, filter.name) { filter.name = it }
+
+                initRegions(filter, tvRegion, tilRegion, tilTown)
+                initTowns(filter, tvTown, tilTown)
+
                 initFormats(filter, tilFormat, tvFormat)
                 initOrganizations(filter, tilOrganization, tvOrganization)
                 initEventInterests(filter, this)
 
-                initTextFilter(etName, filter.name) { filter.name = it }
+
                 initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
                 initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
             }.root
     }
+
 
     private fun initFormats(
         filter: SearchFilter.EventNew,
@@ -176,7 +185,10 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         }
     }
 
-    private fun initEventInterests(filter: SearchFilter.EventNew, binding: LayoutFilterEventBinding){
+    private fun initEventInterests(
+        filter: SearchFilter.EventNew,
+        binding: LayoutFilterEventSearchBinding
+    ) {
         binding.apply {
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {
@@ -202,9 +214,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     override fun clearFilterView(filterView: View) {
-        LayoutFilterEventBinding.bind(filterView).apply {
+        LayoutFilterEventSearchBinding.bind(filterView).apply {
             etName.text = null
-            etAddress.text = null
+
+            tvRegion.text = null
+            tvTown.text = null
+
             tvFormat.text = null
             tvOrganization.text = null
             tvTheme.text = null

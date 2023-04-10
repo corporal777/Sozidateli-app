@@ -33,5 +33,6 @@ interface SearchContract {
         fun onFilterCancel()
         fun onRefreshRequest()
         fun isHasFilter() : Boolean
+        fun getSearchType(): String
     }
 }

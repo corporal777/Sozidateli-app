@@ -2,7 +2,11 @@ package com.example.data.models
 
 import java.io.Serializable
 
-sealed class SearchFilter : Serializable {
+sealed class SearchFilter(
+    open var addressRegion: String? = null,
+    open var addressTown: String? = null,
+    open var addressTownType: String? = null
+) : Serializable {
 
     data class Organization(
         var address: String? = null,
@@ -18,11 +22,17 @@ sealed class SearchFilter : Serializable {
         var settlement: String? = null,
         var street: String? = null,
         var house: String? = null,
-        var flat: String? = null
+        var flat: String? = null,
+
+        override var addressRegion: String? = null,
+        override var addressTown: String? = null,
+        override var addressTownType: String? = null
     ) : SearchFilter() {
 
         fun isHasFilter(): Boolean {
-            return (!address.isNullOrEmpty() || !name.isNullOrEmpty() || !inn.isNullOrEmpty())
+            return (!address.isNullOrEmpty() || !name.isNullOrEmpty()
+                    || !inn.isNullOrEmpty() || !addressRegion.isNullOrEmpty()
+                    || !addressTown.isNullOrEmpty())
         }
 
         fun setAddressFilter(address: NewUserAddress?) {
@@ -45,14 +55,17 @@ sealed class SearchFilter : Serializable {
         var name: String? = null,
         var dateStart: String? = null,
         var dateFinish: String? = null,
-        var registration: String? = null,
         var theme: Int? = null,
         var spec: Int? = null,
         var format: Int? = null,
         var customFormat: String? = null,
         var organizationId: Long? = null,
         var organizationName: String? = null,
-        var fullAddress: NewUserAddress? = null
+        var fullAddress: NewUserAddress? = null,
+
+        override var addressRegion: String? = null,
+        override var addressTown: String? = null,
+        override var addressTownType: String? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
         var formats: List<NewEventFormat>? = null
@@ -62,7 +75,8 @@ sealed class SearchFilter : Serializable {
             return (!address.isNullOrEmpty() || !name.isNullOrEmpty()
                     || !dateStart.isNullOrEmpty() || !dateFinish.isNullOrEmpty()
                     || theme != null || spec != null || !customFormat.isNullOrEmpty()
-                    || format != null || organizationId != null || organizationName != null)
+                    || format != null || organizationId != null || organizationName != null
+                    || !addressRegion.isNullOrEmpty() || !addressTown.isNullOrEmpty())
         }
 
         fun getFormatName(): String? {
@@ -97,12 +111,17 @@ sealed class SearchFilter : Serializable {
         var settlement: String? = null,
         var street: String? = null,
         var house: String? = null,
-        var flat: String? = null
+        var flat: String? = null,
+
+        override var addressRegion: String? = null,
+        override var addressTown: String? = null,
+        override var addressTownType: String? = null
     ) : SearchFilter() {
         var interests: Map<InterestNew, List<InterestNew>>? = null
 
         fun isHasFilter(): Boolean {
-            return (!address.isNullOrEmpty() || ageFrom != null || ageTo != null || theme != null || spec != null)
+            return (!address.isNullOrEmpty() || ageFrom != null || ageTo != null || theme != null || spec != null
+                    || !addressRegion.isNullOrEmpty() || !addressTown.isNullOrEmpty())
         }
 
         fun setAddressFilter(address: NewUserAddress?) {
@@ -124,3 +143,14 @@ sealed class SearchFilter : Serializable {
         }
     }
 }
+
+data class SearchRegion(
+    val id: Int,
+    val name: String
+)
+
+data class SearchTown(
+    var id: Int? = null,
+    val type: String,
+    val name: String
+)

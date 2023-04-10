@@ -10,4 +10,7 @@ interface CommonRepository {
     //fun getAgreement(): Maybe<Agreement>
 
     //fun getEventFormats(): Maybe<List<EventFormat/*NewEventFormat*/>>
+
+    fun getFilterRegions() : Maybe<List<SearchRegion>>
+    fun getFilterTowns(type : String, region : String) : Maybe<List<SearchTown>>
 }

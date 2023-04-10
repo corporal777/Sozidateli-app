@@ -253,8 +253,6 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
                 }
             }
 
-            tilOrganization.isVisible = false
-
             initTextFilter(etName, filter.name) { filter.name = it }
             initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
             initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }

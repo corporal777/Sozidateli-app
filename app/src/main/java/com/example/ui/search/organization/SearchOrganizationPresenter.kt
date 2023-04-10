@@ -43,29 +43,6 @@ class SearchOrganizationPresenter
 ), SearchOrganizationContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        /*
-        organizationRepository.searchOrganizations(
-            mutableMapOf<String, Any>().apply {
-                put(ORGANIZATION_LIMIT, limit)
-                put(ORGANIZATION_OFFSET, offset)
-                put(ORGANIZATION_BINDS, "userFavorite")
-
-                put("status", "approved")
-                put("isSpecial", true)
-
-                if (searchText.isNotEmpty()) put(ORGANIZATION_LEGAL_INFORMATION_NAME_SHORT, "$searchText%")
-                val name = filter.name
-                if (!name.isNullOrEmpty()) put(ORGANIZATION_LEGAL_INFORMATION_NAME_SHORT, "$name%")
-                val inn = filter.inn
-                if (!inn.isNullOrEmpty()) put(ORGANIZATION_LEGAL_INFORMATION_INN, inn)
-                val address = filter.address
-                if (!address.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_STREET, address)
-            }
-
-        )
-
-         */
-
         val data = buildFilterNew(limit, offset)
         organizationRepository.searchOrganizationsNew(data)
     }
@@ -75,16 +52,6 @@ class SearchOrganizationPresenter
     }
 
     override fun onOrganizationSubscriptionClick(organization: OrganizationNew/*Organization*/) {
-        /*val isSubscribed = organization.isSubscribed ?: false
-        val request = if (isSubscribed) organizationRepository.unsubscribe(organization.id)
-        else organizationRepository.subscribe(organization.id)
-
-        compositeDisposable += request.performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    organization.isSubscribed = !isSubscribed
-                    viewState.changeSubscription(organization)
-                }*/
         val isSubscribed = organization.binds?.userFavorite != null
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
@@ -133,31 +100,42 @@ class SearchOrganizationPresenter
             put(ORGANIZATION_SEARCH_TYPE, true)
 
             //new address filters
-            val index = filter.index
-            if (!index.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_INDEX, index)
-            val country = filter.country
-            if (!country.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_COUNTRY, country)
-            val federal = filter.federal
-            if (!federal.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FEDERAL, federal)
-            val region = filter.region
-            if (!region.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_REGION, region)
-            val area = filter.area
-            if (!area.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_AREA, area)
-            val city = filter.city
-            if (!city.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_CITY, city)
-            val settlement = filter.settlement
-            if (!settlement.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_SETTLEMENT, settlement)
-            val street = filter.street
-            if (!street.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_STREET, street)
-            val house = filter.house
-            if (!house.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_HOUSE, house)
-            val flat = filter.flat
-            if (!flat.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FLAT, flat)
+            if (!filter.addressRegion.isNullOrEmpty()) {
+                put(ORGANIZATION_ADDRESS_REGION, filter.addressRegion!!)
+            }
+            if (!filter.addressTown.isNullOrEmpty()) {
+                put(ORGANIZATION_ADDRESS_CITY, filter.addressTown!!)
+            }
+            if (!filter.addressTownType.isNullOrEmpty()) {
+                put("type", filter.addressTownType!!)
+            }
+
+//            val index = filter.index
+//            if (!index.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_INDEX, index)
+//            val country = filter.country
+//            if (!country.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_COUNTRY, country)
+//            val federal = filter.federal
+//            if (!federal.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FEDERAL, federal)
+//            val region = filter.region
+//            if (!region.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_REGION, region)
+//            val area = filter.area
+//            if (!area.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_AREA, area)
+//            val city = filter.city
+//            if (!city.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_CITY, city)
+//            val settlement = filter.settlement
+//            if (!settlement.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_SETTLEMENT, settlement)
+//            val street = filter.street
+//            if (!street.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_STREET, street)
+//            val house = filter.house
+//            if (!house.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_HOUSE, house)
+//            val flat = filter.flat
+//            if (!flat.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FLAT, flat)
         }
 
     override fun createFilter() = SearchFilter.Organization()
     override fun copyFilter(filter: SearchFilter.Organization) = filter.copy()
     override fun isHasFilter(): Boolean = filter.isHasFilter()
+    override fun getSearchType(): String = ORGANIZATION_SEARCH_TYPE
 
     companion object {
         private const val FILTER_CONTENT = "content"

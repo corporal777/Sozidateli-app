@@ -1,6 +1,7 @@
 package com.example.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -8,7 +9,9 @@ import android.widget.EditText
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
+import com.example.data.models.SearchTown
 import com.example.databinding.LayoutFilterBinding
+import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.databinding.LayoutListSearchBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
@@ -16,8 +19,12 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.ui.search.event.SearchEventPresenter
 import com.example.ui.search.tabs.SearchTabsFragment
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.initInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -252,6 +259,74 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     private fun findInterest(id: Int?, interests: Collection<InterestNew>): InterestNew? {
         return id?.let { interests.find { it.id == id } }
     }
+
+    protected fun initRegions(
+        filter : F?,
+        tvRegion: AutoCompleteTextView,
+        tilRegion: TextInputLayout,
+        tilTown: TextInputLayout
+    ) {
+        tilRegion.setEndIconOnClickListener {
+            tvRegion.performClick()
+        }
+        tvRegion.apply {
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                SearchRegionBottomSheet(requireContext())
+                    .setRegionSelectedCallback {
+                        filter?.addressRegion = it?.name
+                        this.setText(it?.name)
+                    }
+                    .show()
+            }
+            initInput(filter?.addressRegion) {
+                tilTown.isEnabled = !it.isNullOrBlank()
+                if (it.isNullOrBlank()) filter?.addressRegion = null
+            }
+        }
+    }
+
+    protected fun initTowns(
+        filter : F?,
+        tvTown: AutoCompleteTextView,
+        tilTown: TextInputLayout,
+    ) {
+        tilTown.apply {
+            isEnabled = !filter?.addressRegion.isNullOrBlank()
+            setEndIconOnClickListener {
+                tvTown.performClick()
+            }
+        }
+        tvTown.apply {
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                SearchTownBottomSheet(
+                    requireContext(),
+                    filter?.addressRegion,
+                    searchPresenter.getSearchType()
+                )
+                    .setTownSelectedCallback {
+                        filter?.addressTown = it?.name
+                        filter?.addressTownType = it?.type
+                        this.setText(it?.name)
+                    }
+                    .show()
+            }
+            initInput(filter?.addressTown) {
+                if (it.isNullOrBlank()){
+                    filter?.addressTown = null
+                    filter?.addressTownType = null
+                }
+            }
+        }
+    }
+
 
     protected abstract fun createItem(itemData: I?): Group
     protected abstract fun createFilterView(filter: F): View

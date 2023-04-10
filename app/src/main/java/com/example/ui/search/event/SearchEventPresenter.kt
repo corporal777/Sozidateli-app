@@ -52,56 +52,6 @@ class SearchEventPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
-        /*
-        val data = mutableMapOf<String, Any>().apply {
-            put(EventNew.EVENT_LIMIT, limit)
-            put(EventNew.EVENT_OFFSET, offset)
-            put(EventNew.EVENT_SORT_TYPE, "desc")
-            put(EventNew.EVENT_SORT_FIELD, "id")
-            put(EventNew.EVENT_STATUS, "approved,registration,registrationFinished,running")
-            put(EventNew.EVENT_PUBLIC, "true")
-            put(
-                EventNew.EVENT_BINDS,
-                "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
-            )
-
-            if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
-            if (!filter.name.isNullOrEmpty()) put(EventNew.EVENT_NAME, "%" + filter.name + "%")
-            if (filter.dateStart != null) put(
-                EventNew.EVENT_START_DATE,
-                filter.dateStart + "," + filter.dateFinish
-            )
-            if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
-            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
-                if (filter.fullAddress != null) {
-                    if (filter.fullAddress?.country != null) put(
-                        EventNew.EVENT_ADDRESS_COUNTRY,
-                        filter.fullAddress?.country!!
-                    )
-                    if (filter.fullAddress?.city != null) put(
-                        EventNew.EVENT_ADDRESS_CITY,
-                        filter.fullAddress?.city!!
-                    )
-                    if (filter.fullAddress?.region != null) put(
-                        EventNew.EVENT_ADDRESS_REGION,
-                        filter.fullAddress?.region!!
-                    )
-                    if (filter.fullAddress?.street != null) put(
-                        EventNew.EVENT_ADDRESS_STREET,
-                        filter.fullAddress?.street!!
-                    )
-
-                } else {
-
-                }
-            }
-            val category = filter.spec ?: filter.theme
-            if (category != null) put(EventNew.EVENT_CATEGORY, category)
-        }
-        eventRepository.getEventsList(data)
-         */
-
-
         val data = buildNewFilters(limit, offset)
         eventRepository.searchEventsNew(data)
     }
@@ -122,7 +72,11 @@ class SearchEventPresenter
 
         val loadEventFormats = eventRepository.getActiveEventFormatsList()
 
-        compositeDisposable += Maybe.zip(loadInterests, loadEventFormats, loadOrganizations) { interests, formats, organizations ->
+        compositeDisposable += Maybe.zip(
+            loadInterests,
+            loadEventFormats,
+            loadOrganizations
+        ) { interests, formats, organizations ->
             this.interests = interests
             this.formats.apply {
                 if (!formats.isNullOrEmpty()) addAll(formats)
@@ -189,6 +143,7 @@ class SearchEventPresenter
     override fun createFilter() = SearchFilter.EventNew()
     override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
     override fun isHasFilter(): Boolean = filter.isHasFilter()
+    override fun getSearchType(): String = SEARCH_EVENT_TYPE
 
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {
@@ -196,10 +151,7 @@ class SearchEventPresenter
             put(EventNew.EVENT_OFFSET, offset)
 
             put(SEARCH_EVENT_TYPE, true)
-            put(
-                SEARCH_EVENT_BINDS,
-                "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
-            )
+            //put(SEARCH_EVENT_BINDS, "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState")
 
             //if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
@@ -210,40 +162,45 @@ class SearchEventPresenter
             if (filter.format == null && !filter.customFormat.isNullOrBlank())
                 put(SEARCH_EVENT_FORMAT_CUSTOM, filter.customFormat!!)
 
-            if (filter.organizationId != null) put(
-                SEARCH_EVENT_ORGANIZATION,
-                filter.organizationId!!
-            )
-            if (filter.organizationId == null && !filter.organizationName.isNullOrBlank()) put(
-                SEARCH_ORG_NAME,
-                filter.organizationName!!
-            )
+            if (filter.organizationId != null)
+                put(SEARCH_EVENT_ORGANIZATION, filter.organizationId!!)
 
-            if (filter.dateStart != null) put(
-                EventNew.EVENT_START_DATE,
-                filter.dateStart + "," + filter.dateFinish
-            )
+            if (filter.organizationId == null && !filter.organizationName.isNullOrBlank())
+                put(SEARCH_ORG_NAME, filter.organizationName!!)
 
-            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
-                if (filter.fullAddress != null) {
-                    if (filter.fullAddress?.country != null) put(
-                        EventNew.EVENT_ADDRESS_COUNTRY,
-                        filter.fullAddress?.country!!
-                    )
-                    if (filter.fullAddress?.city != null) put(
-                        EventNew.EVENT_ADDRESS_CITY,
-                        filter.fullAddress?.city!!
-                    )
-                    if (filter.fullAddress?.region != null) put(
-                        EventNew.EVENT_ADDRESS_REGION,
-                        filter.fullAddress?.region!!
-                    )
-                    if (filter.fullAddress?.street != null) put(
-                        EventNew.EVENT_ADDRESS_STREET,
-                        filter.fullAddress?.street!!
-                    )
-                }
+            if (filter.dateStart != null)
+                put(EventNew.EVENT_START_DATE, filter.dateStart + "," + filter.dateFinish)
+
+            //address
+            if (!filter.addressRegion.isNullOrEmpty()) {
+                put(EventNew.EVENT_ADDRESS_REGION, filter.addressRegion!!)
             }
+            if (!filter.addressTown.isNullOrEmpty()) {
+                put(EventNew.EVENT_ADDRESS_CITY, filter.addressTown!!)
+            }
+            if (!filter.addressTownType.isNullOrEmpty()) {
+                put("type", filter.addressTownType!!)
+            }
+//            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
+//                if (filter.fullAddress != null) {
+//                    if (filter.fullAddress?.country != null) put(
+//                        EventNew.EVENT_ADDRESS_COUNTRY,
+//                        filter.fullAddress?.country!!
+//                    )
+//                    if (filter.fullAddress?.city != null) put(
+//                        EventNew.EVENT_ADDRESS_CITY,
+//                        filter.fullAddress?.city!!
+//                    )
+//                    if (filter.fullAddress?.region != null) put(
+//                        EventNew.EVENT_ADDRESS_REGION,
+//                        filter.fullAddress?.region!!
+//                    )
+//                    if (filter.fullAddress?.street != null) put(
+//                        EventNew.EVENT_ADDRESS_STREET,
+//                        filter.fullAddress?.street!!
+//                    )
+//                }
+//            }
 
 //            val interests = filter.spec ?: filter.theme
 //            if (interests != null) put(SEARCH_EVENT_INTERESTS, interests)

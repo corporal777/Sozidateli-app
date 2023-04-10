@@ -112,6 +112,7 @@ class AppData(
 
     var interests: List<Interest>? = null
     var interestsNew: List<InterestNew>? = null
+    val filterRegionsList = arrayListOf<SearchRegion>()
 
     private var user: User? = null
     private var newUser: UserDetail? = null

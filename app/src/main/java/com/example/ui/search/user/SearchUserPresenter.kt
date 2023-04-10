@@ -5,10 +5,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.models.EventUserFavorite
-import com.example.data.models.InterestNew
-import com.example.data.models.SearchFilter
-import com.example.data.models.UserDetail
+import com.example.data.models.*
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_AREA
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_CITY
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_COUNTRY
@@ -53,48 +50,6 @@ class SearchUserPresenter
 
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        /*
-        val data = mutableMapOf<String, Any>().apply {
-             put(USER_LIMIT, limit)
-             put(USER_OFFSET, offset)
-             put(USER_BINDS, "userFavorite")
- //            val address = filter.address
- //            if (!address.isNullOrEmpty()) put(USER_ADDRESS_STREET, address)
-
-             if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
-             val interest = filter.spec ?: filter.theme
-             if (interest != null) put(FILTER_INTEREST, interest)
-
-             //new address filters
-             val index = filter.index
-             if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
-             val country = filter.country
-             if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
-             val federal = filter.federal
-             if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
-             val region = filter.region
-             if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
-             val area = filter.area
-             if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
-             val city = filter.city
-             if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
-             val settlement = filter.settlement
-             if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
-             val street = filter.street
-             if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
-             val house = filter.house
-             if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
-             val flat = filter.flat
-             if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
-
-         }
-         userRepository.getUsers(data).doOnSuccess {
-             val uid = appData.getId()
-             it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
-         }
-         */
-
-
         val data = buildFilterNew(limit, offset)
         userRepository.searchUsersNew(data).doOnSuccess {
             val uid = appData.getId()
@@ -173,6 +128,7 @@ class SearchUserPresenter
     override fun createFilter() = SearchFilter.UserNew()
     override fun copyFilter(filter: SearchFilter.UserNew) = filter.copy()
     override fun isHasFilter(): Boolean = filter.isHasFilter()
+    override fun getSearchType(): String = SEARCH_USER_TYPE
 
 
     private fun buildFilterNew(limit: Int, offset: Int): MutableMap<String, Any> {
@@ -194,26 +150,37 @@ class SearchUserPresenter
             put(SEARCH_USER_TYPE, true)
 
             //new address filters
-            val index = filter.index
-            if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
-            val country = filter.country
-            if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
-            val federal = filter.federal
-            if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
-            val region = filter.region
-            if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
-            val area = filter.area
-            if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
-            val city = filter.city
-            if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
-            val settlement = filter.settlement
-            if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
-            val street = filter.street
-            if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
-            val house = filter.house
-            if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
-            val flat = filter.flat
-            if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
+            if (!filter.addressRegion.isNullOrEmpty()) {
+                put(USER_ADDRESS_REGION, filter.addressRegion!!)
+            }
+            if (!filter.addressTown.isNullOrEmpty()) {
+                put(USER_ADDRESS_CITY, filter.addressTown!!)
+            }
+            if (!filter.addressTownType.isNullOrEmpty()) {
+                put("type", filter.addressTownType!!)
+            }
+
+
+//            val index = filter.index
+//            if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
+//            val country = filter.country
+//            if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
+//            val federal = filter.federal
+//            if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
+//            val region = filter.region
+//            if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
+//            val area = filter.area
+//            if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
+//            val city = filter.city
+//            if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
+//            val settlement = filter.settlement
+//            if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
+//            val street = filter.street
+//            if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
+//            val house = filter.house
+//            if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
+//            val flat = filter.flat
+//            if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
 
         }
     }

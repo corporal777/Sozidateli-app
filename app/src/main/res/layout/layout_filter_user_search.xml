@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:paddingBottom="@dimen/margin_horizontal_default"
+    tools:paddingEnd="@dimen/margin_horizontal_default"
+    tools:paddingStart="@dimen/margin_horizontal_default"
+    tools:paddingTop="@dimen/margin_horizontal_default">
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilRegion"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconDrawable="@drawable/ic_arrow_right">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvRegion"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_region"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilTown"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:endIconDrawable="@drawable/ic_arrow_right">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvTown"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_city"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/ln_age_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilAgeFrom"
+            style="@style/Profile.Edit.InputLayout.DropDown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvAgeFrom"
+                style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                android:hint="@string/search_filter_age_from"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilAgeTo"
+            style="@style/Profile.Edit.InputLayout.DropDown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/tvAgeTo"
+                style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                android:hint="@string/search_filter_age_to"
+                android:paddingStart="@dimen/background_input_padding"
+                android:paddingEnd="@dimen/background_input_padding" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilTheme"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvTheme"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_theme_short"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilSpec"
+        style="@style/Profile.Edit.InputLayout.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/tvSpec"
+            style="@style/Profile.Edit.Input.SingleLine.DropDown"
+            android:hint="@string/search_filter_specialization"
+            android:paddingStart="@dimen/background_input_padding"
+            android:paddingEnd="@dimen/background_input_padding" />
+    </com.example.ui.views.CustomTextInputLayout>
+
+
+</LinearLayout>

@@ -85,3 +85,8 @@ fun Section.updateItem(item: Item<*>?){
 fun Section.updateGroup(item: NestedGroup){
     update(listOf(item))
 }
+
+fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateItem(item: Item<*>?) {
+    if (item == null) update(emptyList())
+    else update(listOf(item))
+}

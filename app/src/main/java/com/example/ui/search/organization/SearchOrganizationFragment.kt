@@ -14,6 +14,7 @@ import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
 import com.example.databinding.LayoutFilterEventBinding
 import com.example.databinding.LayoutFilterOrganizationBinding
+import com.example.databinding.LayoutFilterOrganizationSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
@@ -62,23 +63,29 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
     }
 
     override fun createFilterView(filter: SearchFilter.Organization): View {
-        return LayoutFilterOrganizationBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
-            etAddress.apply {
-                setTextWithoutSearch(filter.address)
-                onTextChanged {
-                    filter.address = it.toString()
-                    if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
-                }
-                onDataSelectedListener = { filter.setAddressFilter(it) }
-            }
+        return LayoutFilterOrganizationSearchBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
+//            etAddress.apply {
+//                setTextWithoutSearch(filter.address)
+//                onTextChanged {
+//                    filter.address = it.toString()
+//                    if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
+//                }
+//                onDataSelectedListener = { filter.setAddressFilter(it) }
+//            }
+
+            initRegions(filter, tvRegion, tilRegion, tilTown)
+            initTowns(filter, tvTown, tilTown)
+
             initTextFilter(etOrganizationName, filter.name) { filter.name = it }
             initTextFilter(etInn, filter.inn) { filter.inn = it }
         }.root
     }
 
     override fun clearFilterView(filterView: View) {
-        LayoutFilterOrganizationBinding.bind(filterView).apply {
-            etAddress.text = null
+        LayoutFilterOrganizationSearchBinding.bind(filterView).apply {
+            tvRegion.text = null
+            tvTown.text = null
+
             etOrganizationName.text = null
             etInn.text = null
         }
