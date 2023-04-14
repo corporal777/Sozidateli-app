@@ -79,7 +79,7 @@ class MaxStatusInterestsPresenter
     }
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
-        compositeDisposable += userRepository.updateProfile(
+        compositeDisposable += userRepository.updateUserProfile(
             appData.getId(),
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )

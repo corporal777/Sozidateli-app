@@ -9,7 +9,6 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.models.UserSessions
 import com.example.ui.base.BaseContract
-import com.example.ui.userSessions.items.SessionsAction
 import com.example.util.pagination.PaginationListGroupAdapter
 
 interface UserSessionsContract {
@@ -24,21 +23,10 @@ interface UserSessionsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSessionsLoadingPlaceholder()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateSessionsActionButton(action: SessionsAction)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSessionsActionButton(action: SessionsAction)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideSessionsActionButton()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun killAllSessionsClick()
         fun killUsersDeviceSessionClick(id: Int)
-        fun showSessionClick(session: UserSessionModel)
-        fun showOrHideSessionsHistoryClick(action: SessionsAction)
     }
 }

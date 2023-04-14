@@ -6,7 +6,6 @@ import com.example.data.models.UserSessionModel
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.userSessions.items.SessionsAction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
@@ -20,38 +19,21 @@ class UserSessionsPresenter
     private val authRepository: AuthRepository
 ) : BasePresenter<UserSessionsContract.View>(appData), UserSessionsContract.Presenter {
 
-    var deviceId = appData.deviceId?:""
-    private val allOtherSessions = arrayListOf<UserSessionModel>()
-    private val shortAllOtherSessions = arrayListOf<UserSessionModel>()
-    private var actionType = SessionsAction.HIDDEN
+    private val deviceId = appData.deviceId ?: ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showSessionsLoadingPlaceholder()
-        getUserSessionsData()
-    }
-
-    private fun getUserSessionsData() {
         compositeDisposable += userRepository.getAllUsersSessions(deviceId)
-            .doOnSuccess {
-                allOtherSessions.addAll(it.userSessions)
-                if (it.userSessions.size > 3) {
-                    for (i in 0 until 3) {
-                        shortAllOtherSessions.add(it.userSessions[i])
-                    }
-                }
-            }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                viewState.setCurrentSession(it.currentSession)
-                if (allOtherSessions.size > 3) {
-                    viewState.showSessionsActionButton(actionType)
-                    viewState.setOtherSessions(shortAllOtherSessions)
-                }else {
-                    viewState.setOtherSessions(allOtherSessions)
+                viewState.apply {
+                    setCurrentSession(it.currentSession)
+                    setOtherSessions(it.userSessions)
                 }
             }
     }
+
 
     override fun killAllSessionsClick() {
         compositeDisposable += userRepository.killAllUsersOtherSessions()
@@ -59,7 +41,6 @@ class UserSessionsPresenter
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                viewState.hideSessionsActionButton()
                 viewState.setOtherSessions(it.userSessions)
             }
     }
@@ -71,24 +52,6 @@ class UserSessionsPresenter
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.setOtherSessions(it.userSessions)
-                if (it.userSessions.size <= 3){
-                    viewState.hideSessionsActionButton()
-                }
             }
     }
-
-    override fun showSessionClick(session: UserSessionModel) {
-    }
-
-    override fun showOrHideSessionsHistoryClick(action: SessionsAction) {
-        viewState.apply {
-            if (action == SessionsAction.SHOWN) {
-                setOtherSessions(allOtherSessions)
-            } else {
-                setOtherSessions(shortAllOtherSessions)
-            }
-        }
-    }
-
-
 }

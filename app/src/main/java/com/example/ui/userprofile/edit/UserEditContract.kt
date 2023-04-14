@@ -24,6 +24,9 @@ interface UserEditContract {
         fun setContactsData(user: UserDetail)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun addNewUserFile(file: FileModel)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -43,9 +46,6 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun hideEnterPassword()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
 
         @StateStrategyType(SkipStrategy::class)
         fun showFileSelector()

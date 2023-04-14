@@ -16,6 +16,7 @@ import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.userprofile.edit.UserEditFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -59,40 +60,31 @@ class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterest
     }
 
     override fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>) {
-        if (interests.isNullOrEmpty()) {
-            navigateUp()
-        }
-        val items = interests.map {
-            val parent = it.key
-            val childList = it.value
-            ProfileExpandableSubtitleGroup(
-                parent.name ?: "",
-                onExpandChange = onItemExpandChange
-            ).apply {
-                addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
+        if (interests.isNullOrEmpty()) findNavController().navigateUp()
+        else {
+            val items = interests.map {
+                val parent = it.key
+                val childList = it.value
+                ProfileExpandableSubtitleGroup(
+                    parent.name ?: "",
+                    onExpandChange = onItemExpandChange
+                ).apply {
+                    addAll(childList.map { interest -> ProfileDataInterestItem(interest) })
+                }
             }
+            adapter.update(items)
         }
-        adapter.update(items)
-
-    }
-
-    override fun showNextScreen() {
-        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileInterestsFragmentDirections.toEdit(UserEditDataType.INTERESTS))
+        findNavController().navigate(
+            R.id.user_edit_fragment,
+            UserEditFragmentArgs.Builder(UserEditDataType.INTERESTS).build().toBundle()
+        )
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_interests) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.rvInterests.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
-
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

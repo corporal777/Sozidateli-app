@@ -1,5 +1,6 @@
 package com.example.ui.userprofile
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel

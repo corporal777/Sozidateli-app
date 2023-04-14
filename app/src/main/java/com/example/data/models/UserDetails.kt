@@ -74,11 +74,9 @@ data class UserDetail(
     }
 
     fun isHasInterests(): Boolean {
-        var isHas = false
-        if (!interests.isNullOrEmpty()){
-            isHas = interests?.firstOrNull() != null
-        } else isHas = false
-        return isHas
+        if (interests.isNullOrEmpty())return false
+        else if (interests?.firstOrNull() == null) return false
+        else return true
     }
 
     fun getUserInterests(): List<Int> {

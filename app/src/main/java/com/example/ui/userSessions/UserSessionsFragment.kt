@@ -53,14 +53,11 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
             setHideWhenEmpty(true)
         }
     }
-    private val sessionsHistorySection = Section()
-
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
             add(currentSessionSection)
             add(otherSessionsSection)
-            add(sessionsHistorySection)
         }
     }
 
@@ -99,24 +96,9 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     }
 
     override fun showSessionsLoadingPlaceholder() {
-        currentSessionSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SESSIONS)))
+        currentSessionSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SESSIONS))
     }
 
-
-    override fun showSessionsActionButton(action: SessionsAction) {
-        sessionsHistorySection.update(listOf(SessionsHistoryActionItem(action) {
-            presenter.showOrHideSessionsHistoryClick(it)
-        }))
-    }
-
-
-    override fun hideSessionsActionButton() {
-        sessionsHistorySection.clear()
-    }
-
-    override fun updateSessionsActionButton(action: SessionsAction) {
-        sessionsHistorySection.findItemBy<SessionsHistoryActionItem> { true }?.notifyChanged(action)
-    }
 
     private fun showSessionDialog(
         isCurrent: Boolean,

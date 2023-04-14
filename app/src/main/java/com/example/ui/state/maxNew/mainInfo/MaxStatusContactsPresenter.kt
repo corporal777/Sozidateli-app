@@ -48,7 +48,7 @@ class MaxStatusContactsPresenter
             viewState.navigateUp()
             return
         } else {
-            compositeDisposable += userRepository.updateProfile(appData.getId(), data)
+            compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
                 .doOnSuccess {
                     appData.updateUserNew {
                         name = it.name

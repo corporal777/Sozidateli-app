@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.edit
 
 import android.Manifest
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -57,41 +58,23 @@ class UserEditPresenter
                     when (editType) {
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
-                            compositeDisposable += userRepository.searchAddress(
-                                user.address?.getShortAddress() ?: ""
-                            )
+                            saveOnClick(true)
+                            compositeDisposable += userRepository.searchAddress(user.address?.getShortAddress() ?: "")
                                 .performOnBackgroundOutOnMain()
                                 .withProgressBarLoadingDialog(viewState)
                                 .subscribeSimple(
                                     onError = { t ->
                                         t.printStackTrace()
-                                        setPersonalData(
-                                            user,
-                                            if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
-                                        )
+                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
                                     },
                                     onSuccess = { add ->
-                                        if (add.data?.isNotEmpty() == true)
-                                            user.address?.shortAddres = add.data[0].region
-                                        setPersonalData(
-                                            user,
-                                            if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный"
-                                        )
-
+                                        if (add.data?.isNotEmpty() == true) user.address?.shortAddres = add.data[0].region
+                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
                                     })
-                            saveOnClick(true)
                         }
                         UserEditDataType.CONTACTS -> viewState.apply {
                             setContactsTitle()
                             setContactsData(user)
-                            saveOnClick(true)
-                        }
-                        UserEditDataType.EDUCATION -> viewState.apply {
-                            setEducationTitle()
-                            saveOnClick(true)
-                        }
-                        UserEditDataType.WORK -> viewState.apply {
-                            setWorkTitle()
                             saveOnClick(true)
                         }
                         UserEditDataType.INTERESTS -> viewState.apply {
@@ -121,13 +104,13 @@ class UserEditPresenter
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
         updateUserNew(
-            userRepository.updateProfile(
+            userRepository.updateUserProfile(
                 appData.getId(),
                 mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
             )
         ) {
-            it.interests = data.map { item -> item.id ?: 0 }
-            false
+            //it.interests = data.map { item -> item.id ?: 0 }
+            true
         }
     }
 
@@ -280,8 +263,8 @@ class UserEditPresenter
 
     private fun getInterests(user: UserDetail) {
         if (isInterestsLoaded) return
-        compositeDisposable += userRepository.getInterestsList(null)
-            .map { groupUserInterests(user, it.data) }
+        compositeDisposable += commonRepository.getInterests()
+            .map { groupUserInterests(user, it) }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
             .subscribe({
@@ -321,27 +304,25 @@ class UserEditPresenter
 
     private fun updateUserNew(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
         compositeDisposable += request
+            .doOnSuccess { appData.getUserNew().apply { phone = it.phone } }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                appData.getUserNew().apply {
-                    phone = it.phone
-                }
-                compositeDisposable += userRepository.checkUserProfileSingle()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({ state ->
-                        if (onComplete(it))
-                            viewState.navigateUp()
-                    }, { error ->
-                        error.printStackTrace()
-                        if (onComplete(it))
-                            viewState.navigateUp()
-                    })
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    viewState.showUpdateError(it.message)
+                },
+                onSuccess = {
+                    compositeDisposable += userRepository.checkUserProfileSingle()
+                        .performOnBackgroundOutOnMain()
+                        .subscribe({ state ->
+                            if (onComplete(it)) viewState.navigateUp()
+                        }, { error ->
+                            error.printStackTrace()
+                            if (onComplete(it)) viewState.navigateUp()
+                        })
+                })
     }
 
     private fun fileRequestBody(
