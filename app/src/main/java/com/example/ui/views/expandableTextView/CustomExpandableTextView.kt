@@ -35,7 +35,6 @@ import com.example.util.markWon
 import kotlin.math.abs
 
 
-@SuppressLint("ViewConstructor")
 class CustomExpandableTextView : AppCompatTextView {
 
     constructor(context: Context) : super(context)
@@ -43,14 +42,20 @@ class CustomExpandableTextView : AppCompatTextView {
         obtainAttributes(attrs)
     }
 
-    @SuppressLint("Recycle")
+
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView)
         val originalText = a.getText(R.styleable.ExpandableTextView_originalText)
         val expandActionText = a.getText(R.styleable.ExpandableTextView_expandAction)
+        a.recycle()
     }
 
-    private val click = ClickableSpanNew(this) { toggle() }
+    var isCanExpand = true
+    var onExpandClick: () -> Unit = {}
+    private val click = ClickableSpanNew(this) {
+        if (isCanExpand) toggle()
+        onExpandClick.invoke()
+    }
 
     private var oldTextWidth = 0
     private var animator: Animator? = null
@@ -62,7 +67,6 @@ class CustomExpandableTextView : AppCompatTextView {
         set(value) {
             field = value
             updateCollapsedDisplayedText(ctaChanged = false)
-            this.postInvalidate()
         }
 
     var expandAction: CharSequence = ""
@@ -70,12 +74,34 @@ class CustomExpandableTextView : AppCompatTextView {
             field = value
             expandActionSpannable = SpannableString(value)
             val expandColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
-            expandActionSpannable.setSpan(ForegroundColorSpan(expandColor), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            val font: Typeface = Typeface.createFromAsset(context.assets, "fonts/sf_pro_text_bold.ttf")
-            expandActionSpannable.setSpan(CustomTypefaceSpan("", font), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            val textSize = resources.getDimensionPixelSize(R.dimen.sub_event_description_show_more_text_size)
-            expandActionSpannable.setSpan(AbsoluteSizeSpan(textSize), 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            expandActionSpannable.setSpan(click, 0, expandActionSpannable.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            expandActionSpannable.setSpan(
+                ForegroundColorSpan(expandColor),
+                0,
+                expandActionSpannable.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            val font: Typeface =
+                Typeface.createFromAsset(context.assets, "fonts/sf_pro_text_bold.ttf")
+            expandActionSpannable.setSpan(
+                CustomTypefaceSpan("", font),
+                0,
+                expandActionSpannable.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            val textSize =
+                resources.getDimensionPixelSize(R.dimen.sub_event_description_show_more_text_size)
+            expandActionSpannable.setSpan(
+                AbsoluteSizeSpan(textSize),
+                0,
+                expandActionSpannable.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            expandActionSpannable.setSpan(
+                click,
+                0,
+                expandActionSpannable.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
 
     var limitedMaxLines: Int = 3
@@ -90,7 +116,6 @@ class CustomExpandableTextView : AppCompatTextView {
         }
 
 
-
     init {
         ellipsize = END
         movementMethod = LinkMovementMethod.getInstance()
@@ -102,6 +127,7 @@ class CustomExpandableTextView : AppCompatTextView {
         }
         //setOnClickListener { toggle() }
     }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val givenWidth = MeasureSpec.getSize(widthMeasureSpec)

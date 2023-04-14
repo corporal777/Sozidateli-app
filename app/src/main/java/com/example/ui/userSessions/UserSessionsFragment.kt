@@ -10,6 +10,7 @@ import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
@@ -73,15 +74,11 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
 
 
     override fun setCurrentSession(session: UserSessionModel) {
-        currentSessionSection.update(
-            listOf(
-                CurrentSessionItem(
-                    session,
-                    { presenter.killAllSessionsClick() },
-                    { s ->
-                        showSessionDialog(true, { presenter.killAllSessionsClick() }, s)
-                    }
-                )
+        currentSessionSection.updateItem(
+            CurrentSessionItem(
+                session,
+                { presenter.killAllSessionsClick() },
+                { s -> showSessionDialog(true, { presenter.killAllSessionsClick() }, s) }
             )
         )
     }

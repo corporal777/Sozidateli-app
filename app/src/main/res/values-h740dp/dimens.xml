@@ -21,7 +21,7 @@
 
     <dimen name="event_item_height_new">428dp</dimen>
     <dimen name="event_image_height_new">450dp</dimen>
-    <dimen name="event_image_shadow_height_new">300dp</dimen>
+    <dimen name="event_image_shadow_height_new">250dp</dimen>
 
     <dimen name="current_session_item_height">115dp</dimen>
     <dimen name="other_session_item_height">90dp</dimen>

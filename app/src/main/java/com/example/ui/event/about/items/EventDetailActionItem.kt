@@ -1,9 +1,14 @@
 package com.example.ui.event.about.items
 
 import android.content.Context
+import android.text.SpannableStringBuilder
+import android.text.style.URLSpan
+import android.util.Log
 import android.view.ViewTreeObserver
 import android.widget.Button
 import androidx.annotation.StringRes
+import androidx.core.text.getSpans
+import androidx.core.text.set
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
@@ -16,6 +21,8 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs_new.EventDescriptionBottomSheet
+import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
@@ -31,16 +38,6 @@ class EventDetailActionItem(
     val userRegistration: Event.Status? = eventData?.binds?.currentUserRegistration?.status?.value
     val backgroundColor: String? = eventData?.binds?.organization?.backgroundColor?.value
     val logo: String? = eventData?.image?.uri
-
-//    val eventFormat =
-//
-//        EventFormat(
-//            name = if (!eventData?.binds?.format?.name.isNullOrEmpty()) {
-//                eventData?.binds?.format?.name ?: ""
-//            } else {
-//                eventData?.format?.name ?: ""
-//            }
-//        )
 
     private val eventFormat =
         if (eventData?.format?.value == null && !eventData?.format?.custom.isNullOrEmpty()) {
@@ -90,12 +87,16 @@ class EventDetailActionItem(
                 isInvisible = !canShowDate
                 tvRequestsDate.text = eventDate
             }
-            //tvDescription.text = eventData?.description
 
-            markWon(viewBinding.root.context).setMarkdown(
-                tvDescription,
-                eventData?.description ?: ""
-            )
+            tvDescription.apply {
+                isCanExpand = false
+                originalText = getMarkdownFormattedText(root.context, eventData?.description)
+                limitedMaxLines = 4
+                expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
+                onExpandClick = {
+                    showEventDescriptionDialog(context)
+                }
+            }
 
             formatLn.isVisible = !eventFormat.name.isNullOrEmpty()
             tvFormat.text = eventFormat.name
@@ -118,13 +119,13 @@ class EventDetailActionItem(
             decorActionButton(eventData, btnEventAction)
         }
 
-        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                viewHeight = viewBinding.root.height
-            }
-        })
+//        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+//            ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                viewHeight = viewBinding.root.height
+//            }
+//        })
     }
 
     private fun decorActionButton(eventNew: EventNew?, btnAction: Button) {
@@ -219,12 +220,13 @@ class EventDetailActionItem(
         }
     }
 
+    private fun showEventDescriptionDialog(context: Context){
+        EventDescriptionBottomSheet(context, eventData?.name, eventData?.description).show()
+    }
+
     private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
-        if (this == false) {
-            hasLevel()
-        } else {
-            clickListener.onShowUpdateState()
-        }
+        if (this == false) hasLevel()
+        else clickListener.onShowUpdateState()
     }
 
     override fun bind(
@@ -269,8 +271,20 @@ class EventDetailActionItem(
         return days
     }
 
-    fun viewHeight(): Int {
-        return this.viewHeight
+    private fun getMarkdownFormattedText(
+        context: Context,
+        description: String?
+    ): SpannableStringBuilder {
+        val spanned = markWon(context).toMarkdown(description ?: "")
+        return SpannableStringBuilder(spanned).apply {
+            val urls = getSpans<URLSpan>()
+            urls.forEach {
+                val start = getSpanStart(it)
+                val end = getSpanEnd(it)
+                removeSpan(it)
+                set(start..end, URLSpanNoUnderline(it.url))
+            }
+        }
     }
 
 }

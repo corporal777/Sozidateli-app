@@ -30,7 +30,6 @@ class EventDetailImageItem(
     }
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
-
         viewBinding.apply {
             tvTitle.text = name
             tvDate.text = date

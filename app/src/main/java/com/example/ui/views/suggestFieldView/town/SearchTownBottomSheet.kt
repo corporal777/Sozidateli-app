@@ -89,9 +89,9 @@ class SearchTownBottomSheet(
         if (list.isEmpty()){
             groupAdapter.updateItem(
                 when (presenter.type) {
-                    "event" -> SearchEmptyItem("В городах выбранного региона мероприятия не проводятся")
-                    "user" -> SearchEmptyItem("В городах выбранного региона пользователей нет")
-                    else -> SearchEmptyItem("В городах выбранного региона организаций не зарегистрировано")
+                    "event" -> SearchEmptyItem("В населенных пунктах выбранного региона мероприятия не проводятся")
+                    "user" -> SearchEmptyItem("В населенных пунктах выбранного региона пользователей нет")
+                    else -> SearchEmptyItem("В населенных пунктах выбранного региона организаций не зарегистрировано")
                 }
             )
         } else {

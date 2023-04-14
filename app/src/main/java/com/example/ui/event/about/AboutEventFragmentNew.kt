@@ -2,10 +2,12 @@ package com.example.ui.event.about
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
+import android.view.WindowInsetsController
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
@@ -17,9 +19,7 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentAboutEventNewBinding
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.findItemBy
+import com.example.extensions.*
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragmentNew
@@ -91,7 +91,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
 
     private val onActionClickListener = object : EventDetailActionItem.OnActionClickListener {
-        override fun onActionRegister() { mPresenter.onGoToEventClick() }
+        override fun onActionRegister() = mPresenter.onGoToEventClick()
         override fun onActionCancel() = mPresenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
@@ -129,12 +129,14 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                     mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
                 }
             }
-
-            ivShare.setOnClickListener(mPresenter::onShareClick)
-            ivBack.setOnClickListener(findNavController()::navigateUp)
-            btnAddToCalendar.setOnClickListener {
-                mPresenter.onAddEventToCalendarClick()
+            toolbar.apply {
+                ivShare.setOnClickListener(mPresenter::onShareClick)
+                ivBack.setOnClickListener(findNavController()::navigateUp)
+                btnAddToCalendar.setOnClickListener {
+                    mPresenter.onAddEventToCalendarClick()
+                }
             }
+
             swipeToRefresh.apply {
                 setProgressViewOffset(
                     true,
@@ -166,30 +168,26 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                 EventDetailActionItem(eventData.event, onActionClickListener)
             )
         )
-        eventOrganizationSection.update(
-            listOf(
-                EventDetailInfoBlock(
-                    eventData.event.binds?.organization,
-                    { mPresenter.onAddOrganizationToFavoriteClick() },
-                    { mPresenter.onOrganizationClick(it) },
-                    getString(R.string.information),
-                    eventData.event.address?.fullValue,
-                    eventData.event.binds?.page,
-                    { mPresenter.onMapPageSelected() },
-                    { mPresenter.onPageClick(it) }
-                )
+        eventOrganizationSection.updateGroup(
+            EventDetailInfoBlock(
+                eventData.event.binds?.organization,
+                { mPresenter.onAddOrganizationToFavoriteClick() },
+                { mPresenter.onOrganizationClick(it) },
+                getString(R.string.information),
+                eventData.event.address?.fullValue,
+                eventData.event.binds?.page,
+                { mPresenter.onMapPageSelected() },
+                { mPresenter.onPageClick(it) }
             )
         )
 
         if (!eventData.speakers.isNullOrEmpty()) {
-            eventSpeakersSection.update(
-                listOf(
-                    SpeakersHorizontalListItem(
-                        eventData.speakers,
-                        eventData.showMoreSpeakers,
-                        { mPresenter.onSpeakerClick(it) },
-                        { mPresenter.onShowAllSpeakersClick() }),
-                )
+            eventSpeakersSection.updateItem(
+                SpeakersHorizontalListItem(
+                    eventData.speakers,
+                    eventData.showMoreSpeakers,
+                    { mPresenter.onSpeakerClick(it) },
+                    { mPresenter.onShowAllSpeakersClick() })
             )
         }
 
@@ -355,8 +353,9 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     private fun decorEventFavoriteButton(isSubscribed: Boolean) {
-        mBinding.ivAddToFavorite.apply {
-            setActionAlternative(!isSubscribed)
+        mBinding.toolbar.ivAddToFavorite.apply {
+            if (!isSubscribed) setImageResource(R.drawable.ic_star)
+            else setImageResource(R.drawable.ic_star_filled)
             setOnClickListener {
                 mPresenter.onAddEventToFavoriteClick()
             }
@@ -394,62 +393,20 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         }
     }
 
-    private fun setBlackIcons(value : Int) {
-        mBinding.apply {
-            ivAddToFavorite.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
-            ivShare.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
-            ivBack.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
-            btnAddToCalendar.apply {
-                setTextColor(Color.BLACK)
-                background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.custom_btn_add_to_calendar_background_black
-                )
-            }
-            requireActivity().window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-
-    }
-
-    private fun setWhiteIcons() {
-        mBinding.apply {
-            requireActivity().window.decorView.systemUiVisibility = 0
-            btnAddToCalendar.apply {
-                setTextColor(Color.WHITE)
-                background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.custom_btn_add_to_calendar_background
-                )
-            }
-            ivAddToFavorite.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.white)
-            ivShare.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.white)
-            ivBack.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.white)
-        }
-
-    }
-
     override fun updateAppBarBackgroundColorValue(value: Int) {
         Log.e("OFFSET", value.toString())
 
-        mBinding.apply {
-            if (value <= 0) {
-                tbBackground.alpha = 0f
-            } else {
-                tbBackground.apply {
-                    alpha = abs(value / (1450).toFloat())
-                }
-                if (value >= 1450) appBar.changeAppBarElevation(abs(value / 100f))
-                else appBar.changeAppBarElevation(0f)
+        mBinding.toolbar.apply {
+            if (value <= 0) tbBackground.alpha = 0f
+            else {
+                tbBackground.apply { alpha = abs(value / (1450).toFloat()) }
+                if (value >= 1450) mBinding.appBar.changeAppBarElevation(abs(value / 100f))
+                else mBinding.appBar.changeAppBarElevation(0f)
 
-                if (value >= 740) setBlackIcons(value)
-                else setWhiteIcons()
+                requireActivity().window.apply {
+                    if (value >= 740) decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    else decorView.systemUiVisibility = 0
+                }
             }
         }
     }

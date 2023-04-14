@@ -1061,6 +1061,7 @@
 
     </fragment>
 
+
     <fragment
         android:id="@+id/fragment_map_new"
         android:name="com.example.ui.event.location.map.redesign.MapFragmentNew"
