@@ -31,12 +31,6 @@ class SimpleNotificationItemNew(
     override fun bind(viewBinding: ItemNotificationSimpleNewBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.apply {
-            this.root.doOnLayout {
-                if (!notification.wasRead && !getReadMoreView(viewBinding).isVisible) {
-                    listener.onReadListener(notification.id)
-                }
-            }
-
             btnMarkAsRead.apply {
                 if (notification.wasRead) {
                     isEnabled = false

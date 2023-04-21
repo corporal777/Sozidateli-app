@@ -170,3 +170,9 @@ data class NotificationEventInfo(
     val link: String?
 ) : Parcelable
 
+@Parcelize
+data class UnacceptedInviteNotification(
+    @SerializedName("unacceptedInvitations")
+    val unAcceptedInvites: Int
+) : Parcelable
+

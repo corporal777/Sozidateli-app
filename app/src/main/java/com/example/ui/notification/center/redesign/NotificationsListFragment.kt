@@ -17,12 +17,13 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.center.NotificationsFragmentDirections
+import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
 import com.example.ui.notification.center.redesign.items.NotificationItemNew
 import com.example.ui.notification.center.redesign.items.NotificationsItemsGroup
 import com.example.ui.notification.center.redesign.items.NotificationsTagsItem
-import com.example.ui.notification.center.redesign.types.NotificationTypeFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
@@ -30,7 +31,6 @@ import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -49,31 +49,16 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
 
     private val onNotificationListener = object : NotificationItemNew.OnNotificationActionListener {
-
         override fun onOpenEventClickListener(eventId: String) = showAboutEvent(eventId)
         override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
         override fun onRateClickListener(rateId: String) = presenter.onNotificationRateClick(rateId)
-
-        override fun onReadListener(id: Int) {
-            if (mBinding.notificationsList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                presenter.onNotificationRead(id)
-            }
-        }
-
-        override fun onLinkClickListener(url: String) {
-            if (url.contains("/organization/")) {
-                showAboutOrganization(Uri.parse(url).lastPathSegment)
-            } else presenter.onNotificationUrlClick(url)
-        }
-
-
+        override fun onLinkClickListener(url: String) = presenter.onNotificationUrlClick(url)
         override fun onAcceptClickListener(notification: Notification, isAccept: Boolean) {
             presenter.apply {
                 if (isAccept) onNotificationAcceptClick(notification)
                 else onNotificationCancelClick(notification)
             }
         }
-
     }
 
     private val tagsSection = Section()
@@ -102,23 +87,15 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
             btnReadAll.setOnClickListener {
                 presenter.onReadAllNotificationsClick()
             }
-//            btnShowNotRead.setOnCheckedChangeListener { _, isChecked ->
-//                //presenter.showOnlyNotRead(isChecked)
-//            }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
     override fun setNotReadButtonEnabled(enabled: Boolean) {
-//        mBinding.btnShowNotRead.apply {
-//            isEnabled = enabled
-//            alpha = if (enabled) 1.0f
-//            else 0.5f
-//        }
         mBinding.btnReadAll.isVisible = enabled
     }
 
-    override fun setData(notifications: List<Notification?>) {
+    override fun setPlaceholder(notifications: List<Notification?>) {
         notificationsSection.update(notifications.map {
             PlaceholderItem(PlaceholderItem.Type.NOTIFICATIONS_LIST)
         })
@@ -147,14 +124,15 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
 
     override fun showAboutEvent(eventId: String) {
-        findNavController().navigate(
-            NotificationsFragmentDirections.notificationToAboutEventFragment(
-                eventId
+        if (!eventId.isNullOrEmpty()){
+            findNavController().navigate(
+                R.id.about_event_fragment_new,
+                AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
             )
-        )
+        }
     }
 
-    private fun showAboutOrganization(id: String?) {
+    override fun showAboutOrganization(id: String?) {
         findNavController().navigate(
             R.id.organization_fragment_new,
             bundleOf("organizationId" to id)
@@ -162,10 +140,18 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     private fun showNotificationsType(type: NotificationType) {
-        findNavController().navigate(
-            R.id.notification_type_fragment,
-            NotificationTypeFragmentArgs.Builder(type).build().toBundle()
-        )
+        when(type){
+            NotificationType.SYSTEM -> findNavController().navigate(R.id.system_notifications_fragment)
+            NotificationType.PROJECTS -> findNavController().navigate(R.id.project_notifications_fragment)
+            NotificationType.EVENTS -> findNavController().navigate(R.id.event_notifications_fragment)
+            NotificationType.ORGANIZER -> findNavController().navigate(R.id.organizer_notifications_fragment)
+            NotificationType.ESTIMATES -> findNavController().navigate(R.id.evaluate_notifications_fragment)
+        }
+    }
+
+    override fun showInvitesBottomSheet() {
+        val inviteNotifications = InviteNotificationsBottomSheet(null)
+        inviteNotifications.show(requireActivity().supportFragmentManager, "invitesDialog")
     }
 
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
@@ -179,7 +165,6 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
 
 
     fun smoothScrollToFirstItem() {
-
         val mLayoutManager =
             mBinding.notificationsList.layoutManager as LinearLayoutManagerAccurateOffset
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)

@@ -62,7 +62,7 @@ class RecommendationsPresenter
         viewState.setData(List(10) { null }, null)
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false)
+        }.buildList(enablePlaceholders = false, initialSize = 30)
 
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()

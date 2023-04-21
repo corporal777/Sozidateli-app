@@ -38,13 +38,11 @@ class MyEventsPresenterNew
     lateinit var mEventStateFilter: MyEventsFilter
     private var mSearchFilter = SearchFilter.EventNew()
     private var isFirstAttach = true
-    private var isFirstLaunch = true
     private var mSearchText = ""
 
     private var isCommonDataLoaded = false
 
-    private val pagination: PaginationDataSourceFactory<EventNew?> =
-        PaginationDataSourceFactory(::getPaginationRequest)
+    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
     private lateinit var paginationList: PaginationList<EventNew?>
 
     override fun attachView(view: MyEventsContractNew.View?) {
@@ -55,25 +53,23 @@ class MyEventsPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getEventsData(true, SHIMMER_LOADING)
-        getFiltersData()
         compositeDisposable += eventRepository.getUserCalendarEvents()
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                val list =
-                    it?.filter { x -> x.binds?.activity?.any { z -> z.binds?.userCalendar != null } == true }
+                val list = it?.filter { x -> x.binds?.activity?.any { z -> z.binds?.userCalendar != null } == true }
                 viewState.setShowMyScheduleButton(!list.isNullOrEmpty())
             }
+
+        paginationList = pagination.applyErrorHandler {
+            if (it.cause is UnknownHostException) hasNoConnectionError = true
+        }.buildList(enablePlaceholders = false, initialSize = 30)
+
+        getFiltersData()
+        getEventsData(true, SHIMMER_LOADING)
     }
 
     private fun getEventsData(isFirst : Boolean, loading : Int) {
         if (loading == 0) viewState.setData(List(5) { null })
-        paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException)
-                hasNoConnectionError = true
-        }
-            .buildList(enablePlaceholders = false)
-
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
             .let {
@@ -86,32 +82,14 @@ class MyEventsPresenterNew
                     viewState.showEmptyListPlaceholder(isFirst)
                 },
                 onNext = { eventList ->
-                    if (eventList.isEmpty()) {
-                        viewState.showEmptyListPlaceholder(isFirst)
-                    } else {
-                        Log.e("EventList size: ", eventList.size.toString())
-                        viewState.apply {
-                            setData(eventList)
-                        }
-                    }
-
+                    if (eventList.isEmpty()) viewState.showEmptyListPlaceholder(isFirst)
+                    else viewState.setData(eventList)
                 })
-
-        compositeDisposable += connectivity
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (hasNoConnectionError && it) {
-                    hasNoConnectionError = false
-                    paginationList.invalidate()
-                }
-            }
     }
 
     private fun getFiltersData() {
         val loadInterests = userRepository.getInterestsList(null)
-            .map { interests ->
-                interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } }
-            }
+            .map { interests -> interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } } }
         compositeDisposable += Maybe.zip(loadInterests,
             eventRepository.getEventFormatsList(
                 mapOf(
@@ -196,7 +174,7 @@ class MyEventsPresenterNew
     ): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getSortedEventsList(
             mutableMapOf<String, Any>().apply {
-                put(EventNew.EVENT_LIMIT, 30)
+                put(EventNew.EVENT_LIMIT, limit)
                 put(EventNew.EVENT_OFFSET, offset)
                 put(
                     EventNew.EVENT_BINDS,
@@ -206,10 +184,7 @@ class MyEventsPresenterNew
                 put(EventNew.EVENT_USER_ID, appData.getId())
                 //put(EventNew.EVENT_SORT_TYPE, "desc")
                 //put(EventNew.EVENT_SORT_FIELD, "id")
-                put(
-                    EventNew.EVENT_STATUS,
-                    "cancelled,registration,registrationFinished,running,finished"
-                )
+                put(EventNew.EVENT_STATUS, "cancelled,registration,registrationFinished,running,finished")
                 put(
                     EventNew.EVENT_USER_STATUS, when (mEventStateFilter) {
                         MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED
@@ -260,10 +235,6 @@ class MyEventsPresenterNew
 
     }
 
-    private fun <T> Observable<T>.setLoading(isFirst: Boolean): Observable<T> {
-        return if (isFirst) withProgressBarLoadingDialog(viewState)
-        else withCustomProgressBarLoadingDialog(viewState)
-    }
 
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)
 

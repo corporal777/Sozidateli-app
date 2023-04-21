@@ -24,7 +24,9 @@ import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.items.*
+import com.example.ui.event.activities.ActivitiesFragmentArgs
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
+import com.example.ui.event.location.map.redesign.MapFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
@@ -91,7 +93,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
 
     private val onActionClickListener = object : EventDetailActionItem.OnActionClickListener {
-        override fun onActionRegister() = mPresenter.onGoToEventClick()
+        override fun onActionRegister() = mPresenter.onActionRegister()
         override fun onActionCancel() = mPresenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
@@ -163,9 +165,10 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                     eventData.event.holdingDate?.from,
                     eventData.event.holdingDate?.to,
                     eventData.event.image?.uri,
-                    eventData.event.backgroundColor?.value
+                    eventData.event.backgroundColor?.value,
+                    eventData.event.requestsApply
                 ),
-                EventDetailActionItem(eventData.event, onActionClickListener)
+                EventDetailActionItem(requireContext(), eventData.event, onActionClickListener)
             )
         )
         eventOrganizationSection.updateGroup(
@@ -223,13 +226,11 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         eventPartnersSection.update(
             eventData.partners.map {
                 EventPartnerItem(
-                    it.id ?: 0,
+                    it.id,
                     it.name,
                     it.description,
                     it.logo?.uri ?: it.image?.uri
-                ) { id ->
-                    mPresenter.onPartnerClick(id)
-                }
+                ) { id -> mPresenter.onPartnerClick(id) }
             }
         )
         groupAdapter.notifyDataSetChanged()
@@ -267,27 +268,20 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     override fun showEventActivities(eventId: String, listTags: List<NewTags>) {
-        findNavController().navigate(
-            AboutEventFragmentNewDirections.actionAboutEventFragmentToActivitiesFragment(
-                eventId.toInt()
-            )
-                .setTags(listTags.toTypedArray())
-        )
+        val args = ActivitiesFragmentArgs.Builder(eventId.toInt())
+            .setTags(listTags.toTypedArray())
+            .build().toBundle()
+        findNavController().navigate(R.id.activitiesFragment, args)
     }
 
     override fun showSpeakerProfile(speakerId: Int, eventId: String) {
-        findNavController().navigate(
-            R.id.user_speaker_fragment,
-            UserSpeakerFragmentArgs.Builder(speakerId.toString(), eventId).build().toBundle()
-        )
+        val args = UserSpeakerFragmentArgs.Builder(speakerId.toString(), eventId).build().toBundle()
+        findNavController().navigate(R.id.user_speaker_fragment, args)
     }
 
     override fun showMap(mapInfo: MapInfo?) {
-        findNavController().navigate(
-            AboutEventFragmentNewDirections.actionAboutEventFragmentNewToMapFragmentNew(
-                mapInfo
-            )
-        )
+        val args = MapFragmentNewArgs.Builder(mapInfo).build().toBundle()
+        findNavController().navigate(R.id.fragment_map_new, args)
     }
 
     override fun showShare(eventId: String) {
@@ -404,7 +398,8 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                 else mBinding.appBar.changeAppBarElevation(0f)
 
                 requireActivity().window.apply {
-                    if (value >= 740) decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    if (value >= 740) decorView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     else decorView.systemUiVisibility = 0
                 }
             }

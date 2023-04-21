@@ -57,6 +57,12 @@ data class EventNew(
     val destinationScheme: List<String>? = null
 ) : Parcelable {
 
+    fun getEventFormat(): EventFormat {
+        return if (format?.value == null && !format?.custom.isNullOrEmpty())
+            EventFormat(name = format?.custom ?: "")
+        else EventFormat(binds?.format?.id ?: 0, binds?.format?.name ?: "")
+    }
+
     companion object {
         const val EVENT_SORT_FIELD = "sortField"
         const val EVENT_SORT_TYPE = "sortType"

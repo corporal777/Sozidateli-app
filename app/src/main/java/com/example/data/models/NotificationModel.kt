@@ -31,6 +31,9 @@ data class NotificationModel (
                 const val NOTIFICATION_EVENT_ID = "entityId"
                 const val NOTIFICATION_ACKNOWLEDGED = "acknowledged"
                 const val NOTIFICATION_IS_IN_APP = "isInApp"
+
+                const val NOTIFICATION_IS_INVITE = "isInvite"
+                const val NOTIFICATION_TYPE = "type"
          }
 }
 

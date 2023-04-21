@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.util.Log
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
@@ -260,13 +261,14 @@ class EventRepositoryImp
     override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         newApi.getEventsList(map)
             .map {
-                val eventFormats = appData.getEventFormats()
-                if (!eventFormats.isNullOrEmpty()) {
-                    it.data?.forEach { ev ->
-                        ev?.format?.name =
-                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
-                    }
-                }
+//                val eventFormats = appData.getEventFormats()
+//                if (!eventFormats.isNullOrEmpty()) {
+//                    it.data?.forEachIndexed { index, ev ->
+//                        ev?.format?.name =
+//                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+//                    }
+//
+//                }
                 PaginationResponse(it.totalCount, it.data ?: arrayListOf())
             }
 

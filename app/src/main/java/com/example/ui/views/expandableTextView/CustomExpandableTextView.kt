@@ -29,6 +29,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
 import com.example.extensions.dp
+import com.example.extensions.substringToWholeWord
 import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
 import com.example.util.markWon
@@ -199,22 +200,17 @@ class CustomExpandableTextView : AppCompatTextView {
     private fun resolveDisplayedText(staticLayout: StaticLayout): CharSequence? {
         val truncatedTextWithoutCta = staticLayout.text
         if (truncatedTextWithoutCta.toString() != originalText.toString()) {
-            val totalTextWidthWithoutCta =
-                (0 until staticLayout.lineCount).sumOf { staticLayout.getLineWidth(it).toInt() }
-            val totalTextWidthWithCta =
-                totalTextWidthWithoutCta - expandActionStaticLayout!!.getLineWidth(0)
-            val textWithoutCta =
-                TextUtils.ellipsize(originalText, paint, totalTextWidthWithCta, END)
+            val totalTextWidthWithoutCta = (0 until staticLayout.lineCount).sumOf { staticLayout.getLineWidth(it).toInt() }
+            val totalTextWidthWithCta = totalTextWidthWithoutCta - expandActionStaticLayout!!.getLineWidth(0)
+            val textWithoutCta = TextUtils.ellipsize(originalText, paint, totalTextWidthWithCta.toFloat(), END)
+
             val defaultEllipsisStart = textWithoutCta.indexOf(Typography.ellipsis)
             if (textWithoutCta == "") return expandActionStaticLayout!!.text
-            if (defaultEllipsisStart == -1) {
-                return truncatedTextWithoutCta
-            }
+            if (defaultEllipsisStart == -1) return truncatedTextWithoutCta
 
             return SpannableStringBuilder(textWithoutCta).append(expandActionSpannable)
         } else return originalText
     }
-
 
     private fun updateCollapsedDisplayedText(
         ctaChanged: Boolean,
@@ -222,8 +218,9 @@ class CustomExpandableTextView : AppCompatTextView {
     ) {
         if (textWidth <= 0) return
         val collapsedStaticLayout = getStaticLayout(limitedMaxLines, originalText, textWidth)
-        if (ctaChanged) expandActionStaticLayout =
-            getStaticLayout(1, expandActionSpannable, textWidth)
+        if (ctaChanged)
+            expandActionStaticLayout = getStaticLayout(1, expandActionSpannable, textWidth)
+
 
         collapsedDisplayedText = resolveDisplayedText(collapsedStaticLayout)
         text = collapsedDisplayedText
@@ -258,11 +255,6 @@ class CustomExpandableTextView : AppCompatTextView {
                 textWidth.coerceAtLeast(0)
             )
         }
-    }
-
-
-    interface TextStateListener {
-        fun onChangeState(isCollapsed: Boolean)
     }
 
 }

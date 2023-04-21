@@ -2,6 +2,7 @@ package com.example.ui.notification.center.redesign
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.BaseContract
@@ -11,7 +12,7 @@ interface NotificationsListContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(notifications: List<Notification?>)
+        fun setPlaceholder(notifications: List<Notification?>)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setDataNew(notifications: Map<String, List<Notification>>)
@@ -29,7 +30,13 @@ interface NotificationsListContract {
         fun showAboutEvent(eventId: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showAboutOrganization(id: String?)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setNotReadButtonEnabled(enabled: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showInvitesBottomSheet()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -40,7 +47,6 @@ interface NotificationsListContract {
         fun onNotificationAcceptClick(notification: Notification)
         fun onNotificationCancelClick(notification: Notification)
         fun onNotificationRateClick(eventId: String)
-        fun showOnlyNotRead(show: Boolean)
         fun onReadAllNotificationsClick()
     }
 }

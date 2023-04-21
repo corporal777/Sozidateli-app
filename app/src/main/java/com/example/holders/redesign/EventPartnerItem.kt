@@ -8,12 +8,12 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 
 class EventPartnerItem(
-    val id: Int,
+    val id: Int?,
     val name: String?,
     val title: String?,
     val image: String?,
-    val onPartnerClick: (id : Int) -> Unit
-) : BindableItem<ItemPartnerBinding>(id.toLong()) {
+    val onPartnerClick: (id: Int) -> Unit
+) : BindableItem<ItemPartnerBinding>(id?.toLong() ?: 0) {
 
 
     override fun bind(viewBinding: ItemPartnerBinding, position: Int) {
@@ -28,9 +28,8 @@ class EventPartnerItem(
             ivPartnerImage.setImage(image)
 
             root.setOnClickListener {
-               onPartnerClick(id)
+                if (id != null) onPartnerClick(id)
             }
-
         }
     }
 

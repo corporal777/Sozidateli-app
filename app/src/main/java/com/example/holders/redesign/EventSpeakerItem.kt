@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemSpeakerNewBinding
+import com.example.ui.event.about.items.EventDetailActionItem
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
@@ -21,14 +22,11 @@ class EventSpeakerItem(
 
     override fun bind(viewBinding: ItemSpeakerNewBinding, position: Int) {
         viewBinding.apply {
-
             ivSpeakerImage.setImage(image, error = R.drawable.empty_speaker_avatar)
             tvSpeakersName.text = name
-
             root.setOnClickListener {
                 onItemClick(id)
             }
-
             decorSpeakerStatus(status, ivSpeakerStatus)
         }
     }
@@ -41,18 +39,14 @@ class EventSpeakerItem(
         if (isRegistered) {
             when (status) {
                 "pending" -> {
-                    if (isRegistered) {
-                        visibility = true
-                        mIcon = R.drawable.ic_speaker_status_pending
-                        mText =
-                            "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
-                    }
+                    visibility = true
+                    mIcon = R.drawable.ic_speaker_status_pending
+                    mText = "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                 }
                 "approved" -> {
                     visibility = true
                     mIcon = R.drawable.ic_speaker_status_confirmed
-                    mText =
-                        "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                    mText = "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                 }
                 else -> visibility = false
             }
@@ -69,6 +63,16 @@ class EventSpeakerItem(
                 MessageDialogWithBrownButton(context, mText)
             }
         }
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is EventSpeakerItem) return false
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (image != other.image) return false
+        if (status != other.status) return false
+        if (isRegistered != other.isRegistered) return false
+        return true
     }
 
 

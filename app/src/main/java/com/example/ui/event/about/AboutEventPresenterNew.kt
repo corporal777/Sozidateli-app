@@ -1,5 +1,6 @@
 package com.example.ui.event.about
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
@@ -123,9 +124,8 @@ class AboutEventPresenterNew
             }
     }
 
-    override fun onShowEventActivitiesClick() {
-        viewState.showEventActivities(eventId, emptyList())
-    }
+    override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
+
 
     override fun onAddEventToFavoriteClick() {
         if (event?.event?.binds?.userFavorite != null) {
@@ -183,12 +183,6 @@ class AboutEventPresenterNew
 
     override fun onPartnerClick(partner: Int) {
         viewState.showPartner(eventId, partner.toString())
-    }
-
-    override fun onGoToEventClick() {
-        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
-            viewState.showEventRequest(eventId)
-        }
     }
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
@@ -276,6 +270,12 @@ class AboutEventPresenterNew
         }
     }
 
+    override fun onActionRegister() {
+        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
+            viewState.showEventRequest(eventId)
+        }
+    }
+
     override fun onActionCancel() {
         compositeDisposable += eventRepository.cancelRegisterToEvent(
             event?.event?.binds?.currentUserRegistration?.id ?: 0
@@ -285,6 +285,9 @@ class AboutEventPresenterNew
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
+
+                val actions = it.event.binds?.eventRegistrationState?.availableActions
+                Log.e("ACTIONS", actions?.firstOrNull()?:"null")
             }
     }
 

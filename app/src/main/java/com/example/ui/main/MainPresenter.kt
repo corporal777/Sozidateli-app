@@ -619,11 +619,6 @@ class MainPresenter
                 it.printStackTrace()
                 appData.notificationsCount = 0
             })
-        /*return userRepository.getFcmToken()
-                .flatMapCompletable { userRepository.notificationsRegister(it.token) }
-                .doOnComplete { appData.isSubscribedToPush = true }
-                .doOnError { appData.isSubscribedToPush = false }
-                .onErrorComplete()*/
     }
 
     private fun subscribeChatUnreadCount() {

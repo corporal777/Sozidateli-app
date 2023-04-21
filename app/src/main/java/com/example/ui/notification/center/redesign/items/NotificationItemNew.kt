@@ -58,7 +58,7 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     private val isMessageLong = isMessageTooLong(context, notification.message)
     private val fullMessage = fullMarkdownText(context, notification.message)
     private val shortMessage = ellipsizeMarkdownText(context, notification.message)
-    private var actualMessage = SpannableStringBuilder()
+    private var actualMessage : SpannableStringBuilder? = null
 
     init {
         actualMessage = if (isMessageLong) shortMessage
@@ -76,18 +76,6 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
                 text = getNotificationTitle(this)
                 highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
                 movementMethod = LinkMovementMethod.getInstance()
-//                text = context.resources.getString(
-//                    R.string.notification_event_title,
-//                    "<br><br><a href=" + notification.eventInfo?.link + " target=_blank>«" + notification.eventInfo?.name + "»</a>"
-//                ).parseAsHtml()
-//                BetterLinkMovementMethod.linkifyHtml(this)
-//                    .setOnLinkClickListener { _, url ->
-//                        if (notification.eventId != null) {
-//                            listener.onOpenEventClickListener(notification.eventId.toString())
-//                        }
-//                        true
-//                    }
-//                removeUrlUnderline()
             } else {
                 if (notification.notificationMainType.contentEquals(resources.getString(R.string.notifications_simple_title))) {
                     text = resources.getString(R.string.notifications_simple_title)
@@ -132,9 +120,8 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
 
     private fun View.changeTextReadMore(isExpanded: Boolean) {
         (this as TextView).apply {
-            if (isExpanded) {
-                text = context.getString(R.string.hide_all_sessions_history)
-            } else text = context.getString(R.string.notifications_read_more)
+            if (isExpanded) text = context.getString(R.string.hide_all_sessions_history)
+            else text = context.getString(R.string.notifications_read_more)
         }
     }
 
@@ -148,18 +135,16 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
 
 
     private fun isMessageTooLong(context: Context, message: String?): Boolean {
-        return if (message.isNullOrEmpty()) {
-            false
-        } else {
+        return if (message.isNullOrEmpty()) false
+        else {
             val spanned = markWon(context).toMarkdown(message)
             spanned.length > 240
         }
     }
 
-    private fun ellipsizeMarkdownText(context: Context, message: String?): SpannableStringBuilder {
-        if (message.isNullOrBlank() || !isMessageLong) {
-            return SpannableStringBuilder("")
-        } else {
+    private fun ellipsizeMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
+        if (message.isNullOrBlank() || !isMessageLong) return null
+        else {
             val spanned = markWon(context).toMarkdown(message)
             val ellipsizedSpan =
                 SpannableStringBuilder(spanned.subSequence(0, 240)).append('.').append('.')
@@ -177,12 +162,11 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         }
     }
 
-    private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder {
-        return if (message.isNullOrBlank()) {
-            SpannableStringBuilder("")
-        } else {
-            val spanned = markWon(context).toMarkdown(message ?: "")
-            SpannableStringBuilder(spanned).apply {
+    private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
+         if (message.isNullOrBlank()) return null
+         else {
+            val spanned = markWon(context).toMarkdown(message)
+             return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {
                     val start = getSpanStart(it)
@@ -194,22 +178,24 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         }
     }
 
-    private fun getNotificationTitle(textView : TextView): SpannableStringBuilder {
-        val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
-        val eventName = CustomSpannableString(notification.eventInfo?.name).apply {
-            setClickSpan(textView){
-                if (notification.eventId != null) {
-                    listener.onOpenEventClickListener(notification.eventId.toString())
+    private fun getNotificationTitle(textView : TextView): SpannableStringBuilder? {
+        if (notification.eventInfo?.name.isNullOrEmpty()) return null
+        else {
+            val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
+            val eventName = CustomSpannableString(notification.eventInfo?.name).apply {
+                setClickSpan(textView){
+                    if (notification.eventId != null) {
+                        listener.onOpenEventClickListener(notification.eventId.toString())
+                    }
                 }
+                setColorSpan(R.color.main_brown_color_new, textView.context)
             }
-            setColorSpan(R.color.main_brown_color_new, textView.context)
+            return notificationTitle.append("\n").append(eventName)
         }
-        return notificationTitle.append("\n").append(eventName)
     }
 
     interface OnNotificationActionListener {
         fun onReadClickListener(id: Int)
-        fun onReadListener(id: Int)
         fun onRateClickListener(rateId: String)
         fun onLinkClickListener(url: String)
         fun onOpenEventClickListener(eventId: String)

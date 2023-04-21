@@ -138,8 +138,9 @@ class SearchUserPresenter
 
             if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
 
-            val interest = filter.spec ?: filter.theme
-            if (interest != null) put(FILTER_INTEREST, interest)
+            //new interests filter
+            if (filter.theme != null) put(SEARCH_THEME, filter.theme!!)
+            if (filter.spec != null) put(SEARCH_SPEC, filter.spec!!)
 
             //new age filter
             if (filter.ageFrom != null) put(SEARCH_AGE_FROM, filter.ageFrom!!)
@@ -206,6 +207,9 @@ class SearchUserPresenter
 
         private const val SEARCH_AGE_FROM = "ageFrom"
         private const val SEARCH_AGE_TO = "ageTo"
+
+        private const val SEARCH_THEME = "themes"
+        private const val SEARCH_SPEC = "specialization"
 
         private const val SEARCH_USER_TYPE = "user"
         private const val SEARCH_USER_BINDS = "userBinds"

@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:descendantFocusability="beforeDescendants"
-                android:paddingBottom="60dp"
+                android:paddingBottom="70dp"
                 tools:listitem="@layout/item_notification_simple_new" />
         </com.example.ui.views.CustomSwipeRefreshLayout>
 

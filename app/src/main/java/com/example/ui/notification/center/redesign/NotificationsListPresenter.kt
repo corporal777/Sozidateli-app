@@ -1,6 +1,7 @@
 package com.example.ui.notification.center.redesign
 
 import android.app.NotificationManager
+import android.net.Uri
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
@@ -13,6 +14,7 @@ import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.notification.center.NotificationsContract
+import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
@@ -36,45 +38,44 @@ class NotificationsListPresenter
     private var firstLaunch = true
     private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
-    private var showOnlyNotRead = false
+
+    private var totalUnread = 0
+    private var totalUnreadInvites = 0
+    private var isHasUnreadNotifications = false
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        userRepository.getNotificationsList(buildParams(limit, offset))
+        userRepository.getUserNotifications(buildParams(limit, offset))
+            .doOnSuccess {
+                totalUnread = it.totalUnread ?: 0
+                totalUnreadInvites = it.totalUnreadInvites ?: 0
+                isHasUnreadNotifications = totalUnread > 0
+            }
+            .map { PaginationResponse(it.totalCount, it.data) }
     }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = false)
+        .buildList(enablePlaceholders = false, initialSize = 30)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (!blockInvalidation) {
-                    pagination.invalidate()
-                }
+                if (!blockInvalidation) pagination.invalidate()
             }
 
         compositeDisposable += appData.notificationReadSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                val id = it.first
-                val state = it.second
-                notifications.find { notification -> notification?.id == id }?.apply {
-                    wasRead = true
-                    acceptState = state
-                    viewState.onNotificationNeedUpdate(id)
-                }
+                if (!blockInvalidation) pagination.invalidate()
             }
+
         loadNotifications()
     }
 
     private fun loadNotifications() {
-        viewState.setData(List(20) { null })
+        viewState.setPlaceholder(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-            .map {
-                notifications = it
-                it.groupBy { x -> x.date?.split(" ")?.get(0) }
-            }
+            .map { it.groupBy { x -> x.date?.split(" ")?.get(0) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
@@ -82,8 +83,7 @@ class NotificationsListPresenter
                     if (!it.isNullOrEmpty()) viewState.setDataNew(it)
                     else viewState.showEmptyListPlaceholder()
 
-                    viewState.setNotReadButtonEnabled(!notifications.filter { x -> x?.wasRead == false }
-                        .isNullOrEmpty())
+                    viewState.setNotReadButtonEnabled(isHasUnreadNotifications)
                 })
     }
 
@@ -94,7 +94,12 @@ class NotificationsListPresenter
     }
 
 
-    override fun onNotificationUrlClick(url: String) = viewState.showUrl(url)
+    override fun onNotificationUrlClick(url: String) {
+        if (url.contains("/organization/")) {
+            viewState.showAboutOrganization(Uri.parse(url).lastPathSegment)
+        } else viewState.showUrl(url)
+    }
+
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
     override fun onRefreshRequest() = pagination.invalidate()
 
@@ -191,30 +196,22 @@ class NotificationsListPresenter
         updateNotification(userRepository.markAsRead(id.toString()), id)
     }
 
-    fun onNotificationRead(id: Int) {
+    override fun onReadAllNotificationsClick() {
         compositeDisposable += Completable.fromAction { blockInvalidation = true }
-            .andThen(userRepository.markAsRead(id.toString()))
+            .andThen(userRepository.markAllNotificationsAsRead(null))
             .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     blockInvalidation = false
-                    it.printStackTrace()
+                    onReceiveError(it)
                 },
-                onComplete = {
+                onSuccess = {
                     blockInvalidation = false
                     pagination.invalidate()
-                    notificationManager.cancel(id)
-                })
-
-    }
-
-    override fun onReadAllNotificationsClick() {
-        compositeDisposable += userRepository.markAllNotificationsAsRead()
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                pagination.invalidate()
-            }
+                    if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet()
+                }
+            )
     }
 
     override fun onNotificationRateClick(eventId: String) {
@@ -236,11 +233,6 @@ class NotificationsListPresenter
                 })
     }
 
-    override fun showOnlyNotRead(show: Boolean) {
-        this.showOnlyNotRead = show
-        loadNotifications()
-        //pagination.invalidate()
-    }
 
     private fun buildParams(limit: Int, offset: Int): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {
@@ -249,7 +241,6 @@ class NotificationsListPresenter
             put(NotificationModel.NOTIFICATION_USER, appData.getId())
             put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
             put(NotificationModel.NOTIFICATION_SORT, "desc")
-            if (showOnlyNotRead) put(NotificationModel.NOTIFICATION_ACKNOWLEDGED, false)
         }
     }
 }

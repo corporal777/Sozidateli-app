@@ -72,13 +72,13 @@ interface AboutEventContractNew {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onGoToEventClick()
         fun onPageClick(page: Int)
         fun onPartnerClick(partner: Int)
         fun onRefreshRequest()
 
         fun onOrganizationClick(organization: String)
 
+        fun onActionRegister()
         fun onActionCancel()
         fun onShareClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)

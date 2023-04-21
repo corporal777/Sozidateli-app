@@ -5,6 +5,7 @@ import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.ui.chat.body.MessageBodyNew
 import com.example.ui.event.registration.items.ProfileFieldsData
+import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -277,6 +278,9 @@ interface NewApi {
     @GET("v1/user-notification")
     fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
 
+    @GET("v1/user-notification")
+    fun getUserNotifications(@QueryMap map: Map<String, Any>): Maybe<NotificationsResponse<NotificationModel>>
+
     @GET("v1/user/password/recover/send")
     fun sendEmailRecovery(@Query("type") type: String, @Query("value") value: String): Maybe<RecoverPasswordResponse>
 
@@ -387,8 +391,17 @@ interface NewApi {
     @PATCH("v1/user-notification/{id}/acknowledge")
     fun markAsRead(@Path("id") notificationId: String): Completable
 
+    //+
     @PATCH("v1/user-notification/{id}/mark-as-read")
-    fun markAllNotificationsAsRead(@Path("id") userId: String): Completable
+    fun markAllNotificationsAsRead(
+        @Path("id") userId: String,
+    ): Maybe<UnacceptedInviteNotification>
+
+    @PATCH("v1/user-notification/{id}/mark-as-read")
+    fun markAllTypeNotificationsAsRead(
+        @Path("id") userId: String,
+        @Query("type") type: String
+    ): Maybe<UnacceptedInviteNotification>
 
     @GET("v1/user-external-invite/assistance/{id}")
     fun getInviteAssistanceDetail(@Path("id") assistanceId: String): Single<InviteDetail>

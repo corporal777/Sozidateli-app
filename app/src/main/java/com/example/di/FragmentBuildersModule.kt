@@ -44,7 +44,12 @@ import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
 import com.example.ui.notification.center.redesign.NotificationsListFragment
-import com.example.ui.notification.center.redesign.types.NotificationTypeFragment
+import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
+import com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment
+import com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment
+import com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment
+import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment
+import com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
 import com.example.ui.organizations.list.OrganizationsFragment
@@ -373,7 +378,22 @@ abstract class FragmentBuildersModule {
     abstract fun contributeInAppNotificationBottomSheetFragment(): InAppNotificationFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeNotificationTypeFragment(): NotificationTypeFragment
+    abstract fun contributeSystemNotificationsFragment(): SystemNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeProjectNotificationsFragment(): ProjectNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventNotificationsFragment(): EventNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeOrganizerNotificationsFragment(): OrganizerNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEvaluateNotificationsFragment(): EvaluateNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeInvitesNotificationsFragment(): InviteNotificationsBottomSheet
 
     @ContributesAndroidInjector
     abstract fun contributeMaxStatusMainInfoFragment(): MaxStatusContactsFragment

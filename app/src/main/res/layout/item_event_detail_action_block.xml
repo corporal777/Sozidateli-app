@@ -14,7 +14,6 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnEventAction"
             style="@style/BtnWhiteGhostStyle"
-            fontPath="fonts/sf_pro_text_bold.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
@@ -28,35 +27,38 @@
 
 
         <TextView
-            android:id="@+id/tvRequestsDate"
+            android:id="@+id/tvCancelRegister"
             fontPath="fonts/sf_pro_text_medium.ttf"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/custom_text_background_selectable"
             android:gravity="center"
             android:letterSpacing="-0.02"
-            android:textColor="@color/white"
+            android:text="@string/change_decision"
+            android:textColor="#CCFFFFFF"
             android:textSize="15sp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnEventAction"
-            tools:text="Заявки принимаются до 7 июля" />
+            tools:visibility="visible" />
 
 
-        <com.example.ui.views.expandableTextView.CustomExpandableTextView
+        <com.example.ui.views.expandableTextView.ExpandableTextView
             android:id="@+id/tvDescription"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:letterSpacing="-0.02"
             android:maxLines="25"
+            android:paddingHorizontal="15dp"
             android:textColor="@color/white"
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/ln"
-            app:layout_constraintTop_toBottomOf="@id/tvRequestsDate"
+            app:layout_constraintTop_toBottomOf="@id/tvCancelRegister"
             app:limitedMaxLines="4"
             tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
 Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. " />

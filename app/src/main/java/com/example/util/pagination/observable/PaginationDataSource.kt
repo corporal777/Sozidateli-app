@@ -23,7 +23,6 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
             callback.onResult(emptyList())
             return
         }
-
         val result = executeRequest(params.loadSize, params.startPosition)
         val data = getDataFromResult(result)
         result?.totalCount?.let { lastTotalCount = it }
@@ -44,12 +43,8 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         var data = getDataFromResult(result)
         val totalCount = result.totalCount
 
-        if (totalCount == null) {
-            callback.onResult(data, startPosition)
-        }
-        else if (data.size < params.requestedLoadSize) {
-            callback.onResult(data, startPosition)
-        }
+        if (totalCount == null) callback.onResult(data, startPosition)
+        else if (data.size < params.requestedLoadSize) callback.onResult(data, startPosition)
         else {
             var dataPosition = startPosition
             if (data.isEmpty() && totalCount > 0) {
@@ -73,7 +68,6 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
 
     private fun executeRequest(limit: Int, offset: Int): PaginationResponse<I>? {
         val request = request.invoke(limit, offset)
-
         return try {
             request.blockingGet()
         } catch (t: Throwable) {

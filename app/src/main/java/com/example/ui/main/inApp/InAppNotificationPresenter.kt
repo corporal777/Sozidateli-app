@@ -124,18 +124,6 @@ class InAppNotificationPresenter
     }
 
 
-    override fun onNotificationRead(id: Int) {
-        compositeDisposable += userRepository.markAsRead(id.toString())
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onComplete = {
-                    notificationManager.cancel(id)
-                })
-    }
-
     private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += request
             .andThen(userRepository.getNotificationDetail(notificationId.toString(),true))

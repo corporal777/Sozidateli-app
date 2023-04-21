@@ -34,7 +34,6 @@ interface InAppNotificationContract {
     interface Presenter : BaseBottomSheetContract.Presenter {
         fun onNotificationUrlClick(url: String)
         fun onNotificationReadClick(id: Int)
-        fun onNotificationRead(id: Int)
         fun onNotificationAcceptClick(notification: Notification)
         fun onNotificationCancelClick(notification: Notification)
         fun onNotificationRateClick(eventId: String)

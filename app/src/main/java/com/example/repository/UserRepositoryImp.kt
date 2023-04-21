@@ -1,11 +1,15 @@
 package com.example.repository
 
 import android.graphics.Bitmap
+import androidx.navigation.fragment.findNavController
+import com.example.R
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
+import com.example.ui.notification.center.redesign.NotificationType
+import com.example.util.pagination.NotificationsResponse
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -159,7 +163,8 @@ class UserRepositoryImp
     override fun getAllUsersSessionsFromCurrentDevice(deviceId: String): Maybe<UserSessions> =
         newApi.getAllUsersSessionsFromCurrentDevice(deviceId, "user")
 
-    override fun deleteUsersDeviceSession(id: Int): Completable = newApi.deleteUsersDeviceSession(id)
+    override fun deleteUsersDeviceSession(id: Int): Completable =
+        newApi.deleteUsersDeviceSession(id)
 
     override fun killAllUsersOtherSessions(): Completable = newApi.killAllUsersOtherSessions()
 
@@ -392,6 +397,17 @@ class UserRepositoryImp
             }
     }
 
+    override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
+        return newApi.getUserNotifications(map).map {
+            NotificationsResponse(
+                it.totalCount,
+                it.data.map { Notification.fromRemoteNotification(it) },
+                it.totalUnreadInvites,
+                it.totalUnread
+            )
+        }
+    }
+
     override fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>> {
         return newApi.getNotifications(map)
             .map { it.data }
@@ -446,14 +462,32 @@ class UserRepositoryImp
     override fun getNotificationDetail(
         notificationId: String,
         loadModel: Boolean
-    ): Single<NotificationModel> =
-        newApi.getNotificationDetail(notificationId, loadModel)
+    ): Single<NotificationModel> = newApi.getNotificationDetail(notificationId, loadModel)
 
-    override fun markAsRead(notificationId: String): Completable =
-        newApi.markAsRead(notificationId)
+    override fun markAsRead(notificationId: String): Completable = newApi.markAsRead(notificationId)
 
-    override fun markAllNotificationsAsRead(): Completable =
-        newApi.markAllNotificationsAsRead(appData.getId().toString())
+    override fun markAllNotificationsAsRead(type: NotificationType?): Maybe<UnacceptedInviteNotification> {
+        return when (type) {
+            NotificationType.PROJECTS -> {
+                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "pgrf")
+            }
+            NotificationType.ORGANIZER -> {
+                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "org")
+            }
+            NotificationType.ESTIMATES -> {
+                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "evaluate")
+            }
+            NotificationType.EVENTS -> {
+                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "event")
+            }
+            NotificationType.SYSTEM -> {
+                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "system")
+            }
+            else -> newApi.markAllNotificationsAsRead(appData.getId().toString())
+        }
+
+    }
+
 
     override fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable =
         newApi.approveOrgMember(orgMemberId, body)
@@ -494,7 +528,7 @@ class UserRepositoryImp
     override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return newApi.searchDataNew(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
-            //.map { it.users }
+        //.map { it.users }
     }
 
     override fun unblockUser(id: Int): Completable {

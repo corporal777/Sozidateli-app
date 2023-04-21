@@ -68,9 +68,6 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
         override fun onOpenEventClickListener(eventId: String) = showAboutEvent(eventId)
         override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
         override fun onRateClickListener(rateId: String) = presenter.onNotificationRateClick(rateId)
-        override fun onReadListener(id: Int){
-            //presenter.onNotificationRead(id)
-        }
 
         override fun onLinkClickListener(url: String) {
             if (url.contains("/organization/")) {

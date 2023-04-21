@@ -1051,14 +1051,6 @@
             android:name="eventId"
             app:argType="string"
             app:nullable="false" />
-        <action
-            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
-            app:destination="@id/activitiesFragment" />
-
-        <action
-            android:id="@+id/action_about_event_fragment_new_to_map_fragment_new"
-            app:destination="@id/fragment_map_new" />
-
     </fragment>
 
 
@@ -1138,15 +1130,25 @@
 
 
     <fragment
-        android:id="@+id/notification_type_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.NotificationTypeFragment">
+        android:id="@+id/system_notifications_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment"/>
 
-        <argument
-            android:name="notificationType"
-            app:argType="com.example.ui.notification.center.redesign.NotificationType"
-            app:nullable="false" />
+    <fragment
+        android:id="@+id/project_notifications_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment"/>
 
-    </fragment>
+    <fragment
+        android:id="@+id/event_notifications_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment"/>
+
+    <fragment
+        android:id="@+id/organizer_notifications_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment"/>
+
+    <fragment
+        android:id="@+id/evaluate_notifications_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment"/>
+
 
     <fragment
         android:id="@+id/destination_scheme_fragment"

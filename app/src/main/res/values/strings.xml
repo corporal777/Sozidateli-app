@@ -37,7 +37,7 @@
     <string name="events_favorites_empty_list_description">Пока Вы не добавили ни одного мероприятия. \nДобавьте мероприятия в избранное, чтобы получать быстрый доступ и следить за их статусами</string>
     <string name="user_favorites_empty_list_description">Пока Вы не добавили ни одного пользователя. \nДобавьте пользователей в избранное, чтобы иметь быстрый доступ к важным для Вас людям</string>
 
-    <string name="event_status_approved">Участие одобрено</string>
+    <string name="event_status_approved">Заявка одобрена</string>
     <string name="event_status_approved_new">Участие подтверждено</string>
     <string name="event_status_wait_confirmation">Заявка на рассмотрении</string>
     <string name="event_status_wait_confirmation_short">На рассмотрении</string>
@@ -134,6 +134,7 @@
     <string name="notifications_state_cancelled">Отклонено</string>
     <string name="notifications_state_disabled">Приглашение было отозвано организаторами.</string>
     <string name="notifications_change_decision">Изменить решение?</string>
+    <string name="change_decision">Изменить решение</string>
     <string name="notifications_rate_event">Оценить мероприятие</string>
     <string name="notifications_simple_title">Уведомление</string>
     <string name="notifications_acceptable_title">Приглашение</string>
@@ -950,6 +951,8 @@
     <string name="browser_label">Браузер</string>
     <string name="no_sub_events_in_schedule">Событий в расписании нет</string>
     <string name="no_data_found">Нет результатов</string>
+
+    <string name="yes_cancel_register">Да, хочу отозвать заявку</string>
 
     <string name="no_event_schedule_you_have">У вас еще нет мероприятий</string>
     <string name="choose_event_and_do_request">Выберите мероприятие и подайте заявку на участие на главной странице</string>

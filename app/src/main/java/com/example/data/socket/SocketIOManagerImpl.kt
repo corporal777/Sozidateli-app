@@ -168,7 +168,8 @@ class SocketIOManagerImpl
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->
                     Log.i("ChatSocket", "Data: " + args.toString())
-                    emitter.onNext(args[0].toString().toInt())
+                    //emitter.onNext(args[0].toString().toInt())
+                    if (args.first() != null) emitter.onNext(args.first().toString().toInt())
                 }
 
                 mSocket?.on("user-count-of-invites", listener)
@@ -184,7 +185,8 @@ class SocketIOManagerImpl
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->
                     Log.i("ChatSocket", "Data: " + args.toString())
-                    emitter.onNext(args[0].toString().toInt())
+                    //emitter.onNext(args[0].toString().toInt())
+                    if (args.first() != null) emitter.onNext(args.first().toString().toInt())
                 }
 
                 mSocket?.on("unread-total-message-count", listener)

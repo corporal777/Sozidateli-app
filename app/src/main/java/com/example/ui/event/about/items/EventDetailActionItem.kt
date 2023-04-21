@@ -4,9 +4,9 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
 import android.util.Log
-import android.view.ViewTreeObserver
 import android.widget.Button
-import androidx.annotation.StringRes
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isInvisible
@@ -15,6 +15,7 @@ import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
+import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
 import com.example.extensions.dateFormatterShortDayFullMothShortYear
 import com.example.extensions.defaultServerDateFormatter
@@ -25,81 +26,39 @@ import com.example.ui.views.dialogs_new.EventDescriptionBottomSheet
 import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
+import onClickListener
 import setOnClickListener
 import java.util.*
 
 
 class EventDetailActionItem(
-    val eventData: EventNew?,
+    context: Context,
+    eventNew: EventNew?,
     val clickListener: OnActionClickListener,
 ) : BindableItem<ItemEventDetailActionBlockBinding>(-1001L) {
 
-    val status: Event.Status? = eventData?.status?.value
-    val userRegistration: Event.Status? = eventData?.binds?.currentUserRegistration?.status?.value
-    val backgroundColor: String? = eventData?.binds?.organization?.backgroundColor?.value
-    val logo: String? = eventData?.image?.uri
-
-    private val eventFormat =
-        if (eventData?.format?.value == null && !eventData?.format?.custom.isNullOrEmpty()) {
-            EventFormat(name = eventData?.format?.custom ?: "")
-        } else EventFormat(
-            id = eventData?.binds?.format?.id ?: 0,
-            name = eventData?.binds?.format?.name ?: ""
-        )
-
-    private var eventDate = ""
-    private var canShowDate = false
-    private var viewHeight = 0
-
-    init {
-        val limitDate = eventData?.requestsApply?.dateLimit
-            ?.parseAndFormat(defaultServerDateFormatter, dateFormatterShortDayFullMothShortYear)
-
-        val requestDate = eventData?.requestsApply?.dateFrom
-        if (!requestDate.isNullOrEmpty()) {
-            val mToday = System.currentTimeMillis()
-            val mStartReq =
-                defaultServerDateTimeFormatter.parse(eventData?.requestsApply?.dateFrom).time
-
-            if (mStartReq > mToday) {
-                val day = daysBetweenNew(mToday, mStartReq)
-                canShowDate = true
-                eventDate = if (day == 1) {
-                    "До начала приема заявок $day день"
-                } else if (day != 1 && day < 5) {
-                    "До начала приема заявок $day дня"
-                } else {
-                    "До начала приема заявок $day дней"
-                }
-            } else {
-                canShowDate = !limitDate.isNullOrEmpty()
-                eventDate = "Заявки принимаются по $limitDate"
-            }
-        } else {
-            canShowDate = !limitDate.isNullOrEmpty()
-            eventDate = "Заявки принимаются по $limitDate"
-        }
-    }
+    private var eventData = eventNew
+    private val status: Event.Status? = eventData?.status?.value
+    private val eventFormat = eventData?.getEventFormat()
+    private val eventDescription = getMarkdownFormattedText(context, eventData?.description)
 
     override fun bind(viewBinding: ItemEventDetailActionBlockBinding, position: Int) {
         viewBinding.apply {
-            tvRequestsDate.apply {
-                isInvisible = !canShowDate
-                tvRequestsDate.text = eventDate
-            }
-
             tvDescription.apply {
-                isCanExpand = false
-                originalText = getMarkdownFormattedText(root.context, eventData?.description)
-                limitedMaxLines = 4
-                expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
-                onExpandClick = {
-                    showEventDescriptionDialog(context)
+                if (eventData?.description.isNullOrEmpty()) isVisible = false
+                else {
+                    isCanExpand = false
+                    originalText = eventDescription
+                    limitedMaxLines = 4
+                    expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
+                    onExpandClick = {
+                        showEventDescriptionDialog(context)
+                    }
                 }
             }
 
-            formatLn.isVisible = !eventFormat.name.isNullOrEmpty()
-            tvFormat.text = eventFormat.name
+            formatLn.isVisible = !eventFormat?.name.isNullOrEmpty()
+            tvFormat.text = eventFormat?.name
 
             addressLn.isVisible = !eventData?.address?.fullValue.isNullOrEmpty()
             tvAddress.text = eventData?.address?.fullValue
@@ -116,25 +75,18 @@ class EventDetailActionItem(
             networkLn.isVisible = !eventData?.socialLink.isNullOrEmpty()
             tvSocialNetwork.text = eventData?.socialLink?.firstOrNull()?.value
 
-            decorActionButton(eventData, btnEventAction)
+            decorActionButton(eventData, btnEventAction, tvCancelRegister)
         }
-
-//        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-//            ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//                viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                viewHeight = viewBinding.root.height
-//            }
-//        })
     }
 
-    private fun decorActionButton(eventNew: EventNew?, btnAction: Button) {
-        @StringRes var btnText: Int? = null
+    private fun decorActionButton(eventNew: EventNew?, btnAction: Button, tvCancel: TextView) {
         var clickAction: (() -> Unit)? = null
-        var visibility = true
-        var mTextSize = 17f
-        val userAgreement = eventData?.userAgreement?.uri
-        val eventRegistrationState = eventData?.binds?.eventRegistrationState
+        var btnText = R.string.event_action_participate
+        var btnTextSize = 17f
+        var btnTextColor = R.color.vk_black
+        var btnBackground = R.drawable.custom_btn_white_ghost_selectable
+        val userAgreement = eventNew?.userAgreement?.uri
+        val eventRegistrationState = eventNew?.binds?.eventRegistrationState
 
         when (status) {
             Event.Status.REGISTRATION,
@@ -147,39 +99,49 @@ class EventDetailActionItem(
                     if (eventRegistrationState.prohibitions?.registrationClosed == false) {
                         when (actions.firstOrNull()) {
                             "register" -> {
+                                tvCancel.isVisible = false
                                 btnText = R.string.event_action_participate
+                                btnBackground = R.drawable.custom_btn_white_ghost_selectable
+                                btnTextColor = R.color.vk_black
                                 clickAction = {
-                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
-                                        if (userAgreement.isNullOrEmpty()) {
-                                            clickListener.onActionRegister()
-                                        } else {
-                                            showAgreementRegisterDialog(
-                                                btnAction.context,
-                                                userAgreement
-                                            )
-                                        }
-                                    }
+                                    showAgreementRegisterDialog(
+                                        btnAction.context,
+                                        eventRegistrationState,
+                                        userAgreement
+                                    )
                                 }
                             }
                             "withdraw" -> {
+                                tvCancel.isVisible = false
                                 btnText = R.string.event_action_cancel_request
+                                btnBackground = R.drawable.custom_btn_white_ghost_selectable
+                                btnTextColor = R.color.vk_black
                                 clickAction = {
                                     eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
                                         clickListener.onActionCancel()
                                     }
                                 }
                             }
-                            else -> {
-                                visibility = false
+                            "view" -> {
+                                btnText = R.string.event_status_approved
+                                btnBackground = R.drawable.btn_background_register_approved
+                                btnTextColor = R.color.white
+                                tvCancel.apply {
+                                    isVisible = true
+                                    setOnClickListener {
+                                        showCancelRegisterDialog(context, eventRegistrationState)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
             else -> {
+                tvCancel.isVisible = false
                 val actions = eventRegistrationState?.availableActions ?: arrayListOf("")
                 if (actions.firstOrNull() == "subscribe" || actions.contains("subscribe")) {
-                    mTextSize = 16f
+                    btnTextSize = 16f
                     if (eventNew?.binds?.isUserSubscribed == true) {
                         btnText = R.string.event_action_unsubscribe_request
                         clickAction = {
@@ -195,33 +157,48 @@ class EventDetailActionItem(
                             }
                         }
                     }
-                } else {
-                    visibility = false
                 }
             }
         }
 
         btnAction.apply {
-            text = btnText?.let { context.getString(it) }
-            this.textSize = mTextSize
-            if (clickAction != null) {
-                setOnClickListener(clickAction)
-            } else {
-                setOnClickListener(null)
-                isEnabled = false
+            text = context.getString(btnText)
+            textSize = btnTextSize
+            setTextColor(ContextCompat.getColor(context, btnTextColor))
+            background = ContextCompat.getDrawable(context, btnBackground)
+            onClickListener(clickAction)
+            isEnabled = clickAction != null
+        }
+    }
+
+    private fun showAgreementRegisterDialog(
+        context: Context,
+        eventState: EventRegistrationStateModel,
+        url: String?
+    ) {
+        eventState.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+            if (url.isNullOrEmpty()) clickListener.onActionRegister()
+            else {
+                EventAgreementRegisterDialog(context, url)
+                    .setSelectCallback { clickListener.onActionRegister() }
             }
-            isVisible = visibility
         }
     }
 
-    private fun showAgreementRegisterDialog(context: Context, url: String) {
-        EventAgreementRegisterDialog(context, url).setSelectCallback {
-            clickListener.onActionRegister()
-        }
-    }
-
-    private fun showEventDescriptionDialog(context: Context){
+    private fun showEventDescriptionDialog(context: Context) {
         EventDescriptionBottomSheet(context, eventData?.name, eventData?.description).show()
+    }
+
+    private fun showCancelRegisterDialog(
+        context: Context,
+        eventState: EventRegistrationStateModel,
+    ) {
+        eventState.prohibitions?.profileLevelToLow?.value.checkStateLevel {
+            CancelRegisterEventDialog(context)
+                .setCancelRegisterCallback { clickListener.onActionCancel() }
+                .show()
+        }
+
     }
 
     private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
@@ -238,7 +215,8 @@ class EventDetailActionItem(
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventNew) {
-                decorActionButton(payload, viewBinding.btnEventAction)
+                eventData = payload
+                decorActionButton(payload, viewBinding.btnEventAction, viewBinding.tvCancelRegister)
             }
         }
     }
@@ -259,23 +237,12 @@ class EventDetailActionItem(
         fun onDeleteSubscribeEvent()
     }
 
-    private fun daysBetween(d1: Date, d2: Date): Int {
-        return ((d2.time - d1.time) / (1000 * 60 * 60 * 24)).toInt()
-    }
-
-    private fun daysBetweenNew(d1: Long, d2: Long): Int {
-        var days = 0
-        for (i in d1..d2 step 86400000) {
-            days++
-        }
-        return days
-    }
 
     private fun getMarkdownFormattedText(
         context: Context,
         description: String?
     ): SpannableStringBuilder {
-        val spanned = markWon(context).toMarkdown(description ?: "")
+        val spanned = markWon(context).toMarkdown(description?.replace("\n", " ") ?: "")
         return SpannableStringBuilder(spanned).apply {
             val urls = getSpans<URLSpan>()
             urls.forEach {
@@ -284,6 +251,7 @@ class EventDetailActionItem(
                 removeSpan(it)
                 set(start..end, URLSpanNoUnderline(it.url))
             }
+            replace(Regex("[\\t\\n\\r]+"), " ")
         }
     }
 

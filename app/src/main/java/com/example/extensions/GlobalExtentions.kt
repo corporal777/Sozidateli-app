@@ -19,8 +19,8 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -55,7 +55,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -594,8 +593,8 @@ fun View.setOnClickListener(listener: () -> Unit) {
     setOnClickListener { listener() }
 }
 
-fun View.onClickListener(listener: () -> Unit) {
-    setOnClickListener { listener() }
+fun View.onClickListener(listener: (() -> Unit)?) {
+    if (listener != null) setOnClickListener { listener.invoke() }
 }
 
 fun JSONObject.getStringOrNull(name: String): String? {

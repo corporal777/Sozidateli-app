@@ -61,27 +61,10 @@
             app:layout_constraintTop_toBottomOf="@id/btn_system_notifications" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_pgrf"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_tag_new"
-            android:paddingHorizontal="15dp"
-            android:singleLine="true"
-            android:text="@string/estimates_rf"
-            android:textAllCaps="false"
-            android:textColor="@color/text_color_tag_new"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_events" />
-
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_organizer"
             fontPath="fonts/sf_pro_text_semibold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/background_tag_new"
             android:paddingHorizontal="15dp"
@@ -90,10 +73,28 @@
             android:textAllCaps="false"
             android:textColor="@color/text_color_tag_new"
             android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_events" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_pgrf"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/background_tag_new"
+            android:paddingHorizontal="15dp"
+            android:singleLine="true"
+            android:text="@string/estimates_rf"
+            android:textAllCaps="false"
+            android:textColor="@color/text_color_tag_new"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/btn_pgrf"
-            app:layout_constraintTop_toBottomOf="@id/btn_events" />
+            app:layout_constraintStart_toEndOf="@id/btn_organizer"
+            app:layout_constraintTop_toBottomOf="@id/btn_events"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

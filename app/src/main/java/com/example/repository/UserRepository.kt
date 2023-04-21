@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
+import com.example.ui.notification.center.redesign.NotificationType
+import com.example.util.pagination.NotificationsResponse
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceIdReceiver
 import io.reactivex.Completable
@@ -94,6 +96,7 @@ interface UserRepository {
     //fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
+    fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>>
     fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>>
     fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
@@ -106,7 +109,7 @@ interface UserRepository {
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
     fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
     fun markAsRead(notificationId: String): Completable
-    fun markAllNotificationsAsRead(): Completable
+    fun markAllNotificationsAsRead(type : NotificationType?): Maybe<UnacceptedInviteNotification>
     fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable
     fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable
     fun approvePgrf(pgrfId: String): Completable

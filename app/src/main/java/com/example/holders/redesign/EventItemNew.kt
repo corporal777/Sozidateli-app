@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -35,19 +36,16 @@ class EventItemNew(
     val registrationId: String,
     val name: String?,
     val address: String?,
-    dateFrom: String?,
-    dateTo: String?,
+    val dateFrom: String?,
+    val dateTo: String?,
     private val onEventClickListener: OnEventClickListener
 ) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
 
-    val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
-    private var imageColor = ColorDrawable(Color.DKGRAY)
+    private val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
+    private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
 
     init {
-        if (!backgroundColor.isNullOrEmpty()) {
-            val color = backgroundColor.parseColor() ?: Color.DKGRAY
-            imageColor = ColorDrawable(color)
-        }
+
     }
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
@@ -81,47 +79,51 @@ class EventItemNew(
         status: Event.Status?,
         userRegistration: Event.Status?
     ) {
-        tvStatus.apply {
-            val mTextBackground: Int
-            val mTextRes: Int
-            when (status) {
-                Event.Status.FINISHED -> {
-                    mTextBackground = R.color.event_status_finished_background
-                    mTextRes = R.string.event_status_finished
-                }
-                Event.Status.CANCELED -> {
-                    mTextBackground = R.color.event_status_cancelled_background
-                    mTextRes = R.string.event_status_cancelled
-                }
-                else -> {
-                    when (userRegistration) {
-                        Event.Status.APPROVED -> {
-                            mTextBackground = R.color.event_status_approved_background
-                            mTextRes = R.string.event_status_approved_new
-                        }
-                        Event.Status.PENDING -> {
-                            mTextBackground = R.color.event_status_wait_confirmation_background
-                            mTextRes = R.string.event_status_wait_confirmation
-                        }
-                        Event.Status.DECLINED -> {
-                            mTextBackground = R.color.event_status_declined_background
-                            mTextRes = R.string.event_status_decline_new
-                        }
-                        Event.Status.REGISTRATION_FINISHED -> {
-                            mTextBackground = R.color.event_status_wait_confirmation_background
-                            mTextRes = R.string.about_event_registration_closed
-                        }
-                        else -> {
-                            isVisible = false
-                            return
-                        }
+        var statusBackground = R.color.event_status_finished_background
+        var statusText = R.string.event_status_finished
+        var statusVisibility = false
+        when (status) {
+            Event.Status.FINISHED -> {
+                statusVisibility = true
+                statusBackground = R.color.event_status_finished_background
+                statusText = R.string.event_status_finished
+
+            }
+            Event.Status.CANCELED -> {
+                statusVisibility = true
+                statusBackground = R.color.event_status_cancelled_background
+                statusText = R.string.event_status_cancelled
+            }
+            else -> {
+                when (userRegistration) {
+                    Event.Status.APPROVED -> {
+                        statusVisibility = true
+                        statusBackground = R.color.event_status_approved_background
+                        statusText = R.string.event_status_approved_new
                     }
+                    Event.Status.PENDING -> {
+                        statusVisibility = true
+                        statusBackground = R.color.event_status_wait_confirmation_background
+                        statusText = R.string.event_status_wait_confirmation
+                    }
+                    Event.Status.DECLINED -> {
+                        statusVisibility = true
+                        statusBackground = R.color.event_status_declined_background
+                        statusText = R.string.event_status_decline_new
+                    }
+                    Event.Status.REGISTRATION_FINISHED -> {
+                        statusVisibility = true
+                        statusBackground = R.color.event_status_wait_confirmation_background
+                        statusText = R.string.about_event_registration_closed
+                    }
+                    else -> statusVisibility = false
                 }
             }
-
-            text = resources.getString(mTextRes)
-            backgroundTintList = ContextCompat.getColorStateList(context, mTextBackground)
-            isVisible = true
+        }
+        tvStatus.apply {
+            text = context.getString(statusText)
+            backgroundTintList = ContextCompat.getColorStateList(context, statusBackground)
+            isVisible = statusVisibility
         }
     }
 
@@ -146,11 +148,9 @@ class EventItemNew(
                                 text = context.getString(R.string.event_action_participate)
                                 setOnClickListener {
                                     profileLevel.checkStateLevel {
-                                        if (userAgreement.isNullOrEmpty()) {
+                                        if (userAgreement.isNullOrEmpty())
                                             onEventClickListener.onActionRegister(eventId)
-                                        } else {
-                                            showAgreementRegisterDialog(context, userAgreement)
-                                        }
+                                        else showAgreementRegisterDialog(context, userAgreement)
                                     }
                                 }
                             }
@@ -176,11 +176,8 @@ class EventItemNew(
     }
 
     private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
-        if (this == false) {
-            hasLevel()
-        } else {
-            onEventClickListener.onShowUpdateState()
-        }
+        if (this == false) hasLevel()
+        else onEventClickListener.onShowUpdateState()
     }
 
     private fun showAgreementRegisterDialog(context: Context, url: String) {
@@ -192,13 +189,20 @@ class EventItemNew(
     override fun getLayout() = R.layout.item_event_new
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
-        if (this === other) return true
         if (other !is EventItemNew) return false
         if (eventId != other.eventId) return false
+        if (state != other.state) return false
         if (status != other.status) return false
         if (userRegistration != other.userRegistration) return false
         if (backgroundColor != other.backgroundColor) return false
         if (logo != other.logo) return false
+        if (eventRegistrationState != other.eventRegistrationState) return false
+        if (userAgreement != other.userAgreement) return false
+        if (registrationId != other.registrationId) return false
+        if (name != other.name) return false
+        if (address != other.address) return false
+        if (dateFrom != other.dateFrom) return false
+        if (dateTo != other.dateTo) return false
         return true
     }
 
