@@ -6,13 +6,13 @@ import java.util.regex.Pattern
 object AuthValidateUtil {
 
     private val EMAIL_PATTERN = Pattern.compile(
-            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                    "\\@" +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                    "(" +
-                    "\\." +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                    ")+"
+        "[a-zA-Z0-9\\@\\#\\$\\_\\&\\-\\+\\(\\)\\/\\*\\\"\\'\\:\\;\\!\\?\\,\\.\\~\\`\\|\\÷\\×\\^\\=\\{\\}\\%\\<\\>]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                ")+"
     )
 
     private val PHONE_PATTERN = Pattern.compile(
@@ -26,6 +26,6 @@ object AuthValidateUtil {
 
     fun isValidPassword(password: CharSequence) = PASSWORD_PATTERN.matcher(password).matches()
 
-    fun isValidPhone(phone : String) = Utils.isNewPhoneIsValid(phone)
+    fun isValidPhone(phone: String) = Utils.isNewPhoneIsValid(phone)
 }
 

@@ -46,6 +46,9 @@ class UserEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        if (editType == UserEditDataType.INTERESTS){
+            viewState.showInterestsPlaceholder()
+        }
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -155,7 +158,7 @@ class UserEditPresenter
     }
 
     override fun onDeleteFilesClick(data: FileModel) {
-        compositeDisposable += userRepository.deleteRecommendedFile(data.id ?: 0)
+        compositeDisposable += userRepository.deleteRecommendedFile(data.id?.toInt() ?: 0)
             .doOnComplete {
                 val userFiles = mutableListOf<FileModel>()
                 userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
@@ -266,7 +269,6 @@ class UserEditPresenter
         compositeDisposable += commonRepository.getInterests()
             .map { groupUserInterests(user, it) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
             .subscribe({
                 viewState.setInterestsData(it)
                 isInterestsLoaded = true

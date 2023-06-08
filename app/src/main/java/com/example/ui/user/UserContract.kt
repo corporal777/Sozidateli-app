@@ -12,10 +12,6 @@ import com.example.util.OneExecutionByTagStateStrategy
 
 interface UserContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showShimmerPlaceholder()
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUser(profileUserData: ProfileUserData)
 
@@ -45,15 +41,12 @@ interface UserContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showUserHiddenDialog()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun setAppBarShadow(value : Float)
     }
 
-    interface Presenter : BaseContract.Presenter, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter{
         fun onWriteMessageClick()
-        fun onOrganizationClick(organization: /*Organization*/OrganizationNew)
-        fun onFileClick(file: /*RecommendationFile*/FileModel)
+        fun onOrganizationClick(organization: OrganizationNew)
+        fun onFileClick(file: FileModel)
 
         fun onSubscribeClick()
         fun onUnsubscribeClick()

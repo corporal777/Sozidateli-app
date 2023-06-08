@@ -6,6 +6,7 @@
             <stroke
                 android:width="2dp"
                 android:color="#BE9B72" />
+            <solid android:color="@color/event_calendar_add_to_schedule_background" />
         </shape>
     </item>
 </layer-list>

@@ -21,7 +21,7 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 class AcceptNotificationItemNew(
     private val context: Context,
     private val notification: Notification,
-    private val listener : OnNotificationActionListener
+    private val listener: OnNotificationActionListener
 ) : NotificationItemNew<ItemNotificationAcceptNewBinding>(
     context,
     notification,
@@ -58,7 +58,7 @@ class AcceptNotificationItemNew(
                     lnDecline.isVisible = true
                     tvDecline.apply {
                         highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
-                        text = getDeclineText(this)
+                        text = getNotificationAcceptedText(this)
                         movementMethod = LinkMovementMethod.getInstance()
                     }
                 }
@@ -68,7 +68,7 @@ class AcceptNotificationItemNew(
                     lnDecline.isVisible = true
                     tvDecline.apply {
                         highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
-                        text = getAcceptedText(this)
+                        text = getNotificationDeclinedText(this)
                         movementMethod = LinkMovementMethod.getInstance()
                     }
                 }
@@ -82,25 +82,33 @@ class AcceptNotificationItemNew(
             .setSelectCallback {}
     }
 
-    private fun getDeclineText(textView: TextView): SpannableString {
+    private fun getNotificationAcceptedText(textView: TextView): SpannableString {
         val clickableSpan = ClickableSpanNew(textView) {
             showCancelInfo(textView.context)
         }
-        return SpannableString(textView.context.getString(R.string.decline_text_for_notification)).apply {
-            val linkStart = length - 10
-            val linkEnd = length - 1
-            setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        return when (notification.partitionType) {
+            //"event" -> SpannableString("Приглашение было принято.")
+            "org" -> SpannableString("Приглашение было принято.")
+            else -> SpannableString(textView.context.getString(R.string.decline_text_for_notification)).apply {
+                val linkStart = length - 10
+                val linkEnd = length - 1
+                setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
         }
     }
 
-    private fun getAcceptedText(textView: TextView): SpannableString {
+    private fun getNotificationDeclinedText(textView: TextView): SpannableString {
         val clickableSpan = ClickableSpanNew(textView) {
             listener.onAcceptClickListener(notification, true)
         }
-        return SpannableString(textView.context.getString(R.string.accept_text_for_notification)).apply {
-            val linkStart = length - 8
-            val linkEnd = length - 1
-            setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        return when (notification.partitionType) {
+            //"event" -> SpannableString("Приглашение было отклонено.")
+            "org" -> SpannableString("Приглашение было отклонено.")
+            else -> SpannableString(textView.context.getString(R.string.accept_text_for_notification)).apply {
+                val linkStart = length - 8
+                val linkEnd = length - 1
+                setSpan(clickableSpan, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
         }
     }
 
@@ -115,6 +123,9 @@ class AcceptNotificationItemNew(
 
     override fun getBadgeView(viewBinding: ItemNotificationAcceptNewBinding): View =
         viewBinding.viewBadge
+
+    override fun getRootView(viewBinding: ItemNotificationAcceptNewBinding): View =
+        viewBinding.clAcceptNotification
 
     override fun getLayout() = R.layout.item_notification_accept_new
 }

@@ -10,6 +10,7 @@ import com.example.data.models.OrganizationNew
 import com.example.data.models.OrganizationsFilter
 import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
@@ -56,8 +57,6 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@OrganizationsFragment.adapter
-                onScrolled { dx, dy ->
-                }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -75,11 +74,7 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
     }
 
     override fun setFavoritesHeader() {
-        headGroup.update(
-            listOf(
-                ScreenLabelItem(getString(R.string.organizations_favorites))
-            )
-        )
+        headGroup.updateItem(ScreenLabelItem(getString(R.string.organizations_favorites)))
     }
 
     override fun changeSubscription(organization: OrganizationNew/*Organization*/) {
@@ -100,17 +95,15 @@ class OrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), Organization
     }
 
     override fun showNoFilterEmptyListPlaceholder() {
-        organizationSection.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        organizationSection.updateItem(NoDataItem(getString(R.string.empty_list_placeholder_message)))
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showFavoritesEmptyListPlaceholder() {
-        organizationSection.update(
-            listOf(
-                NoEventItem(
-                    getString(R.string.blank_list_error),
-                    getString(R.string.organizations_favorites_empty_list_description)
-                )
+        organizationSection.updateItem(
+            NoEventItem(
+                getString(R.string.blank_list_error),
+                getString(R.string.organizations_favorites_empty_list_description)
             )
         )
         mBinding.swipeToRefresh.isRefreshing = false

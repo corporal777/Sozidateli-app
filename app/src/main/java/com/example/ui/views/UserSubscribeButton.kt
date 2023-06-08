@@ -76,11 +76,8 @@ class UserSubscribeButton : AppCompatButton {
     }
 
     fun setActionNew(isSubscribed : Boolean){
-        if (isSubscribed){
-            setActionUnfavorite()
-        }else {
-            setActionFavorite()
-        }
+        if (isSubscribed) setActionUnfavorite()
+        else setActionFavorite()
     }
 
     fun setActionSubscribe() {

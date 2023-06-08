@@ -16,6 +16,7 @@ import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatSearchBinding
 import com.example.databinding.LayoutFilterUserBinding
+import com.example.extensions.updateItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -50,26 +51,7 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
     private var filterDialog: BottomSheetDialog? = null
     private var filterView: View? = null
 
-    private val favoritesSection by lazy {
-        Section().apply {
-            setHeader(
-                ListSectionNameItem(
-                    -100L,
-                    getString(R.string.search_contact_section_favorites)
-                )
-            )
-            setHideWhenEmpty(true)
-        }
-    }
-
-    private val chatsSection by lazy {
-        Section().apply {
-            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_chats)))
-            setHideWhenEmpty(true)
-        }
-    }
-
-    private val anotherSection by lazy {
+    private val usersSection by lazy {
         Section().apply {
             setHeader(
                 ListSectionNameItem(
@@ -83,9 +65,7 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
 
     private val adapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(favoritesSection)
-            add(chatsSection)
-            add(anotherSection)
+            add(usersSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     presenter.onItemTake(position)
@@ -140,13 +120,13 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
 
     override fun setUsersData(users: List<UserDetail?>) {
         if (!users.isNullOrEmpty()) {
-            anotherSection.update(users.map { itemData ->
+            usersSection.update(users.map { itemData ->
                 if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
                     itemData.id,
                     itemData.nameLastName,
                     null,
-                    itemData.image.uri,
+                    itemData.loadUserImage(),
                     { presenter.onUserClick(itemData) })
             })
 
@@ -163,12 +143,10 @@ class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchC
     }
 
     override fun showEmptyDataPlaceholder() {
-        adapter.update(
-            listOf(
-                NoDataItem(
-                    getString(R.string.schedule_my_empty_day_placeholder_title),
-                    getString(R.string.search_no_data_description)
-                )
+        adapter.updateItem(
+            NoDataItem(
+                getString(R.string.schedule_my_empty_day_placeholder_title),
+                getString(R.string.search_no_data_description)
             )
         )
     }

@@ -22,6 +22,7 @@ import com.example.data.models.UserInterest
 import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
@@ -130,7 +131,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onBackPressedCallback(true){
+        onBackPressedCallback(true) {
             hideKeyboard()
             presenter.onNavigateUpRequest()
         }
@@ -139,7 +140,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
-
 
 
     override fun setPersonalData(user: UserDetail, state: String) {
@@ -181,6 +181,10 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
     }
 
+    override fun showInterestsPlaceholder() {
+        adapter.update(List(7) { PlaceholderItem(PlaceholderItem.Type.INTERESTS) })
+    }
+
     override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
         val findUserInterests: () -> List<InterestNew> = {
             interests.values.flatten().filter { item -> item.isUserInterest }
@@ -189,9 +193,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
         var userInterests = findUserInterests()
 
-        if (userInterests.isNullOrEmpty()) {
-            mBinding.btnSave.isEnabled = false
-        }
+        if (userInterests.isNullOrEmpty()) mBinding.btnSave.isEnabled = false
 
         adapter.update(interests.map {
             val parent = it.key
@@ -254,7 +256,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }.apply {
             data = this
         }
-        adapter.update(listOf(item))
+        adapter.updateItem(item)
 
         onSaveClick = {
             presenter.canUpdate(true)
@@ -428,15 +430,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.recyclerView.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ ->
-               scroll.invoke(this.computeVerticalScrollOffset())
-            }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }

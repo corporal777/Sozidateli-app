@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.item_lecture.*
 
 class RegisterEventProfileMainItem(
     val itemId : Long,
+    val name : ProfileFieldString,
     val birthDay: ProfileFieldString,
     val gender: ProfileFieldString,
     val address: ProfileFieldString,
@@ -37,6 +38,10 @@ class RegisterEventProfileMainItem(
 
     private fun initDataFields(viewBinding: ItemRegisterEventProfileMainBinding) {
         viewBinding.apply {
+            lnName.apply {
+                isVisible = name.isChosen
+                tvName.setField(name)
+            }
             lnBirthday.apply {
                 isVisible = birthDay.isChosen
                 tvBirthday.setField(birthDay)
@@ -102,9 +107,7 @@ class RegisterEventProfileMainItem(
     private fun TextView.setField(field: ProfileFieldString) {
         if (field.value.isNullOrEmpty()) {
             text = context.getString(R.string.user_profile_additional_hint)
-            if (field.isRequired) {
-                setTextColor(ContextCompat.getColor(context, R.color.red_new))
-            }
+            if (field.isRequired) setTextColor(ContextCompat.getColor(context, R.color.red_new))
         } else {
             setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
             text = field.value
@@ -113,6 +116,7 @@ class RegisterEventProfileMainItem(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is RegisterEventProfileMainItem) return false
+        if (name != other.name) return false
         if (birthDay != other.birthDay) return false
         if (gender != other.gender) return false
         if (address != other.address) return false

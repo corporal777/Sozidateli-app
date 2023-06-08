@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.Tag
 import com.example.ui.views.TagChipNew
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
 class TagsHorizontalListItem(
     private val tags: List<Tag>,
     private val onSelectedChange: () -> Unit
-) : Item() {
+) : Item(-1011L) {
 
     @SuppressLint("ResourceAsColor", "ResourceType")
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -48,8 +49,7 @@ class TagsHorizontalListItem(
                         text = "Еще $otherSize "
                         isChecked = false
                         isClickable = true
-                        val img: Drawable =
-                            context.resources.getDrawable(R.drawable.ic_arrow_down_for_tags)
+                        val img = ContextCompat.getDrawable(context, R.drawable.ic_arrow_down_for_tags)
                         setCompoundDrawablesWithIntrinsicBounds(null, null, img, null)
                         setOnClickListener {
                             for (i in 6 until tags.size) {

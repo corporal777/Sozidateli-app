@@ -2,13 +2,15 @@ package com.example.ui.views.toolbar
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
-import androidx.core.view.setPadding
 import com.example.R
 import com.example.extensions.dp
 import io.github.inflationx.calligraphy3.CalligraphyUtils
+import org.commonmark.internal.Bracket.image
+
 
 class ToolbarCircleButton : AppCompatButton {
 
@@ -27,5 +29,12 @@ class ToolbarCircleButton : AppCompatButton {
         setTextColor(ContextCompat.getColor(context, R.color.main_brown_color_new))
         textSize = 11f
         isAllCaps = false
+    }
+
+    fun setButtonMargins(top : Int, bottom : Int, left : Int, right : Int){
+        val marginParams = ViewGroup.MarginLayoutParams(layoutParams)
+        marginParams.setMargins(left, top, right, bottom)
+        val layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(marginParams)
+        setLayoutParams(layoutParams)
     }
 }

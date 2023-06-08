@@ -20,7 +20,6 @@ class SearchTabsPresenter
     var currentPosition = 0
 
 
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
     }

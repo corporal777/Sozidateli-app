@@ -12,6 +12,7 @@ import com.example.R
 import com.example.data.models.UserChat
 import com.example.databinding.FragmentInviteListBinding
 import com.example.extensions.dp
+import com.example.extensions.updateItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -64,13 +65,10 @@ class InviteListFragment : BaseFragmentNew<FragmentInviteListBinding>(), InviteL
     }
 
     override fun setInvitesData(chats: List<UserChat?>) {
-        //if (chats.isEmpty()) invitesSection.update(listOf(NoEventItem(getString(R.string.empty_list_placeholder_message))))
-        if (chats.isEmpty()) invitesSection.update(
-            listOf(
-                NoScheduleEventItem(
-                    getString(R.string.empty_list_placeholder_message),
-                    padding = 70.dp
-                )
+        if (chats.isEmpty()) invitesSection.updateItem(
+            NoScheduleEventItem(
+                getString(R.string.empty_list_placeholder_message),
+                padding = 70.dp
             )
         )
         else invitesSection.apply {

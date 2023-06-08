@@ -6,18 +6,23 @@ import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.Event
 import com.example.data.models.EventActivityModel
+import com.example.data.models.EventNew
 import com.example.data.models.MemberModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.subevent.items.AboutSubEventData
 import com.google.gson.Gson
 import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 
@@ -31,114 +36,23 @@ class SubEventPresenter @Inject constructor(
     lateinit var subEventId: String
     lateinit var eventId: String
 
-    private var firstLoading = true
-
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getSubEventData()
-    }
-
-    private fun getSubEventData() {
-        val subEventId = subEventId
-        val speakersList = arrayListOf<MemberModel>()
-        compositeDisposable += eventRepository.getEventActivityDetail(subEventId)
-            .zipWith(eventRepository.getEventDetailForRegister(eventId).toSingle())
-            .doOnSuccess {
-                speakersList.addAll(it.first.binds?.member?.filter { x -> x.isLead == true }
-                    ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-                speakersList.addAll(it.first.binds?.member?.filter { x -> x.isLead == false }
-                    ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-            }
+        viewState.setSubEventPlaceholder()
+        compositeDisposable += loadData()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    catchSubEventError(it)
-                    it.printStackTrace()
-                },
+                onError = { catchSubEventError(it) },
                 onSuccess = {
-                    val subEvent = it.first
-                    val isApproved =
-                        it.second.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-                    if (firstLoading) viewState.setData(isApproved, subEvent)
-                    firstLoading = false
-
-                    val uid = appData.getId()
-                    subEvent.binds?.member?.forEach { speaker ->
-                        speaker.binds?.user?.isCurrentUser = speaker.user == uid
-                    }
-                    viewState.setSpeakers(speakersList)
+                    viewState.setData(it.isApproved, it.subEvent)
+                    viewState.setSpeakers(it.members)
                 })
-
     }
 
 
-    override fun onSpeakerClick(speaker: MemberModel) {
-        viewState.showSpeakerProfile(speaker)
-    }
+    override fun onSpeakerClick(speaker: Int) = viewState.showSpeakerProfile(speaker)
 
-    /*override fun onSpeakerChangeSubscriptionClick(speaker: MemberModel) {
-        val id = speaker.user.toString()
-        if (speaker.binds?.user?.binds?.userFavorite == null)
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, id.toInt())
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    viewState.showRequestErrorMessage()
-                }) {
-                    speaker.binds?.user?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    //viewState.updateSpeaker(speaker)
-                }
-        else
-            compositeDisposable += eventRepository.deleteFromFavorite(speaker.binds.user.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple({
-                    viewState.showRequestErrorMessage()
-                }) {
-                    speaker.binds.user.binds?.userFavorite = null
-                    //viewState.updateSpeaker(speaker)
-                }
-    }
-    */
-    /* override fun onSubeventChangeSubscriptionClick(subevent: EventActivityModel) {
-         val id = subevent.id.toString()
-         if (subevent.binds?.userFavorite == null)
-             compositeDisposable += eventRepository.addToFavorites(
-                 AddToFavoriteModel(
-                     appData.getId(),
-                     AddToFavoriteEntityModel(
-                         AddToFavoriteEntityModel.FAVORITE_SUB_EVENT,
-                         id.toInt()
-                     )
-                 )
-             )
-                 .performOnBackgroundOutOnMain()
-                 .withLoadingDialog(viewState)
-                 .subscribeSimple({
-                     viewState.showRequestErrorMessage()
-                 }) {
-                     subevent.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                     viewState.setData(subevent)
-                 }
-         else
-             compositeDisposable += eventRepository.deleteFromFavorite(subevent.binds.userFavorite?.id.toString())
-                 .performOnBackgroundOutOnMain()
-                 .withLoadingDialog(viewState)
-                 .subscribeSimple({
-                     viewState.showRequestErrorMessage()
-                 }) {
-                     subevent.binds.userFavorite = null
-                     viewState.setData(subevent)
-                 }
-     }
- */
+
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
             subEvent,
@@ -167,7 +81,7 @@ class SubEventPresenter @Inject constructor(
         )
     }
 
-    protected open fun processChangeEventInCalendarStatusRequest(
+    private fun processChangeEventInCalendarStatusRequest(
         subEvent: EventActivityModel,
         request: Completable
     ) {
@@ -176,15 +90,29 @@ class SubEventPresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onComplete = {
-                    viewState.updateSubEvent(subEvent)
-                })
+                onError = { onReceiveError(it) },
+                onComplete = { viewState.updateSubEvent(subEvent) }
+            )
+    }
+
+    private fun loadData(): Single<AboutSubEventData> {
+        return Single.zip(eventRepository.getEventActivityDetail(subEventId),
+            eventRepository.getEventDetailForRegister(eventId).toSingle(),
+            BiFunction<EventActivityModel, EventNew, AboutSubEventData> { subEvent, event ->
+                val speakersList = arrayListOf<MemberModel>()
+                speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == true }?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+                speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == false }?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+
+                subEvent.binds?.member?.forEach { speaker ->
+                    speaker.binds?.user?.isCurrentUser = speaker.user == appData.getId()
+                }
+                val isApproved = event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+                AboutSubEventData(subEvent, isApproved, speakersList)
+            })
     }
 
     private fun catchSubEventError(t: Throwable) {
+        t.printStackTrace()
         if (t is HttpException) {
             when (t.code()) {
                 403 -> {

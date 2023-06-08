@@ -54,6 +54,12 @@ interface BaseContract {
         fun showEnterAnimation()
 
         @StateStrategyType(SkipStrategy::class)
+        fun showEventAddedToFavoriteDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRemovedFromFavoriteDialog()
+
+        @StateStrategyType(SkipStrategy::class)
         fun setIgnoreTokenListener(isIgnore: Boolean)
     }
 

@@ -691,6 +691,7 @@
     <string name="user_profile_education">Образование</string>
     <string name="user_profile_experience">Опыт работы</string>
 
+    <string name="user_profile_fio">ФИО</string>
     <string name="user_profile_last_name">Фамилия</string>
     <string name="user_profile_last_name_hint">Ваша фамилия</string>
     <string name="user_profile_name">Имя</string>
@@ -917,6 +918,7 @@
     <string name="added_to_favorite">Добавлено в\nизбранное</string>
     <string name="scan_qr_code_title">Сканировать QR-код</string>
     <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="removed_from_favorites">Удалено из\nизбранного</string>
     <string name="kill_all_other_sessions">Завершить все другие сеансы</string>
     <string name="sessions_label">Устройства</string>
     <string name="show_all_sessions_history">Показать историю активности</string>
@@ -933,7 +935,7 @@
     <string name="user_profile_off_messaging_projects">Отписаться от рассылки по проектам</string>
     <string name="user_profile_off_messaging_events">Отписаться от рассылки по мероприятиям</string>
     <string name="user_profile_off_messaging_organizations">Отписаться от рассылки по организациям</string>
-    <string name="session_info_message">История активности показывает информацию о том, с каких устройств и в какое время вы входили на сайт. В случае обнаружения подозрительной активности рекомендуем завершить подозрительные сеансы, нажав на кнопку \"Завершить сеанс\".</string>
+    <string name="session_info_message">История активности показывает информацию о том, с каких устройств и в какое время вы входили на сайт. В случае обнаружения подозрительной активности рекомендуем завершить подозрительные сеансы, нажав на кнопку «Завершить сеанс».</string>
     <string name="block_notification_org_title">Отписаться от рассылки по организациям</string>
     <string name="block_notification_org_message">Вы уверены, что хотите отписаться от рассылки по организациям с адреса noreply@sozidateli.ru? Обращаем ваше внимание, что письма, связанные с организациями на сайте «Созидатели», в том числе приглашения стать сотрудником организации, не будут приходить на email аккаунта после отписки от рассылки.</string>
     <string name="block_notification_event_title">Отписаться от рассылки по мероприятиям</string>
@@ -1009,10 +1011,10 @@
     <string name="unread_notifications_label">Непросмотренные уведомления</string>
     <string name="system_notifications">Системные уведомления</string>
     <string name="system_notifications_short">Системные</string>
-    <string name="my_projects">Мои проекты</string>
+    <string name="my_projects">Проекты</string>
     <string name="events">Мероприятия</string>
-    <string name="estimates_rf">Оценки.рф</string>
-    <string name="organizer">Организатор</string>
+    <string name="estimates_rf">Оценка результатов проектов</string>
+    <string name="organizer">Мои организации</string>
     <string name="change_user_name_label">Изменение Ф. И. О. пользователя</string>
     <string name="change_user_name_description">Пожалуйста, обратите внимание, что изменение фамилии, имени или отчества, возможно только один раз. Для последующих изменений вам будет предложено обратиться в техническую поддержку.</string>
     <string name="edit_name_title">Редактировать Ф. И. О.</string>

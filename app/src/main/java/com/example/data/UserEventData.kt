@@ -162,7 +162,10 @@ class UserEventData(
         } as ArrayList<EventScheduleCalendarDay>
     }
 
-    fun createCalendarDaysForSchedule(dates: List<Long>, list : List<EventActivityModel>): ArrayList<EventScheduleCalendarDay> {
+    fun createCalendarDaysForSchedule(
+        dates: List<Long>,
+        list: List<EventActivityModel>
+    ): ArrayList<EventScheduleCalendarDay> {
         val sortedDates = dates.sorted()
         val allDates = sortedDates.map { day ->
             val cal = day.calendar()
@@ -217,11 +220,43 @@ class UserEventData(
         eventMemberDao.insert(eventMember)
     }
 
-    fun updateEventMembers(eventMember: EventMember){
+    fun updateEventMembers(eventMember: EventMember) {
         eventMemberDao.update(eventMember)
     }
 
-    fun getSortedSpeakersFromLocalDb(id: String): Single<EventMember> {
+    private fun getSortedSpeakersFromLocalDb(id: String): Single<EventMember> {
         return eventMemberDao.getById(id)
+    }
+
+    fun loadSpeakers(id: String): Single<List<MemberModel>> {
+        return Single.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += getSortedSpeakersFromLocalDb(id)
+                .subscribe(
+                    { emitter.onSuccess(it.members) },
+                    {
+                        it.printStackTrace()
+                        disposable += eventRepository.getSpeakersWithoutPagination(
+                            mapOf(
+                                MemberModel.MEMBER_EVENT to id,
+                                MemberModel.MEMBER_ROLE to MemberModel.MEMBER_ROLE_SPEAKER,
+                                MemberModel.MEMBER_BINDS to "user"
+                            )
+                        ).subscribe(
+                            { list ->
+                                val mSortedList = arrayListOf<MemberModel>()
+                                mSortedList.addAll(list.filter { x -> x.isLead == true }.sortedBy { x -> x.binds?.user?.fullName })
+                                mSortedList.addAll(list.filter { x -> x.isLead == false }.sortedBy { x -> x.binds?.user?.fullName })
+                                insertEventMembers(EventMember(id, mSortedList, System.currentTimeMillis()))
+                                emitter.onSuccess(mSortedList)
+                            },
+                            { error ->
+                                error.printStackTrace()
+                                emitter.onError(error)
+                            }
+                        )
+                    })
+            emitter.setDisposable(disposable)
+        }
     }
 }

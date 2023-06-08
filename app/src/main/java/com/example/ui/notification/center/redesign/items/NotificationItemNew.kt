@@ -45,20 +45,21 @@ import kotlin.math.abs
 abstract class NotificationItemNew<T : ViewDataBinding>(
     private val context: Context,
     private val notification: Notification,
-    private val listener : OnNotificationActionListener
+    private val listener: OnNotificationActionListener
 ) : BindableItem<T>(notification.id.toLong()) {
 
     abstract fun getTitleView(viewBinding: T): TextView
     abstract fun getMessageView(viewBinding: T): TextView
     abstract fun getReadMoreView(viewBinding: T): View
     abstract fun getBadgeView(viewBinding: T): View
+    abstract fun getRootView(viewBinding: T): View
 
 
     private var isExpanded = false
     private val isMessageLong = isMessageTooLong(context, notification.message)
     private val fullMessage = fullMarkdownText(context, notification.message)
     private val shortMessage = ellipsizeMarkdownText(context, notification.message)
-    private var actualMessage : SpannableStringBuilder? = null
+    private var actualMessage: SpannableStringBuilder? = null
 
     init {
         actualMessage = if (isMessageLong) shortMessage
@@ -68,6 +69,11 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
 
     @CallSuper
     override fun bind(viewBinding: T, position: Int) {
+        getRootView(viewBinding).apply {
+            background = if (!notification.wasRead)
+                ContextCompat.getDrawable(context, R.drawable.background_notification_unread)
+            else ContextCompat.getDrawable(context, R.drawable.background_notification_normal)
+        }
         getBadgeView(viewBinding).apply {
             isVisible = !notification.wasRead
         }
@@ -133,7 +139,6 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     }
 
 
-
     private fun isMessageTooLong(context: Context, message: String?): Boolean {
         return if (message.isNullOrEmpty()) false
         else {
@@ -163,10 +168,10 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
     }
 
     private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
-         if (message.isNullOrBlank()) return null
-         else {
+        if (message.isNullOrBlank()) return null
+        else {
             val spanned = markWon(context).toMarkdown(message)
-             return SpannableStringBuilder(spanned).apply {
+            return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {
                     val start = getSpanStart(it)
@@ -178,12 +183,12 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         }
     }
 
-    private fun getNotificationTitle(textView : TextView): SpannableStringBuilder? {
+    private fun getNotificationTitle(textView: TextView): SpannableStringBuilder? {
         if (notification.eventInfo?.name.isNullOrEmpty()) return null
         else {
             val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
             val eventName = CustomSpannableString(notification.eventInfo?.name).apply {
-                setClickSpan(textView){
+                setClickSpan(textView) {
                     if (notification.eventId != null) {
                         listener.onOpenEventClickListener(notification.eventId.toString())
                     }

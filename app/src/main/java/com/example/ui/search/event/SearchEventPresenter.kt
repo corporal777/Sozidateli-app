@@ -34,6 +34,7 @@ import io.reactivex.rxkotlin.plusAssign
 import kotlinx.coroutines.processNextEventInCurrentThread
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -103,7 +104,21 @@ class SearchEventPresenter
         }
     }
 
-    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
+    override fun onActionRegister(event: String, url: String?) {
+        if (url.isNullOrEmpty()) viewState.showEventRequest(event)
+        else {
+            compositeDisposable += eventRepository.checkRegistrationAgreement(event)
+                .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onSuccess = {
+                        if (it.isAccepted()) viewState.showEventRequest(event)
+                        else viewState.showAgreementRegisterDialog(event, url)
+                    }
+                )
+        }
+    }
 
     override fun onActionCancel(event: String, registrationId: String?) {
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
@@ -113,6 +128,16 @@ class SearchEventPresenter
             .subscribeSimple {
                 pagination.invalidate()
             }
+    }
+
+    override fun onAcceptRegistrationAgreement(event: String) {
+        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
+            )
     }
 
 
@@ -151,12 +176,15 @@ class SearchEventPresenter
             put(EventNew.EVENT_OFFSET, offset)
 
             put(SEARCH_EVENT_TYPE, true)
-            //put(SEARCH_EVENT_BINDS, "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState")
 
             //if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            if (!filter.name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%" + filter.name + "%")
+            val binds = "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+            put(SEARCH_EVENT_BINDS, binds)
+
+            val name = filter.name
+            if (!name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%$name%")
 
             if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
             if (filter.format == null && !filter.customFormat.isNullOrBlank())
@@ -181,6 +209,11 @@ class SearchEventPresenter
             if (!filter.addressTownType.isNullOrEmpty()) {
                 put("type", filter.addressTownType!!)
             }
+
+            val topicCategory = filter.theme
+            if (topicCategory != null) put(SEARCH_EVENT_TOPIC_CATEGORY, topicCategory)
+            val topicSubcategory = filter.spec
+            if (topicSubcategory != null) put(SEARCH_EVENT_TOPIC_SUBCATEGORY, topicSubcategory)
 //            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
 //                if (filter.fullAddress != null) {
 //                    if (filter.fullAddress?.country != null) put(
@@ -204,10 +237,6 @@ class SearchEventPresenter
 
 //            val interests = filter.spec ?: filter.theme
 //            if (interests != null) put(SEARCH_EVENT_INTERESTS, interests)
-            val topicCategory = filter.theme
-            if (topicCategory != null) put(SEARCH_EVENT_TOPIC_CATEGORY, topicCategory)
-            val topicSubcategory = filter.spec
-            if (topicSubcategory != null) put(SEARCH_EVENT_TOPIC_SUBCATEGORY, topicSubcategory)
         }
     }
 

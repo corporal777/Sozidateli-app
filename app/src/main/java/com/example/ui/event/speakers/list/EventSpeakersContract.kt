@@ -13,11 +13,11 @@ interface EventSpeakersContract {
         fun setData(data: List<MemberModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeaker(eventId : String, speaker: MemberModel)
+        fun showSpeaker(eventId : String, speakerId: Int)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onSpeakerClick(speaker: MemberModel)
+    interface Presenter : BaseContract.Presenter {
+        fun onSpeakerClick(id: Int)
         fun onRefreshRequest()
     }
 }

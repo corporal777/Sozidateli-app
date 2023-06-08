@@ -8,10 +8,14 @@ import android.graphics.drawable.InsetDrawable
 import android.os.Handler
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import com.example.R
 import com.example.databinding.DialogEventAddedToFavoriteBinding
 
 
-class EventAddedToFavoriteDialog(val context: Context) {
+class EventAddedToFavoriteDialog(
+    val action: Int = 0,
+    val context: Context
+) {
 
     private val mBinding = DialogEventAddedToFavoriteBinding.inflate(LayoutInflater.from(context))
 
@@ -22,7 +26,11 @@ class EventAddedToFavoriteDialog(val context: Context) {
         mBuilder.setView(mBinding.root)
         mBuilder.setCancelable(true)
 
-
+        mBinding.apply {
+            tvTitle.text =
+                if (action == 0) context.getString(R.string.added_to_favorite)
+                else context.getString(R.string.removed_from_favorites)
+        }
         mAlertDialog = mBuilder.create()
         val back = ColorDrawable(Color.TRANSPARENT)
         val inset = InsetDrawable(back, 0)

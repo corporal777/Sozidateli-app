@@ -3,6 +3,8 @@ package com.example.ui.auth.base
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
+import com.example.data.socket.SocketConnectionState
+import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.snAuth.SnAuth
@@ -10,6 +12,7 @@ import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnAuthManager
 import com.vk.sdk.VKScope
 import io.reactivex.rxkotlin.plusAssign
+import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 
 abstract class BaseAuthPresenter<V : BaseAuthContract.View>
@@ -93,6 +96,9 @@ constructor(
             }
         }
     }
+
+
+
 
     override fun onDestroy() {
         super.onDestroy()

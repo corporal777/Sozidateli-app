@@ -526,4 +526,13 @@ class EventRepositoryImp
         return newApi.searchDataNew(map)
             .map { PaginationResponse(it.events.count, it.events.data) }
     }
+
+
+    override fun checkRegistrationAgreement(eventId: String): Maybe<RegistrationAgreementStatus> {
+        return newApi.checkRegistrationAgreement(eventId.toInt())
+    }
+
+    override fun acceptRegistrationAgreement(eventId: String): Maybe<RegistrationAgreementStatus> {
+        return newApi.acceptRegistrationAgreement(eventId.toInt())
+    }
 }

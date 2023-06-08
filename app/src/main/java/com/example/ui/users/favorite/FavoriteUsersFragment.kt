@@ -8,18 +8,20 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.databinding.LayoutListBinding
+import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
+class FavoriteUsersFragment : BaseFragmentNew<LayoutListBinding>(), FavoriteUsersContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteUsersPresenter
@@ -30,7 +32,7 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
     @ProvidePresenter
     fun providePresenter(): FavoriteUsersPresenter = presenterProvider.get()
 
-    private val adapter by lazy {
+    private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
@@ -42,43 +44,37 @@ class FavoriteUsersFragment : BaseFragment(), FavoriteUsersContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = this@FavoriteUsersFragment.adapter
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
-        swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
     }
 
     override fun setData(data: List<UserDetail?>) {
         if (data.isEmpty()) {
-            adapter.update(listOf(
-                NoEventItem(getString(R.string.blank_list_error),
-                    getString(R.string.user_favorites_empty_list_description))
-            ))
+            groupAdapter.updateItem(
+                NoEventItem(
+                    getString(R.string.blank_list_error),
+                    getString(R.string.user_favorites_empty_list_description)
+                )
+            )
         } else {
-            adapter.update(data.map {
+            groupAdapter.update(data.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
-                        it.id,
-                        it.nameLastName,
-                        it.address?.city,
-                        it.image?.uri,
-                        { presenter.onUserClick(it) },
-                        it.getUserSubscribeAction(),
-                        { presenter.onUserRemoveFromFavoritesClick(it) })
-
-                    /*UserItem(
-                        it.user_id,
-                        it.fullName,
-                        it.user_city,
-                        it.user_avatar,
-                        { presenter.onUserClick(it) },
-                        it.getUserSubscribeAction(),
-                        { presenter.onUserRemoveFromFavoritesClick(it) }
-                )*/
+                    it.id,
+                    it.nameLastName,
+                    it.address?.city,
+                    it.loadUserImage(),
+                    { presenter.onUserClick(it) },
+                    it.getUserSubscribeAction(),
+                    { presenter.onUserRemoveFromFavoritesClick(it) })
             })
         }
 
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showUser(user: UserDetail) {

@@ -152,7 +152,8 @@ class SocketIOManagerImpl
             Flowable.create({ emitter ->
                 val listener = Emitter.Listener { args ->
                     Log.i("ChatSocket", "Data: " + args.toString())
-                    emitter.onNext(args[0].toString().toInt())
+                    //emitter.onNext(args[0].toString().toInt())
+                    if (args.first() != null) emitter.onNext(args.first().toString().toInt())
                 }
 
                 mSocket?.on("notification-count", listener)
@@ -163,6 +164,40 @@ class SocketIOManagerImpl
                     mSocket?.off("notification-count", listener)
                 }
             }, BackpressureStrategy.LATEST)
+
+    override fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel> {
+        return Flowable.create({ emitter ->
+            val listener = Emitter.Listener { args ->
+                Log.i("ChatSocket", "Data: " + args.toString())
+                emitter.onNext(Gson().fromJson(args[0].toString(), NotificationInviteModel::class.java))
+            }
+
+            mSocket?.on("notification-invite-types-count", listener)
+            Log.i("NotificationSocket", "Started listening notification-invite-types-count event")
+
+            emitter.setCancellable {
+                Log.i("NotificationSocket", "Stopped listening notification-invite-types-count event")
+                mSocket?.off("notification-invite-types-count", listener)
+            }
+        }, BackpressureStrategy.LATEST)
+    }
+
+    override fun subscribeTotalNotificationsTypesCount(): Flowable<NotificationsTypesModel> {
+        return Flowable.create({ emitter ->
+            val listener = Emitter.Listener { args ->
+                Log.i("ChatSocket", "Data: " + args.toString())
+                emitter.onNext(Gson().fromJson(args[0].toString(), NotificationsTypesModel::class.java))
+            }
+
+            mSocket?.on("notification-types-count", listener)
+            Log.i("NotificationSocket", "Started listening notification-types-count event")
+
+            emitter.setCancellable {
+                Log.i("NotificationSocket", "Stopped listening notification-types-count event")
+                mSocket?.off("notification-types-count", listener)
+            }
+        }, BackpressureStrategy.LATEST)
+    }
 
     override fun subscribeToInvitesCount(): Flowable<Int> =
             Flowable.create({ emitter ->

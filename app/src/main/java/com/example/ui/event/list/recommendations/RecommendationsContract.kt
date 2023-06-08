@@ -12,22 +12,13 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 
 interface RecommendationsContract {
-    interface View : BaseContract.View{
+    interface View : EventListContract.View{
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setData(events: List<EventNew?>, isNeedUpdateApp : Boolean?)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun scrollToPositionWithOffset(position: Int, offset: Int)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showAboutEvent(event: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showEventRequest(event: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSearch()
@@ -37,12 +28,8 @@ interface RecommendationsContract {
 
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
         fun onRefreshRequest()
-
-        fun onActionRegister(event: String)
-        fun onActionCancel(event: String, registrationId: String?)
-        fun onShowEventClick(event: String)
     }
 }

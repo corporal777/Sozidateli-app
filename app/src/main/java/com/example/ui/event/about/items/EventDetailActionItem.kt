@@ -104,11 +104,9 @@ class EventDetailActionItem(
                                 btnBackground = R.drawable.custom_btn_white_ghost_selectable
                                 btnTextColor = R.color.vk_black
                                 clickAction = {
-                                    showAgreementRegisterDialog(
-                                        btnAction.context,
-                                        eventRegistrationState,
-                                        userAgreement
-                                    )
+                                    eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
+                                        clickListener.onActionRegister(userAgreement)
+                                    }
                                 }
                             }
                             "withdraw" -> {
@@ -171,19 +169,6 @@ class EventDetailActionItem(
         }
     }
 
-    private fun showAgreementRegisterDialog(
-        context: Context,
-        eventState: EventRegistrationStateModel,
-        url: String?
-    ) {
-        eventState.prohibitions?.profileLevelToLow?.value.checkStateLevel {
-            if (url.isNullOrEmpty()) clickListener.onActionRegister()
-            else {
-                EventAgreementRegisterDialog(context, url)
-                    .setSelectCallback { clickListener.onActionRegister() }
-            }
-        }
-    }
 
     private fun showEventDescriptionDialog(context: Context) {
         EventDescriptionBottomSheet(context, eventData?.name, eventData?.description).show()
@@ -230,7 +215,7 @@ class EventDetailActionItem(
     override fun getLayout(): Int = R.layout.item_event_detail_action_block
 
     interface OnActionClickListener {
-        fun onActionRegister()
+        fun onActionRegister(url: String?)
         fun onActionCancel()
         fun onShowUpdateState()
         fun onSubscribeEvent()

@@ -160,7 +160,6 @@ class MainPresenter
             }
     }
 
-    var isEditingPhone = false
     private fun loadUser() {
         compositeDisposable += Completable.create { emitter ->
             val disposable = CompositeDisposable()
@@ -168,13 +167,7 @@ class MainPresenter
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     updateUserInShake(user)
-                    disposable += Completable.merge(
-                        listOf(
-                            getInAppRequest(),
-                            checkUserLocation(),
-                            getAdditionalData()
-                        )
-                    )
+                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket(appData.getId()) }
                         .andThen(Completable.defer { checkShowGreetings() })
@@ -189,9 +182,9 @@ class MainPresenter
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
-                    viewState.hideSplashScreen()
                     isAuthRequired = true
                     viewState.apply {
+                        hideSplashScreen()
                         hideLoadingDialog()
                         showLogin()
                         checkIntent()
@@ -199,65 +192,134 @@ class MainPresenter
                     initInternetConnectionCheck()
                 },
                 onComplete = {
-                    viewState.hideSplashScreen()
-                    if (!isEditingPhone) {
-                        viewState.apply {
-                            hideLoadingDialog()
-                            showRecommendations()
-                            checkIntent()
-                        }
-                        showNextInApp()
-                        initInternetConnectionCheck()
+                    viewState.apply {
+                        hideSplashScreen()
+                        hideLoadingDialog()
+                        showRecommendations()
+                        checkIntent()
                     }
-                    isEditingPhone = false
+                    showNextInApp()
+                    initInternetConnectionCheck()
                 }
             )
-        /*
-        val loadUser = userRepository.getUserShortNew().ignoreElement()
-        val inApp = userRepository.getInAppList(
-            mapOf(
-                NotificationModel.NOTIFICATION_LIMIT to 50,
-                NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-//                NotificationModel.NOTIFICATION_IS_IN_APP to 0,
-//                NotificationModel.NOTIFICATION_ACKNOWLEDGED to 0
-            )
-        ).doOnSuccess { inappList = LinkedList(it) }.ignoreElement()
+    }
 
-        compositeDisposable += Completable.merge(listOf(loadUser, checkUserLocation(), inApp))
-            .andThen(Completable.defer { checkInternetConnected() })
-            //.andThen(subscribeToNotifications())
-            .doOnComplete { connectToSocket(appData.getId()) }
-            .andThen(Completable.defer { checkShowGreetings() })
-            //.andThen(Maybe.defer { checkUserEvent() })
+    private fun connectToSocket(userId: Int) {
+        chatCompositeDisposable += socket.connect()
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                val connected = it == SocketConnectionState.CONNECTED
+                chatHelper.isConnectingToSocket = connected
+                if (connected) {
+                    EventBus.getDefault().post(OnSocketConnectEvent())
+                    if (chatCompositeDisposable.size() == 1) {
+                        subscribeChatNewMessage()
+                        subscribeToNotifications()
+                        subscribeChatUnreadCount()
+                        subscribeChatRequestsCount()
+                        updateEmitValues()
+                    }
+                }
+            }, {
+                it.printStackTrace()
+            })
+    }
+
+    private fun updateEmitValues() {
+        compositeDisposable += socket.connectToUpdates()
+            .performOnBackgroundOutOnMain()
+            .subscribe()
+    }
+
+    private fun subscribeToNotifications() {
+        chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
-                    isAuthRequired = true
-                    viewState.apply {
-                        hideLoadingDialog()
-                        showLogin()
-                        checkIntent()
-                    }
-                    initInternetConnectionCheck()
+                    appData.notificationsCount = 0
                 },
-                onComplete = {
-                    if (!isEditingPhone) {
-                        viewState.apply {
-                            hideLoadingDialog()
-                            showRecommendations()
-                            checkIntent()
-                        }
-                        showNextInapp()
-                        initInternetConnectionCheck()
-                    }
-                    isEditingPhone = false
-                },
-                //onSuccess = {}
+                onNext = { nCount ->
+                    Log.e("TOTAL NOTES COUNT", nCount.toString())
+                    appData.notificationsCount = nCount
+                }
             )
-         */
+        chatCompositeDisposable += socket.subscribeTotalNotificationsTypesCount()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = {
+                    Log.e("TOTAL TYPES COUNT", it.toString())
+                    appData.setNotificationsTypes(it)
+                }
+            )
+        chatCompositeDisposable += socket.subscribeNotificationsInvitesCount()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = {
+                    Log.e("TOTAL INVITES COUNT", it.toString())
+                    appData.setNotificationsInvites(it)
+                })
+    }
+
+    private fun subscribeChatUnreadCount() {
+        chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                Log.e("TOTAL MESSAGES COUNT", it.toString())
+                appData.chatUnreadMessageCount = it
+            }, {
+                it.printStackTrace()
+                appData.chatUnreadMessageCount = 0
+            })
+    }
+
+    private fun subscribeChatNewMessage() {
+        chatCompositeDisposable += socket.subscribeNewChatMessage()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onNext = {
+                    Log.e("NEW CHAT MESSAGE", it.data.toString())
+                    it.data.lastOrNull().let { message ->
+                        chatHelper.showNotificationIfCan(
+                            message?.chat.toString(),
+                            message?.id.toString(),
+                            message?.sender?.name + " " + message?.sender?.lastName,
+                            message?.message ?: "",
+                            "",
+                            message?.sender?.avatar
+                        )
+                    }
+                    appData.setNewChatMessage(it.data.lastOrNull())
+                })
+    }
+
+    private fun subscribeChatRequestsCount() {
+        compositeDisposable += Flowable.create<Int>({ emitter ->
+            val disposables = CompositeDisposable()
+            disposables += chatRepository.getChatInvitesCount()
+                .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
+            disposables += socket.subscribeToInvitesCount()
+                .subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
+            emitter.setDisposable(disposables)
+        }, BackpressureStrategy.LATEST)
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                Log.e("CHAT REQUEST COUNT", it.toString())
+                appData.chatRequestsCount = it
+            }, {
+                appData.chatRequestsCount = 0
+            })
+    }
+
+
+    private fun unsubscribeChat() {
+        socket.disconnectFromSocket()
+        chatCompositeDisposable.clear()
     }
 
     private fun initInternetConnectionCheck() {
@@ -296,9 +358,7 @@ class MainPresenter
             Completable.fromAction {
                 viewState.apply {
                     hideAllLoadingDialogs()
-                    if (!isEditingPhone) {
-                        showGreetings()
-                    }
+                    showGreetings()
                 }
             }
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -570,121 +630,11 @@ class MainPresenter
     }
 
     override fun openAuthWebsiteFragment(code: String) {
-        if (!isAuthRequired) {
-            viewState.showAuthWebsiteFragment(code)
-        } else {
+        if (!isAuthRequired) viewState.showAuthWebsiteFragment(code)
+        else {
             isFromQr = true
             viewState.showLogin()
         }
-    }
-
-
-    private fun connectToSocket(userId: Int) {
-        chatCompositeDisposable += socket.connect()
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                val connected = it == SocketConnectionState.CONNECTED
-                chatHelper.isConnectingToSocket = connected
-                if (connected) {
-                    EventBus.getDefault().post(OnSocketConnectEvent())
-                    if (chatCompositeDisposable.size() == 1) {
-                        subscribeChatNewMessage()
-                        subscribeToNotifications()
-                        subscribeChatUnreadCount()
-                        subscribeChatRequestsCount()
-                        emitValueUpdates()
-                    }
-                }
-            }, {
-                it.printStackTrace()
-            })
-    }
-
-    private fun subscribeToNotifications() {
-        compositeDisposable += userRepository.getNotificationNotReadedSize(
-            mapOf(
-                NotificationModel.NOTIFICATION_LIMIT to 1,
-                NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-            )
-        ).performOnBackgroundOutOnMain()
-            .subscribe({
-                appData.notificationsCount = it
-                chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
-                    .performOnBackgroundOutOnMain()
-                    .subscribe({ nCount ->
-                        appData.notificationsCount = nCount
-                    }, {})
-            }, {
-                it.printStackTrace()
-                appData.notificationsCount = 0
-            })
-    }
-
-    private fun subscribeChatUnreadCount() {
-        chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                Log.e("CHAT MESSAGE COUNT", it.toString())
-                appData.chatUnreadMessageCount = it
-            }, {
-                it.printStackTrace()
-                appData.chatUnreadMessageCount = 0
-            })
-    }
-
-    private fun subscribeChatNewMessage() {
-        //chatCompositeDisposable += socket.subscribeToChatUpdate()
-        chatCompositeDisposable += socket.subscribeNewChatMessage()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onNext = {
-                    Log.e("CHAT NEW MESSAGE", it.data.toString())
-                    it.data.lastOrNull().let { message ->
-                        chatHelper.showNotificationIfCan(
-                            message?.chat.toString(),
-                            message?.id.toString(),
-                            message?.sender?.name + " " + message?.sender?.lastName,
-                            message?.message ?: "",
-                            "",
-                            message?.sender?.avatar
-                        )
-                    }
-                    appData.setNewChatMessage(it.data.lastOrNull())
-                })
-    }
-
-    private fun emitValueUpdates() {
-        compositeDisposable += socket.connectToUpdates()
-            .performOnBackgroundOutOnMain()
-            .subscribe()
-    }
-
-    private fun subscribeChatRequestsCount() {
-        compositeDisposable += Flowable.create<Int>({ emitter ->
-            val disposables = CompositeDisposable()
-            disposables += chatRepository.getChatInvitesCount()
-                .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })
-            disposables += socket.subscribeToInvitesCount()
-                .subscribe({ emitter.onNext(it) }, { emitter.onError(it) })
-            emitter.setDisposable(disposables)
-        }, BackpressureStrategy.LATEST)
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                Log.e("CHAT REQUEST COUNT", it.toString())
-                appData.chatRequestsCount = it
-            }, {
-                appData.chatRequestsCount = 0
-            })
-    }
-
-
-    private fun unsubscribeChat() {
-        socket.disconnectFromSocket()
-        chatCompositeDisposable.clear()
     }
 
     override fun onDestroy() {
@@ -752,7 +702,7 @@ class MainPresenter
     }
 
     fun startUpdateTimer(time: Long?, isRequired: Boolean) {
-        var counter = time?:0
+        var counter = time ?: 0
         timerCompositeDisposable.clear()
         timerCompositeDisposable += Observable.interval(1, TimeUnit.MINUTES)
             .performOnBackgroundOutOnMain()
@@ -830,6 +780,7 @@ class MainPresenter
             }
         }
     }
+
 
     companion object {
         private const val EVENT_AREA_DISTANCE = 500

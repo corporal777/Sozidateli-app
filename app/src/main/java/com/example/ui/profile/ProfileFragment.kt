@@ -95,10 +95,12 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
 
 
     override fun setUser(user: UserDetail) {
-        mBinding.ivAvatar.setImage(
-            image = user.image.uri ?: R.drawable.avatar_placeholder_rectangle,
-            transformations = listOf(RoundedCornersTransformation(10f.dp))
-        )
+        mBinding.ivAvatar.apply {
+            setImage(
+                image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
+                transformations = listOf(RoundedCornersTransformation(10f.dp))
+            )
+        }
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -143,7 +145,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
                 setColorSpan(R.color.main_brown_color_new, requireContext())
                 setTextSizeSpan(R.dimen.user_short_name_text_size, requireContext())
                 setFontSpan("fonts/sf_pro_text_medium.ttf", requireContext())
-                setClickSpan(toolbarContent.getToolbarTitleView()){
+                setClickSpan(toolbarContent.getToolbarTitleView()) {
                     presenter.onShowChangeUserShortName()
                 }
                 userShortName = SpannableStringBuilder(userId + "\n").append(this)
@@ -315,7 +317,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
         }
     }
 
-    override fun hideShimmerLoading()  {
+    override fun hideShimmerLoading() {
         mBinding.apply {
             shimmerView.isVisible = false
             clHeader.isVisible = true

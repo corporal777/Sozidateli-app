@@ -2,48 +2,30 @@ package com.example.ui.notification.center.redesign.types.base
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
+import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.Notification
-import com.example.data.models.Organization
-import com.example.databinding.FragmentMaxStateInfoBinding
-import com.example.databinding.LayoutListBinding
+import com.example.databinding.FragmentNotificationsTypesBinding
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
-import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.main.inApp.InAppNotificationFragment
-import com.example.ui.notification.center.NotificationsFragmentDirections
 import com.example.ui.notification.center.redesign.NotificationType
 import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
-import com.example.ui.state.maxNew.base.BaseMaxStateContract
-import com.example.ui.views.toolbar.ToolbarCircleButton
-import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
-import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Presenter> :
-    BaseFragmentNew<LayoutListBinding>(),
-    BaseNotificationTypeContract.View, ToolbarFragment {
+    BaseFragmentNew<FragmentNotificationsTypesBinding>(),
+    BaseNotificationTypeContract.View {
 
     abstract var presenter: P
-
-    private val readAllButton by lazy {
-        ToolbarCircleButton(requireContext()).apply {
-            text = requireContext().getString(R.string.read_all)
-            isVisible = false
-            setOnClickListener { presenter.onReadAllClick() }
-        }
-    }
 
     val contentSection by lazy { Section() }
     private val groupAdapter by lazy {
@@ -62,7 +44,14 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            recyclerView.adapter = groupAdapter
+            notificationsList.adapter = groupAdapter
+            btnReadAll.apply {
+                setOnClickListener { presenter.onReadAllClick() }
+            }
+            toolbarLabel.text = title
+            ivBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
@@ -105,17 +94,10 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun setReadAllButton(show: Boolean) {
-        readAllButton.isVisible = show
+        mBinding.btnReadAll.isInvisible = !show
     }
 
-    override fun layout(): Int = R.layout.layout_list
-    override fun actionIconContainer(view: ViewGroup) {
-        view.apply {
-            removeAllViews()
-            addView(readAllButton)
-        }
-    }
+    abstract val title: CharSequence
 
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun layout(): Int = R.layout.fragment_notifications_types
 }

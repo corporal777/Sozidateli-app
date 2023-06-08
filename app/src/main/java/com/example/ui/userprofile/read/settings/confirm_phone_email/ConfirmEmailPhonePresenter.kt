@@ -78,7 +78,7 @@ class ConfirmEmailPhonePresenter
         compositeDisposable += Completable.create { emitter ->
             val disposable = CompositeDisposable()
             if (loginType == "email") {
-                userRepository.confirmEmailCodeNew(EmailCodeBody(code = code, email = email))
+                authRepository.confirmEmailCode(EmailCodeBody(code = code, email = email))
                     .subscribeSimple(
                         onError = { emitter.onError(it) },
                         onComplete = {
@@ -91,7 +91,7 @@ class ConfirmEmailPhonePresenter
                         }
                     ).call(disposable)
             } else {
-                authRepository.confirmPhone(ConfirmCodeBody("personal", email, code))
+                authRepository.confirmPhoneCode(ConfirmCodeBody("personal", email, code))
                     .subscribeSimple(
                         onError = { emitter.onError(it) },
                         onComplete = { emitter.onComplete() }

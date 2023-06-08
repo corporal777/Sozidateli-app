@@ -36,16 +36,16 @@ import setOnClickListener
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class SubeventInfoItem(
+class SubEventInfoItem(
     private val isApproved: Boolean,
     private val subEvent: EventActivityModel,
-    //private val onFavoriteClickListener: () -> Unit,
     private val onAddClickListener: (subEvent: EventActivityModel) -> Unit,
     private val onRemoveClickListener: (subEvent: EventActivityModel) -> Unit,
     private val onTagCLick: (id: Int) -> Unit
 ) : BindableItem<ItemSubeventInfoBinding>(subEvent.id?.toLong() ?: 0) {
 
     private var activityTime = ""
+
     init {
         val time = subEvent.holdingDate?.from
             .formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
@@ -64,9 +64,8 @@ open class SubeventInfoItem(
             tvTitle.text = subEvent.title
             tvTime.text = activityTime
             tvDescription.apply {
-                //text = subEvent.description
                 isVisible = !subEvent.description.isNullOrEmpty()
-                markWon(context).setMarkdown(this, subEvent.description?:"")
+                markWon(context).setMarkdown(this, subEvent.description ?: "")
             }
 
             val location = subEvent.binds?.auditorium?.name
@@ -78,28 +77,13 @@ open class SubeventInfoItem(
             decorActionButton(btnAddToTimetable, subEvent)
 
             tagsGroup.apply {
-                val createChip: (Tags) -> CompoundButton = {
-                    TagChipNew(context).apply {
-                        id = it.id ?: 0
-                        text = it.name
-                        isChecked = false
-                        isClickable = false
-                        setOnClickListener {
-                            onTagCLick(id)
-                        }
-                    }
-                }
-
                 removeAllViews()
-
                 val listTags = subEvent?.binds?.tag
                 val needTags = subEvent.tag
                 if (!listTags.isNullOrEmpty() && !needTags.isNullOrEmpty()) {
                     listTags.forEach { tag ->
                         needTags.forEach { id ->
-                            if (tag.id == id) {
-                                addView(createChip(tag))
-                            }
+                            if (tag.id == id) addView(createChip(context, tag))
                         }
                     }
 
@@ -146,6 +130,17 @@ open class SubeventInfoItem(
                 }
             }
 
+        }
+    }
+
+
+    private fun createChip(context: Context, tag : Tags): CompoundButton{
+        return TagChipNew(context).apply {
+            id = tag.id ?: 0
+            text = tag.name
+            isChecked = false
+            isClickable = false
+            setOnClickListener { onTagCLick.invoke(tag.id?:0) }
         }
     }
 

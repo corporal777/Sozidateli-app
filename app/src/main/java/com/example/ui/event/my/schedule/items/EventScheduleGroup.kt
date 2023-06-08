@@ -15,13 +15,12 @@ class EventScheduleGroup(
 
     private val mDataItem = Section()
     private val mHeaderItem = Section()
-    private val mNoParamTitle = "По данным параметрам нет событий"
 
     init {
         mHeaderItem.apply {
             update(listOf(
                 EventActivityDateItem(data.firstDate),
-                EventImageHeaderItem(data.getName(), data.getImage(), data.getBackgroundColor()) {
+                EventImageHeaderItem(data.getId(), data.getName(), data.getImage(), data.getBackgroundColor()) {
                     onHeaderClick(data.getId())
                 }
             ))

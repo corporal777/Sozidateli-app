@@ -1,26 +1,17 @@
 package com.example.data.models
 
-import com.example.data.models.user.UserData
+import android.graphics.Bitmap
 
 data class ProfileUserData(
-        var userData: UserData,
-        val editable: Boolean
+    var user: UserDetail,
+    var avatar: Bitmap?,
+    var interests: Map<InterestNew, List<InterestNew>>?
 ) {
-    var user
-        get() = userData.user
-        set(value) {
-            userData.user = value
-        }
 
-    var avatar
-        get() = userData.avatar
-        set(value) {
-            userData.avatar = value
+    fun setUserShortAddress(address: SearchAddressModel){
+        if (address.data?.isNotEmpty() == true){
+            user.address?.shortAddres = address.data[0].region
         }
+    }
 
-    var interests
-        get() = userData.interests
-        set(value) {
-            userData.interests = value
-        }
 }

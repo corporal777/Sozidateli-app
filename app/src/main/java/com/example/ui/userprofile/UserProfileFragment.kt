@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -54,7 +55,7 @@ class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
         startPostponedEnterTransition()
         user ?: return
         mBinding.ivAvatar.apply {
-            val avatarUrl = user.image?.uri?.takeIf { it.isNotBlank() }
+            val avatarUrl = user.loadUserImage()
             transitionName = avatarUrl
             setImage(
                 avatarUrl,

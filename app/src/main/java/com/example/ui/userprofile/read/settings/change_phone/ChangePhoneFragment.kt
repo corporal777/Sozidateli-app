@@ -73,9 +73,7 @@ class ChangePhoneFragment(
         mBinding.etMobilePhone.apply {
             focusOnInput(getEditTextLayout(), true)
             setPhone(phone ?: "")
-            if (!phone.isNullOrEmpty()) {
-                getEditTextLayout().setSelection(phone.length + 1)
-            }
+            setCursorPosition()
             getPhoneCallback {
                 mBinding.btnSave.isEnabled = validatePhone(it)
                 presenter.setNewPhone(it)

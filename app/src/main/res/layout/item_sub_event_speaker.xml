@@ -6,15 +6,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="@drawable/custom_text_background_selectable">
+        android:background="@drawable/custom_text_background_selectable">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/image_container"
             android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             android:layout_marginVertical="10dp"
             android:layout_marginStart="20dp"
-            android:minHeight="180dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,73 +48,62 @@
 
         </androidx.cardview.widget.CardView>
 
-
-        <com.example.ui.views.dialogs_new.LayoutTextView
-            android:id="@+id/tvSpeakersName"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:letterSpacing="-0.01"
-            android:lineSpacingExtra="0.5sp"
-            android:textColor="@color/vk_black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@id/tvSpeakersPosition"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Lorem ipsum dolor sit amet," />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSpeakersPosition"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:letterSpacing="-0.01"
-            android:maxLines="7"
-            android:lineSpacingExtra="0.5sp"
-            android:textColor="@color/input_text_color_disabled_new"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@id/tvSpeakersDescription"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersName"
-            tools:text="Lorem ipsum dolor sit amet," />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSpeakersDescription"
-            fontPath="fonts/sf_pro_display_regular.OTF"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:letterSpacing="-0.01"
-            android:lineSpacingExtra="0.5sp"
-            android:textColor="@color/input_text_color_disabled_new"
-            android:textSize="13sp"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/image_container"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeakersPosition"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
+            app:layout_constraintStart_toEndOf="@id/image_container"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.95" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:textStyle="bold"
+                android:id="@+id/tvSpeakersName"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:letterSpacing="-0.01"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp"
+                tools:text="Lorem ipsum dolor sit amet," />
 
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSpeakersPosition"
+                android:textStyle="bold"
+                fontPath="fonts/sf_pro_display_bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:letterSpacing="-0.01"
+                android:maxLines="5"
+                android:textColor="@color/input_text_color_disabled_new"
+                android:textSize="13sp"
+                tools:text="Lorem ipsum dolor sit amet," />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSpeakersDescription"
+                fontPath="fonts/sf_pro_display_regular.OTF"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:includeFontPadding="false"
+                android:ellipsize="end"
+                android:maxLines="9"
+                android:letterSpacing="-0.01"
+                android:textColor="@color/input_text_color_disabled_new"
+                android:textSize="13sp"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
+
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

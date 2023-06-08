@@ -3,17 +3,18 @@ package com.example.ui.organizations.detail.items
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemOrganizationInfoBinding
+import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import removeUrlUnderline
 
 class OrganizationInfoItem(
-    val links : String?,
-    val socialLinks : String?,
-    val emails : String?,
-    val phones : String?,
-    val address : String?
-) : BindableItem<ItemOrganizationInfoBinding>() {
-
+    val orgId: Long?,
+    val links: String?,
+    val socialLinks: String?,
+    val emails: String?,
+    val phones: String?,
+    val address: String?
+) : BindableItem<ItemOrganizationInfoBinding>(orgId?: 0) {
 
 
     override fun bind(viewBinding: ItemOrganizationInfoBinding, position: Int) {
@@ -47,6 +48,16 @@ class OrganizationInfoItem(
             tvAddress.isVisible = !address.isNullOrEmpty()
             tvAddress.text = address
         }
+    }
+
+    override fun hasSameContentAs(other: Item<*>?): Boolean {
+        if (other !is OrganizationInfoItem) return false
+        if (links != other.links) return false
+        if (socialLinks != other.socialLinks) return false
+        if (emails != other.emails) return false
+        if (phones != other.phones) return false
+        if (address != other.address) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_organization_info

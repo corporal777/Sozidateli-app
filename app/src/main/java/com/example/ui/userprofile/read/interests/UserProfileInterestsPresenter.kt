@@ -22,6 +22,11 @@ class UserProfileInterestsPresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileInterestsContract.View>(appData),
     UserProfileInterestsContract.Presenter {
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.showInterestsPlaceholder()
+    }
+
 
     override fun onUserUpdated(user: UserDetail?) {
         if (user?.isHasInterests() == false) viewState.onInterestsUpdated(emptyMap())
@@ -30,12 +35,10 @@ class UserProfileInterestsPresenter @Inject constructor(
             compositeDisposable += commonRepository.getInterests()
                 .map { groupUserInterests(userInterests, it) }
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
-                .subscribe({
-                    viewState.onInterestsUpdated(it)
-                }, {
-                    it.printStackTrace()
-                })
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onSuccess = { viewState.onInterestsUpdated(it) }
+                )
         }
     }
 

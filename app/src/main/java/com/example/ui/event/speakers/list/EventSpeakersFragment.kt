@@ -9,15 +9,19 @@ import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentEventSpeakersBinding
 import com.example.holders.PlaceholderItem
-import com.example.holders.SpeakerGroup
 import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
+import com.example.ui.subevent.items.SubEventSpeakerItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.appbar.AppBarLayout
+import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.abs
 
 class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
     EventSpeakersContract.View {
@@ -28,31 +32,14 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
     @Inject
     lateinit var presenterProvider: Provider<EventSpeakersPresenter>
 
-
-    private val headerSection by lazy {
-        Section().apply {
-            update(listOf(ScreenHeaderItem(getString(R.string.speakers))))
-        }
-    }
-    private val speakersSection = Section()
-
     @ProvidePresenter
     fun providePresenter(): EventSpeakersPresenter = presenterProvider.get().apply {
-        eventId = EventSpeakersFragmentArgs.fromBundle(
-            requireArguments()
-        ).eventId
+        eventId = EventSpeakersFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
-    private val groupAdapter by lazy {
-        PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            //add(headerSection)
-            add(speakersSection)
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-                override fun onItemTake(position: Int) {
-                    presenter.onItemTake(position)
-                }
-            })
-        }
+    private val speakersSection = Section()
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
+        add(speakersSection)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,37 +48,34 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
             speakersList.apply {
                 adapter = groupAdapter
             }
-            ivBack.setOnClickListener {
-                findNavController().navigateUp()
-            }
+            ivBack.setOnClickListener { findNavController().navigateUp() }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
-
-            appBarLayout.addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-                    updateViews(Math.abs(i / appBarLayout.totalScrollRange.toFloat()))
-                })
+            appBarLayout.offsetChangedListener { appBarLayout, offset ->
+                updateViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
+            }
         }
-
     }
 
 
     override fun setData(data: List<MemberModel?>) {
         speakersSection.update(data.map { speaker ->
             if (speaker == null) PlaceholderItem(PlaceholderItem.Type.SPEAKER_LIST)
-            else SpeakerGroup(
-                speaker,
+            else SubEventSpeakerItem(
+                speaker.id,
+                speaker.binds?.user?.nameLastName,
+                speaker.organizationAndPosition,
+                speaker.description,
+                speaker.binds?.user?.image?.uri,
+                speaker.status,
+                speaker.binds?.user?.state?.isRegistered ?: false
             ) { presenter.onSpeakerClick(it) }
         })
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun showSpeaker(eventId: String, speaker: MemberModel) {
-        findNavController().navigate(
-            EventSpeakersFragmentDirections.actionEventSpeakerFragmentToUserSpeakerFragment(
-                speaker.id.toString(),
-                eventId
-            )
-        )
+    override fun showSpeaker(eventId: String, speakerId: Int) {
+        val args = UserSpeakerFragmentArgs.Builder(speakerId.toString(), eventId).build().toBundle()
+        findNavController().navigate(R.id.user_speaker_fragment, args)
     }
 
     private fun updateViews(offset: Float) {

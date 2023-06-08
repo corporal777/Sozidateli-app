@@ -2,6 +2,7 @@ package com.example.ui.notification.center.redesign
 
 import android.app.NotificationManager
 import android.net.Uri
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
@@ -9,6 +10,7 @@ import com.example.data.bodies.CancelBody
 import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
+import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -18,10 +20,13 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
@@ -32,16 +37,19 @@ class NotificationsListPresenter
     private val userRepository: UserRepository,
     private val eventRepository: EventRepository,
     private val appData: AppData,
-    private val notificationManager: NotificationManager
+    private val notificationManager: NotificationManager,
+    private val socket: SocketIOManager,
 ) : BasePresenter<NotificationsListContract.View>(appData), NotificationsListContract.Presenter {
 
     private var firstLaunch = true
     private var notifications: List<Notification?> = emptyList()
     private var blockInvalidation = false
+    private var isOnResume = false
 
     private var totalUnread = 0
     private var totalUnreadInvites = 0
     private var isHasUnreadNotifications = false
+
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         userRepository.getUserNotifications(buildParams(limit, offset))
@@ -57,30 +65,30 @@ class NotificationsListPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setNotificationsPlaceholder()
+
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (!blockInvalidation) pagination.invalidate()
+                if (!blockInvalidation && isOnResume) pagination.invalidate()
+                else blockInvalidation = false
             }
-
         compositeDisposable += appData.notificationReadSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (!blockInvalidation) pagination.invalidate()
+                //if (!blockInvalidation && isOnResume) pagination.invalidate()
             }
-
         loadNotifications()
     }
 
     private fun loadNotifications() {
-        viewState.setPlaceholder(List(20) { null })
         compositeDisposable += Observable.create(pagination)
             .map { it.groupBy { x -> x.date?.split(" ")?.get(0) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onNext = {
-                    if (!it.isNullOrEmpty()) viewState.setDataNew(it)
+                    if (!it.isNullOrEmpty()) viewState.setData(it)
                     else viewState.showEmptyListPlaceholder()
 
                     viewState.setNotReadButtonEnabled(isHasUnreadNotifications)
@@ -191,48 +199,45 @@ class NotificationsListPresenter
         )
     }
 
+    override fun onNotificationRateClick(eventId: String) {
+    }
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
     }
 
-    override fun onReadAllNotificationsClick() {
+    private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += Completable.fromAction { blockInvalidation = true }
-            .andThen(userRepository.markAllNotificationsAsRead(null))
+            .andThen(request)
+            .andThen(socket.connectToUpdates())
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    blockInvalidation = false
-                    onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
+                onComplete = {
+                    pagination.invalidate()
+                    notificationManager.cancel(notificationId)
+                })
+    }
+
+    override fun onReadAllNotificationsClick() {
+        compositeDisposable += Completable.fromAction { blockInvalidation = true }
+            .andThen(userRepository.markAllNotificationsAsRead(null))
+            .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
                 onSuccess = {
-                    blockInvalidation = false
                     pagination.invalidate()
                     if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet()
                 }
             )
     }
 
-    override fun onNotificationRateClick(eventId: String) {
+    fun setFragmentOnResume(onResume : Boolean){
+        this.isOnResume = onResume
     }
-
-    private fun updateNotification(request: Completable, notificationId: Int) {
-        compositeDisposable += Completable.fromAction { blockInvalidation = true }
-            .andThen(request)
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    blockInvalidation = false
-                    onReceiveError(it)
-                }, onComplete = {
-                    blockInvalidation = false
-                    pagination.invalidate()
-                    notificationManager.cancel(notificationId)
-                })
-    }
-
 
     private fun buildParams(limit: Int, offset: Int): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {

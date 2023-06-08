@@ -13,6 +13,9 @@ interface ActivitiesContract {
 
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setContentPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setTags(tags: List<Tag>?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -48,7 +51,7 @@ interface ActivitiesContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onDaySelected(day: EventScheduleCalendarDay)
-        fun onTagSelectedListChange()
+        fun onTagSelected()
 
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onSchemeClick()

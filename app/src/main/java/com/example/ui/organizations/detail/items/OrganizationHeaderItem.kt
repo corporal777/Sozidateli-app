@@ -8,19 +8,21 @@ import com.example.R
 import com.example.databinding.ItemOrganizationHeaderBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
+import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
 class OrganizationHeaderItem(
+    val orgId: Long?,
     val image: String?,
     val logo: String?,
     val backgroundColor: String?,
     val name: String?,
     val description: String?,
     val userFavorite: Boolean,
-    private val imageClick: (url: String, view:  ImageView) -> Unit,
-    private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
-) : BindableItem<ItemOrganizationHeaderBinding>() {
+    private val imageClick: (url: String, view: ImageView) -> Unit,
+    private val actionClickListener: (isSubscribed : Boolean) -> Unit,
+) : BindableItem<ItemOrganizationHeaderBinding>(orgId ?: 0) {
 
     private var imageColor = ColorDrawable(Color.DKGRAY)
 
@@ -51,7 +53,7 @@ class OrganizationHeaderItem(
                 } else {
                     setImage(logo)
                     setOnClickListener {
-                        imageClick.invoke(logo , ivLogo)
+                        imageClick.invoke(logo, ivLogo)
                     }
                 }
             }
@@ -80,8 +82,19 @@ class OrganizationHeaderItem(
     private fun setSubscribed(isSubscribed: Boolean, button: UserSubscribeButton) {
         button.setActionNew(isSubscribed)
         button.setOnClickListener {
-            actionClickListener.invoke(button.action)
+            actionClickListener.invoke(isSubscribed)
         }
+    }
+
+    override fun hasSameContentAs(other: Item<*>?): Boolean {
+        if (other !is OrganizationHeaderItem) return false
+        if (image != other.image) return false
+        if (logo != other.logo) return false
+        if (backgroundColor != other.backgroundColor) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (userFavorite != other.userFavorite) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_organization_header

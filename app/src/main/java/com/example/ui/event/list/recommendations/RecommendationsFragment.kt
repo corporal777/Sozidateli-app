@@ -14,10 +14,13 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
+import com.example.ui.profile.ProfileFragmentArgs
 import com.example.ui.views.StateType
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
@@ -27,11 +30,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(),
+class RecommendationsFragment :
+    EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
-    lateinit var presenter: RecommendationsPresenter
+    override lateinit var presenter: RecommendationsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<RecommendationsPresenter>
@@ -42,19 +46,14 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
         try {
             val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
-            if (args.isOpenProfile)
-                findNavController().navigate(
-                    RecommendationsFragmentDirections.recommendationsFragmentToProfileFragment(
-                        true
-                    )
-                )
+            if (args.isOpenProfile) showUserProfile()
         } catch (e: Exception) {
 
         }
     }
 
     private val dataGroup = Section()
-    val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
+    private val groupAdapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
         add(dataGroup)
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
@@ -63,21 +62,11 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         })
     }
 
-    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-        override fun onActionCancel(event: String, registrationId: String?) =
-            presenter.onActionCancel(event, registrationId)
-
-        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
-        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             eventsList.apply {
-                adapter = this@RecommendationsFragment.adapter
+                adapter = groupAdapter
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
@@ -96,6 +85,7 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+
     override fun updateActionButton(event: EventNew?) {
         dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
     }
@@ -110,41 +100,20 @@ class RecommendationsFragment : BaseFragmentNew<FragmentRecommendationsBinding>(
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        (mBinding.eventsList.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-            position,
-            offset
-        )
-    }
-
-
     fun smoothScrollToFirstItem() {
         val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
         mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
-    override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
-        )
-    }
 
     override fun showSearch() {
-        findNavController().navigate(
-            RecommendationsFragmentDirections.recommendationsFragmentToSearchFragment(
-                null
-            )
-        )
+        findNavController().navigate(R.id.search_tabs_fragment)
     }
 
-    override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
+    private fun showUserProfile() {
+        val args = ProfileFragmentArgs.Builder(true).build().toBundle()
+        findNavController().navigate(R.id.profile_fragment, args)
     }
-
 
     private fun updateViews(offset: Float) {
 

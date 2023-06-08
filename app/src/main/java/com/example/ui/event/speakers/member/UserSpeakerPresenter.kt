@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.*
+import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
 import com.example.data.models.*
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
@@ -33,40 +34,34 @@ class UserSpeakerPresenter
     lateinit var eventId: String
     lateinit var memberId: String
 
-    lateinit var mUser: UserDetail
-    private var mDy = 0f
+    lateinit var user: UserDetail
+    private var isFirstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadUserData()
+        viewState.setEmptyMainDataPlaceholder()
+        loadSpeakerData()
     }
 
     override fun attachView(view: UserSpeakerContract.View?) {
         super.attachView(view)
-        viewState.changeAppbarElevation(mDy)
+        if (isFirstLaunch) isFirstLaunch = false
+        else loadSpeakerData()
     }
 
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.changeAppbarElevation(mDy)
-    }
-
-    private fun loadUserData() {
-        viewState.setEmptyMainDataPlaceholder()
+    private fun loadSpeakerData() {
         compositeDisposable += eventRepository.getEventMember(memberId)
             .zipWith(eventRepository.getEventDetailForRegister(eventId))
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = {
                     val member = it.first
                     val registerStatus =
                         it.second.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
 
                     if (member.binds?.user != null) {
-                        mUser = member.binds.user
+                        user = member.binds.user
                         viewState.updateSpeaker(member.binds.user)
                     }
                     val listSubEvents = member.binds?.activities?.groupBy { event ->
@@ -77,62 +72,62 @@ class UserSpeakerPresenter
                     viewState.setSpeakerActivities(registerStatus, listSubEvents)
                 })
 
-
     }
 
-    override fun onWriteMessageClick(speaker: UserDetail) {
-        if (speaker.binds?.chatRoomWithMe == null) {
-            compositeDisposable += chatRepository.createChat(CreateChatBody(speaker?.id))
+    override fun onWriteMessageClick() {
+        if (user.binds?.chatRoomWithMe == null) {
+            compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
-                    onError = {
-                        onReceiveError(it)
-                    },
+                    onError = { onReceiveError(it) },
                     onSuccess = {
                         viewState.openChat(
-                            speaker.fullName ?: "",
-                            speaker.image?.uri, it.id.toString()
+                            user.fullName,
+                            user.image.uri,
+                            it.id.toString()
                         )
-                    })
+                    }
+                )
         } else {
             viewState.openChat(
-                speaker.fullName,
-                speaker.image.uri,
-                speaker.binds?.chatRoomWithMe?.id.toString()
+                user.fullName,
+                user.image.uri,
+                user.binds?.chatRoomWithMe?.id.toString()
             )
         }
     }
 
-    override fun onAddSpeakerToFavoriteClick(id: String) {
-        if (mUser.binds?.userFavorite == null)
+    override fun onAddSpeakerToFavoriteClick() {
+        if (user.binds?.userFavorite == null)
             compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
+                AddToFavoriteModel.toBody(
                     appData.getId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, id.toInt())
+                    FAVORITE_SPEAKER,
+                    getUserDetailId().toInt()
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple({
-                    onReceiveError(it)
-                }) {
-                    Log.e("ADDED TO FAVORITE", it.user.toString())
-                    mUser.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    viewState.updateSpeaker(mUser)
-                    viewState.showSpeakerAddedToFavoriteMessage()
-                }
-        else
-            compositeDisposable += eventRepository.deleteFromFavorite(mUser.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple({
-                    onReceiveError(it)
-                }) {
-                    Log.e("DELETED FROM FAVORITE", mUser.binds?.userFavorite?.id.toString())
-                    mUser.binds?.userFavorite = null
-                    viewState.updateSpeaker(mUser)
-                }
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onSuccess = {
+                        user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                        viewState.apply {
+                            updateSpeaker(user)
+                            showEventAddedToFavoriteDialog()
+                        }
+                    })
+        else compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onComplete = {
+                    user.binds?.userFavorite = null
+                    viewState.apply {
+                        updateSpeaker(user)
+                        showEventRemovedFromFavoriteDialog()
+                    }
+                })
     }
 
 
@@ -143,11 +138,9 @@ class UserSpeakerPresenter
     }
 
     override fun onGoToProfileClick() {
-        if (appData.isCurrentUser(mUser.id.toString())){
+        if (appData.isCurrentUser(user.id.toString())) {
             viewState.showCurrentUserProfile()
-        }else {
-            viewState.showUserProfile(mUser.id.toString())
-        }
+        } else viewState.showUserProfile(user.id.toString())
     }
 
     override fun onItemTake(position: Int) {
@@ -201,5 +194,10 @@ class UserSpeakerPresenter
     }
 
     fun isCurrentUser() = getUserDetailId() == appData.getId().toString()
-    fun getUserDetailId(): String = mUser.id.toString()
+    fun isUserRegistered(): Boolean {
+        if (this::user.isInitialized) return user.state?.isRegistered ?: false
+        else return false
+    }
+
+    private fun getUserDetailId(): String = user.id.toString()
 }

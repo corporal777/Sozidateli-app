@@ -38,7 +38,7 @@ class EventItemNew(
     val address: String?,
     val dateFrom: String?,
     val dateTo: String?,
-    private val onEventClickListener: OnEventClickListener
+    private val clickListener: OnEventClickListener
 ) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
 
     private val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
@@ -51,10 +51,7 @@ class EventItemNew(
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
             cardEvent.setOnClickListener {
-                onEventClickListener.onShowEventClick(
-                    viewBinding.root,
-                    eventId
-                )
+                clickListener.onShowEventClick(viewBinding.root, eventId)
             }
 
             tvDate.text = date
@@ -62,11 +59,9 @@ class EventItemNew(
             tvTitle.text = name
             ivLogo.apply {
                 setImage(logo ?: imageColor)
-                colorFilter =
-                    if (status == Event.Status.CANCELED) ColorMatrixColorFilter(ColorMatrix().apply {
-                        setSaturation(0f)
-                    })
-                    else null
+                colorFilter = if (status == Event.Status.CANCELED)
+                    ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
+                else null
             }
 
             setApproveStatus(tvEventState, status, userRegistration)
@@ -148,9 +143,7 @@ class EventItemNew(
                                 text = context.getString(R.string.event_action_participate)
                                 setOnClickListener {
                                     profileLevel.checkStateLevel {
-                                        if (userAgreement.isNullOrEmpty())
-                                            onEventClickListener.onActionRegister(eventId)
-                                        else showAgreementRegisterDialog(context, userAgreement)
+                                        clickListener.onActionRegister(eventId, userAgreement)
                                     }
                                 }
                             }
@@ -160,10 +153,7 @@ class EventItemNew(
                                 text = context.getString(R.string.event_action_cancel_request)
                                 setOnClickListener {
                                     profileLevel.checkStateLevel {
-                                        onEventClickListener.onActionCancel(
-                                            eventId,
-                                            registrationId
-                                        )
+                                        clickListener.onActionCancel(eventId, registrationId)
                                     }
                                 }
                             }
@@ -177,14 +167,9 @@ class EventItemNew(
 
     private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
         if (this == false) hasLevel()
-        else onEventClickListener.onShowUpdateState()
+        else clickListener.onShowUpdateState()
     }
 
-    private fun showAgreementRegisterDialog(context: Context, url: String) {
-        EventAgreementRegisterDialog(context, url).setSelectCallback {
-            onEventClickListener.onActionRegister(eventId)
-        }
-    }
 
     override fun getLayout() = R.layout.item_event_new
 
@@ -231,7 +216,7 @@ class EventItemNew(
     }
 
     interface OnEventClickListener {
-        fun onActionRegister(event: String)
+        fun onActionRegister(event: String, agreementUrl: String?)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(view: View, event: String)
         fun onShowUpdateState()

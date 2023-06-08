@@ -18,7 +18,6 @@
             android:id="@+id/iv_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/custom_toolbar_btn_background_selectable"
             android:padding="10dp"
@@ -30,45 +29,37 @@
         <TextView
             android:id="@+id/toolbar_label"
             fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:letterSpacing="-0.02"
-            android:text="@string/chat_list"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.025"
+            android:paddingHorizontal="5dp"
             android:textColor="@android:color/black"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/iv_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/custom_toolbar_btn_background_selectable"
-            android:minWidth="40dp"
-            android:minHeight="40dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_about_session"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/estimates_rf" />
 
         <LinearLayout
             android:id="@+id/toolbar_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:minWidth="40dp"
             android:orientation="horizontal"
+            android:paddingTop="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

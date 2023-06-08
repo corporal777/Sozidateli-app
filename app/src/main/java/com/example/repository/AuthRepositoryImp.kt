@@ -105,6 +105,7 @@ class AuthRepositoryImp
     override fun registerUser(body: RegisterBody): Completable {
         return newApi.registerUser(body).doOnSuccess {
             appData.saveId(it.id)
+            if (it.token != null) appData.login(it.token)
         }.ignoreElement()
     }
 
@@ -125,10 +126,15 @@ class AuthRepositoryImp
         return newApi.registerPhoneResend(appData.getId(), type, phone)
     }
 
-    override fun confirmPhone(body: ConfirmCodeBody): Completable {
-        return callNewAuthCompletable(newApi.confirmPhone(appData.getId(), body))
+    override fun confirmPhoneCode(body: ConfirmCodeBody): Completable {
+        return callNewAuthCompletable(newApi.confirmPhoneCode(appData.getId(), body))
     }
 
+    override fun confirmEmailCode(body: EmailCodeBody): Completable =
+        newApi.confirmEmailCode(appData.getId(), body).doOnSuccess {
+            appData.login(it.token)
+            appData.saveId(it.id)
+        }.ignoreElement()
 
     /*override fun registerSnResend(email: String, token: String): Completable {
         return callAuthCompletable(api.registerSnResend(email, token))

@@ -34,5 +34,7 @@ data class OrganizationPosition(
 )
 
 data class OrganizationBinds(
-        val user: UserDetail?
+        val user: UserDetail?,
+        @SerializedName("userFavorite")
+        var userFavorite: EventUserFavorite?
 )

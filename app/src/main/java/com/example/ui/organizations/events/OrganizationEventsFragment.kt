@@ -9,12 +9,14 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.LayoutListBinding
+import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.EventRegistrationProfileFieldsDialog
@@ -27,11 +29,13 @@ import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationEventsFragment : BaseFragmentNew<LayoutListBinding>(), OrganizationEventsContract.View, ToolbarFragment {
+class OrganizationEventsFragment :
+    EventListFragment<OrganizationEventsPresenter, LayoutListBinding>(),
+    OrganizationEventsContract.View, ToolbarFragment {
 
 
     @InjectPresenter
-    lateinit var presenter: OrganizationEventsPresenter
+    override lateinit var presenter: OrganizationEventsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<OrganizationEventsPresenter>
@@ -42,7 +46,6 @@ class OrganizationEventsFragment : BaseFragmentNew<LayoutListBinding>(), Organiz
     }
 
     private val dataGroup = Section()
-
     private val groupAdapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
         add(dataGroup)
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
@@ -52,12 +55,6 @@ class OrganizationEventsFragment : BaseFragmentNew<LayoutListBinding>(), Organiz
         })
     }
 
-    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
-        override fun onActionCancel(event: String, registrationId: String?) = presenter.onActionCancel(event, registrationId)
-        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
-        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,46 +93,14 @@ class OrganizationEventsFragment : BaseFragmentNew<LayoutListBinding>(), Organiz
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
+        dataGroup.updateItem(NoDataItem(getString(R.string.empty_list_placeholder_message)))
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle())
-
-    }
-
-    override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
-    }
-
-
-    override fun showRegistrationFieldsRequest(fields: List<String>) {
-        EventRegistrationProfileFieldsDialog(requireContext(), fields) {
-            presenter.onShowEditProfileClick()
-        }.show()
-    }
-
-    override fun showEditProfile(id: String) {
-        findNavController().navigate(
-            R.id.user_profile_fragment,
-            UserFragmentArgs.Builder(id).build().toBundle()
-        )
-    }
 
     override fun layout(): Int = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_events) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.recyclerView.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

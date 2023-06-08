@@ -469,7 +469,7 @@ fun saveImageToCache(context: Context, image: Bitmap): Uri? {
 }
 
 
-fun pdfToBitmap(url: String, context: Context, index : Int) : Bitmap? {
+fun pdfToBitmap(url: String, context: Context, index: Int): Bitmap? {
     val client = OkHttpClient()
     val request = Request.Builder().url(url)
         .addHeader("Content-Type", "application/json")
@@ -500,7 +500,7 @@ fun pdfToBitmap(url: String, context: Context, index : Int) : Bitmap? {
     }
 }
 
-fun pdfToUri(url: String, context: Context, index : Int): Uri? {
+fun pdfToUri(url: String, context: Context, index: Int): Uri? {
     val client = OkHttpClient()
     val request = Request.Builder().url(url)
         .addHeader("Content-Type", "application/json")
@@ -529,7 +529,11 @@ fun pdfToUri(url: String, context: Context, index : Int): Uri? {
         bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
         stream.flush()
         stream.close()
-        return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", pdfFile)
+        return FileProvider.getUriForFile(
+            context,
+            BuildConfig.APPLICATION_ID + ".provider",
+            pdfFile
+        )
     } catch (e: IOException) {
         e.printStackTrace()
         return null
@@ -588,11 +592,13 @@ fun getNameFilter(): Array<InputFilter> {
 }
 
 fun getPhoneFilter(): Array<InputFilter> {
-    return arrayOf(InputFilter { source, _, _, _, _, _ ->
-        source.toString().filter {
-            it.isDigit() || it == '+'
-        }
-    })
+    return arrayOf(
+        InputFilter { source, start, end, dest, dStart, dEnd ->
+            source.toString().filterIndexed { index, it ->
+                if (index == 0) it.isDigit() || it == '+'
+                else it.isDigit()
+            }
+        })
 }
 
 

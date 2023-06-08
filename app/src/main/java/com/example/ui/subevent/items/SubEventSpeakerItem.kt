@@ -5,80 +5,84 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemSubEventSpeakerBinding
+import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.util.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
 class SubEventSpeakerItem(
-    private val name: String,
-    private val orgPosition: String,
-    private val description: String,
+    private val id: Int?,
+    private val name: String?,
+    private val orgPosition: String?,
+    private val description: String?,
     private val avatar: String?,
-    val status: String,
+    val status: String?,
     val isRegistered: Boolean,
-    private val onSpeakerClick: () -> Unit
-) : BindableItem<ItemSubEventSpeakerBinding>() {
+    private val onSpeakerClick: (id: Int) -> Unit
+) : BindableItem<ItemSubEventSpeakerBinding>(id?.toLong() ?: 0) {
 
-    private var speakerName = name
-    private var speakerPosition = StringBuilder(orgPosition.replace("\n", " ")).toString()
-    //private var speakerDescription = StringBuilder(description.replace("\n", " ")).toString()
-    private var speakerDescription = StringBuilder(description).toString()
+    private val speakerName = name
 
-//    private var speakerDescription =
-//        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    private val speakerPosition =
+        if (orgPosition.isNullOrEmpty()) ""
+        else StringBuilder(orgPosition.replace("\n", " ")).toString()
+
+    private val speakerDescription =
+        if (description.isNullOrEmpty()) ""
+        else StringBuilder(description.replace("\n", " ")).toString()
+
 
     override fun bind(viewBinding: ItemSubEventSpeakerBinding, position: Int) {
         viewBinding.apply {
-
             ivSpeakerImage.setImage(avatar, error = R.drawable.empty_speaker_avatar)
+
             tvSpeakersName.text = speakerName
             tvSpeakersPosition.apply {
                 isVisible = !speakerPosition.isNullOrEmpty()
                 text = speakerPosition
             }
-
-            if (!speakerName.isNullOrEmpty()){
-                var linesCount = 10
-                tvSpeakersName.setOnLayoutListener { n ->
-                    if (n.lineCount > 0) {
-                        linesCount -= n.lineCount
-                        tvSpeakersDescription.apply {
-                            maxLines = linesCount
-                            markWon(context).setMarkdown(this, speakerDescription)
-                            //text = speakerDescription
-                        }
-                    }
-                }
+            tvSpeakersDescription.apply {
+                markWon(context).setMarkdown(this, speakerDescription)
             }
 
+//            if (!speakerName.isNullOrEmpty()){
+//                var linesCount = 10
+//                tvSpeakersName.setOnLayoutListener { n ->
+//                    if (n.lineCount > 0) {
+//                        linesCount -= n.lineCount
+//                        tvSpeakersDescription.apply {
+//                            maxLines = linesCount
+//                            markWon(context).setMarkdown(this, speakerDescription)
+//                            //text = speakerDescription
+//                        }
+//                    }
+//                }
+//            }
+
             root.setOnClickListener {
-                onSpeakerClick.invoke()
+                onSpeakerClick.invoke(id ?: 0)
             }
 
             decorSpeakerStatus(status, ivSpeakerStatus)
         }
     }
 
-    private fun decorSpeakerStatus(status: String, imageView: ImageView) {
+    private fun decorSpeakerStatus(status: String?, imageView: ImageView) {
         var mIcon = 0
         var mText = ""
         var visibility = false
         if (isRegistered) {
             when (status) {
                 "pending" -> {
-                    if (isRegistered) {
-                        visibility = true
-                        mIcon = R.drawable.ic_speaker_status_pending
-                        mText =
-                            "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
-                    }
+                    visibility = true
+                    mIcon = R.drawable.ic_speaker_status_pending
+                    mText = "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                 }
                 "approved" -> {
                     visibility = true
                     mIcon = R.drawable.ic_speaker_status_confirmed
-                    mText =
-                        "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                    mText = "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                 }
                 else -> visibility = false
             }
@@ -88,14 +92,24 @@ class SubEventSpeakerItem(
             mText = "Спикер еще не зарегистрирован в «Созидателях»"
         }
 
-        imageView.setImageResource(mIcon)
         imageView.apply {
             isVisible = visibility
+            setImageResource(mIcon)
             setOnClickListener {
                 MessageDialogWithBrownButton(context, mText)
             }
         }
+    }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is SubEventSpeakerItem) return false
+        if (name != other.name) return false
+        if (orgPosition != other.orgPosition) return false
+        if (description != other.description) return false
+        if (avatar != other.avatar) return false
+        if (status != other.status) return false
+        if (isRegistered != other.isRegistered) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_sub_event_speaker

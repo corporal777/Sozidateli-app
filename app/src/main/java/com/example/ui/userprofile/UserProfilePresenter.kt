@@ -79,7 +79,7 @@ class UserProfilePresenter @Inject constructor(
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple(onSuccess = {})
                     updateUserInternal {
-                        image = ImageModel(null, null, null, null, null, null)
+                        image = ImageModel(null, null, null, null, null)
                     }
                 }
             )
@@ -92,7 +92,6 @@ class UserProfilePresenter @Inject constructor(
     override fun onInterestsClick() {
         if (!user.isHasInterests()) viewState.showEdit()
         else viewState.showInterests()
-            //viewState.showNextScreen()
     }
 
     override fun onEducationClick() = viewState.showEducation()

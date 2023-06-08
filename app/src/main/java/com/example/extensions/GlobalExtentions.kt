@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ContentResolver
@@ -36,6 +37,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -43,6 +45,13 @@ import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
+import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.chatList.ChatListTabsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.my.MyEventsFragmentNew
+import com.example.ui.main.MainActivity
+import com.example.ui.notification.center.NotificationsFragment
+import com.example.ui.profile.ProfileFragment
 import com.example.util.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
@@ -138,7 +147,7 @@ fun ViewPager2.onPageChanged(
     return listener
 }
 
-fun onPageChanged(onPageChanged: (position : Int) -> Unit): ViewPager.SimpleOnPageChangeListener {
+fun onPageChanged(onPageChanged: (position: Int) -> Unit): ViewPager.SimpleOnPageChangeListener {
     val pageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
             onPageChanged(position)
@@ -148,7 +157,7 @@ fun onPageChanged(onPageChanged: (position : Int) -> Unit): ViewPager.SimpleOnPa
 }
 
 fun AppBarLayout.offsetChangedListener(
-    offsetChanged: (appBarLayout : AppBarLayout, offset : Int) -> Unit
+    offsetChanged: (appBarLayout: AppBarLayout, offset: Int) -> Unit
 ): AppBarLayout.OnOffsetChangedListener {
     val listener = object : AppBarLayout.OnOffsetChangedListener {
         override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) =
@@ -192,7 +201,7 @@ fun NestedScrollView.onScrolled(onScrolled: (scrollY: Int, oldScrollY: Int, scro
 fun getFragmentLifecycleCallback(
     onFragmentStarted: (f: Fragment) -> Unit?,
     onFragmentStopped: (f: Fragment) -> Unit?,
-    onFragmentDestroyed:(f: Fragment) -> Unit?,
+    onFragmentDestroyed: (f: Fragment) -> Unit?,
     onViewCreated: (f: Fragment) -> Unit,
 ): FragmentManager.FragmentLifecycleCallbacks {
     val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -202,7 +211,12 @@ fun getFragmentLifecycleCallback(
             onFragmentDestroyed(f)
         }
 
-        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            v: View,
+            savedInstanceState: Bundle?
+        ) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
             onViewCreated(f)
         }
@@ -221,7 +235,6 @@ fun getFragmentLifecycleCallback(
     }
     return callback
 }
-
 
 
 fun TextView.checkIsEllipsized(onChecked: (Boolean) -> Unit) {
@@ -633,3 +646,15 @@ fun Fragment.onBackPressedCallback(
             }
         })
 }
+
+fun Activity.onBackPressedCallback(
+    enabled: Boolean,
+    onBackClick: () -> Unit
+): OnBackPressedCallback {
+    return object : OnBackPressedCallback(enabled) {
+        override fun handleOnBackPressed() {
+            onBackClick.invoke()
+        }
+    }
+}
+

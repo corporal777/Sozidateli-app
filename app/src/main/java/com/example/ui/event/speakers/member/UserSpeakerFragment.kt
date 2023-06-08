@@ -2,6 +2,7 @@ package com.example.ui.event.speakers.member
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -13,24 +14,44 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserSpeakerBinding
 import com.example.extensions.dp
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.chat.ChatFragmentArgs
 import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.speakers.member.items.UserSpeakerMainInfoItem
 import com.example.ui.subevent.SubEventFragmentArgs
-import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
+import com.example.ui.user.UserFragmentArgs
+import com.example.ui.views.UserSubscribeImageView
+import com.example.ui.views.toolbar.ToolbarCircleButton
+import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
-    UserSpeakerContract.View {
+    UserSpeakerContract.View, ToolbarFragment {
 
+
+    private val goToProfileButton by lazy {
+        ToolbarCircleButton(requireContext()).apply {
+            text = requireContext().getString(R.string.go_to_profile)
+            isVisible = false
+            setOnClickListener { presenter.onGoToProfileClick() }
+        }
+    }
+
+    private val addToFavoriteButton by lazy {
+        UserSubscribeImageView(requireContext()).apply {
+            isVisible = false
+            setOnClickListener { presenter.onAddSpeakerToFavoriteClick() }
+        }
+    }
 
     @InjectPresenter
     lateinit var presenter: UserSpeakerPresenter
@@ -41,8 +62,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
     @ProvidePresenter
     fun providePresenter(): UserSpeakerPresenter = presenterProvider.get().apply {
-        val args =
-            UserSpeakerFragmentArgs.fromBundle(requireArguments())
+        val args = UserSpeakerFragmentArgs.fromBundle(requireArguments())
         memberId = args.userId
         eventId = args.eventId
     }
@@ -80,71 +100,42 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
         mBinding.apply {
             listSpeakersContent.apply {
                 this.adapter = groupAdapter
-                onScrolled { _, dy ->
-                    presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
-                }
-            }
-
-            ivBack.setOnClickListener {
-                findNavController().navigateUp()
-            }
-            ivAddToFavorite.setOnClickListener {
-                presenter.onAddSpeakerToFavoriteClick(presenter.getUserDetailId())
-            }
-            btnGoToProfile.setOnClickListener {
-                presenter.onGoToProfileClick()
             }
         }
-
-
     }
 
-    override fun changeAppbarElevation(value: Float) {
-        mBinding.appBar.apply {
-            changeAppBarElevation(value)
-        }
-    }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
-        findNavController().navigate(
-            UserSpeakerFragmentDirections.userToChat(userName, chatId)
-                .apply {
-                    setUserAvatar(userAvatar)
-                })
+        val args = ChatFragmentArgs.Builder(userName, chatId)
+            .setUserAvatar(userAvatar).build().toBundle()
+        findNavController().navigate(R.id.chat_fragment, args)
     }
 
 
     override fun setSpeakersMainInfo(speaker: MemberModel, isCurrentUser: Boolean) {
         mBinding.apply {
-            if (speaker.binds?.user?.state?.isRegistered == true) {
-                if (!isCurrentUser) {
-                    ivAddToFavorite.isVisible = true
-                } else {
-                    toolbarContent.setPadding(0, 0, 15.dp, 0)
+            addToFavoriteButton.apply {
+                isVisible = presenter.isUserRegistered() && !isCurrentUser
+            }
+            goToProfileButton.apply {
+                isVisible = speaker.binds?.user?.state?.isRegistered ?: false
+                if (!isCurrentUser && addToFavoriteButton.isVisible) {
+                    setButtonMargins(0, 0, 0, 10.dp)
                 }
-                btnGoToProfile.isVisible = true
-            } else {
-                ivAddToFavorite.isVisible = false
-                btnGoToProfile.isVisible = false
             }
         }
 
-
-        mainDataSection.update(
-            listOf(
-                UserSpeakerMainInfoItem(
-                    presenter.isCurrentUser(),
-                    speaker.binds?.user,
-                    speaker.binds?.user?.nameLastName ?: "",
-                    speaker.organizationAndPosition ?: "",
-                    speaker.description,
-                    speaker.binds?.user?.image?.uri,
-                    speaker.status ?: "",
-                    speaker.binds?.user?.state?.isRegistered ?: false
-                ) {
-                    presenter.onWriteMessageClick(it)
-                }
-            )
+        mainDataSection.updateItem(
+            UserSpeakerMainInfoItem(
+                speaker.id,
+                presenter.isCurrentUser(),
+                speaker.binds?.user?.nameLastName,
+                speaker.organizationAndPosition,
+                speaker.description,
+                speaker.binds?.user?.image?.uri,
+                speaker.status,
+                presenter.isUserRegistered()
+            ) { presenter.onWriteMessageClick() }
         )
     }
 
@@ -167,7 +158,11 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
 
 
     override fun setEmptyMainDataPlaceholder() {
-        mainDataSection.update(listOf(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN)))
+        mainDataSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN))
+    }
+
+    override fun updateSpeaker(speaker: UserDetail) {
+        addToFavoriteButton.setActionAlternative(speaker.binds?.userFavorite == null)
     }
 
     override fun updateSubEvent(subEvent: EventActivityModel) {
@@ -182,27 +177,26 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
     }
 
     override fun showUserProfile(userId: String) {
-        findNavController().navigate(
-            UserSpeakerFragmentDirections.speakerToUser(
-                userId
-            )
-        )
+        val args = UserFragmentArgs.Builder(userId).build().toBundle()
+        findNavController().navigate(R.id.user_fragment, args)
     }
 
     override fun showCurrentUserProfile() {
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
-    override fun showSpeakerAddedToFavoriteMessage() {
-        EventAddedToFavoriteDialog(requireContext())
-    }
 
-    override fun updateSpeaker(speaker: UserDetail) {
-        mBinding.apply {
-            ivAddToFavorite.setActionAlternative(speaker.binds?.userFavorite == null)
+    override fun layout(): Int = R.layout.fragment_user_speaker
+    override val title: CharSequence by lazy { "" }
+
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            removeAllViews()
+            addView(goToProfileButton, 0)
+            addView(addToFavoriteButton, 1)
         }
     }
 
-
-    override fun layout(): Int = R.layout.fragment_user_speaker
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

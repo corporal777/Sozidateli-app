@@ -25,6 +25,7 @@ import com.example.data.models.ChatMessage
 import com.example.data.models.Message
 import com.example.databinding.FragmentChatBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
@@ -71,7 +72,10 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
         get() = arguments?.let { ChatFragmentArgs.fromBundle(it).chatId }
 
     private val imageClickListener = { url: String, imageView: ImageView ->
-        val opt = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), Pair(imageView, imageView.transitionName))
+        val opt = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            requireActivity(),
+            Pair(imageView, imageView.transitionName)
+        )
 
         findNavController().navigate(
             R.id.image_view_activity,
@@ -119,11 +123,14 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
         }
     }
 
+    override fun setChatPlaceholder() {
+        chatSection.updateItem(PlaceholderItem(PlaceholderItem.Type.CHAT))
+    }
+
     override fun updateMessages(showAnim: Boolean, messages: List<ChatMessage>) {
         chatSection.update(messages.map {
-            if (animCounter < 8) {
-                animCounter++
-            }
+            if (animCounter < 8) animCounter++
+
             when (it) {
                 is ChatMessage.NewMessages -> {
                     ChatUnreadLabelItem(it.count)
@@ -161,11 +168,8 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
 
 
     override fun scrollListToPosition(position: Int, smooth: Boolean) {
-        if (smooth) {
-            mBinding.rvChat.smoothScrollToPosition(position)
-        } else {
-            mBinding.rvChat.scrollToPosition(0)
-        }
+        if (smooth) mBinding.rvChat.smoothScrollToPosition(position)
+        else mBinding.rvChat.scrollToPosition(0)
     }
 
     override fun setUserNameAvatar(url: String, name: String) {

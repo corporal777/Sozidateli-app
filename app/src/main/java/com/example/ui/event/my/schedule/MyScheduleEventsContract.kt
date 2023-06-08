@@ -13,6 +13,9 @@ interface MyScheduleEventsContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setContentPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setHeaderCalendar(days: List<List<EventScheduleCalendarDay>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)

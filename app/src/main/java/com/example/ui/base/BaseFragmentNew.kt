@@ -20,6 +20,7 @@ import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
+import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.Utils
 import com.google.android.material.transition.MaterialSharedAxis
@@ -80,6 +81,7 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
         mActivity = null
         super.onDetach()
     }
+
 
     @LayoutRes
     abstract fun layout(): Int
@@ -240,6 +242,14 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
             )
                 .setSelectCallback { }
         }
+    }
+
+    override fun showEventAddedToFavoriteDialog() {
+        EventAddedToFavoriteDialog(0, requireContext())
+    }
+
+    override fun showEventRemovedFromFavoriteDialog() {
+        EventAddedToFavoriteDialog(1, requireContext())
     }
 
     override fun showNotificationErrorMessage() {

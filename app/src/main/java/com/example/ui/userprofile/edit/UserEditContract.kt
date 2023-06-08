@@ -81,6 +81,9 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showInterestsPlaceholder()
     }
 
     interface Presenter : BaseContract.Presenter {

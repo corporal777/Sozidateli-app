@@ -47,15 +47,14 @@ class MyScheduleEventsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setContentPlaceholder()
         getEventsList()
     }
 
     override fun attachView(view: MyScheduleEventsContract.View?) {
         super.attachView(view)
         if (isFirstLaunch) isFirstLaunch = false
-        else {
-            viewState.getResultForUpdate()
-        }
+        else viewState.getResultForUpdate()
     }
 
     fun getEventsList() {
@@ -72,24 +71,14 @@ class MyScheduleEventsPresenter
                     subEvent.binds?.activity
                         ?.filter { x -> x.binds?.userCalendar != null }
                         ?.sortedBy { x -> x.holdingDate?.from }
-                        ?.forEach { x ->
-                            subEventsList.add(x)
-                        }
+                        ?.forEach { x -> subEventsList.add(x) }
                 }
                 Maybe.just(subEventsList.sortedBy { x -> x.holdingDate?.from })
             }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (isFirstLaunch) {
-                    it.withProgressBarLoadingDialog(viewState)
-                } else it
-            }
             .subscribeSimple {
-                if (eventsList.isNullOrEmpty()) {
-                    viewState.showEmptyListPlaceholder()
-                } else {
-                    initCalendarDays(it)
-                }
+                if (eventsList.isNullOrEmpty()) viewState.showEmptyListPlaceholder()
+                else initCalendarDays(it)
             }
     }
 
@@ -113,9 +102,7 @@ class MyScheduleEventsPresenter
 
 
     private fun initMainDataContent(nearDay: EventScheduleCalendarDay) {
-        compositeDisposable += Maybe.fromCallable {
-            transformDataToShow(eventsList, mSearchText)
-        }
+        compositeDisposable += transformDataRequest(eventsList, mSearchText)
             .performOnBackgroundOutOnMain()
             .subscribeSimple { list ->
                 viewState.apply {
@@ -173,14 +160,13 @@ class MyScheduleEventsPresenter
     }
 
     override fun onSearchTextSubmit(text: String) {
+        viewState.hideKeyboard()
         mSearchText = text
         updateData(text)
     }
 
     private fun updateData(text: String) {
-        compositeDisposable += Flowable.fromCallable {
-            transformDataToShow(eventsList, text)
-        }
+        compositeDisposable += transformDataRequest(eventsList, text)
             .performOnBackgroundOutOnMain()
             .subscribeSimple { events ->
                 if (events.isNullOrEmpty()) {
@@ -214,48 +200,39 @@ class MyScheduleEventsPresenter
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    catchEventError(it)
-                },
-                onComplete = {
-                    if (subEvent.binds?.userCalendar == null) {
-                        getEventsList()
-                    }
-                })
+                onError = { catchEventError(it) },
+                onComplete = { if (subEvent.binds?.userCalendar == null) getEventsList() }
+            )
     }
 
-    private fun transformDataToShow(
-        eventsList: List<EventNew?>,
-        text: String
-    ): List<EventScheduleData> {
-        val listScheduleEvents = arrayListOf<EventScheduleData>()
+    private fun transformDataRequest(eventsList: List<EventNew?>, text: String): Flowable<List<EventScheduleData>> {
+        return Flowable.fromCallable {
+            val listScheduleEvents = arrayListOf<EventScheduleData>()
 
-        eventsList.forEach { event ->
-            val firstDate = event?.binds?.activity
-                ?.filter { x -> x.binds?.userCalendar != null }
-                ?.sortedBy { x -> x.holdingDate?.from }
-                ?.firstOrNull()?.holdingDate?.from?.split(" ")?.get(0) ?: ""
+            eventsList.forEach { event ->
+                val firstDate = event?.binds?.activity
+                    ?.filter { x -> x.binds?.userCalendar != null }
+                    ?.sortedBy { x -> x.holdingDate?.from }
+                    ?.firstOrNull()?.holdingDate?.from?.split(" ")?.get(0) ?: ""
 
-            val list = event?.binds?.activity
-                ?.filter { x -> x.binds?.userCalendar != null }
-            val eventsMap =
-                if (text.isNullOrEmpty()) {
-                    list?.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }
-                        ?.toSortedMap()
-                } else {
-                    list?.filter { x -> isHasSearchText(text, x) }
-                        ?.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }
-                        ?.toSortedMap()
+                val list = event?.binds?.activity?.filter { x -> x.binds?.userCalendar != null }
+                val eventsMap =
+                    if (text.isNullOrEmpty()) {
+                        list?.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }?.toSortedMap()
+                    } else {
+                        list?.filter { x -> isHasSearchText(text, x) }
+                            ?.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }
+                            ?.toSortedMap()
+                    }
+
+                if (!eventsMap.isNullOrEmpty()) {
+                    eventsMap.put("", eventsMap.remove(firstDate)!!)
+                    listScheduleEvents.add(EventScheduleData(event, firstDate, eventsMap))
+
                 }
-
-            if (!eventsMap.isNullOrEmpty()) {
-                eventsMap.put("", eventsMap.remove(firstDate)!!)
-                listScheduleEvents.add(EventScheduleData(event, firstDate, eventsMap))
-
             }
+            listScheduleEvents.sortedBy { x -> x.firstDate }
         }
-        return listScheduleEvents.sortedBy { x -> x.firstDate }
     }
 
     private fun findNearestDay(
@@ -274,18 +251,6 @@ class MyScheduleEventsPresenter
         return createCalendarDay(defaultServerDateFormatter.parse(eventDate).time.calendar().timeInMillis)
     }
 
-    fun createCalendarDay(date: Long): EventScheduleCalendarDay {
-        val cal = date.calendar()
-        return EventScheduleCalendarDay(
-            date,
-            cal.get(Calendar.WEEK_OF_MONTH),
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                ?: "",
-            cal.get(Calendar.DAY_OF_MONTH),
-            true
-        )
-    }
-
 
     private fun isHasSearchText(text: String, event: EventActivityModel): Boolean {
         var isHas = false
@@ -301,21 +266,18 @@ class MyScheduleEventsPresenter
         return isHas
     }
 
-    override fun onShowEventClick(eventId: String) {
-        viewState.showAboutEvent(eventId)
-    }
+    override fun onShowEventClick(eventId: String) = viewState.showAboutEvent(eventId)
+    override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = viewState.showSubEvent(eventId, subEvent.id.toString())
 
-    override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
-        checkInternetAndRun {
-            viewState.showSubEvent(eventId, subEvent.id.toString())
-        }
-    }
-
-    private fun setEventCalendarDays(cal: Calendar): CalendarDay {
-        return CalendarDay(
-            cal.get(Calendar.YEAR),
-            cal.get(Calendar.MONTH) + 1,
-            cal.get(Calendar.DAY_OF_MONTH)
+    fun createCalendarDay(date: Long): EventScheduleCalendarDay {
+        val cal = date.calendar()
+        return EventScheduleCalendarDay(
+            date,
+            cal.get(Calendar.WEEK_OF_MONTH),
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+                ?: "",
+            cal.get(Calendar.DAY_OF_MONTH),
+            true
         )
     }
 
@@ -357,6 +319,7 @@ class MyScheduleEventsPresenter
     }
 
     private fun catchEventError(t: Throwable) {
+        t.printStackTrace()
         if (t is HttpException) {
             try {
                 val error = Gson().fromJson(

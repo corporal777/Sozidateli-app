@@ -576,9 +576,18 @@
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">3</item>
+        <item name="android:maxLines">2</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="UserItem.Description">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textColor">@color/input_hint_text_color</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
 
@@ -666,6 +675,19 @@
         <item name="android:drawablePadding">12dp</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Notification.Tag">
+        <item name="fontPath">fonts/sf_pro_display_semibold.ttf</item>
+        <item name="android:textColor">@color/text_color_tag_new</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@drawable/background_tag_new</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:singleLine">true</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
@@ -979,19 +1001,5 @@
         <item name="android:background">@drawable/custom_btn_write_speaker_selectable</item>
         <item name="android:textAllCaps">false</item>
     </style>
-
-    <style name="BtnCircleStrokeStyle">
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">15dp</item>
-        <item name="android:textColor">#BE9B72</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:minHeight">25dp</item>
-        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
-        <item name="android:background">@drawable/custom_btn_add_favorites_selectable</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
 
 </resources>

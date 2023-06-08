@@ -14,6 +14,8 @@ import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.databinding.BottomSheetCalendarBinding
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.calendarView.DayViewDecorator
@@ -33,6 +35,7 @@ class CalendarBottomSheet(
 
     private val mBinding = BottomSheetCalendarBinding.inflate(LayoutInflater.from(context))
     private var onActionClick: (date: Calendar) -> Unit = {}
+    private var onDateClick: (date: EventScheduleCalendarDay) -> Unit = {}
     private val mvpDelegate by lazy { MvpDelegate<CalendarBottomSheet>(this) }
 
 
@@ -88,11 +91,18 @@ class CalendarBottomSheet(
 
     override fun setDateSelected(cal: Calendar) {
         onActionClick(cal)
+        val valueLong = defaultServerDateFormatter.parse(defaultServerDateFormatter.format(cal.time)).time
+        onDateClick(createCalendarDay(valueLong))
         dismiss()
     }
 
     fun setSelectCallback(block: (date: Calendar) -> Unit): CalendarBottomSheet {
         onActionClick = block
+        return this
+    }
+
+    fun setDateSelectCallback(block: (date: EventScheduleCalendarDay) -> Unit): CalendarBottomSheet {
+        onDateClick = block
         return this
     }
 
@@ -108,6 +118,18 @@ class CalendarBottomSheet(
         mvpDelegate.onDetach()
         mvpDelegate.onDestroyView()
         mvpDelegate.onDestroy()
+    }
+
+    fun createCalendarDay(date: Long): EventScheduleCalendarDay {
+        val cal = date.calendar()
+        return EventScheduleCalendarDay(
+            date,
+            cal.get(Calendar.WEEK_OF_MONTH),
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+                ?: "",
+            cal.get(Calendar.DAY_OF_MONTH),
+            true
+        )
     }
 
 

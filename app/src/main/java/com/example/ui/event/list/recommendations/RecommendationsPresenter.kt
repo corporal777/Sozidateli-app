@@ -20,6 +20,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.flow.PaginationListFlow
 import com.example.util.pagination.observable.PaginationDataSourceFactory
@@ -39,17 +40,11 @@ import javax.inject.Inject
 class RecommendationsPresenter
 @Inject constructor(
     val appData: AppData,
-    eventData: UserEventData,
     private val eventRepository: EventRepository,
-    userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     @Connectivity val connectivity: Observable<Boolean>
-) : BasePresenter<RecommendationsContract.View>(appData), RecommendationsContract.Presenter {
+) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository), RecommendationsContract.Presenter {
 
-    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<EventNew?>
     private var isFirstAttach = true
-
 
     override fun attachView(view: RecommendationsContract.View?) {
         super.attachView(view)
@@ -81,8 +76,11 @@ class RecommendationsPresenter
             }
     }
 
+    override fun onSearchClick() = viewState.showSearch()
+    override fun onRefreshRequest() = paginationList.invalidate()
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
 
-    private fun getPaginationRequest(
+    override fun getPaginationRequest(
         limit: Int,
         offset: Int
     ): Maybe<PaginationResponse<EventNew?>> {
@@ -93,28 +91,10 @@ class RecommendationsPresenter
                 EVENT_OFFSET to offset,
                 EVENT_SORT_TYPE to "desc",
                 EVENT_SORT_FIELD to "id",
-                //EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"/*,
                 EVENT_BINDS to "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState,format",
                 EVENT_PUBLIC to "true",
                 EVENT_STATUS to "approved,registration,registrationFinished,running"
             )
         )
     }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEventDetails(event))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                paginationList.invalidate()
-            }
-    }
-
-    override fun onSearchClick() = viewState.showSearch()
-    override fun onActionRegister(event: String) = viewState.showEventRequest(event)
-    override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
-    override fun onRefreshRequest() = paginationList.invalidate()
-    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
-
 }

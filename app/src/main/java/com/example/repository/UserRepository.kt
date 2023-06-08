@@ -61,10 +61,7 @@ interface UserRepository {
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>
     fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail>
-    fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail>
-    fun confirmEmailCodeNew(body: EmailCodeBody): Completable
-    fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable
-    fun sendPhoneCode(id: Int, phone: String): Completable
+
 
     fun getAllUsersSessions(deviceId: String): Maybe<UserSessions>
     fun getAllUsersSessionsFromCurrentDevice(deviceId : String): Maybe<UserSessions>

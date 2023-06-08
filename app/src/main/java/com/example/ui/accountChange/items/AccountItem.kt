@@ -16,22 +16,22 @@ class AccountItem(
     val onAccountClick: (session: UserSessionModel) -> Unit
 ) : BindableItem<ItemAccountChangeBinding>(session.sessionId.toLong()) {
 
-    val isCurrentUser = currentAccountId == session.binds.user.id.toString()
+    private val isCurrentUser = currentAccountId == session.binds.user.id.toString()
+    private val userLogin =
+        if (session.binds.user.email != null && !session.binds.user.email?.value.isNullOrEmpty()) {
+            session.binds.user.email?.value
+        } else session.binds.user.phone?.get(0)?.value
+
     override fun bind(viewBinding: ItemAccountChangeBinding, position: Int) {
         viewBinding.apply {
             ivAvatar.setCircleAvatar(session.binds.user.image.uri)
             tvName.text = session.binds.user.nameLastName
-            if (session.binds.user.email != null && !session.binds.user.email?.value.isNullOrEmpty()) {
-                tvEmail.text = session.binds.user.email?.value
-            } else {
-                tvEmail.text = session.binds.user.phone?.get(0)?.value
-            }
+            tvEmail.text = userLogin
 
-            if (isCurrentUser && session.isLogged) {
-                cardAccountStatus.isVisible = true
-            }
+            if (isCurrentUser && session.isLogged) cardAccountStatus.isVisible = true
 
             decorMenuButton(canShow, ivMenu)
+
             ivMenu.setOnClickListener {
                 onMenuClick(session)
             }
@@ -50,13 +50,11 @@ class AccountItem(
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
-            if (payload is Boolean) {
-                decorMenuButton(payload, viewBinding.ivMenu)
-            }
+            if (payload is Boolean) decorMenuButton(payload, viewBinding.ivMenu)
         }
     }
 
-    private fun decorMenuButton(canShow : Boolean, imageView: ImageView){
+    private fun decorMenuButton(canShow: Boolean, imageView: ImageView) {
         imageView.isVisible = canShow
     }
 

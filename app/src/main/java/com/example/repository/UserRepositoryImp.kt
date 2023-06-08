@@ -108,32 +108,7 @@ class UserRepositoryImp
                 return@BiFunction user
             })
 
-    override fun confirmEmailCode(id: Int, body: EmailCodeBody): Single<ConfirmEmail> =
-        newApi.confirmEmailCode(id, body).doOnSuccess {
-            appData.login(it.token)
-            appData.saveId(it.id)
-        }
 
-    override fun confirmEmailCodeNew(body: EmailCodeBody): Completable {
-        return newApi.confirmEmailCode(appData.getId(), body).doOnSuccess {
-            appData.login(it.token)
-            appData.saveId(it.id)
-        }.ignoreElement()
-    }
-
-    /*override fun getUserShort(): Maybe<UserShort> = call(api.getUserShort()).doOnSuccess {
-        appData.setUserShort(it)
-    }*/
-
-    override fun confirmPhoneCode(id: Int, body: PhoneCodeBody): Completable =
-        newApi.confirmPhoneCode(id, body)
-
-    override fun sendPhoneCode(id: Int, phone: String): Completable =
-        newApi.sendPhoneCode(id, phone)
-
-    /*override fun getAddress(body: AddressBody): Maybe<List<AddressResponse>> =  call(api.getAddress(body)).doOnSuccess {
-
-    }*/
 
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
         newApi.searchAddress(query, 20)

@@ -104,10 +104,6 @@
         android:label="Register">
 
         <action
-            android:id="@+id/email_register_to_phone_confirm_fragment"
-            app:destination="@id/phone_confirm_fragment" />
-
-        <action
             android:id="@+id/invite_register_to_mail"
             app:destination="@+id/recommendations_fragment"
             app:popUpTo="@id/main_navigation" />
@@ -209,10 +205,6 @@
             android:id="@+id/email_register_to_sn_register"
             app:destination="@id/register_sn_fragment"
             app:popUpTo="@id/authorization_fragment" />
-
-        <action
-            android:id="@+id/email_register_to_phone_confirm_fragment"
-            app:destination="@id/phone_confirm_fragment" />
         <action
             android:id="@+id/action_register_email_new_fragment_to_authorization_fragment"
             app:destination="@id/authorization_fragment" />
@@ -272,31 +264,6 @@
     <fragment
         android:id="@+id/recommendations_fragment"
         android:name="com.example.ui.event.list.recommendations.RecommendationsFragment">
-
-        <action
-            android:id="@+id/recommendations_fragment_to_search_fragment"
-            app:destination="@id/search_tabs_fragment" />
-
-        <action
-            android:id="@+id/recommendations_fragment_to_favorite_organizations_fragment"
-            app:destination="@id/organizations_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
-
-
-        <action
-            android:id="@+id/recommendations_fragment_to_chat_list_tabs_fragment"
-            app:destination="@id/chat_list_tabs_fragment" />
-
-        <action
-            android:id="@+id/recommendations_fragment_to_profile_fragment"
-            app:destination="@id/profile_fragment" />
-
-        <action
-            android:id="@+id/recommendations_fragment_to_notifications_fragment"
-            app:destination="@id/notifications_fragment" />
         <argument
             android:name="isOpenProfile"
             app:argType="boolean" />
@@ -343,28 +310,6 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/event_tabs_fragment"
-        android:name="com.example.ui.eventTabs.EventTabsFragment"
-        tools:layout="@layout/fragment_event_tabs">
-
-        <action
-            android:id="@+id/action_event_tabs_fragment_to_chat_list_tabs_fragment"
-            app:destination="@id/chat_list_tabs_fragment" />
-        <action
-            android:id="@+id/main_to_search"
-            app:destination="@id/search_tabs_fragment" />
-        <action
-            android:id="@+id/main_to_profile"
-            app:destination="@id/profile_fragment" />
-        <action
-            android:id="@+id/event_to_notifications"
-            app:destination="@id/notifications_fragment" />
-
-        <action
-            android:id="@+id/action_about_event_fragment_to_activitiesFragment"
-            app:destination="@id/activitiesFragment" />
-    </fragment>
 
     <activity
         android:id="@+id/image_view_activity"
@@ -401,14 +346,6 @@
         <argument
             android:name="subEventId"
             app:argType="string" />
-
-        <action
-            android:id="@+id/action_subEvent_fragment_to_user_speaker_fragment"
-            app:destination="@id/user_speaker_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
     </fragment>
 
     <fragment
@@ -462,10 +399,6 @@
             android:name="organizationId"
             app:argType="string"
             app:nullable="false" />
-
-        <action
-            android:id="@+id/organization_members_to_user"
-            app:destination="@id/user_fragment" />
     </fragment>
 
     <fragment
@@ -685,15 +618,6 @@
             android:id="@+id/edit_to_edit"
             app:destination="@id/user_edit_fragment" />
         <action
-            android:id="@+id/edit_to_phone_confirm"
-            app:destination="@id/phone_confirm_fragment">
-            <argument
-                android:name="phone"
-                app:argType="string"
-                app:nullable="false" />
-        </action>
-
-        <action
             android:id="@+id/edit_to_file_edit_fragment"
             app:destination="@id/file_edit_fragment" />
         <action
@@ -735,15 +659,6 @@
         android:id="@+id/search_tabs_fragment"
         android:name="com.example.ui.search.tabs.SearchTabsFragment"
         tools:layout="@layout/fragment_search_tabs">
-
-        <argument
-            android:name="filter"
-            app:argType="com.example.data.models.SearchFilter"
-            app:nullable="true" />
-
-        <action
-            android:id="@+id/search_tabs_to_qr_scanner"
-            app:destination="@id/qr_scanner_fragment" />
     </fragment>
 
     <fragment
@@ -781,14 +696,6 @@
         android:id="@+id/speakers_list_fragment"
         android:name="com.example.ui.event.speakers.list.EventSpeakersFragment"
         android:label="@string/speakers">
-        <action
-            android:id="@+id/action_event_speaker_fragment_to_userSpeakerFragment"
-            app:destination="@id/user_speaker_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
-
         <argument
             android:name="eventId"
             app:argType="string" />
@@ -828,27 +735,6 @@
 
 
     <fragment
-        android:id="@+id/event_location_fragment"
-        android:name="com.example.ui.event.location.EventLocationFragment">
-
-        <argument
-            android:name="eventName"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="mapInfo"
-            app:argType="com.example.data.models.MapInfo"
-            app:nullable="true" />
-
-        <argument
-            android:name="places"
-            app:argType="com.example.data.models.Place[]"
-            app:nullable="true" />
-    </fragment>
-
-
-    <fragment
         android:id="@+id/favorite_subevents_fragment"
         android:name="com.example.ui.event.favorite.subevent.FavoriteSubeventFragment">
         <argument
@@ -864,39 +750,7 @@
             app:destination="@id/subEvent_fragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/password_confirm_fragment"
-        android:name="com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment"
-        tools:layout="@layout/fragment_confirm_password">
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="false" />
 
-        <action
-            android:id="@+id/password_confirm_to_phone_confirm"
-            app:destination="@+id/phone_confirm_fragment"
-            app:popUpTo="@id/password_confirm_fragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/phone_confirm_fragment"
-        android:name="com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment"
-        tools:layout="@layout/fragment_confirm_password">
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="password"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="screenType"
-            app:argType="java.lang.Integer"
-            app:nullable="true" />
-    </fragment>
     <fragment
         android:id="@+id/userStateFragment"
         android:name="com.example.ui.state.UserStateFragment"
@@ -914,10 +768,6 @@
             android:name="screen"
             android:defaultValue="1"
             app:argType="integer" />
-
-        <action
-            android:id="@+id/action_mainInfoFragment_to_password_confirm_fragment"
-            app:destination="@id/password_confirm_fragment" />
     </fragment>
 
 
@@ -975,19 +825,6 @@
             android:defaultValue="@null"
             app:argType="com.example.data.models.NewTags[]"
             app:nullable="true" />
-
-        <action
-            android:id="@+id/action_activitiesFragment_to_allActivitiesFragment"
-            app:destination="@id/allActivitiesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/allActivitiesFragment"
-        android:name="com.example.ui.event.allactivities.AllActivitiesFragment"
-        android:label="AllActivitiesFragment"
-        tools:layout="@layout/fragment_activitys">
-        <argument
-            android:name="eventId"
-            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -1025,15 +862,6 @@
         android:id="@+id/user_speaker_fragment"
         android:name="com.example.ui.event.speakers.member.UserSpeakerFragment"
         tools:layout="@layout/fragment_user_speaker">
-        <action
-            android:id="@+id/user_to_chat"
-            app:destination="@id/chat_fragment"
-            app:launchSingleTop="true" />
-
-        <action
-            android:id="@+id/speaker_to_user"
-            app:destination="@id/user_fragment" />
-
         <argument
             android:name="userId"
             app:argType="string" />

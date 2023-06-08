@@ -217,9 +217,9 @@ class MainInfoPresenter
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple(onSuccess = {})
                     updateUserInternal {
-                        image = ImageModel(null, null, null, null, null, null)
+                        image = ImageModel(null, null, null, null, null)
                     }
-                    viewState.photoUpdated(ImageModel(null, null, null, null, null, null))
+                    viewState.photoUpdated(ImageModel(null, null, null, null, null))
                 }
             )
     }

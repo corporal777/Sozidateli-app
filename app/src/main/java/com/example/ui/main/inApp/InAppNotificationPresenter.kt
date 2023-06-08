@@ -1,24 +1,15 @@
 package com.example.ui.main.inApp
 
 import android.app.NotificationManager
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
-import com.example.data.models.NotificationEntity
-import com.example.data.models.NotificationEntityModell
 import com.example.data.models.NotificationModel
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.ui.profile.data.ProfileDataContract
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog

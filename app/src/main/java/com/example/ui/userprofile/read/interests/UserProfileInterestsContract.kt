@@ -16,6 +16,9 @@ interface UserProfileInterestsContract {
 
         override fun onUserUpdated(user: UserDetail?, state: String) = Unit
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showInterestsPlaceholder()
+
         @StateStrategyType(AddToEndStrategy::class)
         fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>)
 

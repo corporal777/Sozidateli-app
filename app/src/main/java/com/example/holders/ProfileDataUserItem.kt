@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import com.example.R
 import com.example.databinding.ItemProfileDataUserBinding
+import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -59,6 +60,16 @@ class ProfileDataUserItem(
         val alpha = if (isEnabled) 1f else 0.6f
         chatButton.isEnabled = isEnabled
         chatButton.alpha = alpha
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is ProfileDataUserItem) return false
+        if (avatarUrl != other.avatarUrl) return false
+        if (avatar != other.avatar) return false
+        if (name != other.name) return false
+        if (uid != other.uid) return false
+        if (subscribeAction != other.subscribeAction) return false
+        return true
     }
 
     override fun getLayout() = R.layout.item_profile_data_user

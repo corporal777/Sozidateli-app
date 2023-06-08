@@ -59,6 +59,9 @@ class SimpleNotificationItemNew(
     override fun getReadMoreView(viewBinding: ItemNotificationSimpleNewBinding): View =
         viewBinding.tvReadMore
 
+    override fun getRootView(viewBinding: ItemNotificationSimpleNewBinding): View =
+        viewBinding.clSimpleNotification
+
 
     override fun getLayout() = R.layout.item_notification_simple_new
 }

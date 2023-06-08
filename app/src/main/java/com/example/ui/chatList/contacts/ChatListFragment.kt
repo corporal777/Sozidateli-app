@@ -14,6 +14,7 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatListBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.chatList.contacts.items.UserChatGroup
@@ -41,7 +42,12 @@ class ChatListFragment() :
     private val chatSection by lazy { Section() }
     private val favoritesSection by lazy {
         Section().apply {
-            setHeader(ListSectionNameItem(-200L, getString(R.string.search_contact_section_favorites)))
+            setHeader(
+                ListSectionNameItem(
+                    -200L,
+                    getString(R.string.search_contact_section_favorites)
+                )
+            )
             setHideWhenEmpty(true)
         }
     }
@@ -72,7 +78,7 @@ class ChatListFragment() :
 
     override fun setChatsData(chats: List<UserChat?>, favorites: List<UserDetail>) {
         if (chats.isEmpty()) {
-            chatSection.update(listOf(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() }))
+            chatSection.updateItem(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
         } else {
             chatSection.apply {
                 val chatsCount = chats.size
@@ -92,11 +98,11 @@ class ChatListFragment() :
         }
 
         favoritesSection.update(favorites.map {
-            UserItem(it.id, it.fullName, null, it.image.uri, {
+            UserItem(it.id, it.fullName, null, it.loadUserImage(), {
                 presenter.onUserClick(
                     it.id,
                     it.nameLastName,
-                    it.image.uri,
+                    it.loadUserImage(),
                     it.binds?.chatRoomWithMe
                 )
             })
@@ -105,18 +111,20 @@ class ChatListFragment() :
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {
-        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
+        val item =
+            chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
         //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
         item?.updateBadge(count)
     }
 
     override fun setChatUnreadMessage(chatId: String, message: String) {
         //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
-        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
+        val item =
+            chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
         if (item != null) {
             item.updateMessage(message)
             val oldPosition = chatSection.getPosition(item)
-            if (oldPosition != 0 && oldPosition != 1){
+            if (oldPosition != 0 && oldPosition != 1) {
                 chatSection.remove(item)
                 chatSection.add(0, item)
             }

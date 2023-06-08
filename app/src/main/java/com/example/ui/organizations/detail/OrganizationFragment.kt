@@ -16,6 +16,7 @@ import com.example.data.models.OrganizationMemberModel
 import com.example.data.models.OrganizationNew
 import com.example.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.interfaces.ToolbarFragment
@@ -28,11 +29,11 @@ import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.StateType
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -66,7 +67,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
     }
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) = presenter.onActionRegister(event)
+        override fun onActionRegister(event: String, agreementUrl: String?) =
+            presenter.onActionRegister(event, agreementUrl)
+
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
 
@@ -126,8 +129,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
 
 
     override fun setMainData(organization: OrganizationNew) {
-        mainDataSection.update(listOf(
+        mainDataSection.updateItem(
             OrganizationHeaderItem(
+                organization.id,
                 organization.image?.uri,
                 organization.logo?.uri,
                 organization.backgroundColor?.value,
@@ -136,24 +140,20 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
                 organization.description,
                 organization.binds?.userFavorite != null,
                 imageClickListener
-            ) {
-                presenter.onSubscribeClick(it)
-            }
-        ))
-        groupAdapter.notifyDataSetChanged()
+            ) { presenter.onAddOrganizationFavoriteClick(organization) }
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun setInformationData(organization: OrganizationNew) {
-        infoDataSection.update(
-            listOf(
-                OrganizationInfoItem(
-                    organization.site?.joinToString(separator = "\n") { it.getAffiliationString() },
-                    organization.socialLink?.joinToString(separator = "\n") { it.getAffiliationString() },
-                    organization.email?.joinToString(separator = "\n") { it.getAffiliationString() },
-                    organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() },
-                    organization.address?.firstOrNull()?.fullValue
-                )
+        infoDataSection.updateItem(
+            OrganizationInfoItem(
+                organization.id,
+                organization.site?.joinToString(separator = "\n") { it.getAffiliationString() },
+                organization.socialLink?.joinToString(separator = "\n") { it.getAffiliationString() },
+                organization.email?.joinToString(separator = "\n") { it.getAffiliationString() },
+                organization.phone?.joinToString(separator = "\n") { it.getAffiliationString() },
+                organization.address?.firstOrNull()?.fullValue
             )
         )
     }
@@ -183,27 +183,27 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
 
     override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
         membersDataSection.apply {
-            setHeader(
-                EventsTitleItem(
-                    getString(R.string.organization_peoples).format(totalSize),
-                    pBottom = 10
+            update(
+                listOf(
+                    EventsTitleItem(
+                        getString(R.string.organization_peoples).format(totalSize),
+                        pBottom = 10
+                    )
+                ).plus(
+                    members.map { member ->
+                        OrganizationMemberItem(
+                            member.user,
+                            member.binds?.user?.nameLastName,
+                            member.binds?.user?.address?.shortAddres,
+                            member.binds?.user?.loadUserImage(),
+                            member.binds?.userFavorite != null,
+                            presenter.isCurrentUser(member.binds?.user?.id.toString()),
+                            { user -> presenter.onUserClick(user.toString()) },
+                            { id -> presenter.onAddUserFavoriteCLick(member) }
+                        )
+                    }
                 )
             )
-            update(members.map {
-                UserItemNew(
-                    it.user ?: 0,
-                    it.binds?.user?.nameLastName ?: "",
-                    it.binds?.user?.address?.city,
-                    it.binds?.user?.image?.uri,
-                    it.binds?.user?.binds?.userFavorite != null,
-                    presenter.isCurrentUser(it.binds?.user?.id.toString()),
-                    { user ->
-                        presenter.onUserClick(user.toString())
-                    },
-                    { id ->
-                        presenter.onUserActionCLick(id.toString())
-                    })
-            })
         }
     }
 
@@ -215,8 +215,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
 
     override fun updateUserSubscription(userId: Int, isSubscribed: Boolean) {
         val idLong = userId.toLong()
-        val item = membersDataSection.findItemBy<UserItemNew> { userItem -> userItem.id == idLong }
-            ?: return
+        val item =
+            membersDataSection.findItemBy<OrganizationMemberItem> { userItem -> userItem.id == idLong }
+                ?: return
         item.notifyChanged(isSubscribed)
     }
 
@@ -266,18 +267,16 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
         )
     }
 
-    override fun layout(): Int = R.layout.fragment_organization
-    override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
-    override fun actionIconContainer(view: ViewGroup) {}
-
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.rvOrganization.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
+    override fun showAgreementRegisterDialog(event: String, url: String) {
+        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+            presenter.onAcceptRegistrationAgreement(event)
         }
     }
 
-
+    override fun layout(): Int = R.layout.fragment_organization
+    override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

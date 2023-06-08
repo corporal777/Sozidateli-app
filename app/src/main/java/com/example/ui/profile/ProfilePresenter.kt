@@ -2,6 +2,7 @@ package com.example.ui.profile
 
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -51,6 +52,7 @@ class ProfilePresenter
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
+                    Log.e("PROFILE", it.state.toString())
                     viewState.apply {
                         setUser(it)
                         setUserLink(it)

@@ -10,6 +10,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
+import com.example.extensions.updateItem
+import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.items.*
 import com.example.ui.base.BaseFragmentNew
@@ -30,7 +32,6 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
     @InjectPresenter
     lateinit var presenter: ChangeAccountPresenter
 
-
     @Inject
     lateinit var presenterProvider: Provider<ChangeAccountPresenter>
 
@@ -42,19 +43,15 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
         this.authType = args.authType
     }
 
-    private val logoSection by lazy {
-        Section().apply {
-            update(listOf(LogoItem()))
-        }
-    }
-    private val accountsSection = Section()
+    private val logoSection by lazy { Section().apply { updateItem(LogoItem()) } }
+    private val accountsSection by lazy { Section() }
     private val unLoggedAccountsSection by lazy {
         Section().apply {
             setHeader(UnLoggedAccountsHeader())
             setHideWhenEmpty(true)
         }
     }
-    private val loginButtonSection = Section()
+    private val loginButtonSection by lazy { Section() }
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
@@ -67,23 +64,25 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onBackPressedCallback(true) {
+            presenter.onClickClose()
+        }
         mBinding.accountsList.apply {
             adapter = groupAdapter
             doOnPreDraw { startPostponedEnterTransition() }
         }
-        onBackPressedCallback(true){
-            presenter.onClickClose()
-        }
     }
 
-    override fun setAccounts(canShow: Boolean, sessions: List<UserSessionModel>) {
+    override fun setAccounts(canShow: Boolean, sessions: List<UserSessionModel?>) {
         accountsSection.update(
             sessions.map { x ->
-                AccountItem(canShow, x, presenter.getUserId(), {
-                    showAccountActionDialog(x)
-                }, {
-                    presenter.switchAccount(it)
-                })
+                if (x == null) PlaceholderItem(PlaceholderItem.Type.ACCOUNTS)
+                else {
+                    AccountItem(canShow, x, presenter.getUserId(),
+                        { showAccountActionDialog(x) },
+                        { presenter.switchAccount(it) }
+                    )
+                }
             }
         )
     }
@@ -101,13 +100,9 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
     }
 
     override fun setLoginToAnotherAccountButton() {
-        loginButtonSection.update(listOf(LoginButtonItem {
-            presenter.authToAccountClick()
-        }))
-    }
-
-    override fun showMessage(message: String) {
-        showToast(message)
+        loginButtonSection.updateItem(
+            LoginButtonItem { presenter.authToAccountClick() }
+        )
     }
 
     override fun showAuthorizationFragment() {
@@ -128,23 +123,15 @@ class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true
         }.show()
     }
 
+    override fun showMessage(message: String) = showToast(message)
     override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)
 
-    override fun ignoreTokenListener(ignore: Boolean) {
-        (requireActivity() as MainActivity).setIgnoreTokenListener(ignore)
-    }
 
     override fun layout(): Int = R.layout.fragment_change_account
 
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.accountsList.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _ ->  scroll.invoke(computeVerticalScrollOffset())}
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

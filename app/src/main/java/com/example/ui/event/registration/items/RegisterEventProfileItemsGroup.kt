@@ -62,6 +62,7 @@ class RegisterEventProfileItemsGroup(
         mainSection.updateItem(
             RegisterEventProfileMainItem(
                 101L,
+                profileForm.user_name,
                 profileForm.user_birthday,
                 profileForm.user_gender,
                 profileForm.address,

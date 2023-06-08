@@ -7,15 +7,16 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.OrganizationNewMemberModel
+import com.example.data.models.OrganizationMemberModel
 import com.example.databinding.LayoutListBinding
-import com.example.holders.OrganizationUserItem
+import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.organizations.detail.items.OrganizationMemberItem
+import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,11 +31,10 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
 
     @ProvidePresenter
     fun providePresenter(): OrganizationMembersPresenter = presenterProvider.get().apply {
-        organizationId =
-            OrganizationMembersFragmentArgs.fromBundle(requireArguments()).organizationId
+        organizationId = OrganizationMembersFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 
-    val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
+    private val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
                 presenter.onItemTake(position)
@@ -48,30 +48,34 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
             recyclerView.apply {
                 adapter = this@OrganizationMembersFragment.adapter
             }
-
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-    override fun setData(members: List<OrganizationNewMemberModel>) {
-        adapter.update(members.mapNotNull {
-            val user = it.binds?.user ?: return@mapNotNull null
-            OrganizationUserItem(
-                it.binds.user.id,
-                user.nameLastName,
-                user.image?.uri,
-                it.position?.value
-            ) { presenter.onMemberClick(it) }
-        })
+    override fun setData(members: List<OrganizationMemberModel?>) {
+        adapter.update(
+            members.map { member ->
+                if (member == null) PlaceholderItem(PlaceholderItem.Type.USER)
+                else {
+                    OrganizationMemberItem(
+                        member.user,
+                        member.binds?.user?.nameLastName,
+                        member.binds?.user?.address?.shortAddres,
+                        member.binds?.user?.loadUserImage(),
+                        member.binds?.userFavorite != null,
+                        presenter.isCurrentUser(member.binds?.user?.id.toString()),
+                        { user -> presenter.onMemberClick(user) },
+                        { user -> presenter.onAddUserFavoriteCLick(member) }
+                    )
+                }
+            }
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showUser(userId: String) {
-        findNavController().navigate(
-            OrganizationMembersFragmentDirections.organizationMembersToUser(
-                userId
-            )
-        )
+        val args = UserFragmentArgs.Builder(userId).build().toBundle()
+        findNavController().navigate(R.id.user_fragment, args)
     }
 
     override fun showCurrentUser(userId: String) {
@@ -81,13 +85,6 @@ class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_members) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.recyclerView.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
-
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

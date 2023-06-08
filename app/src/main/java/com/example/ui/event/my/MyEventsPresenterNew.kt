@@ -8,9 +8,11 @@ import com.example.data.models.*
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.extensions.groupByNotNull
+import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
@@ -29,46 +31,58 @@ import javax.inject.Inject
 class MyEventsPresenterNew
 @Inject constructor(
     private val eventRepository: EventRepository,
-    private val userEventData: UserEventData,
-    private val userRepository: UserRepository,
-    private val appData: AppData,
-    @Connectivity private val connectivity: Observable<Boolean>
-) : BasePresenter<MyEventsContractNew.View>(appData), MyEventsContractNew.Presenter {
+    private val commonRepository: CommonRepository,
+    private val appData: AppData
+) : EventListPresenter<MyEventsContractNew.View>(appData, eventRepository),
+    MyEventsContractNew.Presenter {
 
     lateinit var mEventStateFilter: MyEventsFilter
     private var mSearchFilter = SearchFilter.EventNew()
     private var isFirstAttach = true
     private var mSearchText = ""
 
+    private var isHasSchedules = false
     private var isCommonDataLoaded = false
-
-    private val pagination: PaginationDataSourceFactory<EventNew?> = PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<EventNew?>
 
     override fun attachView(view: MyEventsContractNew.View?) {
         super.attachView(view)
-        if (isFirstAttach) isFirstAttach = false
-        else getEventsData(true, SHIMMER_LOADING)
+//        if (isFirstAttach) isFirstAttach = false
+//        else pagination.invalidate()
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getUserCalendarEvents()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                val list = it?.filter { x -> x.binds?.activity?.any { z -> z.binds?.userCalendar != null } == true }
-                viewState.setShowMyScheduleButton(!list.isNullOrEmpty())
-            }
-
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException) hasNoConnectionError = true
         }.buildList(enablePlaceholders = false, initialSize = 30)
 
-        getFiltersData()
+        compositeDisposable += Maybe.zip(
+            eventRepository.getUserCalendarEvents()
+                .map { it.filter { x -> x.binds?.activity?.any { z -> z.binds?.userCalendar != null } == true } },
+            commonRepository.getInterests()
+                .map { interests -> interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } } },
+            eventRepository.getEventFormatsList(
+                mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
+            )
+        ) { events, interests, formats ->
+            mSearchFilter.interests = interests
+            mSearchFilter.formats = formats
+            isHasSchedules = !events.isNullOrEmpty()
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    isCommonDataLoaded = true
+                    viewState.setShowMyScheduleButton(isHasSchedules)
+                },
+                onSuccess = {
+                    isCommonDataLoaded = true
+                    viewState.setShowMyScheduleButton(isHasSchedules)
+                })
         getEventsData(true, SHIMMER_LOADING)
     }
 
-    private fun getEventsData(isFirst : Boolean, loading : Int) {
+    private fun getEventsData(isFirst: Boolean, loading: Int) {
         if (loading == 0) viewState.setData(List(5) { null })
         compositeDisposable += Observable.create(paginationList)
             .performOnBackgroundOutOnMain()
@@ -77,60 +91,28 @@ class MyEventsPresenterNew
                 else it
             }
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                    viewState.showEmptyListPlaceholder(isFirst)
-                },
+                onError = { viewState.showEmptyListPlaceholder(isFirst) },
                 onNext = { eventList ->
                     if (eventList.isEmpty()) viewState.showEmptyListPlaceholder(isFirst)
                     else viewState.setData(eventList)
                 })
     }
 
-    private fun getFiltersData() {
-        val loadInterests = userRepository.getInterestsList(null)
-            .map { interests -> interests.data.groupByNotNull { child -> interests.data.firstOrNull { it.id == child.parent } } }
-        compositeDisposable += Maybe.zip(loadInterests,
-            eventRepository.getEventFormatsList(
-                mapOf(
-                    EventNew.EVENT_LIMIT to 100,
-                    EventNew.EVENT_OFFSET to 0
-                )
-            ),
-            BiFunction<Map<InterestNew, List<InterestNew>>, List<NewEventFormat>, Unit> { interests, formats ->
-                mSearchFilter.interests = interests
-                mSearchFilter.formats = formats
-            })
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    isCommonDataLoaded = true
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    isCommonDataLoaded = true
-                })
-    }
-
-    fun getSearchFilters(): SearchFilter.EventNew {
-        return mSearchFilter
-    }
 
     override fun onSearchTextChange(text: String) {
         mSearchText = text
         getEventsData(false, SHIMMER_LOADING)
-        //paginationList.invalidate()
     }
 
     override fun onSearchTextSubmit(text: String) {
         mSearchText = text
         getEventsData(false, SHIMMER_LOADING)
-        //paginationList.invalidate()
     }
 
-    override fun onRefreshRequest() {
-        paginationList.invalidate()
-    }
+    fun getSearchFilters() = mSearchFilter
+    override fun onRefreshRequest() = paginationList.invalidate()
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
+
 
     override fun updateData() {
         getEventsData(false, PROGRESS_LOADING)
@@ -138,37 +120,18 @@ class MyEventsPresenterNew
     }
 
     override fun setEventStateFilter(isChecked: Boolean, filter: MyEventsFilter) {
-        if (isChecked) {
-            this.mEventStateFilter = filter
-        } else {
-            this.mEventStateFilter = MyEventsFilter.NONE
-        }
+        mEventStateFilter =
+            if (isChecked) filter
+            else MyEventsFilter.NONE
         getEventsData(false, PROGRESS_LOADING)
     }
 
-    override fun onActionRegister(event: String) {
-        viewState.showEventRequest(event)
-    }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEventDetails(event))
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                paginationList.invalidate()
-            }
-    }
-
-    override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
     override fun onShowFiltersClick() {
-        if (isCommonDataLoaded) {
-            viewState.showFilters()
-        }
+        if (isCommonDataLoaded) viewState.showFilters()
     }
 
-    private fun getPaginationRequest(
+    override fun getPaginationRequest(
         limit: Int,
         offset: Int
     ): Maybe<PaginationResponse<EventNew?>> {
@@ -176,11 +139,7 @@ class MyEventsPresenterNew
             mutableMapOf<String, Any>().apply {
                 put(EventNew.EVENT_LIMIT, limit)
                 put(EventNew.EVENT_OFFSET, offset)
-                put(
-                    EventNew.EVENT_BINDS,
-                    //"rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState"
-                    "activity,user-registration,user-form-result,current-user-registration,eventRegistrationState"
-                )
+                put(EventNew.EVENT_BINDS, "activity,user-registration,user-form-result,current-user-registration,eventRegistrationState")
                 put(EventNew.EVENT_USER_ID, appData.getId())
                 //put(EventNew.EVENT_SORT_TYPE, "desc")
                 //put(EventNew.EVENT_SORT_FIELD, "id")
@@ -194,14 +153,10 @@ class MyEventsPresenterNew
                     }
                 )
                 if (!mSearchText.isNullOrEmpty()) put(EventNew.EVENT_SEARCH, "%$mSearchText%")
-                if (!mSearchFilter.name.isNullOrEmpty()) put(
-                    EventNew.EVENT_NAME,
-                    "%" + mSearchFilter.name + "%"
-                )
-                if (mSearchFilter.dateStart != null) put(
-                    EventNew.EVENT_START_DATE, /*"%"+*/
-                    mSearchFilter.dateStart + "," + mSearchFilter.dateFinish/*+"%"*/
-                )
+                if (!mSearchFilter.name.isNullOrEmpty())
+                    put(EventNew.EVENT_NAME, "%" + mSearchFilter.name + "%")
+                if (mSearchFilter.dateStart != null)
+                    put(EventNew.EVENT_START_DATE, mSearchFilter.dateStart + "," + mSearchFilter.dateFinish)
                 if (mSearchFilter.format != null) put(EventNew.EVENT_FORMAT, mSearchFilter.format!!)
                 if (!mSearchFilter.address.isNullOrEmpty() || mSearchFilter.fullAddress != null) {
                     if (mSearchFilter.fullAddress != null) {
@@ -235,8 +190,6 @@ class MyEventsPresenterNew
 
     }
 
-
-    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
 
     companion object {
         const val SHIMMER_LOADING = 0

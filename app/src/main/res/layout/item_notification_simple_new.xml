@@ -11,7 +11,7 @@
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/custom_session_background_selectable"
+        android:background="@drawable/background_notification_normal"
         android:elevation="10dp"
         android:paddingBottom="20dp">
 

@@ -22,11 +22,9 @@ import com.example.ui.editeducation.EditEducationFragment
 import com.example.ui.editwork.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.activities.ActivitiesFragment
-import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.location.EventLocationFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment
 import com.example.ui.event.location.map.MapFragment
@@ -35,11 +33,8 @@ import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragment
 import com.example.ui.event.registration.EventRegistrationFragment
-import com.example.ui.event.schedule.complete.EventCompleteScheduleFragment
-import com.example.ui.event.schedule.my.EventMyScheduleFragment
 import com.example.ui.event.speakers.list.EventSpeakersFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragment
-import com.example.ui.eventTabs.EventTabsFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationFragment
 import com.example.ui.notification.center.NotificationsFragment
@@ -86,8 +81,6 @@ import com.example.ui.userprofile.UserProfileFragment
 import com.example.ui.userprofile.academicdegree.EditDegreeFragment
 import com.example.ui.userprofile.edit.UserEditFragment
 import com.example.ui.userprofile.editfile.UserEditFileFragment
-import com.example.ui.userprofile.passwordconfirm.PasswordConfirmFragment
-import com.example.ui.userprofile.phoneconfirm.PhoneConfirmFragment
 import com.example.ui.userprofile.read.contacts.UserProfileContactsFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
@@ -186,18 +179,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeSearchChatFragment(): SearchChatFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeEventTabsFragment(): EventTabsFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeEventMyScheduleFragment(): EventMyScheduleFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeEventCompleteScheduleFragment(): EventCompleteScheduleFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeMapTabsFragment(): EventLocationFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeMapFragment(): MapFragment
 
     @ContributesAndroidInjector
@@ -291,12 +272,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeFavoriteSubeventFragment(): FavoriteSubeventFragment
 
     @ContributesAndroidInjector
-    abstract fun contributePasswordConfirmFragment(): PasswordConfirmFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributePhoneConfirmFragment(): PhoneConfirmFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeInviteRegisterFragment(): InviteRegisterFragment
 
     @ContributesAndroidInjector
@@ -313,9 +288,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeActivitiesFragment(): ActivitiesFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeAllActivitiesFragment(): AllActivitiesFragment
 
     @ContributesAndroidInjector
     abstract fun contributeEditWorksFragment(): EditWorksFragment

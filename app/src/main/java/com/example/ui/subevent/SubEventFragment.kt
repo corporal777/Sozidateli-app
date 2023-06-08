@@ -13,17 +13,19 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentSubeventBinding
 import com.example.extensions.findItemBy
-import com.example.holders.SpeakerGroup
-import com.example.holders.SubeventInfoItem
+import com.example.extensions.updateItem
+import com.example.holders.PlaceholderItem
+import com.example.holders.SubEventInfoItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
+import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
+import com.example.ui.subevent.items.SubEventSpeakerItem
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -66,36 +68,45 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
         }
     }
 
+    override fun setSubEventPlaceholder() {
+        infoSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SUB_EVENT_MAIN))
+    }
+
     override fun setData(isApproved: Boolean, subEvent: EventActivityModel) {
-        infoSection.update(listOf(SubeventInfoItem(isApproved, subEvent, {
-            presenter.onAddToScheduleClick(it)
-        }, {
-            presenter.onRemoveFromScheduleClick(it)
-        }, {
-            //showToast(it.toString())
-        })))
-    }
-
-    override fun setSpeakers(speakers: List<MemberModel>) {
-        speakersSection.update(speakers.map { speaker ->
-            SpeakerGroup(
-                speaker
-            ) { presenter.onSpeakerClick(it) }
-        })
-    }
-
-    override fun showSpeakerProfile(speaker: MemberModel) {
-        findNavController().navigate(
-            SubEventFragmentDirections.actionSubEventFragmentToUserSpeakerFragment(
-                speaker.id.toString(),
-                presenter.eventId
+        infoSection.updateItem(
+            SubEventInfoItem(isApproved, subEvent,
+                { presenter.onAddToScheduleClick(it) },
+                { presenter.onRemoveFromScheduleClick(it) },
+                { }
             )
         )
     }
 
+    override fun setSpeakers(speakers: List<MemberModel>) {
+        speakersSection.update(speakers.map { speaker ->
+            SubEventSpeakerItem(
+                speaker.id,
+                speaker.binds?.user?.nameLastName,
+                speaker.organizationAndPosition,
+                speaker.description,
+                speaker.binds?.user?.image?.uri,
+                speaker.status,
+                speaker.binds?.user?.state?.isRegistered ?: false
+            ) {
+                presenter.onSpeakerClick(it)
+            }
+        })
+    }
+
+    override fun showSpeakerProfile(speaker: Int) {
+        val args = UserSpeakerFragmentArgs.Builder(speaker.toString(), presenter.eventId)
+            .build().toBundle()
+        findNavController().navigate(R.id.user_speaker_fragment, args)
+    }
+
     override fun updateSubEvent(subEvent: EventActivityModel) {
         val idLong = subEvent?.id?.toLong()
-        infoSection.findItemBy<SubeventInfoItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
+        infoSection.findItemBy<SubEventInfoItem> { it -> it.id == idLong }?.notifyChanged(subEvent)
     }
 
     override fun showEventErrorMessageDialog(withResult: Boolean, id: String, message: String) {
@@ -105,22 +116,11 @@ class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventCon
             }
             findNavController().navigateUp()
         }
-
     }
 
     override fun layout() = R.layout.fragment_subevent
     override val title: CharSequence by lazy { getString(R.string.event) }
     override fun actionIconContainer(view: ViewGroup) {}
-
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.contentList.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, dy ->
-                scroll.invoke(computeVerticalScrollOffset())
-            }
-        }
-    }
-
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

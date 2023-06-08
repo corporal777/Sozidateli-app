@@ -134,11 +134,42 @@
             </com.example.ui.views.CustomTextInputLayout>
 
 
-            <com.example.ui.views.passwordView.PasswordCustomView
+            <com.example.ui.views.passwordView.PasswordFieldsView
                 android:id="@+id/password_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default" />
+
+            <LinearLayout
+                android:id="@+id/llAgree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/cbAgree"
+                    fontPath="fonts/Roboto-Light.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:theme="@style/CheckBox" />
+
+                <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:id="@+id/tvAgree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/auth_title_text"
+                    tools:text="@string/auth_agree_user_agreement" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_agree_error"

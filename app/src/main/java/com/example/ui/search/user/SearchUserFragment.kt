@@ -48,7 +48,7 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
             itemData.id,
             itemData.nameLastName,
             itemData.address?.city,
-            itemData.image?.uri,
+            itemData.loadUserImage(),
             { searchPresenter.onUserClick(itemData) },
             itemData.getUserSubscribeAction(),
             { searchPresenter.onUserActionCLick(itemData) })

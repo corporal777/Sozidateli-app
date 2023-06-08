@@ -36,12 +36,12 @@ class RegisterEmailNewPresenter
     private var email: String = ""
     private var password: String = ""
     private var passwordConfirm: String = ""
-    //private var isAgree: Boolean = false
-    private var isAgree: Boolean = true
-    private var isPasswordValid: Boolean = false
-    var loginType = "email"
-    private val deviceId = appData.deviceId
 
+    private var isAgree: Boolean = false
+    private var isPasswordValid: Boolean = false
+    private var loginType = "email"
+
+    private val deviceId = appData.deviceId
     private val deviceModel = getDeviceName()
     private val appVersion = getAppVersion()
     private val appCode = getAppVersionCode()
@@ -53,43 +53,33 @@ class RegisterEmailNewPresenter
 
 
     override fun onClickRegister() {
-        if (isDataValid(firstName, lastName, email, password, isAgree)) {
+        if (isDataValid(firstName, lastName, email, password, isAgree))
             checkPhoneEmailIsUnique(email)
-        } else {
-            showErrors()
-        }
+        else showErrors()
     }
 
     override fun checkPhoneEmailIsUnique(email: String) {
-        compositeDisposable += if (loginType == "email") {
-            userRepository.checkEmailPhone(email, null)
-        } else {
-            userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
+        compositeDisposable += Completable.defer {
+            if (loginType == "email") userRepository.checkEmailPhone(email, null)
+            else userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
         }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
-                    if (loginType == "email") {
-                        viewState.showEmailNotUnique(email)
-                    } else {
-                        viewState.showPhoneNotUnique(email)
-                    }
+                    if (loginType == "email") viewState.showEmailNotUnique(email)
+                    else viewState.showPhoneNotUnique(email)
                 },
                 onComplete = {
                     register()
                 })
     }
 
-    override fun onChangeEmailText(email: String, context: Context) {
+    override fun onChangeEmailText(email: String) {
         this.email = email
         viewState.showEmailError(false)
-        loginType = if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
-            "phone"
-        } else {
-            "email"
-        }
+        loginType = if (Utils.isPhone(email) && !Utils.isContainLetters(email)) "phone" else "email"
         performDataChange()
     }
 
@@ -126,6 +116,7 @@ class RegisterEmailNewPresenter
     override fun onChangePasswordText(password: String, isValid: Boolean) {
         this.password = password
         this.isPasswordValid = isValid
+        viewState.showAgreementSelection(isPasswordValid)
         performDataChange()
     }
 
@@ -179,19 +170,13 @@ class RegisterEmailNewPresenter
         var phoneNumber: ArrayList<FieldDetails>? = null
         var em: FieldDetails? = null
         when (loginType) {
-            "email" -> {
-                em = FieldDetails(value = email, isVisible = true)
-            }
-            "phone" -> {
-                phoneNumber = if (email.isNullOrEmpty()) null
-                else arrayListOf(
-                    FieldDetails(
-                        value = validatePhoneBeforeSend(email),
-                        type = PHONE_PERSONAL,
-                        isVisible = true
-                    )
-                )
-            }
+            "email" -> em = FieldDetails(value = email, isVisible = true)
+            "phone" -> phoneNumber =
+                FieldDetails(
+                    value = validatePhoneBeforeSend(email),
+                    type = PHONE_PERSONAL,
+                    isVisible = true
+                ).toList()
         }
         return RegisterBody(
             password = password,
@@ -213,7 +198,18 @@ class RegisterEmailNewPresenter
     }
 
     override fun onClickClose() {
-        viewState.navigateUp()
+        viewState.setIgnoreTokenListener(true)
+        compositeDisposable += Completable.fromAction {
+            appData.isSubscribedToPush = false
+            appData.logout()
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    setIgnoreTokenListener(false)
+                    navigateUp()
+                }
+            }
     }
 
     private fun isDataValid(
@@ -244,11 +240,10 @@ class RegisterEmailNewPresenter
         viewState.apply {
             showFirstNameError(firstName.isNullOrEmpty())
             showLastNameError(lastName.isNullOrEmpty())
-            if (loginType == "email")
-                showEmailError(AuthValidateUtil.isValidEmail(email))
-            else {
-                showWrongPhoneError(Utils.isNewPhoneIsValid(email))
-            }
+
+            if (loginType == "email") showEmailError(AuthValidateUtil.isValidEmail(email))
+            else showWrongPhoneError(Utils.isNewPhoneIsValid(email))
+
             showAgreementError(!isAgree)
         }
     }

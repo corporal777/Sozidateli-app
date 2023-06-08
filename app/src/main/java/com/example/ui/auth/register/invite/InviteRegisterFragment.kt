@@ -15,6 +15,7 @@ import com.example.R
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import kotlinx.android.synthetic.main.fragment_finish_register.*
 import kotlinx.android.synthetic.main.fragment_finish_register.ibCancel
 import kotlinx.android.synthetic.main.fragment_invite_register.*
@@ -184,7 +185,11 @@ class InviteRegisterFragment : BaseFragment(), InviteRegisterContract.View {
     }
 
     override fun showPhoneConfirm(phone: String) {
-        findNavController().navigate(InviteRegisterFragmentDirections.emailRegisterToPhoneConfirmFragment(phone, "", null))
+        val confirmPhone = ConfirmEmailPhoneFragment(phone)
+        confirmPhone.show(requireActivity().supportFragmentManager, "confirm_phone")
+        confirmPhone.setConfirmCallback {
+
+        }
     }
 
     override fun phoneConfirmEnabled(enabled: Boolean) {

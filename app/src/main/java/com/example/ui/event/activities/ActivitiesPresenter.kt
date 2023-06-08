@@ -20,6 +20,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
@@ -43,44 +44,27 @@ class ActivitiesPresenter
     var firstAttach = true
     private lateinit var mLastDay: EventScheduleCalendarDay
 
-    private var mSubEventsMap = sortedMapOf<String, List<EventActivityModel>>()
 
+    override fun attachView(view: ActivitiesContract.View?) {
+        super.attachView(view)
+        if (firstAttach) firstAttach = false
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getEventData()
-        if (firstAttach) {
-            firstAttach = false
-        }
-    }
-
-    fun getEventData() {
+        viewState.setContentPlaceholder()
         compositeDisposable += userEventData.loadEventData(eventId)
             .withCheckInternetConnectivity()
-            .withProgressBarLoadingDialog(viewState)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                Log.e("ActivitiesFragment", "Events: " + it.activity.activities.size)
                 userEvent = it
-                if (currentDay == null) {
-                    findDay()
-                }
+                if (currentDay == null) findDay()
                 invalidateData()
                 viewState.setSchemeButton(userEvent.isHasBuildingScheme())
             }
     }
 
 
-    private fun getAllDates(): ArrayList<String> {
-        val subEvents =
-            userEvent.eventInfo.event.binds?.activity?.sortedBy { x -> x.holdingDate?.from }
-        val mStartEventDate = subEvents?.firstOrNull()?.holdingDate?.from ?: ""
-        val mEndEventDate = subEvents?.lastOrNull()?.holdingDate?.from ?: ""
-        //val mEndEventDate = "2022-06-29 04:40:00"
-        //return getDaysFromMondayToSundayNew(mStartEventDate, mEndEventDate)
-
-        return getDaysFromDateToDate(mStartEventDate, mEndEventDate)
-    }
 
     private fun invalidateData() {
         compositeDisposable += Maybe.fromCallable {
@@ -318,7 +302,7 @@ class ActivitiesPresenter
     }
 
     override fun onSearchTextChange(text: String) = onSearchTextSubmit(text)
-    override fun onTagSelectedListChange() = updateSubEventsByTagOrText()
+    override fun onTagSelected() = updateSubEventsByTagOrText()
     override fun onSearchTextSubmit(text: String) {
         mSearchWord = text
         updateSubEventsByTagOrText()

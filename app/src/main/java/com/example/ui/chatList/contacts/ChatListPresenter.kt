@@ -202,8 +202,7 @@ class ChatListPresenter
                         img?.size,
                         it.binds?.lastMessage?.event?.url ?: img?.uri,
                         img?.name,
-                        1,
-                        null
+                        ""
                     ),
                     null,
                     null,

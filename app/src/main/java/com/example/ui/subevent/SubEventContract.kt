@@ -7,6 +7,10 @@ import com.example.ui.base.BaseContract
 
 interface SubEventContract {
     interface View : BaseContract.View {
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setSubEventPlaceholder()
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(isApproved : Boolean, subEvent: EventActivityModel)
 
@@ -14,7 +18,7 @@ interface SubEventContract {
         fun setSpeakers(speakers: List<MemberModel>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showSpeakerProfile(speaker: MemberModel)
+        fun showSpeakerProfile(speaker: Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun updateSubEvent(subEvent: EventActivityModel)
@@ -24,7 +28,7 @@ interface SubEventContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onSpeakerClick(speaker: MemberModel)
+        fun onSpeakerClick(speaker: Int)
 //        fun onSpeakerChangeSubscriptionClick(speaker: MemberModel)
 //        fun onSubeventChangeSubscriptionClick(subevent: EventActivityModel)
 

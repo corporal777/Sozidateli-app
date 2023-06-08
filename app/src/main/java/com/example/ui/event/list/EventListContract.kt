@@ -13,37 +13,20 @@ import com.example.util.pagination.PaginationListGroupAdapter
 
 interface EventListContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun setData(events: List<EventNew?>)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun showEmptyListPlaceholder()
-
         @StateStrategyType(SkipStrategy::class)
-        fun scrollToPositionWithOffset(position: Int, offset: Int)
+        fun showEventRequest(event: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showAboutEvent(event: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventRequest(event: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showRegistrationFieldsRequest(fields: List<String>)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEditProfile(id: String)
+        fun showAgreementRegisterDialog(event: String, url : String)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-
-        fun onScrollChange(position: Int, offset: Int)
-        fun onRefreshRequest()
-
-        fun onActionRegister(event: String)
+        fun onActionRegister(event: String, url : String?)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-
-        fun onShowEditProfileClick()
+        fun onAcceptRegistrationAgreement(event : String)
     }
 }

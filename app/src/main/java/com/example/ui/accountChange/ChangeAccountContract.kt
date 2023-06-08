@@ -10,7 +10,7 @@ import com.example.ui.base.BaseContract
 interface ChangeAccountContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setAccounts(canShow : Boolean, sessions: List<UserSessionModel>)
+        fun setAccounts(canShow : Boolean, sessions: List<UserSessionModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setUnLoggedAccounts(canShow : Boolean, sessions: List<UserSessionModel>)
@@ -29,9 +29,6 @@ interface ChangeAccountContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showBrowser(url : String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun ignoreTokenListener(ignore : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

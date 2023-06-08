@@ -11,11 +11,12 @@ import parseColor
 import setOnClickListener
 
 class EventImageHeaderItem(
+    val id: String?,
     val title: String?,
     val image: String?,
     val backgroundColor: String?,
     val onHeaderClick: () -> Unit
-) : BindableItem<ItemEventImageHeaderBinding>() {
+) : BindableItem<ItemEventImageHeaderBinding>(id?.toLong() ?: 0) {
 
     private var imageColor = ColorDrawable(Color.DKGRAY)
 
@@ -40,6 +41,7 @@ class EventImageHeaderItem(
         if (other !is EventImageHeaderItem) return false
         if (title != other.title) return false
         if (image != other.image) return false
+        if (backgroundColor != other.backgroundColor) return false
         return true
     }
 

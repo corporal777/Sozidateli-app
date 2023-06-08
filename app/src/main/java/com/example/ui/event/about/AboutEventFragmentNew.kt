@@ -1,15 +1,10 @@
 package com.example.ui.event.about
 
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.View
-import android.view.WindowInsetsController
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -20,12 +15,12 @@ import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentAboutEventNewBinding
 import com.example.extensions.*
+import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.items.*
 import com.example.ui.event.activities.ActivitiesFragmentArgs
-import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
 import com.example.ui.event.location.map.redesign.MapFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
@@ -35,9 +30,8 @@ import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.GridLayoutManagerAccurateOffset
-import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -93,25 +87,17 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
 
     private val onActionClickListener = object : EventDetailActionItem.OnActionClickListener {
-        override fun onActionRegister() = mPresenter.onActionRegister()
+        override fun onActionRegister(url: String?) = mPresenter.onActionRegister(url)
         override fun onActionCancel() = mPresenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
         override fun onDeleteSubscribeEvent() = mPresenter.onDeleteEventSubscriptionClick()
-
-
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
-            mPresenter.onSubEventClick(subEvent)
-        }
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onRemoveFromScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = mPresenter.onSubEventClick(subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = mPresenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = mPresenter.onRemoveFromScheduleClick(subEvent)
     }
 
     private val customLayoutManager by lazy {
@@ -153,6 +139,9 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     }
 
+    override fun setEventDataPlaceholder() {
+        eventMainSection.updateItem(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN))
+    }
 
     override fun setEventData(eventData: AboutEventData) {
         decorEventFavoriteButton(eventData.event.binds?.userFavorite != null)
@@ -166,7 +155,9 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                     eventData.event.holdingDate?.to,
                     eventData.event.image?.uri,
                     eventData.event.backgroundColor?.value,
-                    eventData.event.requestsApply
+                    eventData.event.requestsApply,
+                    eventData.event.address?.lat,
+                    eventData.event.address?.lon
                 ),
                 EventDetailActionItem(requireContext(), eventData.event, onActionClickListener)
             )
@@ -260,6 +251,14 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     override fun setActionButton(event: EventNew?) {
         val item = eventMainSection.findItemBy<EventDetailActionItem> { true }
         item?.notifyChanged(event)
+    }
+
+
+
+    override fun showAgreementRegisterDialog(event: String, url: String) {
+        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+            mPresenter.onAcceptRegistrationAgreement(event)
+        }
     }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
@@ -356,9 +355,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         }
     }
 
-    override fun showEventAddedToFavoriteMessage() {
-        EventAddedToFavoriteDialog(requireContext())
-    }
 
     override fun addEventToCalendar(eventData: EventNew?) {
         if (eventData != null) {

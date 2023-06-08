@@ -2,8 +2,10 @@ package com.example.ui.notification.center.redesign
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,6 +78,16 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.setFragmentOnResume(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.setFragmentOnResume(false)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,17 +104,15 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     override fun setNotReadButtonEnabled(enabled: Boolean) {
-        mBinding.btnReadAll.isVisible = enabled
+        mBinding.btnReadAll.isInvisible = !enabled
     }
 
-    override fun setPlaceholder(notifications: List<Notification?>) {
-        notificationsSection.update(notifications.map {
-            PlaceholderItem(PlaceholderItem.Type.NOTIFICATIONS_LIST)
-        })
+    override fun setNotificationsPlaceholder() {
+        notificationsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.NOTIFICATIONS_MAIN))
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun setDataNew(notifications: Map<String, List<Notification>>) {
+    override fun setData(notifications: Map<String, List<Notification>>) {
         mBinding.swipeToRefresh.isRefreshing = false
         if (tagsSection.itemCount == 0)
             tagsSection.updateItem(NotificationsTagsItem { showNotificationsType(it) })
@@ -118,6 +128,7 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     override fun showEmptyListPlaceholder() {
+        tagsSection.update(emptyList())
         notificationsSection.updateItem(NoEventItem(getString(R.string.notifications_not_found)))
         mBinding.swipeToRefresh.isRefreshing = false
     }

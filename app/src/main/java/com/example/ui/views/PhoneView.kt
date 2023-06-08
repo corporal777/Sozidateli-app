@@ -1,11 +1,13 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.text.InputFilter
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.example.R
+import com.example.util.getPhoneFilter
 import com.google.android.material.textfield.TextInputEditText
 import com.hbb20.CountryCodePicker
 import kotlinx.android.synthetic.main.phone_view.view.*
@@ -29,6 +31,10 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
             isPhoneValidd = it
         }
         etCountryCodePhone.apply {
+            filters = arrayOf(
+                InputFilter { source, _, _, _, _, _ ->
+                    source.toString().filterIndexed { index, it -> it.isDigit() }
+                })
             onTextChanged {
                 textChanged(getFullNumberWithPlus())
                 textChangedWithoutPlus(it.toString())
@@ -94,4 +100,12 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     fun getIsValid(): Boolean = isPhoneValidd
 
     fun getEditTextLayout() : TextInputEditText = etCountryCodePhone
+
+    fun setCursorPosition(){
+        etCountryCodePhone.apply {
+            val text = etCountryCodePhone.text
+            if (!text.toString().isNullOrEmpty()) setSelection(text.toString().length)
+            else setSelection(0)
+        }
+    }
 }

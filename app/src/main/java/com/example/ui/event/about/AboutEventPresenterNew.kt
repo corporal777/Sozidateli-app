@@ -31,12 +31,10 @@ class AboutEventPresenterNew
     private val appData: AppData,
     private val eventRepository: EventRepository,
     private val userEventData: UserEventData,
-    private val userRepository: UserRepository
 ) : BasePresenter<AboutEventContractNew.View>(appData), AboutEventContractNew.Presenter {
 
     lateinit var eventId: String
     private var event: EventInfo? = null
-    private lateinit var mUserEvent: UserEvent
     private var mDy = 0
     private lateinit var aboutEventData: AboutEventData
 
@@ -52,7 +50,10 @@ class AboutEventPresenterNew
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.updateAppBarBackgroundColorValue(mDy)
+        viewState.apply {
+            updateAppBarBackgroundColorValue(mDy)
+            setEventDataPlaceholder()
+        }
 
         val userEventInfo = userEventData.userEvent?.eventInfo
         val eventInfoMaybe =
@@ -66,7 +67,6 @@ class AboutEventPresenterNew
             }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     catchEventError(it)
@@ -77,16 +77,14 @@ class AboutEventPresenterNew
 
     private fun prepareAboutEventData(event: EventNew?): Maybe<AboutEventData> {
         return if (event != null) {
-            val tags = event.binds?.tag?.map {
-                Tag.EventTag(it.id.toString(), it.name ?: "")
-            } ?: emptyList()
-            aboutEventData = AboutEventData(event, tags = tags).apply {
+            aboutEventData = AboutEventData(event).apply {
+                setTags()
                 setSortedSpeakers()
                 setSubEvents()
                 setPartners()
             }
             Maybe.just(aboutEventData)
-        } else Maybe.just(null)
+        } else Maybe.empty()
     }
 
     override fun onRefreshRequest() {
@@ -119,22 +117,20 @@ class AboutEventPresenterNew
             .withDelay(100)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it != null)
-                    viewState.updateTags(it)
+                if (it != null) viewState.updateTags(it)
             }
     }
-
-    override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
-
 
     override fun onAddEventToFavoriteClick() {
         if (event?.event?.binds?.userFavorite != null) {
             compositeDisposable += eventRepository.deleteFromFavorite(event?.event?.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = null
-                    viewState.changeEventSubscription(false)
+                    viewState.apply {
+                        changeEventSubscription(false)
+                        showEventRemovedFromFavoriteDialog()
+                    }
                 }
         } else {
             compositeDisposable += eventRepository.addToFavorites(
@@ -144,12 +140,11 @@ class AboutEventPresenterNew
                     )
                 )
             ).performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     this.event?.event?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.apply {
                         changeEventSubscription(true)
-                        showEventAddedToFavoriteMessage()
+                        showEventAddedToFavoriteDialog()
                     }
                 }
         }
@@ -159,7 +154,6 @@ class AboutEventPresenterNew
         compositeDisposable += eventRepository.createEventSubscription(eventId.toInt())
             .andThen(eventRepository.getEventDetails(eventId)).performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            //.withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
@@ -177,13 +171,13 @@ class AboutEventPresenterNew
     }
 
 
-    override fun onPageClick(page: Int) {
-        viewState.showPage(eventId, page.toString())
-    }
+    override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
+    override fun onPageClick(page: Int) = viewState.showPage(eventId, page.toString())
+    override fun onPartnerClick(partner: Int) =  viewState.showPartner(eventId, partner.toString())
+    override fun onSubEventClick(subEvent: EventActivityModel) = viewState.showSubEvent(eventId, subEvent.id.toString())
+    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
+    override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
-    override fun onPartnerClick(partner: Int) {
-        viewState.showPartner(eventId, partner.toString())
-    }
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(subEvent,
@@ -207,13 +201,6 @@ class AboutEventPresenterNew
                 .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
         )
     }
-
-    override fun onSubEventClick(subEvent: EventActivityModel) {
-        viewState.showSubEvent(eventId, subEvent.id.toString())
-    }
-
-    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
-    override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
     override fun onMapPageSelected() {
         viewState.apply {
@@ -270,25 +257,45 @@ class AboutEventPresenterNew
         }
     }
 
-    override fun onActionRegister() {
-        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
-            viewState.showEventRequest(eventId)
+    override fun onActionRegister(url: String?) {
+//        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
+//            viewState.showEventRequest(eventId)
+//        }
+        if (url.isNullOrEmpty()) viewState.showEventRequest(eventId)
+        else {
+            compositeDisposable += eventRepository.checkRegistrationAgreement(eventId)
+                .performOnBackgroundOutOnMain()
+                .withCustomProgressBarLoadingDialog(viewState)
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onSuccess = {
+                        if (it.isAccepted()) viewState.showEventRequest(eventId)
+                        else viewState.showAgreementRegisterDialog(eventId, url)
+                    }
+                )
         }
     }
 
     override fun onActionCancel() {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(
-            event?.event?.binds?.currentUserRegistration?.id ?: 0
-        ).andThen(eventRepository.getEventDetails(eventId))
+        val registrationId = event?.event?.binds?.currentUserRegistration?.id ?: 0
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
+            .andThen(eventRepository.getEventDetails(eventId))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 this.event = it
                 viewState.setActionButton(it.event)
-
-                val actions = it.event.binds?.eventRegistrationState?.availableActions
-                Log.e("ACTIONS", actions?.firstOrNull()?:"null")
             }
+    }
+
+    override fun onAcceptRegistrationAgreement(event: String) {
+        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
+            )
     }
 
     override fun onOrganizationClick(organization: String) =

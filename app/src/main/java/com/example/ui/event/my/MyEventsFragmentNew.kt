@@ -22,6 +22,7 @@ import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
@@ -38,15 +39,17 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
+import offsetChangedListener
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEventsContractNew.View {
+class MyEventsFragmentNew : EventListFragment<MyEventsPresenterNew, FragmentMyEventsBinding>(),
+    MyEventsContractNew.View {
 
     @InjectPresenter
-    lateinit var presenter: MyEventsPresenterNew
+    override lateinit var presenter: MyEventsPresenterNew
 
     private var mFilterDialog: BottomSheetDialog? = null
     private var mFilterView: View? = null
@@ -60,8 +63,6 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     }
 
     private val eventsSection = Section()
-
-
     private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
             add(eventsSection)
@@ -73,27 +74,33 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
         }
     }
 
-
-    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) {
-            presenter.onActionRegister(event)
-        }
-
-        override fun onActionCancel(event: String, registrationId: String?) {
-            presenter.onActionCancel(event, registrationId)
-        }
-
-        override fun onShowEventClick(view: View, event: String) {
-            presenter.onShowEventClick(event)
-        }
-
-        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            eventsList.adapter = groupAdapter
+            eventsList.apply {
+                adapter = groupAdapter
+            }
+            etSearch.apply {
+                SearchInput(this).apply {
+                    setOnTextChange { presenter.onSearchTextChange(it) }
+                    setOnTextChangeDone {
+                        presenter.onSearchTextSubmit(it)
+                        hideKeyboard()
+                    }
+                }
+                onTextChanged { btnClear.isVisible = !it.isNullOrEmpty() }
+                onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                    clSearch.setBackgroundResource(
+                        if (hasFocus) R.drawable.background_search_field_rounded_focused
+                        else R.drawable.background_search_field_rounded_normal
+                    )
+                }
+            }
+            btnClear.apply {
+                isVisible = !etSearch.text.isNullOrEmpty()
+                setOnClickListener { etSearch.text = null }
+            }
+            btnFilter.setOnClickListener { presenter.onShowFiltersClick() }
             btnDeclined.setOnCheckedChangeListener { _, isChecked ->
                 presenter.setEventStateFilter(isChecked, MyEventsFilter.DECLINED)
             }
@@ -103,38 +110,35 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
             btnPending.setOnCheckedChangeListener { _, isChecked ->
                 presenter.setEventStateFilter(isChecked, MyEventsFilter.PENDING)
             }
-            mBinding.apply {
-                etSearch.apply {
-                    SearchInput(this).apply {
-                        setOnTextChange { presenter.onSearchTextChange(it) }
-                        setOnTextChangeDone {
-                            presenter.onSearchTextSubmit(it)
-                            hideKeyboard()
-                        }
-                    }
-                    onTextChanged { btnClear.isVisible = !it.isNullOrEmpty() }
-                    btnClear.apply {
-                        btnClear.isVisible = !etSearch.text.isNullOrEmpty()
-                        setOnClickListener { etSearch.text = null }
-                    }
-                    btnFilter.setOnClickListener { presenter.onShowFiltersClick() }
-                    onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                        clSearch.setBackgroundResource(
-                            if (hasFocus) R.drawable.background_search_field_rounded_focused
-                            else R.drawable.background_search_field_rounded_normal
-                        )
-                    }
-                }
-            }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            appBarLayout.offsetChangedListener { appBarLayout, offset ->
+                updateViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
+            }
         }
-        initCollapseLabel()
+
     }
+
 
     override fun setData(data: List<EventNew?>) {
         eventsSection.update(data.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventGroupNew(it, onEventClickListener)
+            else EventItemNew(
+                it,
+                it.id.toString(),
+                it.state,
+                it.status?.value,
+                it.binds?.currentUserRegistration?.status?.value,
+                it.backgroundColor?.value,
+                it.image?.uri,
+                it.binds?.eventRegistrationState,
+                it.userAgreement?.uri,
+                it.binds?.currentUserRegistration?.id.toString(),
+                it.name,
+                it.address?.getShortAddress(),
+                it.holdingDate?.from,
+                it.holdingDate?.to,
+                onEventClickListener,
+            )
         })
         mBinding.swipeToRefresh.isRefreshing = false
     }
@@ -178,28 +182,20 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
     }
 
     override fun showEmptyListPlaceholder(isFirst: Boolean) {
-        if (isFirst) {
-            eventsSection.update(
-                listOf(
-                    NoScheduleEventItem(
-                        getString(R.string.no_event_schedule_you_have),
-                        getString(R.string.choose_event_and_do_request),
-                        60.dp
-                    )
-                )
-            )
-        } else {
-            eventsSection.update(
-                listOf(
-                    NoScheduleEventItem(
-                        getString(R.string.no_data_found),
-                        getString(R.string.no_event_with_params_title),
-                        60.dp
-                    )
-                )
-            )
-        }
+        var titlePlaceholder = getString(R.string.no_data_found)
+        var textPlaceholder = getString(R.string.no_event_with_params_title)
 
+        if (isFirst) {
+            titlePlaceholder = getString(R.string.no_event_schedule_you_have)
+            textPlaceholder = getString(R.string.choose_event_and_do_request)
+        }
+        eventsSection.updateItem(
+            NoScheduleEventItem(
+                titlePlaceholder,
+                textPlaceholder,
+                60.dp
+            )
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
@@ -208,26 +204,13 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
         mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
-    override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
-        )
-    }
-
-    override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
-    }
-
     private fun showMyScheduleEvents() {
         findNavController().navigate(R.id.my_schedule_events_fragment)
     }
 
     override fun setActionButton(event: EventNew?) {
-        eventsSection.findGroupBy<EventGroupNew> { true }?.updateButtonState(event)
+        val id = event?.id?.toLong()
+        eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun setShowMyScheduleButton(canShow: Boolean) {
@@ -407,13 +390,6 @@ class MyEventsFragmentNew : BaseFragmentNew<FragmentMyEventsBinding>(), MyEvents
             tvSpec.text.clear()
             tvFormat.text.clear()
         }
-    }
-
-    private fun initCollapseLabel() {
-        mBinding.appBarLayout.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
-            })
     }
 
 

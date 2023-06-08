@@ -99,4 +99,8 @@ interface EventRepository {
 
     //+
     fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+
+    //+
+    fun checkRegistrationAgreement(eventId : String) : Maybe<RegistrationAgreementStatus>
+    fun acceptRegistrationAgreement(eventId : String) : Maybe<RegistrationAgreementStatus>
 }

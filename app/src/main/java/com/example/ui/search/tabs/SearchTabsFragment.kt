@@ -2,27 +2,20 @@ package com.example.ui.search.tabs
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentSearchTabsBinding
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.user.SearchUserFragment
-import com.example.ui.views.toolbar.ToolbarButton
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.util.SearchInput
 import onPageChanged
 import onTextChanged
@@ -41,9 +34,7 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
 
     @ProvidePresenter
     fun providePresenter(): SearchTabsPresenter = presenterProvider.get().apply {
-        searchInterface = this@SearchTabsFragment.searchInterface.apply {
-            initWithFilter = SearchTabsFragmentArgs.fromBundle(requireArguments()).filter
-        }
+        searchInterface = this@SearchTabsFragment.searchInterface
     }
 
 
@@ -139,9 +130,8 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
 
     override fun setCurrentFragment(position: Int) {
         mBinding.viewPager.apply {
-            if (currentItem == position) {
-                return
-            } else {
+            if (currentItem == position) return
+            else {
                 currentItem = position
                 selectTab(position)
             }
@@ -157,7 +147,7 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
     }
 
     override fun showQrScanner() {
-        findNavController().navigate(SearchTabsFragmentDirections.searchTabsToQrScanner())
+        findNavController().navigate(R.id.qr_scanner_fragment)
     }
 
     override fun layout() = R.layout.fragment_search_tabs

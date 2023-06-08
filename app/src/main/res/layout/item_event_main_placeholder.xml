@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shimmer_view_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:shimmer_duration="1500">
+
+    <LinearLayout
+        android:id="@+id/itemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#14747480"
+            android:paddingBottom="10dp">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_image_height_new"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/top_guideLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="360dp" />
+
+
+            <View
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_guideLine" />
+
+            <View
+                android:id="@+id/tvTitle2"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+
+            <View
+                android:id="@+id/tvDate"
+                android:layout_width="200dp"
+                android:layout_height="17dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle2" />
+
+            <View
+                android:id="@+id/tvRequestsDate"
+                android:layout_width="250dp"
+                android:layout_height="15dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDate" />
+
+
+            <View
+                android:id="@+id/tvLocation"
+                android:layout_width="200dp"
+                android:layout_height="15dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRequestsDate" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#14747480"
+            android:paddingBottom="20dp"
+            tools:ignore="MissingPrefix">
+
+            <View
+                android:id="@+id/btnEventAction"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <View
+                android:id="@+id/tvCancelRegister"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_marginHorizontal="100dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/placeholder_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnEventAction" />
+
+
+            <com.example.ui.views.expandableTextView.ExpandableTextView
+                android:id="@+id/tvDescription"
+                fontPath="fonts/sf_pro_text.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:letterSpacing="-0.02"
+                android:maxLines="25"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@id/ln"
+                app:layout_constraintTop_toBottomOf="@id/tvCancelRegister"
+                app:limitedMaxLines="4"
+                tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
+Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. " />
+
+            <LinearLayout
+                android:id="@+id/ln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="25dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription">
+
+
+                <LinearLayout
+                    android:id="@+id/format_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvDescription">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:id="@+id/tv_format"
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/address_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/format_ln">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/phone_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/address_ln">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/email_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/phone_ln">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/link_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/email_ln">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/network_ln"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/link_ln">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/placeholder_background"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/placeholder_background" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

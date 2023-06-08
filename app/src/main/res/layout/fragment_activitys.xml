@@ -60,29 +60,23 @@
                             android:textSize="17sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/btnGoToScheme"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:ignore="MissingPrefix" />
 
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btnGoToScheme"
-                            fontPath="fonts/sf_pro_text_semibold.ttf"
-                            android:layout_width="145dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/custom_btn_add_favorites_selectable"
-                            android:minHeight="@dimen/auth_button_min_height"
-                            android:text="@string/scheme_of_building"
-                            android:textAllCaps="false"
-                            android:textColor="#BE9B72"
-                            android:textSize="11sp"
+                        <com.example.ui.views.toolbar.ToolbarCircleButton
                             android:visibility="gone"
+                            android:id="@+id/btnGoToScheme"
+                            tools:visibility="visible"
+                            android:text="@string/scheme_of_building"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginTop="5dp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.MaterialToolbar>
@@ -102,7 +96,8 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     android:id="@+id/clSearch"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -157,7 +152,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/activitiesList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"

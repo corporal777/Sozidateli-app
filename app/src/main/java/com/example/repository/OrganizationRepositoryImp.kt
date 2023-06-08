@@ -38,7 +38,7 @@ class OrganizationRepositoryImp
         return callPagination(api.organizationMembers(orgId, limit, offset))
     }*/
 
-    override fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNewMemberModel>> {
+    override fun getOrganizationMembers(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationMemberModel>> {
         return newApi.getOrganizationMembers(map)
             .map {
                 PaginationResponse(it.totalCount, it.data)

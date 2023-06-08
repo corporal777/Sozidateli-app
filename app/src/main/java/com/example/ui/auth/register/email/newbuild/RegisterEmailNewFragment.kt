@@ -5,8 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -20,8 +24,10 @@ import com.example.databinding.FragmentRegisterEmailNewBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.util.*
+import onBackPressedCallback
 import onFocusChanged
 import onTextChanged
 import java.lang.StringBuilder
@@ -47,6 +53,9 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onBackPressedCallback(true) {
+            presenter.onClickClose()
+        }
         mBinding.apply {
             ivClose.setOnClickListener { presenter.onClickClose() }
 
@@ -56,9 +65,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                     it?.toString()?.let { text -> presenter.onChangeFirstNameText(text) }
                 }
                 onFocusChanged { hasFocus ->
-                    if (!hasFocus) {
-                        setText(removeFirstAndLastSpaces(text.toString()))
-                    }
+                    if (!hasFocus) setText(removeFirstAndLastSpaces(text.toString()))
                 }
             }
             etLastName.apply {
@@ -67,9 +74,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                     it?.toString()?.let { text -> presenter.onChangeLastNameText(text) }
                 }
                 onFocusChanged { hasFocus ->
-                    if (!hasFocus) {
-                        setText(removeFirstAndLastSpaces(text.toString()))
-                    }
+                    if (!hasFocus) setText(removeFirstAndLastSpaces(text.toString()))
                 }
             }
             etMiddleName.apply {
@@ -78,15 +83,12 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                     it?.toString()?.let { text -> presenter.onChangeMiddleNameText(text) }
                 }
                 onFocusChanged { hasFocus ->
-                    if (!hasFocus) {
-                        setText(removeFirstAndLastSpaces(text.toString()))
-                    }
+                    if (!hasFocus) setText(removeFirstAndLastSpaces(text.toString()))
                 }
             }
             etEmail.apply {
-                //filters = getEmailFilter()
                 onTextChanged {
-                    it?.toString()?.let { text -> presenter.onChangeEmailText(text, requireContext()) }
+                    it?.toString()?.let { text -> presenter.onChangeEmailText(text) }
                 }
                 onFocusChanged { hasFocus ->
                     if (!hasFocus) {
@@ -107,16 +109,24 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
                 presenter.onNoMiddleNameChecked(checked)
             }
             passwordView.apply {
-                setShowAgree(true)
-                setHyperlinkClickCallback {
-                    showUserAgreement()
-                }
                 setPasswordValidCallback {
                     presenter.onChangePasswordText(it.password ?: "", it.isValid)
                 }
-                setChangedSelectionCallback {
-                    presenter.onClickAgree(it)
+            }
+
+            tvAgree.apply {
+                text = CustomSpannableString(getString(R.string.auth_agree_user_agreement)).apply {
+                    val linkStart = 11
+                    val linkEnd = length
+                    setClickSpanWithLength(tvAgree, linkStart, linkEnd) {
+                        showUserAgreement()
+                    }
                 }
+                highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+            cbAgree.setOnCheckedChangeListener { _, isChecked ->
+                presenter.onClickAgree(isChecked)
             }
             ibRegister.setOnClickListener {
                 hideKeyboard()
@@ -125,17 +135,17 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
         }
     }
 
+    override fun showAgreementSelection(isValid: Boolean) {
+        mBinding.llAgree.isVisible = isValid
+    }
+
     override fun showEmailNotUnique(email: String) {
         ConfirmPhoneDialog(
             requireContext(),
             getString(R.string.confirm_email_text, email),
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
-        ).setSelectCallback {
-                if (it) {
-                    presenter.register()
-                }
-            }
+        ).setSelectCallback { if (it) presenter.register() }
     }
 
     override fun showPhoneNotUnique(email: String) {
@@ -145,11 +155,7 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
 
-        ).setSelectCallback {
-                if (it) {
-                    presenter.register()
-                }
-            }
+        ).setSelectCallback { if (it) presenter.register() }
     }
 
 
@@ -162,7 +168,8 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
     override fun showFirstNameError(show: Boolean) {
-        mBinding.tilFirstName.error = if (show) getString(R.string.auth_error_no_first_name) else null
+        mBinding.tilFirstName.error =
+            if (show) getString(R.string.auth_error_no_first_name) else null
     }
 
     override fun showLastNameError(show: Boolean) {
@@ -174,7 +181,8 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
     override fun showWrongPhoneError(show: Boolean) {
-        mBinding.tilEmail.error = if (show) getString(R.string.invalid_phone_number_second_error) else null
+        mBinding.tilEmail.error =
+            if (show) getString(R.string.invalid_phone_number_second_error) else null
     }
 
     override fun showAgreementError(show: Boolean) {
@@ -209,16 +217,9 @@ class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding
     }
 
 
-    override fun showSnRegistration(snUser: SnUser) {
-        findNavController().navigate(
-            RegisterEmailNewFragmentDirections.emailRegisterToSnRegister(
-                snUser
-            )
-        )
-    }
+    override fun showSnRegistration(snUser: SnUser) {}
 
-    private fun showUserAgreement() {
+    private fun showUserAgreement() =
         showCustomTabsBrowser(requireContext(), getString(R.string.auth_agree_address))
-    }
 
 }

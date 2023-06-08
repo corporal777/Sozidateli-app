@@ -37,6 +37,9 @@ interface NewApi {
     @POST("v1/user")
     fun registerUser(@Body body: RegisterBody): Single<NewAuthResponse>
 
+    @PATCH("v1/user/{id}")
+    fun updateProfile(@Path("id") id: Int, @Body map: Map<String, Any?>): Single<UserDetail>
+
     @POST("v1/user")
     fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
 
@@ -51,16 +54,10 @@ interface NewApi {
     ): Completable
 
     @POST("v1/user/{id}/phone/confirm")
-    fun confirmPhone(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<NewAuthResponse>
-
-    @PATCH("v1/user/{id}")
-    fun updateProfile(@Path("id") id: Int, @Body map: Map<String, Any?>): Single<UserDetail>
+    fun confirmPhoneCode(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<NewAuthResponse>
 
     @POST("v1/user/{id}/email/confirm")
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
-
-    @POST("v1/user/{id}/phone/confirm")
-    fun confirmPhoneCode(@Path("id") id: Int, @Body body: PhoneCodeBody): Completable
 
     @GET("v1/user/{id}/phone/confirm")
     fun sendPhoneCode(@Path("id") id: Int, @Query("phone") phone: String): Completable
@@ -303,7 +300,7 @@ interface NewApi {
     fun getUsersFavoritesList(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<UsersFavoriteModel>>>
 
     @GET("v1/organization-member")
-    fun getOrganizationMembers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationNewMemberModel>>>
+    fun getOrganizationMembers(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationMemberModel>>>
 
     @GET("v1/organization-member")
     fun getOrganizationMembersWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<OrganizationMemberModel>>>
@@ -508,4 +505,11 @@ interface NewApi {
 
     @GET("v1/address/cities-orgs")
     fun getOrganizationsTowns(@Query("query") region: String): Maybe<List<SearchTown>>
+
+    //+
+    @GET("v1/event-agreement/{id}")
+    fun checkRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
+
+    @PATCH("v1/event-agreement/{id}")
+    fun acceptRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
 }

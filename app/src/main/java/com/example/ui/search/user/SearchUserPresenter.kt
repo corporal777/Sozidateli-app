@@ -85,10 +85,10 @@ class SearchUserPresenter
         if (isSubscribed) {
             compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     user.binds?.userFavorite = null
                     viewState.updateUser(user)
+                    viewState.showEventRemovedFromFavoriteDialog()
                 }
         } else {
             compositeDisposable += eventRepository.addToFavorites(
@@ -98,10 +98,10 @@ class SearchUserPresenter
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
                     user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     viewState.updateUser(user)
+                    viewState.showEventAddedToFavoriteDialog()
                 }
         }
     }

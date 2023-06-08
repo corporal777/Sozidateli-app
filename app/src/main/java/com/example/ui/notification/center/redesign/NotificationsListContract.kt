@@ -12,10 +12,10 @@ interface NotificationsListContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setPlaceholder(notifications: List<Notification?>)
+        fun setNotificationsPlaceholder()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setDataNew(notifications: Map<String, List<Notification>>)
+        fun setData(notifications: Map<String, List<Notification>>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()

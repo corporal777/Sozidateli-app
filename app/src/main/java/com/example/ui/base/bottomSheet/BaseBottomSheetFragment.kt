@@ -57,6 +57,8 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
         return dialog
     }
 
+
+
     fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet: FrameLayout =
             dialog!!.findViewById(com.google.android.material.R.id.design_bottom_sheet)

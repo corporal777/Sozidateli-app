@@ -22,6 +22,7 @@ import com.example.data.models.Tag
 import com.example.databinding.FragmentActivitysBinding
 import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
+import com.example.holders.PlaceholderItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
@@ -36,6 +37,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_activitys.*
 import kotlinx.android.synthetic.main.fragment_map_new.*
+import onBackPressedCallback
 import onScrollStateChanged
 import onScrolled
 import onTextChanged
@@ -54,7 +56,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
     @Inject
     lateinit var presenterProvider: Provider<ActivitiesPresenter>
 
-    var mCanChangeDay = false
+    private var mCanChangeDay = false
 
     @ProvidePresenter
     fun providePresenter(): ActivitiesPresenter = presenterProvider.get().apply {
@@ -85,21 +87,16 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
             presenter.onSubEventClick(subEvent)
-        }
 
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) {
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
             presenter.onAddToScheduleClick(subEvent)
-        }
 
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
             presenter.onRemoveFromScheduleClick(subEvent)
-        }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setFragmentResultListener("tags_fragment") { _, bundle ->
@@ -109,19 +106,13 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                 t
             }
         }
-        setFragmentResultListener("all_actions") { _, bundle ->
-            if (bundle.getBoolean("isUpdate", false)) {
-                presenter.getEventData()
-            }
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         mBinding.apply {
-            recyclerView.apply {
+            activitiesList.apply {
                 adapter = groupAdapter
                 val mLayoutManager = this.layoutManager as LinearLayoutManager
                 onScrolled { _, _ ->
@@ -132,9 +123,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                             val now =
                                 createCalendarDay(defaultServerDateFormatter.parse(item?.date).time)
                             changeDayWhenScrollDown(now)
-                            if (!mCanChangeDay) {
-                                changeDay(now)
-                            }
+                            if (!mCanChangeDay) changeDay(now)
                         }
                     } catch (e: Exception) {
                     }
@@ -159,7 +148,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                     setOnTextChangeDone {
                         presenter.onSearchTextSubmit(it)
                         hideKeyboard()
-
                     }
                 }
 
@@ -182,30 +170,30 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
+    override fun setContentPlaceholder() {
+        calendarSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_CALENDAR))
+        eventsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_LIST))
+    }
 
     override fun setSchemeButton(show: Boolean) {
-        mBinding.apply {
-            btnGoToScheme.apply {
-                isVisible = show
-                setOnClickListener {
-                    presenter.onSchemeClick()
-                }
+        mBinding.btnGoToScheme.apply {
+            isVisible = show
+            setOnClickListener {
+                presenter.onSchemeClick()
             }
         }
     }
 
     override fun setTags(tags: List<Tag>?) {
         if (!tags.isNullOrEmpty()) {
-            tagsSection.update(listOf(TagsHorizontalListItem(tags) {
-                presenter.onTagSelectedListChange()
-            }))
+            tagsSection.updateItem(TagsHorizontalListItem(tags) { presenter.onTagSelected() })
         }
     }
 
     override fun setDays(days: List<List<EventScheduleCalendarDay>>) {
         calendarSection.update(
-            days.map {
-                CalendarHorizontalListItem(it) { day ->
+            days.mapIndexed { index, d ->
+                CalendarHorizontalListItem(index,d) { day ->
                     presenter.onDaySelected(day)
                 }
             }
@@ -288,7 +276,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
         if (group != null) {
             val position = groupAdapter.getAdapterPosition(group)
-            val mLayoutManager = mBinding.recyclerView.layoutManager as LinearLayoutManager
+            val mLayoutManager = mBinding.activitiesList.layoutManager as LinearLayoutManager
             mSmoothScroller.targetPosition = position
             mLayoutManager.startSmoothScroll(mSmoothScroller)
         }
@@ -296,13 +284,11 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     override fun showEmptyEventPlaceholder() {
-        eventsSection.update(
-            listOf(
-                NoScheduleEventItem(
-                    "Нет результатов",
-                    "По заданным параметрам нет подходящих событий",
-                    30.dp
-                )
+        eventsSection.updateItem(
+            NoScheduleEventItem(
+                "Нет результатов",
+                "По заданным параметрам нет подходящих событий",
+                30.dp
             )
         )
     }

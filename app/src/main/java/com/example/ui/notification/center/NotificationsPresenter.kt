@@ -47,7 +47,6 @@ class NotificationsPresenter
     }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
         .buildList(enablePlaceholders = false)
-    //.buildListNew(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

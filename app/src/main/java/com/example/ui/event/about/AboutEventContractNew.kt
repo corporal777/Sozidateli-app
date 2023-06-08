@@ -11,6 +11,9 @@ import com.example.ui.event.about.items.AboutEventData
 interface AboutEventContractNew {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setEventDataPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEventData(eventData: AboutEventData)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
@@ -33,9 +36,6 @@ interface AboutEventContractNew {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeEventSubscription(isSubscribed: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showEventAddedToFavoriteMessage()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeOrganizationSubscription(isSubscribed: Boolean)
@@ -64,6 +64,9 @@ interface AboutEventContractNew {
         @StateStrategyType(SkipStrategy::class)
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun showAgreementRegisterDialog(event: String, url : String)
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun addEventToCalendar(eventData : EventNew?)
 
@@ -78,8 +81,9 @@ interface AboutEventContractNew {
 
         fun onOrganizationClick(organization: String)
 
-        fun onActionRegister()
+        fun onActionRegister(url : String?)
         fun onActionCancel()
+        fun onAcceptRegistrationAgreement(event : String)
         fun onShareClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)
         fun onRemoveFromScheduleClick(subEvent: EventActivityModel)

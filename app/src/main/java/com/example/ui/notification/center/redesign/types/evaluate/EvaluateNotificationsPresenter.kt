@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
+import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.notification.center.redesign.NotificationType
@@ -22,11 +23,13 @@ class EvaluateNotificationsPresenter
 @Inject constructor(
     val appData: AppData,
     private val userRepository: UserRepository,
-    private val notificationManager: NotificationManager
+    private val notificationManager: NotificationManager,
+    private val socket: SocketIOManager,
 ) : BaseNotificationTypePresenter<EvaluateNotificationsContract.View>(
     appData,
     userRepository,
-    notificationManager
+    notificationManager,
+    socket
 ), EvaluateNotificationsContract.Presenter {
 
     override fun onFirstViewAttach() {
@@ -62,17 +65,12 @@ class EvaluateNotificationsPresenter
 
 
     override fun onReadAllClick() {
-        compositeDisposable += Completable.fromAction { blockInvalidation = true }
-            .andThen(userRepository.markAllNotificationsAsRead(NotificationType.ESTIMATES))
+        compositeDisposable += readAllNotificationsRequest(NotificationType.ESTIMATES)
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    blockInvalidation = false
-                    onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = {
-                    blockInvalidation = false
                     pagination.invalidate()
                     if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet(NotificationType.ESTIMATES)
                 }

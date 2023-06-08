@@ -16,7 +16,7 @@ import com.example.util.ClickableSpanNew
 class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
 
 
-    fun setColorSpan(color: Int, context : Context) {
+    fun setColorSpan(color: Int, context: Context) {
         val expandColor = ContextCompat.getColor(context, color)
         setSpan(
             ForegroundColorSpan(expandColor),
@@ -26,19 +26,26 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
         )
     }
 
-    fun setTextSizeSpan(size : Int, context: Context, ){
+    fun setTextSizeSpan(size: Int, context: Context) {
         val textSize = context.resources.getDimensionPixelSize(size)
         setSpan(AbsoluteSizeSpan(textSize), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
-    fun setClickSpan(textView : TextView, onClick: () -> Unit){
+    fun setClickSpan(textView: TextView, onClick: () -> Unit) {
         val clickableSpan = ClickableSpanNew(textView) {
-           onClick.invoke()
+            onClick.invoke()
         }
         setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
     }
 
-    fun setFontSpan(res : String, context: Context){
+    fun setClickSpanWithLength(textView: TextView, start: Int, end: Int, onClick: () -> Unit) {
+        val clickableSpan = ClickableSpanNew(textView) {
+            onClick.invoke()
+        }
+        setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+    }
+
+    fun setFontSpan(res: String, context: Context) {
         val font = Typeface.createFromAsset(context.assets, res)
         setSpan(CustomTypefaceSpan("", font), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }

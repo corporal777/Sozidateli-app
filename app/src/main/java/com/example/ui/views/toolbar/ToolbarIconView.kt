@@ -2,6 +2,7 @@ package com.example.ui.views.toolbar
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -22,7 +23,7 @@ class ToolbarIconView(
         initPadding(5.dp, 5.dp, 5.dp, 5.dp)
     }
 
-    private fun initPadding(top: Int, bottom: Int, left: Int, right: Int) {
+    fun initPadding(top: Int, bottom: Int, left: Int, right: Int) {
         setPadding(left, top, right, bottom)
     }
 
@@ -30,11 +31,8 @@ class ToolbarIconView(
         setImageResource(image)
     }
 
-    fun setAlphaVision(enabled: Boolean) {
-        this.apply {
-            isEnabled = enabled
-            alpha = if (enabled) 1f
-            else 0.6f
-        }
+    fun setIconTint(tint : Int){
+        imageTintList = ContextCompat.getColorStateList(context, tint);
     }
+
 }

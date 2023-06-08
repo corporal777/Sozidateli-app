@@ -50,13 +50,16 @@ interface RegisterEmailNewContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(email: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAgreementSelection(isValid: Boolean)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickClose()
         fun onClickRegister()
 
-        fun onChangeEmailText(email: String, context: Context)
+        fun onChangeEmailText(email: String)
 
         fun onChangeFirstNameText(firstName: String)
         fun onChangeLastNameText(lastName: String)

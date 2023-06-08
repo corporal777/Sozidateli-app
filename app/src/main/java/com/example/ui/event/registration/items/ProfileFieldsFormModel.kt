@@ -15,6 +15,7 @@ data class ProfileFieldsData(
     fun toProfileFieldsFormResult(): ProfileFieldsFormResult {
         return ProfileFieldsFormResult(
             fieldsIsRequired = isRequired,
+            user_name = ProfileFieldString(isRequired, false, false, fields.user_fio),
             user_birthday = ProfileFieldString(isRequired, false, false, fields.user_birthday),
             user_gender = ProfileFieldString(isRequired, false, false, fields.user_gender),
             user_notes = ProfileFieldString(isRequired, false, false, fields.user_notes),
@@ -36,6 +37,7 @@ data class ProfileFieldsData(
 
 @Parcelize
 data class ProfileFieldsFormModel(
+    val user_fio : String? = null,
     val user_name: String? = null,
     val user_last_name: String? = null,
     val user_middle_name: String? = null,
@@ -66,6 +68,7 @@ data class ProfileFieldsFormModel(
 
 data class ProfileFieldsFormResult(
     val fieldsIsRequired: Boolean,
+    var user_name: ProfileFieldString,
     var user_birthday: ProfileFieldString,
     var user_gender: ProfileFieldString,
     var user_notes: ProfileFieldString,
@@ -87,6 +90,9 @@ data class ProfileFieldsFormResult(
     fun checkProfileFieldsIsValid(data: ProfileFieldsFormResult): Boolean {
         var isValid = true
         if (data.fieldsIsRequired) {
+            if (data.user_name.isChosen) {
+                if (data.user_name.value.isNullOrEmpty()) isValid = false
+            }
             if (data.user_birthday.isChosen) {
                 if (data.user_birthday.value.isNullOrEmpty()) isValid = false
             }
@@ -148,6 +154,10 @@ data class ProfileFieldsFormResult(
 
     fun setFieldsIsChosen(options: List<String>?, data: ProfileFieldsFormResult) {
         data.apply {
+            user_name.isChosen = true
+//            if (options?.contains("user_fio") == true) {
+//                user_name.isChosen = true
+//            }
             if (options?.contains("user_birthday") == true) {
                 user_birthday.isChosen = true
             }

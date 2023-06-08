@@ -178,6 +178,10 @@ fun <T> Maybe<T>.withDelay(time: Long): Maybe<T> {
     return delay(time, TimeUnit.MILLISECONDS)
 }
 
+fun <T> Observable<T>.withDelay(time: Long): Observable<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
 fun Completable.withDelay(time: Long): Completable {
     return delay(time, TimeUnit.MILLISECONDS)
 }

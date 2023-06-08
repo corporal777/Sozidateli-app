@@ -109,6 +109,7 @@ data class OrganizationMemberModel(
         val nko: OrganizationMemberNkoModel? = null,
         @SerializedName("canCreateEvent")
         val canCreateEvent: Boolean? = null,
+        val isHidden : Boolean? = null,
         val status: String? = null,
         val binds: OrganizationMemberBindsModel? = null
 ): Parcelable

@@ -1,6 +1,6 @@
 package com.example.ui.auth.register.email.finish
 
-import call
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
@@ -8,20 +8,30 @@ import com.example.data.bodies.EmailCodeBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
+import com.example.data.socket.SocketConnectionState
+import com.example.data.socket.SocketIOManager
+import com.example.events.OnSocketConnectEvent
+import com.example.exceptions.CodeInvalidException
 import com.example.repository.AuthRepository
+import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.google.gson.Gson
 import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCustomProgressBarLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -33,6 +43,8 @@ class FinishRegisterPresenter
     private val authRepository: AuthRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val userRepository: UserRepository,
+    private val chatRepository: ChatRepository,
+    private val socket: SocketIOManager,
     snAuthManager: SnAuthManager
 ) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData),
     FinishRegisterContract.Presenter {
@@ -132,37 +144,38 @@ class FinishRegisterPresenter
     }
 
     override fun onHandleAuthLink() {
-        viewState.apply {
-            setIgnoreTokenListener(true)
-            showCustomProgressDialog()
+        viewState.setIgnoreTokenListener(true)
+        compositeDisposable += Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += userRepository.updateProfile(appData.getId(), getUpdateRequestBody())
+                .subscribeSimple(
+                    onError = { emitter.onError(it) },
+                    onSuccess = { user ->
+                        disposable += confirmCodeRequest().subscribeSimple(
+                            onError = { emitter.onError(CodeInvalidException()) },
+                            onComplete = {
+                                Shake.registerUser(user.id.toString())
+                                updateUserInShake(user)
+                                emitter.onComplete()
+                            })
+                    })
+            emitter.setDisposable(disposable)
         }
-        compositeDisposable += confirmCodeRequest()
+            .andThen(connectToSocket())
             .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
+                    if (it is CodeInvalidException) viewState.codeError()
+                    else onReceiveError(it)
+                },
+                onComplete = {
                     viewState.apply {
-                        hideCustomProgressDialog()
-                        codeError()
+                        setIgnoreTokenListener(false)
+                        openHome()
                     }
-                }, onComplete = {
-                    userRepository.updateUserProfile(appData.getId(), getUpdateRequestBody())
-                        .doOnSuccess {
-                            Shake.registerUser(it.id.toString())
-                            updateUserInShake(it)
-                        }
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({
-                            viewState.apply {
-                                hideCustomProgressDialog()
-                                openHome()
-                            }
-                        }, {
-                            viewState.hideCustomProgressDialog()
-                            onReceiveError(it)
-                        }).call(compositeDisposable)
-                })
-
+                }
+            )
     }
 
     override fun onChangeCodeText(code: String) {
@@ -185,8 +198,7 @@ class FinishRegisterPresenter
 
     override fun onChangeEmailText(email: String) {
         this.login = email
-        loginType = if (Utils.isPhone(login) && !Utils.isContainLetters(login)) "phone"
-        else "email"
+        loginType = if (Utils.isPhone(login) && !Utils.isContainLetters(login)) "phone" else "email"
         viewState.apply {
             showHideDescriptionText(false)
             setCanResend(true)
@@ -239,32 +251,33 @@ class FinishRegisterPresenter
     }
 
     private fun confirmCodeRequest(): Completable {
-        return if (loginType == "email") {
-            userRepository.confirmEmailCodeNew(EmailCodeBody(code = code, email = login))
-        } else {
-            authRepository.confirmPhone(
-                ConfirmCodeBody("personal", validatePhoneBeforeSend(login), code)
+        return if (loginType == "email") authRepository.confirmEmailCode(
+            EmailCodeBody(
+                code = code,
+                email = login
             )
-        }
+        )
+        else authRepository.confirmPhoneCode(
+            ConfirmCodeBody(
+                "personal",
+                validatePhoneBeforeSend(login),
+                code
+            )
+        )
     }
 
     private fun getUpdateRequestBody(): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {
             if (loginType == "email") {
-                put(
-                    UserDetail.USER_EMAIL,
-                    FieldDetails(value = login, isVisible = true, isConfirmed = true)
-                )
+                put(UserDetail.USER_EMAIL, FieldDetails(value = login, isVisible = true))
             } else {
                 put(
-                    UserDetail.USER_PHONE, arrayListOf(
-                        FieldDetails(
-                            value = validatePhoneBeforeSend(login),
-                            type = PHONE_PERSONAL,
-                            isVisible = true,
-                            isConfirmed = true
-                        )
-                    )
+                    UserDetail.USER_PHONE,
+                    FieldDetails(
+                        value = validatePhoneBeforeSend(login),
+                        type = PHONE_PERSONAL,
+                        isVisible = true
+                    ).toList()
                 )
             }
             put(UserDetail.USER_NAME, firstName)
@@ -276,6 +289,29 @@ class FinishRegisterPresenter
             put(UserDetail.USER_REGISTRATION_FINISH, true)
         }
     }
+
+    private fun connectToSocket(): Completable {
+        return Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += socket.connect().subscribeSimple(
+                onError = { emitter.onComplete() },
+                onNext = {
+                    if (it == SocketConnectionState.CONNECTED) {
+                        disposable += socket.subscribeToTotalNotificationsCount()
+                            .subscribeSimple(
+                                onError = { emitter.onComplete() },
+                                onNext = { count ->
+                                    appData.notificationsCount = count
+                                    emitter.onComplete()
+                                })
+                        disposable += socket.connectToUpdates()
+                            .subscribeSimple { }
+                    }
+                })
+            emitter.setDisposable(disposable)
+        }
+    }
+
 
     companion object {
         val TIMER_SECONDS_COUNT = 60

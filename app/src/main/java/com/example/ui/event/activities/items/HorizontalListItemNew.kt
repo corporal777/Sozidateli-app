@@ -2,21 +2,16 @@ package com.example.ui.event.activities.items
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Handler
-import android.util.AttributeSet
 import android.util.DisplayMetrics
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.R
-import com.example.util.PositionOffsetScrollListener
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import io.socket.client.On
 import kotlinx.android.synthetic.main.item_horizontal_list.*
 
-open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
+open class HorizontalListItemNew<VH : RecyclerView.ViewHolder>(id: Long) : Item(id) {
 
     private var scrollPosition = 0
     private var scrollOffset = 0
@@ -43,7 +38,10 @@ open class HorizontalListItemNew<VH : RecyclerView.ViewHolder> : Item() {
             scrollPosition = position
             scrollOffset = offset
         } else {
-            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(scrollPosition, scrollOffset)
+            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                scrollPosition,
+                scrollOffset
+            )
         }
     }
 

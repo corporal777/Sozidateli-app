@@ -20,9 +20,9 @@ import javax.inject.Inject
 @InjectViewState
 class FavoriteUsersPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val userRepository: UserRepository,
-        private val eventRepository: EventRepository
+    private val appData: AppData,
+    private val userRepository: UserRepository,
+    private val eventRepository: EventRepository
 ) : BasePresenter<FavoriteUsersContract.View>(appData), FavoriteUsersContract.Presenter {
 
     private var firstLaunch = true
@@ -37,17 +37,17 @@ class FavoriteUsersPresenter
         }
         userRepository.getUsersFavoritesList(data)
     }
-            .buildList(enablePlaceholders = true)
+        .buildList(enablePlaceholders = true)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-                .subscribe({
-                    val uid = appData.getId()
-                    it.forEach { user -> user?.isCurrentUser = user?.id == uid }
-                    viewState.setData(it)
-                }, { it.printStackTrace() })
+            .subscribe({
+                val uid = appData.getId()
+                it.forEach { user -> user?.isCurrentUser = user?.id == uid }
+                viewState.setData(it)
+            }, { it.printStackTrace() })
     }
 
     override fun attachView(view: FavoriteUsersContract.View?) {
@@ -60,9 +60,15 @@ class FavoriteUsersPresenter
 
     override fun onUserRemoveFromFavoritesClick(user: UserDetail) {
         compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ pagination.invalidate() }, { pagination.invalidate() })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    pagination.invalidate()
+                },
+                onComplete = {
+                    viewState.showEventRemovedFromFavoriteDialog()
+                    pagination.invalidate()
+                })
     }
 
     override fun onItemTake(position: Int) {

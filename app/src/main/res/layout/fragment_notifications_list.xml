@@ -52,11 +52,10 @@
                             tools:ignore="MissingPrefix" />
 
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <com.example.ui.views.toolbar.ToolbarCircleButton
                             android:visibility="gone"
-                            tools:visibility="visible"
+                            tools:visibility="invisible"
                             android:id="@+id/btnReadAll"
-                            style="@style/BtnCircleStrokeStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"

@@ -25,12 +25,13 @@ import javax.inject.Inject
 @InjectViewState
 class InviteRegisterPresenter
 @Inject constructor(
-        private val appData: AppData,
-        private val authRepository: AuthRepository,
-        private val phoneNumberUtil: PhoneNumberUtil,
-        private val userRepository: UserRepository,
-        snAuthManager: SnAuthManager
-) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager, appData), InviteRegisterContract.Presenter {
+    private val appData: AppData,
+    private val authRepository: AuthRepository,
+    private val phoneNumberUtil: PhoneNumberUtil,
+    private val userRepository: UserRepository,
+    snAuthManager: SnAuthManager
+) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager, appData),
+    InviteRegisterContract.Presenter {
 
     private var firstName: String? = null
     private var lastName: String? = null
@@ -52,21 +53,34 @@ class InviteRegisterPresenter
     }
 
     override fun getData() {
-        compositeDisposable += authRepository.authEmailOrPhone(AuthBody(LoginModel("email", email?: ""), LoginModel("temporary", code)))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            viewState.unblockTokenListener()
-                        },
-                        onComplete = {
-                            viewState.unblockTokenListener()
-                        }
-                )
+        compositeDisposable += authRepository.authEmailOrPhone(
+            AuthBody(
+                LoginModel(
+                    "email",
+                    email ?: ""
+                ), LoginModel("temporary", code)
+            )
+        )
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    viewState.unblockTokenListener()
+                },
+                onComplete = {
+                    viewState.unblockTokenListener()
+                }
+            )
     }
 
-    override fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String, invite: Int) {
+    override fun onSaveEmailText(
+        email: String,
+        name: String,
+        lastName: String,
+        middleName: String,
+        invite: Int
+    ) {
         this.email = email
         this.newEmail = email
         this.firstName = name
@@ -115,21 +129,21 @@ class InviteRegisterPresenter
     }
 
     override fun onClickRegister(
-            email: String?,
-            firstName: String?,
-            lastName: String?,
-            password: String?,
-            isAgree: Boolean
-            //passwordConfirm: String?
+        email: String?,
+        firstName: String?,
+        lastName: String?,
+        password: String?,
+        isAgree: Boolean
+        //passwordConfirm: String?
     ) {
         if (isDataValid(firstName, lastName, email, password, passwordConfirm, noAgreeChecked)) {
             register(
-                    email!!,
-                    firstName!!,
-                    lastName!!,
-                    password!!,
-                    if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
-                    phone
+                email!!,
+                firstName!!,
+                lastName!!,
+                password!!,
+                if (noMiddleNameChecked) USER_DATA_EMPTY else middleName,
+                phone
             )
         } else {
             viewState.apply {
@@ -143,12 +157,12 @@ class InviteRegisterPresenter
     }
 
     private fun register(
-            email: String,
-            firstName: String,
-            lastName: String,
-            password: String,
-            middleName: String?,
-            phone: String?
+        email: String,
+        firstName: String,
+        lastName: String,
+        password: String,
+        middleName: String?,
+        phone: String?
     ) {
         viewState.blockTokenListener()
         val newEm = if (this.email == email) null else email
@@ -157,36 +171,43 @@ class InviteRegisterPresenter
         else
             FieldDetails(value = middleName, absent = noMiddleNameChecked)
 
-        compositeDisposable += userRepository.changePassword(appData.getId(), PasswordBody(password = password))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            it.printStackTrace()
-                        },
-                        onComplete = {
-                            compositeDisposable += userRepository.updateProfile(appData.getId(), mapOf(UserDetail.USER_NAME to firstName,
-                                    UserDetail.USER_LAST_NAME to lastName,
-                                    UserDetail.USER_MIDDLE_NAME to midName,
-                                    UserDetail.USER_EMAIL to FieldDetails(value = email),
-                                    UserDetail.USER_REGISTRATION_FINISH to true))
-                                    .withCheckInternetConnectivity()
-                                    .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
-                                    .subscribeSimple {
-                                        confirmCode(newEm)
-                                    }
-                        })
+        compositeDisposable += userRepository.changePassword(
+            appData.getId(),
+            PasswordBody(password = password)
+        )
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                },
+                onComplete = {
+                    compositeDisposable += userRepository.updateProfile(
+                        appData.getId(), mapOf(
+                            UserDetail.USER_NAME to firstName,
+                            UserDetail.USER_LAST_NAME to lastName,
+                            UserDetail.USER_MIDDLE_NAME to midName,
+                            UserDetail.USER_EMAIL to FieldDetails(value = email),
+                            UserDetail.USER_REGISTRATION_FINISH to true
+                        )
+                    )
+                        .withCheckInternetConnectivity()
+                        .performOnBackgroundOutOnMain()
+                        .withLoadingDialog(viewState)
+                        .subscribeSimple {
+                            confirmCode(newEm)
+                        }
+                })
     }
 
     private fun confirmCode(newEm: String?) {
-        userRepository.confirmEmailCode(appData.getId(), EmailCodeBody(code = code, email = newEmail?: ""))
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({
-                    if (newEm != null) viewState.showEmailDialog(newEm) else viewState.openHome()
-                }, {  })
-                .call(compositeDisposable)
+        authRepository.confirmEmailCode(EmailCodeBody(code = code, email = newEmail ?: ""))
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribe({
+                if (newEm != null) viewState.showEmailDialog(newEm) else viewState.openHome()
+            }, { })
+            .call(compositeDisposable)
     }
 
     override fun onNoMiddleNameChecked(checked: Boolean) {
@@ -229,39 +250,43 @@ class InviteRegisterPresenter
     }
 
     private fun performDataChange() {
-        viewState.enableRegisterBtn(isDataValid(
+        viewState.enableRegisterBtn(
+            isDataValid(
                 firstName,
                 lastName,
                 newEmail,
                 password,
                 passwordConfirm,
                 noAgreeChecked
-        ))
+            )
+        )
     }
 
     private fun isDataValid(
-            firstName: String?,
-            lastName: String?,
-            email: String?,
-            password: String?,
-            passwordConfirm: String?,
-            isAgree: Boolean
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        password: String?,
+        passwordConfirm: String?,
+        isAgree: Boolean
     ): Boolean {
         return !firstName.isNullOrBlank()
                 && !lastName.isNullOrBlank()
                 && email?.let { AuthValidateUtil.isValidEmail(it) } ?: false
                 && password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
                 && isPasswordValid
-               // && password == passwordConfirm
+                // && password == passwordConfirm
                 && isAgree
     }
 
     override fun onSaveCode(code: String) {
         this.code = code
-        viewState.updateFieldsInUI(firstName?: "",
-                lastName?: "",
-                middleName?: "",
-                email?: "")
+        viewState.updateFieldsInUI(
+            firstName ?: "",
+            lastName ?: "",
+            middleName ?: "",
+            email ?: ""
+        )
         /*authRepository.registerData(email?: "", code)
                 .performOnBackgroundOutOnMain()
                 .subscribe({

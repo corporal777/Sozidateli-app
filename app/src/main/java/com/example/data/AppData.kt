@@ -118,6 +118,7 @@ class AppData(
     private var newUser: UserDetail? = null
     private var newChatMessage: MessageModel? = null
 
+
     var isLoggedOut = token.isNullOrEmpty()
         private set
 
@@ -136,6 +137,12 @@ class AppData(
     val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
     val userPhoneConfirmedSubject = BehaviorSubject.createDefault(false)
     private var eventFormats: List<NewEventFormat>? = null
+
+    //new notifications subjects
+    private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
+    private var notificationsInvites = NotificationInviteModel(0, 0, 0,)
+    val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
+    val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
 
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
@@ -161,6 +168,16 @@ class AppData(
     fun setNewChatMessage(message: MessageModel?) {
         this.newChatMessage = message
         chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
+    }
+
+    fun setNotificationsTypes(types: NotificationsTypesModel) {
+        this.notificationsTypes = types
+        notificationsTypesSubject.onNext(notificationsTypes.asOptional())
+    }
+
+    fun setNotificationsInvites(invites: NotificationInviteModel) {
+        this.notificationsInvites = invites
+        notificationsInvitesSubject.onNext(notificationsInvites.asOptional())
     }
 
 
@@ -241,8 +258,7 @@ class AppData(
     }
 
     fun saveId(id: Int?) {
-        if (id != null)
-            appPrefs.userId = id
+        if (id != null) appPrefs.userId = id
     }
 
     fun getId(): Int {

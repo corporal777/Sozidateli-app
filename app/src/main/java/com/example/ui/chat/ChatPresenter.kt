@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withProgressBarLoadingDialog
 import java.net.UnknownHostException
 import java.util.*
@@ -74,8 +75,10 @@ class ChatPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
+            setChatPlaceholder()
             setUserNameAvatar(userAvatar, userName)
         }
+
         initChat()
         getChatMessages()
         subscribeChatSocketMessages()
@@ -89,16 +92,12 @@ class ChatPresenter
 
     private fun getChatMessages() {
         paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException)
-                hasNoConnectionError = true
+            if (it.cause is UnknownHostException) hasNoConnectionError = true
         }.buildList(enablePlaceholders = false)
 
         compositeDisposable += Observable.create(paginationList)
-            .flatMapMaybe {
-                prepareListOfMessages(it)
-            }
+            .flatMapMaybe { prepareListOfMessages(it) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 viewState.apply {
                     updateMessages(isFirstLaunch, it)
@@ -224,7 +223,7 @@ class ChatPresenter
         }
 
         if (isCanShowUnreadMessagesItem) {
-            if (messages.filter { x -> !x.wasRead }.isNotEmpty()){
+            if (messages.filter { x -> !x.wasRead }.isNotEmpty()) {
                 val index = messages.indexOfLast { x -> !x.wasRead }
                 formattedMessages.add(
                     index + 1,
@@ -303,8 +302,11 @@ class ChatPresenter
     }
 
 
-    override fun onTakePhotoFromCameraRequest() = takePhoto(takePhoto.takeCameraImage().formatImage())
-    override fun onTakePhotoFromGalleryRequest() = takePhoto(takePhoto.takeGalleryImage().formatImage())
+    override fun onTakePhotoFromCameraRequest() =
+        takePhoto(takePhoto.takeCameraImage().formatImage())
+
+    override fun onTakePhotoFromGalleryRequest() =
+        takePhoto(takePhoto.takeGalleryImage().formatImage())
 
     private fun Observable<ResultRotation>.formatImage(): Observable<Bitmap>? {
         return flatMapSingle {
@@ -358,28 +360,30 @@ class ChatPresenter
             mapOf(CHAT_BINDS to "users,event,bans,last-unread-message,last-message")
         )
             .doOnSuccess {
-                if (it.isEventChat()){
+                if (it.isEventChat()) {
                     isEventChat = true
                     userId = it.binds?.event?.id.toString()
-                }else {
+                } else {
                     isEventChat = false
                     userId = it.users?.first { us -> us.user != appData.getId() }?.user.toString()
                 }
             }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                val avatarFromChat = if (it.isEventChat()) {
-                    it.binds?.lastMessage?.event?.url ?: it.binds?.event?.image?.uri
-                } else {
-                    it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
-                }
+                val avatarFromChat =
+                    if (it.isEventChat())
+                        it.binds?.lastMessage?.event?.url ?: it.binds?.event?.image?.uri
+                    else it.binds?.users?.first { us -> us.id != appData.getId() }?.image?.uri
+
                 if (userAvatar != avatarFromChat && avatarFromChat != null) {
                     userAvatar = avatarFromChat
                     viewState.setUserNameAvatar(avatarFromChat, userName)
                 }
                 viewState.apply {
                     when {
-                        it.isEventChat() -> { hideKeyboard() }
+                        it.isEventChat() -> {
+                            hideKeyboard()
+                        }
                         it.isBannedByYou(appData.getId()) -> disableMessaging { showYouBanUser() }
                         it.isBannedByRecipient(appData.getId()) -> disableMessaging { showYouBanned() }
                         it.isInInvites(appData.getId()) -> disableMessaging { showChatConfirm(it.binds?.users?.first { us -> us.id != appData.getId() }?.fullName) }
@@ -394,11 +398,8 @@ class ChatPresenter
     }
 
     override fun onUserClick() {
-        if (isEventChat){
-            viewState.showEvent(userId)
-        }else {
-            viewState.showUser(userId)
-        }
+        if (isEventChat) viewState.showEvent(userId)
+        else viewState.showUser(userId)
     }
 
     private fun disableMessaging(action: () -> Unit) {

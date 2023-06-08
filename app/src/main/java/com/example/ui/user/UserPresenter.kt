@@ -4,38 +4,26 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
-import com.example.data.models.user.User
-import com.example.data.models.user.UserData
-import com.example.extensions.defaultServerDateFormatter
 import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.userSessions.UserSessionsContract
-import com.example.util.ImageUtil
 import com.example.util.loadBitmap
 import com.example.util.loadBitmapNew
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.functions.Function
-import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
-import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withLoadingDialog
-import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserPresenter
@@ -47,37 +35,18 @@ class UserPresenter
     private val eventRepository: EventRepository,
 ) : BasePresenter<UserContract.View>(appData), UserContract.Presenter {
 
-    private var mDy = 0f
     lateinit var userId: String
     private lateinit var profileUserData: ProfileUserData
     lateinit var context: Context
 
 
-    override fun attachView(view: UserContract.View?) {
-        super.attachView(view)
-        viewState.setAppBarShadow(mDy)
-    }
-
-    override fun changeAppBarElevation(value: Int) {
-        mDy = abs(value / 10f)
-        viewState.setAppBarShadow(mDy)
-    }
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadUserData(true)
+        loadUserData()
     }
 
-    private fun loadUserData(withLoading: Boolean) {
-        if (withLoading) viewState.showShimmerPlaceholder()
-        compositeDisposable += userRepository.getUserByIdNew(userId)
-            .zipWith(commonRepository.getInterests())
-            .flatMap {
-                val user = it.first
-                val avatar = it.first.image.uri.loadAvatarNew()
-                val interests = it.second
-                Maybe.just(UserData(user, avatar, groupUserInterests(user, interests)))
-            }
+    private fun loadUserData() {
+        compositeDisposable += userLoadRequest()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -85,53 +54,20 @@ class UserPresenter
                     viewState.showUserHiddenDialog()
                 },
                 onSuccess = {
-                    profileUserData = ProfileUserData(it, false)
                     compositeDisposable += userAddressRequest()
                         .performOnBackgroundOutOnMain()
-                        .subscribeSimple(
-                            onError = {
-                                viewState.apply {
-                                    setUser(profileUserData)
-                                    if (profileUserData.user.state?.isRegistered == true) {
-                                        setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                                        setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
-                                    }
+                        .subscribeSimple {
+                            viewState.apply {
+                                setUser(profileUserData)
+                                if (profileUserData.user.state?.isRegistered == true) {
+                                    setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                                    setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
                                 }
-                            },
-                            onSuccess = { add ->
-                                viewState.apply {
-                                    if (add.data?.isNotEmpty() == true)
-                                        profileUserData.userData.user.address?.shortAddres =
-                                            add.data[0].region
-
-                                    setUser(profileUserData)
-                                    if (profileUserData.user.state?.isRegistered == true) {
-                                        setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                                        setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
-                                    }
-                                }
-                            })
+                            }
+                        }
                 })
     }
 
-    private fun groupUserInterests(
-        user: /*User*/UserDetail,
-        interests: List<InterestNew>
-    ): MutableMap<InterestNew, MutableList<InterestNew>>? {
-        val groups = mutableMapOf<InterestNew, MutableList<InterestNew>>()
-        val headers = interests.filter { it.parent == 0 }
-        headers.forEach {
-            val parent = interests.filter { parent -> parent.parent == it.id }
-            parent.let { it1 ->
-                user.interests?.forEach { usIn ->
-                    val isUserInterest = it1.find { it2 -> it2.id == usIn }
-                    if (isUserInterest != null)
-                        groups.getOrPut(it) { mutableListOf() }.add(isUserInterest)
-                }
-            }
-        }
-        return groups
-    }
 
     override fun onWriteMessageClick() {
         val user = profileUserData.user
@@ -151,36 +87,31 @@ class UserPresenter
         }
     }
 
-    override fun onOrganizationClick(organization: /*Organization*/OrganizationNew) {
+    override fun onOrganizationClick(organization: OrganizationNew) {
         viewState.showOrganization(organization)
     }
 
-    override fun onFileClick(file: /*RecommendationFile*/FileModel) {
+    override fun onFileClick(file: FileModel) {
         file.uri?.let { viewState.downloadFile(it) }
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += eventRepository.addToFavorites(
-            AddToFavoriteModel(
-                appData.getId(),
-                AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, userId.toInt())
-            )
-        )
+        compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel.toBody(appData.getId(), FAVORITE_SPEAKER, userId.toInt()))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                 viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                viewState.showEventAddedToFavoriteDialog()
             }
     }
 
     override fun onUnsubscribeClick() {
         compositeDisposable += eventRepository.deleteFromFavorite(profileUserData.user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = null
                 viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                viewState.showEventRemovedFromFavoriteDialog()
             }
     }
 
@@ -236,9 +167,6 @@ class UserPresenter
         }
     }
 
-    private fun String?.loadAvatar(): Maybe<Optional<Bitmap>> {
-        return loadBitmap()
-    }
 
     private fun String?.loadAvatarNew(): Bitmap? {
         return loadBitmapNew(context)
@@ -246,14 +174,41 @@ class UserPresenter
 
     private fun isCurrentUser() = userId == appData.getId().toString()
 
-    override fun onRefreshRequest() {
-        loadUserData(false)
+    override fun onRefreshRequest() = loadUserData()
+
+    private fun userAddressRequest(): Completable {
+        return userRepository.searchAddress(
+            profileUserData.user.address?.getShortAddress() ?: ""
+        ).doOnSuccess { profileUserData.setUserShortAddress(it) }
+            .ignoreElement().onErrorResumeNext { Completable.complete() }
     }
 
-    private fun userAddressRequest(): Single<SearchAddressModel> {
-        return userRepository.searchAddress(
-            profileUserData.userData.user.address?.getShortAddress() ?: ""
-        )
+    private fun userLoadRequest(): Maybe<ProfileUserData> {
+        return Maybe.zip(
+            userRepository.getUserByIdNew(userId),
+            commonRepository.getInterests()
+        ) { user, interests ->
+            val userInterests = if (user.isHasInterests() && !interests.isNullOrEmpty()) {
+                mutableMapOf<InterestNew, MutableList<InterestNew>>().apply {
+                    interests.filter { it.parent == 0 }.forEach {
+                        val parent = interests.filter { parent -> parent.parent == it.id }
+                        parent.let { it1 ->
+                            user.interests?.forEach { usIn ->
+                                val isUserInterest = it1.find { it2 -> it2.id == usIn }
+                                if (isUserInterest != null)
+                                    getOrPut(it) { mutableListOf() }.add(isUserInterest)
+                            }
+                        }
+                    }
+                }
+            } else mutableMapOf()
+
+            ProfileUserData(
+                user,
+                user.loadUserImage().loadAvatarNew(),
+                userInterests
+            ).apply { profileUserData = this }
+        }
     }
 
 }

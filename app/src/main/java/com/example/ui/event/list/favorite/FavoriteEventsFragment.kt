@@ -1,26 +1,32 @@
 package com.example.ui.event.list.favorite
 
+import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
+import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.EventFavoriteItem
-import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
+import com.example.ui.base.BaseFragmentNew
+import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
-import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import kotlinx.android.synthetic.main.layout_list.*
+import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), FavoriteEventsContract.View {
+class FavoriteEventsFragment : BaseFragmentNew<LayoutListBinding>(), FavoriteEventsContract.View {
 
     @InjectPresenter
-    override lateinit var presenter: FavoriteEventsPresenter
+    lateinit var presenter: FavoriteEventsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<FavoriteEventsPresenter>
@@ -28,17 +34,39 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
     @ProvidePresenter
     fun providePresenter(): FavoriteEventsPresenter = presenterProvider.get()
 
-    override fun setData(events: List<EventNew/*Event*/?>) {
+    private val dataGroup = Section()
+    private val groupAdapter by lazy {
+        PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            add(dataGroup)
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    presenter.onItemTake(position)
+                }
+            })
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        }
+    }
+
+    override fun setData(events: List<EventNew?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
             else EventFavoriteItem(
-                    it,
-                    { presenter.onShowEventClick(it.id?.toString()?:"0") },
-                    { presenter.onEventActionClick(it) },
-                    { presenter.onEventSubeventsClick(it) }
+                it,
+                { presenter.onShowEventClick(it.id?.toString()) },
+                { presenter.onEventActionClick(it) },
+                { presenter.onEventSubEventsClick(it) }
             )
         })
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun updateEventFavorite(eventId: String, isFavorite: Boolean) {
@@ -47,16 +75,28 @@ class FavoriteEventsFragment : EventListFragment<FavoriteEventsPresenter>(), Fav
         }
     }
 
-    override fun showSubEvents(event: String, subEvents: List</*SubEvent*/EventActivityModel>) {
-        val args = FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
-        findNavController().navigate(R.id.favorite_subevents_fragment, args/*bundleOf()*/)
+    override fun showAboutEvent(event: String) {
+        findNavController().navigate(
+            R.id.about_event_fragment_new,
+            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
+    }
+
+    override fun showSubEvents(event: String, subEvents: List<EventActivityModel>) {
+        val args =
+            FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
+        findNavController().navigate(R.id.favorite_subevents_fragment, args)
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.update(listOf(NoEventItem(
+        dataGroup.updateItem(
+            NoEventItem(
                 getString(R.string.empty_list_placeholder_message),
                 getString(R.string.events_favorites_empty_list_description)
-        )))
-        swipeToRefresh.isRefreshing = false
+            )
+        )
+        mBinding.swipeToRefresh.isRefreshing = false
     }
+
+    override fun layout(): Int = R.layout.layout_list
 }

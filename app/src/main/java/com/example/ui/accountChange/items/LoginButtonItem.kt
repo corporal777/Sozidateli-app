@@ -5,8 +5,9 @@ import com.example.databinding.ItemLoginAccountButtonBinding
 import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
 
-class LoginButtonItem(val onActionClick: () -> Unit) :
-    BindableItem<ItemLoginAccountButtonBinding>() {
+class LoginButtonItem(
+    val onActionClick: () -> Unit
+) : BindableItem<ItemLoginAccountButtonBinding>(-1001L) {
 
 
     override fun bind(viewBinding: ItemLoginAccountButtonBinding, position: Int) {

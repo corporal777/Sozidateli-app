@@ -15,6 +15,7 @@ import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withDelay
 import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
@@ -28,34 +29,25 @@ class ChangeAccountPresenter
     private val notificationManager: NotificationManager
 ) : BasePresenter<ChangeAccountContract.View>(appData), ChangeAccountContract.Presenter {
 
-    var mDeviceId = appData.deviceId ?: ""
+    private val mDeviceId = appData.deviceId ?: ""
     private val loggedSessions = arrayListOf<UserSessionModel>()
     private val unLoggedSessions = arrayListOf<UserSessionModel>()
     private var canShowMenu = true
-    private var currentUserId = ""
+    private val currentUserId = appData.getId().toString()
+
     var redirectLink = ""
     var authType = AuthType.NONE
     var isFromDeeplink = false
 
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        currentUserId = appData.getId().toString()
-        loadData()
-    }
-
-    private fun loadData() {
+        viewState.setAccounts(false, List(4) { null })
         compositeDisposable += userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId)
-            .doOnSuccess {
-                transformData(it.userSessions.filter { x -> x.deviceId == mDeviceId })
-            }
+            .doOnSuccess { transformData(it.userSessions.filter { x -> x.deviceId == mDeviceId }) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = { s ->
+                onError = { onReceiveError(it) },
+                onSuccess = {
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
@@ -68,16 +60,12 @@ class ChangeAccountPresenter
     override fun logoutFromAccount(session: UserSessionModel) {
         compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId.toInt())
             .andThen(userRepository.getAllUsersSessionsFromCurrentDevice(mDeviceId))
-            .doOnSuccess { s ->
-                transformData(s.userSessions)
-            }
+            .doOnSuccess { s -> transformData(s.userSessions) }
             .flatMapCompletable { clearAppData(session) }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
                 onComplete = {
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
@@ -89,17 +77,13 @@ class ChangeAccountPresenter
     fun logoutFromAccountAndKill(session: UserSessionModel) {
         compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId.toInt())
             .andThen(userRepository.killUsersDeviceSession(session.sessionId.toInt()))
-            .doOnComplete {
-                loggedSessions.remove(session)
-            }
+            .doOnComplete { loggedSessions.remove(session) }
             .andThen(clearAppData(session))
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showRequestErrorMessage()
-                }, onComplete = {
+                onError = { onReceiveError(it) },
+                onComplete = {
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
@@ -109,16 +93,12 @@ class ChangeAccountPresenter
 
     fun killSession(session: UserSessionModel) {
         compositeDisposable += userRepository.killUsersDeviceSession(session.sessionId.toInt())
-            .doOnComplete {
-                unLoggedSessions.remove(session)
-            }
+            .doOnComplete { unLoggedSessions.remove(session) }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showRequestErrorMessage()
-                }, onComplete = {
+                onError = { onReceiveError(it) },
+                onComplete = {
                     viewState.apply {
                         setAccounts(canShowMenu, loggedSessions)
                         setUnLoggedAccounts(canShowMenu, unLoggedSessions)
@@ -128,15 +108,13 @@ class ChangeAccountPresenter
 
     override fun switchAccount(session: UserSessionModel) {
         when (authType) {
-            AuthType.OTHER_PLATFORM -> {
-                observeDeeplink(session)
-            }
+            AuthType.OTHER_PLATFORM -> observeDeeplink(session)
             else -> {
                 viewState.showCustomProgressDialog()
                 if (!isCurrentUser(session.binds.user.id.toString())) {
                     compositeDisposable += Completable.fromAction {
                         Shake.unregisterUser()
-                        viewState.ignoreTokenListener(false)
+                        viewState.setIgnoreTokenListener(false)
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
@@ -159,7 +137,7 @@ class ChangeAccountPresenter
 
     override fun authToAccountClick() {
         viewState.apply {
-            ignoreTokenListener(false)
+            setIgnoreTokenListener(false)
             showAuthorizationFragment()
         }
     }
@@ -172,28 +150,23 @@ class ChangeAccountPresenter
             }
         } else {
             user.phone?.forEach {
-                if (it.type == "personal") {
-                    login = it.value ?: ""
-                }
+                if (it.type == "personal") login = it.value ?: ""
             }
         }
         viewState.apply {
-            ignoreTokenListener(false)
-            showLoginFragment(login)
+            if (!login.isNullOrEmpty()){
+                setIgnoreTokenListener(false)
+                showLoginFragment(login)
+            }
         }
-
     }
 
     override fun onClickClose() {
-        if (!appData.isLoggedOut) {
-            viewState.navigateUp()
-        }
+        if (!appData.isLoggedOut) viewState.navigateUp()
     }
 
     fun getUserId(): String = currentUserId
-    fun isCurrentUser(id: String): Boolean {
-        return id == currentUserId
-    }
+    fun isCurrentUser(id: String) = id == currentUserId
 
     private fun transformData(sessions: List<UserSessionModel>) {
         loggedSessions.clear()
@@ -218,7 +191,7 @@ class ChangeAccountPresenter
             userRepository.logout(appData.getId())
                 .doOnComplete {
                     Shake.unregisterUser()
-                    viewState.ignoreTokenListener(true)
+                    viewState.setIgnoreTokenListener(true)
                     appData.isSubscribedToPush = false
                     socket.disconnectFromSocket()
                     appData.logout()

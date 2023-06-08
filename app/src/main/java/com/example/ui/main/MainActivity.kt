@@ -44,8 +44,8 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.event.allactivities.AllActivitiesFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragmentNew
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
@@ -70,6 +70,7 @@ import com.example.util.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import getFragmentLifecycleCallback
 import kotlinx.android.synthetic.main.activity_main.*
+import onBackPressedCallback
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -172,24 +173,22 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
 
-    private val backClick = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-            val fr = navHost.childFragmentManager.fragments.firstOrNull()
-            //val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
-            if (fr != null) {
-                if (fr is ProfileFragment || fr is MyEventsFragmentNew || fr is NotificationsFragment || fr is ChatListTabsFragment) {
+    private val backClick = onBackPressedCallback(true){
+        val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val fr = navHost.childFragmentManager.fragments.firstOrNull()
+        //val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
+        if (fr != null) {
+            when (fr) {
+                is ProfileFragment,
+                is MyEventsFragmentNew,
+                is NotificationsFragment,
+                is ChatListTabsFragment ->
                     findNavController().popBackStack(R.id.recommendations_fragment, false)
-                } else if (fr is AllActivitiesFragment) {
-                    fr.setFragmentResult("all_actions", bundleOf("isUpdate" to fr.isUpdate()))
-                    findNavController().navigateUp()
-                } else if (fr is RecommendationsFragment || fr is AuthorizationFragment) {
-                    finish()
-                } else findNavController().navigateUp()
+                is RecommendationsFragment, is AuthorizationFragment -> finish()
+                else -> findNavController().navigateUp()
             }
         }
     }
-
 
     private var noInternetDialog: BottomSheetDialog? = null
     private lateinit var splashScreen: SplashScreen
@@ -502,21 +501,25 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     @SuppressLint("InflateParams")
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {
-            val mustGoToEvent = try {
-                findNavController().getBackStackEntry(R.id.event_tabs_fragment)
-                true
-            } catch (e: IllegalArgumentException) {
-                false
-            }
+//            val mustGoToEvent = try {
+//                findNavController().getBackStackEntry(R.id.event_tabs_fragment)
+//                true
+//            } catch (e: IllegalArgumentException) {
+//                false
+//            }
             BottomSheetDialog(this).apply {
                 val dialogBinding = LayoutNoInternetBinding.inflate(layoutInflater)
                 dialogBinding.apply {
-                    this.btnAction.text =
-                        getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
+//                    this.btnAction.text =
+//                        getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
+//                    this.btnAction.setOnClickListener {
+//                        if (mustGoToEvent) this@MainActivity.findNavController()
+//                            .popBackStack(R.id.event_tabs_fragment, false)
+//                        else presenter.onRetryConnectionClick()
+//                    }
+                    this.btnAction.text = getString(R.string.no_internet_action_retry)
                     this.btnAction.setOnClickListener {
-                        if (mustGoToEvent) this@MainActivity.findNavController()
-                            .popBackStack(R.id.event_tabs_fragment, false)
-                        else presenter.onRetryConnectionClick()
+                        presenter.onRetryConnectionClick()
                     }
                 }
                 setContentView(dialogBinding.root)
@@ -634,13 +637,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
     }
 
-    override fun setIgnoreTokenListener(isIgnore: Boolean) {
-        presenter.ignoreTokenListener(isIgnore)
-    }
-
-    fun startEditPhoneListener(value: Boolean) {
-        presenter.isEditingPhone = value
-    }
+    override fun setIgnoreTokenListener(isIgnore: Boolean) = presenter.ignoreTokenListener(isIgnore)
 
     private fun setupMainNavBar() {
         val navHost =
@@ -732,26 +729,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     override fun showBadgeNotification(count: Int) {
-//        mBinding.mainNavBar.getOrCreateBadge(R.id.notification).apply {
-//            backgroundColor = Color.RED
-//            isVisible = count > 0
-//            maxCharacterCount = 3
-//            number = count
-//        }
         mBinding.mainNavBar.setBadge(R.id.notification, count)
     }
 
     override fun showBadgeChat(count: Int) {
-//        mBinding.mainNavBar.getOrCreateBadge(R.id.chats).apply {
-//            backgroundColor = Color.RED
-//            isVisible = count > 0
-//            number = if (count > 99) +99
-//            else count
-//        }
         mBinding.mainNavBar.setBadge(R.id.chats, count)
     }
-
-
 
 
     private fun setupNavBarItems(f: Fragment) {
@@ -774,12 +757,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    fun showNavBar() {
+    private fun showNavBar() {
         window.navigationBarColor = navBarColorBottomNav
         mBinding.navBarContainer.visibility = View.VISIBLE
     }
 
-    fun hideNavBar() {
+    private fun hideNavBar() {
         window.navigationBarColor = navBarColorDefault
         mBinding.navBarContainer.visibility = View.GONE
     }

@@ -12,6 +12,7 @@ import com.example.data.models.InterestNew
 import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.OnExpandChange
+import com.example.holders.PlaceholderItem
 import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.interfaces.ToolbarFragment
@@ -57,6 +58,10 @@ class UserProfileInterestsFragment : BaseFragmentNew<FragmentUserProfileInterest
             rvInterests.adapter = adapter
             btnEdit.setOnClickListener(presenter::onEditClick)
         }
+    }
+
+    override fun showInterestsPlaceholder() {
+        adapter.update(List(7) { PlaceholderItem(PlaceholderItem.Type.INTERESTS) })
     }
 
     override fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>) {

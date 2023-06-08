@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationRateNewBinding
+import com.example.databinding.ItemNotificationSimpleNewBinding
 import com.example.holders.NotificationItem
 import com.example.holders.OnNotificationRateClickListener
 import com.example.holders.OnOpenEventListener
@@ -51,6 +52,9 @@ class RateNotificationItemNew(
 
     override fun getBadgeView(viewBinding: ItemNotificationRateNewBinding): View =
         viewBinding.viewBadge
+
+    override fun getRootView(viewBinding: ItemNotificationRateNewBinding): View =
+        viewBinding.clRateNotification
 
     override fun getLayout() = R.layout.item_notification_rate_new
 }

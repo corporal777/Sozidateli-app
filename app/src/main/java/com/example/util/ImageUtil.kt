@@ -62,9 +62,7 @@ fun String.loadBitmapAsync(
 }
 
 fun String?.loadBitmapNew(context: Context): Bitmap? {
-    return if (this.isNullOrEmpty()) {
-        null
-    } else
-        Glide.with(context).asBitmap().load(this).submit().get()
+    return if (this.isNullOrEmpty()) null
+    else Glide.with(context).asBitmap().load(this).submit().get()
 }
 

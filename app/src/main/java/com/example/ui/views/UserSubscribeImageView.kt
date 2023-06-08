@@ -2,6 +2,8 @@ package com.example.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.example.R
@@ -21,8 +23,10 @@ class UserSubscribeImageView : AppCompatImageView {
     private val iconUnFavorite = R.drawable.ic_star
 
     init {
-        setPadding(8.dp, 8.dp, 8.dp, 8.dp)
+        setPadding(5.dp, 0, 5.dp, 0)
+        layoutParams = LinearLayout.LayoutParams(32.dp, 32.dp)
         background = ContextCompat.getDrawable(context, R.drawable.custom_toolbar_btn_background_selectable)
+        minimumHeight = 32.dp
     }
 
     fun setAction(action: UserSubscribeButton.Action) {
@@ -41,11 +45,8 @@ class UserSubscribeImageView : AppCompatImageView {
     }
 
     fun setActionAlternative(isFavorite : Boolean){
-        if (isFavorite) {
-            setImageResource(iconUnFavorite)
-        } else {
-            setImageResource(iconFavorite)
-        }
+        if (isFavorite) setImageResource(iconUnFavorite)
+        else setImageResource(iconFavorite)
     }
 
     fun setAlphaVision(enabled: Boolean){
@@ -54,5 +55,12 @@ class UserSubscribeImageView : AppCompatImageView {
             alpha = if (enabled) 1f
             else 0.6f
         }
+    }
+
+    fun setButtonMargins(top : Int, bottom : Int, left : Int, right : Int){
+        val marginParams = ViewGroup.MarginLayoutParams(layoutParams)
+        marginParams.setMargins(left, top, right, bottom)
+        val layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(marginParams)
+        setLayoutParams(layoutParams)
     }
 }

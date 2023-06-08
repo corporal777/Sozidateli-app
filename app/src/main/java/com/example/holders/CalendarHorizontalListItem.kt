@@ -1,33 +1,27 @@
 package com.example.holders
 
 import android.graphics.Color
-import androidx.recyclerview.widget.RecyclerView
 import com.example.data.models.EventScheduleCalendarDay
 import com.example.ui.event.activities.items.HorizontalListItemNew
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.Completable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import performOnBackgroundOutOnMain
 
 class CalendarHorizontalListItem(
+    id: Int?,
     days: List<EventScheduleCalendarDay>,
     private val onDaySelect: (date: EventScheduleCalendarDay) -> Unit
-) : HorizontalListItemNew<GroupieViewHolder>() {
+) : HorizontalListItemNew<GroupieViewHolder>(id?.toLong() ?: 0) {
 
 
-    private val items = days.map { day ->
-        DayItem(day, onDaySelect)
-    } as ArrayList
+    private val items = days.map { day -> DayItem(day, onDaySelect) }
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
+        GroupAdapter<GroupieViewHolder>().apply { update(items) }
     }
+
     init {
         adapter = groupAdapter
         backgroundColor = Color.WHITE
-
     }
 
     fun selectDay(day: EventScheduleCalendarDay) {

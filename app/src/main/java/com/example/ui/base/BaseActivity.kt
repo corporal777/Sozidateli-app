@@ -76,6 +76,12 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun showEnterAnimation() {
     }
 
+    override fun showEventAddedToFavoriteDialog() {
+    }
+
+    override fun showEventRemovedFromFavoriteDialog() {
+    }
+
     override fun showLoadingDialog() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading++

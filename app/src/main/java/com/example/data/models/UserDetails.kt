@@ -1,8 +1,12 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import coil.transform.RoundedCornersTransformation
+import com.example.R
+import com.example.extensions.dp
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.USER_DATA_EMPTY
+import com.example.util.setImage
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -74,7 +78,7 @@ data class UserDetail(
     }
 
     fun isHasInterests(): Boolean {
-        if (interests.isNullOrEmpty())return false
+        if (interests.isNullOrEmpty()) return false
         else if (interests?.firstOrNull() == null) return false
         else return true
     }
@@ -100,6 +104,12 @@ data class UserDetail(
     }
 
     fun getSessionsCount(): Int = binds?.deviceSessionsCount ?: 0
+
+    fun loadUserImage(): String? {
+        return if (image == null) return null
+        else if (image.uri.isNullOrEmpty()) return null
+        else image.uri
+    }
 
 
     companion object {
@@ -249,8 +259,7 @@ data class OrganizationModel(
 
 @Parcelize
 data class FileModel(
-    val id: Int? = null,
-    val user: Int? = null,
+    val id: String? = null,
     @SerializedName("createdDate")
     val createdDate: String? = null,
     @SerializedName("mimeType")
@@ -396,11 +405,9 @@ data class NewUserAddress(
 ) : Parcelable {
 
     fun getShortAddress(): String {
-        return if (!shortAddres.isNullOrEmpty())
-            shortAddres ?: ""
+        return if (!shortAddres.isNullOrEmpty()) shortAddres ?: ""
         else
-            if (!region.isNullOrEmpty())
-                city ?: ""
+            if (!region.isNullOrEmpty()) city ?: ""
             else {
                 if (region.isNullOrEmpty() && city.isNullOrEmpty()) ""
                 else if (!region.isNullOrEmpty() && city.isNullOrEmpty()) region ?: ""
@@ -431,13 +438,11 @@ data class ImageModel(
     val size: Long? = null,
     var uri: String? = null,
     val name: String? = null,
-    val id: Int? = null,
-    val user: Int? = null
+    val id: String? = null
 ) : Parcelable {
     fun toFileModel(): FileModel {
         return FileModel(
             id = id,
-            user = user,
             mimeType = mimeType,
             size = size,
             name = name,
@@ -484,7 +489,12 @@ data class FieldDetails(
     @SerializedName("onConfirmation")
     var onConfirmation: String? = null,
     var additional: String? = null
-) : Parcelable
+) : Parcelable {
+
+    fun toList(): ArrayList<FieldDetails> {
+        return arrayListOf(this)
+    }
+}
 
 @Parcelize
 data class FieldListDetails(

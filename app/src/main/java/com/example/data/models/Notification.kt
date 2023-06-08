@@ -1,17 +1,25 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_ACTIVITY
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_MEMBER
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_ASSISTANCE
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_PGFR
+import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_ORGANIZATION_MEMBER
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Notification(
     val id: Int,
-    val title: String?,
     val message: String?,
     val date: String,
     val type: Type,
+    val partitionType: String,
     var wasRead: Boolean,
+    val isInApp: Boolean,
+    val isInvite: Boolean,
     var acceptState: AcceptState = AcceptState.NONE,
     val rateId: String? = null,
     @SerializedName("event_id")
@@ -19,7 +27,7 @@ data class Notification(
     @SerializedName("event_activity_id")
     val eventActivityId: Int?,
     val eventInfo: NotificationEventInfo?,
-    val event: /*Event*/NotificationEntityModell?,
+    val event: NotificationEntityLocalModel?,
     val project_name: String?,
     val notificationMainType: String,
     val entity: NotificationEntity?,
@@ -36,113 +44,102 @@ data class Notification(
     }
 
     companion object {
-        fun fromRemoteNotification(remoteNotification: /*RemoteNotification*/NotificationModel): Notification {
+        fun fromRemoteNotification(remoteNotification: NotificationModel): Notification {
+            val notificationMainType =
+                if (!remoteNotification.notificationType.isNullOrEmpty()) remoteNotification.notificationType
+                else if (!remoteNotification.entity?.type.isNullOrEmpty()) remoteNotification.entity?.type
+                else NOTIFICATION_TYPE_EVENT
+
             val state = when (remoteNotification.entity?.type) {
-                "invitePgfr" -> {
-                    if (remoteNotification.entity.model?.state != null){
-                        remoteNotification.entity.model.state as String
+                NOTIFICATION_TYPE_EVENT_MEMBER -> {
+                    if (remoteNotification.entity.model?.status != null) {
+                        remoteNotification.entity.model.status as String
                     } else null
                 }
-                "inviteAssistance" -> {
-                    if (remoteNotification.entity.model?.state != null){
-                        remoteNotification.entity.model.state as String
-                    } else null
-                }
-                "organizationMember" -> (remoteNotification.entity.model?.status as String)
+                NOTIFICATION_TYPE_INVITE_PGFR -> remoteNotification.entity.state
+                NOTIFICATION_TYPE_INVITE_ASSISTANCE -> remoteNotification.entity.state
+                NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> remoteNotification.entity.state
                 else -> null
             }
+            val notificationType = when (remoteNotification.entity?.type) {
+                NOTIFICATION_TYPE_INVITE_PGFR,
+                NOTIFICATION_TYPE_INVITE_ASSISTANCE,
+                NOTIFICATION_TYPE_ORGANIZATION_MEMBER,
+                NOTIFICATION_TYPE_EVENT_MEMBER -> Type.ACCEPTABLE
+                else -> Type.SIMPLE
+            }
+            val rateId = remoteNotification.entity?.id.toString()
+            val eventId = when (remoteNotification.entity?.type) {
+                NOTIFICATION_TYPE_EVENT -> remoteNotification.entity.model?.id
+                NOTIFICATION_TYPE_EVENT_ACTIVITY -> remoteNotification.entity.model?.event
+                else -> 0
+            }
+
+            val eventActivityId =
+                if (remoteNotification.entity?.type == NOTIFICATION_TYPE_EVENT_ACTIVITY)
+                    remoteNotification.entity.model?.event
+                else 0
+
+            val eventInfo =
+                if (remoteNotification.entity?.type == NOTIFICATION_TYPE_EVENT)
+                    NotificationEventInfo(remoteNotification.entity.model?.name, "")
+                else null
+
+            val entityModel = NotificationEntityLocalModel(
+                remoteNotification.entity?.model?.id,
+                remoteNotification.entity?.model?.createdDate,
+                remoteNotification.entity?.model?.name,
+                remoteNotification.entity?.model?.createdBy,
+                remoteNotification.entity?.model?.event,
+                remoteNotification.entity?.model?.title,
+                remoteNotification.entity?.model?.description,
+                remoteNotification.entity?.model?.holdingDate,
+                if (remoteNotification.entity?.type == "organizationMember") remoteNotification.entity.model?.status as String
+                else null,
+                state
+            )
+
+            val organization =
+                if (remoteNotification.entity?.type == "invitePgfr") 0
+                else {
+                    when (remoteNotification.entity?.model?.organization) {
+                        is Int -> remoteNotification.entity.model.organization
+                        is Double -> remoteNotification.entity.model.organization.toInt()
+                        else -> 0
+                    }
+                }
+
             return Notification(
                 remoteNotification.id ?: 0,
-                remoteNotification.entity?.type ?: "",
                 remoteNotification.message,
                 remoteNotification.createdDate ?: "",
-                when (remoteNotification.entity?.type) {
-                    NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR, NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE,
-                    NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER, NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> Type.ACCEPTABLE
-                    else -> Type.SIMPLE
-                },
+                notificationType,
+                remoteNotification.partitionType ?: "",
                 remoteNotification.acknowledged,
+                remoteNotification.isInApp,
+                remoteNotification.isInvite,
                 when (state) {
-                    "confirmed", "approved" -> AcceptState.ACCEPTED
+                    "confirmed", "approved", "accepted" -> AcceptState.ACCEPTED
                     "declined" -> AcceptState.CANCELED
                     "canceled" -> AcceptState.DISABLED
                     else -> AcceptState.NONE
                 },
-                "",
-                if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT)
-                    remoteNotification.entity.model?.id
-                else if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT_ACTIVITY)
-                    remoteNotification.entity.model?.event else 0,
-                if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT_ACTIVITY)
-                    remoteNotification.entity.model?.event else 0,
-                if (remoteNotification.entity?.type == NotificationModel.NOTIFICATION_TYPE_EVENT)
-                    NotificationEventInfo(remoteNotification.entity.model?.name, "") else null,
-                NotificationEntityModell(
-                    remoteNotification.entity?.model?.id,
-                    remoteNotification.entity?.model?.createdDate,
-                    remoteNotification.entity?.model?.name,
-                    remoteNotification.entity?.model?.createdBy,
-                    remoteNotification.entity?.model?.event,
-                    remoteNotification.entity?.model?.title,
-                    remoteNotification.entity?.model?.description,
-                    remoteNotification.entity?.model?.holdingDate,
-                    if (remoteNotification.entity?.type == "organizationMember") remoteNotification.entity.model?.status as String
-                    else null
-                    /*remoteNotification.entity?.model?.status*/,
-                    state
-                )
-                /*remoteNotification.entity?.model*/,
+                rateId,
+                eventId,
+                eventActivityId,
+                eventInfo,
+                entityModel,
                 remoteNotification.entity?.model?.project?.name,
-                remoteNotification.entity?.type ?: NotificationModel.NOTIFICATION_TYPE_EVENT,
+                notificationMainType ?: NOTIFICATION_TYPE_EVENT,
                 NotificationEntity(remoteNotification.entity?.type, remoteNotification.entity?.id),
-                if (remoteNotification.entity?.type == "invitePgfr") {
-                    0
-                } else {
-                    if (remoteNotification.entity?.model?.organization != null) {
-                        when (remoteNotification.entity.model.organization) {
-                            is Double -> {
-                                remoteNotification.entity.model.organization.toInt()
-                            }
-                            else -> {
-                                remoteNotification.entity.model.organization as Int
-                            }
-                        }
-                    } else {
-                        0
-                    }
-                }
+                organization
             )
-            /*return Notification(
-                    remoteNotification.id,
-                    remoteNotification.type,
-                    remoteNotification.text,
-                    remoteNotification.time,
-                    when (remoteNotification.type) {
-                        RemoteNotification.TYPE_RATE -> Type.RATE
-                        RemoteNotification.TYPE_INVITE -> Type.ACCEPTABLE
-                        else -> Type.SIMPLE
-                    },
-                    remoteNotification.status != RemoteNotification.STATUS_NONE,
-                    when (remoteNotification.status) {
-                        RemoteNotification.STATUS_ACKNOWLEDGED,
-                        RemoteNotification.STATUS_NONE -> AcceptState.NONE
-                        RemoteNotification.STATUS_ACCEPTED -> AcceptState.ACCEPTED
-                        RemoteNotification.STATUS_DECLINED -> AcceptState.CANCELED
-                        RemoteNotification.STATUS_CANCELLED -> AcceptState.DISABLED
-                        else -> AcceptState.NONE
-                    },
-                    if (remoteNotification.event_id == 0) null else remoteNotification.event_id.toString(),
-                    remoteNotification.event_id,
-                    remoteNotification.event_activity_id,
-                    if (remoteNotification.event == null) null else NotificationEventInfo(remoteNotification.event.name, remoteNotification.event.link),
-                    remoteNotification.event, remoteNotification.project_name
-            )*/
         }
     }
 }
 
 @Parcelize
-data class NotificationEntityModell(
+data class NotificationEntityLocalModel(
     val id: Int? = null,
     @SerializedName("createdDate")
     val createdDate: String? = null,

@@ -49,6 +49,9 @@ interface OrganizationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRequest(event: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showAgreementRegisterDialog(event: String, url : String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -57,13 +60,13 @@ interface OrganizationContract {
         fun onShowMoreUsersClick()
 
         fun onUserClick(user: String?)
-        fun onUserActionCLick(userId : String)
-        fun onSubscribeClick(action : UserSubscribeButton.Action)
+        fun onAddUserFavoriteCLick(member : OrganizationMemberModel)
+        fun onAddOrganizationFavoriteClick(organization: OrganizationNew)
         fun onRefreshRequest()
 
-        fun onActionRegister(event: String)
+        fun onActionRegister(event: String, url : String?)
         fun onActionCancel(event: String, registrationId: String?)
-
         fun onShowEventClick(event: String)
+        fun onAcceptRegistrationAgreement(event : String)
     }
 }

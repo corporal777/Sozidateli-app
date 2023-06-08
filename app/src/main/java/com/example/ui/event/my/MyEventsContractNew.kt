@@ -2,21 +2,17 @@ package com.example.ui.event.my
 
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
-import com.example.data.models.Tag
-import com.example.ui.base.BaseContract
+import com.example.ui.event.list.EventListContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 
 interface MyEventsContractNew {
 
 
-    interface View : BaseContract.View {
-
+    interface View : EventListContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setData(data: List<EventNew?>)
 
@@ -29,12 +25,6 @@ interface MyEventsContractNew {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showEmptyListPlaceholder(isFirst : Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showAboutEvent(event: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showEventRequest(event: String)
-
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(event: EventNew?)
 
@@ -42,16 +32,12 @@ interface MyEventsContractNew {
         fun setShowMyScheduleButton(canShow: Boolean)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback{
+    interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback{
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)
         fun onShowFiltersClick()
         fun onRefreshRequest()
         fun setEventStateFilter(isChecked : Boolean, filter: MyEventsFilter)
         fun updateData()
-
-        fun onActionRegister(event: String)
-        fun onActionCancel(event: String, registrationId: String?)
-        fun onShowEventClick(event: String)
     }
 }

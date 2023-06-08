@@ -22,23 +22,45 @@ import javax.inject.Inject
 @InjectViewState
 class InviteListPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository,
-        private val appData: AppData
+    private val chatRepository: ChatRepository,
+    private val appData: AppData
 ) : BasePresenter<InviteListContract.View>(appData), InviteListContract.Presenter {
 
     private val invitesPagination = PaginationDataSourceFactory { limit, offset ->
         chatRepository.getChats(
-                mapOf(ChatModel.CHAT_SORT to "desc", ChatModel.CHAT_LIMIT to limit, ChatModel.CHAT_OFFSET to offset,
-                        ChatModel.CHAT_BINDS to "users,event,bans", ChatModel./*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "pending",
-                        ChatModel.CHAT_USER to appData.getId())
+            mapOf(
+                ChatModel.CHAT_SORT to "desc",
+                ChatModel.CHAT_LIMIT to limit,
+                ChatModel.CHAT_OFFSET to offset,
+                ChatModel.CHAT_BINDS to "users,event,bans",
+                ChatModel./*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "pending",
+                ChatModel.CHAT_USER to appData.getId()
+            )
         ).map { response ->
-            val items = response.data.map { ChatListDataItem.Invite(UserChat(it.id, it.binds?.users?.first { us -> us.id != appData.getId() }!!,
-                    it.createdDate?: "", it.binds.lastUnreadMessage?.message, it.binds.lastUnreadMessage?.createdDate,
-                    if (it.binds.lastUnreadMessage?.file == null) MessageType.TEXT else MessageType.IMAGE,
-                    it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user, null, it.binds.lastUnreadMessage?.id.toString(),
-                    false, it.isInInvites(appData.getId()), it.isWaitForAcceptInvites(appData.getId()), it.isBannedByRecipient(appData.getId()), it.isBannedByYou(appData.getId()), it.isEventChat(),
-                    it.binds.event?.id.toString(), 0)) }
-                    //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
+            val items = response.data.map {
+                ChatListDataItem.Invite(
+                    UserChat(
+                        it.id,
+                        it.binds?.users?.first { us -> us.id != appData.getId() }!!,
+                        it.createdDate ?: "",
+                        it.binds.lastUnreadMessage?.message,
+                        it.binds.lastUnreadMessage?.createdDate,
+                        if (it.binds.lastUnreadMessage?.file == null) MessageType.TEXT else MessageType.IMAGE,
+                        it.binds.lastUnreadMessage?.acknowledge?.get(0)?.user,
+                        null,
+                        it.binds.lastUnreadMessage?.id.toString(),
+                        false,
+                        it.isInInvites(appData.getId()),
+                        it.isWaitForAcceptInvites(appData.getId()),
+                        it.isBannedByRecipient(appData.getId()),
+                        it.isBannedByYou(appData.getId()),
+                        it.isEventChat(),
+                        it.binds.event?.id.toString(),
+                        0
+                    )
+                )
+            }
+            //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }
         /*chatRepository.loadInvitesList(limit, offset).map { response ->
@@ -55,13 +77,13 @@ class InviteListPresenter
 
         viewState.setInvitesData(List(20) { null })
         compositeDisposable += appData.chatRequestsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({ invitesPagination.invalidate() }, { invitesPagination.invalidate() })
+            .performOnBackgroundOutOnMain()
+            .subscribe({ invitesPagination.invalidate() }, { invitesPagination.invalidate() })
 
         compositeDisposable += Observable.create(invitesPagination)
-                .subscribe({
-                    dispatchInvitesListUpdate(it)
-                }, { it.printStackTrace() })
+            .subscribe({
+                dispatchInvitesListUpdate(it)
+            }, { it.printStackTrace() })
     }
 
     override fun attachView(view: InviteListContract.View?) {
@@ -72,11 +94,16 @@ class InviteListPresenter
 
     private fun dispatchInvitesListUpdate(data: List<ChatListDataItem>) {
         val invites = mutableListOf<UserChat>()
-        data.forEach { if (it is ChatListDataItem.Invite) invites.add(it.userChat.apply { unreadMessageCount = 1 }) }
+        data.forEach {
+            if (it is ChatListDataItem.Invite) invites.add(it.userChat.apply {
+                unreadMessageCount = 1
+            })
+        }
         viewState.setInvitesData(invites)
     }
 
-    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
+    override fun onChatClick(userChat: UserChat) =
+        viewState.openChat(userChat.id, userChat.user.fullName)
 
     override fun onItemTake(position: Int) {
         invitesPagination.onItemTake(position)

@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -24,18 +25,20 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentUserBinding
-import com.example.extensions.findItemBy
-import com.example.extensions.formatToDefaultDate
-import com.example.extensions.showChangePasswordDialog
-import com.example.extensions.showPasswordChangeCompleteDialog
+import com.example.extensions.*
 import com.example.holders.*
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.items.ProfileDataDividerItem
 import com.example.ui.user.items.UserProfileActionsItem
 import com.example.ui.views.UserSubscribeButton
+import com.example.ui.views.UserSubscribeImageView
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.toolbar.ToolbarCircleButton
+import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarContentActionBar
+import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import com.example.util.firstLetterToUppercase
@@ -49,7 +52,24 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
+class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View, ToolbarFragment {
+
+    private val shareProfileButton by lazy {
+        ToolbarIconView(requireContext(), 32).apply {
+            setImageAsIcon(R.drawable.ic_share_white)
+            setIconTint(R.color.main_brown_color_new)
+            initPadding(top = 0, bottom = 0, left = 7.dp, right = 7.dp)
+            setOnClickListener { if (!presenter.userId.isNullOrEmpty()) showShare(presenter.userId) }
+        }
+    }
+
+    private val addToFavoriteButton by lazy {
+        UserSubscribeImageView(requireContext()).apply {
+            isVisible = false
+            setButtonMargins(0, 0, 0, 10.dp)
+        }
+    }
+
 
     @InjectPresenter
     lateinit var presenter: UserPresenter
@@ -64,7 +84,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         context = requireContext()
     }
 
-    private val onOrganizationClickListener: (/*Organization*/OrganizationNew) -> Unit = {
+    private val onOrganizationClickListener: (OrganizationNew) -> Unit = {
         presenter.onOrganizationClick(it)
     }
 
@@ -106,39 +126,27 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.contentList.apply {
-            adapter = this@UserFragment.adapter
-            onScrolled { _, _ ->
-                presenter.changeAppBarElevation(this.computeVerticalScrollOffset())
+        mBinding.apply {
+            contentList.apply {
+                adapter = this@UserFragment.adapter
             }
-        }
-        mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-        mBinding.ivShare.setOnClickListener {
-            if (!presenter.userId.isNullOrEmpty()) {
-                showShare(presenter.userId)
-            }
+            mBinding.swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-    override fun showShimmerPlaceholder() {
-        //mainDataSection.setPlaceholder(PlaceholderItem(PlaceholderItem.Type.USER_PROFILE))
-    }
 
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
         val avatar = profileUserData.avatar
         val interests = profileUserData.interests
-        val editable = profileUserData.editable
 
-        mainDataSection.update(listOf(initProfileItem(user, avatar)))
-        personalDataSection.update(listOf(initPersonalDataItem(user)))
-        educationDataSection.update(listOfNotNull(initEducationDataItem(user)))
-        workDataSection.update(listOfNotNull(initWorkExperience(user)))
-        interestsDataSection.update(listOfNotNull(initInterests(interests)))
-        additionalDataSection.update(listOfNotNull(initAdditionalInformation(user)))
+
+        mainDataSection.updateItem(initProfileItem(user, avatar))
+        personalDataSection.updateGroup(initPersonalDataItem(user))
+        educationDataSection.updateGroup(initEducationDataItem(user))
+        workDataSection.updateGroup(initWorkExperience(user))
+        interestsDataSection.updateGroup(initInterests(interests))
+        additionalDataSection.updateGroup(initAdditionalInformation(user))
 
         if (profileUserData.user.state?.isRegistered == true) {
             actionsDataSection.update(
@@ -256,9 +264,7 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         } else null
     }
 
-    private fun initInterests(
-        interests: Map<InterestNew, List<InterestNew>>?
-    ): Group? {
+    private fun initInterests(interests: Map<InterestNew, List<InterestNew>>?): Group? {
         val nonNullInterests = interests ?: emptyMap()
         return if (nonNullInterests.isNotEmpty()) {
             ProfileExpandableTitleGroup(
@@ -348,20 +354,18 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
     }
 
     override fun setEnableAddToFavoriteButton(enabled: Boolean) {
-        mBinding.ivAddToFavorite.setAlphaVision(enabled)
+        addToFavoriteButton.setAlphaVision(enabled)
     }
 
     override fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?) {
-        mBinding.ivAddToFavorite.apply {
+        addToFavoriteButton.apply {
             if (action != null) {
                 isVisible = true
                 setAction(action)
                 setOnClickListener {
                     if (action == UserSubscribeButton.Action.UNFAVORITE) {
                         presenter.onUnsubscribeClick()
-                    } else {
-                        presenter.onSubscribeClick()
-                    }
+                    } else presenter.onSubscribeClick()
                 }
             }
         }
@@ -423,13 +427,21 @@ class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View {
         }
     }
 
-    override fun setAppBarShadow(value: Float) {
-        mBinding.appBar.changeAppBarElevation(value)
-    }
-
-    override fun layout() = R.layout.fragment_user
 
     companion object {
         private const val HEADER_ITEM_ID = 100L
     }
+
+    override fun layout() = R.layout.fragment_user
+    override val title: CharSequence by lazy { getString(R.string.profile_current_user_label) }
+    override fun actionIconContainer(view: ViewGroup) {
+        view.apply {
+            removeAllViews()
+            addView(addToFavoriteButton, 0)
+            addView(shareProfileButton, 1)
+        }
+    }
+
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

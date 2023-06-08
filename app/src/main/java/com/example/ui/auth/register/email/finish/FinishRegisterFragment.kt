@@ -19,6 +19,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onBackPressedCallback
 import onFocusChanged
 import onTextChanged
 import javax.inject.Inject
@@ -52,13 +53,10 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    presenter.onCloseClick()
-                }
-            })
+        onBackPressedCallback(true){
+            presenter.onCloseClick()
+        }
+
         mBinding.apply {
             ivClose.setOnClickListener { presenter.onCloseClick() }
             scNoMiddleName.initSwitch(presenter.noMiddleNameChecked) {
@@ -96,7 +94,6 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 }
             }
             etEmail.apply {
-                //filters = getEmailFilter()
                 onTextChanged {
                     tilEmail.error = null
                     it?.toString()?.let { text -> presenter.onChangeEmailText(text) }
@@ -262,7 +259,6 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
     }
 
     override fun openHome() {
-        setIgnoreTokenListener(false)
         findNavController().navigate(FinishRegisterFragmentDirections.registerToMail(true))
     }
 

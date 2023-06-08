@@ -88,7 +88,7 @@ class SearchOrganizationPresenter
             if (searchText.isNotEmpty()) put(ORGANIZATION_SEARCH, searchText)
 
             val name = filter.name
-            if (!name.isNullOrEmpty()) put(ORGANIZATION_SEARCH_NAME, "$name%")
+            if (!name.isNullOrEmpty()) put(ORGANIZATION_SEARCH_NAME, "%$name%")
 
             val inn = filter.inn
             if (!inn.isNullOrEmpty()) {

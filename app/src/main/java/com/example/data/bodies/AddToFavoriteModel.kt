@@ -3,7 +3,19 @@ package com.example.data.bodies
 data class AddToFavoriteModel(
         val user: Int? = null,
         val entity: AddToFavoriteEntityModel? = null
-)
+){
+    companion object {
+        fun toBody(userId : Int, type: String?, id : Int) : AddToFavoriteModel {
+            return AddToFavoriteModel(
+                userId,
+                AddToFavoriteEntityModel(
+                    type,
+                    id
+                )
+            )
+        }
+    }
+}
 
 data class AddToFavoriteEntityModel(
         val type: String? = null,

@@ -18,6 +18,7 @@ import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
+import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput
@@ -40,13 +41,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String) = searchPresenter.onActionRegister(event)
+        override fun onActionRegister(event: String, agreementUrl: String?) =
+            searchPresenter.onActionRegister(event, agreementUrl)
         override fun onActionCancel(event: String, registrationId: String?) =
             searchPresenter.onActionCancel(event, registrationId)
-
         override fun onShowEventClick(view: View, event: String) =
             searchPresenter.onShowEventClick(event)
-
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
     }
 
@@ -62,6 +62,12 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
             R.id.request_fragment,
             EventRegistrationFragmentArgs.Builder(event).build().toBundle()
         )
+    }
+
+    override fun showAgreementRegisterDialog(event: String, url: String) {
+        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+            searchPresenter.onAcceptRegistrationAgreement(event)
+        }
     }
 
 
