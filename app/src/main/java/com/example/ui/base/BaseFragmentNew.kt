@@ -48,7 +48,7 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        if(canShowAnim){
+        if (canShowAnim) {
             postponeEnterTransition()
             showEnterAnimation()
         }
@@ -61,8 +61,9 @@ abstract class BaseFragmentNew<binding : ViewDataBinding>(val canShowAnim: Boole
     ): View? {
 
         RxJavaPlugins.setErrorHandler { e ->
+            e.printStackTrace()
             if (e is UndeliverableException) {
-                e.printStackTrace()
+
             } else {
                 Thread.currentThread().also { thread ->
                     thread.uncaughtExceptionHandler.uncaughtException(thread, e)

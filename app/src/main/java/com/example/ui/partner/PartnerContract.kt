@@ -9,8 +9,10 @@ import com.example.ui.base.BaseContract
 interface PartnerContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?)
+        fun setData(partner: PartnerModel)
     }
 
-    interface Presenter : BaseContract.Presenter
+    interface Presenter : BaseContract.Presenter {
+        fun onRefreshRequest()
+    }
 }

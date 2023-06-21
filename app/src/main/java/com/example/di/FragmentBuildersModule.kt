@@ -47,7 +47,7 @@ import com.example.ui.notification.center.redesign.types.projects.ProjectNotific
 import com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
-import com.example.ui.organizations.list.OrganizationsFragment
+import com.example.ui.organizations.favorite.FavoriteOrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
@@ -155,7 +155,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeOrganizationMembersFragment(): OrganizationMembersFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFavoriteOrganizationsFragment(): OrganizationsFragment
+    abstract fun contributeFavoriteOrganizationsFragment(): FavoriteOrganizationsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteFragment(): FavoriteTabsFragment

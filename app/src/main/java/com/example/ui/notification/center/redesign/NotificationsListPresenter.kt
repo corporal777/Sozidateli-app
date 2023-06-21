@@ -28,7 +28,9 @@ import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
 import withDelay
 import withProgressBarLoadingDialog
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 @InjectViewState
@@ -42,13 +44,17 @@ class NotificationsListPresenter
 ) : BasePresenter<NotificationsListContract.View>(appData), NotificationsListContract.Presenter {
 
     private var firstLaunch = true
-    private var notifications: List<Notification?> = emptyList()
+
+    private var groupedNotifications = mutableListOf<NotificationsSortedData>()
+    private var notifications = arrayListOf<Notification>()
+
     private var blockInvalidation = false
     private var isOnResume = false
 
     private var totalUnread = 0
     private var totalUnreadInvites = 0
     private var isHasUnreadNotifications = false
+    private var titleDatesCount = 0
 
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
@@ -63,6 +69,8 @@ class NotificationsListPresenter
         .applyErrorHandler { viewState.showRequestErrorMessage() }
         .buildList(enablePlaceholders = false, initialSize = 30)
 
+
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setNotificationsPlaceholder()
@@ -73,17 +81,15 @@ class NotificationsListPresenter
                 if (!blockInvalidation && isOnResume) pagination.invalidate()
                 else blockInvalidation = false
             }
-        compositeDisposable += appData.notificationReadSubject
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                //if (!blockInvalidation && isOnResume) pagination.invalidate()
-            }
         loadNotifications()
     }
 
     private fun loadNotifications() {
         compositeDisposable += Observable.create(pagination)
-            .map { it.groupBy { x -> x.date?.split(" ")?.get(0) } }
+            .map {
+                //groupData(it)
+                transformData(it)
+            }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
@@ -113,7 +119,6 @@ class NotificationsListPresenter
 
 
     override fun onNotificationAcceptClick(notification: Notification) {
-        //updateNotification(userRepository.notificationsInviteAccept(notification.id), notification.id)
         when (notification.notificationMainType) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
                 approvePgrf(notification.entity?.id ?: 0)
@@ -210,13 +215,17 @@ class NotificationsListPresenter
         compositeDisposable += Completable.fromAction { blockInvalidation = true }
             .andThen(request)
             .andThen(socket.connectToUpdates())
+            .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
+            .map { Notification.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = {
-                    pagination.invalidate()
+
+                onSuccess = {
+                    //pagination.invalidate()
                     notificationManager.cancel(notificationId)
+                    viewState.onNotificationNeedUpdate(it)
                 })
     }
 
@@ -235,7 +244,7 @@ class NotificationsListPresenter
             )
     }
 
-    fun setFragmentOnResume(onResume : Boolean){
+    fun setFragmentOnResume(onResume: Boolean) {
         this.isOnResume = onResume
     }
 
@@ -246,6 +255,49 @@ class NotificationsListPresenter
             put(NotificationModel.NOTIFICATION_USER, appData.getId())
             put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
             put(NotificationModel.NOTIFICATION_SORT, "desc")
+            put(NotificationModel.NOTIFICATION_SORT_FIELD, "createdDate")
         }
     }
+
+    private fun groupData(list: List<Notification>): MutableList<NotificationsSortedData> {
+        val notificationsList = arrayListOf<NotificationsSortedData>()
+
+//        list.filter { x -> !x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
+//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
+//
+//        list.filter { x -> x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
+//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
+
+        groupedNotifications = notificationsList
+
+        return groupedNotifications
+    }
+
+    private fun transformData(list: List<Notification>): MutableList<NotificationsSortedData> {
+        val notificationsList = arrayListOf<NotificationsSortedData>()
+        var titleDate = ""
+        var wasRead = false
+        list.forEach { note ->
+            val noteDate = note.date?.split(" ")?.get(0)
+            if (titleDate == noteDate && wasRead == note.wasRead) titleDate = ""
+            else titleDate = noteDate
+
+            notificationsList.add(NotificationsSortedData(titleDate, note))
+            titleDate = noteDate
+            wasRead = note.wasRead
+        }
+        groupedNotifications = notificationsList
+        titleDatesCount = groupedNotifications.filter { x -> !x.titleDate.isNullOrEmpty() }.size
+        return groupedNotifications
+    }
+
+    fun getTitleDatesCount(): Int {
+        return titleDatesCount
+    }
+}
+
+data class NotificationsSortedData(
+    var titleDate: String?,
+    var data: Notification
+) {
 }

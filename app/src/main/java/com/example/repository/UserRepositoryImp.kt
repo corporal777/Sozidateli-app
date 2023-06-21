@@ -419,7 +419,7 @@ class UserRepositoryImp
                     org.entity?.model?.binds =
                         UserBinds(userFavorite = EventUserFavorite(org.id?.toLong(), org.user))
                 }
-                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                PaginationResponse(it.totalCount, it.data.mapNotNull { org -> org.entity?.model })
             }
     }
 

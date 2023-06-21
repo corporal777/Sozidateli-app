@@ -24,6 +24,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.Notification
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
@@ -138,6 +139,22 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
         return true
     }
 
+    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>?) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is Notification) {
+                getRootView(viewBinding).apply {
+                    background = if (!payload.wasRead)
+                        ContextCompat.getDrawable(context, R.drawable.background_notification_unread)
+                    else ContextCompat.getDrawable(context, R.drawable.background_notification_normal)
+                }
+                getBadgeView(viewBinding).apply {
+                    isVisible = !payload.wasRead
+                }
+            }
+        }
+    }
 
     private fun isMessageTooLong(context: Context, message: String?): Boolean {
         return if (message.isNullOrEmpty()) false
@@ -198,6 +215,7 @@ abstract class NotificationItemNew<T : ViewDataBinding>(
             return notificationTitle.append("\n").append(eventName)
         }
     }
+
 
     interface OnNotificationActionListener {
         fun onReadClickListener(id: Int)

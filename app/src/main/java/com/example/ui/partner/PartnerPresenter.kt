@@ -19,8 +19,8 @@ import javax.inject.Inject
 @InjectViewState
 class PartnerPresenter
 @Inject constructor(
-        private val eventRepository: EventRepository,
-        appData: AppData
+    private val eventRepository: EventRepository,
+    appData: AppData
 ) : BasePresenter<PartnerContract.View>(appData), PartnerContract.Presenter {
 
     lateinit var dataEventId: String
@@ -28,27 +28,24 @@ class PartnerPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getPartnerDetails(dataPartnerId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .flatMap {
-                    Maybe.zip(it.logo?.uri.loadBitmap(), it.image?.uri.loadBitmap(), BiFunction<Optional<Bitmap>, Optional<Bitmap>, PartnerAndImages> { logo, bg ->
-                        PartnerAndImages(it, logo.value, bg.value)
-                    })
-                            .toSingle()
-                }
-                .subscribeSimple {
-                    viewState.apply {
-                        setData(it.partner, it.logo, it.background)
-                    }
-                }
+        loadData()
     }
+
+    private fun loadData() {
+        compositeDisposable += eventRepository.getPartnerDetails(dataPartnerId)
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.setData(it)
+            }
+    }
+
+    override fun onRefreshRequest() = loadData()
 
 
     private class PartnerAndImages(
-            val partner: PartnerModel,
-            val logo: Bitmap?,
-            val background: Bitmap?
+        val partner: PartnerModel,
+        val logo: Bitmap?,
+        val background: Bitmap?
     )
 }

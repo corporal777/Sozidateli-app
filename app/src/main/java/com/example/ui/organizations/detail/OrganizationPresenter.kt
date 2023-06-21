@@ -98,17 +98,37 @@ class OrganizationPresenter
     }
 
     override fun onAddOrganizationFavoriteClick(organization: OrganizationNew) {
-        compositeDisposable += Completable.defer {
-            if (organization.binds?.userFavorite == null)
-                eventRepository.addToFavorites(organizationFavoriteBody()).ignoreElement()
-            else eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+        compositeDisposable += Single.create<OrganizationNew> { emitter ->
+            val disposables = CompositeDisposable()
+            disposables += if (organization.binds?.userFavorite == null) {
+                eventRepository.addToFavorites(organizationFavoriteBody())
+                    .subscribeSimple(
+                        onError = { emitter.onError(it) },
+                        onSuccess = {
+                            organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                            emitter.onSuccess(organization)
+                        })
+            } else {
+                eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                    .subscribeSimple(
+                        onError = { emitter.onError(it) },
+                        onComplete = {
+                            organization.binds?.userFavorite = null
+                            emitter.onSuccess(organization)
+                        })
+            }
+            emitter.setDisposable(disposables)
         }
-            .andThen(organizationRepository.getOrganizationDetails(organizationId))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { viewState.setMainData(it) }
+                onSuccess = {
+                    viewState.apply {
+                        updateOrganizationSubscription(it)
+                        if (it.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
+                        else showEventRemovedFromFavoriteDialog()
+                    }
+                }
             )
     }
 

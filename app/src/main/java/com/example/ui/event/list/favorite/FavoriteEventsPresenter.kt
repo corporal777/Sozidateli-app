@@ -14,6 +14,7 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
@@ -69,31 +70,26 @@ class FavoriteEventsPresenter
         if (!event.isNullOrEmpty()) viewState.showAboutEvent(event)
     }
 
-    override fun onEventActionClick(event: /*Event*/EventNew) {
-        if (event.binds?.userFavorite != null) {
-            compositeDisposable += eventRepository.deleteFromFavorite(event.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    event.binds?.userFavorite = null
-                    viewState.updateEventFavorite(event.id.toString(), false)
-                    paginationList.invalidate()
-                }
-        } else {
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_EVENT, event.id ?: 0)
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    event.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    viewState.updateEventFavorite(event.id.toString(), true)
-                    paginationList.invalidate()
-                }
+    override fun onEventActionClick(event: EventNew) {
+        compositeDisposable += Completable.defer {
+            if (event.binds?.userFavorite != null) {
+                eventRepository.deleteFromFavorite(event.binds?.userFavorite?.id.toString())
+                    .doOnComplete { event.binds?.userFavorite = null }
+            } else {
+                eventRepository.addToFavorites(addToFavoriteBody(event.id ?: 0))
+                    .doOnSuccess {
+                        event.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                    }.ignoreElement()
+            }
         }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    paginationList.invalidate()
+                    if (event.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
+                    else showEventRemovedFromFavoriteDialog()
+                }
+            }
     }
 
     override fun onEventSubEventsClick(event: EventNew) {
@@ -102,4 +98,11 @@ class FavoriteEventsPresenter
 
     override fun onItemTake(position: Int) = paginationList.onItemTake(position)
     override fun onRefreshRequest() = paginationList.invalidate()
+
+    private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
+        return AddToFavoriteModel(
+            appData.getId(),
+            AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_EVENT, id)
+        )
+    }
 }

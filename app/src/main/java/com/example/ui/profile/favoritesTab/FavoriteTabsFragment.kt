@@ -15,8 +15,7 @@ import com.example.databinding.FragmentFavoriteBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.favorite.FavoriteEventsFragment
-import com.example.ui.organizations.list.OrganizationsFragment
-import com.example.ui.organizations.list.OrganizationsFragmentArgs
+import com.example.ui.organizations.favorite.FavoriteOrganizationsFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import javax.inject.Inject
@@ -47,9 +46,7 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
     private val fragments by lazy {
         listOf(
                 FavoriteEventsFragment(),
-                OrganizationsFragment().apply {
-                    arguments = OrganizationsFragmentArgs.Builder(OrganizationsFilter.FAVORITES_NO_TITLE).build().toBundle()
-                },
+                FavoriteOrganizationsFragment(),
                 FavoriteUsersFragment()
         )
     }

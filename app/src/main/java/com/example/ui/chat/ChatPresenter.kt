@@ -93,7 +93,7 @@ class ChatPresenter
     private fun getChatMessages() {
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false)
+        }.buildList(enablePlaceholders = false, initialSize = 40)
 
         compositeDisposable += Observable.create(paginationList)
             .flatMapMaybe { prepareListOfMessages(it) }
@@ -245,7 +245,7 @@ class ChatPresenter
             mapOf(
                 MessageModel.MESSAGES_CHAT to chatId,
                 MessageModel.MESSAGES_ACKNOWLEDGED_BY to appData.getId(),
-                MessageModel.MESSAGES_LIMIT to 40,
+                MessageModel.MESSAGES_LIMIT to limit,
                 MessageModel.MESSAGES_OFFSET to offset,
                 MessageModel.MESSAGES_SORT_TYPE to "desc"
             )
@@ -282,9 +282,7 @@ class ChatPresenter
                     addFormDataPart("chat", chatId)
                     addFormDataPart("message", message)
                 }.build()
-        }.flatMap {
-            chatRepository.sendChatMessage(it)
-        }
+        }.flatMap { chatRepository.sendChatMessage(it) }
             .withCheckInternetConnectivity()
             .flatMapMaybe { prepareListOfMessages(listOf(it)) }
             .performOnBackgroundOutOnMain()

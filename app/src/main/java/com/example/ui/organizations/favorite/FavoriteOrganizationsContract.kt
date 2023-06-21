@@ -1,36 +1,22 @@
-package com.example.ui.organizations.list
+package com.example.ui.organizations.favorite
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.OneExecutionByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 
-interface OrganizationsContract {
+interface FavoriteOrganizationsContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "header")
-        fun setNoFilterHeader()
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "header")
-        fun setFavoritesHeader()
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setOrganizations(organizations: List<OrganizationNew/*Organization*/?>)
-
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        fun showNoFilterEmptyListPlaceholder()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun showFavoritesEmptyListPlaceholder()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showOrganization(organization: OrganizationNew/*Organization*/)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showFavorites()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun changeSubscription(organization: OrganizationNew/*Organization*/)
@@ -40,6 +26,5 @@ interface OrganizationsContract {
         fun onOrganizationClick(organization: OrganizationNew/*Organization*/)
         fun onRemoveFromFavoriteClick(organization: OrganizationNew/*Organization*/)
         fun onRefreshRequest()
-        fun onFavoritesClick()
     }
 }

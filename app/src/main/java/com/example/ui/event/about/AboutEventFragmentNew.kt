@@ -155,9 +155,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                     eventData.event.holdingDate?.to,
                     eventData.event.image?.uri,
                     eventData.event.backgroundColor?.value,
-                    eventData.event.requestsApply,
-                    eventData.event.address?.lat,
-                    eventData.event.address?.lon
+                    eventData.event.requestsApply
                 ),
                 EventDetailActionItem(requireContext(), eventData.event, onActionClickListener)
             )

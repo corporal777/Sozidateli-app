@@ -1,11 +1,15 @@
 package com.example.ui.notification.center.redesign.items
 
 import android.content.Context
+import android.util.Log
 import com.example.data.models.EventNew
 import com.example.data.models.Notification
+import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventItemNew
+import com.example.ui.notification.center.redesign.NotificationsSortedData
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -13,9 +17,9 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class NotificationsItemsGroup(
     val context: Context,
-    val date: String,
+    val date: String?,
     val list: List<Notification>,
-    listener: NotificationItemNew.OnNotificationActionListener,
+    val listener: NotificationItemNew.OnNotificationActionListener,
 ) : NestedGroup() {
 
     private val dateItem = NotificationsDateItem(date)
@@ -23,26 +27,30 @@ class NotificationsItemsGroup(
 
     init {
         dateItem.registerGroupDataObserver(this)
+
         if (!list.isNullOrEmpty()){
-            notificationsSection.update(list.map {
-                when (it.type) {
-                    Notification.Type.SIMPLE -> SimpleNotificationItemNew(
-                        context,
-                        it,
-                        listener
-                    )
-                    Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
-                        context,
-                        it,
-                        listener
-                    )
-                    Notification.Type.RATE -> RateNotificationItemNew(
-                        context,
-                        it,
-                        listener
-                    )
+            notificationsSection.update(
+                list.map {
+                    when (it.type) {
+                        Notification.Type.SIMPLE -> SimpleNotificationItemNew(
+                            context,
+                            it,
+                            listener
+                        )
+                        Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
+                            context,
+                            it,
+                            listener
+                        )
+                        Notification.Type.RATE -> RateNotificationItemNew(
+                            context,
+                            it,
+                            listener
+                        )
+                    }
                 }
-            })
+
+            )
         }
         notificationsSection.registerGroupDataObserver(this)
     }
@@ -63,6 +71,16 @@ class NotificationsItemsGroup(
         }
     }
 
+    fun updateNotification(data: Notification){
+        val idLong = data.id.toLong()
+
+        val item = notificationsSection.findItemBy<NotificationItemNew<*>> { x -> x.id == idLong }
+        if (item != null){
+            item.notifyChanged(data)
+        }
+    }
+
+    fun isSameDate(newDate: String?) = newDate == date
 
     override fun getGroupCount() = 2
 }

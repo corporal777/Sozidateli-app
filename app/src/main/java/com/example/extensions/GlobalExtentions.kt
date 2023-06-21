@@ -99,6 +99,7 @@ fun TextView.setDateCheckYearText(date: String) {
 }
 
 fun TextView.removeUrlUnderline(textColor: Int? = null) {
+    if (text.isNullOrEmpty()) return
     text.toSpannable().apply {
         val urls = getSpans<URLSpan>()
         urls.forEach {

@@ -105,14 +105,14 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
     }
 
     override fun setNotifications(notifications: Map<String, List<Notification>>) {
-        notificationsSection.update(notifications.map {
-            NotificationsItemsGroup(
-                requireContext(),
-                it.key,
-                it.value,
-                onNotificationListener
-            )
-        })
+//        notificationsSection.update(notifications.map {
+//            NotificationsItemsGroup(
+//                requireContext(),
+//                it.key,
+//                it.value,
+//                onNotificationListener
+//            )
+//        })
     }
 
 

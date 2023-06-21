@@ -20,11 +20,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/white"
+                app:contentInsetEnd="0dp"
                 app:contentInsetStart="0dp"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingPrefix">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
@@ -40,6 +42,19 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guidelineLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.11" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guidelineRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.9" />
 
                     <TextView
                         android:id="@+id/toolbar_label"
@@ -48,18 +63,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:ellipsize="end"
+                        android:gravity="center_horizontal"
+                        android:includeFontPadding="false"
                         android:letterSpacing="-0.025"
-                        android:maxEms="9"
                         android:maxLines="1"
-                        android:paddingHorizontal="5dp"
+                        android:paddingHorizontal="10dp"
                         android:text="@string/profile_about_app"
                         android:textColor="@android:color/black"
                         android:textSize="17sp"
+                        android:visibility="invisible"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/btnReadAll"
-                        app:layout_constraintHorizontal_bias="0.8"
-                        app:layout_constraintStart_toEndOf="@id/iv_back"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
 
                     <com.example.ui.views.toolbar.ToolbarCircleButton
                         android:id="@+id/btnReadAll"
@@ -69,7 +87,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
                         android:text="@string/read_all"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -95,8 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="30dp"
-                app:layoutManager="com.example.util.NoDataPlaceholderLinearLayoutManager" />
+                android:paddingBottom="30dp" />
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
 

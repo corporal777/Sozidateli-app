@@ -38,7 +38,7 @@ class SystemNotificationsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += Observable.create(pagination)
-            .map { it.transformList() }
+            .map { transformList(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
@@ -65,7 +65,7 @@ class SystemNotificationsPresenter
                 onError = { onReceiveError(it) },
                 onSuccess = {
                     pagination.invalidate()
-                    if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet(NotificationType.SYSTEM)
+                    //if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet(NotificationType.SYSTEM)
                 }
             )
     }

@@ -131,16 +131,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
     override fun setMainData(organization: OrganizationNew) {
         mainDataSection.updateItem(
             OrganizationHeaderItem(
-                organization.id,
-                organization.image?.uri,
-                organization.logo?.uri,
-                organization.backgroundColor?.value,
-                organization.legalInformation?.name?.short
-                    ?: organization.legalInformation?.name?.full,
-                organization.description,
-                organization.binds?.userFavorite != null,
+                organization,
                 imageClickListener
-            ) { presenter.onAddOrganizationFavoriteClick(organization) }
+            ) { presenter.onAddOrganizationFavoriteClick(it) }
         )
         mBinding.swipeToRefresh.isRefreshing = false
     }
@@ -208,9 +201,9 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
     }
 
 
-    override fun setSubscribed(isSubscribed: Boolean) {
+    override fun updateOrganizationSubscription(organization: OrganizationNew) {
         val item = mainDataSection.findItemBy<OrganizationHeaderItem> { true }
-        item?.notifyChanged(isSubscribed)
+        item?.notifyChanged(organization)
     }
 
     override fun updateUserSubscription(userId: Int, isSubscribed: Boolean) {

@@ -271,20 +271,7 @@
 
     <fragment
         android:id="@+id/organizations_fragment"
-        android:name="com.example.ui.organizations.list.OrganizationsFragment">
-
-        <argument
-            android:name="filter"
-            app:argType="com.example.data.models.OrganizationsFilter"
-            app:nullable="false" />
-
-        <action
-            android:id="@+id/organizations_fragment_to_self"
-            app:destination="@id/organizations_fragment"
-            app:enterAnim="@anim/slide_from_right_enter"
-            app:exitAnim="@anim/slide_from_right_exit"
-            app:popEnterAnim="@anim/slide_from_right_popup_enter"
-            app:popExitAnim="@anim/slide_from_right_popup_exit" />
+        android:name="com.example.ui.organizations.favorite.FavoriteOrganizationsFragment">
     </fragment>
 
 

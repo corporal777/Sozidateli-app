@@ -42,7 +42,8 @@ class RecommendationsPresenter
     val appData: AppData,
     private val eventRepository: EventRepository,
     @Connectivity val connectivity: Observable<Boolean>
-) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository), RecommendationsContract.Presenter {
+) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository),
+    RecommendationsContract.Presenter {
 
     private var isFirstAttach = true
 

@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationAcceptNewBinding
+import com.example.databinding.ItemNotificationSimpleNewBinding
 import com.example.holders.OnNotificationAcceptClickListener
 import com.example.holders.OnNotificationReadClickListener
 import com.example.holders.OnOpenEventListener
@@ -30,6 +31,13 @@ class AcceptNotificationItemNew(
 
     override fun bind(viewBinding: ItemNotificationAcceptNewBinding, position: Int) {
         super.bind(viewBinding, position)
+        decorViews(viewBinding, notification)
+    }
+
+    private fun decorViews(
+        viewBinding: ItemNotificationAcceptNewBinding,
+        notification: Notification
+    ) {
         viewBinding.apply {
             when (notification.acceptState) {
                 Notification.AcceptState.NONE -> {
@@ -76,6 +84,22 @@ class AcceptNotificationItemNew(
         }
     }
 
+    override fun bind(
+        viewBinding: ItemNotificationAcceptNewBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is Notification) {
+                notification.acceptState = payload.acceptState
+                notification.wasRead = payload.wasRead
+                decorViews(viewBinding, notification)
+                super.bind(viewBinding, position, payloads)
+            }
+        }
+    }
 
     private fun showCancelInfo(context: Context) {
         CtpDialog(context)

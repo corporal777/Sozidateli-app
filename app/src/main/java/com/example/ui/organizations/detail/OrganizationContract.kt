@@ -27,7 +27,7 @@ interface OrganizationContract {
         fun showAllEvents(organizationId: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun setSubscribed(isSubscribed: Boolean)
+        fun updateOrganizationSubscription(organization: OrganizationNew)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAllUsers(organizationId: String)

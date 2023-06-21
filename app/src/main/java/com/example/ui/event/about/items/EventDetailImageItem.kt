@@ -27,9 +27,7 @@ class EventDetailImageItem(
     val dateTo: String?,
     val logo: String?,
     val backgroundColor: String?,
-    val requestsApply: RequestApplyModel?,
-    val lat : Double?,
-    val lon : Double?
+    val requestsApply: RequestApplyModel?
 ) : BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
 
     private val eventDate = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
@@ -79,18 +77,7 @@ class EventDetailImageItem(
             }
             tvLocation.apply {
                 isVisible = !address.isNullOrEmpty()
-                if (!address.isNullOrEmpty()){
-                    text = CustomSpannableString(address).apply {
-                        setClickSpan(tvLocation){
-                            openRoute(root.context)
-                        }
-                        setColorSpan(R.color.main_background, context)
-                    }
-                    if (lat != null && lon != null){
-                        highlightColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
-                        movementMethod = LinkMovementMethod.getInstance()
-                    }
-                }
+                text = address
             }
 
             ivLogo.apply {
@@ -108,8 +95,6 @@ class EventDetailImageItem(
         if (logo != other.logo) return false
         if (backgroundColor != other.backgroundColor) return false
         if (requestsApply != other.requestsApply) return false
-        if (lat != other.lat) return false
-        if (lon != other.lon) return false
         return true
     }
 
@@ -120,17 +105,6 @@ class EventDetailImageItem(
     }
 
 
-    private fun openRoute(context : Context){
-        if (lat != null && lon != null){
-            val routeUrl = "geo:0,0?mode=d&q=$lat,$lon"
-            try {
-                val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(routeUrl))
-                context.startActivity(viewIntent)
-            } catch (e: Throwable) {
-                Toast.makeText(context, R.string.map_route_error, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
 
     override fun getLayout(): Int = R.layout.item_event_detail_image_block
 

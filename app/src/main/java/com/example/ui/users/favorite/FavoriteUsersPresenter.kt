@@ -36,18 +36,23 @@ class FavoriteUsersPresenter
             put(UsersFavoriteModel.USERS_FAVORITE_USER, appData.getId())
         }
         userRepository.getUsersFavoritesList(data)
-    }
-        .buildList(enablePlaceholders = true)
+    }.buildList(enablePlaceholders = false, initialSize = 30)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-            .subscribe({
-                val uid = appData.getId()
-                it.forEach { user -> user?.isCurrentUser = user?.id == uid }
-                viewState.setData(it)
-            }, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = {
+                    if (it.isEmpty()) viewState.setUsersFavoriteEmptyPlaceholder()
+                    else {
+                        val uid = appData.getId()
+                        it.forEach { user -> user?.isCurrentUser = user?.id == uid }
+                        viewState.setData(it)
+                    }
+                })
     }
 
     override fun attachView(view: FavoriteUsersContract.View?) {
@@ -56,26 +61,18 @@ class FavoriteUsersPresenter
         else pagination.invalidate()
     }
 
-    override fun onUserClick(user: UserDetail) = viewState.showUser(user)
-
     override fun onUserRemoveFromFavoritesClick(user: UserDetail) {
         compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    pagination.invalidate()
-                },
+                onError = { pagination.invalidate() },
                 onComplete = {
                     viewState.showEventRemovedFromFavoriteDialog()
                     pagination.invalidate()
                 })
     }
 
-    override fun onItemTake(position: Int) {
-        pagination.onItemTake(position)
-    }
-
-    override fun onRefreshRequest() {
-        pagination.invalidate()
-    }
+    override fun onUserClick(user: UserDetail) = viewState.showUser(user)
+    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
 }

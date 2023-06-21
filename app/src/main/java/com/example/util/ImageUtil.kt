@@ -52,14 +52,6 @@ fun String?.loadBitmap(transformations: List<Transformation>? = null): Maybe<Opt
     }
 }
 
-fun String.loadBitmapAsync(
-    transformations: List<Transformation>? = null,
-    onResult: (bitmap: Bitmap?) -> Unit
-) {
-    loadBitmap(transformations) {
-        onResult.invoke(it)
-    }
-}
 
 fun String?.loadBitmapNew(context: Context): Bitmap? {
     return if (this.isNullOrEmpty()) null

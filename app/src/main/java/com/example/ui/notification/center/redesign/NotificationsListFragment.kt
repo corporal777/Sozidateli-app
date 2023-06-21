@@ -15,21 +15,23 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationsListBinding
+import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
+import com.example.extensions.forEachItems
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
+import com.example.holders.redesign.EventActivityDateItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.center.NotificationsFragmentDirections
 import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
-import com.example.ui.notification.center.redesign.items.NotificationItemNew
-import com.example.ui.notification.center.redesign.items.NotificationsItemsGroup
-import com.example.ui.notification.center.redesign.items.NotificationsTagsItem
+import com.example.ui.notification.center.redesign.items.*
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -72,11 +74,17 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
             add(notificationsSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
+                    val tagsCount = tagsSection.itemCount
+                    val datesCount = presenter.getTitleDatesCount()
+                    if (position < (tagsCount + datesCount)) return
+                    presenter.onItemTake(position - (tagsCount + datesCount))
+
+                    //presenter.onItemTake(position)
                 }
             })
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -112,18 +120,35 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun setData(notifications: Map<String, List<Notification>>) {
+
+    override fun setData(notifications: List<NotificationsSortedData>) {
         mBinding.swipeToRefresh.isRefreshing = false
         if (tagsSection.itemCount == 0)
             tagsSection.updateItem(NotificationsTagsItem { showNotificationsType(it) })
 
         notificationsSection.update(notifications.map {
-            NotificationsItemsGroup(
-                requireContext(),
-                it.key,
-                it.value,
-                onNotificationListener
-            )
+            Section().apply {
+                if (!it.titleDate.isNullOrEmpty()) add(NotificationsDateItem(it.titleDate))
+                add(
+                    when (it.data.type) {
+                        Notification.Type.SIMPLE -> SimpleNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.RATE -> RateNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                    }
+                )
+            }
         })
     }
 
@@ -133,9 +158,21 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+    override fun onNotificationNeedUpdate(data: Notification) {
+        val date = data.date?.split(" ")?.get(0)
+//        val group = notificationsSection.findGroupBy<NotificationsItemsGroup> { x -> x.isSameDate(date) }
+//        if (group != null){
+//            group.updateNotification(data)
+//        }
+
+        val idLong = data.id.toLong()
+        val item = notificationsSection.findItemBy<NotificationItemNew<*>> { x -> x.id == idLong }
+        if (item != null) item.notifyChanged(data)
+    }
+
 
     override fun showAboutEvent(eventId: String) {
-        if (!eventId.isNullOrEmpty()){
+        if (!eventId.isNullOrEmpty()) {
             findNavController().navigate(
                 R.id.about_event_fragment_new,
                 AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
@@ -151,7 +188,7 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     private fun showNotificationsType(type: NotificationType) {
-        when(type){
+        when (type) {
             NotificationType.SYSTEM -> findNavController().navigate(R.id.system_notifications_fragment)
             NotificationType.PROJECTS -> findNavController().navigate(R.id.project_notifications_fragment)
             NotificationType.EVENTS -> findNavController().navigate(R.id.event_notifications_fragment)
@@ -166,14 +203,6 @@ class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBindi
     }
 
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
-
-    override fun onNotificationNeedUpdate(id: Int) {
-        val idLong = id.toLong()
-        notificationsSection.findItemBy { item: Item -> item.id == idLong }?.apply {
-            notifyChanged()
-        }
-    }
-
 
     fun smoothScrollToFirstItem() {
         val mLayoutManager =

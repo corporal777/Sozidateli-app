@@ -12,14 +12,15 @@ import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NotificationsDateItem (
+class NotificationsDateItem(
     val date: String?,
     private val id: Long? = null,
 ) : BindableItem<ItemNotificationsDateBinding>(id ?: 0) {
 
     override fun bind(viewBinding: ItemNotificationsDateBinding, position: Int) {
         viewBinding.apply {
-            tvDate.text = date?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear)
+            tvDate.text =
+                date?.parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.ui.partner
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.core.view.isVisible
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -16,13 +14,16 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.PartnerModel
 import com.example.databinding.FragmentPartnerBinding
+import com.example.extensions.updateItem
+import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.partner.items.PartnerMainInfoItem
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.markWon
-import onScrolled
-import removeUrlUnderline
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -43,93 +44,67 @@ class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContra
         }
     }
 
+    private val mainDataSection by lazy {
+        Section().apply {
+            setPlaceholder(PlaceholderItem(PlaceholderItem.Type.ORGANIZATION_MAIN))
+        }
+    }
+
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            add(mainDataSection)
+        }
+    }
+
     private lateinit var toolbarContent: ToolbarContent
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun setData(partner: PartnerModel, logo: Bitmap?, background: Bitmap?) {
         mBinding.apply {
-            ivBackground.apply {
-                clipToOutline = true
-                if (background == null) {
-                    isVisible = false
-                } else {
-                    setImageBitmap(background)
-                    setOnImageClickListener(this, partner.image?.uri)
-                }
+            partnerList.adapter = groupAdapter
+            swipeToRefresh.setOnRefreshListener {
+                presenter.onRefreshRequest()
             }
-            ivLogo.apply {
-                clipToOutline = true
-                if (logo == null) {
-                    isVisible = false
-                } else {
-                    setImageBitmap(logo)
-                    setOnImageClickListener(this, partner.logo?.uri)
-                }
-            }
-
-            tvName.apply {
-                isVisible = partner.name?.isNotEmpty() == true
-                text = partner.name
-                toolbarContent.setToolbarTitle(partner.name ?: "")
-            }
-
-            tvDescription.apply {
-                isVisible = !partner.description.isNullOrEmpty()
-                markWon(requireContext()).setMarkdown(this, partner.description ?: "")
-                //text = partner.description
-            }
-
-            //val link = partner.web?.takeIf { it.isNotBlank() }
-            val link = partner.site?.joinToString("\n") { it.value ?: "" }
-
-            tvLinksTitle.isVisible = link != null
-
-            tvLinks.apply {
-                isVisible = link != null
-                text = link
-                removeUrlUnderline()
-            }
-
-            llSupportType.isVisible = !partner.supportType.isNullOrEmpty()
-            tvSupportType.text = partner.supportType
-
-            llContent.isVisible = true
         }
     }
 
-    private fun setOnImageClickListener(imageView: ImageView, url: String?) {
-        imageView.setOnClickListener {
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                requireActivity(),
-                Pair(it, it.transitionName)
-            )
+    override fun setData(partner: PartnerModel) {
+        toolbarContent.setToolbarTitle(partner.name ?: "")
+        mainDataSection.updateItem(
+            PartnerMainInfoItem(
+                partner.id,
+                partner.loadPartnerLogo(),
+                partner.loadPartnerImage(),
+                partner.name,
+                partner.description,
+                partner.site?.joinToString("\n") { it.value ?: "" },
+                partner.supportType
+            ) { imageView, url ->
+                showPartnerImage(imageView, url)
+            }
+        )
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
 
-            findNavController().navigate(
-                R.id.image_view_activity,
-                ImageViewActivityArgs.Builder(url, null, null, it.transitionName).build()
-                    .toBundle(),
-                null,
-                ActivityNavigatorExtras(options)
-            )
-        }
+    private fun showPartnerImage(imageView: ImageView, url: String?) {
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            requireActivity(),
+            Pair(imageView, imageView.transitionName)
+        )
+
+        findNavController().navigate(
+            R.id.image_view_activity,
+            ImageViewActivityArgs.Builder(url, null, null, imageView.transitionName).build()
+                .toBundle(),
+            null,
+            ActivityNavigatorExtras(options)
+        )
     }
 
     override fun layout() = R.layout.fragment_partner
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.scrollContainer.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }

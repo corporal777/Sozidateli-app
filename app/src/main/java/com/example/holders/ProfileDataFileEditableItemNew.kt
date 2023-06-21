@@ -11,7 +11,7 @@ class ProfileDataFileEditableItemNew(
     val file: FileModel,
     private val onFileClick: (FileModel) -> Unit,
     private val onRemoveClick: (ProfileDataFileEditableItemNew) -> Unit
-) : BindableItem<ItemProfileDataEditableFileNewBinding>(file.id?.toLong() ?: 0) {
+) : BindableItem<ItemProfileDataEditableFileNewBinding>(file.size?.toLong() ?: 0) {
 
     override fun bind(viewBinding: ItemProfileDataEditableFileNewBinding, position: Int) {
         viewBinding.apply {

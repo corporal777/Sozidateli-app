@@ -46,9 +46,9 @@ data class Notification(
     companion object {
         fun fromRemoteNotification(remoteNotification: NotificationModel): Notification {
             val notificationMainType =
-                if (!remoteNotification.notificationType.isNullOrEmpty()) remoteNotification.notificationType
-                else if (!remoteNotification.entity?.type.isNullOrEmpty()) remoteNotification.entity?.type
-                else NOTIFICATION_TYPE_EVENT
+                 if (!remoteNotification.entity?.type.isNullOrEmpty()) remoteNotification.entity?.type
+                 else if (!remoteNotification.notificationType.isNullOrEmpty()) remoteNotification.notificationType
+                 else NOTIFICATION_TYPE_EVENT
 
             val state = when (remoteNotification.entity?.type) {
                 NOTIFICATION_TYPE_EVENT_MEMBER -> {

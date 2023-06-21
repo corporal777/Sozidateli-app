@@ -15,7 +15,7 @@ interface NotificationsListContract {
         fun setNotificationsPlaceholder()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setData(notifications: Map<String, List<Notification>>)
+        fun setData(notifications: List<NotificationsSortedData>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
         fun showEmptyListPlaceholder()
@@ -24,7 +24,7 @@ interface NotificationsListContract {
         fun showUrl(url: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun onNotificationNeedUpdate(id: Int)
+        fun onNotificationNeedUpdate(data : Notification)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutEvent(eventId: String)

@@ -2,9 +2,13 @@ package com.example.ui.organizations.detail.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.EventUserFavorite
+import com.example.data.models.Organization
+import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemOrganizationHeaderBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
@@ -13,27 +17,18 @@ import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
 class OrganizationHeaderItem(
-    val orgId: Long?,
-    val image: String?,
-    val logo: String?,
-    val backgroundColor: String?,
-    val name: String?,
-    val description: String?,
-    val userFavorite: Boolean,
+    org: OrganizationNew,
     private val imageClick: (url: String, view: ImageView) -> Unit,
-    private val actionClickListener: (isSubscribed : Boolean) -> Unit,
-) : BindableItem<ItemOrganizationHeaderBinding>(orgId ?: 0) {
+    private val actionClickListener: (org : OrganizationNew) -> Unit,
+) : BindableItem<ItemOrganizationHeaderBinding>(org.id ?: 0) {
 
-    private var imageColor = ColorDrawable(Color.DKGRAY)
-
-    private var isSubscribed = userFavorite
-
-    init {
-        if (!backgroundColor.isNullOrEmpty()) {
-            val color = backgroundColor.parseColor() ?: Color.DKGRAY
-            imageColor = ColorDrawable(color)
-        }
-    }
+    private var organization = org
+    private val image = organization.image?.uri
+    private val logo = organization.logo?.uri
+    private val backgroundColor = organization.backgroundColor?.value
+    private val name = organization.legalInformation?.name?.short ?: organization.legalInformation?.name?.full
+    private val description = organization.description
+    private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
 
     override fun bind(viewBinding: ItemOrganizationHeaderBinding, position: Int) {
         viewBinding.apply {
@@ -60,7 +55,7 @@ class OrganizationHeaderItem(
 
             tvName.text = name
             tvDescription.text = description
-            setSubscribed(isSubscribed, btnAction)
+            setSubscribed(btnAction)
         }
     }
 
@@ -72,30 +67,26 @@ class OrganizationHeaderItem(
         val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
-            if (payload is Boolean) {
-                isSubscribed = payload
-                setSubscribed(isSubscribed, viewBinding.btnAction)
+            if (payload is OrganizationNew) {
+                organization = payload
+                setSubscribed(viewBinding.btnAction)
             }
         }
     }
 
-    private fun setSubscribed(isSubscribed: Boolean, button: UserSubscribeButton) {
-        button.setActionNew(isSubscribed)
+    private fun setSubscribed(button: UserSubscribeButton) {
+        button.setActionNew(organization.binds?.userFavorite != null)
         button.setOnClickListener {
-            actionClickListener.invoke(isSubscribed)
+            actionClickListener.invoke(organization)
         }
     }
 
     override fun hasSameContentAs(other: Item<*>?): Boolean {
         if (other !is OrganizationHeaderItem) return false
-        if (image != other.image) return false
-        if (logo != other.logo) return false
-        if (backgroundColor != other.backgroundColor) return false
-        if (name != other.name) return false
-        if (description != other.description) return false
-        if (userFavorite != other.userFavorite) return false
+        if (organization != other.organization) return false
         return true
     }
+
 
     override fun getLayout(): Int = R.layout.item_organization_header
 }

@@ -35,7 +35,7 @@ class EvaluateNotificationsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += Observable.create(pagination)
-            .map { it.transformList() }
+            .map { transformList(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },

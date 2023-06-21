@@ -7,12 +7,12 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.extensions.updateItem
-import com.example.ui.notification.center.redesign.items.NotificationItemNew
-import com.example.ui.notification.center.redesign.items.NotificationsItemsGroup
-import com.example.ui.notification.center.redesign.items.NotificationsTagsItem
+import com.example.ui.notification.center.redesign.NotificationsSortedData
+import com.example.ui.notification.center.redesign.items.*
 import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypeFragment
 import com.example.ui.state.maxNew.education.MaxStatusEducationPresenter
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
+import com.xwray.groupie.Section
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -38,19 +38,45 @@ class SystemNotificationsFragment : BaseNotificationTypeFragment<SystemNotificat
         override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
     }
 
-    override fun setNotifications(notifications: Map<String, List<Notification>>) {
+    override fun setNotifications(notifications: List<NotificationsSortedData>) {
         mBinding.swipeToRefresh.isRefreshing = false
 
+//        contentSection.update(notifications.map {
+//            NotificationsItemsGroup(
+//                requireContext(),
+//                it.titleDate,
+//                it.data,
+//                onNotificationListener
+//            )
+//        })
+
         contentSection.update(notifications.map {
-            NotificationsItemsGroup(
-                requireContext(),
-                it.key,
-                it.value,
-                onNotificationListener
-            )
+            Section().apply {
+                if (!it.titleDate.isNullOrEmpty()) add(NotificationsDateItem(it.titleDate))
+                add(
+                    when (it.data.type) {
+                        Notification.Type.SIMPLE -> SimpleNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.RATE -> RateNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                    }
+                )
+            }
         })
     }
 
 
+    override val type: CharSequence by lazy { "system" }
     override val title: CharSequence by lazy { getString(R.string.system_notifications_short) }
 }

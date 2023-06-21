@@ -41,6 +41,32 @@ class RateNotificationItemNew(
     }
 
 
+    override fun bind(
+        viewBinding: ItemNotificationRateNewBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is Notification) {
+                notification.wasRead = payload.wasRead
+                viewBinding.apply {
+                    btnRate.apply {
+                        isVisible = !notification.wasRead
+                        setOnClickListener {
+                            notification.rateId?.let {
+                                listener.onRateClickListener(it)
+                            }
+                        }
+                    }
+                }
+                super.bind(viewBinding, position, payloads)
+            }
+        }
+
+    }
+
     override fun getTitleView(viewBinding: ItemNotificationRateNewBinding): TextView =
         viewBinding.tvTitle
 

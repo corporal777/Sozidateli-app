@@ -117,7 +117,20 @@ data class PartnerModel(
     val image: ImageModel? = null,
     val site: List<PartnersSiteModel>? = null,
     val binds: PartnersBindsModel? = null
-) : Parcelable
+) : Parcelable {
+
+    fun loadPartnerLogo(): String? {
+        return if (logo == null) return null
+        else if (logo.uri.isNullOrEmpty()) return null
+        else logo.uri
+    }
+
+    fun loadPartnerImage(): String? {
+        return if (image == null) return null
+        else if (image.uri.isNullOrEmpty()) return null
+        else image.uri
+    }
+}
 
 @Parcelize
 data class PartnersBindsModel(

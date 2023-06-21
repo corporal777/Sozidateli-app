@@ -14,6 +14,9 @@ interface FavoriteUsersContract {
         fun setData(data: List<UserDetail?>)
 
         @StateStrategyType(SkipStrategy::class)
+        fun setUsersFavoriteEmptyPlaceholder()
+
+        @StateStrategyType(SkipStrategy::class)
         fun showUser(user: UserDetail)
     }
 

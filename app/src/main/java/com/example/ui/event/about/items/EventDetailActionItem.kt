@@ -1,11 +1,15 @@
 package com.example.ui.event.about.items
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
@@ -21,10 +25,12 @@ import com.example.extensions.dateFormatterShortDayFullMothShortYear
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
+import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.EventDescriptionBottomSheet
 import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
+import com.generator.qrcodegenerator.style.Color
 import com.xwray.groupie.databinding.BindableItem
 import onClickListener
 import setOnClickListener
@@ -61,7 +67,18 @@ class EventDetailActionItem(
             tvFormat.text = eventFormat?.name
 
             addressLn.isVisible = !eventData?.address?.fullValue.isNullOrEmpty()
-            tvAddress.text = eventData?.address?.fullValue
+            tvAddress.apply {
+                if (!eventData?.address?.fullValue.isNullOrEmpty()){
+                    text = CustomSpannableString(eventData?.address?.fullValue).apply {
+                        setClickSpan(tvAddress){
+                            openRoute(context, eventData?.address?.fullValue)
+                        }
+                        setColorSpan(R.color.bottom_nav_item_selected_color, context)
+                    }
+                    highlightColor = ContextCompat.getColor(context, R.color.colorOverlay)
+                    movementMethod = LinkMovementMethod.getInstance()
+                }
+            }
 
             phoneLn.isVisible = !eventData?.phone.isNullOrEmpty()
             tvPhone.text = eventData?.phone?.firstOrNull()?.value
@@ -222,6 +239,16 @@ class EventDetailActionItem(
         fun onDeleteSubscribeEvent()
     }
 
+    private fun openRoute(context: Context, address: String?) {
+        val routeUrl = "https://yandex.ru/maps/?mode=search&text=$address"
+        //val routeUrl = "geo:0,0?mode=d&q=$lat,$lon"
+        try {
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(routeUrl))
+            context.startActivity(viewIntent)
+        } catch (e: Throwable) {
+            Toast.makeText(context, R.string.map_route_error, Toast.LENGTH_LONG).show()
+        }
+    }
 
     private fun getMarkdownFormattedText(
         context: Context,

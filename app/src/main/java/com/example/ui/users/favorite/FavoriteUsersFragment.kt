@@ -53,27 +53,27 @@ class FavoriteUsersFragment : BaseFragmentNew<LayoutListBinding>(), FavoriteUser
     }
 
     override fun setData(data: List<UserDetail?>) {
-        if (data.isEmpty()) {
-            groupAdapter.updateItem(
-                NoEventItem(
-                    getString(R.string.blank_list_error),
-                    getString(R.string.user_favorites_empty_list_description)
-                )
-            )
-        } else {
-            groupAdapter.update(data.map {
-                if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
-                else UserItem(
-                    it.id,
-                    it.nameLastName,
-                    it.address?.city,
-                    it.loadUserImage(),
-                    { presenter.onUserClick(it) },
-                    it.getUserSubscribeAction(),
-                    { presenter.onUserRemoveFromFavoritesClick(it) })
-            })
-        }
+        groupAdapter.update(data.map {
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
+            else UserItem(
+                it.id,
+                it.nameLastName,
+                it.address?.city,
+                it.loadUserImage(),
+                { presenter.onUserClick(it) },
+                it.getUserSubscribeAction(),
+                { presenter.onUserRemoveFromFavoritesClick(it) })
+        })
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
 
+    override fun setUsersFavoriteEmptyPlaceholder() {
+        groupAdapter.updateItem(
+            NoEventItem(
+                getString(R.string.blank_list_error),
+                getString(R.string.user_favorites_empty_list_description)
+            )
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 

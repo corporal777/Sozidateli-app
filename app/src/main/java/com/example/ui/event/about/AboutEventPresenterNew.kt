@@ -173,8 +173,10 @@ class AboutEventPresenterNew
 
     override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
     override fun onPageClick(page: Int) = viewState.showPage(eventId, page.toString())
-    override fun onPartnerClick(partner: Int) =  viewState.showPartner(eventId, partner.toString())
-    override fun onSubEventClick(subEvent: EventActivityModel) = viewState.showSubEvent(eventId, subEvent.id.toString())
+    override fun onPartnerClick(partner: Int) = viewState.showPartner(eventId, partner.toString())
+    override fun onSubEventClick(subEvent: EventActivityModel) =
+        viewState.showSubEvent(eventId, subEvent.id.toString())
+
     override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
     override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
@@ -226,17 +228,19 @@ class AboutEventPresenterNew
 
 
     override fun onAddOrganizationToFavoriteClick() {
-        if (event?.event?.binds?.organization?.binds?.userFavorite != null) {
-            val id = event?.event?.binds?.organization?.binds?.userFavorite?.id.toString()
-            compositeDisposable += eventRepository.deleteFromFavorite(id)
+        val organizationFavorite = event?.event?.binds?.organization?.binds?.userFavorite
+        if (organizationFavorite != null) {
+            compositeDisposable += eventRepository.deleteFromFavorite(organizationFavorite.id.toString())
+                .doOnComplete { event?.event?.binds?.organization?.binds?.userFavorite = null }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple(onComplete = {
-                    event?.event?.binds?.organization?.binds?.userFavorite = null
-                    viewState.changeOrganizationSubscription(false)
-                }, onError = {
-                    it.printStackTrace()
-                })
+                .subscribeSimple(
+                    onComplete = {
+                        viewState.apply {
+                            changeOrganizationSubscription(false)
+                            showEventRemovedFromFavoriteDialog()
+                        }
+                    }, onError = { it.printStackTrace() }
+                )
         } else {
             compositeDisposable += eventRepository.addToFavorites(
                 AddToFavoriteModel(
@@ -245,15 +249,20 @@ class AboutEventPresenterNew
                         event?.event?.binds?.organization?.id?.toInt()
                     )
                 )
-            ).performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple(onSuccess = {
+            )
+                .performOnBackgroundOutOnMain()
+                .doOnSuccess {
                     event?.event?.binds?.organization?.binds?.userFavorite =
                         EventUserFavorite(it.id, it.user)
-                    viewState.changeOrganizationSubscription(true)
-                }, onError = {
-                    it.printStackTrace()
-                })
+                }
+                .subscribeSimple(
+                    onSuccess = {
+                        viewState.apply {
+                            changeOrganizationSubscription(true)
+                            showEventAddedToFavoriteDialog()
+                        }
+                    }, onError = { it.printStackTrace() }
+                )
         }
     }
 

@@ -31,6 +31,7 @@ data class NotificationModel(
         const val NOTIFICATION_TYPE_EVENT_ACTIVITY = "eventActivity"
         const val NOTIFICATION_TYPE_EVENT_MEMBER = "eventMember"
         const val NOTIFICATION_SORT = "sortType"
+        const val NOTIFICATION_SORT_FIELD = "sortField"
         const val NOTIFICATION_ENTITY_TYPE = "entityType"
         const val NOTIFICATION_EVENT_ID = "entityId"
         const val NOTIFICATION_ACKNOWLEDGED = "acknowledged"

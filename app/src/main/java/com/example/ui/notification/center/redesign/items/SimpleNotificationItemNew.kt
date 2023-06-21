@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnAttach
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnNextLayout
@@ -30,19 +31,36 @@ class SimpleNotificationItemNew(
 
     override fun bind(viewBinding: ItemNotificationSimpleNewBinding, position: Int) {
         super.bind(viewBinding, position)
-        viewBinding.apply {
-            btnMarkAsRead.apply {
-                if (notification.wasRead) {
-                    isEnabled = false
-                    text = context.getString(R.string.notifications_was_read)
-                } else {
-                    isEnabled = true
-                    text = context.getString(R.string.notifications_mark_as_read)
-                    setOnClickListener {
-                        listener.onReadClickListener(notification.id)
-                    }
-                }
+        viewBinding.btnMarkAsRead.apply {
+            decorViews(this, notification)
+            setOnClickListener {
+                listener.onReadClickListener(notification.id)
             }
+        }
+    }
+
+
+    override fun bind(
+        viewBinding: ItemNotificationSimpleNewBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is Notification) {
+                notification.wasRead = payload.wasRead
+                decorViews(viewBinding.btnMarkAsRead, payload)
+                super.bind(viewBinding, position, payloads)
+            }
+        }
+    }
+
+    private fun decorViews(button: Button, notification: Notification) {
+        button.apply {
+            isEnabled = !notification.wasRead
+            text = if (notification.wasRead) context.getString(R.string.notifications_was_read)
+            else context.getString(R.string.notifications_mark_as_read)
         }
     }
 
@@ -61,6 +79,8 @@ class SimpleNotificationItemNew(
 
     override fun getRootView(viewBinding: ItemNotificationSimpleNewBinding): View =
         viewBinding.clSimpleNotification
+
+
 
 
     override fun getLayout() = R.layout.item_notification_simple_new

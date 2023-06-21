@@ -27,6 +27,7 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withLoadingDialog
@@ -47,37 +48,30 @@ class SearchOrganizationPresenter
         organizationRepository.searchOrganizationsNew(data)
     }
 
-    override fun onOrganizationClick(organization: OrganizationNew/*Organization*/) {
+    override fun onOrganizationClick(organization: OrganizationNew) {
         viewState.showOrganization(organization)
     }
 
-    override fun onOrganizationSubscriptionClick(organization: OrganizationNew/*Organization*/) {
-        val isSubscribed = organization.binds?.userFavorite != null
-        if (isSubscribed) {
-            compositeDisposable += eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    organization.binds?.userFavorite = null
-                    viewState.changeSubscription(organization)
-                }
-        } else {
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(
-                        AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
-                        organization.id?.toInt()
-                    )
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    viewState.changeSubscription(organization)
-                }
+    override fun onOrganizationSubscriptionClick(organization: OrganizationNew) {
+        compositeDisposable += Completable.defer {
+            if (organization.binds?.userFavorite != null) {
+                eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                    .doOnComplete { organization.binds?.userFavorite = null }
+            } else {
+                eventRepository.addToFavorites(addToFavoriteBody(organization.id?.toInt()))
+                    .doOnSuccess {
+                        organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                    }.ignoreElement()
+            }
         }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    changeSubscription(organization)
+                    if (organization.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
+                    else showEventRemovedFromFavoriteDialog()
+                }
+            }
     }
 
     private fun buildFilterNew(limit: Int, offset: Int): Map<String, Any> =
@@ -109,33 +103,19 @@ class SearchOrganizationPresenter
             if (!filter.addressTownType.isNullOrEmpty()) {
                 put("type", filter.addressTownType!!)
             }
-
-//            val index = filter.index
-//            if (!index.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_INDEX, index)
-//            val country = filter.country
-//            if (!country.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_COUNTRY, country)
-//            val federal = filter.federal
-//            if (!federal.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FEDERAL, federal)
-//            val region = filter.region
-//            if (!region.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_REGION, region)
-//            val area = filter.area
-//            if (!area.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_AREA, area)
-//            val city = filter.city
-//            if (!city.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_CITY, city)
-//            val settlement = filter.settlement
-//            if (!settlement.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_SETTLEMENT, settlement)
-//            val street = filter.street
-//            if (!street.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_STREET, street)
-//            val house = filter.house
-//            if (!house.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_HOUSE, house)
-//            val flat = filter.flat
-//            if (!flat.isNullOrEmpty()) put(ORGANIZATION_ADDRESS_FLAT, flat)
         }
 
     override fun createFilter() = SearchFilter.Organization()
     override fun copyFilter(filter: SearchFilter.Organization) = filter.copy()
     override fun isHasFilter(): Boolean = filter.isHasFilter()
     override fun getSearchType(): String = ORGANIZATION_SEARCH_TYPE
+
+    private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
+        return AddToFavoriteModel(
+            appData.getId(),
+            AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_ORGANIZATION, id)
+        )
+    }
 
     companion object {
         private const val FILTER_CONTENT = "content"
