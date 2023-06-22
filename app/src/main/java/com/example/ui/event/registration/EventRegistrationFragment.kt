@@ -47,7 +47,6 @@ import kotlin.math.abs
 class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
     EventRegistrationContract.View {
 
-    private lateinit var mListState: Parcelable
 
     @InjectPresenter
     lateinit var presenter: EventRegistrationPresenter

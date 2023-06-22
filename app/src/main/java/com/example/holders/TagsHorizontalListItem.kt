@@ -70,5 +70,11 @@ class TagsHorizontalListItem(
         }
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is TagsHorizontalListItem) return false
+        if (tags != other.tags) return false
+        return true
+    }
+
     override fun getLayout() = R.layout.item_tags_horizontal_list
 }

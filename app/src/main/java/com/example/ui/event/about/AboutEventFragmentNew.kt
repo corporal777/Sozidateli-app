@@ -33,6 +33,7 @@ import com.example.ui.views.GridLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -56,7 +57,12 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
             setHideWhenEmpty(true)
         }
     }
-    private val eventProgramSection by lazy { Section() }
+    private val eventProgramSection by lazy {
+        Section().apply {
+            setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
+            setHideWhenEmpty(true)
+        }
+    }
     private val eventPartnersSection by lazy {
         Section().apply {
             setHeader(EventDetailBlocksLabelItem(getString(R.string.partners_label)))
@@ -143,77 +149,78 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         eventMainSection.updateItem(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN))
     }
 
-    override fun setEventData(eventData: AboutEventData) {
-        decorEventFavoriteButton(eventData.event.binds?.userFavorite != null)
+    override fun setMainData(event: EventNew) {
+        decorEventFavoriteButton(event.binds?.userFavorite != null)
 
         eventMainSection.update(
             listOf(
                 EventDetailImageItem(
-                    eventData.event.name,
-                    eventData.event.address?.getShortAddress(),
-                    eventData.event.holdingDate?.from,
-                    eventData.event.holdingDate?.to,
-                    eventData.event.image?.uri,
-                    eventData.event.backgroundColor?.value,
-                    eventData.event.requestsApply
+                    event.name,
+                    event.address?.getShortAddress(),
+                    event.holdingDate?.from,
+                    event.holdingDate?.to,
+                    event.image?.uri,
+                    event.backgroundColor?.value,
+                    event.requestsApply
                 ),
-                EventDetailActionItem(requireContext(), eventData.event, onActionClickListener)
+                EventDetailActionItem(requireContext(), event, onActionClickListener)
             )
         )
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun setOrganizationData(event: EventNew) {
         eventOrganizationSection.updateGroup(
             EventDetailInfoBlock(
-                eventData.event.binds?.organization,
+                event.binds?.organization,
                 { mPresenter.onAddOrganizationToFavoriteClick() },
                 { mPresenter.onOrganizationClick(it) },
                 getString(R.string.information),
-                eventData.event.address?.fullValue,
-                eventData.event.binds?.page,
+                event.address?.fullValue,
+                event.binds?.page,
                 { mPresenter.onMapPageSelected() },
                 { mPresenter.onPageClick(it) }
             )
         )
+    }
 
-        if (!eventData.speakers.isNullOrEmpty()) {
-            eventSpeakersSection.updateItem(
-                SpeakersHorizontalListItem(
-                    eventData.speakers,
-                    eventData.showMoreSpeakers,
-                    { mPresenter.onSpeakerClick(it) },
-                    { mPresenter.onShowAllSpeakersClick() })
-            )
+    override fun setSpeakersData(speakers: List<MemberModel>, showMore: Boolean) {
+        eventSpeakersSection.updateItem(
+            SpeakersHorizontalListItem(
+                speakers,
+                showMore,
+                { mPresenter.onSpeakerClick(it) },
+                { mPresenter.onShowAllSpeakersClick() })
+        )
+    }
+
+    override fun setProgramData(eventData: AboutEventData) {
+        val list = arrayListOf<Group>()
+        if (!eventData.tags.isNullOrEmpty()){
+            list.add(TagsItem(eventData.tags) { mPresenter.onTagSelected() })
         }
-
-        if (!eventData.subEvents.isNullOrEmpty() || !eventData.tags.isNullOrEmpty()) {
-            eventProgramSection.apply {
-                setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
-                update(
-                    if (!eventData.tags.isNullOrEmpty()) {
-                        listOf(TagsItem(eventData.tags) {
-                            mPresenter.onTagSelected()
-                        })
-                    } else {
-                        emptyList()
-                    }
-                        .plus(eventData.subEvents.map {
-                            EventDetailActivitiesItem(
-                                eventData.event.id.toString(),
-                                eventData.getUserRegistrationState(),
-                                it.key,
-                                it.value,
-                                onSubEventClickListener
-                            )
-                        })
+        if (!eventData.subEvents.isNullOrEmpty()){
+            list.addAll(eventData.subEvents.map {
+                EventDetailActivitiesItem(
+                    eventData.event.id.toString(),
+                    eventData.getUserRegistrationState(),
+                    it.key,
+                    it.value,
+                    onSubEventClickListener
                 )
-                if (eventData.showMoreSubEvents) {
-                    setFooter(EventDetailShowActivitiesItem {
-                        mPresenter.onShowEventActivitiesClick()
-                    })
-                }
-            }
+            })
         }
+        if (eventData.showMoreSubEvents){
+            list.add(EventDetailShowActivitiesItem {
+                mPresenter.onShowEventActivitiesClick()
+            })
+        }
+        eventProgramSection.update(list)
+    }
 
+    override fun setPartnersData(partners: List<PartnerModel>) {
         eventPartnersSection.update(
-            eventData.partners.map {
+            partners.map {
                 EventPartnerItem(
                     it.id,
                     it.name,
@@ -222,8 +229,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                 ) { id -> mPresenter.onPartnerClick(id) }
             }
         )
-        groupAdapter.notifyDataSetChanged()
-        mBinding.swipeToRefresh.isRefreshing = false
     }
 
 
@@ -250,8 +255,6 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         val item = eventMainSection.findItemBy<EventDetailActionItem> { true }
         item?.notifyChanged(event)
     }
-
-
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
         EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {

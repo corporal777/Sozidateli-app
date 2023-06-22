@@ -11,6 +11,7 @@ import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_FORM_ID
 import com.example.data.models.EventFormResultModel.Companion.EVENT_FORM_RESULT_USER_ID
+import com.example.data.socket.SocketIOManager
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -48,7 +49,7 @@ class EventRegistrationPresenter
     private val userRepository: UserRepository,
     private val rxPermissions: RxPermissions,
     private val contentResolver: ContentResolver,
-    private val context: Context,
+    private val socket: SocketIOManager,
     private val appData: AppData
 ) : BasePresenter<EventRegistrationContract.View>(appData), EventRegistrationContract.Presenter {
 
@@ -240,6 +241,7 @@ class EventRegistrationPresenter
 
     private fun registerToEvent() {
         compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
+            .andThen(socket.connectToUpdates())
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
@@ -362,7 +364,6 @@ class EventRegistrationPresenter
                 },
                 onSuccess = {
                     registerToEvent()
-                    //viewState.showSuccessRegister(approvingMode)
                 })
     }
 

@@ -161,7 +161,7 @@ class FinishRegisterPresenter
                     })
             emitter.setDisposable(disposable)
         }
-            .andThen(connectToSocket())
+            .doOnComplete { viewState.connectToSocket() }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -287,28 +287,6 @@ class FinishRegisterPresenter
                 FieldDetails(value = middleName, absent = noMiddleNameChecked)
             )
             put(UserDetail.USER_REGISTRATION_FINISH, true)
-        }
-    }
-
-    private fun connectToSocket(): Completable {
-        return Completable.create { emitter ->
-            val disposable = CompositeDisposable()
-            disposable += socket.connect().subscribeSimple(
-                onError = { emitter.onComplete() },
-                onNext = {
-                    if (it == SocketConnectionState.CONNECTED) {
-                        disposable += socket.subscribeToTotalNotificationsCount()
-                            .subscribeSimple(
-                                onError = { emitter.onComplete() },
-                                onNext = { count ->
-                                    appData.notificationsCount = count
-                                    emitter.onComplete()
-                                })
-                        disposable += socket.connectToUpdates()
-                            .subscribeSimple { }
-                    }
-                })
-            emitter.setDisposable(disposable)
         }
     }
 

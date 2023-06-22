@@ -12,15 +12,22 @@ data class AboutEventData(
     var partners: List<PartnerModel> = emptyList()
 ) {
 
+    init {
+        setTags()
+        setSortedSpeakers()
+        setSubEvents()
+        setPartners()
+    }
+
     fun getUserRegistrationState() =
         event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
 
-    fun setTags() {
+    private fun setTags() {
         this.tags =
             event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name ?: "") } ?: emptyList()
     }
 
-    fun setSortedSpeakers() {
+    private fun setSortedSpeakers() {
         val list = event.binds?.member?.filter { it.role == "speaker" }
         if (!list.isNullOrEmpty()) {
             val members = arrayListOf<MemberModel>()
@@ -34,7 +41,7 @@ data class AboutEventData(
         }
     }
 
-    fun setSubEvents() {
+    private fun setSubEvents() {
         val list = event.binds?.activity
         if (!list.isNullOrEmpty()) {
             this.showMoreSubEvents = list.size > 4
@@ -50,7 +57,13 @@ data class AboutEventData(
         }
     }
 
-    fun setPartners() {
+    private fun setPartners() {
         this.partners = event.binds?.partner ?: emptyList()
+    }
+
+    fun getSelectedTags(): List<NewTags> {
+        return tags.filter { x -> x.isSelected }.map {
+            NewTags(it.id, it.name, it.isSelected)
+        }
     }
 }

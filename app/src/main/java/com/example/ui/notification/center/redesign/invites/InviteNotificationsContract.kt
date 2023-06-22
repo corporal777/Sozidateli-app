@@ -5,15 +5,16 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
+import com.example.ui.notification.center.redesign.NotificationsSortedData
 
-interface InviteNotificationsBottomSheetContract {
+interface InviteNotificationsContract {
     interface View : BaseBottomSheetContract.View{
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setUnreadInvitesLabel(invites : Int)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setNotifications(notifications: Map<String, List<Notification>>)
+        fun setNotifications(notifications: List<NotificationsSortedData>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutEvent(eventId : String)

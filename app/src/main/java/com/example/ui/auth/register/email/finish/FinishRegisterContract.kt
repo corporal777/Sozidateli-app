@@ -53,6 +53,9 @@ interface FinishRegisterContract {
         @StateStrategyType(SkipStrategy::class)
         fun showEmailPhoneNotUnique(email: String, loginType : String)
 
+        @StateStrategyType(SkipStrategy::class)
+        fun connectToSocket()
+
     }
 
     interface Presenter : BaseAuthContract.Presenter {

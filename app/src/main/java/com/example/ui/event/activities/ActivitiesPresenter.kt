@@ -8,10 +8,12 @@ import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
+import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.notification.center.redesign.NotificationsSortedData
 import com.example.util.getDaysFromDateToDate
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -24,6 +26,7 @@ import withDelay
 import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @InjectViewState
 class ActivitiesPresenter
@@ -36,90 +39,81 @@ class ActivitiesPresenter
     lateinit var userEvent: UserEvent
 
     private var currentDay: EventScheduleCalendarDay? = null
-    private var tags: List<Tag> = emptyList()
     private var mSearchWord = ""
     var tagsNew: List<Tag.EventTag>? = null
     lateinit var eventId: String
 
-    var firstAttach = true
+    private var isFirstAttach = true
     private lateinit var mLastDay: EventScheduleCalendarDay
 
+    private var groupedEventList = arrayListOf<SubEventsData>()
+    private var eventTags: List<Tag> = emptyList()
+    private var eventDates = emptyList<List<EventScheduleCalendarDay>>()
+    private var isStatusApproved = false
 
-    override fun attachView(view: ActivitiesContract.View?) {
-        super.attachView(view)
-        if (firstAttach) firstAttach = false
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setContentPlaceholder()
         compositeDisposable += userEventData.loadEventData(eventId)
+            .doOnSuccess { e ->
+                userEvent = e
+                isStatusApproved = e.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+                eventTags = e.activity.groups.plus(e.activity.tags)
+                if (tagsNew != null) {
+                    eventTags.forEach {
+                        val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
+                        if (nt != null) it.isSelected = nt.isSelected
+                        else it.isSelected = it.isSelected
+                    }
+                }
+            }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                userEvent = it
-                if (currentDay == null) findDay()
-                invalidateData()
+                initContent()
                 viewState.setSchemeButton(userEvent.isHasBuildingScheme())
             }
     }
 
 
-
-    private fun invalidateData() {
-        compositeDisposable += Maybe.fromCallable {
-            val dates = userEventData.createCalendarDays(userEvent.activity.dates.map {
-                defaultServerDateFormatter.parse(it.date).time
-            })
-            tags = userEvent.activity.groups.plus(userEvent.activity.tags)
-            if (tagsNew != null) {
-                tags.forEach {
-                    val nt = tagsNew?.firstOrNull { t -> t.id == it.id }
-                    if (nt != null) {
-                        it.isSelected = nt.isSelected
-                    } else {
-                        it.isSelected = it.isSelected
-                    }
-                }
+    private fun initContent() {
+        compositeDisposable += Maybe.defer {
+            val selectedTags = eventTags.filter { it.isSelected }
+            val list = checkParams(userEvent.activity.activities, selectedTags)
+            val groupedList = groupData(selectedTags, list)
+            if (!groupedList.isNullOrEmpty()) {
+                val dates = groupedList.mapNotNull { x -> x.titleDate }
+                eventDates = collectDatesToWeeks(userEventData.createCalendarDays(dates.map { s ->
+                    defaultServerDateFormatter.parse(s).time
+                }))
             }
-            collectDatesToWeeks(dates)
+            Maybe.just(groupData(selectedTags, list))
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { list ->
-                viewState.setDays(list)
                 viewState.apply {
-                    setTags(tags)
-                    currentDay?.let { day ->
-                        selectDay(day)
-                        //scrollToDay(day)
+                    if (list.isNullOrEmpty()) showEmptyEventPlaceholder()
+                    else {
+                        setDays(eventDates)
+                        setTags(eventTags)
+                        setSubEvents(isStatusApproved, list)
+                        if (isFirstAttach){
+                            if (currentDay == null) findDay()
+                            isFirstAttach = false
+                        }
                     }
                 }
-                invalidateDay()
             }
-
     }
 
 
     private fun findDay() {
-        compositeDisposable += findNearestDayFromEventDays(System.currentTimeMillis())
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    Log.e("ActivitiesFragment", "Date error")
-                    viewState.apply { showEmptyEventPlaceholder() }
-                    onReceiveError(it)
-                },
-                onComplete = {
-                    /*onLoadingComplete*/
-                })
-    }
-
-    private fun findNearestDayFromEventDays(date: Long): Completable {
-        return Completable.fromAction {
-            val days = /*userEventData.days ?: emptyList()*/
-                userEventData.createCalendarDays(userEvent.activity.dates.map {
-                    defaultServerDateFormatter.parse(it.date).time
-                })
+        compositeDisposable += Completable.fromAction {
+            val date = System.currentTimeMillis()
+            val days = userEventData.createCalendarDays(
+                userEvent.activity.dates.map { defaultServerDateFormatter.parse(it.date).time }
+            )
             val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
             val other = Calendar.getInstance()
             currentDay = days.find {
@@ -129,8 +123,12 @@ class ActivitiesPresenter
                         }) || it.millis - date > 0)
             } ?: days.lastOrNull()
         }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onComplete = { if (currentDay != null) viewState.scrollContent(currentDay!!) }
+            )
     }
-
 
     override fun onDaySelected(day: EventScheduleCalendarDay) {
         currentDay = day
@@ -139,99 +137,6 @@ class ActivitiesPresenter
             selectDay(day)
         }
     }
-
-    private fun updateSubEventsByTagOrText() {
-        var dates = listOf<List<EventScheduleCalendarDay>>()
-        compositeDisposable += Flowable.fromCallable {
-            val eventsList = arrayListOf<EventActivityModel>()
-            val selectedTags = tags.filter { it.isSelected }
-            userEvent.activity.activities.forEach { e ->
-                if (!mSearchWord.isNullOrEmpty() && !selectedTags.isNullOrEmpty()){
-                    selectedTags.forEach { tag ->
-                        if (filterTagsNew(e, tag) && isEventHasParams(mSearchWord, e)) {
-                            if (!eventsList.contains(e)){
-                                eventsList.add(e)
-                            }
-                        }
-                    }
-                }
-                else if (!mSearchWord.isNullOrEmpty()) {
-                    if (isEventHasParams(mSearchWord, e)) {
-                        if (!eventsList.contains(e)){
-                            eventsList.add(e)
-                        }
-                    }
-                }
-                else if (!selectedTags.isNullOrEmpty()) {
-                    selectedTags.forEach { tag ->
-                        if (filterTagsNew(e, tag)) {
-                            if (!eventsList.contains(e)){
-                                eventsList.add(e)
-                            }
-                        }
-                    }
-                }else {
-                    eventsList.add(e)
-                }
-            }
-            Pair(
-                eventsList.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }.toSortedMap(),
-                selectedTags
-            )
-        }
-            .doOnNext {
-                dates = collectDatesToWeeks(userEventData.createCalendarDays(it.first.map { e ->
-                    defaultServerDateFormatter.parse(e.key).time
-                }))
-            }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                val canShow =
-                    userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-                viewState.apply {
-                    if (it.first.isNullOrEmpty()) {
-                        showEmptyEventPlaceholder()
-                        setDays(emptyList())
-                    } else {
-                        setDays(dates)
-                        setSubEvents(canShow, it.first, it.second)
-                    }
-                }
-            }
-    }
-
-    private fun invalidateDay() {
-        val day = currentDay ?: return daySubEventsError()
-        compositeDisposable += Maybe.fromCallable {
-            val selectedTags = tags.filter { it.isSelected }
-            val list = arrayListOf<EventActivityModel>()
-            if (!selectedTags.isNullOrEmpty()) {
-                userEvent.activity.activities.forEach { e ->
-                    selectedTags.forEach { tag ->
-                        if (filterTagsNew(e, tag)) {
-                            list.add(e)
-                        }
-                    }
-                }
-            }else {
-                list.addAll(userEvent.activity.activities)
-            }
-            Pair(
-                list.groupBy { x -> x.holdingDate?.from?.split(" ")?.get(0) ?: "" }.toSortedMap(),
-                selectedTags
-            )
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple { map ->
-                val canShow =
-                    userEvent.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-                viewState.apply {
-                    setSubEvents(canShow, map.first, map.second)
-                    scrollContent(day)
-                }
-            }
-    }
-
 
     override fun onSubEventClick(subEvent: EventActivityModel) {
         checkInternetAndRun {
@@ -282,30 +187,11 @@ class ActivitiesPresenter
     }
 
 
-    private fun daySubEventsError() {
-        viewState.apply {
-            Log.e("ActivitiesFragment", "Activities Date error")
-            showEmptyEventPlaceholder()
-        }
-    }
-
-    private fun filterTagsNew(event: EventActivityModel, selectedTag: Tag): Boolean {
-        var isHas = false
-        if (!event.tag.isNullOrEmpty()) {
-            if (event.tag.contains(selectedTag.id.toInt())) {
-                isHas = true
-            }
-        } else {
-            isHas = false
-        }
-        return isHas
-    }
-
     override fun onSearchTextChange(text: String) = onSearchTextSubmit(text)
-    override fun onTagSelected() = updateSubEventsByTagOrText()
+    override fun onTagSelected() = initContent()
     override fun onSearchTextSubmit(text: String) {
         mSearchWord = text
-        updateSubEventsByTagOrText()
+        initContent()
     }
 
 
@@ -315,7 +201,6 @@ class ActivitiesPresenter
             isSame = it.binds?.user?.nameLastName!!.contains(text, ignoreCase = true)
         }
         return isSame
-
     }
 
 
@@ -334,9 +219,10 @@ class ActivitiesPresenter
         return isHas
     }
 
-    fun getLastDay(): EventScheduleCalendarDay {
-        return mLastDay
+    private fun isEventHasTag(event: EventActivityModel, tags: List<Tag>): Boolean {
+        return !tags.filter { x -> event.tag?.contains(x.id.toInt()) == true }.isNullOrEmpty()
     }
+
 
     private fun collectDatesToWeeks(dates: List<EventScheduleCalendarDay>): ArrayList<List<EventScheduleCalendarDay>> {
         var countSize = 0
@@ -359,6 +245,62 @@ class ActivitiesPresenter
             }
         }
         return days
+    }
+
+    private fun checkParams(
+        list: List<EventActivityModel>,
+        selectedTags: List<Tag>
+    ): List<EventActivityModel> {
+        return if (list.isNullOrEmpty()) return emptyList()
+        else if (!mSearchWord.isNullOrBlank() && !selectedTags.isNullOrEmpty())
+            list.filter { x -> isEventHasTag(x, selectedTags) && isEventHasParams(mSearchWord, x) }
+        else if (!mSearchWord.isNullOrEmpty()) list.filter { x -> isEventHasParams(mSearchWord, x) }
+        else if (!selectedTags.isNullOrEmpty()) list.filter { x -> isEventHasTag(x, selectedTags) }
+        else list
+    }
+
+    private fun groupData(
+        tags: List<Tag>,
+        list: List<EventActivityModel>
+    ): ArrayList<SubEventsData> {
+        val subEventsList = arrayListOf<SubEventsData>()
+        var titleDate: String? = ""
+        if (!list.isNullOrEmpty()) {
+            list.forEach { subEvent ->
+                val subEventDate = subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
+                if (titleDate == subEventDate) titleDate = null
+                else titleDate = subEventDate
+
+                subEventsList.add(SubEventsData(titleDate, subEvent, tags))
+                titleDate = subEventDate
+            }
+            groupedEventList = subEventsList
+        }
+        return subEventsList
+    }
+
+    fun createCalendarDay(day: String?): EventScheduleCalendarDay {
+        val date = defaultServerDateFormatter.parse(day).time
+        val cal = date.calendar()
+        return EventScheduleCalendarDay(
+            date,
+            cal.get(Calendar.WEEK_OF_MONTH),
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+                ?: "",
+            cal.get(Calendar.DAY_OF_MONTH),
+            false
+        )
+    }
+}
+
+data class SubEventsData(
+    var titleDate: String?,
+    var subEvent: EventActivityModel,
+    var selectedTags: List<Tag>
+) {
+    fun getDateInLong(): Long? {
+        return if (!titleDate.isNullOrEmpty()) defaultServerDateFormatter.parse(titleDate)?.time
+        else 0
     }
 
 }

@@ -221,7 +221,6 @@ class NotificationsListPresenter
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-
                 onSuccess = {
                     //pagination.invalidate()
                     notificationManager.cancel(notificationId)
@@ -259,19 +258,6 @@ class NotificationsListPresenter
         }
     }
 
-    private fun groupData(list: List<Notification>): MutableList<NotificationsSortedData> {
-        val notificationsList = arrayListOf<NotificationsSortedData>()
-
-//        list.filter { x -> !x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
-//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
-//
-//        list.filter { x -> x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
-//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
-
-        groupedNotifications = notificationsList
-
-        return groupedNotifications
-    }
 
     private fun transformData(list: List<Notification>): MutableList<NotificationsSortedData> {
         val notificationsList = arrayListOf<NotificationsSortedData>()

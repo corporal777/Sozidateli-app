@@ -10,19 +10,15 @@ import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
-import com.example.databinding.BottomSheetInAppNotificationBinding
 import com.example.databinding.BottomSheetInviteNotificationsBinding
-import com.example.extensions.findItemBy
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.main.inApp.InAppNotificationContract
-import com.example.ui.main.inApp.InAppNotificationPresenter
 import com.example.ui.notification.center.redesign.NotificationType
+import com.example.ui.notification.center.redesign.NotificationsSortedData
 import com.example.ui.notification.center.redesign.items.*
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
-import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import javax.inject.Inject
 import javax.inject.Provider
@@ -30,17 +26,16 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
     BaseBottomSheetFragment<BottomSheetInviteNotificationsBinding>(),
-    InviteNotificationsBottomSheetContract.View {
+    InviteNotificationsContract.View {
 
     @InjectPresenter(type = PresenterType.WEAK, tag = INVITES_FRAGMENT_TAG)
-    lateinit var presenter: InviteNotificationsBottomSheetPresenter
+    lateinit var presenter: InviteNotificationsPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<InviteNotificationsBottomSheetPresenter>
+    lateinit var presenterProvider: Provider<InviteNotificationsPresenter>
 
     @ProvidePresenter(type = PresenterType.WEAK, tag = INVITES_FRAGMENT_TAG)
-    fun providePresenter(): InviteNotificationsBottomSheetPresenter =
-        presenterProvider.get().apply {
+    fun providePresenter(): InviteNotificationsPresenter = presenterProvider.get().apply {
             type = notificationType
         }
 
@@ -50,7 +45,11 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
             add(notificationsSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
+                    val datesCount = presenter.getTitleDatesCount()
+                    if (position < datesCount) return
+                    presenter.onItemTake(position - datesCount)
+
+                    //if (position > 0) presenter.onItemTake(position - 1)
                 }
             })
         }
@@ -104,15 +103,31 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
         }
     }
 
-    override fun setNotifications(notifications: Map<String, List<Notification>>) {
-//        notificationsSection.update(notifications.map {
-//            NotificationsItemsGroup(
-//                requireContext(),
-//                it.key,
-//                it.value,
-//                onNotificationListener
-//            )
-//        })
+    override fun setNotifications(notifications: List<NotificationsSortedData>) {
+        notificationsSection.update(notifications.map {
+            Section().apply {
+                if (!it.titleDate.isNullOrEmpty()) add(NotificationsDateItem(it.titleDate))
+                add(
+                    when (it.data.type) {
+                        Notification.Type.SIMPLE -> SimpleNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                        Notification.Type.RATE -> RateNotificationItemNew(
+                            requireContext(),
+                            it.data,
+                            onNotificationListener
+                        )
+                    }
+                )
+            }
+        })
     }
 
 

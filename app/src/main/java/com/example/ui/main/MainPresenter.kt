@@ -169,7 +169,7 @@ class MainPresenter
                     updateUserInShake(user)
                     disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
                         .andThen(Completable.defer { checkInternetConnected() })
-                        .doOnComplete { connectToSocket(appData.getId()) }
+                        .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })
                         .subscribeSimple(
                             onError = { emitter.onError(it) },
@@ -204,7 +204,7 @@ class MainPresenter
             )
     }
 
-    private fun connectToSocket(userId: Int) {
+    fun connectToSocket() {
         chatCompositeDisposable += socket.connect()
             .performOnBackgroundOutOnMain()
             .subscribe({

@@ -1,5 +1,6 @@
 package com.example.ui.event.activities
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
@@ -15,11 +16,14 @@ interface ActivitiesContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContentPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setDays(days: List<List<EventScheduleCalendarDay>>)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun setTags(tags: List<Tag>?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setDays(days: List<List<EventScheduleCalendarDay>>)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setSubEvents(isApproved : Boolean, data: List<SubEventsData>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun selectDay(day: EventScheduleCalendarDay)
@@ -27,8 +31,6 @@ interface ActivitiesContract {
         @StateStrategyType(SkipStrategy::class)
         fun scrollToDay(day: EventScheduleCalendarDay)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setSubEvents(canShow : Boolean, subEvents: Map<String, List<EventActivityModel>>, selectedTags: List<Tag>)
 
         @StateStrategyType(SkipStrategy::class)
         fun scrollContent(day: EventScheduleCalendarDay)

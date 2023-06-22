@@ -13,8 +13,20 @@ interface AboutEventContractNew {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setEventDataPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setEventData(eventData: AboutEventData)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setMainData(event: EventNew)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setOrganizationData(event: EventNew)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setSpeakersData(speakers: List<MemberModel>, showMore : Boolean)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setProgramData(eventData: AboutEventData)
+
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setPartnersData(partners: List<PartnerModel>)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setActionButton(event: EventNew?)

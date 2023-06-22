@@ -18,6 +18,7 @@ import com.example.ui.event.list.favorite.FavoriteEventsFragment
 import com.example.ui.organizations.favorite.FavoriteOrganizationsFragment
 import com.example.ui.users.favorite.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
+import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,21 +34,16 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
     @ProvidePresenter
     fun providePresenter(): FavoritePresenter = presenterProvider.get()
 
-    private val pageChangeListener = object : ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-        override fun onPageSelected(position: Int) {
-            selectTab(position)
-        }
+    private val pageChangeListener = onPageChanged { position ->
+        presenter.currentPosition = position
+        selectTab(position)
     }
 
     private val fragments by lazy {
         listOf(
-                FavoriteEventsFragment(),
-                FavoriteOrganizationsFragment(),
-                FavoriteUsersFragment()
+            FavoriteEventsFragment(),
+            FavoriteOrganizationsFragment(),
+            FavoriteUsersFragment()
         )
     }
 
@@ -55,10 +51,13 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             viewPager.run {
+                isSaveEnabled = false
                 addOnPageChangeListener(pageChangeListener)
-                adapter = object : FragmentStatePagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                adapter = object : FragmentStatePagerAdapter(
+                    childFragmentManager,
+                    BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+                ) {
                     override fun getItem(position: Int) = fragments[position] as Fragment
-
                     override fun getCount() = fragments.size
                 }
                 selectTab(currentItem)
@@ -79,9 +78,19 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
         }
     }
 
+    override fun setCurrentFragment(position: Int) {
+        mBinding.viewPager.apply {
+            if (currentItem == position) return
+            else {
+                currentItem = position
+                selectTab(position)
+            }
+        }
+    }
+
     override fun layout() = R.layout.fragment_favorite
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

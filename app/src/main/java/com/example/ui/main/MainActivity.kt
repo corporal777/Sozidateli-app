@@ -639,6 +639,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun setIgnoreTokenListener(isIgnore: Boolean) = presenter.ignoreTokenListener(isIgnore)
 
+    fun connectToSocket() = presenter.connectToSocket()
+
     private fun setupMainNavBar() {
         val navHost =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment

@@ -16,6 +16,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterBinding
 import com.example.ui.base.BaseFragmentNew
+import com.example.ui.main.MainActivity
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
@@ -268,6 +269,10 @@ class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
                 popUpTo(R.id.main_navigation) { inclusive = true }
             })
         }
+    }
+
+    override fun connectToSocket() {
+        (requireActivity() as MainActivity).connectToSocket()
     }
 
     override fun layout() = R.layout.fragment_finish_register

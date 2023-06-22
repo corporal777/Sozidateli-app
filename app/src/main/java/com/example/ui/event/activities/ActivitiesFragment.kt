@@ -28,8 +28,10 @@ import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.activities.items.*
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
+import com.example.ui.notification.center.redesign.items.NotificationsDateItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
@@ -87,15 +89,11 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            presenter.onSubEventClick(subEvent)
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenter.onRemoveFromScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onRemoveFromScheduleClick(subEvent)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +106,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
@@ -120,8 +118,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                     try {
                         if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
-                            val now =
-                                createCalendarDay(defaultServerDateFormatter.parse(item?.date).time)
+                            val now = presenter.createCalendarDay(item.date)
                             changeDayWhenScrollDown(now)
                             if (!mCanChangeDay) changeDay(now)
                         }
@@ -184,16 +181,10 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
-    override fun setTags(tags: List<Tag>?) {
-        if (!tags.isNullOrEmpty()) {
-            tagsSection.updateItem(TagsHorizontalListItem(tags) { presenter.onTagSelected() })
-        }
-    }
-
     override fun setDays(days: List<List<EventScheduleCalendarDay>>) {
         calendarSection.update(
             days.mapIndexed { index, d ->
-                CalendarHorizontalListItem(index,d) { day ->
+                CalendarHorizontalListItem(index, d) { day ->
                     presenter.onDaySelected(day)
                 }
             }
@@ -201,21 +192,29 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         mBinding.clSearch.isVisible = true
     }
 
-    override fun setSubEvents(
-        canShow: Boolean,
-        subEvents: Map<String, List<EventActivityModel>>,
-        selectedTags: List<Tag>
-    ) {
+    override fun setTags(tags: List<Tag>?) {
+        if (!tags.isNullOrEmpty()) {
+            tagsSection.updateItem(TagsHorizontalListItem(tags) { presenter.onTagSelected() })
+        }
+    }
+
+    override fun setSubEvents(isApproved: Boolean, data: List<SubEventsData>) {
         eventsSection.update(
-            subEvents.map {
-                SubEventsWithDateItem(
-                    presenter.eventId,
-                    canShow,
-                    it.key,
-                    it.value,
-                    selectedTags,
-                    onSubEventClickListener
-                )
+            data.map {
+                Section().apply {
+                    if (!it.titleDate.isNullOrEmpty())
+                        add(EventActivityDateItem(it.titleDate, it.getDateInLong()))
+
+                    add(
+                        EventActivityItem(
+                            presenter.eventId,
+                            it.subEvent,
+                            it.selectedTags,
+                            onSubEventClickListener,
+                            isApproved
+                        )
+                    )
+                }
             }
         )
     }
@@ -284,11 +283,12 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
 
     override fun showEmptyEventPlaceholder() {
+        calendarSection.update(emptyList())
+        tagsSection.update(emptyList())
         eventsSection.updateItem(
-            NoScheduleEventItem(
+            NoEventItem(
                 "Нет результатов",
-                "По заданным параметрам нет подходящих событий",
-                30.dp
+                "По заданным параметрам нет подходящих событий"
             )
         )
     }
@@ -310,18 +310,6 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             ?.notifyChanged(subEvent)
     }
 
-
-    private fun createCalendarDay(date: Long): EventScheduleCalendarDay {
-        val cal = date.calendar()
-        return EventScheduleCalendarDay(
-            date,
-            cal.get(Calendar.WEEK_OF_MONTH),
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                ?: "",
-            cal.get(Calendar.DAY_OF_MONTH),
-            false
-        )
-    }
 
     private val mSmoothScroller by lazy {
         object : LinearSmoothScroller(requireContext()) {
