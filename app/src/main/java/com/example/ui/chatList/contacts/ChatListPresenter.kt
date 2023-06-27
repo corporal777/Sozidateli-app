@@ -143,7 +143,7 @@ class ChatListPresenter
     }
 
 
-    override fun onEmptyChatsButtonAddChatClick() = viewState.openSearch()
+    override fun onAddChatClick() = viewState.openSearch()
 
     override fun onItemTake(position: Int) {
         chatsPagination.onItemTake(position)
@@ -216,9 +216,8 @@ class ChatListPresenter
                     null,
                     false
                 )
-            } else {
-                it.binds?.users?.first { us -> us.id != appData.getId() }!!
-            }
+            } else it.binds?.users?.first { us -> us.id != appData.getId() }!!
+
             UserChat(
                 it.id,
                 user,

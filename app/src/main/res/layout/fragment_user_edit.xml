@@ -17,8 +17,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/btnSave"
             app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_profile_data_user_edit" />
+            tools:listitem="@layout/item_profile_data_user" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSave"

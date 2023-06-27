@@ -1,13 +1,17 @@
 package com.example.ui.views.toolbar
 
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isInvisible
 
 class ToolbarContent(
+    private val backButton : ImageView,
     private val toolbarTitle: TextView,
     private val toolbarContainer : ViewGroup
 ) {
     init {
+        backButton.isInvisible = false
         toolbarContainer.removeAllViews()
     }
 
@@ -17,4 +21,5 @@ class ToolbarContent(
 
     fun getToolbarTitleView() = toolbarTitle
     fun getToolbarContainer() = toolbarContainer
+    fun getBackButton() = backButton
 }

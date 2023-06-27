@@ -737,8 +737,7 @@
     <string name="fill_field">Заполните поле</string>
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
     <string name="user_profile_status_name">Максимальный</string>
-    <string name="user_profile_upload_photo_help">Формат файлов pdf, jpeg, png, tiff
-        \nРазмер файла: до 10Мб.</string>
+    <string name="user_profile_upload_photo_help">Формат файлов pdf, jpeg, png, tiff\nРазмер файла: до 10Мб.\nМаксимальное число файлов - 10 штук</string>
     <string name="user_profile_receipt_date">Поступление</string>
     <string name="user_profile_expiration_date">Окончание</string>
     <string name="enter_specialty">Введите специальность</string>

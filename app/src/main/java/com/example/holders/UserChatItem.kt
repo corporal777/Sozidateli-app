@@ -35,7 +35,7 @@ class UserChatItem(
         onBind?.invoke(this)
         mViewHolder = viewHolder
         viewHolder.apply {
-            ivAvatar.setCircleAvatar(userChat.user.image.uri)
+            ivAvatar.setCircleAvatar(userChat.user.loadUserImage())
             tvName.text = userChat.user.nameLastName
             tvLastMessage.apply {
                 text = when (userChat.lastMessageType) {

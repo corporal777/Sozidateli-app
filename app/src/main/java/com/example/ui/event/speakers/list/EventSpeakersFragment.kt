@@ -9,12 +9,9 @@ import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentEventSpeakersBinding
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.ScreenHeaderItem
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

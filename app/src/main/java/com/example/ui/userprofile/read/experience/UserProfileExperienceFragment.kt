@@ -71,11 +71,6 @@ class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInteres
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_experience) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.rvInterests.apply {
-            scroll.invoke(this.computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(this.computeVerticalScrollOffset()) }
-        }
-    }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

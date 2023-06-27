@@ -1,6 +1,5 @@
 package com.example.ui.userprofile.edit
 
-import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -15,10 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FileModel
-import com.example.data.models.InterestNew
-import com.example.data.models.UserDetail
-import com.example.data.models.UserInterest
+import com.example.data.models.*
 import com.example.databinding.FragmentUserEditBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
@@ -26,10 +22,6 @@ import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREES_LEVEL
-import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.DEGREE_EDIT_CODE
-import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.ITEM_POSITION
-import com.example.ui.userprofile.academicdegree.EditDegreeFragment.Companion.SCIENCES_LEVEL
 import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
@@ -42,11 +34,9 @@ import com.example.util.FileUtils
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import com.example.util.UriUtils
-import com.vincent.filepicker.Constant
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import onBackPressedCallback
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -113,20 +103,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
             this
         ) { requestKey, result ->
         }
-        parentFragmentManager.setFragmentResultListener(
-            DEGREE_EDIT_CODE,
-            this
-        ) { requestKey, result ->
-            val degreesLevel = result.getString(DEGREES_LEVEL)
-            val sciencesLevel = result.getString(SCIENCES_LEVEL)
-            val position = result.getInt(ITEM_POSITION)
-            (adapter.getGroup(1) as ProfileDataEducationEditGroup).addDegree(
-                degreesLevel,
-                sciencesLevel,
-                position,
-                false
-            )
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,9 +118,18 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
     }
 
 
+    override fun showPlaceholder(type: UserEditDataType) {
+        when (type) {
+            UserEditDataType.PERSONAL -> adapter.updateItem(PlaceholderItem(PlaceholderItem.Type.CONTACTS))
+            UserEditDataType.CONTACTS -> adapter.updateItem(PlaceholderItem(PlaceholderItem.Type.CONTACTS))
+            UserEditDataType.INTERESTS -> adapter.update(List(7) { PlaceholderItem(PlaceholderItem.Type.INTERESTS) })
+        }
+    }
+
+
     override fun setPersonalData(user: UserDetail, state: String) {
-        val dataItem = ProfileDataPersonalEditNewItem(
-            1,
+        val dataItem = ProfileDataPersonalEditItem(
+            user.id.toLong(),
             requireContext(),
             user.gender,
             user.birthday?.value,
@@ -153,10 +138,9 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
             user.notes,
         ) { showWhyUserShouldAddDataToNotesField() }
 
-        val files = ProfileDataAdditionalFilesEditNewGroup(
-            2,
-            requireContext(),
+        val files = ProfileDataFileEditableGroup(
             user.binds?.recommendationFile ?: emptyList(),
+            user.filesCount,
             { presenter.onAddFileClick() },
             { presenter.onFileClick(it) },
             { presenter.onDeleteFilesClick(it) }
@@ -179,10 +163,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
                 }
             }
         }
-    }
-
-    override fun showInterestsPlaceholder() {
-        adapter.update(List(7) { PlaceholderItem(PlaceholderItem.Type.INTERESTS) })
     }
 
     override fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>) {
@@ -375,42 +355,27 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        super.onActivityResult(requestCode, resultCode, result)
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
-                result?.data?.let {
-                    val file = FileUtils.getPath(context, it)
-                    val mimeType = FileUtils.getMimeType(context, it)
-                    presenter.onFilePicked(file, mimeType)
-                }
-            }
-        }
-    }
-
-    override fun addNewUserFile(file: FileModel) {
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
+    override fun addUserFile(file: FileModel, fileCount: Int) {
+        adapter.findGroupBy<GroupieViewHolder, ProfileDataFileEditableGroup> {
             true
-        }?.addNewFile(file)
+        }?.addFileItem(file, fileCount)
     }
 
-    override fun deleteUserFile(file: FileModel) {
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataAdditionalFilesEditNewGroup> {
+    override fun deleteUserFile(file: FileModel, fileCount: Int) {
+        adapter.findGroupBy<GroupieViewHolder, ProfileDataFileEditableGroup> {
             true
-        }?.deleteUserFile(file)
+        }?.removeFileItem(file, fileCount)
     }
 
 
-    //override fun setMainTitle() = setTitle(getString(R.string.profile_edit_name_and_photo))
+
     override fun setPersonalTitle() = setTitle(getString(R.string.user_profile_main_info))
     override fun setContactsTitle() = setTitle(getString(R.string.user_profile_contacts))
     override fun setPhoneTitle() = setTitle(getString(R.string.profile_phone_mobile))
     override fun setEducationTitle() = setTitle(getString(R.string.profile_title_education))
     override fun setWorkTitle() = setTitle(getString(R.string.profile_work_experience))
     override fun setInterestsTitle() = setTitle(getString(R.string.profile_interests))
-    //override fun setAdditionalNotesTitle() = setTitle(getString(R.string.profile_notes))
-    //override fun setAdditionalFilesTitle() = setTitle(getString(R.string.profile_files_title))
+
 
     private fun setTitle(title: String) {
         toolbarContent.setToolbarTitle(title)

@@ -1,11 +1,10 @@
 package com.example.holders.redesign
 
 import com.example.R
-import com.example.data.models.PageModel
 import com.example.databinding.ItemEventPageNewBinding
 import com.xwray.groupie.databinding.BindableItem
 
-class EventPageItemNew(
+class EventPageItem(
     val id : Int,
     val name : String,
     val onPageClick: (id : Int) -> Unit

@@ -104,9 +104,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 setWindowTransparency()
-            } else if (f is StoriesFragment) {
-                doEdgeWindow()
-            } else if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
+            } else if (f is StoriesFragment) doEdgeWindow()
+            else if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
                 cancelWindowTransparency()
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
             } else {
@@ -163,8 +162,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     appBar.isVisible = true
                     toolbar.apply {
                         toolbarLabel.text = f.title
-                        f.setupToolbarContent(ToolbarContent(toolbarLabel, toolbarContainer))
-                        f.actionIconContainer(toolbarContainer.apply { removeAllViews() })
+                        f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
+                        f.actionIconContainer(toolbarContainer)
                     }
                     getBehavior()?.setScrollChangeCallback { presenter.changeScrollingOffset(it) }
                 }

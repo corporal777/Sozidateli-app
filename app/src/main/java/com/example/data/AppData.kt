@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import com.example.BuildConfig
 import com.example.data.models.*
 import com.example.data.models.user.User
@@ -140,9 +141,10 @@ class AppData(
 
     //new notifications subjects
     private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
-    private var notificationsInvites = NotificationInviteModel(0, 0, 0,)
+    private var notificationsInvites = NotificationInviteModel(0, 0, 0)
     val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
-    val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
+    val notificationsInvitesSubject =
+        BehaviorSubject.createDefault(notificationsInvites.asOptional())
 
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
@@ -279,5 +281,41 @@ class AppData(
 
     fun isCurrentUser(id: String): Boolean {
         return newUser?.id.toString() == id
+    }
+
+    fun getStateValue(): String {
+        return if (hasMaxState && hasBaseState) "Максимальный"
+        else "Минимальный"
+    }
+
+    fun updateFilesWithAdd(newFile: FileModel): FileModel {
+        val userFiles = mutableListOf<FileModel>()
+        userFiles.addAll(getUserNew().binds?.recommendationFile ?: mutableListOf())
+        userFiles.add(newFile)
+        this.newUser?.binds?.recommendationFile = userFiles
+
+        var userFilesCount = getUserNew().filesCount ?: 0
+        userFilesCount += 1
+        getUserNew().filesCount = userFilesCount
+        return newFile
+    }
+
+    fun updateFilesWithDelete(newFile: FileModel): FileModel {
+        val userFiles = mutableListOf<FileModel>()
+        userFiles.addAll(getUserNew().binds?.recommendationFile ?: mutableListOf())
+        val file = userFiles.find { x -> x.id == newFile.id }
+        if (file != null) userFiles.remove(file)
+        this.newUser?.binds?.recommendationFile = userFiles
+
+        var userFilesCount = getUserNew().filesCount ?: 0
+        if (userFilesCount > 0) {
+            userFilesCount -= 1
+            getUserNew().filesCount = userFilesCount
+        }
+        return newFile
+    }
+
+    fun getUserFiles(): List<FileModel> {
+        return getUserNew().binds?.recommendationFile ?: emptyList()
     }
 }

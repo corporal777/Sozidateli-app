@@ -1,14 +1,7 @@
 package com.example.holders
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.os.Build
-import android.text.util.Linkify
-import android.util.Log
-import android.view.View
 import android.widget.CompoundButton
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -17,22 +10,9 @@ import com.example.data.models.*
 import com.example.databinding.ItemSubeventInfoBinding
 import com.example.extensions.*
 import com.example.ui.views.TagChipNew
-import com.example.ui.views.UserSubscribeButton
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
 import com.example.util.markWon
-import com.google.android.material.chip.Chip
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.fragment_about_event_new.*
-import kotlinx.android.synthetic.main.item_lecture.*
-import kotlinx.android.synthetic.main.item_subevent_info.*
-import kotlinx.android.synthetic.main.item_subevent_info.btnAddToTimetable
-import kotlinx.android.synthetic.main.item_subevent_info.tvDescription
-import kotlinx.android.synthetic.main.item_subevent_info.tvLocation
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import setOnClickListener
 import java.text.SimpleDateFormat
 import java.util.*
 

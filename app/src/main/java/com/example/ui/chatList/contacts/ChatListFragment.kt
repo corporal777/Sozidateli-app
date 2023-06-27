@@ -77,24 +77,21 @@ class ChatListFragment() :
 
 
     override fun setChatsData(chats: List<UserChat?>, favorites: List<UserDetail>) {
-        if (chats.isEmpty()) {
-            chatSection.updateItem(ChatListEmptyItem { presenter.onEmptyChatsButtonAddChatClick() })
-        } else {
-            chatSection.apply {
-                val chatsCount = chats.size
-                update(
-                    chats.mapIndexed { index, chat ->
-                        if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
-                        else UserChatGroup(
-                            chat,
-                            { presenter.onChatClick(it) },
-                            { },
-                            { },
-                            index != chatsCount - 1
-                        )
-                    }
-                )
-            }
+        if (chats.isEmpty()) chatSection.updateItem(ChatListEmptyItem { presenter.onAddChatClick() })
+        else {
+            chatSection.update(
+                chats.mapIndexed { index, chat ->
+                    val withDivider = index != (chats.size - 1)
+                    if (chat == null) PlaceholderItem(PlaceholderItem.Type.CHAT_LIST)
+                    else UserChatGroup(
+                        chat,
+                        { presenter.onChatClick(it) },
+                        { },
+                        { },
+                        withDivider
+                    )
+                }
+            )
         }
 
         favoritesSection.update(favorites.map {

@@ -1,15 +1,10 @@
 package com.example.holders
 
 import android.content.Context
-import android.util.Log
 import android.view.View
-import androidx.appcompat.widget.AppCompatCheckBox
 import com.example.R
 import com.example.data.models.*
-import com.example.data.models.user.SocialRoles
-import com.example.data.models.user.User
 import com.example.extensions.forEachGroups
-import com.example.extensions.forEachItems
 import com.example.util.DEGREES_MAX_SIZE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
@@ -24,20 +19,23 @@ class ProfileDataEducationEditGroup(
         private val availableSciences: List<EducationLevel>,
         education: List<EducationModel>,
         academicDegrees: List<AcademicDegreeModel>,
-        private val openDegreeEdit: (degreesLevel: String?, sciencesLevel: String?, position: Int) -> Unit
+        private val enableNextButton:(enable: Boolean) -> Unit
 ) : NestedGroup() {
 
-    var validatorSize = 3
+    var isEducationLevelValid = false
+    var isDegreeValid = true
+    var isEducationValid = false
+    var validatorSize = 4
     var hasAcademicDegree = false
-    var data: MutableList<ProfileDataAcademicDegreeEditNewItem> = mutableListOf()
+    var data: MutableList<ProfileDataAcademicDegreeEditItem> = mutableListOf()
 
-    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel?.value }?.name, availableEducations,
-            academicDegrees.isNotEmpty(), educationLevel?.showInProfile, {
+    private val educationLevelItem = ProfileDataEducationLevelEditItem(availableEducations.firstOrNull { it.id == educationLevel?.value }?.name ,
+            availableEducations, academicDegrees.isNotEmpty(), educationLevel?.showInProfile, {
         if (it) {
             validatorSize = 4
             if (degrees.itemCount == 0) {
-                /*degrees.add(createAcademicDegreeEditItem(null, null))
-                isDeleteVisible()*/
+                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
+                isDeleteVisible()
             }
         } else {
             validatorSize= 3
@@ -48,17 +46,29 @@ class ProfileDataEducationEditGroup(
         if (it) {
             isDeleteVisible()
             addDegreeButton.setButtonVisibility(View.VISIBLE)
+            if (data.isEmpty() && degrees.itemCount == 0) {
+                degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
+                isDeleteVisible()
+            }
             returnDegree()
         } else {
             addDegreeButton.setButtonVisibility(View.GONE)
             saveDegree()
             degrees.clear()
         }
+        isEducationLevelValid = true
+        validateEnableButton()
     })
+
+    private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
+        if (degrees.itemCount < DEGREES_MAX_SIZE)
+            degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
+        isDeleteVisible()
+    }
 
     private fun saveDegree() {
         data = mutableListOf()
-        degrees.forEachGroups<ProfileDataAcademicDegreeEditNewItem> { group ->
+        degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> { group ->
             data.add(group)
         }
     }
@@ -70,22 +80,8 @@ class ProfileDataEducationEditGroup(
         }
     }
 
-    private val addDegreeButton = ButtonAddMore(context.getString(R.string.profile_sciences_add)) {
-        if (degrees.itemCount < DEGREES_MAX_SIZE)
-            openDegreeEdit(null, null, degrees.itemCount)
-    }
-
     private val degrees = Section().apply {
         setHideWhenEmpty(true)
-        /*setFooter(ProfileButtonEditItem(context.getString(R.string.profile_sciences_add), false) {
-            if (checkDataValid()) {
-                add(createAcademicDegreeEditItem(null, null))
-                isDeleteVisible()
-            }
-        }.apply {
-            hasDivider = false
-            compactMargin = true
-        })*/
     }
 
     private val educations = Section().apply {
@@ -93,6 +89,8 @@ class ProfileDataEducationEditGroup(
             if (checkDataValid()) {
                 add(createEducationItem(null))
                 isDeleteVisible()
+                isEducationValid = false
+                validateEnableButton()
             }
         }.apply {
             hasDivider = false
@@ -102,15 +100,13 @@ class ProfileDataEducationEditGroup(
 
     init {
         if (academicDegrees.isNotEmpty()) {
-            academicDegrees.map {
-                createAcademicDegreeEditItem(availableDegrees.firstOrNull { degree -> degree.id == it.degree }?.name,
-                        availableSciences.firstOrNull { science -> science.id == it.speciality }?.name)
-            }.let {
+            academicDegrees.map { createAcademicDegreeEditItem(it.id, availableDegrees.firstOrNull { degree -> degree.id == it.degree } ,
+                    availableSciences.firstOrNull { science -> science.id == it.speciality }?.name, it.showInProfile) }.let {
                 val edLevel = availableEducations.firstOrNull { avEd -> avEd.id == educationLevel?.value }?.name
                 if (educationLevel != null && (edLevel == availableEducations.lastOrNull()?.name || edLevel == availableEducations[availableEducations.size - 2].name)) {
                     validatorSize = 4
                     if (it.isEmpty()) {
-                        degrees.add(createAcademicDegreeEditItem(null, null))
+                        degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
                     } else {
                         degrees.addAll(it)
                     }
@@ -119,7 +115,6 @@ class ProfileDataEducationEditGroup(
             addDegreeButton.setButtonVisibility(View.VISIBLE)
         } else
             addDegreeButton.setButtonVisibility(View.GONE)
-
 
         education.map { createEducationItem(it) }.let {
             if (it.isEmpty()) {
@@ -157,33 +152,21 @@ class ProfileDataEducationEditGroup(
         }
     }
 
-    /*private fun createAcademicDegreeEditItem(degree: String?, specialisation: String?): ProfileDataAcademicDegreeEditItem {
-        return ProfileDataAcademicDegreeEditItem(degree, specialisation, availableDegrees, availableSciences) {
-            degrees.remove(it)
-            if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, null))
-            isDeleteVisible()
-        }
-    }*/
-
-    private fun createAcademicDegreeEditItem(degree: String?, specialisation: String?): ProfileDataAcademicDegreeEditNewItem {
-        return ProfileDataAcademicDegreeEditNewItem(degree, specialisation, {
-            degrees.remove(it)
-            isDeleteVisible()
-        }, { it, position ->
-            openDegreeEdit(it.mDegreesLevel, it.mSciencesLevel, position)
-        })
+    private fun validateEnableButton() {
+        enableNextButton(isDegreeValid && isEducationValid && isEducationLevelValid)
     }
 
-    fun addDegree(degreesLevel: String?, sciencesLevel: String?, position: Int, showInProfile: Boolean?) {
-        try {
-            val item = degrees.getItem(position) as ProfileDataAcademicDegreeEditNewItem
-            item.updateData(degreesLevel, sciencesLevel)
-        } catch (e: Exception) {
-            degrees.add(createAcademicDegreeEditItem(degreesLevel, sciencesLevel))
+    private fun createAcademicDegreeEditItem(id: Int?, degree: EducationLevel?, specialisation: String?, showInProfile: Boolean?): ProfileDataAcademicDegreeEditItem {
+        return ProfileDataAcademicDegreeEditItem(id, degree?.name, specialisation, availableDegrees, availableSciences, showInProfile) {
+            degrees.remove(it)
+            if (degrees.itemCount == 0) degrees.add(createAcademicDegreeEditItem(null, availableDegrees.first(), null, false))
+            isDeleteVisible()
         }
     }
 
     private fun createEducationItem(socialRoles: EducationModel?): ProfileDataEducationEditItem {
+        isEducationValid = false
+        validateEnableButton()
         return ProfileDataEducationEditItem(
                 socialRoles?.id,
                 socialRoles?.begin,
@@ -195,32 +178,23 @@ class ProfileDataEducationEditGroup(
         {
             educations.remove(it)
             isDeleteVisible()
-        }, {})
+        }, {
+            isEducationValid = it
+            validateEnableButton()
+        })
     }
 
     private fun isDeleteVisible() {
-        /*this.forEachItems { item, position ->
-            if (this.itemCount <= validatorSize) {
-                when (item) {
-                    is ProfileDataEducationEditItem -> {
-                        item.isDeleteVisible = position != 1
-                    }
-                    is ProfileDataAcademicDegreeEditItem -> {
-                        item.isDeleteVisible = position != 1
-                    }
-                }
-            } else {
-                when (item) {
-                    is ProfileDataEducationEditItem -> {
-                        item.isDeleteVisible = true
-                    }
-                    is ProfileDataAcademicDegreeEditItem -> {
-                        item.isDeleteVisible = true
-                    }
-                }
-            }
+        val isDeleteD = degrees.itemCount > 1
+        degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> {
+            it.isDeleteVisible = isDeleteD
             notifyChanged()
-        }*/
+        }
+        val isDeleteE = educations.itemCount > 2
+        educations.forEachGroups<ProfileDataEducationEditItem> {
+            it.isDeleteVisible = isDeleteE
+            notifyChanged()
+        }
     }
 
     fun checkDataValid(): Boolean {
@@ -229,10 +203,6 @@ class ProfileDataEducationEditGroup(
             isValid = false
             educationLevelItem.notifyChanged(true)
         }
-
-        if (hasAcademicDegree)
-            if (degrees.itemCount == 0)
-                isValid = false
 
         /*degrees.forEachGroups<ProfileDataAcademicDegreeEditItem> {
             if (!it.isDataValid()) {
@@ -257,7 +227,8 @@ class ProfileDataEducationEditGroup(
             degrees.add(AcademicDegreeModel(
                     id = it.mId,
                     speciality = availableSciences.firstOrNull { degree -> degree.name == it.mSciencesLevel }?.id,
-                    degree = availableDegrees.firstOrNull { degree -> degree.name == it.mDegreesLevel }?.id
+                    degree = availableDegrees.firstOrNull { degree -> degree.name == it.mDegreesLevel }?.id,
+                    showInProfile = it.mShowInProfile
             ))
         }
         return degrees
@@ -267,12 +238,12 @@ class ProfileDataEducationEditGroup(
         val educations = mutableListOf<EducationModel>()
         this.educations.forEachGroups<ProfileDataEducationEditItem> {
             educations.add(EducationModel(id = it.mId, begin = it.mStart,
-                    end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality, showInProfile = it.mShowInProfile))
+            end = it.mFinish, organization = it.mInstitution, speciality = it.mSpeciality, showInProfile = it.mShowInProfile))
         }
         return educations
     }
 
-    fun getEducationLevelToSave(): Int? = availableEducations.firstOrNull { it.name == educationLevelItem.mEducationLevel }?.id
+    fun getEducationLevelToSave(): ToggleIntModel? = ToggleIntModel(availableEducations.firstOrNull { it.name == educationLevelItem.mEducationLevel }?.id, educationLevelItem.mShowInProfile)
 
     override fun getGroupCount(): Int {
         return 4

@@ -18,7 +18,6 @@ import com.example.data.models.SearchFilter
 import com.example.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventGroupNew
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs

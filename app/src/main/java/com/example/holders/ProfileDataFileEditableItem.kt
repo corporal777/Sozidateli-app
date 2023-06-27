@@ -1,32 +1,76 @@
 package com.example.holders
 
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import com.example.R
-import com.example.data.models.user.RecommendationFile
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_editable_file.*
+import com.example.data.models.FileModel
+import com.example.databinding.ItemProfileDataEditableFileBinding
+import com.example.util.initInput
+import com.example.util.initSwitch
+import com.xwray.groupie.Item
+import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.databinding.GroupieViewHolder
+import kotlinx.android.synthetic.main.item_register_event_input.*
+import onTextChanged
 
 class ProfileDataFileEditableItem(
-        id: Long,
-        val file: RecommendationFile,
-        private val onFileClick: (RecommendationFile) -> Unit,
-        private val onEditClick: (RecommendationFile) -> Unit,
-        private val onRemoveClick: (ProfileDataFileEditableItem) -> Unit
-) : Item(id) {
+    val file: FileModel,
+    private val onFileClick: (file: FileModel) -> Unit,
+    private val onRemoveClick: (file: FileModel) -> Unit
+) : BindableItem<ItemProfileDataEditableFileBinding>(file.id?.toLong()?:0){
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            val fileName = (if (file.desc.isNullOrBlank()) file.name else file.desc) ?: "file"
-            tvFileName.apply {
-                text = fileName
-                isClickable = false
+    private var fileName = file.name
+    private val textChangeListener: (CharSequence?) -> Unit = {
+        fileName = it?.toString()
+    }
+    private var textWatcher: TextWatcher? = null
+
+
+    override fun bind(viewBinding: ItemProfileDataEditableFileBinding, position: Int) {
+        viewBinding.apply {
+            etFileName.apply {
+                setText(fileName)
+                textWatcher = onTextChanged(textChangeListener)
             }
 
-            btnEdit.setOnClickListener { onEditClick(file) }
-            btnDelete.setOnClickListener { onRemoveClick(this@ProfileDataFileEditableItem) }
-            tvFileName.setOnClickListener { onFileClick(file) }
+            tvFileName.apply {
+                text = file.name
+                setOnClickListener {
+                    onFileClick(file)
+                }
+            }
+
+            scFile.initSwitch(file.showInProfile ?: false) {
+                file.showInProfile = it
+            }
+            btnDelete.setOnClickListener {
+                onRemoveClick(file)
+            }
+
         }
     }
+
+    override fun unbind(viewHolder: GroupieViewHolder<ItemProfileDataEditableFileBinding>) {
+        viewHolder.apply {
+            viewHolder.binding.apply {
+                etFileName.apply {
+                    textWatcher?.let { removeTextChangedListener(it) }
+                }
+            }
+        }
+        super.unbind(viewHolder)
+    }
+
+    override fun hasSameContentAs(other: Item<*>?): Boolean {
+        if (other !is ProfileDataFileEditableItem) return false
+        if (file != other.file) return false
+        return true
+    }
+
+    fun getFileName() = fileName
 
     override fun getLayout() = R.layout.item_profile_data_editable_file
 }

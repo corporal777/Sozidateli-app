@@ -4,8 +4,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.extensions.updateGroup
-import com.example.holders.ProfileDataEducationEditGroupNew
 import com.example.ui.editeducation.items.UserEducationGroup
 import com.example.ui.editeducation.items.UserEducationLevelGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment

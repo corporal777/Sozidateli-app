@@ -35,14 +35,14 @@ class EventDetailInfoBlock(
         mInformationItem.apply {
             if (!address.isNullOrEmpty()){
                 add(
-                    EventPageItemNew(
+                    EventPageItem(
                         1,
                         "Как добраться"
                     ) { mapClick() })
             }
             if (!pages.isNullOrEmpty()) {
                 addAll(pages.map { item ->
-                    EventPageItemNew(
+                    EventPageItem(
                         item.id ?: 0,
                         item.name ?: ""
                     ) { pageClick(it) }

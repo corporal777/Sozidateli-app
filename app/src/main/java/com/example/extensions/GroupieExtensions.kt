@@ -89,3 +89,8 @@ fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateItem(item: Item<*>?) {
     if (item == null) update(emptyList())
     else update(listOf(item))
 }
+
+fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateGroup(group: Group?) {
+    if (group == null) update(emptyList())
+    else update(listOf(group))
+}

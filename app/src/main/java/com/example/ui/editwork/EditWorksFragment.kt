@@ -1,7 +1,6 @@
 package com.example.ui.editwork
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -9,26 +8,16 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.WorkExperience
-import com.example.data.models.WorkExperienceModel
-import com.example.data.models.WorkExperienceServerModel
 import com.example.databinding.FragmentEditWorkFragmentBinding
-import com.example.databinding.ItemProfileDataEditNoWorkNewBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateGroup
-import com.example.holders.ProfileDataWorkEditGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.editwork.EditWorksModel.Companion.ADD_WORK
-import com.example.ui.editwork.EditWorksModel.Companion.HAS_WORK
-import com.example.ui.editwork.EditWorksModel.Companion.WORK_ITEM
 import com.example.ui.editwork.items.UserWorksGroup
-import com.example.ui.views.NoWorkDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 

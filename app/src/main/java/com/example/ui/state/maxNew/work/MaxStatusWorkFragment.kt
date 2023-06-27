@@ -4,15 +4,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.extensions.findGroupBy
 import com.example.extensions.updateGroup
-import com.example.holders.ProfileDataWorkEditGroup
 import com.example.ui.editwork.items.UserWorksGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.RegisterDataType
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -4,20 +4,15 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.WorkExperience
-import com.example.data.models.WorkExperienceServerModel
 import com.example.databinding.ItemProfileDataEditWorkBinding
-import com.example.databinding.ItemProfileDataWorkExperienceBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
-import com.example.holders.ProfileDataWorkEditItem
 import com.example.util.*
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsMonthYearPicker
-import kotlinx.android.synthetic.main.item_profile_data_edit_work.*
 import java.util.*
 
 class UserWorkItem(

@@ -1,7 +1,6 @@
 package com.example.ui.editwork.items
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import com.example.R
 import com.example.data.models.FieldDetails
@@ -11,12 +10,9 @@ import com.example.data.models.WorkExperienceServerModel
 import com.example.extensions.forEachGroups
 import com.example.extensions.updateItem
 import com.example.holders.ButtonAddMore
-import com.example.holders.ProfileButtonEditItem
 import com.example.holders.ProfileDataNoExperienceItem
-import com.example.holders.ProfileDataWorkEditItem
 import com.example.ui.views.NoWorkDialog
 import com.xwray.groupie.Group
-import com.xwray.groupie.Item
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 

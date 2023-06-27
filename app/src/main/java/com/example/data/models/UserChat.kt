@@ -35,4 +35,6 @@ data class UserChat(
         @SerializedName("event_id")
         var eventId: String?,
         var unreadMessageCount: Int = 0
-)
+) {
+
+}

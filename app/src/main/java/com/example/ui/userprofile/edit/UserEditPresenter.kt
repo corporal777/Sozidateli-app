@@ -11,6 +11,8 @@ import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -46,9 +48,8 @@ class UserEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (editType == UserEditDataType.INTERESTS){
-            viewState.showInterestsPlaceholder()
-        }
+        viewState.showPlaceholder(editType)
+
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -62,18 +63,19 @@ class UserEditPresenter
                         UserEditDataType.PERSONAL -> viewState.apply {
                             setPersonalTitle()
                             saveOnClick(true)
-                            compositeDisposable += userRepository.searchAddress(user.address?.getShortAddress() ?: "")
-                                .performOnBackgroundOutOnMain()
-                                .withProgressBarLoadingDialog(viewState)
-                                .subscribeSimple(
-                                    onError = { t ->
-                                        t.printStackTrace()
-                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
-                                    },
-                                    onSuccess = { add ->
-                                        if (add.data?.isNotEmpty() == true) user.address?.shortAddres = add.data[0].region
-                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
-                                    })
+                            setPersonalData(user, appData.getStateValue())
+//                            compositeDisposable += userRepository.searchAddress(user.address?.getShortAddress() ?: "")
+//                                .performOnBackgroundOutOnMain()
+//                                .withProgressBarLoadingDialog(viewState)
+//                                .subscribeSimple(
+//                                    onError = { t ->
+//                                        t.printStackTrace()
+//                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
+//                                    },
+//                                    onSuccess = { add ->
+//                                        if (add.data?.isNotEmpty() == true) user.address?.shortAddres = add.data[0].region
+//                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
+//                                    })
                         }
                         UserEditDataType.CONTACTS -> viewState.apply {
                             setContactsTitle()
@@ -157,24 +159,6 @@ class UserEditPresenter
         }
     }
 
-    override fun onDeleteFilesClick(data: FileModel) {
-        compositeDisposable += userRepository.deleteRecommendedFile(data.id?.toInt() ?: 0)
-            .doOnComplete {
-                val userFiles = mutableListOf<FileModel>()
-                userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
-                val file = userFiles.find { x -> x.id == data.id }
-                if (file != null) {
-                    userFiles.remove(file)
-                }
-                appData.getUserNew().binds?.recommendationFile = userFiles
-            }
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                viewState.deleteUserFile(data)
-            }
-    }
-
 
     override fun onChangeEmailClick() {
         viewState.showChangeEmail()
@@ -232,20 +216,24 @@ class UserEditPresenter
             }
         }
             .flatMap { f -> userRepository.uploadRecommendedFile(f).map { it.toFileModel() } }
-            .doOnSuccess { newFile ->
-                val userFiles = mutableListOf<FileModel>()
-                userFiles.addAll(appData.getUserNew().binds?.recommendationFile ?: mutableListOf())
-                userFiles.add(newFile)
-                appData.getUserNew().binds?.recommendationFile = userFiles
-            }
+            .map { newFile -> appData.updateFilesWithAdd(newFile) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
-            .subscribe({ newFile ->
-                viewState.addNewUserFile(newFile)
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError()
-            })
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.addUserFile(it, appData.getUserNew().filesCount) }
+            )
+    }
+
+    override fun onDeleteFilesClick(file: FileModel) {
+        compositeDisposable += userRepository.deleteRecommendedFile(file.id?.toInt()?:0)
+            .andThen(Maybe.just(appData.updateFilesWithDelete(file)))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.deleteUserFile(it, appData.getUserNew().filesCount ) }
+            )
     }
 
 
@@ -286,7 +274,8 @@ class UserEditPresenter
         interests?.forEach { interest ->
             val parent = interests.find { parent -> parent.id == interest.parent }
             parent?.let {
-                val isUserInterest = userInterests.find { userInterest -> userInterest == interest.id } != null
+                val isUserInterest =
+                    userInterests.find { userInterest -> userInterest == interest.id } != null
 
                 groups.getOrPut(parent) { mutableListOf() }
                     .add(UserInterest(interest, isUserInterest))
@@ -327,15 +316,11 @@ class UserEditPresenter
                 })
     }
 
-    private fun fileRequestBody(
-        file: File,
-        fieldName: String,
-        mimeType: String
-    ): MultipartBody.Part? {
+    private fun fileRequestBody(file: File, field: String, mimeType: String): MultipartBody.Part? {
         file.asRequestBody(mimeType.toMediaTypeOrNull())
         // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
         val body = file.asRequestBody(mimeType.toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(fieldName, file.name, body)
+        return MultipartBody.Part.createFormData(field, file.name, body)
     }
 
     private fun textRequestBody(text: String?, fieldName: String): MultipartBody.Part? =

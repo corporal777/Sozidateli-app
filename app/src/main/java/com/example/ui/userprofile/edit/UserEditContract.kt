@@ -15,6 +15,9 @@ interface UserEditContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
+        fun showPlaceholder(type : UserEditDataType)
+
+        @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -27,10 +30,10 @@ interface UserEditContract {
         fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun addNewUserFile(file: FileModel)
+        fun addUserFile(file: FileModel, fileCount : Int)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun deleteUserFile(file: FileModel)
+        fun deleteUserFile(file: FileModel, fileCount : Int)
 
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
@@ -81,9 +84,6 @@ interface UserEditContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showInterestsPlaceholder()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -102,11 +102,12 @@ interface UserEditContract {
         fun onFilePicked(path: String, mimeType: String)
         fun onFileEditCancelClick()
         fun onFileClick(file: FileModel)
+        fun onDeleteFilesClick(file: FileModel)
 
         fun onSaveContactsClick(data: MutableMap<String, Any?>)
         fun onSaveInterestsClick(data: List<InterestNew>)
         fun onNavigateUpRequest()
-        fun onDeleteFilesClick(data: FileModel)
+
         fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
     }
 }

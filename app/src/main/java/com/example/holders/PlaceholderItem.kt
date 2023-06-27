@@ -43,6 +43,7 @@ class PlaceholderItem(
         Type.ACTIVITY_CALENDAR -> R.layout.item_activity_calendar_placeholder
         Type.ACTIVITY_LIST -> R.layout.item_activity_list_placeholder
         Type.INTERESTS -> R.layout.item_interests_placeholder
+        Type.CONTACTS -> R.layout.item_contacts_placeholder
     }
 
     enum class Type {
@@ -76,6 +77,7 @@ class PlaceholderItem(
 
         SUB_EVENT_MAIN,
 
-        INTERESTS
+        INTERESTS,
+        CONTACTS
     }
 }

@@ -50,7 +50,9 @@ data class UserDetail(
     @SerializedName("blockedNotifications")
     val blockedNotifications: BlockedNotifications? = null,
     @SerializedName("qrLink")
-    val qrCodeLink: String? = null
+    val qrCodeLink: String? = null,
+    @SerializedName("recomendationFilesCount")
+    var filesCount: Int = 0,
 
 ) : Parcelable {
 

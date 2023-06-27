@@ -81,14 +81,6 @@ class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsB
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }
     override fun actionIconContainer(view: ViewGroup) {}
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.nestedScrollView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

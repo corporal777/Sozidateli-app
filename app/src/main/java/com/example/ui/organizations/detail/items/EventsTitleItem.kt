@@ -2,7 +2,7 @@ package com.example.ui.organizations.detail.items
 
 import androidx.core.view.updatePadding
 import com.example.R
-import com.example.databinding.ItemPartnersTitleBinding
+import com.example.databinding.ItemEventsTitleBinding
 import com.example.extensions.dp
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
@@ -13,9 +13,9 @@ class EventsTitleItem(
     val pBottom: Int = 0,
     val pLeft: Int = 0,
     val pRight: Int = 0,
-) : BindableItem<ItemPartnersTitleBinding>(-1005L) {
+) : BindableItem<ItemEventsTitleBinding>(-1005L) {
 
-    override fun bind(viewBinding: ItemPartnersTitleBinding, position: Int) {
+    override fun bind(viewBinding: ItemEventsTitleBinding, position: Int) {
         viewBinding.tvTitle.apply {
             text = title
             if (pTop != 0) {
@@ -39,5 +39,5 @@ class EventsTitleItem(
         return true
     }
 
-    override fun getLayout(): Int = R.layout.item_partners_title
+    override fun getLayout(): Int = R.layout.item_events_title
 }
