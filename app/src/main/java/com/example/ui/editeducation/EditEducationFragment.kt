@@ -1,6 +1,7 @@
 package com.example.ui.editeducation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast

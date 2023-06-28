@@ -102,7 +102,8 @@ class ProfileDataAcademicDegreeEditItem(
 
     fun getDataToSave(): AcademicDegreeModel {
         return AcademicDegreeModel(
-            id = mId,
+            //id = mId,
+            id = null,
             speciality = availableSciences.firstOrNull { degree -> degree.name == mSciencesLevel }?.id,
             degree = availableDegrees.firstOrNull { degree -> degree.name == mDegreesLevel }?.id,
             showInProfile = mShowInProfile

@@ -9,6 +9,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withDelay
 import javax.inject.Inject
 
 @InjectViewState

@@ -51,19 +51,17 @@ class EditEducationPresenter
         degree: List<AcademicDegreeModel>?
     ) {
 
-        compositeDisposable += userRepository.updateUserEducationScreen(
+        compositeDisposable += userRepository.updateUserEducation(
             educationLevel,
             educationsList,
             degree
         )
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
-            .subscribe({
-                viewState.navigateUp()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.navigateUp() }
+            )
     }
 
     fun getBaseUserState() = appData.hasBaseState

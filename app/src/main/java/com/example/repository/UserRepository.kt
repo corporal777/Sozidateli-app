@@ -87,9 +87,8 @@ interface UserRepository {
     fun getEducationLevel(): Single<EducationLevelModel>
     fun getSpeciality(): Single<EducationLevelModel>
     fun getAcademicDegrees(): Single<EducationLevelModel>
-    fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel>
-    fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel>
-    fun updateUserEducationScreen(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
+
+    fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     //fun getNotFilledFields(): Maybe<List<NotFilledFields>>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>

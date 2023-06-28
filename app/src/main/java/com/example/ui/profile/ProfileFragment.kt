@@ -123,13 +123,15 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
     }
 
     override fun setUserState(hasBase: Boolean, hasMax: Boolean) {
-        val newState = if (!hasBase && !hasMax) {
-            getString(R.string.state).firstLetterToUppercase() + " " + getString(R.string.state_empty)
-        } else if (hasBase && !hasMax) {
-            getString(R.string.state_base).firstLetterToUppercase() + " " + getString(R.string.state)
-        } else {
-            getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
-        }
+        val newState =
+            if (!hasBase && !hasMax) getString(R.string.state).firstLetterToUppercase() + " " + getString(
+                R.string.state_empty
+            )
+            else if (hasBase && !hasMax) getString(R.string.state_base).firstLetterToUppercase() + " " + getString(
+                R.string.state
+            )
+            else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
+
         mBinding.stateTitle.apply {
             text = newState
             setOnClickListener { showStates() }

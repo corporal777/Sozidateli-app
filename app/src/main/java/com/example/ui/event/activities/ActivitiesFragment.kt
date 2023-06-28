@@ -169,7 +169,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
     override fun setContentPlaceholder() {
         calendarSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_CALENDAR))
-        eventsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_LIST))
+        tagsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_LIST))
     }
 
     override fun setSchemeButton(show: Boolean) {

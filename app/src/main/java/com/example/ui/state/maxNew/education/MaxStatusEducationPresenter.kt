@@ -51,7 +51,7 @@ class MaxStatusEducationPresenter
         educationsList: List<EducationModel>?,
         degree: List<AcademicDegreeModel>?
     ) {
-        compositeDisposable += userRepository.updateUserEducationScreen(
+        compositeDisposable += userRepository.updateUserEducation(
             educationLevel,
             educationsList,
             degree

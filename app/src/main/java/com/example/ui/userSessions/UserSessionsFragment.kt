@@ -96,7 +96,8 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     }
 
     override fun showSessionsLoadingPlaceholder() {
-        currentSessionSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SESSIONS))
+        currentSessionSection.updateItem(PlaceholderItem(PlaceholderItem.Type.MAIN_SESSIONS))
+        otherSessionsSection.update(List(5) { PlaceholderItem(PlaceholderItem.Type.OTHER_SESSIONS) })
     }
 
 

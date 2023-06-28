@@ -27,7 +27,8 @@ class PlaceholderItem(
         Type.CHAT_LIST -> R.layout.item_user_chat_list_placeholder
         Type.CHAT -> R.layout.item_user_chat_placeholder
 
-        Type.SESSIONS -> R.layout.item_sessions_placeholder
+        Type.MAIN_SESSIONS -> R.layout.item_main_sessions_placeholder
+        Type.OTHER_SESSIONS -> R.layout.item_other_sessions_placeholder
         Type.ACCOUNTS -> R.layout.item_accounts_placeholder
 
         Type.ORGANIZATION -> R.layout.item_organization_placeholder
@@ -66,7 +67,6 @@ class PlaceholderItem(
 
         CHAT_LIST,
         CHAT,
-        SESSIONS,
         ACCOUNTS,
 
         SCHEDULE_CALENDAR,
@@ -78,6 +78,9 @@ class PlaceholderItem(
         SUB_EVENT_MAIN,
 
         INTERESTS,
-        CONTACTS
+        CONTACTS,
+
+        MAIN_SESSIONS,
+        OTHER_SESSIONS,
     }
 }

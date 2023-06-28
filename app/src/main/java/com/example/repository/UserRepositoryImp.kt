@@ -109,7 +109,6 @@ class UserRepositoryImp
             })
 
 
-
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
         newApi.searchAddress(query, 20)
 
@@ -298,59 +297,41 @@ class UserRepositoryImp
 
     override fun getEducationLevel(): Single<EducationLevelModel> {
         val education = appData.getUserNew().educationLevelList
-        return if (education != null) {
-            Single.just(EducationLevelModel(education, 6))
-        } else {
-            newApi.getEducationLevel()
-                .doOnSuccess {
-                    appData.updateEducationLevel(it.data)
-                }
-        }
+        return if (education != null) Single.just(EducationLevelModel(education, 6))
+        else newApi.getEducationLevel().doOnSuccess { appData.updateEducationLevel(it.data) }
     }
 
     override fun getSpeciality(): Single<EducationLevelModel> {
         val speciality = appData.getUserNew().speciality
-        return if (speciality != null) {
-            Single.just(EducationLevelModel(speciality, 23))
-        } else {
-            newApi.getSpeciality(100)
-                .doOnSuccess {
-                    appData.updateSpeciality(it.data)
-                }
-        }
+        return if (speciality != null) Single.just(EducationLevelModel(speciality, 23))
+        else newApi.getSpeciality(100).doOnSuccess { appData.updateSpeciality(it.data) }
     }
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
         val academicDegrees = appData.getUserNew().academicDegrees
-        return if (academicDegrees != null) {
-            Single.just(EducationLevelModel(academicDegrees, 4))
-        } else {
-            newApi.getAcademicDegrees()
-                .doOnSuccess {
-                    appData.updateAcademicDegrees(it.data)
-                }
-        }
+        return if (academicDegrees != null) Single.just(EducationLevelModel(academicDegrees, 4))
+        else newApi.getAcademicDegrees().doOnSuccess { appData.updateAcademicDegrees(it.data) }
     }
 
-    override fun updateUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
+    private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
         newApi.updateUserEducation(appData.getId(), body)
             .doOnSuccess {
                 appData.updateUserEducation(it.data)
             }
 
-    override fun updateUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
+    private fun sendUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
         newApi.updateUserAcademicDegree(appData.getId(), body)
             .doOnSuccess {
                 appData.updateUserAcademicDegree(it.data)
             }
 
-    override fun updateUserEducationScreen(
+    override fun updateUserEducation(
         educationLevel: ToggleIntModel?,
         educationsList: List<EducationModel>?,
         degree: List<AcademicDegreeModel>?
     ): Single<String> {
-        return Single.zip(updateUserEducation(EducationBodyModel(educationsList)),
-            updateUserAcademicDegree(AcademicDegreeBodyModel(degree)),
+        return Single.zip(sendUserEducation(EducationBodyModel(educationsList)),
+            sendUserAcademicDegree(AcademicDegreeBodyModel(degree)),
             updateProfile(
                 appData.getId(),
                 mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)
