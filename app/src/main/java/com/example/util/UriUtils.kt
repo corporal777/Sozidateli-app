@@ -2,13 +2,15 @@ package com.example.util
 
 import android.content.ContentResolver
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.provider.OpenableColumns
+import android.util.Log
 import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import kotlin.jvm.Throws
 
 
 object UriUtils {
@@ -17,7 +19,8 @@ object UriUtils {
     internal fun pickedExistingPicture(context: Context, photoUri: Uri): File {
         val pictureInputStream = context.contentResolver.openInputStream(photoUri)
         val directory = tempImageDirectory(context)
-        val photoFile = File(directory, generateFileName() + "." + getMimeType(context, photoUri))
+
+        val photoFile = File(directory, generateFileName(context, photoUri))
         photoFile.createNewFile()
         writeToFile(pictureInputStream!!, photoFile)
         return photoFile
@@ -29,8 +32,10 @@ object UriUtils {
         return privateTempDir
     }
 
-    private fun generateFileName(): String {
-        return /*"ei_${System.currentTimeMillis()}"*/"имя_файла"
+    private fun generateFileName(context: Context, photoUri: Uri): String {
+        val name = queryName(context, photoUri)
+        return if (!name.isNullOrEmpty()) name
+        else ("имя_файла" + "." + getMimeType(context, photoUri))
     }
 
     private fun writeToFile(inputStream: InputStream, file: File) {
@@ -58,6 +63,20 @@ object UriUtils {
             extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(uri.path)).toString())
         }
         return extension
+    }
+
+    private fun queryName(context: Context, uri: Uri): String? {
+        return try {
+            val returnCursor: Cursor = context.contentResolver.query(uri, null, null, null, null)!!
+            val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            returnCursor.moveToFirst()
+            val name: String = returnCursor.getString(nameIndex)
+            returnCursor.close()
+            return name
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
 }

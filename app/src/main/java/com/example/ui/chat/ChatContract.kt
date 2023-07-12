@@ -13,6 +13,9 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface ChatContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showEmptyChatPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setChatPlaceholder()
 
         @StateStrategyType(AddToEndSingleStrategy::class)

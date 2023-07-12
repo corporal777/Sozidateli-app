@@ -14,15 +14,17 @@ import com.example.util.pagination.PaginationListGroupAdapter
 interface UserSessionsContract {
 
     interface View : BaseContract.View {
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setCurrentSession(session: UserSessionModel, isHasSessions : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setOtherSessions(sessions: List<UserSessionModel?>)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setCurrentSession(session: UserSessionModel)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSessionsLoadingPlaceholder()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun updateKillSessionsButton(isHasSessions : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

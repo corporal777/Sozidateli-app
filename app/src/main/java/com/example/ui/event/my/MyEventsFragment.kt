@@ -19,17 +19,12 @@ import com.example.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
-import com.example.ui.event.registration.EventRegistrationFragmentArgs
-import com.example.ui.views.StateType
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
@@ -44,20 +39,20 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class MyEventsFragmentNew : EventListFragment<MyEventsPresenterNew, FragmentMyEventsBinding>(),
-    MyEventsContractNew.View {
+class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBinding>(),
+    MyEventsContract.View {
 
     @InjectPresenter
-    override lateinit var presenter: MyEventsPresenterNew
+    override lateinit var presenter: MyEventsPresenter
 
     private var mFilterDialog: BottomSheetDialog? = null
     private var mFilterView: View? = null
 
     @Inject
-    lateinit var presenterProvider: Provider<MyEventsPresenterNew>
+    lateinit var presenterProvider: Provider<MyEventsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): MyEventsPresenterNew = presenterProvider.get().apply {
+    fun providePresenter(): MyEventsPresenter = presenterProvider.get().apply {
         mEventStateFilter = MyEventsFilter.NONE
     }
 
@@ -123,23 +118,15 @@ class MyEventsFragmentNew : EventListFragment<MyEventsPresenterNew, FragmentMyEv
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventItemNew(
                 it,
-                it.id.toString(),
-                it.state,
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.backgroundColor?.value,
-                it.image?.uri,
-                it.binds?.eventRegistrationState,
-                it.userAgreement?.uri,
-                it.binds?.currentUserRegistration?.id.toString(),
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.holdingDate?.to,
                 onEventClickListener,
             )
         })
         mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun updateEvent(event: EventNew) {
+        val id = event.id?.toLong()
+        eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showFilters() {

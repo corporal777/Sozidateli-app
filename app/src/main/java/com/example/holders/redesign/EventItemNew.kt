@@ -24,25 +24,13 @@ import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
 class EventItemNew(
-    eventData: EventNew?,
-    val eventId: String,
-    val state: EventStateModel?,
-    val status: Event.Status?,
-    val userRegistration: Event.Status?,
-    val backgroundColor: String?,
-    val logo: String?,
-    val eventRegistrationState: EventRegistrationStateModel?,
-    val userAgreement: String?,
-    val registrationId: String,
-    val name: String?,
-    val address: String?,
-    val dateFrom: String?,
-    val dateTo: String?,
-    private val clickListener: OnEventClickListener
-) : BindableItem<ItemEventNewBinding>(eventData?.id?.toLong() ?: 0) {
+    event: EventNew,
+    val clickListener: OnEventClickListener
+) : BindableItem<ItemEventNewBinding>(event.id?.toLong() ?: 0) {
 
-    private val date = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
-    private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
+    private var eventData = event
+    private val eventId = eventData.id.toString()
+    private val imageColor = ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
 
     init {
 
@@ -54,26 +42,24 @@ class EventItemNew(
                 clickListener.onShowEventClick(viewBinding.root, eventId)
             }
 
-            tvDate.text = date
-            tvLocation.text = address
-            tvTitle.text = name
+            tvDate.text = eventData.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData.holdingDate?.to)
+            tvLocation.text = eventData.address?.getShortAddress()
+            tvTitle.text = eventData.name
             ivLogo.apply {
-                setImage(logo ?: imageColor)
-                colorFilter = if (status == Event.Status.CANCELED)
+                setImage(eventData.image?.uri ?: imageColor)
+                colorFilter = if (eventData.status?.value == Event.Status.CANCELED)
                     ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
                 else null
             }
 
-            setApproveStatus(tvEventState, status, userRegistration)
-            decorActionButton(btnEventAction, status, eventRegistrationState)
+            setApproveStatus(tvEventState)
+            decorActionButton(btnEventAction)
         }
     }
 
-    private fun setApproveStatus(
-        tvStatus: TextView,
-        status: Event.Status?,
-        userRegistration: Event.Status?
-    ) {
+    private fun setApproveStatus(tvStatus: TextView) {
+        val status = eventData.status?.value
+        val userRegistration = eventData.binds?.currentUserRegistration?.status?.value
         var statusBackground = R.color.event_status_finished_background
         var statusText = R.string.event_status_finished
         var statusVisibility = false
@@ -122,11 +108,12 @@ class EventItemNew(
         }
     }
 
-    private fun decorActionButton(
-        btnAction: Button,
-        status: Event.Status?,
-        eventRegistrationState: EventRegistrationStateModel?
-    ) {
+    private fun decorActionButton(btnAction: Button) {
+        val registrationId = eventData.binds?.currentUserRegistration?.id.toString()
+        val status = eventData.status?.value
+        val eventRegistrationState = eventData.binds?.eventRegistrationState
+        val userAgreement = eventData.userAgreement?.uri
+
         when (status) {
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
@@ -175,19 +162,7 @@ class EventItemNew(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventItemNew) return false
-        if (eventId != other.eventId) return false
-        if (state != other.state) return false
-        if (status != other.status) return false
-        if (userRegistration != other.userRegistration) return false
-        if (backgroundColor != other.backgroundColor) return false
-        if (logo != other.logo) return false
-        if (eventRegistrationState != other.eventRegistrationState) return false
-        if (userAgreement != other.userAgreement) return false
-        if (registrationId != other.registrationId) return false
-        if (name != other.name) return false
-        if (address != other.address) return false
-        if (dateFrom != other.dateFrom) return false
-        if (dateTo != other.dateTo) return false
+        if (eventData != other.eventData) return false
         return true
     }
 
@@ -200,16 +175,9 @@ class EventItemNew(
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventNew) {
-                decorActionButton(
-                    viewBinding.btnEventAction,
-                    payload.status?.value,
-                    payload.binds?.eventRegistrationState
-                )
-                setApproveStatus(
-                    viewBinding.tvEventState,
-                    payload.status?.value,
-                    payload.binds?.currentUserRegistration?.status?.value
-                )
+                eventData = payload
+                decorActionButton(viewBinding.btnEventAction)
+                setApproveStatus(viewBinding.tvEventState)
             }
         }
 

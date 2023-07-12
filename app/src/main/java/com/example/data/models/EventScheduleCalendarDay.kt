@@ -7,3 +7,11 @@ data class EventScheduleCalendarDay(
         val dayOfMonth: Int,
         var hasEvents: Boolean
 )
+
+data class EventScheduleDay(
+        val date : String,
+        val millis: Long,
+        val dayOfWeek: String?,
+        val dayOfMonth: Int,
+        var hasEvents: Boolean
+)

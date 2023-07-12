@@ -21,6 +21,9 @@ interface EventListContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showAgreementRegisterDialog(event: String, url : String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun updateEvent(event: EventNew)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {

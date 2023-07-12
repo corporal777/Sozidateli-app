@@ -1,49 +1,40 @@
 package com.example.ui.event.activities
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.AbsListView
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView.*
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.databinding.FragmentActivitysBinding
-import com.example.extensions.*
-import com.example.holders.CalendarHorizontalListItem
+import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
+import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.activities.items.*
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
-import com.example.ui.notification.center.redesign.items.NotificationsDateItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_activitys.*
-import kotlinx.android.synthetic.main.fragment_map_new.*
-import onBackPressedCallback
 import onScrollStateChanged
 import onScrolled
 import onTextChanged
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -118,9 +109,8 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                     try {
                         if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
-                            val now = presenter.createCalendarDay(item.date)
-                            changeDayWhenScrollDown(now)
-                            if (!mCanChangeDay) changeDay(now)
+                            scrollCalendar(item.getDay())
+                            if (!mCanChangeDay) changeDay(item.getDay())
                         }
                     } catch (e: Exception) {
                     }
@@ -139,9 +129,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
             }
             etSearch.apply {
                 SearchInput(this).apply {
-                    setOnTextChange {
-                        presenter.onSearchTextChange(it)
-                    }
+                    setOnTextChange { presenter.onSearchTextChange(it) }
                     setOnTextChangeDone {
                         presenter.onSearchTextSubmit(it)
                         hideKeyboard()
@@ -152,7 +140,7 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
                     btnClear.isVisible = !it.isNullOrEmpty()
                 }
                 btnClear.apply {
-                    btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                    isVisible = !etSearch.text.isNullOrEmpty()
                     setOnClickListener { etSearch.text = null }
                 }
 
@@ -169,7 +157,8 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
 
     override fun setContentPlaceholder() {
         calendarSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_CALENDAR))
-        tagsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_LIST))
+        tagsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_TAGS))
+        eventsSection.updateItem(PlaceholderItem(PlaceholderItem.Type.ACTIVITY_LIST))
     }
 
     override fun setSchemeButton(show: Boolean) {
@@ -181,13 +170,9 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         }
     }
 
-    override fun setDays(days: List<List<EventScheduleCalendarDay>>) {
+    override fun setDays(days: Map<Int, List<EventScheduleDay>>) {
         calendarSection.update(
-            days.mapIndexed { index, d ->
-                CalendarHorizontalListItem(index, d) { day ->
-                    presenter.onDaySelected(day)
-                }
-            }
+            days.map { EventDaysListItem(it.key, it.value){ day -> presenter.onDaySelected(day) } }
         )
         mBinding.clSearch.isVisible = true
     }
@@ -219,60 +204,33 @@ class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), Activiti
         )
     }
 
-    override fun selectDay(
-        day: EventScheduleCalendarDay
-    ) {
+    override fun selectDay(day: EventScheduleDay) {
         for (i in 0 until calendarSection.itemCount) {
-            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
+            val item = calendarSection.getItem(i) as EventDaysListItem
             item.selectDay(day)
         }
-        deselectAllExcept(day)
     }
 
-    private fun changeDay(day: EventScheduleCalendarDay) {
+    private fun changeDay(day: String?) {
         for (i in 0 until calendarSection.itemCount) {
-            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
-            item.selectDayNew(day)
+            val item = calendarSection.getItem(i) as EventDaysListItem
+            item.changeDay(day)
         }
     }
 
-
-    private fun deselectAllExcept(except: EventScheduleCalendarDay) {
-        for (i in 0 until calendarSection.itemCount) {
-            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
-            item.deselectAllExcept(except)
-        }
-    }
-
-    override fun scrollToDay(day: EventScheduleCalendarDay) {
-//        var mPosition = 0
-//        Handler().post(Runnable {
-//            selectDay(day)
-//            val item =
-//                calendarSection.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
-//            if (item != null) {
-//                mPosition = calendarSection.getPosition(item)
-//                calendarPager?.setCurrentItem(mPosition, true)
-//            }
-//        })
-    }
-
-    private fun changeDayWhenScrollDown(day: EventScheduleCalendarDay) {
-        var mPosition = 0
+    private fun scrollCalendar(date: String?) {
         Handler().post(Runnable {
-            val item =
-                calendarSection.findItemBy<CalendarHorizontalListItem> { it.changeDay(day) }
+            val item = calendarSection.findItemBy<EventDaysListItem> { it.isHasDay(date) }
             if (item != null) {
-                mPosition = calendarSection.getPosition(item)
-                calendarPager?.setCurrentItem(mPosition, true)
+                val position = calendarSection.getPosition(item)
+                mBinding.calendarPager.setCurrentItem(position, true)
             }
         })
     }
 
-    override fun scrollContent(day: EventScheduleCalendarDay) {
-        val date = defaultServerDateFormatter.format(day.millis)
+    override fun scrollContent(day: EventScheduleDay) {
         val group =
-            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
+            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == day.date }
         if (group != null) {
             val position = groupAdapter.getAdapterPosition(group)
             val mLayoutManager = mBinding.activitiesList.layoutManager as LinearLayoutManager

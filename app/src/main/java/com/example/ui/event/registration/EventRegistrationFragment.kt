@@ -24,8 +24,10 @@ import com.example.databinding.FragmentRequestBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.forEachGroups
 import com.example.extensions.setRequired
+import com.example.extensions.updateItem
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
+import com.example.holders.PlaceholderItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
@@ -103,9 +105,14 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
     }
 
+    override fun setContentPlaceholder() {
+        headerSection.updateItem(PlaceholderItem(PlaceholderItem.Type.REGISTER_HEADER))
+        fieldsDataSection.update(List(2) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) })
+
+    }
 
     override fun setFormHeader(event: EventRegistration) {
-        headerSection.setHeader(
+        headerSection.updateItem(
             RegisterEventImageHeaderItem(
                 -100L,
                 event.image,
@@ -233,13 +240,6 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
         }.show()
     }
 
-    override fun showAgreementRegisterDialog(url: String) {
-        bottomDialog?.dismiss()
-
-        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
-            presenter.onRegisterClick()
-        }
-    }
 
     override fun showSaveFormResultDraftDialog() {
         EventRegistrationRequestDialog(
@@ -409,47 +409,21 @@ class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
 
 
     override fun updateAppBarBackgroundColorValue(offset: Int) {
-        Log.e("OFFSET", offset.toString())
         mBinding.apply {
-            if (offset <= 0) {
-                tbBackground.alpha = 0f
-            } else {
-                tbBackground.apply {
-                    alpha = abs(offset / (900).toFloat())
-                }
-            }
-            if (offset >= 1070) {
-                appBar.changeAppBarElevation(abs(offset / 120f))
-            } else {
-                appBar.changeAppBarElevation(0f)
-            }
+            if (offset <= 0) tbBackground.alpha = 0f
+            else tbBackground.apply { alpha = abs(offset / (900).toFloat()) }
 
-            if (offset >= 500) {
-                setBlackIcons()
-            } else {
-                setWhiteIcons()
-            }
+            if (offset >= 1070) appBar.changeAppBarElevation(abs(offset / 120f))
+            else appBar.changeAppBarElevation(0f)
 
-        }
-
-    }
-
-    private fun setBlackIcons() {
-        mBinding.apply {
-            ivBack.imageTintList =
-                ContextCompat.getColorStateList(requireContext(), R.color.vk_black)
-            requireActivity().window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (offset >= 500) changeStatusBarColor(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            else changeStatusBarColor(0)
         }
     }
 
-    private fun setWhiteIcons() {
-        mBinding.apply {
-            requireActivity().window.decorView.systemUiVisibility = 0
-            ivBack.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
-        }
+    private fun changeStatusBarColor(s : Int){
+        requireActivity().window.decorView.systemUiVisibility = s
     }
-
 
     override fun layout() = R.layout.fragment_request
 

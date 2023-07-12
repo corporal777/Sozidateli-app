@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -69,6 +70,7 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
                 it.data?.data?.let { file ->
                     val filePath = FileUtils.getPath(requireContext(), file)
                     val mimeType = FileUtils.getMimeType(requireContext(), file)
+
                     if (filePath.isEmpty()) {
                         val path = UriUtils.pickedExistingPicture(requireContext(), file).path
                         val type = UriUtils.getMimeType(requireContext(), file) ?: ""

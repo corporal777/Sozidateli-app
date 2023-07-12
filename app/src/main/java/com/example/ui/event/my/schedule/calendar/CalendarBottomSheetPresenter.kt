@@ -6,6 +6,7 @@ import com.arellomobile.mvp.MvpView
 import com.example.data.AppData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
@@ -23,9 +24,9 @@ class CalendarBottomSheetPresenter @Inject constructor(
     private val appData: AppData
 ) : MvpPresenter<CalendarBottomSheetContract.View>(), CalendarBottomSheetContract.Presenter {
 
-    protected val compositeDisposable = CompositeDisposable()
-    var eventDays: List<EventActivityModel> = emptyList()
-    var selectedDay: EventScheduleCalendarDay? = null
+    private val compositeDisposable = CompositeDisposable()
+    var eventDays: List<EventScheduleDay> = emptyList()
+    var selectedDay: EventScheduleDay? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -34,7 +35,7 @@ class CalendarBottomSheetPresenter @Inject constructor(
         var maxDate: CalendarDay? = null
         compositeDisposable += Maybe.fromCallable {
             eventDays.map {
-                val cal = defaultServerDateFormatter.parse(it.holdingDate?.from).time.calendar()
+                val cal = defaultServerDateFormatter.parse(it.date).time.calendar()
                 setEventCalendarDays(cal)
             }
         }

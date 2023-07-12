@@ -29,7 +29,7 @@ class UserSessionsPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    setCurrentSession(it.currentSession)
+                    setCurrentSession(it.currentSession, !it.userSessions.isNullOrEmpty())
                     setOtherSessions(it.userSessions)
                 }
             }
@@ -42,7 +42,10 @@ class UserSessionsPresenter
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                viewState.setOtherSessions(it.userSessions)
+                viewState.apply {
+                    updateKillSessionsButton(!it.userSessions.isNullOrEmpty())
+                    setOtherSessions(it.userSessions)
+                }
             }
     }
 
@@ -52,7 +55,10 @@ class UserSessionsPresenter
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                viewState.setOtherSessions(it.userSessions)
+                viewState.apply {
+                    updateKillSessionsButton(!it.userSessions.isNullOrEmpty())
+                    setOtherSessions(it.userSessions)
+                }
             }
     }
 }

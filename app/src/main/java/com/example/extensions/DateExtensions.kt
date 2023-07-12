@@ -70,7 +70,7 @@ fun String.parseToDate(parser: DateFormat): Date? {
 //    SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR).format(date)
 
 fun longToDate(date: Long): String =
-        SimpleDateFormat(DATE_TIME_FORMAT_SERVER_TIMESTAMP).format(date)
+        SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP).format(date)
 
 fun longToTime(date: Date): String =
         SimpleDateFormat(TIME_FORMAT_DEFAULT).format(date)

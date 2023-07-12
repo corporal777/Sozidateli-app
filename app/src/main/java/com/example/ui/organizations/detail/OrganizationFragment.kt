@@ -151,23 +151,10 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
         )
     }
 
-    override fun setEventsData(events: List<EventNew?>) {
+    override fun setEventsData(events: List<EventNew>) {
         eventsDataSection.update(events.map {
             EventItemNew(
                 it,
-                it?.id.toString(),
-                it?.state,
-                it?.status?.value,
-                it?.binds?.currentUserRegistration?.status?.value,
-                it?.backgroundColor?.value,
-                it?.image?.uri,
-                it?.binds?.eventRegistrationState,
-                it?.userAgreement?.uri,
-                it?.binds?.currentUserRegistration?.id.toString(),
-                it?.name,
-                it?.address?.getShortAddress(),
-                it?.holdingDate?.from,
-                it?.holdingDate?.to,
                 onEventClickListener,
             )
         })
@@ -177,12 +164,10 @@ class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
     override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
         membersDataSection.apply {
             update(
-                listOf(
-                    EventsTitleItem(
-                        getString(R.string.organization_peoples).format(totalSize),
-                        pBottom = 10
-                    )
-                ).plus(
+                listOf(EventsTitleItem(
+                    getString(R.string.organization_peoples).format(totalSize),
+                    pBottom = 10
+                )).plus(
                     members.map { member ->
                         OrganizationMemberItem(
                             member.user,

@@ -81,19 +81,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         else {
             return EventItemNew(
                 itemData,
-                itemData.id.toString(),
-                itemData.state,
-                itemData.status?.value,
-                itemData.binds?.currentUserRegistration?.status?.value,
-                itemData.backgroundColor?.value,
-                itemData.image?.uri,
-                itemData.binds?.eventRegistrationState,
-                itemData.userAgreement?.uri,
-                itemData.binds?.currentUserRegistration?.id.toString(),
-                itemData.name,
-                itemData.address?.getShortAddress(),
-                itemData.holdingDate?.from,
-                itemData.holdingDate?.to,
                 onEventClickListener,
             )
         }

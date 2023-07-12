@@ -26,23 +26,11 @@ class RegisterEventImageHeaderItem(
     private val dateTo: String?,
 ) : BindableItem<ItemRegisterEventHeaderNewBinding>(id) {
 
-    private var eventStartDate = ""
-    private var imageColor = ColorDrawable(Color.DKGRAY)
+    private val eventStartDate =
+        "Дата проведения " + dateFrom.formatToEventDatesIntervalOnMain(dateTo)
+    private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
 
     init {
-        val cal = defaultServerDateFormatter.parse(dateFrom).time.calendar()
-//        eventStartDate = "Дата проведения " + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(
-//            Calendar.MONTH,
-//            Calendar.LONG,
-//            Locale.getDefault()
-//        ) + " " + cal.get(Calendar.YEAR) + " г."
-        eventStartDate =
-            "Дата проведения " + dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
-
-        if (!backgroundColor.isNullOrEmpty()) {
-            val color = backgroundColor.parseColor() ?: Color.DKGRAY
-            imageColor = ColorDrawable(color)
-        }
 
     }
 

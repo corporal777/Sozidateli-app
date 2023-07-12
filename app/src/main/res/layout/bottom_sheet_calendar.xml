@@ -55,6 +55,7 @@
 
     <com.example.ui.views.calendarView.MaterialCalendarView
         android:id="@+id/calendarView"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         app:mcv_tileWidth="50dp"
         app:mcv_tileHeight="40dp"

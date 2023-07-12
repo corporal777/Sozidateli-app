@@ -22,7 +22,6 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -70,10 +69,11 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
     }
 
 
-    override fun setCurrentSession(session: UserSessionModel) {
+    override fun setCurrentSession(session: UserSessionModel, isHasSessions: Boolean) {
         currentSessionSection.updateItem(
             CurrentSessionItem(
                 session,
+                isHasSessions,
                 { presenter.killAllSessionsClick() },
                 { s -> showSessionDialog(true, { presenter.killAllSessionsClick() }, s) }
             )
@@ -93,6 +93,10 @@ class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
             }
         )
 
+    }
+
+    override fun updateKillSessionsButton(isHasSessions: Boolean) {
+        currentSessionSection.findItemBy<CurrentSessionItem> { true }?.notifyChanged(isHasSessions)
     }
 
     override fun showSessionsLoadingPlaceholder() {

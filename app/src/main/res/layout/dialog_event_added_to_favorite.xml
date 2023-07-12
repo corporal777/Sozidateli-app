@@ -5,22 +5,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@drawable/dialog_rounded_corners"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="@dimen/event_added_to_favorite_dialog_size"
-        android:layout_height="@dimen/event_added_to_favorite_dialog_size">
-
+        android:layout_height="@dimen/event_added_to_favorite_dialog_size"
+        android:background="@drawable/dialog_rounded_corners"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_marginTop="20dp"
             android:id="@+id/iv_icon"
             android:layout_width="@dimen/event_added_to_favorite_dialog_icon_size"
             android:layout_height="@dimen/event_added_to_favorite_dialog_icon_size"
+            android:layout_marginTop="20dp"
             android:src="@drawable/ic_star_added_to_favorite"
             app:layout_constraintBottom_toTopOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,8 +45,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

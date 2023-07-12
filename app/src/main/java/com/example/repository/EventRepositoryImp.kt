@@ -258,23 +258,14 @@ class EventRepositoryImp
     }*/
 
     //Alfa API
+    override fun getEvent(eventId: String, binds: String?): Maybe<EventNew> {
+        return newApi.getEventDetails(eventId, binds ?: "")
+    }
+
     override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         newApi.getEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getEventsListFlow(map: Map<String, Any>): Flowable<PaginationResponse<EventNew?>> {
-        return newApi.getEventsListFlow(map)
-            .map {
-                val eventFormats = appData.getEventFormats()
-                if (!eventFormats.isNullOrEmpty()) {
-                    it.data?.forEach { ev ->
-                        ev?.format?.name =
-                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
-                    }
-                }
-                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
-            }
-    }
 
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         newApi.getSortedEventsList(map)

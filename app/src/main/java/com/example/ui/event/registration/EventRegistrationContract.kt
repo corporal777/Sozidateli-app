@@ -13,6 +13,10 @@ import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface EventRegistrationContract {
     interface View : BaseContract.View {
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setContentPlaceholder()
+
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setFormHeader(event: EventRegistration)
 
@@ -28,9 +32,6 @@ interface EventRegistrationContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRegisterConfirmation()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showAgreementRegisterDialog(url: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showSaveFormResultDraftDialog()

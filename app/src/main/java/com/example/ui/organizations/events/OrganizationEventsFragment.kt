@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.LayoutListBinding
+import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
@@ -50,7 +51,8 @@ class OrganizationEventsFragment :
         add(dataGroup)
         setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
-                if (position > 0) presenter.onItemTake(position - 1)
+                //if (position > 0) presenter.onItemTake(position - 1)
+                presenter.onItemTake(position)
             }
         })
     }
@@ -72,24 +74,16 @@ class OrganizationEventsFragment :
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
             else EventItemNew(
                 it,
-                it.id.toString(),
-                it.state,
-                it.status?.value,
-                it.binds?.currentUserRegistration?.status?.value,
-                it.backgroundColor?.value,
-                it.image?.uri,
-                it.binds?.eventRegistrationState,
-                it.userAgreement?.uri,
-                it.binds?.currentUserRegistration?.id.toString(),
-                it.name,
-                it.address?.getShortAddress(),
-                it.holdingDate?.from,
-                it.holdingDate?.to,
                 onEventClickListener,
             )
         })
 
         mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun updateEvent(event: EventNew) {
+        val id = event.id?.toLong()
+        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showEmptyListPlaceholder() {

@@ -585,6 +585,7 @@
     <string name="no_internet_action_to_calendar">Перейти в календарь</string>
 
     <string name="banned_empty_message">Никого нет</string>
+    <string name="messages_not_found">Сообщений нет</string>
 
     <string name="about_version">Версия %s</string>
     <string name="about_developer_site">Разработано в houseofapps.ru</string>
@@ -592,9 +593,9 @@
     <string name="organization_main_data">Общая информация</string>
     <string name="organization_peoples">Сотрудники (%d)</string>
     <string name="organization_members">Сотрудники организации</string>
-    <string name="organization_peoples_watch">Смотреть всех</string>
+    <string name="organization_peoples_watch">Все сотрудники</string>
     <string name="organization_events">Мероприятия организации</string> <!-- (%d) -->
-    <string name="organization_events_watch">Смотреть все мероприятия</string>
+    <string name="organization_events_watch">Все мероприятия</string>
     <string name="organization_links">Ссылки</string>
     <string name="organization_sn_links">Соцсети</string>
     <string name="organization_email">Email</string>

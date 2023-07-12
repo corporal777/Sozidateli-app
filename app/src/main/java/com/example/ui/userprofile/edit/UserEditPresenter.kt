@@ -87,6 +87,7 @@ class UserEditPresenter
                             getInterests(user)
                             saveOnClick(true)
                         }
+                        else -> {}
                     }
                 })
     }

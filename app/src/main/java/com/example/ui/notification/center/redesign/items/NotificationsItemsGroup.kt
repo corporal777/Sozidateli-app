@@ -1,19 +1,11 @@
 package com.example.ui.notification.center.redesign.items
 
 import android.content.Context
-import android.util.Log
-import com.example.data.models.EventNew
 import com.example.data.models.Notification
 import com.example.extensions.findItemBy
-import com.example.extensions.updateItem
-import com.example.holders.*
-import com.example.holders.redesign.EventActivityDateItem
-import com.example.holders.redesign.EventItemNew
-import com.example.ui.notification.center.redesign.NotificationsSortedData
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class NotificationsItemsGroup(
     val context: Context,

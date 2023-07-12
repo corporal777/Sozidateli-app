@@ -102,6 +102,7 @@ class EventRegistrationPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
+            setContentPlaceholder()
             updateAppBarBackgroundColorValue(mDy)
             enableActionButton(true)
         }
@@ -119,19 +120,12 @@ class EventRegistrationPresenter
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = { event ->
-                    viewState.showProgressBarLoadingDialog()
                     if (event.state?.registration?.formEnabled == true) {
                         viewState.setFormHeader(eventData)
-
                         getEventFormResult(eventData, formFields)
-                    } else {
-                        viewState.hideProgressBarLoadingDialog()
-                        registerToEvent()
-                    }
+                    } else registerToEvent(false)
                 })
     }
 
@@ -161,12 +155,10 @@ class EventRegistrationPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    viewState.hideProgressBarLoadingDialog()
                     initFormResultData(registerResult.event, registerResult.getSortedFields())
                     if (it is HttpException && it.code() == 404) it.printStackTrace()
                     else onReceiveError(it)
                 }, onComplete = {
-                    viewState.hideProgressBarLoadingDialog()
                     if (registerResult.hasDraft) {
                         viewState.showLoadSavedFormResultDraftDialog(registerResult)
                     } else {
@@ -230,27 +222,26 @@ class EventRegistrationPresenter
         val hasForm = !result.filter { x -> x.value != null || x.field != null }.isNullOrEmpty()
         viewState.apply {
             setFormFields(event, result, hasForm)
-            if (hasForm) {
-                checkDataValid()
-            } else {
-                showEventRegisterConfirmation()
-            }
+
+            if (hasForm) checkDataValid()
+            else showEventRegisterConfirmation()
         }
     }
 
 
-    private fun registerToEvent() {
+    private fun registerToEvent(withLoading : Boolean) {
         compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
             .andThen(socket.connectToUpdates())
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .let {
+                if (withLoading) it.withCustomProgressBarLoadingDialog(viewState)
+                else it
+            }
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                }, onComplete = {
-                    viewState.showSuccessRegister(approvingMode)
-                })
+                onError = { onReceiveError(it) },
+                onComplete = { viewState.showSuccessRegister(approvingMode) }
+            )
     }
 
     private fun mapFields(it: List<EventRegisterFields>?): List<EventRegisterField> {
@@ -363,7 +354,7 @@ class EventRegistrationPresenter
                     onReceiveError(it)
                 },
                 onSuccess = {
-                    registerToEvent()
+                    registerToEvent(true)
                 })
     }
 

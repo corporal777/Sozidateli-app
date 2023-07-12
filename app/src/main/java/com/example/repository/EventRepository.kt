@@ -55,7 +55,6 @@ interface EventRepository {
 
     //Alfa API
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventsListFlow(map: Map<String, Any>): Flowable<PaginationResponse<EventNew?>>
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
     fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
@@ -63,6 +62,7 @@ interface EventRepository {
     fun getOrganizationEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
+    fun getEvent(eventId: String, binds : String?): Maybe<EventNew>
     fun getEventDetails(eventId: String): Maybe<EventInfo>
     fun getEventMember(memberId : String) : Maybe<MemberModel>
     fun createEventSubscription(eventId: Int) : Completable

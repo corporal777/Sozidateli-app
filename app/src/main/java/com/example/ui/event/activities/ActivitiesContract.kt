@@ -6,6 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.data.models.Tag
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -17,7 +18,7 @@ interface ActivitiesContract {
         fun setContentPlaceholder()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setDays(days: List<List<EventScheduleCalendarDay>>)
+        fun setDays(days: Map<Int, List<EventScheduleDay>>)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setTags(tags: List<Tag>?)
@@ -25,18 +26,14 @@ interface ActivitiesContract {
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setSubEvents(isApproved : Boolean, data: List<SubEventsData>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun selectDay(day: EventScheduleCalendarDay)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun scrollToDay(day: EventScheduleCalendarDay)
-
-
-        @StateStrategyType(SkipStrategy::class)
-        fun scrollContent(day: EventScheduleCalendarDay)
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun selectDay(day: EventScheduleDay)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun scrollContent(day: EventScheduleDay)
 
         @StateStrategyType(SkipStrategy::class)
         fun showSubEvent(eventId: String, subEventId: String)
@@ -52,7 +49,7 @@ interface ActivitiesContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onDaySelected(day: EventScheduleCalendarDay)
+        fun onDaySelected(day: EventScheduleDay)
         fun onTagSelected()
 
         fun onSubEventClick(subEvent: EventActivityModel)

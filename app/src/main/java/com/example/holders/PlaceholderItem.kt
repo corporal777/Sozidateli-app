@@ -41,10 +41,18 @@ class PlaceholderItem(
         Type.SCHEDULE_CALENDAR -> R.layout.item_schedule_calendar_placeholder
         Type.SCHEDULE_LIST -> R.layout.item_schedule_list_placeholder
         Type.SUB_EVENT_MAIN -> R.layout.item_sub_event_main_placeholder
+
         Type.ACTIVITY_CALENDAR -> R.layout.item_activity_calendar_placeholder
         Type.ACTIVITY_LIST -> R.layout.item_activity_list_placeholder
+        Type.ACTIVITY_TAGS -> R.layout.item_activity_tags_placeholder
+
+
         Type.INTERESTS -> R.layout.item_interests_placeholder
         Type.CONTACTS -> R.layout.item_contacts_placeholder
+
+        Type.REGISTER_HEADER -> R.layout.item_event_register_header_placeholder
+        Type.REGISTER_FIELD -> R.layout.item_event_register_field_placeholder
+
     }
 
     enum class Type {
@@ -74,6 +82,7 @@ class PlaceholderItem(
 
         ACTIVITY_CALENDAR,
         ACTIVITY_LIST,
+        ACTIVITY_TAGS,
 
         SUB_EVENT_MAIN,
 
@@ -82,5 +91,9 @@ class PlaceholderItem(
 
         MAIN_SESSIONS,
         OTHER_SESSIONS,
+
+        REGISTER_HEADER,
+        REGISTER_FIELD
+
     }
 }

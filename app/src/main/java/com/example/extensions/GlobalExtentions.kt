@@ -21,7 +21,6 @@ import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -37,7 +36,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
@@ -45,13 +43,6 @@ import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
-import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.my.MyEventsFragmentNew
-import com.example.ui.main.MainActivity
-import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.profile.ProfileFragment
 import com.example.util.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout

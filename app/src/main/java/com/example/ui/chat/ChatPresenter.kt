@@ -100,10 +100,13 @@ class ChatPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    updateMessages(isFirstLaunch, it)
-                    if (isFirstLaunch) {
-                        scrollListToPosition(0, false)
-                        isFirstLaunch = false
+                    if (it.isNullOrEmpty()) showEmptyChatPlaceholder()
+                    else {
+                        updateMessages(isFirstLaunch, it)
+                        if (isFirstLaunch) {
+                            scrollListToPosition(0, false)
+                            isFirstLaunch = false
+                        }
                     }
                 }
             }

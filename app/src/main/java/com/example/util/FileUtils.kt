@@ -14,6 +14,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import com.example.BuildConfig
 import okhttp3.ResponseBody
 import timber.log.Timber
@@ -304,7 +305,7 @@ object FileUtils {
                 var longId: Long = 0
                 val contentUriPrefixesToTry = arrayOf(
                         "content://downloads/public_downloads",
-                        "content://downloads/my_downloads"
+                        "content://downloads/my_downloads",
                 )
 
                 try {
@@ -359,6 +360,11 @@ object FileUtils {
                 } else if ("audio" == type) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 }
+                //new
+                else if ("document" == type) {
+                    contentUri = MediaStore.Files.getContentUri("external");
+                }
+
                 val selection = "_id=?"
                 val selectionArgs = arrayOf(
                         split[1]

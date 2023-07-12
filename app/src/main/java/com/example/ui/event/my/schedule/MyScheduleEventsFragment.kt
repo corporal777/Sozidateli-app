@@ -2,6 +2,7 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.core.view.isVisible
@@ -14,9 +15,11 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.*
 import com.example.holders.CalendarHorizontalListItem
+import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
@@ -96,16 +99,16 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                 adapter = groupAdapter
                 setItemViewCacheSize(10)
                 recycledViewPool.setMaxRecycledViews(0, 10)
-                onScrolled { _, dy ->
-                    mDy += dy
+                onScrolled { _, _ ->
                     val lastItem = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     try {
-                        val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
-                        val now =
-                            mPresenter.createCalendarDay(defaultServerDateFormatter.parse(item.date).time)
-                        changeDayWhenScrollDown(now)
-                        if (!mCanChangeDay) changeDay(now)
-
+                        if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
+                            val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
+                            if (!mPresenter.isJumping){
+                                changeDayWhenScrollDown(item.getDay())
+                                if (!mCanChangeDay) changeDay(item.getDay())
+                            }
+                        }
                     } catch (e: Exception) {
                     }
                 }
@@ -118,19 +121,8 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
                 calendarPager.apply {
                     adapter = calendarAdapter
                     offscreenPageLimit = 3
-                    onPageChanged { position, _, _ ->
-                        try {
-                            val item =
-                                calendarAdapter.getItem(position) as CalendarHorizontalListItem
-                            val day = item.getFirstItem().millis.calendar()
-                            val mMonth = getMonthName(day)
-                            tvMonth.text = mMonth
-                        } catch (e: Exception) {
-
-                        }
-                    }
                 }
-                appBar.ivBack.setOnClickListener { findNavController().navigateUp() }
+                ivBack.setOnClickListener { findNavController().navigateUp() }
                 etSearch.apply {
                     SearchInput(this).apply {
                         setOnTextChange { mPresenter.onSearchTextChange(it) }
@@ -162,6 +154,36 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         eventsSection.update(List(3) { PlaceholderItem(PlaceholderItem.Type.SCHEDULE_LIST) })
     }
 
+
+    override fun setHeaderCalendar(days: List<List<EventScheduleDay>>) {
+        calendarSection.update(
+            days.mapIndexed { i, l ->
+                EventDaysListItem(i, l) { day -> mPresenter.onDaySelected(day) }
+            }
+        )
+        mBinding.appBar.tvMonth.isVisible = !days.isNullOrEmpty()
+        mBinding.appBar.clSearch.isVisible = true
+    }
+
+    override fun setMonthCalendar(dates: List<EventScheduleDay>, month: String) {
+        mBinding.appBar.apply {
+            tvMonth.apply {
+                text = month
+                setOnClickListener {
+                    CalendarBottomSheet(
+                        requireContext(),
+                        mPresenter.currentDay,
+                        dates
+                    ).setDateSelectCallback { date ->
+                        changeDayWhenScrollDown(date.date)
+                        changeDay(date.date)
+                        scrollContent(date)
+                    }.show()
+                }
+            }
+        }
+    }
+
     override fun setContent(data: List<EventScheduleData>) {
         eventsSection.update(
             data.map {
@@ -174,51 +196,67 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
         )
     }
 
-    override fun setHeaderCalendar(days: List<List<EventScheduleCalendarDay>>) {
-        calendarSection.update(
-            days.mapIndexed { index, d ->
-                CalendarHorizontalListItem(index, d) { day ->
-                    mPresenter.onDaySelected(day)
-                }
-            }
-        )
-        mBinding.appBar.tvMonth.isVisible = !days.isNullOrEmpty()
-        mBinding.appBar.clSearch.isVisible = true
-    }
-
-    override fun setMonthCalendar(subEvents: List<EventActivityModel>, month: String) {
-        mBinding.appBar.apply {
-            tvMonth.apply {
-                text = month
-                setOnClickListener {
-                    CalendarBottomSheet(
-                        requireContext(),
-                        mCurrentDay,
-                        subEvents
-                    ).setDateSelectCallback { date ->
-                        changeDayWhenScrollDown(date)
-                        changeDay(date)
-                        scrollContent(date)
-                    }.show()
-                }
-            }
+    override fun selectDay(day: EventScheduleDay) {
+        for (i in 0 until calendarSection.itemCount) {
+            val item = calendarSection.getItem(i) as EventDaysListItem
+            item.selectDay(day)
         }
     }
 
-
-    override fun scrollContent(day: EventScheduleCalendarDay) {
-        val date = defaultServerDateFormatter.format(day.millis)
+    override fun scrollContent(day: EventScheduleDay) {
         val group =
-            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == date }
+            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == day.date }
         if (group == null) {
             val message = getString(R.string.this_day_doesnt_have_event)
             showMessageDialog(message)
         } else {
             val position = groupAdapter.getAdapterPosition(group)
+            mPresenter.startJumpingTimer()
             mLayoutManager.startSmoothScroll(getSmoothScroller(position))
         }
     }
 
+    override fun scrollToDay(day: EventScheduleDay) {
+        Handler().post(Runnable {
+            val item = calendarSection.findItemBy<EventDaysListItem> { it.isHasDay(day.date) }
+            if (item != null) {
+                val position = calendarSection.getPosition(item)
+                mBinding.appBar.calendarPager.setCurrentItem(position, true)
+                item.selectDay(day)
+            }
+        })
+    }
+
+    private fun changeDayWhenScrollDown(day: String?) {
+        try {
+            Handler().post(Runnable {
+                mPresenter.apply { currentDay = createCalendarDay(day) }
+                val item = calendarSection.findItemBy<EventDaysListItem> { it.isHasDay(day) }
+                if (item != null) {
+                    val position = calendarSection.getPosition(item)
+                    mBinding.appBar.apply {
+                        calendarPager.setCurrentItem(position, true)
+                        tvMonth.text = getMonthName(item.getFirstItem().millis.calendar())
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun changeDay(day: String?) {
+        try {
+            for (i in 0 until calendarSection.itemCount) {
+                val item = calendarSection.getItem(i) as EventDaysListItem
+                item.changeDay(day)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
 
     override fun showAboutEvent(eventId: String) {
         findNavController().navigate(
@@ -236,6 +274,7 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
 
     override fun showEmptyListPlaceholder() {
         hideLoadingAlertDialog()
+        calendarSection.update(emptyList())
         eventsSection.updateItem(
             NoScheduleEventItem(
                 "Нет результатов",
@@ -272,58 +311,6 @@ class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding
 
     override fun showLoadingAlertDialog() = mProgressDialog.showDialog()
     override fun hideLoadingAlertDialog() = mProgressDialog.hideDialog()
-
-    override fun scrollToDay(day: EventScheduleCalendarDay) {
-        var mPosition = 0
-        mCurrentDay = day
-        Handler().post(Runnable {
-            val item = calendarSection.findItemBy<CalendarHorizontalListItem> { it.scrollToDay(day) }
-            if (item != null) {
-                item.selectDay(day)
-                mPosition = calendarSection.getPosition(item)
-                mBinding.appBar.calendarPager.setCurrentItem(mPosition, true)
-            }
-        })
-    }
-
-    override fun selectDay(day: EventScheduleCalendarDay) {
-        mCurrentDay = day
-        for (i in 0 until calendarSection.itemCount) {
-            val item = calendarSection.getItem(i) as CalendarHorizontalListItem
-            item.selectDay(day)
-        }
-    }
-
-    private fun changeDayWhenScrollDown(day: EventScheduleCalendarDay) {
-        try {
-            var mPosition = 0
-            mCurrentDay = day
-            Handler().post(Runnable {
-                val item =
-                    calendarSection.findItemBy<CalendarHorizontalListItem> { it.changeDay(day) }
-                if (item != null) {
-                    mPosition = calendarSection.getPosition(item)
-                    mBinding.appBar.calendarPager.setCurrentItem(mPosition, true)
-
-                }
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun changeDay(day: EventScheduleCalendarDay) {
-        try {
-            for (i in 0 until calendarSection.itemCount) {
-                val item = calendarSection.getItem(i) as CalendarHorizontalListItem
-                item.selectDayNew(day)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
 
 
     private fun getSmoothScroller(jumPosition: Int): LinearSmoothScroller {

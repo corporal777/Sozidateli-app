@@ -13,7 +13,6 @@ import com.example.util.pagination.PaginationListGroupAdapter
 
 interface RecommendationsContract {
     interface View : EventListContract.View{
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setData(events: List<EventNew?>, isNeedUpdateApp : Boolean?)
 
@@ -22,10 +21,6 @@ interface RecommendationsContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSearch()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updateActionButton(event: EventNew?)
-
     }
 
     interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {

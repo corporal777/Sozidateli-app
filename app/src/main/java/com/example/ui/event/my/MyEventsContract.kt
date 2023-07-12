@@ -9,7 +9,7 @@ import com.example.ui.event.list.EventListContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 
-interface MyEventsContractNew {
+interface MyEventsContract {
 
 
     interface View : EventListContract.View {

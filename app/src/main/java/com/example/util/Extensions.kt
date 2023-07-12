@@ -252,7 +252,7 @@ fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
     return Color.argb(alpha, red, green, blue)
 }
 
-fun getMonthName(calendar: Calendar): String {
+fun getMonthName(calendar: Calendar?): String {
     var month = ""
     val monthNames = arrayOf(
         "Январь",
@@ -268,14 +268,15 @@ fun getMonthName(calendar: Calendar): String {
         "Ноябрь",
         "Декабрь"
     )
-    val cal = System.currentTimeMillis()
 
-    month = if (getCurrentYear() == calendar.get(Calendar.YEAR)) {
-        monthNames[calendar.get(Calendar.MONTH)]
-    } else {
-        monthNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
+    return if (calendar == null) ""
+    else {
+        month =
+            if (getCurrentYear() == calendar.get(Calendar.YEAR)) monthNames[calendar.get(Calendar.MONTH)]
+            else monthNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
+
+        month
     }
-    return month
 }
 
 //@SuppressLint("HardwareIds")

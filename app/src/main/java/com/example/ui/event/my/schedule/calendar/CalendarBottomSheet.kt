@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.isInvisible
 import com.arellomobile.mvp.MvpDelegate
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
@@ -13,10 +14,12 @@ import com.example.App
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.databinding.BottomSheetCalendarBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
+import com.example.extensions.longToDate
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.calendarView.DayViewDecorator
 import com.example.ui.views.calendarView.DayViewFacade
@@ -29,13 +32,13 @@ import javax.inject.Provider
 
 class CalendarBottomSheet(
     context: Context,
-    private val day: EventScheduleCalendarDay,
-    private val days: List<EventActivityModel>
+    private val day: EventScheduleDay?,
+    private val days: List<EventScheduleDay>
 ) : BottomSheetDialog(context), CalendarBottomSheetContract.View {
 
     private val mBinding = BottomSheetCalendarBinding.inflate(LayoutInflater.from(context))
     private var onActionClick: (date: Calendar) -> Unit = {}
-    private var onDateClick: (date: EventScheduleCalendarDay) -> Unit = {}
+    private var onDateClick: (date: EventScheduleDay) -> Unit = {}
     private val mvpDelegate by lazy { MvpDelegate<CalendarBottomSheet>(this) }
 
 
@@ -80,6 +83,7 @@ class CalendarBottomSheet(
                 .setMinimumDate(minDate)
                 .setMaximumDate(maxDate)
                 .commit()
+            isInvisible = false
         }
     }
 
@@ -101,7 +105,7 @@ class CalendarBottomSheet(
         return this
     }
 
-    fun setDateSelectCallback(block: (date: EventScheduleCalendarDay) -> Unit): CalendarBottomSheet {
+    fun setDateSelectCallback(block: (date: EventScheduleDay) -> Unit): CalendarBottomSheet {
         onDateClick = block
         return this
     }
@@ -120,13 +124,12 @@ class CalendarBottomSheet(
         mvpDelegate.onDestroy()
     }
 
-    fun createCalendarDay(date: Long): EventScheduleCalendarDay {
+    private fun createCalendarDay(date: Long): EventScheduleDay {
         val cal = date.calendar()
-        return EventScheduleCalendarDay(
+        return EventScheduleDay(
+            longToDate(date),
             date,
-            cal.get(Calendar.WEEK_OF_MONTH),
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                ?: "",
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
             cal.get(Calendar.DAY_OF_MONTH),
             true
         )

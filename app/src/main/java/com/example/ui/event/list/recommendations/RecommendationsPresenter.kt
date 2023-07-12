@@ -47,6 +47,7 @@ class RecommendationsPresenter
 
     private var isFirstAttach = true
 
+
     override fun attachView(view: RecommendationsContract.View?) {
         super.attachView(view)
         if (isFirstAttach) isFirstAttach = false
@@ -55,12 +56,9 @@ class RecommendationsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(List(10) { null }, null)
-        paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false, initialSize = 30)
-
-        compositeDisposable += Observable.create(paginationList)
+        viewState.setData(List(5) { null }, null)
+        compositeDisposable += Observable.create(pagination)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()
@@ -72,14 +70,14 @@ class RecommendationsPresenter
             .subscribeSimple {
                 if (hasNoConnectionError && it) {
                     hasNoConnectionError = false
-                    paginationList.invalidate()
+                    pagination.invalidate()
                 }
             }
     }
 
     override fun onSearchClick() = viewState.showSearch()
-    override fun onRefreshRequest() = paginationList.invalidate()
-    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
+    override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
     override fun getPaginationRequest(
         limit: Int,

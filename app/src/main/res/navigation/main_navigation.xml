@@ -883,7 +883,7 @@
 
     <fragment
         android:id="@+id/my_events_fragment_new"
-        android:name="com.example.ui.event.my.MyEventsFragmentNew"
+        android:name="com.example.ui.event.my.MyEventsFragment"
         android:label="MyEventsFragmentNew"
         tools:layout="@layout/fragment_my_events">
 

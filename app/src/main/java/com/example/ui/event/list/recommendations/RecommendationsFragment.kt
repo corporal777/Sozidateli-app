@@ -16,6 +16,7 @@ import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
+import com.example.ui.event.list.recommendations.items.UpdateAppItem
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.profile.ProfileFragmentArgs
@@ -86,7 +87,7 @@ class RecommendationsFragment :
     }
 
 
-    override fun updateActionButton(event: EventNew?) {
+    override fun updateEvent(event: EventNew) {
         dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
     }
 

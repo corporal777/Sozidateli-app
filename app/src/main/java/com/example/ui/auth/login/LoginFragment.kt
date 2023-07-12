@@ -29,34 +29,30 @@ class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.Vie
     @Inject
     lateinit var presenterProvider: Provider<LoginPresenter>
 
-
+    private val args: LoginFragmentArgs by navArgs()
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenterProvider.get().apply {
         args.apply {
             isRegister = isRegistered
             invite = inviteId
             (requireActivity() as MainActivity).invite = inviteId
-            deviceModel = getDeviceName()
             login = email ?: ""
         }
     }
 
-    private val args: LoginFragmentArgs by navArgs()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            btnForgotPassword.isVisible = !isRegister
-            etLogin.apply {
-                onTextChanged {
-                    it?.toString()?.let { text -> presenter.onChangeLoginText(text) }
-                }
+            btnForgotPassword.apply {
+                isVisible = !isRegister
+                setOnClickListener { presenter.onClickRecoverPassword() }
+            }
+            etLogin.onTextChanged {
+                it?.toString()?.let { text -> presenter.onChangeLoginText(text) }
             }
             etPassword.onTextChanged {
                 it?.toString()?.let { text -> presenter.onChangePasswordText(text) }
             }
-
-            btnForgotPassword.setOnClickListener { presenter.onClickRecoverPassword() }
             btnLogin.setOnClickListener {
                 hideKeyboard()
                 if (invite != -1) (requireActivity() as MainActivity).setIgnoreDeeplink(true)

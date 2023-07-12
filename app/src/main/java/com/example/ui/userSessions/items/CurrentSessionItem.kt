@@ -1,14 +1,18 @@
 package com.example.ui.userSessions.items
 
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.EventActivityModel
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemCurrentSessionBinding
+import com.example.databinding.ItemLectureBinding
 import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
 
 class CurrentSessionItem(
     val session: UserSessionModel,
+    val isHas : Boolean,
     val onKillSessions: () -> Unit,
     val onShowSession: (session: UserSessionModel) -> Unit
 ) : BindableItem<ItemCurrentSessionBinding>(session.sessionId) {
@@ -16,6 +20,8 @@ class CurrentSessionItem(
     private var deviceName = ""
     private var deviceType = ""
     private var deviceLocation = ""
+
+    private var isHasSession = isHas
 
     init {
         deviceName =
@@ -48,8 +54,11 @@ class CurrentSessionItem(
             tvDeviceType.text = deviceType
             tvLocation.text = "$deviceLocation • в сети"
             decorDeviceIcon(ivDeviceIcon, session)
-            btnKillSessions.setOnClickListener {
-                onKillSessions.invoke()
+            btnKillSessions.apply {
+                isVisible = isHasSession
+                setOnClickListener {
+                    onKillSessions.invoke()
+                }
             }
             itemContainer.setOnClickListener {
                 onShowSession(session)
@@ -71,6 +80,18 @@ class CurrentSessionItem(
                 icon.setImageResource(R.drawable.ic_apple_device)
             } else {
                 icon.setImageResource(R.drawable.ic_desktop_device)
+            }
+        }
+    }
+
+
+    override fun bind(viewBinding: ItemCurrentSessionBinding, position: Int, payloads: MutableList<Any>?) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is Boolean) {
+                isHasSession = payload
+                viewBinding.btnKillSessions.isVisible = isHasSession
             }
         }
     }

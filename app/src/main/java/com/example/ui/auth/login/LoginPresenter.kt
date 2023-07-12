@@ -7,6 +7,7 @@ import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
 import com.example.data.bodies.RebaseInviteBody
 import com.example.data.models.ApiError
+import com.example.data.models.NewAuthResponse
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -19,8 +20,10 @@ import com.example.util.Utils.newPhoneValidator
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.getAppVersion
 import com.example.util.getAppVersionCode
+import com.example.util.getDeviceName
 import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
@@ -46,7 +49,7 @@ class LoginPresenter
     var password = ""
     var loginType = "email"
     var deviceId = appData.deviceId
-    var deviceModel = ""
+    var deviceModel = getDeviceName()
     var appVersion = getAppVersion()
     var appCode = getAppVersionCode()
 
@@ -75,42 +78,25 @@ class LoginPresenter
     }
 
     override fun onClickLogin(login: String, password: String, invite: Int) {
-        val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-        viewState.showCustomProgressDialog()
-        if (invite != -1) {
-            compositeDisposable += authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
-                .flatMapCompletable { authRepository.rebaseInvite(invite, RebaseInviteBody(it.id ?: 0, it.token ?: "")) }
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                    onError = {
-                        it.printStackTrace()
-                        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-                        viewState.apply {
-                            hideCustomProgressDialog()
-                            if (hasApiError == true) showWrongPasswordError()
-                            else onReceiveError(it)
-                        }
-                    },
-                    onComplete = { Shake.registerUser(appData.getId().toString()) }
-                )
-        } else {
-            compositeDisposable += authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                    onError = {
-                        it.printStackTrace()
-                        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-                        viewState.apply {
-                            hideCustomProgressDialog()
-                            if (hasApiError == true) showWrongPasswordError()
-                            else onReceiveError(it)
-                        }
-                    },
-                    onComplete = { Shake.registerUser(appData.getId().toString()) }
-                )
+       compositeDisposable += Completable.defer {
+            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
+            if (invite != -1) {
+                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
+                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
+            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
         }
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+                    if (hasApiError == true) viewState.showWrongPasswordError()
+                    else onReceiveError(it)
+                },
+                onComplete = {
+                    Shake.registerUser(appData.getId().toString())
+                })
     }
 
     private fun performDataChange() {
@@ -135,10 +121,14 @@ class LoginPresenter
         return AuthBody(
             LoginModel(loginType, login),
             LoginModel("common", password),
-            deviceId?:"",
+            deviceId ?: "",
             deviceModel,
             appCode,
             appVersion
         )
+    }
+
+    private fun getInviteBody(auth : NewAuthResponse): RebaseInviteBody {
+        return RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
     }
 }

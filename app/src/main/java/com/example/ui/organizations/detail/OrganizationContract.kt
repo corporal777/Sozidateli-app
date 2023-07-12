@@ -18,7 +18,7 @@ interface OrganizationContract {
         fun setInformationData(organization: OrganizationNew)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setEventsData(events: List<EventNew?>)
+        fun setEventsData(events: List<EventNew>)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun setMembersData(members: List<OrganizationMemberModel>, totalSize : Int)

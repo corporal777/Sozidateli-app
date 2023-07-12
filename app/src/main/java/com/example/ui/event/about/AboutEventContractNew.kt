@@ -84,6 +84,9 @@ interface AboutEventContractNew {
 
         @StateStrategyType(SkipStrategy::class)
         fun updateAppBarBackgroundColorValue(value : Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showTest()
     }
 
     interface Presenter : BaseContract.Presenter {

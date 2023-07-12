@@ -1,10 +1,12 @@
 package com.example.ui.event.my.schedule
 
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
 import com.example.ui.base.BaseContract
 import com.example.ui.event.my.schedule.items.EventScheduleData
 import com.example.util.AddToEndSingleByTagStateStrategy
@@ -15,29 +17,29 @@ interface MyScheduleEventsContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setContentPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setHeaderCalendar(days: List<List<EventScheduleCalendarDay>>)
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setHeaderCalendar(days: List<List<EventScheduleDay>>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun setMonthCalendar(
-            subEvents: List<EventActivityModel>,
+            dates: List<EventScheduleDay>,
             month : String
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(AddToEndSingleStrategy::class)
         fun setContent(data: List<EventScheduleData>)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showAboutEvent(eventId: String)
+        fun scrollToDay(day: EventScheduleDay)
 
         @StateStrategyType(SkipStrategy::class)
-        fun scrollToDay(day: EventScheduleCalendarDay)
+        fun scrollContent(day: EventScheduleDay)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun selectDay(day: EventScheduleCalendarDay)
+        fun selectDay(day: EventScheduleDay)
 
         @StateStrategyType(SkipStrategy::class)
-        fun scrollContent(day: EventScheduleCalendarDay)
+        fun showAboutEvent(eventId: String)
 
         @StateStrategyType(SkipStrategy::class)
         fun showMessageDialog(message: String)
@@ -67,7 +69,7 @@ interface MyScheduleEventsContract {
     interface Presenter : BaseContract.Presenter {
         fun onSearchTextChange(text: String)
         fun onSearchTextSubmit(text: String)
-        fun onDaySelected(day: EventScheduleCalendarDay)
+        fun onDaySelected(day: EventScheduleDay)
         fun onShowEventClick(eventId: String)
         fun onSubEventClick(eventId: String, subEvent: EventActivityModel)
         fun onAddSubEventToScheduleClick(subEvent: EventActivityModel)

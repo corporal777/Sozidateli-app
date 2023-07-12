@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.*
-import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -17,11 +16,9 @@ import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
@@ -45,8 +42,7 @@ import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
-import com.example.ui.event.my.MyEventsFragmentNew
+import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
@@ -105,7 +101,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 setWindowTransparency()
             } else if (f is StoriesFragment) doEdgeWindow()
-            else if (f is MyEventsFragmentNew || f is MyScheduleEventsFragment) {
+            else if (f is MyEventsFragment || f is MyScheduleEventsFragment) {
                 cancelWindowTransparency()
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
             } else {
@@ -130,7 +126,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
             when (f) {
                 is RecommendationsFragment,
-                is MyEventsFragmentNew,
+                is MyEventsFragment,
                 is ChatListTabsFragment,
                 is ProfileFragment,
                 is MyScheduleEventsFragment,
@@ -179,7 +175,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (fr != null) {
             when (fr) {
                 is ProfileFragment,
-                is MyEventsFragmentNew,
+                is MyEventsFragment,
                 is NotificationsFragment,
                 is ChatListTabsFragment ->
                     findNavController().popBackStack(R.id.recommendations_fragment, false)
@@ -664,7 +660,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     if (findNavController().currentDestination?.id == R.id.my_events_fragment_new) {
                         if (frag != null) {
                             val my =
-                                frag.childFragmentManager.primaryNavigationFragment as MyEventsFragmentNew
+                                frag.childFragmentManager.primaryNavigationFragment as MyEventsFragment
                             my.smoothScrollToFirstItem()
                         }
                     }
@@ -752,7 +748,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             is NotificationsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.notification).isChecked = true
             }
-            is MyEventsFragmentNew -> {
+            is MyEventsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.my_events).isChecked = true
             }
         }

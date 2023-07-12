@@ -35,19 +35,6 @@ class RecommendationItemsGroup(
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
                 else EventItemNew(
                     it,
-                    it.id.toString(),
-                    it.state,
-                    it.status?.value,
-                    it.binds?.currentUserRegistration?.status?.value,
-                    it.backgroundColor?.value,
-                    it.image?.uri,
-                    it.binds?.eventRegistrationState,
-                    it.userAgreement?.uri,
-                    it.binds?.currentUserRegistration?.id.toString(),
-                    it.name,
-                    it.address?.getShortAddress(),
-                    it.holdingDate?.from,
-                    it.holdingDate?.to,
                     eventClickListener,
                 )
             })
@@ -74,6 +61,7 @@ class RecommendationItemsGroup(
         val id = event?.id?.toLong()
         eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
+
 
     override fun getGroupCount() = 2
 }

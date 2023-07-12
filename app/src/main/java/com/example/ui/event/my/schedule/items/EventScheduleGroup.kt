@@ -19,35 +19,36 @@ class EventScheduleGroup(
     init {
         mHeaderItem.apply {
             update(listOf(
-                EventActivityDateItem(data.firstDate),
-                EventImageHeaderItem(data.getId(), data.getName(), data.getImage(), data.getBackgroundColor()) {
+                EventActivityDateItem(data.titleDate),
+                EventImageHeaderItem(
+                    data.getId(),
+                    data.getName(),
+                    data.getImage(),
+                    data.getBackgroundColor()
+                ) {
                     onHeaderClick(data.getId())
                 }
             ))
         }
-        add(mHeaderItem)
         mDataItem.apply {
-            if (!data.subEvents.isNullOrEmpty()) {
-                data.subEvents.forEach { subEvents ->
-                    if (!subEvents.key.isNullOrEmpty()) {
-                        add(EventActivityDateItem(subEvents.key))
-                    }
-                    if (!subEvents.value.isNullOrEmpty()) {
-                        subEvents.value.forEach {
-                            add(
-                                EventActivityItem(
-                                    data.getId(),
-                                    it,
-                                    emptyList(),
-                                    onSubEventClickListener,
-                                    true)
-                            )
-                        }
-                    }
-                }
+            data.subEvents.forEach {
+                if (!it.titleDate.isNullOrEmpty())
+                    add(EventActivityDateItem(it.titleDate, it.getDateInLong()))
+
+                add(
+                    EventActivityItem(
+                        data.getId(),
+                        it.subEvent,
+                        emptyList(),
+                        onSubEventClickListener,
+                        true
+                    )
+                )
             }
         }
-        add(mDataItem)
+
+        mHeaderItem.registerGroupDataObserver(this)
+        mDataItem.registerGroupDataObserver(this)
     }
 
     override fun getGroup(position: Int): Group {

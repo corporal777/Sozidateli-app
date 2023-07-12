@@ -26,10 +26,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private val eventRepository: EventRepository,
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
-    protected val pagination: PaginationDataSourceFactory<EventNew?> =
-        PaginationDataSourceFactory(::getPaginationRequest)
-    lateinit var paginationList: PaginationList<EventNew?>
+    protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
+        .applyErrorHandler { if (it.cause is UnknownHostException) hasNoConnectionError = true }
+        .buildList(enablePlaceholders = false, initialSize = 30)
 
+    var eventsList = mutableListOf<EventNew?>()
 
     override fun onActionRegister(event: String, url: String?) {
         if (url.isNullOrEmpty()) viewState.showEventRequest(event)
@@ -48,12 +49,19 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onActionCancel(event: String, registrationId: String?) {
+        val binds =
+            "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState,format"
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEventDetails(event))
+            .andThen(eventRepository.getEvent(event, binds))
+            .doOnSuccess {
+                val item = eventsList.find { x -> x?.id == it.id }
+                if (item != null) eventsList[eventsList.indexOf(item)] = it
+            }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple {
-                paginationList.invalidate()
+                viewState.updateEvent(it)
+                //paginationList.invalidate()
             }
     }
 
@@ -68,6 +76,12 @@ abstract class EventListPresenter<V : EventListContract.View>(
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
+
+    protected fun transformData(list: List<EventNew?>): MutableList<EventNew?> {
+        eventsList = list.toMutableList()
+        return eventsList
+    }
+
 
     protected abstract fun getPaginationRequest(
         limit: Int,

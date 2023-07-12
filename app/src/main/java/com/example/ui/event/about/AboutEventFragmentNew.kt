@@ -33,6 +33,7 @@ import com.example.ui.views.GridLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs_new.blur.EventAddedToFavoriteBlurredDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -101,9 +102,14 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = mPresenter.onSubEventClick(subEvent)
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) = mPresenter.onAddToScheduleClick(subEvent)
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = mPresenter.onRemoveFromScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
+            mPresenter.onSubEventClick(subEvent)
+
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
+            mPresenter.onAddToScheduleClick(subEvent)
+
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
+            mPresenter.onRemoveFromScheduleClick(subEvent)
     }
 
     private val customLayoutManager by lazy {
@@ -184,6 +190,8 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         )
     }
 
+
+
     override fun setSpeakersData(speakers: List<MemberModel>, showMore: Boolean) {
         eventSpeakersSection.updateItem(
             SpeakersHorizontalListItem(
@@ -196,10 +204,10 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
 
     override fun setProgramData(eventData: AboutEventData) {
         val list = arrayListOf<Group>()
-        if (!eventData.tags.isNullOrEmpty()){
+        if (!eventData.tags.isNullOrEmpty()) {
             list.add(TagsItem(eventData.tags) { mPresenter.onTagSelected() })
         }
-        if (!eventData.subEvents.isNullOrEmpty()){
+        if (!eventData.subEvents.isNullOrEmpty()) {
             list.addAll(eventData.subEvents.map {
                 EventDetailActivitiesItem(
                     eventData.event.id.toString(),
@@ -210,7 +218,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
                 )
             })
         }
-        if (eventData.showMoreSubEvents){
+        if (eventData.showMoreSubEvents) {
             list.add(EventDetailShowActivitiesItem {
                 mPresenter.onShowEventActivitiesClick()
             })
@@ -343,6 +351,14 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
         findNavController().navigate(
             R.id.organization_fragment_new,
             OrganizationFragmentArgs.Builder(organization).build().toBundle()
+        )
+    }
+
+    override fun showTest() {
+        EventAddedToFavoriteBlurredDialog(
+            0,
+            requireContext(),
+            mBinding.root
         )
     }
 

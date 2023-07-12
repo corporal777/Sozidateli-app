@@ -36,11 +36,9 @@ class OrganizationEventsPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(10) { null })
-        paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false, initialSize = 30)
 
-        compositeDisposable += Observable.create(paginationList)
+        compositeDisposable += Observable.create(pagination)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()
@@ -55,8 +53,8 @@ class OrganizationEventsPresenter
     }
 
 
-    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
-    override fun onRefreshRequest() = paginationList.invalidate()
+    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
 
     override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getOrganizationEventsList(

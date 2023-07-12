@@ -29,6 +29,7 @@ import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.dialogs_new.BlockingChatDialog
@@ -125,6 +126,10 @@ class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
 
     override fun setChatPlaceholder() {
         chatSection.updateItem(PlaceholderItem(PlaceholderItem.Type.CHAT))
+    }
+
+    override fun showEmptyChatPlaceholder() {
+        chatSection.updateItem(NoEventItem(getString(R.string.messages_not_found)))
     }
 
     override fun updateMessages(showAnim: Boolean, messages: List<ChatMessage>) {

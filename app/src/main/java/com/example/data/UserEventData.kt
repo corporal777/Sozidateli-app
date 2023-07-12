@@ -128,7 +128,7 @@ class UserEventData(
     }
 
 
-    fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
+    private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
         if (dates.isEmpty()) return arrayListOf()
         val sortedDates = dates.sorted()
 
@@ -145,49 +145,80 @@ class UserEventData(
         }
     }
 
-
-    fun createCalendarDaysNew(dates: List<Long>): ArrayList<EventScheduleCalendarDay> {
+    fun createEventScheduleDays(dates: List<String>): List<EventScheduleDay> {
+        if (dates.isEmpty()) return arrayListOf()
         val sortedDates = dates.sorted()
 
-        return sortedDates.map { day ->
-            val cal = day.calendar()
-            EventScheduleCalendarDay(
-                day,
-                cal.get(Calendar.WEEK_OF_MONTH),
-                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                    ?: "",
+        return sortedDates.map {
+            val millis = defaultServerDateFormatter.parse(it).time
+            val cal = millis.calendar()
+            EventScheduleDay(
+                it,
+                millis,
+                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
                 cal.get(Calendar.DAY_OF_MONTH),
-                false
+                true
             )
-        } as ArrayList<EventScheduleCalendarDay>
+        }
     }
 
-    fun createCalendarDaysForSchedule(
-        dates: List<Long>,
-        list: List<EventActivityModel>
-    ): ArrayList<EventScheduleCalendarDay> {
-        val sortedDates = dates.sorted()
-        val allDates = sortedDates.map { day ->
-            val cal = day.calendar()
-            EventScheduleCalendarDay(
-                day,
-                cal.get(Calendar.WEEK_OF_MONTH),
-                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                    ?: "",
-                cal.get(Calendar.DAY_OF_MONTH),
-                false
-            )
-        } as ArrayList<EventScheduleCalendarDay>
-        allDates.forEachIndexed { index, day ->
-            list.forEach { eventDay ->
-                val eventDate = defaultServerDateFormatter.parse(eventDay.holdingDate?.from).time
-                if (eventDate == day.millis) {
-                    allDates[index].hasEvents = true
+    fun createEventScheduleDay(date: String?): EventScheduleDay? {
+        if (date.isNullOrEmpty()) return null
+
+        val millis = defaultServerDateFormatter.parse(date).time
+        val cal = millis.calendar()
+        return EventScheduleDay(
+            date,
+            millis,
+            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
+            cal.get(Calendar.DAY_OF_MONTH),
+            true
+        )
+    }
+
+
+    fun collectDatesToWeeks(dates: List<EventScheduleDay>): List<List<EventScheduleDay>> {
+        var countSize = 0
+        val listDays = arrayListOf<EventScheduleDay>()
+        val days = arrayListOf<List<EventScheduleDay>>()
+        dates.forEach {
+            listDays.add(it)
+            countSize++
+            if (listDays.size == 7) {
+                val list = arrayListOf<EventScheduleDay>()
+                list.addAll(listDays)
+                days.add(list)
+                listDays.clear()
+            } else {
+                if (countSize == dates.size) {
+                    val list = arrayListOf<EventScheduleDay>()
+                    list.addAll(listDays)
+                    days.add(list)
                 }
             }
         }
+        return days
+    }
 
-        return allDates
+    fun collectDates(dates:List<EventScheduleDay>): MutableMap<Int, List<EventScheduleDay>> {
+        var countSize = 0
+        var key = 1
+        val map = mutableMapOf<Int, List<EventScheduleDay>>()
+        val listDays = arrayListOf<EventScheduleDay>()
+        dates.forEach {
+            listDays.add(it)
+            countSize++
+            if (listDays.size == 7) {
+                map[key] = listDays
+                listDays.clear()
+                key++
+            } else {
+                if (countSize == dates.size) {
+                    map[key] = listDays
+                }
+            }
+        }
+        return map
     }
 
     fun clear() {

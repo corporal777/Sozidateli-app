@@ -38,17 +38,16 @@ class ActivitiesPresenter
 
     lateinit var userEvent: UserEvent
 
-    private var currentDay: EventScheduleCalendarDay? = null
-    private var mSearchWord = ""
+    private var currentDay: EventScheduleDay? = null
+    private var searchWord = ""
     var tagsNew: List<Tag.EventTag>? = null
     lateinit var eventId: String
 
     private var isFirstAttach = true
-    private lateinit var mLastDay: EventScheduleCalendarDay
 
     private var groupedEventList = arrayListOf<SubEventsData>()
     private var eventTags: List<Tag> = emptyList()
-    private var eventDates = emptyList<List<EventScheduleCalendarDay>>()
+    private var eventDates = mapOf<Int, List<EventScheduleDay>>()
     private var isStatusApproved = false
 
 
@@ -84,11 +83,9 @@ class ActivitiesPresenter
             val groupedList = groupData(selectedTags, list)
             if (!groupedList.isNullOrEmpty()) {
                 val dates = groupedList.mapNotNull { x -> x.titleDate }
-                eventDates = collectDatesToWeeks(userEventData.createCalendarDays(dates.map { s ->
-                    defaultServerDateFormatter.parse(s).time
-                }))
+                eventDates = userEventData.collectDates(userEventData.createEventScheduleDays(dates))
             }
-            Maybe.just(groupData(selectedTags, list))
+            Maybe.just(groupedList)
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { list ->
@@ -111,13 +108,10 @@ class ActivitiesPresenter
     private fun findDay() {
         compositeDisposable += Completable.fromAction {
             val date = System.currentTimeMillis()
-            val days = userEventData.createCalendarDays(
-                userEvent.activity.dates.map { defaultServerDateFormatter.parse(it.date).time }
-            )
+            val days = eventDates.values.flatten()
             val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
             val other = Calendar.getInstance()
             currentDay = days.find {
-                it.hasEvents &&
                         (dateCalendar.isSameDay(other.apply {
                             timeInMillis = it.millis
                         }) || it.millis - date > 0)
@@ -126,11 +120,16 @@ class ActivitiesPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onComplete = { if (currentDay != null) viewState.scrollContent(currentDay!!) }
+                onComplete = {
+                    if (currentDay != null) {
+                        viewState.scrollContent(currentDay!!)
+                        viewState.selectDay(currentDay!!)
+                    }
+                }
             )
     }
 
-    override fun onDaySelected(day: EventScheduleCalendarDay) {
+    override fun onDaySelected(day: EventScheduleDay) {
         currentDay = day
         viewState.apply {
             scrollContent(day)
@@ -138,11 +137,7 @@ class ActivitiesPresenter
         }
     }
 
-    override fun onSubEventClick(subEvent: EventActivityModel) {
-        checkInternetAndRun {
-            viewState.showSubEvent(userEvent.eventId, subEvent.id.toString())
-        }
-    }
+    override fun onSubEventClick(subEvent: EventActivityModel) = viewState.showSubEvent(eventId, subEvent.id.toString())
 
     override fun onSchemeClick() = viewState.showScheme(eventId)
 
@@ -190,7 +185,7 @@ class ActivitiesPresenter
     override fun onSearchTextChange(text: String) = onSearchTextSubmit(text)
     override fun onTagSelected() = initContent()
     override fun onSearchTextSubmit(text: String) {
-        mSearchWord = text
+        searchWord = text
         initContent()
     }
 
@@ -224,37 +219,14 @@ class ActivitiesPresenter
     }
 
 
-    private fun collectDatesToWeeks(dates: List<EventScheduleCalendarDay>): ArrayList<List<EventScheduleCalendarDay>> {
-        var countSize = 0
-        val listDays = arrayListOf<EventScheduleCalendarDay>()
-        val days = arrayListOf<List<EventScheduleCalendarDay>>()
-        dates.forEach {
-            listDays.add(it)
-            countSize++
-            if (listDays.size == 7) {
-                val list = arrayListOf<EventScheduleCalendarDay>()
-                list.addAll(listDays)
-                days.add(list)
-                listDays.clear()
-            } else {
-                if (countSize == dates.size) {
-                    val list = arrayListOf<EventScheduleCalendarDay>()
-                    list.addAll(listDays)
-                    days.add(list)
-                }
-            }
-        }
-        return days
-    }
-
     private fun checkParams(
         list: List<EventActivityModel>,
         selectedTags: List<Tag>
     ): List<EventActivityModel> {
         return if (list.isNullOrEmpty()) return emptyList()
-        else if (!mSearchWord.isNullOrBlank() && !selectedTags.isNullOrEmpty())
-            list.filter { x -> isEventHasTag(x, selectedTags) && isEventHasParams(mSearchWord, x) }
-        else if (!mSearchWord.isNullOrEmpty()) list.filter { x -> isEventHasParams(mSearchWord, x) }
+        else if (!searchWord.isNullOrBlank() && !selectedTags.isNullOrEmpty())
+            list.filter { x -> isEventHasTag(x, selectedTags) && isEventHasParams(searchWord, x) }
+        else if (!searchWord.isNullOrEmpty()) list.filter { x -> isEventHasParams(searchWord, x) }
         else if (!selectedTags.isNullOrEmpty()) list.filter { x -> isEventHasTag(x, selectedTags) }
         else list
     }
@@ -277,19 +249,6 @@ class ActivitiesPresenter
             groupedEventList = subEventsList
         }
         return subEventsList
-    }
-
-    fun createCalendarDay(day: String?): EventScheduleCalendarDay {
-        val date = defaultServerDateFormatter.parse(day).time
-        val cal = date.calendar()
-        return EventScheduleCalendarDay(
-            date,
-            cal.get(Calendar.WEEK_OF_MONTH),
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                ?: "",
-            cal.get(Calendar.DAY_OF_MONTH),
-            false
-        )
     }
 }
 
