@@ -67,7 +67,7 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
                         it.id,
                         it.user.nameLastName,
                         it.user.address?.getShortAddress()/*user_city*/,
-                        it.user.image.uri/*user_avatar*/,
+                        it.user.loadUserImage(),
                         { presenter.onUserClick(it) },
                         UserSubscribeButton.Action.UNBLOCK,
                         { presenter.onUnblockLick(it) }

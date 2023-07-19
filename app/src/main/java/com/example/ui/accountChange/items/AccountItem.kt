@@ -24,7 +24,7 @@ class AccountItem(
 
     override fun bind(viewBinding: ItemAccountChangeBinding, position: Int) {
         viewBinding.apply {
-            ivAvatar.setCircleAvatar(session.binds.user.image.uri)
+            ivAvatar.setCircleAvatar(session.binds.user.loadUserImage())
             tvName.text = session.binds.user.nameLastName
             tvEmail.text = userLogin
 

@@ -1,6 +1,7 @@
 package com.example.ui.event.registration
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -110,7 +111,8 @@ class EventRegistrationPresenter
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
             .doOnSuccess {
                 approvingMode = it.state?.registration?.approvingMode
-                val form = it.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
+                val form =
+                    it.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
                 eventData = getEventData(form, it)
                 formId = form?.id ?: 0
                 formFields.addAll(mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED }))
@@ -229,7 +231,7 @@ class EventRegistrationPresenter
     }
 
 
-    private fun registerToEvent(withLoading : Boolean) {
+    private fun registerToEvent(withLoading: Boolean) {
         compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
             .andThen(socket.connectToUpdates())
             .withCheckInternetConnectivity()
@@ -341,7 +343,7 @@ class EventRegistrationPresenter
     }
 
     override fun onRegisterClick() {
-        compositeDisposable += getRequestBody(false)
+        compositeDisposable += getRequestBody(0)
             .flatMap { eventRepository.eventRegisterNew(it) }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
@@ -368,7 +370,7 @@ class EventRegistrationPresenter
     }
 
     override fun saveEventFormResultDraft() {
-        compositeDisposable += getRequestBody(true)
+        compositeDisposable += getRequestBody(1)
             .flatMap { body -> eventRepository.saveEventFormResultDraft(body) }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
@@ -468,7 +470,7 @@ class EventRegistrationPresenter
     }
 
 
-    private fun getRequestBody(isDraft: Boolean): Single<RequestBody> {
+    private fun getRequestBody(isDraft: Int): Single<RequestBody> {
         return Single.fromCallable {
             val group = selectedGroup
             val fieldsData = fieldsData
@@ -478,39 +480,30 @@ class EventRegistrationPresenter
                 .setType(MultipartBody.FORM)
                 .apply {
                     var added = false
-                    if (group != null) {
-                        addFormDataPart("category_id", group)
-                        added = true
-                    }
+                    if (group != null) addFormDataPart("category_id", group)
+
                     addFormDataPart("form", formId.toString())
+                    addFormDataPart("isDraft", isDraft.toString())
                     added = true
+
                     fieldsData.forEachIndexed { index, fieldData ->
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
 
                         when (fieldData) {
                             is EventRegisterFieldData.Prefilled -> {
-                                if (!isDraft) addFormDataPart("fields[$index][id]", key)
+                                //if (!isDraft) addFormDataPart("fields[$index][id]", key)
                             }
                             is EventRegisterFieldData.File -> fieldData.value?.let {
                                 val path = it.path
                                 val fileId = it.id
-                                if (path.scheme?.startsWith("https") != true && path.scheme?.contains(
-                                        "https"
-                                    ) != true
-                                ) {
+                                if (checkHttpScheme(path)) {
                                     addFormDataPart("fields[$index][id]", key)
                                     val name = "${it.name}.${it.mimeType}"
                                     contentResolver.openInputStream(path)?.buffered()
                                         ?.use { stream -> stream.readBytes() }?.let { bytes ->
-                                            val body =
-                                                bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
-                                            addFormDataPart(
-                                                //"fields[$position][value][file]",
-                                                "fields[$index][value]",
-                                                name,
-                                                body
-                                            )
+                                            val body = bytes.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                            addFormDataPart("fields[$index][value]", name, body)
                                             added = true
                                         }
                                 } else {
@@ -521,17 +514,10 @@ class EventRegistrationPresenter
                             }
                             else -> {
                                 if (value is Iterable<*>) {
-                                    if (value.count() > 0) addFormDataPart(
-                                        "fields[$index][id]",
-                                        key
-                                    )
+                                    if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
                                     value.forEachIndexed { _, any ->
                                         if (any != null) {
-                                            addFormDataPart(
-                                                //"fields[$position][value][]",
-                                                "fields[$index][value]",
-                                                any.toString()
-                                            )
+                                            addFormDataPart("fields[$index][value]", any.toString())
                                             added = true
                                         }
                                     }
@@ -540,28 +526,13 @@ class EventRegistrationPresenter
                                         is EventPassport ->
                                             if (value.isDataComplete()) {
                                                 addFormDataPart("fields[$index][id]", key)
-                                                addFormDataPart(
-                                                    "fields[$index][value][series]",
-                                                    value.series ?: ""
-                                                )
-                                                addFormDataPart(
-                                                    "fields[$index][value][number]",
-                                                    value.number ?: ""
-                                                )
-                                                addFormDataPart(
-                                                    "fields[$index][value][issuedBy]",
-                                                    value.issuedBy ?: ""
-                                                )
-                                                addFormDataPart(
-                                                    "fields[$index][value][issuedDepartment]",
-                                                    value.issuedDepartment ?: ""
-                                                )
-                                                addFormDataPart(
-                                                    "fields[$index][value][issuedDate]",
-                                                    value.issuedDate ?: ""
-                                                )
+                                                addFormDataPart("fields[$index][value][series]", value.series ?: "")
+                                                addFormDataPart("fields[$index][value][number]", value.number ?: "")
+                                                addFormDataPart("fields[$index][value][issuedBy]", value.issuedBy ?: "")
+                                                addFormDataPart("fields[$index][value][issuedDepartment]", value.issuedDepartment ?: "")
+                                                addFormDataPart("fields[$index][value][issuedDate]", value.issuedDate ?: "")
                                                 added = true
-                                            } else null
+                                            }
                                         else -> {
                                             val data = value.toString()
                                             addFormDataPart("fields[$index][id]", key)
@@ -573,12 +544,8 @@ class EventRegistrationPresenter
                             }
                         }
                     }
-                    addFormDataPart("isDraft", isDraft.toString())
-                    if (!added) {
-                        return@fromCallable "".toRequestBody()
-                    }
-                }
-                .build()
+                    if (!added) return@fromCallable "".toRequestBody()
+                }.build()
         }
 
     }
@@ -624,7 +591,9 @@ class EventRegistrationPresenter
         }
     }
 
-
+    private fun checkHttpScheme(path: Uri): Boolean {
+        return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
+    }
 
     companion object {
         private const val API_ERROR_ALREADY_APPROVED = "Registration is approved before"

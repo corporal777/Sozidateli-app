@@ -76,13 +76,13 @@ class UserPresenter
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple {
-                    viewState.openChat(user.fullName, user.image.uri, it.id.toString())
+                    viewState.openChat(user.fullName, user.loadUserImage(), it.id.toString())
                 }
         } else {
             viewState.openChat(
                 user.fullName,
-                user.image.uri,
-                profileUserData.user.binds?.chatRoomWithMe?.id.toString()
+                user.loadUserImage(),
+                user.binds?.chatRoomWithMe?.id.toString()
             )
         }
     }

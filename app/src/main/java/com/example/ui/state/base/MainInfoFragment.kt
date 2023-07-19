@@ -86,7 +86,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
                 user.phone,
                 user.birthday?.isVisible ?: false,
                 user.state?.nameEdited ?: false,
-                user.image,
+                user.loadUserImage(),
                 isEnableNext = { isEnable ->
                     mBinding.btnSave.isEnabled = isEnable
                 }, confirmPhoneClick = {
@@ -120,7 +120,7 @@ class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoCon
         }
     }
 
-    override fun photoUpdated(photo: ImageModel) {
+    override fun photoUpdated(photo: ImageModel?) {
         adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setImage(photo)
     }
 

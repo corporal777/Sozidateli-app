@@ -953,6 +953,15 @@
         android:name="com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment"/>
 
     <fragment
+        android:id="@+id/active_invites_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment"/>
+
+    <fragment
+        android:id="@+id/archive_invites_fragment"
+        android:name="com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment"/>
+
+
+    <fragment
         android:id="@+id/event_notifications_fragment"
         android:name="com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment"/>
 

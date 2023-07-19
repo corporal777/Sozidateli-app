@@ -5,14 +5,13 @@ import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Handler
+import android.renderscript.RenderScript
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.renderscript.RenderScript
 import com.example.R
 import com.example.databinding.DialogBlurredEventAddedToFavoriteBinding
-import com.example.databinding.DialogEventAddedToFavoriteBinding
 
 class EventAddedToFavoriteBlurredDialog (
     val action: Int = 0,

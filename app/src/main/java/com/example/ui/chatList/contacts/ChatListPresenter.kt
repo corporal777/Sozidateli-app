@@ -122,7 +122,7 @@ class ChatListPresenter
     }
 
     override fun onChatClick(userChat: UserChat) =
-        viewState.openChat(userChat.id, userChat.user.nameLastName, userChat.user.image.uri)
+        viewState.openChat(userChat.id, userChat.user.nameLastName, userChat.user.loadUserImage())
 
     override fun onUserClick(
         uid: Int,

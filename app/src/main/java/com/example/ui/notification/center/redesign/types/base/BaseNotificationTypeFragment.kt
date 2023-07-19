@@ -40,17 +40,17 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
 
     abstract var presenter: P
 
+    val tagsSection by lazy { Section() }
     val contentSection by lazy { Section() }
     private val groupAdapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
+            add(tagsSection)
             add(contentSection)
             setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    val datesCount = presenter.getTitleDatesCount()
+                    val datesCount = presenter.getTitleDatesCount() + tagsSection.itemCount
                     if (position < datesCount) return
                     presenter.onItemTake(position - datesCount)
-
-                    //if (position > 0) presenter.onItemTake(position - 1)
                 }
             })
         }
@@ -137,7 +137,8 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
             toolbarLabel.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 if (btnReadAll.isVisible) {
                     endToStart = btnReadAll.id
-                    horizontalBias = 0.764F
+                    //horizontalBias = 0.764F
+                    horizontalBias = 0.8F
                 }
                 else {
                     endToStart = guidelineRight.id

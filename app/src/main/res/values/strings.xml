@@ -1015,6 +1015,8 @@
     <string name="events">Мероприятия</string>
     <string name="estimates_rf">Оценка результатов проектов</string>
     <string name="organizer">Мои организации</string>
+    <string name="active_invites">Активные</string>
+    <string name="archive_invites">Архивные</string>
     <string name="change_user_name_label">Изменение Ф. И. О. пользователя</string>
     <string name="change_user_name_description">Пожалуйста, обратите внимание, что изменение фамилии, имени или отчества, возможно только один раз. Для последующих изменений вам будет предложено обратиться в техническую поддержку.</string>
     <string name="edit_name_title">Редактировать Ф. И. О.</string>

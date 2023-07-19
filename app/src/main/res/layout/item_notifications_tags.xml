@@ -10,6 +10,7 @@
         android:paddingHorizontal="10dp">
 
         <LinearLayout
+            android:id="@+id/first_ln"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -40,6 +41,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/second_ln"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -55,6 +57,7 @@
 
 
         <LinearLayout
+            android:id="@+id/third_ln"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">

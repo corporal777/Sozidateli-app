@@ -52,7 +52,7 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
             .map { PaginationResponse(it.totalCount, it.data) }
     }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = false)
+        .buildList(enablePlaceholders = false, initialSize = 30)
 
 
     override fun onFirstViewAttach() {
@@ -84,7 +84,6 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    //pagination.invalidate()
                     notificationManager.cancel(notificationId)
                     viewState.onNotificationNeedUpdate(it)
                 })
@@ -111,11 +110,6 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
 
     fun transformList(list: List<Notification>): ArrayList<NotificationsSortedData> {
         val notificationsList = arrayListOf<NotificationsSortedData>()
-//        list.filter { x -> !x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
-//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
-//        list.filter { x -> x.wasRead }.groupBy { it.date?.split(" ")?.get(0) }
-//            .forEach { notificationsList.add(NotificationsSortedData(it.key, it.value)) }
-
         var titleDate = ""
         var wasRead = false
         list.forEach { note ->

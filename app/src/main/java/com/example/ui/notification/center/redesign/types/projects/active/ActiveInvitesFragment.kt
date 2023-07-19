@@ -1,34 +1,30 @@
-package com.example.ui.notification.center.redesign.types.projects
+package com.example.ui.notification.center.redesign.types.projects.active
 
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
-import com.example.extensions.updateItem
 import com.example.ui.notification.center.redesign.NotificationsSortedData
 import com.example.ui.notification.center.redesign.items.*
 import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypeFragment
-import com.example.ui.notification.center.redesign.types.projects.items.ProjectsTagsItem
-import com.example.ui.notification.center.redesign.types.system.SystemNotificationsContract
-import com.example.ui.notification.center.redesign.types.system.SystemNotificationsPresenter
+import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsContract
+import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsPresenter
 import com.xwray.groupie.Section
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ProjectNotificationsFragment : BaseNotificationTypeFragment<ProjectNotificationsPresenter>(),
-    ProjectNotificationsContract.View {
+class ActiveInvitesFragment : BaseNotificationTypeFragment<ActiveInvitesPresenter>(),
+    ActiveInvitesContract.View {
+
 
     @InjectPresenter
-    override lateinit var presenter: ProjectNotificationsPresenter
+    override lateinit var presenter: ActiveInvitesPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<ProjectNotificationsPresenter>
+    lateinit var presenterProvider: Provider<ActiveInvitesPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): ProjectNotificationsPresenter = presenterProvider.get()
-
+    fun providePresenter(): ActiveInvitesPresenter = presenterProvider.get()
 
     private val onNotificationListener = object : NotificationItemNew.OnNotificationActionListener {
         override fun onRateClickListener(rateId: String) {}
@@ -39,7 +35,6 @@ class ProjectNotificationsFragment : BaseNotificationTypeFragment<ProjectNotific
                 else onNotificationCancelClick(notification)
             }
         }
-
         override fun onOpenEventClickListener(eventId: String) = showAboutEvent(eventId)
         override fun onLinkClickListener(url: String) = presenter.onNotificationUrlClick(url)
         override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
@@ -47,9 +42,6 @@ class ProjectNotificationsFragment : BaseNotificationTypeFragment<ProjectNotific
 
     override fun setNotifications(notifications: List<NotificationsSortedData>) {
         mBinding.swipeToRefresh.isRefreshing = false
-
-        if (tagsSection.itemCount == 0)
-            tagsSection.updateItem(ProjectsTagsItem { showProjectInvites(it) })
 
         contentSection.update(notifications.map {
             Section().apply {
@@ -77,12 +69,6 @@ class ProjectNotificationsFragment : BaseNotificationTypeFragment<ProjectNotific
         })
     }
 
-    private fun showProjectInvites(type: ProjectsTagsItem.ProjectsInviteType) {
-        if (type == ProjectsTagsItem.ProjectsInviteType.ACTIVE) {
-            findNavController().navigate(R.id.active_invites_fragment)
-        } else findNavController().navigate(R.id.archive_invites_fragment)
-    }
-
-    override val type: CharSequence by lazy { "project" }
-    override val title: CharSequence by lazy { getString(R.string.my_projects) }
+    override val type: CharSequence by lazy { "active" }
+    override val title: CharSequence by lazy { getString(R.string.active_invites) }
 }

@@ -44,6 +44,9 @@ import com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotifi
 import com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment
 import com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment
 import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment
+import com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment
+import com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesPresenter
+import com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment
 import com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
@@ -354,6 +357,12 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeProjectNotificationsFragment(): ProjectNotificationsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeActiveInvitesFragment(): ActiveInvitesFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeArchiveInvitesFragment(): ArchiveInvitesFragment
 
     @ContributesAndroidInjector
     abstract fun contributeEventNotificationsFragment(): EventNotificationsFragment

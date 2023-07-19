@@ -30,7 +30,7 @@ android {
         multiDexEnabled true
 
         
-        renderscriptSupportModeEnabled true
+        //renderscriptSupportModeEnabled true
     }
 
     buildFeatures {

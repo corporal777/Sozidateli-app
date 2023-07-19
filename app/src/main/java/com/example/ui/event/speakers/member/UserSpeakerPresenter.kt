@@ -82,19 +82,11 @@ class UserSpeakerPresenter
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = {
-                        viewState.openChat(
-                            user.fullName,
-                            user.image.uri,
-                            it.id.toString()
-                        )
+                        viewState.openChat(user.fullName, user.loadUserImage(), it.id.toString())
                     }
                 )
         } else {
-            viewState.openChat(
-                user.fullName,
-                user.image.uri,
-                user.binds?.chatRoomWithMe?.id.toString()
-            )
+            viewState.openChat(user.fullName, user.loadUserImage(), user.binds?.chatRoomWithMe?.id.toString())
         }
     }
 

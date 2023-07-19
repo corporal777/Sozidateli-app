@@ -190,6 +190,7 @@ class MainInfoPresenter
                 )
             }
             .flatMap { userRepository.changeUserImage(it) }
+            .doOnSuccess { updateUserInternal { image = it } }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -197,9 +198,7 @@ class MainInfoPresenter
                     compositeDisposable += userRepository.checkUserProfileSingle()
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple(onSuccess = {})
-                    updateUserInternal {
-                        image = it
-                    }
+
                     viewState.photoUpdated(it)
                 }
             )
@@ -209,17 +208,16 @@ class MainInfoPresenter
         isUpdatePhoto = true
         isImageUpdating = true
         compositeDisposable += userRepository.deleteImage()
+            .doOnComplete { updateUserInternal { image = null } }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onComplete = {
                     compositeDisposable += userRepository.checkUserProfileSingle()
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple(onSuccess = {})
-                    updateUserInternal {
-                        image = ImageModel(null, null, null, null, null)
-                    }
-                    viewState.photoUpdated(ImageModel(null, null, null, null, null))
+
+                    viewState.photoUpdated(null)
                 }
             )
     }

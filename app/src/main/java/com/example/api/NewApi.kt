@@ -96,7 +96,7 @@ interface NewApi {
 
     @Multipart
     @PATCH("v1/user/{id}/image")
-    fun changeUserImage(@Path("id") id: Int, @Part image: MultipartBody.Part?): Single<ImageModel>
+    fun changeUserImage(@Path("id") id: Int, @Part image: MultipartBody.Part?): Single<ImageResponse>
 
     @DELETE("v1/user/{id}/image")
     fun deleteImage(@Path("id") id: Int): Completable

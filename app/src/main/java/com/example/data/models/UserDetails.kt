@@ -31,7 +31,7 @@ data class UserDetail(
     @SerializedName("socialLinks")
     var socialLinks: FieldListDetails? = null,*/
     var birthday: FieldDetails? = null,
-    var image: ImageModel,
+    var image: ImageModel? = null,
     var gender: ToggleStringModel? = null,
     var address: NewUserAddress? = null,
     val state: UserState? = null,
@@ -108,9 +108,11 @@ data class UserDetail(
     fun getSessionsCount(): Int = binds?.deviceSessionsCount ?: 0
 
     fun loadUserImage(): String? {
-        return if (image == null) return null
-        else if (image.uri.isNullOrEmpty()) return null
-        else image.uri
+        return if (image == null) null
+        else {
+            if (image?.uri.isNullOrEmpty()) null
+            else image?.uri
+        }
     }
 
 
@@ -449,6 +451,25 @@ data class ImageModel(
             size = size,
             name = name,
             uri = uri
+        )
+    }
+}
+
+data class ImageResponse(
+    @SerializedName("mimeType")
+    val mimeType: String? = null,
+    val size: Long? = null,
+    val name: String? = null,
+    val id: String? = null,
+    val path : String? = null
+) {
+    fun toImageModel(): ImageModel {
+        return ImageModel(
+            mimeType = mimeType,
+            size = size,
+            uri = path,
+            name = name,
+            id = id
         )
     }
 }

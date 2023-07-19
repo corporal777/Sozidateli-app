@@ -28,7 +28,7 @@ interface MainInfoContract {
         fun showChangeEmailComplete(email: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun photoUpdated(photo: ImageModel)
+        fun photoUpdated(photo: ImageModel?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)

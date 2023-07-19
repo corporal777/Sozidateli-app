@@ -180,6 +180,7 @@ class UserRepositoryImp
 
     override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
         return newApi.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
+            .map { it.toImageModel() }
     }
 
     override fun deleteImage(): Completable {

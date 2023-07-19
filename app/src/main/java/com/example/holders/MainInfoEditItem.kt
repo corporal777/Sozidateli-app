@@ -43,7 +43,7 @@ class MainInfoEditItem(
     private val phone: List<FieldDetails>?,
     private val showBirthday: Boolean,
     private val canEditName: Boolean,
-    private val image: ImageModel,
+    private val image: String?,
     private val isEnableNext: (isEnable: Boolean) -> Unit,
     private val confirmPhoneClick: (String?) -> Unit,
     private val onImageClick: (canRemove: Boolean) -> Unit
@@ -165,7 +165,7 @@ class MainInfoEditItem(
             }
             setAvatar()
             btnEdit.setOnClickListener {
-                onImageClick(mImage.uri != null)
+                onImageClick(!mImage.isNullOrEmpty())
             }
             updatePhoneConfirmationStatus(this)
         }
@@ -215,11 +215,10 @@ class MainInfoEditItem(
 
     private fun setAvatar() {
         this.viewHolder.ivAvatar.apply {
-            val avatarUrl = mImage.uri?.takeIf { it.isNotBlank() }
             clipToOutline = true
-            transitionName = avatarUrl
+            transitionName = mImage
             Picasso.get()
-                .load(avatarUrl)
+                .load(mImage)
                 .placeholder(R.drawable.avatar_placeholder_rectangle)
                 .error(R.drawable.avatar_placeholder_rectangle)
                 .into(this)
@@ -242,7 +241,7 @@ class MainInfoEditItem(
                 if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) {
                     isValid = false
                 }
-                if (mImage.uri.isNullOrEmpty()) isValid = false
+                if (mImage.isNullOrEmpty()) isValid = false
             }
         }
         isEnableNext(isValid)
@@ -255,10 +254,9 @@ class MainInfoEditItem(
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (gender?.value != mGender) put(
-                UserDetail.USER_GENDER,
-                ToggleStringModel(getGender(), mGenderShow)
-            )
+            if (gender?.value != mGender)
+                put(UserDetail.USER_GENDER, ToggleStringModel(getGender(), mGenderShow))
+
             mBirthday?.formatToDefaultServerDate()?.let {
                 put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
@@ -313,8 +311,8 @@ class MainInfoEditItem(
         notifyChanged()
     }
 
-    fun setImage(image: ImageModel) {
-        mImage = image
+    fun setImage(image: ImageModel?) {
+        mImage = image?.uri
         checkDataValid()
         setAvatar()
     }

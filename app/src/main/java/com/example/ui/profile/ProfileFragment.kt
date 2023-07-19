@@ -204,7 +204,7 @@ class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragme
         val profileDataDialog = ProfileDataFragment(
             user.id,
             user.nameLastName,
-            user.image.uri,
+            user.loadUserImage(),
             user.qrCodeLink,
             user.shortName
         )
