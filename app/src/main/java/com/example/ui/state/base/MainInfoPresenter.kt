@@ -190,7 +190,7 @@ class MainInfoPresenter
                 )
             }
             .flatMap { userRepository.changeUserImage(it) }
-            .doOnSuccess { updateUserInternal { image = it } }
+            .doOnSuccess { appData.getUserNew().image = it }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -208,7 +208,7 @@ class MainInfoPresenter
         isUpdatePhoto = true
         isImageUpdating = true
         compositeDisposable += userRepository.deleteImage()
-            .doOnComplete { updateUserInternal { image = null } }
+            .doOnComplete { appData.getUserNew().image = null }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(
@@ -227,6 +227,4 @@ class MainInfoPresenter
     }
 
     fun isCanGoNext() = canGoNext
-
-    private fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUserNew(update)
 }
