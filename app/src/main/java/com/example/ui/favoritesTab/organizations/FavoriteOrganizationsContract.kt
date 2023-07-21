@@ -1,4 +1,4 @@
-package com.example.ui.organizations.favorite
+package com.example.ui.favoritesTab.organizations
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType

@@ -1,4 +1,4 @@
-package com.example.ui.users.favorite
+package com.example.ui.favoritesTab.users
 
 import android.os.Bundle
 import android.view.View
@@ -10,10 +10,8 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutListBinding
 import com.example.extensions.updateItem
-import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentNew
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter

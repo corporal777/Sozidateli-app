@@ -1,38 +1,38 @@
-package com.example.ui.profile.favoritesTab
+package com.example.ui.favoritesTab
 
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.OrganizationsFilter
 import com.example.databinding.FragmentFavoriteBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.list.favorite.FavoriteEventsFragment
-import com.example.ui.organizations.favorite.FavoriteOrganizationsFragment
-import com.example.ui.users.favorite.FavoriteUsersFragment
+import com.example.ui.favoritesTab.events.FavoriteEventsFragment
+import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
+import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), FavoriteContract.View,
+class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true),
+    FavoriteTabsContract.View,
     ToolbarFragment {
 
     @InjectPresenter
-    lateinit var presenter: FavoritePresenter
+    lateinit var presenter: FavoriteTabsPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<FavoritePresenter>
+    lateinit var presenterProvider: Provider<FavoriteTabsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): FavoritePresenter = presenterProvider.get()
+    fun providePresenter(): FavoriteTabsPresenter = presenterProvider.get()
 
     private val pageChangeListener = onPageChanged { position ->
         presenter.currentPosition = position
@@ -51,6 +51,7 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true), Fav
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             viewPager.run {
+
                 isSaveEnabled = false
                 addOnPageChangeListener(pageChangeListener)
                 adapter = object : FragmentStatePagerAdapter(

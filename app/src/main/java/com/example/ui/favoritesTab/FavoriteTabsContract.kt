@@ -1,11 +1,10 @@
-package com.example.ui.profile.favoritesTab
+package com.example.ui.favoritesTab
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 
-interface FavoriteContract {
+interface FavoriteTabsContract {
     interface View : BaseContract.View {
         @StateStrategyType(SkipStrategy::class)
         fun setCurrentFragment(position : Int)

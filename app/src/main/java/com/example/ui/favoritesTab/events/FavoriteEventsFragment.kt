@@ -1,4 +1,4 @@
-package com.example.ui.event.list.favorite
+package com.example.ui.favoritesTab.events
 
 import android.os.Bundle
 import android.view.View

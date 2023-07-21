@@ -1,4 +1,4 @@
-package com.example.ui.organizations.favorite
+package com.example.ui.favoritesTab.organizations
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -24,7 +24,8 @@ class FavoriteOrganizationsPresenter
         private val organizationRepository: OrganizationRepository,
         private val eventRepository: EventRepository,
         @Connectivity private val connectivity: Observable<Boolean>
-) : BasePresenter<FavoriteOrganizationsContract.View>(appData), FavoriteOrganizationsContract.Presenter {
+) : BasePresenter<FavoriteOrganizationsContract.View>(appData),
+    FavoriteOrganizationsContract.Presenter {
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
         organizationRepository.getFavoriteOrganization(

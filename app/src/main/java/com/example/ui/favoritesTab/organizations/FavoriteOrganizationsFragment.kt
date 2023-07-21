@@ -1,4 +1,4 @@
-package com.example.ui.organizations.favorite
+package com.example.ui.favoritesTab.organizations
 
 import android.os.Bundle
 import android.view.View
@@ -19,7 +19,8 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteOrganizationsFragment : BaseFragmentNew<LayoutListBinding>(), FavoriteOrganizationsContract.View{
+class FavoriteOrganizationsFragment : BaseFragmentNew<LayoutListBinding>(),
+    FavoriteOrganizationsContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteOrganizationsPresenter

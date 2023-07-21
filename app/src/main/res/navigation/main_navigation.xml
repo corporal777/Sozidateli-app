@@ -271,7 +271,7 @@
 
     <fragment
         android:id="@+id/organizations_fragment"
-        android:name="com.example.ui.organizations.favorite.FavoriteOrganizationsFragment">
+        android:name="com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment">
     </fragment>
 
 
@@ -366,7 +366,7 @@
 
     <fragment
         android:id="@+id/favorite_fragment"
-        android:name="com.example.ui.profile.favoritesTab.FavoriteTabsFragment"
+        android:name="com.example.ui.favoritesTab.FavoriteTabsFragment"
         android:label="@string/profile_favorite" />
 
 

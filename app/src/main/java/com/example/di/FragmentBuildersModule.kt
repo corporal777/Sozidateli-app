@@ -23,7 +23,7 @@ import com.example.ui.editwork.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
-import com.example.ui.event.list.favorite.FavoriteEventsFragment
+import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
 import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment
@@ -45,18 +45,17 @@ import com.example.ui.notification.center.redesign.types.event.EventNotification
 import com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment
 import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment
 import com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment
-import com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesPresenter
 import com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment
 import com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
-import com.example.ui.organizations.favorite.FavoriteOrganizationsFragment
+import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.profile.favoritesTab.FavoriteTabsFragment
+import com.example.ui.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
@@ -95,7 +94,7 @@ import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.users.favorite.FavoriteUsersFragment
+import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

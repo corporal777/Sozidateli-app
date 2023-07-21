@@ -1,4 +1,4 @@
-package com.example.ui.event.list.favorite
+package com.example.ui.favoritesTab.events
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy

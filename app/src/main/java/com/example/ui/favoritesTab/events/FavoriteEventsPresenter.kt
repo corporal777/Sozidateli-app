@@ -1,4 +1,4 @@
-package com.example.ui.event.list.favorite
+package com.example.ui.favoritesTab.events
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -19,7 +19,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import java.net.UnknownHostException
 import javax.inject.Inject
 

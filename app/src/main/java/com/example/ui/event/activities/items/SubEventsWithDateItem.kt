@@ -6,11 +6,9 @@ import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.util.custom.LinkedSet
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
-import java.util.*
 
 class SubEventsWithDateItem(
     val eventId : String,
