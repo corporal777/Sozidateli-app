@@ -56,6 +56,7 @@ class EditEducationPresenter
             educationsList,
             degree
         )
+            .map { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(

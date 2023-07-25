@@ -86,7 +86,6 @@ class ChangeStateDialog(val context: Context, val type: StateType) {
             alertDialog.dismiss()
         }
         binding.btnNegative.setOnClickListener {
-            onClick(ClickType.CANCEL)
             onChangeState(false)
             alertDialog.dismiss()
         }
@@ -110,5 +109,5 @@ enum class StateType {
 }
 
 enum class ClickType {
-    INFO, CANCEL, BASE, MAX
+    INFO, BASE, MAX
 }

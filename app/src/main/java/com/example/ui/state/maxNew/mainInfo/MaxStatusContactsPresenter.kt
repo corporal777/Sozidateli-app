@@ -49,20 +49,6 @@ class MaxStatusContactsPresenter
             return
         } else {
             compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
-                .doOnSuccess {
-                    appData.updateUserNew {
-                        name = it.name
-                        middleName = it.middleName
-                        lastName = it.lastName
-                        birthday = it.birthday
-                        gender = it.gender
-                        notes = it.notes
-                        address = it.address
-                        contactInformation.site = it.contactInformation.site
-                        contactInformation.socialLinks = it.contactInformation.socialLinks
-                        phone = it.phone
-                    }
-                }
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({

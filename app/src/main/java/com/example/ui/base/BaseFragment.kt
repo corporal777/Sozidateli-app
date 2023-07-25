@@ -221,6 +221,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
                                             R.id.maxStatusWorkFragment,
                                             bundleOf("screen" to 1)
                                         )
+                                    else -> {}
                                 }
                             }
                         } else {

@@ -110,7 +110,7 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
 
     fun transformList(list: List<Notification>): ArrayList<NotificationsSortedData> {
         val notificationsList = arrayListOf<NotificationsSortedData>()
-        var titleDate = ""
+        var titleDate : String? = ""
         var wasRead = false
         list.forEach { note ->
             val noteDate = note.date?.split(" ")?.get(0)

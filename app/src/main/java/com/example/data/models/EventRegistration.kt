@@ -80,23 +80,9 @@ data class EventRegistration(
 
     fun setBackgroundColor(event: EventNew) {
         val form = event.binds?.form?.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
-        when (form?.background) {
-            EventFormModel.BackgroundType.ORGANIZATION -> {
-                if (!event.binds?.organization?.image?.uri.isNullOrEmpty()) {
-                    image = event.binds?.organization?.image?.uri
-                } else {
-                    image = ""
-                    backgroundColor = event.binds?.organization?.backgroundColor?.value
-                }
-            }
-            EventFormModel.BackgroundType.EVENT -> {
-                if (!event.image?.uri.isNullOrEmpty()) {
-                    image = event.image?.uri
-                } else {
-                    image = ""
-                    backgroundColor = event.backgroundColor?.value
-                }
-            }
+        backgroundColor = when (form?.background) {
+            EventFormModel.BackgroundType.EVENT -> event.backgroundColor?.value
+            else -> event.binds?.organization?.backgroundColor?.value
         }
     }
 

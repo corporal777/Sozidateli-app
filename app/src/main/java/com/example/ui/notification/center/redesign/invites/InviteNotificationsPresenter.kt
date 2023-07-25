@@ -57,6 +57,7 @@ class InviteNotificationsPresenter
                     NotificationType.EVENTS -> put(NotificationModel.NOTIFICATION_TYPE, "event")
                     NotificationType.SYSTEM -> put(NotificationModel.NOTIFICATION_TYPE, "system")
                     NotificationType.PROJECTS -> put(NotificationModel.NOTIFICATION_TYPE, "pgrf")
+                    else -> {}
                 }
             }
         )
@@ -177,7 +178,7 @@ class InviteNotificationsPresenter
 
     private fun transformList(list : List<Notification>): ArrayList<NotificationsSortedData> {
         val notificationsList = arrayListOf<NotificationsSortedData>()
-        var titleDate = ""
+        var titleDate : String? = ""
         var wasRead = false
         list.forEach { note ->
             val noteDate = note.date?.split(" ")?.get(0)

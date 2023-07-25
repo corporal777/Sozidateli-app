@@ -64,18 +64,6 @@ class UserEditPresenter
                             setPersonalTitle()
                             saveOnClick(true)
                             setPersonalData(user, appData.getStateValue())
-//                            compositeDisposable += userRepository.searchAddress(user.address?.getShortAddress() ?: "")
-//                                .performOnBackgroundOutOnMain()
-//                                .withProgressBarLoadingDialog(viewState)
-//                                .subscribeSimple(
-//                                    onError = { t ->
-//                                        t.printStackTrace()
-//                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
-//                                    },
-//                                    onSuccess = { add ->
-//                                        if (add.data?.isNotEmpty() == true) user.address?.shortAddres = add.data[0].region
-//                                        setPersonalData(user, if (appData.hasMaxState && appData.hasBaseState) "Максимальный" else "Минимальный")
-//                                    })
                         }
                         UserEditDataType.CONTACTS -> viewState.apply {
                             setContactsTitle()
@@ -87,7 +75,6 @@ class UserEditPresenter
                             getInterests(user)
                             saveOnClick(true)
                         }
-                        else -> {}
                     }
                 })
     }

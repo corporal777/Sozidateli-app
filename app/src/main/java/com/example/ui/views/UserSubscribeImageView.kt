@@ -33,6 +33,7 @@ class UserSubscribeImageView : AppCompatImageView {
         when (action) {
             UserSubscribeButton.Action.FAVORITE -> setActionFavorite()
             UserSubscribeButton.Action.UNFAVORITE -> setActionUnFavorite()
+            else -> {}
         }
     }
 

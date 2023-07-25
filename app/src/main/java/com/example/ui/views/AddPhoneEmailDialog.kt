@@ -58,11 +58,8 @@ class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
                 RegisterDataType.EMAIL -> {
                     binding.btnPositive.isEnabled = AuthValidateUtil.isValidEmail(it.toString())
                 }
-                RegisterDataType.PHONE, RegisterDataType.CHANGE_PHONE -> {
+                RegisterDataType.PHONE -> {
                     binding.btnPositive.isEnabled = Utils.newPhoneValidator(it.toString())
-                }
-                RegisterDataType.CODE -> {
-                    binding.btnPositive.isEnabled = it.toString().length == CODE_SIZE
                 }
             }
         }
@@ -85,19 +82,6 @@ class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
             }
             RegisterDataType.PHONE -> {
                 binding.tvTitle.text = context.getString(R.string.add_phone_dialog_title)
-                binding.tvMessage.text = context.getString(R.string.add_phone_dialog_text)
-                binding.etLogin.setHint(R.string.search_filter_phone)
-                binding.tvCode.isVisible = false
-            }
-            RegisterDataType.CODE -> {
-                startTimer()
-                binding.tvTitle.text = context.getString(R.string.code_dialog_title)
-                binding.tvMessage.text = context.getString(R.string.code_phone_dialog_text, phone)
-                binding.etLogin.setHint(R.string.enter_code_btn_text)
-                binding.tvCode.isVisible = true
-            }
-            RegisterDataType.CHANGE_PHONE -> {
-                binding.tvTitle.text = context.getString(R.string.new_phone_number)
                 binding.tvMessage.text = context.getString(R.string.add_phone_dialog_text)
                 binding.etLogin.setHint(R.string.search_filter_phone)
                 binding.tvCode.isVisible = false
@@ -176,5 +160,5 @@ data class PhoneEmailResult(
 )
 
 enum class RegisterDataType {
-    EMAIL, PHONE, CODE, CHANGE_PHONE
+    EMAIL, PHONE
 }

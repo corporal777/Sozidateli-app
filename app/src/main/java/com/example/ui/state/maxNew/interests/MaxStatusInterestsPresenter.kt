@@ -83,11 +83,6 @@ class MaxStatusInterestsPresenter
             appData.getId(),
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )
-            .doOnSuccess {
-                appData.getUserNew().apply {
-                    interests = it.interests
-                }
-            }
             .performOnBackgroundOutOnMain()
             .withCustomProgressBarLoadingDialog(viewState)
             .subscribeSimple(

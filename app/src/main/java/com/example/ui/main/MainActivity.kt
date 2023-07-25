@@ -612,6 +612,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                                         R.id.maxStatusWorkFragment,
                                         bundleOf("screen" to 1)
                                     )
+                                else -> {}
                             }
                         } else {
                             findNavController().navigate(

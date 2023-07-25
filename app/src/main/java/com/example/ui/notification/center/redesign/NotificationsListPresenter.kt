@@ -261,10 +261,10 @@ class NotificationsListPresenter
 
     private fun transformData(list: List<Notification>): MutableList<NotificationsSortedData> {
         val notificationsList = arrayListOf<NotificationsSortedData>()
-        var titleDate = ""
+        var titleDate : String? = ""
         var wasRead = false
         list.forEach { note ->
-            val noteDate = note.date?.split(" ")?.get(0)
+            val noteDate = note.date.split(" ")[0]
             if (titleDate == noteDate && wasRead == note.wasRead) titleDate = ""
             else titleDate = noteDate
 

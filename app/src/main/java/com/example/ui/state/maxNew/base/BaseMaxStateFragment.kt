@@ -13,6 +13,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
+import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
@@ -56,6 +57,12 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
 
     override fun goToNextScreen(screenType: MaxStateScreenType) {
         when (screenType) {
+            MaxStateScreenType.BASE -> {
+                findNavController().navigate(
+                    R.id.maxStatusContactsFragment,
+                    MaxStatusContactsFragmentArgs.Builder().setScreen(2).build().toBundle()
+                )
+            }
             MaxStateScreenType.INTERESTS -> {
                 findNavController().navigate(
                     R.id.maxStatusInterestsFragment,

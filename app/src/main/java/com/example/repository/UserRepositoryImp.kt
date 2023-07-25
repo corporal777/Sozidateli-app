@@ -333,7 +333,7 @@ class UserRepositoryImp
     ): Single<String> {
         return Single.zip(sendUserEducation(EducationBodyModel(educationsList)),
             sendUserAcademicDegree(AcademicDegreeBodyModel(degree)),
-            updateProfile(
+            updateUserProfile(
                 appData.getId(),
                 mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)
             ),

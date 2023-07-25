@@ -14,7 +14,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 apply plugin: 'com.google.firebase.firebase-perf'
 
-//apply plugin: 'jacoco-android'
 apply plugin: "com.hiya.jacoco-android"
 
 
@@ -28,8 +27,6 @@ android {
         versionName "1.0.39"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
-
-        
         //renderscriptSupportModeEnabled true
     }
 
@@ -43,18 +40,6 @@ android {
     }
 
     signingConfigs {
-        /*def localFile = rootProject.file("release.properties")
-        def propertiesFile = localFile.exists() ? localFile : new File("/home/service/keystore/fond/release.properties")
-        if (propertiesFile.exists()) {
-            def properties = new Properties()
-            properties.load(new FileInputStream(propertiesFile))
-            release {
-                keyAlias properties.keyAlias
-                keyPassword properties.keyAliasPassword
-                storePassword properties.keyStorePassword
-                storeFile rootProject.file(properties.keyStorePath)
-            }
-        }*/
         release {
             storeFile file("fond.jks")
             storePassword "fondkeystore"
@@ -184,12 +169,13 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation project(':filepicker')
     implementation project(':qrcodegenerator')
 
-    // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //socket
+    implementation('io.socket:socket.io-client:1.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 
     // support
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -266,10 +252,6 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'io.coil-kt:coil:1.1.1'
     implementation 'com.github.Commit451.coil-transformations:transformations:1.0.0'
-    
-    // leakcanary
-    // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-    // releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     //utils
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
@@ -307,13 +289,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.4'
     androidTestImplementation 'com.google.firebase:testlab-instr-lib:0.2'
 
-
     //Shake bugs
     implementation 'com.shakebugs:shake:15.3.0'
-
-    implementation('io.socket:socket.io-client:1.0.0') {
-        exclude group: 'org.json', module: 'json'
-    }
 }
 
 sonarqube {
