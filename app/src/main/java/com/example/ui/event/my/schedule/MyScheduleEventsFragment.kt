@@ -2,7 +2,6 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import androidx.core.view.isVisible
@@ -18,12 +17,11 @@ import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.*
-import com.example.holders.CalendarHorizontalListItem
 import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
@@ -33,25 +31,19 @@ import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.SearchInput
 import com.example.util.getMonthName
-import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import offsetChangedListener
-import onPageChanged
 import onScrollStateChanged
 import onScrolled
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.math.abs
 
-class MyScheduleEventsFragment : BaseFragmentNew<FragmentMyScheduleEventsBinding>(),
+class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>(),
     MyScheduleEventsContract.View {
 
-    private var mDy = 0
     var mCanChangeDay = false
-    private lateinit var mCurrentDay: EventScheduleCalendarDay
     private val mProgressDialog by lazy { CustomProgressDialog(requireContext()) }
     private val mLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 

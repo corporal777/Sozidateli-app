@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.finish
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
@@ -8,9 +7,7 @@ import com.example.data.bodies.EmailCodeBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
-import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
-import com.example.events.OnSocketConnectEvent
 import com.example.exceptions.CodeInvalidException
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
@@ -20,18 +17,13 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.google.gson.Gson
 import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
-import retrofit2.HttpException
 import withCustomProgressBarLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

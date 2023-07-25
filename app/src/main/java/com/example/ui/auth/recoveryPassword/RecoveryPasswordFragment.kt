@@ -12,8 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentRecoveryPasswordBinding
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmCodeDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
@@ -22,7 +21,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RecoveryPasswordFragment : BaseFragmentNew<FragmentRecoveryPasswordBinding>(),
+class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>(),
     RecoveryPasswordContract.View {
 
     @InjectPresenter

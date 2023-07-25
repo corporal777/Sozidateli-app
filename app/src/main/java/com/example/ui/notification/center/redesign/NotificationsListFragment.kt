@@ -1,44 +1,34 @@
 package com.example.ui.notification.center.redesign
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationsListBinding
-import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
-import com.example.extensions.forEachItems
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventActivityDateItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.notification.center.NotificationsFragmentDirections
 import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
 import com.example.ui.notification.center.redesign.items.*
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
-import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NotificationsListFragment : BaseFragmentNew<FragmentNotificationsListBinding>(),
+class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>(),
     NotificationsListContract.View {
 
 

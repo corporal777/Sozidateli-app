@@ -11,15 +11,14 @@ import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.auth.authorization.AuthorizationContract
-import com.example.ui.auth.authorization.AuthorizationFragmentDirections
 import com.example.ui.auth.authorization.AuthorizationPresenter
 import com.example.ui.auth.login.LoginFragmentArgs
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.util.AuthBackground
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AccountAuthFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
+class AccountAuthFragment : BaseFragment<FragmentAuthorizationBinding>(),
     BackgroundImageFragment, AuthorizationContract.View {
 
     override val isLightStatus = false

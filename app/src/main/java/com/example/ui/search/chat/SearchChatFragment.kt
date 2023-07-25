@@ -21,23 +21,21 @@ import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.Group
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initDropDownView
-import kotlinx.android.synthetic.main.layout_filter_user.view.*
 import onScrolled
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchChatFragment : BaseFragmentNew<FragmentChatSearchBinding>(), SearchChatContract.View {
+class SearchChatFragment : BaseFragment<FragmentChatSearchBinding>(), SearchChatContract.View {
 
     @InjectPresenter
     lateinit var presenter: SearchChatPresenter

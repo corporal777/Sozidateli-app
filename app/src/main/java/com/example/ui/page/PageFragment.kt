@@ -13,7 +13,7 @@ import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
 import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
@@ -25,7 +25,7 @@ import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, ToolbarFragment {
+class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, ToolbarFragment {
 
     private lateinit var toolbarContent: ToolbarContent
     private val args: PageFragmentArgs by navArgs()
@@ -103,14 +103,6 @@ class PageFragment : BaseFragmentNew<FragmentPageBinding>(), PageContract.View, 
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
     }
-
     override fun actionIconContainer(view: ViewGroup) {}
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.scrollContainer.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
 }

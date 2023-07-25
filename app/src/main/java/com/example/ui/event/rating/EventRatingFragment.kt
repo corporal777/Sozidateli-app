@@ -5,11 +5,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventRegistration
+import com.example.data.models.FileModel
+import com.example.databinding.LayoutListBinding
 import com.example.extensions.forEachGroups
 import com.example.extensions.formatToEventDatesInterval
 import com.example.extensions.setRequired
@@ -17,22 +21,19 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_SEND
 import com.example.holders.RatingItem
 import com.example.holders.registerEvent.*
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.registration.items.RegisterEventProfileMainItem
+import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_request.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventRatingFragment : BaseFragment(), EventRatingContract.View{
-
-//    override val title: CharSequence
-//        get() = getString(R.string.event_rating_title)
+class EventRatingFragment : BaseFragment<LayoutListBinding>(), ToolbarFragment, EventRatingContract.View{
 
     @InjectPresenter
     lateinit var presenter: EventRatingPresenter
@@ -58,7 +59,10 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply { adapter = this@EventRatingFragment.adapter }
+        mBinding.apply {
+            recyclerView.apply { adapter = this@EventRatingFragment.adapter }
+        }
+
     }
 
     override fun setFields(
@@ -85,24 +89,6 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
 
             addAll(fieldsData.map {
                 when (it) {
-//                    is EventRegisterFieldData.Prefilled -> {
-//                        RegisterEventProfileMainItem(
-//                            it.value?.user_birthday,
-//                            it.value?.user_gender,
-//                            it.value?.address?.getShortAddress(),
-//                            it.value?.user_notes,
-//                            "",
-//                            it.value?.user_email,
-//                            it.value?.user_phone,
-//                            it.value?.user_work_phone,
-//                            it.value?.contactInformation?.socialLinks?.values?.joinToString("\n") {
-//                                it.value ?: ""
-//                            },
-//                            it.value?.contactInformation?.site?.values?.joinToString("\n") {
-//                                it.value ?: ""
-//                            }
-//                        )
-//                    }
                     is EventRegisterFieldData.String ->
                         RegisterEventStringItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
                     is EventRegisterFieldData.Date ->
@@ -145,71 +131,6 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
             }
         }
     }
-
-    /*override fun setFields(
-            event: EventData,
-            fieldsData: List<EventRegisterFieldData<*>>,
-            rating: Int
-    ) {
-        val editable = rating <= 0
-        section.apply {
-            setHeader(RegisterEventHeaderItem(
-                    -100L,
-                    event.name,
-                    null,
-                    event.conferenceStart?.formatToEventDatesInterval(event.conferenceFinish),
-                    null,
-                    event.ratingHeadline,
-                    event.ratingSubtitle
-            ))
-
-            if (editable) setFooter(saveButtonItem)
-
-            add(RatingItem(rating, presenter::onRatingChange))
-
-            addAll(fieldsData.map {
-                when (it) {
-                    is EventRegisterFieldData.String ->
-                        RegisterEventStringItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
-                    is EventRegisterFieldData.Date ->
-                        RegisterEventDateItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
-                    is EventRegisterFieldData.SelectBox ->
-                        EventRegistrationSelectBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
-                    is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
-                    is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it, editable, onFieldDataChange).createFieldItemFrom(it)
-                    is EventRegisterFieldData.Boolean ->
-                        RegisterEventBooleanItem(it, editable, onFieldDataChange).createFieldItemFrom(it, withTitle = false)
-                    is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, editable, onFieldDataChange).createFieldItemFrom(it, getString(R.string.event_register_passport))
-                    is EventRegisterFieldData.File ->
-                        EventRegistrationFileGroup(requireContext(), it, onFieldDataChange) {
-                            presenter.onAddFileClick(it)
-                        }.createFieldItemFrom(it)
-                }
-            })
-
-            val filesGroup = Section().apply {
-                setHideWhenEmpty(true)
-                setHeader(EventRegistrationTitleItem(getString(R.string.event_rating_documents)))
-            }
-
-            val files = event.ratingFiles?.mapNotNull {
-                val link = it.fileLink
-                if (link != null) {
-                    EventRegistrationPersonalDataFileItem(link, it.fileName, personalDataFileClickListener)
-                } else {
-                    null
-                }
-            }
-
-            files?.let {
-                filesGroup.addAll(it)
-                add(filesGroup)
-            }
-        }
-    }*/
 
     private fun Group.createFieldItemFrom(
             fieldData: EventRegisterFieldData<*>,
@@ -301,9 +222,14 @@ class EventRatingFragment : BaseFragment(), EventRatingContract.View{
         Toast.makeText(requireContext(), getString(R.string.event_rating_success), Toast.LENGTH_LONG).show()
     }
 
-    override fun layout() = R.layout.fragment_request
+    override fun layout() = R.layout.layout_list
 
     companion object {
         private const val REQUEST_CODE_FILE = 100
     }
+
+    override val title: CharSequence by lazy { getString(R.string.event_rating_title) }
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

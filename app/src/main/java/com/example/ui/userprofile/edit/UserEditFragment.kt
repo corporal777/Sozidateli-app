@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -22,8 +21,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.userprofile.editfile.UserEditFileFragment.Companion.FILE_EDIT_CODE
+import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.InfoDialog
@@ -41,7 +39,7 @@ import onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditContract.View,
+class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContract.View,
     ToolbarFragment {
 
     private lateinit var passwordDialog: SetPasswordDialog
@@ -96,16 +94,6 @@ class UserEditFragment : BaseFragmentNew<FragmentUserEditBinding>(), UserEditCon
 
     private var onSaveClick: (() -> Unit)? = null
     private var onConfirmClick: ((phone: String) -> Unit)? = null
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parentFragmentManager.setFragmentResultListener(
-            FILE_EDIT_CODE,
-            this
-        ) { requestKey, result ->
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

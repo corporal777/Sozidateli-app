@@ -1,15 +1,8 @@
 package com.example.ui.auth.register.email.newbuild
 
-import android.R.attr
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.InputFilter
-import android.text.SpannableString
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -22,33 +15,29 @@ import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentRegisterEmailNewBinding
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.BaseFragmentNew
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.CustomSpannableString
-import com.example.ui.views.dialogs_new.CustomProgressDialog
 import com.example.util.*
 import onBackPressedCallback
 import onFocusChanged
 import onTextChanged
-import java.lang.StringBuilder
-import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class RegisterEmailNewFragment : BaseFragmentNew<FragmentRegisterEmailNewBinding>(),
-    RegisterEmailNewContract.View {
+class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
+    RegisterEmailContract.View {
 
     override fun layout() = R.layout.fragment_register_email_new
 
     @InjectPresenter
-    lateinit var presenter: RegisterEmailNewPresenter
+    lateinit var presenter: RegisterEmailPresenter
 
     @Inject
-    lateinit var presenterProvider: Provider<RegisterEmailNewPresenter>
+    lateinit var presenterProvider: Provider<RegisterEmailPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): RegisterEmailNewPresenter = presenterProvider.get()
+    fun providePresenter(): RegisterEmailPresenter = presenterProvider.get()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

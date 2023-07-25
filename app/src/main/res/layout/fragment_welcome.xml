@@ -1,61 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@android:color/black">
+        android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/ivLogo"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/auth_logo_height"
-            android:contentDescription="@string/content_description_logo"
-            android:src="@drawable/ic_app_logo_white"
-            app:layout_constraintBottom_toTopOf="@id/top_guideLine"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            android:layout_height="match_parent"
+            tools:background="@android:color/black">
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/auth_logo_height"
+                android:contentDescription="@string/content_description_logo"
+                android:src="@drawable/ic_app_logo_white"
+                app:layout_constraintBottom_toTopOf="@id/top_guideLine"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/top_guideLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.3" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/top_guideLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.3" />
 
 
-        <com.example.ui.views.CustomProgressView
-            android:id="@+id/progressView"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            app:layout_constraintBottom_toTopOf="@id/tvGreeting"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_guideLine" />
+            <com.example.ui.views.CustomProgressView
+                android:id="@+id/progressView"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                app:layout_constraintBottom_toTopOf="@id/tvGreeting"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_guideLine" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvGreeting"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:gravity="center"
-            android:letterSpacing="-0.01"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/welcome_greeting_message" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvGreeting"
+                fontPath="fonts/sf_pro_text_semibold.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:gravity="center"
+                android:letterSpacing="-0.01"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/welcome_greeting_message" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -18,6 +18,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
+import com.example.databinding.FragmentRegisterSnBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.snAuth.SnType
 import com.example.util.ClickableSpan
@@ -31,7 +32,7 @@ import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
+class RegisterSnFragment : BaseFragment<FragmentRegisterSnBinding>(), RegisterSnContract.View {
 
     @InjectPresenter
     lateinit var presenter: RegisterSnPresenter
@@ -41,7 +42,7 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
 
     @ProvidePresenter
     fun providePresenter(): RegisterSnPresenter = presenterProvider.get().apply {
-        snUser = RegisterSnFragmentArgs.fromBundle(arguments!!).snUser
+        snUser = RegisterSnFragmentArgs.fromBundle(requireArguments()).snUser
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,9 +102,9 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
 
     private fun getSnBackground(@StyleRes style: Int): Drawable? {
         return ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.background_solid,
-                ContextThemeWrapper(requireContext(), style).theme
+            resources,
+            R.drawable.background_solid,
+            ContextThemeWrapper(requireContext(), style).theme
         )
     }
 
@@ -137,8 +138,8 @@ class RegisterSnFragment : BaseFragment(), RegisterSnContract.View {
 
     override fun showPasswordError(show: Boolean) {
         sceneRoot.tilPassword?.error = if (show) getString(
-                if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
-                else R.string.auth_error_short_password
+            if (etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
+            else R.string.auth_error_short_password
         ) else null
     }
 

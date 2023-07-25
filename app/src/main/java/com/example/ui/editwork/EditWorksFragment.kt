@@ -12,7 +12,7 @@ import com.example.databinding.FragmentEditWorkFragmentBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateGroup
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.editwork.items.UserWorksGroup
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
@@ -21,7 +21,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EditWorksFragment : BaseFragmentNew<FragmentEditWorkFragmentBinding>(),
+class EditWorksFragment : BaseFragment<FragmentEditWorkFragmentBinding>(),
     EditWorksContract.View, ToolbarFragment {
 
 

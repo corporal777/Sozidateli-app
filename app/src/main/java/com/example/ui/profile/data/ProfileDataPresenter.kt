@@ -36,8 +36,6 @@ import javax.inject.Inject
 @InjectViewState
 class ProfileDataPresenter
 @Inject constructor(
-    private val userRepository: UserRepository,
-    private val rxPermissions: RxPermissions,
     private val takePhoto: RxTakePhoto,
     private val appData: AppData,
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {

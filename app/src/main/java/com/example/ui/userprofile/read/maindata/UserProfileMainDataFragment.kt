@@ -17,7 +17,7 @@ import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
@@ -29,7 +29,7 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileMainDataFragment : BaseFragmentNew<FragmentUserProfileMainDataBinding>(),
+class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBinding>(),
     UserProfileMainDataContract.View, ToolbarFragment {
 
     override fun layout() = R.layout.fragment_user_profile_main_data

@@ -266,15 +266,13 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'io.coil-kt:coil:1.1.1'
     implementation 'com.github.Commit451.coil-transformations:transformations:1.0.0'
-//    implementation 'com.github.ZieIony.carbon:carbon:3e929fcff4'
-
+    
     // leakcanary
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     // releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     //utils
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
-    implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
     implementation 'com.isseiaoki:simplecropview:1.1.8'
     implementation 'io.michaelrocks:libphonenumber-android:8.12.13'
@@ -286,14 +284,6 @@ dependencies {
     implementation "io.noties.markwon:html:$markwon_version"
     implementation "io.noties.markwon:linkify:$markwon_version"
     implementation "io.noties.markwon:inline-parser:$markwon_version"
-
-
-//    implementation "io.noties.markwon:editor:$markwon_version"
-//    implementation "io.noties.markwon:ext-latex:$markwon_version"
-//    implementation "io.noties.markwon:ext-strikethrough:$markwon_version"
-//    implementation "io.noties.markwon:ext-tasklist:$markwon_version"
-//    implementation "io.noties.markwon:simple-ext:$markwon_version"
-//    implementation "io.noties.markwon:syntax-highlight:$markwon_version"
 
     // network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -317,9 +307,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.4'
     androidTestImplementation 'com.google.firebase:testlab-instr-lib:0.2'
 
-
-    //Yandex App Metric
-    implementation 'com.yandex.android:mobmetricalib:4.0.0'
 
     //Shake bugs
     implementation 'com.shakebugs:shake:15.3.0'

@@ -8,7 +8,6 @@ import com.example.databinding.ItemSearchEventBinding
 import com.example.util.SearchInput
 import com.facebook.internal.Utility.isNullOrEmpty
 import com.xwray.groupie.databinding.BindableItem
-import com.yandex.metrica.impl.ob.it
 import onTextChanged
 
 class SearchEventItem(

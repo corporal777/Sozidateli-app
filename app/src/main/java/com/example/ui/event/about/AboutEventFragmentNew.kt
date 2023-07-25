@@ -18,10 +18,10 @@ import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.items.*
 import com.example.ui.event.activities.ActivitiesFragmentArgs
-import com.example.ui.event.location.map.redesign.MapFragmentNewArgs
+import com.example.ui.event.location.map.MapFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
@@ -45,7 +45,7 @@ import javax.inject.Provider
 import kotlin.math.abs
 
 
-class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
+class AboutEventFragmentNew() : BaseFragment<FragmentAboutEventNewBinding>(),
     AboutEventContractNew.View {
 
     override fun layout() = R.layout.fragment_about_event_new
@@ -288,7 +288,7 @@ class AboutEventFragmentNew() : BaseFragmentNew<FragmentAboutEventNewBinding>(),
     }
 
     override fun showMap(mapInfo: MapInfo?) {
-        val args = MapFragmentNewArgs.Builder(mapInfo).build().toBundle()
+        val args = MapFragmentArgs.Builder(mapInfo).build().toBundle()
         findNavController().navigate(R.id.fragment_map_new, args)
     }
 

@@ -81,6 +81,10 @@ fun Section.updateItem(item: Item<*>?){
     else update(listOf(item))
 }
 
+fun Section.updateItems(item: Item<*>, list: List<Item<*>>){
+    update(listOf(item).plus(list))
+}
+
 fun Section.updateGroup(item: Group?){
     if (item != null) update(listOf(item))
 }

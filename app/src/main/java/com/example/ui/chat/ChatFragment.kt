@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -27,7 +26,7 @@ import com.example.databinding.FragmentChatBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
@@ -43,7 +42,7 @@ import kotlinx.android.synthetic.main.layout_chat_action_text.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : BaseFragmentNew<FragmentChatBinding>(), ChatContract.View {
+class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
 
     private var animCounter = 0
 

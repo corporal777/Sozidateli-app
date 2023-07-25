@@ -1,4 +1,4 @@
-package com.example.ui.event.location.buildingScheme.redesign
+package com.example.ui.event.location.buildingScheme
 
 import android.graphics.Bitmap
 import android.util.SparseIntArray

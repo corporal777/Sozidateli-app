@@ -6,7 +6,6 @@ import com.example.data.models.ChatListDataItem
 import com.example.data.models.ChatModel
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
-import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
@@ -14,8 +13,6 @@ import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -33,7 +30,7 @@ class InviteListPresenter
                 ChatModel.CHAT_LIMIT to limit,
                 ChatModel.CHAT_OFFSET to offset,
                 ChatModel.CHAT_BINDS to "users,event,bans",
-                ChatModel./*CHAT_INVITED_USER_STATUS*/CHAT_USER_STATUS to "pending",
+                ChatModel.CHAT_USER_STATUS to "pending",
                 ChatModel.CHAT_USER to appData.getId()
             )
         ).map { response ->
@@ -60,21 +57,14 @@ class InviteListPresenter
                     )
                 )
             }
-            //.plus(response.response.favorites.map { ChatListDataItem.User(it) })
             PaginationResponse(response.totalCount, items)
         }
-        /*chatRepository.loadInvitesList(limit, offset).map { response ->
-            response.totalCount?.let { appData.chatRequestsCount = it }
-            PaginationResponse(response.totalCount, response.data.map { ChatListDataItem.Invite(it) })
-        }*/
-    }.buildList()
+    }.buildList(enablePlaceholders = false, initialSize = 30)
 
     private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        EventBus.getDefault().register(this)
-
         viewState.setInvitesData(List(20) { null })
         compositeDisposable += appData.chatRequestsCountSubject
             .performOnBackgroundOutOnMain()
@@ -102,24 +92,7 @@ class InviteListPresenter
         viewState.setInvitesData(invites)
     }
 
-    override fun onChatClick(userChat: UserChat) =
-        viewState.openChat(userChat.id, userChat.user.fullName)
-
-    override fun onItemTake(position: Int) {
-        invitesPagination.onItemTake(position)
-    }
-
-    override fun onRefreshRequest() {
-        invitesPagination.invalidate()
-    }
-
-    @Subscribe
-    fun onSocketConnect(event: OnSocketConnectEvent) {
-        invitesPagination.invalidate()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
+    override fun onChatClick(userChat: UserChat) = viewState.openChat(userChat.id, userChat.user.fullName)
+    override fun onItemTake(position: Int) = invitesPagination.onItemTake(position)
+    override fun onRefreshRequest() = invitesPagination.invalidate()
 }

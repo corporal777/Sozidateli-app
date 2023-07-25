@@ -4,24 +4,22 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.fragment.app.FragmentStatePagerAdapter
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentFavoriteBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.adapters.PagerStateAdapter
 import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true),
+class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(true),
     FavoriteTabsContract.View,
     ToolbarFragment {
 
@@ -35,7 +33,6 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true),
     fun providePresenter(): FavoriteTabsPresenter = presenterProvider.get()
 
     private val pageChangeListener = onPageChanged { position ->
-        presenter.currentPosition = position
         selectTab(position)
     }
 
@@ -51,16 +48,11 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true),
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             viewPager.run {
-
-                isSaveEnabled = false
-                addOnPageChangeListener(pageChangeListener)
-                adapter = object : FragmentStatePagerAdapter(
-                    childFragmentManager,
-                    BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-                ) {
-                    override fun getItem(position: Int) = fragments[position] as Fragment
+                adapter = object : PagerStateAdapter(childFragmentManager){
+                    override fun getItem(position: Int) = fragments[position]
                     override fun getCount() = fragments.size
                 }
+                addOnPageChangeListener(pageChangeListener)
                 selectTab(currentItem)
                 doOnPreDraw { startPostponedEnterTransition() }
             }
@@ -79,15 +71,6 @@ class FavoriteTabsFragment : BaseFragmentNew<FragmentFavoriteBinding>(true),
         }
     }
 
-    override fun setCurrentFragment(position: Int) {
-        mBinding.viewPager.apply {
-            if (currentItem == position) return
-            else {
-                currentItem = position
-                selectTab(position)
-            }
-        }
-    }
 
     override fun layout() = R.layout.fragment_favorite
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }

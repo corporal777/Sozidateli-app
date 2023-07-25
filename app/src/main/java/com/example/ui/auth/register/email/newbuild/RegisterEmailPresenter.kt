@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.newbuild
 
-import android.content.Context
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
@@ -12,7 +11,6 @@ import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -20,14 +18,14 @@ import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
-class RegisterEmailNewPresenter
+class RegisterEmailPresenter
 @Inject constructor(
     private val appData: AppData,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterEmailNewContract.View>(authRepository, snAuthManager, appData),
-    RegisterEmailNewContract.Presenter {
+) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager, appData),
+    RegisterEmailContract.Presenter {
 
     private var firstName: String = ""
     private var lastName: String = ""

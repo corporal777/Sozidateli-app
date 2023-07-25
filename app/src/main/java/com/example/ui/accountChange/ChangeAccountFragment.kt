@@ -14,19 +14,17 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.items.*
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.main.MainActivity
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import onBackPressedCallback
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeAccountFragment : BaseFragmentNew<FragmentChangeAccountBinding>(true),
+class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
     ChangeAccountContract.View, ToolbarFragment {
 
     @InjectPresenter

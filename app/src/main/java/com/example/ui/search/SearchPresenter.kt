@@ -40,13 +40,10 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         viewState.setHasFilter()
     }
 
-    override fun onItemTake(position: Int) {
-        paginationList.onItemTake(position)
-    }
-
-    override fun onRefreshRequest() {
-        pagination.invalidate()
-    }
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
+    override fun onFilterClearClick() = viewState.clearFilter()
+    protected open fun onShowFilterRequest() = viewState.showFilter(tmpFilter)
 
     override fun onFilterApplyClick() {
         filter = copyFilter(tmpFilter)
@@ -54,13 +51,6 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         viewState.hideFilter()
     }
 
-    override fun onFilterClearClick() {
-        viewState.clearFilter()
-    }
-
-    protected open fun onShowFilterRequest() {
-        viewState.showFilter(tmpFilter)
-    }
 
     override fun onFilterCancel() {
         tmpFilter = copyFilter(filter)
@@ -81,20 +71,19 @@ abstract class SearchPresenter<V : SearchContract.View<I, F>, I, F : SearchFilte
         if (!::paginationList.isInitialized) {
             paginationList = pagination.applyErrorHandler {
                 it.printStackTrace()
-            }.buildList(enablePlaceholders = false)
+            }.buildList(enablePlaceholders = false, initialSize = 30)
         }
 
         if (searchDisposable.size() == 0) {
-            viewState.setData(List(20) { null })
+            viewState.setData(List(10) { null })
             searchDisposable += Observable.create(paginationList)
                 .performOnBackgroundOutOnMain()
-                .subscribeSimple { onDataLoaded(it) }
+                .subscribeSimple {
+                    viewState.setData(it)
+                }
         }
     }
 
-    protected open fun onDataLoaded(data: List<I?>) {
-        viewState.setData(data)
-    }
 
     abstract fun createFilter(): F
     abstract fun copyFilter(filter: F): F

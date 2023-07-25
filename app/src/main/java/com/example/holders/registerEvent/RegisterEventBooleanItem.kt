@@ -5,8 +5,8 @@ import com.example.R
 import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.setRequired
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.item_checkbox.*
+import kotlinx.android.synthetic.main.item_register_event_boolean.*
 
 open class RegisterEventBooleanItem(
         private val fieldData: EventRegisterFieldData<Boolean>,

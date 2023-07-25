@@ -1,9 +1,5 @@
 package com.example.ui.chatList.contacts
 
-import android.util.Log
-import android.util.SparseArray
-import android.util.SparseIntArray
-import androidx.core.util.set
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
@@ -16,26 +12,18 @@ import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.ChatModel.Companion.CHAT_USER
 import com.example.data.models.ChatModel.Companion.CHAT_USER_STATUS
 import com.example.data.socket.SocketIOManager
-import com.example.events.OnSocketConnectEvent
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.chatList.contacts.items.UserChatData
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -62,7 +50,8 @@ class ChatListPresenter
             val items = prepareListOfChats(response.data)
             PaginationResponse(response.totalCount, items)
         }
-    }.applyErrorHandler { viewState.showRequestErrorMessage() }.buildList(enablePlaceholders = false)
+    }.applyErrorHandler { onReceiveError(it) }
+        .buildList(enablePlaceholders = false, initialSize = 30)
 
 
     private var firstLaunch = true
@@ -71,17 +60,13 @@ class ChatListPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        EventBus.getDefault().register(this)
         viewState.setChatsData(List(10) { null }, emptyList())
         subscribeChatSocketMessages()
         compositeDisposable += Observable.create(chatsPagination)
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onNext = {
-                    dispatchChatsListUpdate(it)
-                })
+                onError = { it.printStackTrace() },
+                onNext = { dispatchChatsListUpdate(it) }
+            )
     }
 
     override fun attachView(view: ChatListContract.View?) {
@@ -137,52 +122,16 @@ class ChatListPresenter
                 .subscribeSimple {
                     viewState.openChat(it.id, userName, avatar)
                 }
-        } else {
-            viewState.openChat(chatRoomWithMe.id, userName, avatar)
-        }
+        } else viewState.openChat(chatRoomWithMe.id, userName, avatar)
     }
 
 
     override fun onAddChatClick() = viewState.openSearch()
-
-    override fun onItemTake(position: Int) {
-        chatsPagination.onItemTake(position)
-    }
-
-    @Subscribe
-    fun onSocketConnect(event: OnSocketConnectEvent) {
-        chatsPagination.invalidate()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
-    override fun onRefreshRequest() {
-        chatsPagination.invalidate()
-    }
-
-    private fun getLastMessage(it: ChatModel): String {
-        var message = ""
-        if (it.binds?.lastMessage?.file != null) {
-            message = "Изображение"
-        } else {
-            if (it.binds?.lastMessage?.message == CHAT_SERVICE_MESSAGE_ACCEPT) {
-                if (it.binds.lastMessage.acknowledge?.firstOrNull()?.user != appData.getId()) {
-                    message = "Пользователь подтвердил чат"
-                } else {
-                    message = "Вы подтвердили чат"
-                }
-            } else {
-                message = it.binds?.lastMessage?.message ?: ""
-            }
-        }
-        return message
-    }
+    override fun onItemTake(position: Int) = chatsPagination.onItemTake(position)
+    override fun onRefreshRequest() =  chatsPagination.invalidate()
 
     private fun prepareListOfChats(it: List<ChatModel>): List<UserChat> {
-        return it.sortedByDescending { x -> x.binds?.lastMessage?.createdDate }.map {
+        return it.sortedByDescending { x -> x.binds?.lastMessage?.createdDate }.mapNotNull {
             val user = if (it.isEventChat()) {
                 val img = it.binds?.event?.image
                 UserDetail(
@@ -193,34 +142,36 @@ class ChatListPresenter
                         img?.mimeType,
                         img?.size,
                         it.binds?.lastMessage?.event?.url ?: img?.uri,
-                        img?.name,
-                        ""
+                        img?.name
                     ),
                     isCurrentUser = false
                 )
-            } else it.binds?.users?.first { us -> us.id != appData.getId() }!!
+            } else it.binds?.users?.filterNotNull()?.firstOrNull{ us -> us.id != appData.getId()}
 
-            UserChat(
-                it.id,
-                user,
-                it.createdDate ?: "",
-                it.binds?.lastMessage?.message,
-                it.binds?.lastMessage?.createdDate,
-                if (it.binds?.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastMessage?.acknowledge?.get(
-                    0
-                )?.user else 0,
-                null,
-                it.binds?.lastMessage?.id.toString(),
-                false,
-                it.isInInvites(appData.getId()),
-                it.isWaitForAcceptInvites(appData.getId()),
-                it.isBannedByRecipient(appData.getId()),
-                it.isBannedByYou(appData.getId()),
-                it.isEventChat(),
-                it.binds?.event?.id.toString(),
-                it.unreadMessagesCount ?: 0
-            )
+            if (user == null) null
+            else {
+                UserChat(
+                    it.id,
+                    user,
+                    it.createdDate ?: "",
+                    it.binds?.lastMessage?.message,
+                    it.binds?.lastMessage?.createdDate,
+                    if (it.binds?.lastMessage?.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
+                    if (!it.binds?.lastMessage?.acknowledge.isNullOrEmpty()) it.binds?.lastMessage?.acknowledge?.get(
+                        0
+                    )?.user else 0,
+                    null,
+                    it.binds?.lastMessage?.id.toString(),
+                    false,
+                    it.isInInvites(appData.getId()),
+                    it.isWaitForAcceptInvites(appData.getId()),
+                    it.isBannedByRecipient(appData.getId()),
+                    it.isBannedByYou(appData.getId()),
+                    it.isEventChat(),
+                    it.binds?.event?.id.toString(),
+                    it.unreadMessagesCount ?: 0
+                )
+            }
         }
     }
 }

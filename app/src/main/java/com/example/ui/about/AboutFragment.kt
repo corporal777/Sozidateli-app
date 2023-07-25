@@ -10,14 +10,14 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.databinding.FragmentAboutBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AboutFragment : BaseFragmentNew<FragmentAboutBinding>(true), AboutContract.View,
+class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.View,
     ToolbarFragment {
 
 

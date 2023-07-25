@@ -11,7 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import com.example.R
 import com.example.databinding.DialogEventAddedToFavoriteBinding
 import com.example.ui.views.dialogs_new.blur.BlurHelper
-import com.yandex.metrica.impl.ob.rs
 
 
 class EventAddedToFavoriteDialog(

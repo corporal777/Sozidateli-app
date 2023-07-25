@@ -12,6 +12,8 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
@@ -26,12 +28,15 @@ import dagger.android.support.AndroidSupportInjection
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 
-abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
+abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean = false) :
+    MvpAppCompatFragment(),
+    BaseContract.View {
+
+    lateinit var mBinding: binding
 
     private val params = PermissionsParams()
     protected var mActivity: BaseActivity? = null
         private set
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,6 +48,10 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
+        if (canShowAnim) {
+            postponeEnterTransition()
+            showEnterAnimation()
+        }
     }
 
     override fun onCreateView(
@@ -52,8 +61,9 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
     ): View? {
 
         RxJavaPlugins.setErrorHandler { e ->
+            e.printStackTrace()
             if (e is UndeliverableException) {
-                e.printStackTrace()
+
             } else {
                 Thread.currentThread().also { thread ->
                     thread.uncaughtExceptionHandler.uncaughtException(thread, e)
@@ -61,7 +71,11 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
             }
         }
 
-        return inflater.inflate(layout(), container, false)
+        if (::mBinding.isInitialized.not()) {
+            mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
+            mBinding.lifecycleOwner = viewLifecycleOwner
+        }
+        return mBinding.root
     }
 
     override fun onDetach() {
@@ -69,19 +83,19 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         super.onDetach()
     }
 
+
+    @LayoutRes
+    abstract fun layout(): Int
+
     override fun showEnterAnimation() {
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-            duration = (250).toLong()
+            duration = (350).toLong()
         }
 
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
             duration = (450).toLong()
         }
     }
-
-
-    @LayoutRes
-    abstract fun layout(): Int
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
 
@@ -136,12 +150,12 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         mActivity?.showKeyboard(view)
     }
 
-    override fun navigateUp() {
-        mActivity?.navigateUp()
-    }
-
     override fun setIgnoreTokenListener(isIgnore: Boolean) {
         mActivity?.setIgnoreTokenListener(isIgnore)
+    }
+
+    override fun navigateUp() {
+        mActivity?.navigateUp()
     }
 
     override fun showNoConnectionMessage(show: Boolean) {
@@ -168,14 +182,6 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
                 findNavController().navigateUp()
             }
         }
-    }
-
-    override fun showEventAddedToFavoriteDialog() {
-        EventAddedToFavoriteDialog(0, requireContext())
-    }
-
-    override fun showEventRemovedFromFavoriteDialog() {
-        EventAddedToFavoriteDialog(1, requireContext())
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
@@ -239,12 +245,21 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
         }
     }
 
+    override fun showEventAddedToFavoriteDialog() {
+        EventAddedToFavoriteDialog(0, requireContext())
+    }
+
+    override fun showEventRemovedFromFavoriteDialog() {
+        EventAddedToFavoriteDialog(1, requireContext())
+    }
+
     override fun showNotificationErrorMessage() {
         context?.let { FillProfileDialog(it).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) } }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mBinding.unbind()
         hideKeyboard()
         hideAllLoadingDialogs()
         hideCustomProgressDialog()
@@ -314,4 +329,5 @@ abstract class BaseFragment : MvpAppCompatFragment(), BaseContract.View {
                 }
         } else data.invoke()
     }
+
 }

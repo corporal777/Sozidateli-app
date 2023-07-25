@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -15,7 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterBinding
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
@@ -26,7 +25,7 @@ import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FinishRegisterFragment : BaseFragmentNew<FragmentFinishRegisterBinding>(),
+class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
     FinishRegisterContract.View {
 
     private val timerEmailMessage by lazy { getString(R.string.auth_register_confirm_email_timer_two) }

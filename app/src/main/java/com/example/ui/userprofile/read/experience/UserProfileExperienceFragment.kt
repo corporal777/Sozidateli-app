@@ -12,16 +12,15 @@ import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileExperienceFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
+class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileExperienceContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()

@@ -31,7 +31,6 @@ import io.reactivex.rxkotlin.plusAssign
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
@@ -426,7 +425,6 @@ class ChatPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 socket.stopListenChatUpdate()
-                EventBus.getDefault().unregister(this)
                 super.onDestroy()
             }
     }

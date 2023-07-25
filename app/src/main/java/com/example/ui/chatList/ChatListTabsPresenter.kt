@@ -10,34 +10,21 @@ import kotlin.math.abs
 
 @InjectViewState
 class ChatListTabsPresenter
-@Inject constructor(
-        private val appData: AppData
-) : BasePresenter<ChatListTabsContract.View>(appData), ChatListTabsContract.Presenter {
+@Inject constructor(private val appData: AppData) :
+    BasePresenter<ChatListTabsContract.View>(appData), ChatListTabsContract.Presenter {
 
-    private var selectedTab = TAB_CHATS
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.chatRequestsCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.setInvitesCount(it) }, { viewState.setInvitesCount(0) })
+            .performOnBackgroundOutOnMain()
+            .subscribe({ viewState.setInvitesCount(it) }, { viewState.setInvitesCount(0) })
+
         compositeDisposable += appData.chatMessageCountSubject
-                .performOnBackgroundOutOnMain()
-                .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
+            .performOnBackgroundOutOnMain()
+            .subscribe({ viewState.setChatsCount(it) }, { viewState.setChatsCount(0) })
     }
 
-    override fun attachView(view: ChatListTabsContract.View?) {
-        super.attachView(view)
-        viewState.selectTab(selectedTab)
-    }
-
-    override fun onChatsSelected() {
-        selectedTab = TAB_CHATS
-    }
-
-    override fun onInvitesSelected() {
-        selectedTab = TAB_INVITES
-    }
 
     override fun onFabAddChatClick() = viewState.openSearch()
 

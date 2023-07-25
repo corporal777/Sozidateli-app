@@ -1,35 +1,24 @@
 package com.example.ui.chatList
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.databinding.FragmentChatListBinding
 import com.example.databinding.FragmentChatListTabsBinding
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.BaseFragmentNew
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.util.smoothScrollToFirstItem
-import com.google.android.material.appbar.AppBarLayout
+import com.example.adapters.PagerStateAdapter
 import offsetChangedListener
 import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
+class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
     ChatListTabsContract.View {
 
     @InjectPresenter
@@ -42,10 +31,6 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
     fun providePresenter(): ChatListTabsPresenter = presenterProvider.get()
 
     private val pageChangeListener = onPageChanged { position ->
-        when (position) {
-            0 -> presenter.onChatsSelected()
-            1 -> presenter.onInvitesSelected()
-        }
         selectTab(position)
     }
 
@@ -55,14 +40,11 @@ class ChatListTabsFragment : BaseFragmentNew<FragmentChatListTabsBinding>(),
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             viewPager.apply {
-                adapter = object :
-                    FragmentPagerAdapter(
-                        childFragmentManager,
-                        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-                    ) {
+                adapter = object : PagerStateAdapter(childFragmentManager){
                     override fun getItem(position: Int) = fragments[position]
                     override fun getCount() = fragments.size
                 }
+                selectTab(currentItem)
                 addOnPageChangeListener(pageChangeListener)
             }
 

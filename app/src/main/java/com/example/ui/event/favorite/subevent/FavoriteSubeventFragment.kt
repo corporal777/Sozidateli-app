@@ -7,19 +7,20 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
+import com.example.databinding.LayoutListBinding
+import com.example.extensions.updateItem
 import com.example.holders.DayHeaderItem
 import com.example.holders.NoDataItem
 import com.example.ui.base.BaseFragment
+import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.subevent.items.SubEventItem
-import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_event_contacts.recyclerView
-import kotlinx.android.synthetic.main.layout_list.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View {
+class FavoriteSubeventFragment : BaseFragment<LayoutListBinding>(), FavoriteSubeventContract.View {
 
 
     @InjectPresenter
@@ -42,15 +43,8 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View {
         override fun onSubEventClick(subEvent: EventActivityModel) {
             presenter.onSubEventClick(subEvent)
         }
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) {
-            // do nothing
-        }
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
-            // do nothing
-        }
-
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) {}
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {}
         override fun onChangeFavoriteClick(subEvent: EventActivityModel) {
             presenter.onChangeFavoriteRequest(subEvent)
         }
@@ -58,40 +52,42 @@ class FavoriteSubeventFragment : BaseFragment(), FavoriteSubeventContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.apply {
-            adapter = groupAdapter
-        }
+        mBinding.apply {
+            recyclerView.apply {
+                adapter = groupAdapter
+            }
 
-        swipeToRefresh.setOnRefreshListener {
-            presenter.onRefreshRequest()
+            swipeToRefresh.setOnRefreshListener {
+                presenter.onRefreshRequest()
+            }
         }
     }
 
     override fun setData(data: Map<Long?, List<EventActivityModel>>) {
-        val groups = mutableListOf<Group>()
-        data.forEach { entry ->
-            val date = entry.key
-            val events = entry.value
-            if (date != null) {
-                groups.add(DayHeaderItem(date))
-                events.forEach {
-                    groups.add(SubEventItem(it, SubEventItem.Mode.FAVORITE, onSubEventClickListener))
+        if (data.isNullOrEmpty()) groupAdapter.updateItem(NoDataItem(getString(R.string.empty_list_placeholder_message)))
+        else {
+            groupAdapter.update(
+                data.map { entry ->
+                    val date = entry.key
+                    val events = entry.value
+                    Section().apply {
+                        if (date != null) {
+                            add(DayHeaderItem(date))
+                            events.forEach {
+                                add(SubEventItem(it, SubEventItem.Mode.FAVORITE, onSubEventClickListener))
+                            }
+                        }
+                    }
                 }
-            }
+            )
         }
-
-        if (groups.isEmpty()) {
-            groupAdapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
-        } else {
-            groupAdapter.update(groups)
-        }
-
-        swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
-        findNavController().navigate(FavoriteSubeventFragmentDirections.favoriteSubeventsFragmentToSubeventFragment(eventId, subEventId))
+        val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+        findNavController().navigate(R.id.subEvent_fragment, args)
     }
 
-    override fun layout() = R.layout.fragment_event_speakers
+    override fun layout() = R.layout.layout_list
 }

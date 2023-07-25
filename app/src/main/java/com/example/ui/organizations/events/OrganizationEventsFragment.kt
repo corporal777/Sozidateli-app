@@ -3,7 +3,6 @@ package com.example.ui.organizations.events
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
@@ -15,18 +14,11 @@ import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.EventListFragment
-import com.example.ui.event.registration.EventRegistrationFragmentArgs
-import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.EventRegistrationProfileFieldsDialog
-import com.example.ui.views.StateType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 

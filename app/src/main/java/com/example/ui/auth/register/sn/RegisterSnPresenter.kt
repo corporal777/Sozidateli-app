@@ -11,16 +11,18 @@ import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class RegisterSnPresenter
 @Inject constructor(
-        private val authRepository: AuthRepository,
-        snAuthManager: SnAuthManager,
-        appData: AppData
-) : BaseAuthPresenter<RegisterSnContract.View>(authRepository, snAuthManager, appData), RegisterSnContract.Presenter {
+    private val authRepository: AuthRepository,
+    snAuthManager: SnAuthManager,
+    appData: AppData
+) : BaseAuthPresenter<RegisterSnContract.View>(authRepository, snAuthManager, appData),
+    RegisterSnContract.Presenter {
 
     lateinit var snUser: SnUser
 
@@ -35,7 +37,11 @@ class RegisterSnPresenter
         super.onFirstViewAttach()
         email = snUser.snUserData.email ?: snUser.snAuth.email
         viewState.apply {
-            setUserData(snUser.snAuth.snType, "${snUser.snUserData.firstName} ${snUser.snUserData.lastName}", snUser.snUserData.avatar)
+            setUserData(
+                snUser.snAuth.snType,
+                "${snUser.snUserData.firstName} ${snUser.snUserData.lastName}",
+                snUser.snUserData.avatar
+            )
             setEmail(email)
             performDataChange()
         }
@@ -107,17 +113,17 @@ class RegisterSnPresenter
 
     private fun checkEmailRegistered() {
         compositeDisposable += authRepository.checkRegisterStatus(null, null, email)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple {
-                    if (it.user_by_email_found) {
-                        register()
-                    } else {
-                        step = STEP_PASSWORD
-                        viewState.setPassword(password, passwordConfirm)
-                        performDataChange()
-                    }
+            .performOnBackgroundOutOnMain()
+            .withLoadingDialog(viewState)
+            .subscribeSimple {
+                if (it.user_by_email_found) {
+                    register()
+                } else {
+                    step = STEP_PASSWORD
+                    viewState.setPassword(password, passwordConfirm)
+                    performDataChange()
                 }
+            }
     }
 
     private fun register() {
@@ -128,20 +134,27 @@ class RegisterSnPresenter
         val lastName = snUser.snUserData.lastName
         val snType = snUser.snAuth.snType.code
         val snToken = snUser.snAuth.token
-        compositeDisposable += authRepository.authSocialNetwork(snType, snToken, email, firstName, lastName, password)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeSimple(
-                        onError = {
-                            if (it is ApiError && it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {
-                                viewState.showEmailConfirmation(email, snUser)
-                            } else {
-                                onReceiveError(it)
-                            }
-                        },
-                        onComplete = {}
-                )
+        compositeDisposable += authRepository.authSocialNetwork(
+            snType,
+            snToken,
+            email,
+            firstName,
+            lastName,
+            password
+        )
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = {
+                    if (it is ApiError && it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {
+                        viewState.showEmailConfirmation(email, snUser)
+                    } else {
+                        onReceiveError(it)
+                    }
+                },
+                onComplete = {}
+            )
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {

@@ -3,26 +3,24 @@ package com.example.ui.search.tabs
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentSearchTabsBinding
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.user.SearchUserFragment
 import com.example.util.SearchInput
+import com.example.adapters.PagerStateAdapter
 import onPageChanged
-import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchTabsContract.View,
+class SearchTabsFragment : BaseFragment<FragmentSearchTabsBinding>(), SearchTabsContract.View,
     SearchInterfaceProvider {
 
 
@@ -48,7 +46,6 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
         )
     }
     private val pageChangeListener = onPageChanged { position ->
-        presenter.currentPosition = position
         selectTab(position)
         setupQrScannerButton(position)
     }
@@ -57,16 +54,11 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.viewPager.run {
-            isSaveEnabled = false
-            addOnPageChangeListener(pageChangeListener)
-            adapter = object : FragmentStatePagerAdapter(
-                childFragmentManager,
-                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-            ) {
-                override fun getItem(position: Int) = fragments[position] as Fragment
-
+            adapter = object : PagerStateAdapter(childFragmentManager){
+                override fun getItem(position: Int) = fragments[position]
                 override fun getCount() = fragments.size
             }
+            addOnPageChangeListener(pageChangeListener)
             selectTab(currentItem)
             setupQrScannerButton(currentItem)
         }
@@ -77,17 +69,15 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
 
         mBinding.etSearch.apply {
             SearchInput(this).apply {
-                setOnTextChange { presenter.onSearchTextChange(it) }
+                setOnTextChange {
+                    mBinding.btnClear.isVisible = !it.isNullOrEmpty()
+                    presenter.onSearchTextChange(it)
+                }
                 setOnTextChangeDone {
                     presenter.onSearchTextSubmit(it)
                     hideKeyboard(mBinding.etSearch)
                 }
             }
-
-            onTextChanged {
-                mBinding.btnClear.isVisible = !it.isNullOrEmpty()
-            }
-
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 mBinding.clSearch.setBackgroundResource(
                     if (hasFocus) R.drawable.background_search_field_rounded_focused
@@ -98,7 +88,7 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
 
         mBinding.apply {
             btnClear.apply {
-                btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                isVisible = !etSearch.text.isNullOrEmpty()
                 setOnClickListener { mBinding.etSearch.text = null }
             }
 
@@ -128,15 +118,6 @@ class SearchTabsFragment : BaseFragmentNew<FragmentSearchTabsBinding>(), SearchT
         }
     }
 
-    override fun setCurrentFragment(position: Int) {
-        mBinding.viewPager.apply {
-            if (currentItem == position) return
-            else {
-                currentItem = position
-                selectTab(position)
-            }
-        }
-    }
 
     private fun setupQrScannerButton(position: Int) {
         mBinding.cardQrScanner.isVisible = position == 0

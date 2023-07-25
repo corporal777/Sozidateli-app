@@ -12,22 +12,10 @@ import javax.inject.Inject
 class SearchTabsPresenter
 @Inject constructor(
     appData: AppData,
-    private val userRepository: UserRepository,
 ) : BasePresenter<SearchTabsContract.View>(appData), SearchTabsContract.Presenter {
 
     lateinit var searchInterface: SearchInterface
     var filter: SearchFilter? = null
-    var currentPosition = 0
-
-
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-    }
-
-    override fun attachView(view: SearchTabsContract.View?) {
-        super.attachView(view)
-        viewState.setCurrentFragment(currentPosition)
-    }
 
 
     override fun onSearchTextChange(text: String) {

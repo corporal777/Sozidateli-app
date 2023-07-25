@@ -9,25 +9,24 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.databinding.LayoutListBinding
+import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
+import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View, ToolbarFragment {
+class BannedFragment : BaseFragment<LayoutListBinding>(), BannedContract.View, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: BannedPresenter
-
-    var mDy = 0
 
     @Inject
     lateinit var presenterProvider: Provider<BannedPresenter>
@@ -50,23 +49,20 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
         mBinding.apply {
             recyclerView.apply {
                 adapter = this@BannedFragment.adapter
-
             }
-
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
     override fun setItems(userChats: List<UserChat?>) {
-        if (userChats.isEmpty()) {
-            adapter.update(listOf(NoDataItem(getString(R.string.empty_list_placeholder_message))))
-        } else {
+        if (userChats.isEmpty()) adapter.updateItem(NoDataItem(getString(R.string.empty_list_placeholder_message)))
+        else {
             adapter.update(userChats.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.USER)
                 else UserItem(
                         it.id,
                         it.user.nameLastName,
-                        it.user.address?.getShortAddress()/*user_city*/,
+                        it.user.address?.getShortAddress(),
                         it.user.loadUserImage(),
                         { presenter.onUserClick(it) },
                         UserSubscribeButton.Action.UNBLOCK,
@@ -79,20 +75,13 @@ class BannedFragment : BaseFragmentNew<LayoutListBinding>(), BannedContract.View
     }
 
     override fun openUserInfo(userId: String) {
-        findNavController().navigate(BannedFragmentDirections.bannedFragmentToUserFragment(userId))
+        val args = UserFragmentArgs.Builder(userId).build().toBundle()
+        findNavController().navigate(R.id.user_fragment, args)
     }
-
 
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.profile_banned) }
     override fun actionIconContainer(view: ViewGroup) {}
-
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.recyclerView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

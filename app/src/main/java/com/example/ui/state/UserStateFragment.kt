@@ -11,8 +11,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentUserStateBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.state.base.MainInfoFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
@@ -26,7 +25,7 @@ import onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment : BaseFragmentNew<FragmentUserStateBinding>(true), UserStateContract.View,
+class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStateContract.View,
     ToolbarFragment {
 
     @InjectPresenter

@@ -20,7 +20,7 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
@@ -37,7 +37,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationFragment : BaseFragmentNew<FragmentOrganizationBinding>(),
+class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     OrganizationContract.View, ToolbarFragment {
 
     @InjectPresenter

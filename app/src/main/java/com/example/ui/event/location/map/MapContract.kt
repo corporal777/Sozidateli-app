@@ -6,6 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 
 interface MapContract {
+
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -13,9 +14,6 @@ interface MapContract {
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun showContent()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun enableCurrentLocation(enable: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun setMarker(lat: Double, lon: Double)
@@ -30,9 +28,10 @@ interface MapContract {
         fun openUrl(url: String)
     }
 
-    interface Presenter : BaseContract.Presenter {
+    interface Presenter : BaseContract.Presenter{
         fun onMapReady()
         fun onShareClick()
         fun onOpenRouteClick()
     }
+
 }

@@ -1,21 +1,12 @@
 package com.example.ui.event.about.items
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import android.text.method.LinkMovementMethod
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.RequestApplyModel
-import com.example.data.models.RequestsApplyModel
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.*
-import com.example.ui.event.location.map.redesign.MapPresenterNew
-import com.example.ui.views.CustomSpannableString
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import parseColor

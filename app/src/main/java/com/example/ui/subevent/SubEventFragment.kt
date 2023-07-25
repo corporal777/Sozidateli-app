@@ -17,7 +17,7 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.SubEventInfoItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
@@ -29,7 +29,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SubEventFragment : BaseFragmentNew<FragmentSubeventBinding>(), SubEventContract.View,
+class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContract.View,
     ToolbarFragment {
 
     @InjectPresenter

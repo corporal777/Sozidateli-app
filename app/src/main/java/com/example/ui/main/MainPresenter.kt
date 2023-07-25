@@ -14,18 +14,15 @@ import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.*
 import com.example.data.models.Notification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
-import com.example.events.OnSocketConnectEvent
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.accountChange.data.AuthType
-import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
 import com.example.ui.base.BasePresenter
 import com.example.util.*
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -40,12 +37,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withDelay
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import java.util.*
@@ -56,14 +50,12 @@ import kotlin.math.abs
 @InjectViewState
 class MainPresenter
 @Inject constructor(
-    private val userEventData: UserEventData,
     private val chatHelper: ChatHelper,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val appData: AppData,
     private val chatRepository: ChatRepository,
     private val locationProviderClient: FusedLocationProviderClient,
-    private val rxPermissions: RxPermissions,
     private val notificationManager: NotificationManager,
     private val connectivityProvider: ConnectivityProvider,
     private val eventRepository: EventRepository,
@@ -167,7 +159,7 @@ class MainPresenter
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     updateUserInShake(user)
-                    disposable += Completable.merge(listOf(getInAppRequest(), checkUserLocation(), getAdditionalData()))
+                    disposable += Completable.merge(listOf(getInAppRequest(), getAdditionalData()))
                         .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })
@@ -211,7 +203,6 @@ class MainPresenter
                 val connected = it == SocketConnectionState.CONNECTED
                 chatHelper.isConnectingToSocket = connected
                 if (connected) {
-                    EventBus.getDefault().post(OnSocketConnectEvent())
                     if (chatCompositeDisposable.size() == 1) {
                         subscribeChatNewMessage()
                         subscribeToNotifications()
@@ -341,9 +332,7 @@ class MainPresenter
                     isInternetConnected = it
                     if (it || appData.getUser().default_event != null) {
                         if (!emitter.isDisposed) emitter.onComplete()
-                    } else {
-                        checkInternetConnection()
-                    }
+                    } else checkInternetConnection()
                 }, {
                     if (!emitter.isDisposed) emitter.onError(it)
                 })
@@ -363,156 +352,12 @@ class MainPresenter
             }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
-        } else {
-            Completable.complete()
-        }
+        } else Completable.complete()
     }
 
-    private fun checkUserEvent(): Maybe<Boolean> {
-        return appData.defaultEvent?.let { event ->
-            userEventData.load(event.toString())
-                .andThen(Maybe.just(true))
-                .onErrorReturn { false }
-        } ?: Maybe.just(false)
-        /*return appData.getUser().default_event?.let { event ->
-            userEventData.load(event.id)
-                    .andThen(Maybe.just(true))
-                    .onErrorReturn { false }
-        } ?: Maybe.just(false)*/
-    }
-
-    private fun checkUserLocation(): Completable {
-        /*return userRepository.userEventCalendar()
-                .flatMapObservable { Observable.fromIterable(it) }
-                .filter { calendar ->
-                    val now = System.currentTimeMillis() / 1000
-                    calendar.time.any { time -> time.end > now && time.start <= now }
-                }
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMapMaybe { calendar ->
-                    if (calendar.isEmpty()) Maybe.empty()
-                    else getLocation()
-                            .timeout(5, TimeUnit.SECONDS)
-                            .map { calendar to it }
-                }
-                .observeOn(Schedulers.io())
-                .onErrorComplete()
-                .flatMapCompletable {
-                    val calendar = it.first
-                    val location = it.second
-                    val ids = calendar.map { calendarItem -> calendarItem.eventId }
-                    val atEvents = calendar.map { calendarItem ->
-                        checkUserLocationInEventArea(location, calendarItem.eventPlaceGpsLat, calendarItem.eventPlaceGpsLon)
-                    }
-                    userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
-                }
-                .onErrorComplete()*/
-
-        return eventRepository.getUserCalendarEvent(EventCalendarBody.CALENDAR_EVENT)
-            .flatMapObservable { Observable.fromIterable(it.data) }
-            .filter { calendar ->
-                val now = System.currentTimeMillis() / 1000
-                appData.defaultEvent = calendar.entity?.id
-                serverDateToMilliseconds(
-                    calendar.date?.to ?: "",
-                    DATE_FORMAT_SERVER_TIMESTAMP
-                ) > now &&
-                        serverDateToMilliseconds(
-                            calendar.date?.from ?: "",
-                            DATE_FORMAT_SERVER_TIMESTAMP
-                        ) <= now
-            }
-            .toList()
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMapMaybe { calendar ->
-                if (calendar.isEmpty()) Maybe.empty()
-                else getLocation()
-                    .timeout(5, TimeUnit.SECONDS)
-                    .map { calendar to it }
-            }
-            .observeOn(Schedulers.io())
-            //.flatMapCompletable { Completable.complete() }
-            //.onErrorComplete()
-            .flatMapCompletable {
-                val calendar = it.first
-                val location = it.second
-                val ids = calendar.map { calendarItem -> calendarItem.id }
-                val atEvents = calendar.map { calendarItem ->
-                    checkUserLocationInEventArea(
-                        location, /*calendarItem.address?.lat?:*/
-                        0.0, /*calendarItem.address?.lon?:*/
-                        0.0
-                    )
-                }
-                userRepository.setUserAtEvent(ids, atEvents, location.latitude, location.longitude)
-            }
-            .onErrorComplete()
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLocation(): Maybe<Location> {
-        return rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-            .firstElement()
-            .flatMap { isGranted ->
-                if (isGranted) {
-                    Maybe.create<Location> { emitter ->
-                        val locationRequest = LocationRequest.create()
-                            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                            .setNumUpdates(1)
-
-                        val callback = object : LocationCallback() {
-                            override fun onLocationResult(location: LocationResult) {
-                                location.lastLocation?.let {
-                                    emitter.onSuccess(it)
-                                }
-                            }
-                        }
-                        locationProviderClient.requestLocationUpdates(
-                            locationRequest,
-                            callback,
-                            Looper.myLooper()!!
-                        )
-                            .addOnFailureListener {
-                                emitter.onError(it)
-                                it.printStackTrace()
-                            }
-
-                        emitter.setCancellable {
-                            locationProviderClient.removeLocationUpdates(callback)
-                        }
-                    }
-                } else Maybe.empty()
-            }
-    }
-
-    private fun checkUserLocationInEventArea(
-        userLocation: Location,
-        areaLat: Double,
-        areaLon: Double
-    ): Boolean {
-        val distance = FloatArray(1).apply {
-            Location.distanceBetween(
-                userLocation.latitude,
-                userLocation.longitude,
-                areaLat,
-                areaLon,
-                this
-            )
-        }
-
-        return distance[0] <= EVENT_AREA_DISTANCE
-    }
 
     private fun showNextInApp() {
-        if (!inAppListNew.isNullOrEmpty()) {
-            viewState.showInAppNew(inAppListNew)
-        }
-//        inappList?.pollFirst()?.let {
-//            val notification = Notification.fromRemoteNotification(it)
-//            viewState.showInApp(notification)
-//            onInappOkClick(notification)
-//        }
+        if (!inAppListNew.isNullOrEmpty()) viewState.showInAppNew(inAppListNew)
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -521,9 +366,8 @@ class MainPresenter
     }
 
     override fun onHandleEventCode(event: String) {
-        if (isAuthRequired) {
-            viewState.showLogin()
-        } else {
+        if (isAuthRequired) viewState.showLogin()
+        else {
             compositeDisposable += eventRepository.getEventsList(
                 mapOf(
                     EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
@@ -534,8 +378,8 @@ class MainPresenter
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
-                    if (it.data.isNotEmpty())
-                        viewState.showAboutEvent(it.data[0]?.id.toString())
+                    if (!it.data.isNullOrEmpty())
+                        viewState.showAboutEvent(it.data.first()?.id.toString())
                 }, {
                     it.printStackTrace()
                 })
@@ -544,13 +388,8 @@ class MainPresenter
     }
 
     override fun onHandleEvent(event: String) {
-        if (isAuthRequired) {
-            viewState.showLogin()
-        } else {
-            if (!event.isNullOrEmpty()) {
-                viewState.showAboutEvent(event)
-            }
-        }
+        if (isAuthRequired) viewState.showLogin()
+        else viewState.showAboutEvent(event)
     }
 
     override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
@@ -558,11 +397,8 @@ class MainPresenter
             viewState.showLogin()
             canShowBrowser = true
         } else {
-            if (canShowBrowser) {
-                observeDeeplink(url, type)
-            } else {
-                viewState.showAccountChangeFragment(url, type)
-            }
+            if (canShowBrowser) observeDeeplink(url, type)
+            else viewState.showAccountChangeFragment(url, type)
         }
     }
 
@@ -641,7 +477,6 @@ class MainPresenter
         super.onDestroy()
         unsubscribeChat()
         chatHelper.currentChatId = null
-//        AuthBackground.clear()
     }
 
     override fun onOpenStartDestination() {

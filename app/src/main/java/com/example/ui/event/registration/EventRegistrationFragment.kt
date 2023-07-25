@@ -4,13 +4,9 @@ import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -29,12 +25,11 @@ import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.PlaceholderItem
 import com.example.holders.registerEvent.*
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.items.*
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.*
@@ -46,7 +41,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class EventRegistrationFragment : BaseFragmentNew<FragmentRequestBinding>(),
+class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     EventRegistrationContract.View {
 
 

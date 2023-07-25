@@ -8,14 +8,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.budiyev.android.codescanner.*
 import com.example.R
 import com.example.databinding.FragmentAuthWebBinding
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.qrscanner.auth.AuthWebsiteFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import javax.inject.Inject
 import javax.inject.Provider
 
-class QrScannerToAuthWebFragment : BaseFragmentNew<FragmentAuthWebBinding>(),
+class QrScannerToAuthWebFragment : BaseFragment<FragmentAuthWebBinding>(),
     QrScannerToAuthWebContract.View {
 
     private var codeScanner: CodeScanner? = null

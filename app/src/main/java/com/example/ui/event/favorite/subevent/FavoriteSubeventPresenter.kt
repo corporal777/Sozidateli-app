@@ -19,8 +19,8 @@ import javax.inject.Inject
 
 @InjectViewState
 class FavoriteSubeventPresenter @Inject constructor(
-        private val eventRepository: EventRepository,
-        private val appData: AppData
+    private val eventRepository: EventRepository,
+    private val appData: AppData
 ) : BasePresenter<FavoriteSubeventContract.View>(appData), FavoriteSubeventContract.Presenter {
 
     lateinit var event: String
@@ -38,19 +38,20 @@ class FavoriteSubeventPresenter @Inject constructor(
 
     private fun loadData() {
         eventRepository.getEventActivities(event.toInt())
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                        onError = { it.printStackTrace() },
-                        onSuccess = {
-                            actions = it
-                            setData(groupData(it))
-                        }
-                )
+            .doOnSuccess { actions = it }
+            .map { groupData(it) }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onSuccess = { setData(it) }
+            )
     }
 
-    private fun groupData(actions: List<EventActivityModel>): Map<Long?, List</*SubEvent*/EventActivityModel>> {
-        return actions.filter { it.binds?.userFavorite != null }.groupBy {
-            it.holdingDate?.from?.parseToDate(defaultServerDateTimeFormatter)?.time?.startOfDay()
+    private fun groupData(actions: List<EventActivityModel>): Map<Long?, List<EventActivityModel>> {
+        val list = actions.filter { it.binds?.userFavorite != null }
+        return if (list.isNullOrEmpty()) emptyMap()
+        else {
+            list.groupBy { it.holdingDate?.from?.parseToDate(defaultServerDateTimeFormatter)?.time?.startOfDay() }
         }
     }
 
@@ -61,25 +62,34 @@ class FavoriteSubeventPresenter @Inject constructor(
     override fun onChangeFavoriteRequest(subevent: EventActivityModel) {
         val id = subevent.id
         if (subevent.binds?.userFavorite == null)
-            compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel(appData.getId(), AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SUB_EVENT, id?.toInt())))
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeSimple({
-                        viewState.showRequestErrorMessage()
-                    }) {
-                        actions.firstOrNull { ac -> ac.id == subevent.id }?.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                        setData(groupData(actions))
-                    }
+            compositeDisposable += eventRepository.addToFavorites(
+                AddToFavoriteModel(
+                    appData.getId(),
+                    AddToFavoriteEntityModel(
+                        AddToFavoriteEntityModel.FAVORITE_SUB_EVENT,
+                        id?.toInt()
+                    )
+                )
+            )
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple({
+                    viewState.showRequestErrorMessage()
+                }) {
+                    actions.firstOrNull { ac -> ac.id == subevent.id }?.binds?.userFavorite =
+                        EventUserFavorite(it.id, it.user)
+                    setData(groupData(actions))
+                }
         else
             compositeDisposable += eventRepository.deleteFromFavorite(subevent.binds.userFavorite?.id.toString())
-                    .performOnBackgroundOutOnMain()
-                    .withLoadingDialog(viewState)
-                    .subscribeSimple({
-                        viewState.showRequestErrorMessage()
-                    }) {
-                        actions.firstOrNull { ac -> ac.id == subevent.id }?.binds?.userFavorite = null
-                        setData(groupData(actions))
-                    }
+                .performOnBackgroundOutOnMain()
+                .withLoadingDialog(viewState)
+                .subscribeSimple({
+                    viewState.showRequestErrorMessage()
+                }) {
+                    actions.firstOrNull { ac -> ac.id == subevent.id }?.binds?.userFavorite = null
+                    setData(groupData(actions))
+                }
     }
 
     override fun onSubEventClick(subEvent: EventActivityModel) {

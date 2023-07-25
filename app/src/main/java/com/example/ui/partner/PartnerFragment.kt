@@ -1,6 +1,5 @@
 package com.example.ui.partner
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import com.example.databinding.FragmentPartnerBinding
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.partner.items.PartnerMainInfoItem
 import com.example.ui.views.toolbar.ToolbarContent
@@ -27,7 +26,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PartnerFragment : BaseFragmentNew<FragmentPartnerBinding>(), PartnerContract.View,
+class PartnerFragment : BaseFragment<FragmentPartnerBinding>(), PartnerContract.View,
     ToolbarFragment {
 
     @InjectPresenter

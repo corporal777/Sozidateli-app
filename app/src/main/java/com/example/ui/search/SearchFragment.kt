@@ -1,7 +1,6 @@
 package com.example.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -9,17 +8,15 @@ import android.widget.EditText
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
-import com.example.data.models.SearchTown
 import com.example.databinding.LayoutFilterBinding
-import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.databinding.LayoutListSearchBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
+import com.example.extensions.updateItem
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.search.event.SearchEventPresenter
 import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
@@ -37,7 +34,7 @@ import initDropDownView
 import onTextChanged
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
-    BaseFragmentNew<LayoutListSearchBinding>(), SearchContract.View<I, F> {
+    BaseFragment<LayoutListSearchBinding>(), SearchContract.View<I, F> {
 
     abstract var searchPresenter: P
 
@@ -88,17 +85,14 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     override fun setData(data: List<I?>) {
         if (data.isEmpty()) {
-            adapter.update(
-                listOf(
-                    NoEventItem(
-                        getString(R.string.search_no_data_text),
-                        getString(R.string.search_no_data_description)
-                    )
+            adapter.updateItem(
+                NoEventItem(
+                    getString(R.string.search_no_data_text),
+                    getString(R.string.search_no_data_description)
                 )
             )
-        } else {
-            adapter.update(data.map(::createItem))
-        }
+        } else adapter.update(data.map(::createItem))
+
         mBinding.swipeToRefresh.isRefreshing = false
     }
 

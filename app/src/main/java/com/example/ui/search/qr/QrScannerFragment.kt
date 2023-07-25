@@ -16,13 +16,13 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.example.R
 import com.example.databinding.FragmentQrScannerBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class QrScannerFragment : BaseFragmentNew<FragmentQrScannerBinding>(), QrScannerContract.View,
+class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(), QrScannerContract.View,
     ToolbarFragment {
 
     @InjectPresenter

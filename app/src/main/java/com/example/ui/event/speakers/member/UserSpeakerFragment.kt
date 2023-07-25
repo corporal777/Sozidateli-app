@@ -18,7 +18,7 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.chat.ChatFragmentArgs
 import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
@@ -34,7 +34,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
+class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
     UserSpeakerContract.View, ToolbarFragment {
 
 
@@ -132,7 +132,7 @@ class UserSpeakerFragment : BaseFragmentNew<FragmentUserSpeakerBinding>(),
                 speaker.binds?.user?.nameLastName,
                 speaker.organizationAndPosition,
                 speaker.description,
-                speaker.binds?.user?.image?.uri,
+                speaker.binds?.user?.loadUserImage(),
                 speaker.status,
                 presenter.isUserRegistered()
             ) { presenter.onWriteMessageClick() }

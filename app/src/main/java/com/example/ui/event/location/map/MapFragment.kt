@@ -2,32 +2,31 @@ package com.example.ui.event.location.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.Intent.ACTION_SEND
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.MapInfo
+import com.example.databinding.FragmentMapBinding
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.example.ui.views.toolbar.ToolbarContent
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-
-class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
+class MapFragment : BaseFragment<FragmentMapBinding>(), MapContract.View,
+    OnMapReadyCallback, ToolbarFragment {
 
     @InjectPresenter
     lateinit var presenter: MapPresenter
@@ -35,57 +34,62 @@ class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
     @Inject
     lateinit var presenterProvider: Provider<MapPresenter>
 
+
     @ProvidePresenter
     fun providePresenter(): MapPresenter = presenterProvider.get().apply {
-        mapInfo = requireArguments().getParcelable(ARG_MAP_INFO)!!
+        val args = MapFragmentArgs.fromBundle(requireArguments())
+        mapInfo = args.mapInfo
     }
 
     private lateinit var googleMap: GoogleMap
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun initializeMap() {
-        flMapContainer.apply {
-            updateLayoutParams {
-                val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
-                height = dh.roundToInt()
+        mBinding.apply {
+            flMapContainer.apply {
+                updateLayoutParams {
+                    val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
+                    height = dh.roundToInt()
+                }
+
+                (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).apply {
+                    getMapAsync(this@MapFragment)
+                }
+                isVisible = true
             }
 
-            (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).apply {
-                getMapAsync(this@MapFragment)
-            }
-            isVisible = true
-        }
+            llMapAction.isVisible = true
 
-        llMapAction.isVisible = true
-
-        flMapTouchWrapper.apply {
-            setOnTouchListener { _, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_UP -> {
-                        scrollContainer.requestDisallowInterceptTouchEvent(false)
-                        true
+            flMapTouchWrapper.apply {
+                setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_UP -> {
+                            scrollContainer.requestDisallowInterceptTouchEvent(false)
+                            true
+                        }
+                        MotionEvent.ACTION_DOWN,
+                        MotionEvent.ACTION_MOVE -> {
+                            scrollContainer.requestDisallowInterceptTouchEvent(true)
+                            false
+                        }
+                        else -> true
                     }
-                    MotionEvent.ACTION_DOWN,
-                    MotionEvent.ACTION_MOVE -> {
-                        scrollContainer.requestDisallowInterceptTouchEvent(true)
-                        false
-                    }
-                    else -> true
                 }
             }
+
+            btnShare.setOnClickListener { presenter.onShareClick() }
+            btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
         }
 
-        btnShare.setOnClickListener { presenter.onShareClick() }
-        btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
     }
 
     override fun showContent() {
-        scrollContainer.isVisible = true
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun enableCurrentLocation(enable: Boolean) {
-        googleMap.isMyLocationEnabled = enable
+        mBinding.scrollContainer.isVisible = true
     }
 
     override fun setMarker(lat: Double, lon: Double) {
@@ -95,12 +99,12 @@ class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
     }
 
     override fun setDescription(title: String?, description: String?) {
-        tvDescriptionTitle.apply {
+        mBinding.tvDescriptionTitle.apply {
             text = title
             isVisible = !title.isNullOrEmpty()
         }
 
-        tvDescription.apply {
+        mBinding.tvDescription.apply {
             text = description
             isVisible = !description.isNullOrEmpty()
         }
@@ -113,7 +117,7 @@ class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
 
     override fun shareUrl(url: String) {
         try {
-            val shareIntent = Intent(ACTION_SEND)
+            val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, url)
             startActivity(Intent.createChooser(shareIntent, getString(R.string.map_sharing)))
@@ -136,10 +140,11 @@ class MapFragment : BaseFragment(), MapContract.View, OnMapReadyCallback {
     companion object {
         private const val ARG_MAP_INFO = "mapInfo"
 
-        fun newInstance(mapInfo: MapInfo): MapFragment {
-            return MapFragment().apply {
-                arguments = bundleOf(ARG_MAP_INFO to mapInfo)
-            }
-        }
     }
+
+    override val title: CharSequence = ""
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+
 }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -28,16 +27,14 @@ import com.example.databinding.FragmentUserBinding
 import com.example.extensions.*
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.items.ProfileDataDividerItem
 import com.example.ui.user.items.UserProfileActionsItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.UserSubscribeImageView
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.toolbar.ToolbarCircleButton
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.ui.views.toolbar.ToolbarContentActionBar
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
@@ -46,13 +43,10 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import onScrolled
-import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserFragment : BaseFragmentNew<FragmentUserBinding>(), UserContract.View, ToolbarFragment {
+class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, ToolbarFragment {
 
     private val shareProfileButton by lazy {
         ToolbarIconView(requireContext(), 32).apply {

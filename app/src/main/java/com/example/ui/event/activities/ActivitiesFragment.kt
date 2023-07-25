@@ -24,9 +24,9 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragmentArgs
+import com.example.ui.event.location.buildingScheme.DestinationSchemeFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
@@ -39,7 +39,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ActivitiesFragment : BaseFragmentNew<FragmentActivitysBinding>(), ActivitiesContract.View {
+class ActivitiesFragment : BaseFragment<FragmentActivitysBinding>(), ActivitiesContract.View {
 
     override fun layout(): Int = R.layout.fragment_activitys
 

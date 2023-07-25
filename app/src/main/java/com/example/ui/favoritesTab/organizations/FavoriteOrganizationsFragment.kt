@@ -11,7 +11,7 @@ import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -19,7 +19,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteOrganizationsFragment : BaseFragmentNew<LayoutListBinding>(),
+class FavoriteOrganizationsFragment : BaseFragment<LayoutListBinding>(),
     FavoriteOrganizationsContract.View {
 
     @InjectPresenter

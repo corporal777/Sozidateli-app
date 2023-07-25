@@ -1,14 +1,12 @@
 package com.example.ui.auth.register.email.newbuild
 
-import android.content.Context
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 
-interface RegisterEmailNewContract {
+interface RegisterEmailContract {
     interface View : BaseAuthContract.View {
 
         @StateStrategyType(OneExecutionStateStrategy::class)

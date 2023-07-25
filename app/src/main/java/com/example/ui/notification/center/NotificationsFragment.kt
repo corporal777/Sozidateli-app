@@ -14,7 +14,7 @@ import com.example.databinding.FragmentNotificationsBinding
 import com.example.extensions.findItemBy
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.toolbar.ToolbarContent
@@ -29,7 +29,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class NotificationsFragment : BaseFragmentNew<FragmentNotificationsBinding>(), NotificationsContract.View, ToolbarFragment {
+class NotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), NotificationsContract.View, ToolbarFragment {
 
 
     @InjectPresenter

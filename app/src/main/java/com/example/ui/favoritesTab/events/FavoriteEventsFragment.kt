@@ -13,7 +13,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.EventFavoriteItem
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
@@ -23,7 +23,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteEventsFragment : BaseFragmentNew<LayoutListBinding>(), FavoriteEventsContract.View {
+class FavoriteEventsFragment : BaseFragment<LayoutListBinding>(), FavoriteEventsContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteEventsPresenter

@@ -9,7 +9,7 @@ import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.FragmentEventSpeakersBinding
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
 import com.xwray.groupie.GroupAdapter
@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
+class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
     EventSpeakersContract.View {
 
     @InjectPresenter
@@ -62,7 +62,7 @@ class EventSpeakersFragment : BaseFragmentNew<FragmentEventSpeakersBinding>(),
                 speaker.binds?.user?.nameLastName,
                 speaker.organizationAndPosition,
                 speaker.description,
-                speaker.binds?.user?.image?.uri,
+                speaker.binds?.user?.loadUserImage(),
                 speaker.status,
                 speaker.binds?.user?.state?.isRegistered ?: false
             ) { presenter.onSpeakerClick(it) }

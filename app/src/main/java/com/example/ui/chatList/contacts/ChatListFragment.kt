@@ -1,7 +1,6 @@
 package com.example.ui.chatList.contacts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
@@ -13,22 +12,19 @@ import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatListBinding
 import com.example.extensions.findGroupBy
-import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.items.UserChatGroup
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatListFragment() :
-    BaseFragmentNew<FragmentChatListBinding>(), ChatListContract.View {
+class ChatListFragment() : BaseFragment<FragmentChatListBinding>(), ChatListContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListPresenter
@@ -54,13 +50,14 @@ class ChatListFragment() :
 
     private val adapter by lazy {
         PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-                override fun onItemTake(position: Int) {
-                    if (position > 0) presenter.onItemTake(position - 1)
-                }
-            })
             add(chatSection)
             add(favoritesSection)
+            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+                override fun onItemTake(position: Int) {
+                    val count = position - favoritesSection.itemCount
+                    if (count > 0) presenter.onItemTake(count)
+                }
+            })
         }
     }
 
@@ -69,7 +66,6 @@ class ChatListFragment() :
         mBinding.apply {
             chatList.apply {
                 adapter = this@ChatListFragment.adapter
-                onScrolled { _, dy -> }
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -108,16 +104,12 @@ class ChatListFragment() :
     }
 
     override fun setChatUnreadMessageCount(chatId: String, count: Int) {
-        val item =
-            chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
-        //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
+        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
         item?.updateBadge(count)
     }
 
     override fun setChatUnreadMessage(chatId: String, message: String) {
-        //val item = chatSection.findItemBy<UserChatItem> { x -> x.userChat.id.toString() == chatId }
-        val item =
-            chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
+        val item = chatSection.findGroupBy<UserChatGroup> { x -> x.userChat.id.toString() == chatId }
         if (item != null) {
             item.updateMessage(message)
             val oldPosition = chatSection.getPosition(item)

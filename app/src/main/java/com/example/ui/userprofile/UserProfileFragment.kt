@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,15 +14,14 @@ import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.userprofile.read.interests.UserProfileInterestsFragmentDirections
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileFragment : BaseFragmentNew<FragmentUserProfileBinding>(true),
+class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
     UserProfileContract.View, ToolbarFragment {
 
 

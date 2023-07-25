@@ -1,23 +1,16 @@
-package com.example.ui.event.location.buildingScheme.redesign
+package com.example.ui.event.location.buildingScheme
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.util.Base64
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Place
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pdfToBitmap
 import com.example.util.pdfToUri
-import com.example.util.saveImageToCache
-import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withProgressBarLoadingDialog
-import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import kotlin.math.abs
 

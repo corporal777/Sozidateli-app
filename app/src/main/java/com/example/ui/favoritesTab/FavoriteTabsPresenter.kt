@@ -10,13 +10,7 @@ class FavoriteTabsPresenter
 @Inject constructor(appData: AppData) :
     BasePresenter<FavoriteTabsContract.View>(appData), FavoriteTabsContract.Presenter {
 
-    var currentPosition = 0
-    private var isFirstLaunch = true
-
-
     override fun attachView(view: FavoriteTabsContract.View?) {
         super.attachView(view)
-        if (isFirstLaunch) isFirstLaunch = false
-        else viewState.setCurrentFragment(currentPosition)
     }
 }

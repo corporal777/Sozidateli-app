@@ -17,7 +17,7 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
@@ -35,7 +35,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileSettingsFragment :
-    BaseFragmentNew<FragmentUserProfileSettingsBinding>(canShowAnim = true),
+    BaseFragment<FragmentUserProfileSettingsBinding>(canShowAnim = true),
     UserProfileSettingsContract.View, ToolbarFragment {
 
     private lateinit var mUser: UserDetail

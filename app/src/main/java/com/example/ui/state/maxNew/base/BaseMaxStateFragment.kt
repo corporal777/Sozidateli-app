@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentMaxStateInfoBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
@@ -26,7 +26,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
-    BaseFragmentNew<FragmentMaxStateInfoBinding>(),
+    BaseFragment<FragmentMaxStateInfoBinding>(),
     BaseMaxStateContract.View, ToolbarFragment {
 
     abstract var presenter: P

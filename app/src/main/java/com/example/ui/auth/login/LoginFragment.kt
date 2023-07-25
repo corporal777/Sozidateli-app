@@ -11,14 +11,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
-import com.example.util.getDeviceName
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginFragment : BaseFragmentNew<FragmentLoginBinding>(), LoginContract.View {
+class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
 
     private var isRegister = false
     private var invite: Int? = null

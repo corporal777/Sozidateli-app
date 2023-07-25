@@ -192,28 +192,8 @@
 
     <fragment
         android:id="@+id/register_email_new_fragment"
-        android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment"
+        android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailFragment"
         android:label="Register">
-
-
-        <action
-            android:id="@+id/email_register_to_email_confirm"
-            app:destination="@id/email_confirm_fragment"
-            app:popUpTo="@id/authorization_fragment" />
-
-        <action
-            android:id="@+id/email_register_to_sn_register"
-            app:destination="@id/register_sn_fragment"
-            app:popUpTo="@id/authorization_fragment" />
-        <action
-            android:id="@+id/action_register_email_new_fragment_to_authorization_fragment"
-            app:destination="@id/authorization_fragment" />
-        <action
-            android:id="@+id/action_register_email_new_fragment_to_recovery_password_fragment"
-            app:destination="@id/recovery_password_fragment" />
-        <!--app:popUpTo="@id/authorization_fragment"
-            app:popUpToInclusive="true"-->
-
     </fragment>
 
     <fragment
@@ -336,21 +316,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/subevent_user_list_fragment"
-        android:name="com.example.ui.subevent.users.SubeventUserListFragment">
-        <argument
-            android:name="eventId"
-            app:argType="string" />
-        <argument
-            android:name="subeventId"
-            app:argType="string" />
-
-        <action
-            android:id="@+id/subevent_user_list_fragment_to_chat"
-            app:destination="@id/chat_fragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/profile_fragment"
         android:name="com.example.ui.profile.ProfileFragment"
         android:label="@string/profile_title">
@@ -451,10 +416,6 @@
         android:id="@+id/banned_fragment"
         android:name="com.example.ui.banned.BannedFragment"
         android:label="@string/profile_banned">
-
-        <action
-            android:id="@+id/banned_fragment_to_user_fragment"
-            app:destination="@id/user_fragment" />
     </fragment>
 
     <fragment
@@ -601,45 +562,6 @@
         <argument
             android:name="type"
             app:argType="com.example.data.models.UserEditDataType" />
-        <action
-            android:id="@+id/edit_to_edit"
-            app:destination="@id/user_edit_fragment" />
-        <action
-            android:id="@+id/edit_to_file_edit_fragment"
-            app:destination="@id/file_edit_fragment" />
-        <action
-            android:id="@+id/action_user_edit_fragment_to_editDegreeFragment"
-            app:destination="@id/editDegreeFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/editDegreeFragment"
-        android:name="com.example.ui.userprofile.academicdegree.EditDegreeFragment"
-        android:label="EditDegreeFragment"
-        tools:layout="@layout/fragment_edit_degree">
-
-        <argument
-            android:name="degreesLevel"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="sciencesLevel"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="position"
-            app:argType="integer" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/file_edit_fragment"
-        android:name="com.example.ui.userprofile.editfile.UserEditFileFragment"
-        tools:layout="@layout/fragment_edit_file_name">
-
-        <argument
-            android:name="file"
-            app:argType="com.example.data.models.user.RecommendationFile" />
-
     </fragment>
 
     <fragment
@@ -731,10 +653,6 @@
         <argument
             android:name="actions"
             app:argType="com.example.data.models.EventActivityModel[]" />
-
-        <action
-            android:id="@+id/favorite_subevents_fragment_to_subevent_fragment"
-            app:destination="@id/subEvent_fragment" />
     </fragment>
 
 
@@ -871,8 +789,8 @@
 
     <fragment
         android:id="@+id/fragment_map_new"
-        android:name="com.example.ui.event.location.map.redesign.MapFragmentNew"
-        tools:layout="@layout/fragment_map_new">
+        android:name="com.example.ui.event.location.map.MapFragment"
+        tools:layout="@layout/fragment_map">
 
         <argument
             android:name="mapInfo"
@@ -976,7 +894,7 @@
 
     <fragment
         android:id="@+id/destination_scheme_fragment"
-        android:name="com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment"
+        android:name="com.example.ui.event.location.buildingScheme.DestinationSchemeFragment"
         tools:layout="@layout/fragment_destination_scheme">
         <argument
             android:name="eventId"

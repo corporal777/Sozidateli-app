@@ -2,10 +2,8 @@ package com.example.ui.qrscanner.auth
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,13 +14,12 @@ import com.example.data.models.QrAuthResponse
 import com.example.databinding.FragmentAuthWebsiteBinding
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.base.BaseFragment
 import com.example.util.AuthBackground
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AuthWebsiteFragment : BaseFragmentNew<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
+class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
     AuthWebsiteContract.View {
 
     override val isLightStatus = false

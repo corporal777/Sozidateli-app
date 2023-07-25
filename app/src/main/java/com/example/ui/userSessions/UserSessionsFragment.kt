@@ -13,7 +13,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.userSessions.items.*
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs_new.SessionBottomSheet
@@ -25,7 +25,7 @@ import com.xwray.groupie.Section
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSessionsFragment : BaseFragmentNew<FragmentUserSessionsBinding>(true),
+class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(true),
     UserSessionsContract.View, ToolbarFragment {
 
 

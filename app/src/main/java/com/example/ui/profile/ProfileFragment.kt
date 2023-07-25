@@ -1,19 +1,11 @@
 package com.example.ui.profile
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.*
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -29,29 +21,25 @@ import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.accountChange.data.AuthType
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.*
-import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
-import com.example.util.ClickableSpanNew
 import com.example.util.Utils
 import com.example.util.firstLetterToUppercase
 import com.example.util.setImage
 import com.shakebugs.shake.Shake
 import com.shakebugs.shake.ShakeScreen
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ProfileFragment : BaseFragmentNew<FragmentProfileBinding>(), ToolbarFragment,
+class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     ProfileContract.View {
 
     private var isShowPopup = false

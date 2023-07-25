@@ -14,7 +14,7 @@ import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
 import com.example.holders.MainInfoEditItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
@@ -38,7 +38,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class MainInfoFragment : BaseFragmentNew<FragmentMainInfoBinding>(), MainInfoContract.View,
+class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContract.View,
     ToolbarFragment {
 
     private lateinit var passwordDialog: SetPasswordDialog

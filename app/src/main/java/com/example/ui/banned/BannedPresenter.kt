@@ -15,43 +15,46 @@ import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomProgressBarLoadingDialog
 import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
 class BannedPresenter
 @Inject constructor(
-        private val chatRepository: ChatRepository,
-        appData: AppData
-) : BasePresenter<BannedContract.View>(appData), BannedContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    private val chatRepository: ChatRepository,
+    appData: AppData
+) : BasePresenter<BannedContract.View>(appData), BannedContract.Presenter,
+    PaginationListGroupAdapter.OnItemTakeCallback {
 
     private var firstLaunch = true
 
     private val pagination = PaginationDataSourceFactory { limit, offset ->
-        chatRepository.bannedList(mapOf(
+        chatRepository.bannedList(
+            mapOf(
                 BANNED_SORT_TYPE to "desc",
                 BANNED_LIMIT to limit,
                 BANNED_OFFSET to offset,
                 BANNED_BINDS to "user"
-        ))
-    }.buildList()
+            )
+        )
+    }.buildList(enablePlaceholders = false, initialSize = 30)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setItems(List(20) { null })
         compositeDisposable += Observable.create(pagination)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    viewState.setItems(it)
-                }, {
-                    it.printStackTrace()
-                })
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onNext = { viewState.setItems(it) }
+            )
     }
 
     override fun attachView(view: BannedContract.View?) {
         super.attachView(view)
-//        if (firstLaunch) firstLaunch = false
-//        else pagination.invalidate()
+        if (firstLaunch) firstLaunch = false
+        else pagination.invalidate()
     }
 
     override fun onUserClick(userChat: UserChat) {
@@ -60,16 +63,11 @@ class BannedPresenter
 
     override fun onUnblockLick(userChat: UserChat) {
         compositeDisposable += chatRepository.deleteBan(userChat.id)
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribe({ pagination.invalidate() }, { it.printStackTrace() })
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribe({ pagination.invalidate() }, { it.printStackTrace() })
     }
 
-    override fun onItemTake(position: Int) {
-        pagination.onItemTake(position)
-    }
-
-    override fun onRefreshRequest() {
-        pagination.invalidate()
-    }
+    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+    override fun onRefreshRequest() = pagination.invalidate()
 }

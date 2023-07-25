@@ -10,13 +10,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentEnterCodeBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EnterCodeFragment : BaseFragmentNew<FragmentEnterCodeBinding>(), EnterCodeContract.View,
+class EnterCodeFragment : BaseFragment<FragmentEnterCodeBinding>(), EnterCodeContract.View,
     ToolbarFragment {
 
     @InjectPresenter

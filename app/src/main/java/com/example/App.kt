@@ -47,10 +47,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
 
         if (BuildConfig.DEBUG) {
-            //Yandex app metric
-//            val config: YandexMetricaConfig = YandexMetricaConfig.newConfigBuilder(getString(R.string.yandex_app_metric_key)).build()
-//            YandexMetrica.activate(applicationContext, config)
-//            YandexMetrica.enableActivityAutoTracking(this)
             Timber.plant(Timber.DebugTree())
         }
 
@@ -84,8 +80,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "default_channel"
         val channelName = getString(R.string.app_default_notification_channel_name)
 

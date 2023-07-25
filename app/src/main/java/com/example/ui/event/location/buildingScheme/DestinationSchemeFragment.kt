@@ -1,35 +1,28 @@
-package com.example.ui.event.location.buildingScheme.redesign
+package com.example.ui.event.location.buildingScheme
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Place
 import com.example.databinding.FragmentDestinationSchemeBinding
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
-import com.example.ui.event.location.buildingScheme.BuildingSchemePresenter
+import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.fragment_building_scheme.*
 import kotlinx.android.synthetic.main.item_building_scheme.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class DestinationSchemeFragment : BaseFragmentNew<FragmentDestinationSchemeBinding>(),
+class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>(),
     DestinationSchemeContract.View {
 
 

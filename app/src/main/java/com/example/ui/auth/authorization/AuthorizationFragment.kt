@@ -12,14 +12,13 @@ import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.auth.login.LoginFragmentArgs
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.FinishRegisterDialog
 import com.example.util.AuthBackground
-import com.facebook.login.LoginFragment
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AuthorizationFragment : BaseFragmentNew<FragmentAuthorizationBinding>(),
+class AuthorizationFragment : BaseFragment<FragmentAuthorizationBinding>(),
     BackgroundImageFragment, AuthorizationContract.View {
 
     private var showFinishRegister = false

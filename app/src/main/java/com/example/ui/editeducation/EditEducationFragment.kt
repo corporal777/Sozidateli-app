@@ -1,38 +1,27 @@
 package com.example.ui.editeducation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.AcademicDegreeModel
-import com.example.data.models.EducationModel
-import com.example.data.models.ToggleIntModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentEditEducationFragmentBinding
-import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findGroupBy
-import com.example.extensions.parseToDate
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
-import com.example.ui.editeducation.EditEducationModel.Companion.ADD_EDUCATION
-import com.example.ui.editeducation.EditEducationModel.Companion.ADD_HIGHT_LEVEL
-import com.example.ui.editeducation.EditEducationModel.Companion.EDUCATION_ITEM
+import com.example.ui.base.BaseFragment
 import com.example.ui.editeducation.items.UserEducationGroup
 import com.example.ui.editeducation.items.UserEducationLevelGroup
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EditEducationFragment : BaseFragmentNew<FragmentEditEducationFragmentBinding>(),
+class EditEducationFragment : BaseFragment<FragmentEditEducationFragmentBinding>(),
     EditEducationContract.View,
     ToolbarFragment {
 

@@ -22,8 +22,6 @@ interface ChatListTabsContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onChatsSelected()
-        fun onInvitesSelected()
         fun onFabAddChatClick()
     }
 }

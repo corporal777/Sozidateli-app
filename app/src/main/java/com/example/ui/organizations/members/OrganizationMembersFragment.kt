@@ -11,7 +11,7 @@ import com.example.data.models.OrganizationMemberModel
 import com.example.databinding.LayoutListBinding
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.organizations.detail.items.OrganizationMemberItem
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
@@ -20,7 +20,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationMembersFragment : BaseFragmentNew<LayoutListBinding>(),
+class OrganizationMembersFragment : BaseFragment<LayoutListBinding>(),
     OrganizationMembersContract.View, ToolbarFragment {
 
     @InjectPresenter

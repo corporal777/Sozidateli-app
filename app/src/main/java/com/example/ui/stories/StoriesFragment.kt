@@ -2,7 +2,6 @@ package com.example.ui.stories
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -15,12 +14,11 @@ import com.example.R
 import com.example.databinding.FragmentStoriesBinding
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.BaseFragmentNew
 import jp.shts.android.storiesprogressview.StoriesProgressView
 import javax.inject.Inject
 import javax.inject.Provider
 
-class StoriesFragment : BaseFragmentNew<FragmentStoriesBinding>(), StoriesContract.View, DoNotCheckConnectionFragment {
+class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.View, DoNotCheckConnectionFragment {
 
     @InjectPresenter
     lateinit var presenter: StoriesPresenter
@@ -118,14 +116,6 @@ class StoriesFragment : BaseFragmentNew<FragmentStoriesBinding>(), StoriesContra
             3 -> R.drawable.st_4_fg
             else -> throw IllegalStateException("No file for position: $position")
         }))
-
-        /*ivTextImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
-            0 -> R.drawable.st_1_text
-            1 -> R.drawable.st_2_text
-            2 -> R.drawable.st_3_text
-            3 -> R.drawable.st_4_text
-            else -> throw IllegalStateException("No file for position: $position")
-        }))*/
     }
 
     override fun showAuthorization() = findNavController().navigate(

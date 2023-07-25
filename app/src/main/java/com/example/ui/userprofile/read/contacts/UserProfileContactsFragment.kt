@@ -1,7 +1,6 @@
 package com.example.ui.userprofile.read.contacts
 
 import additionalNumber
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +14,15 @@ import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileContactsBinding
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
-import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileContactsFragment : BaseFragmentNew<FragmentUserProfileContactsBinding>(),
+class UserProfileContactsFragment : BaseFragment<FragmentUserProfileContactsBinding>(),
     UserProfileContactsContract.View, ToolbarFragment {
 
     override fun layout() = R.layout.fragment_user_profile_contacts

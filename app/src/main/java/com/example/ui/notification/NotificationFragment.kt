@@ -17,7 +17,7 @@ import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseAndFormat
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.GetMaxStateDialog
 import com.example.ui.views.toolbar.ToolbarContent
@@ -29,7 +29,7 @@ import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NotificationFragment : BaseFragmentNew<FragmentNotificationBinding>(),
+class NotificationFragment : BaseFragment<FragmentNotificationBinding>(),
     NotificationContract.View, ToolbarFragment {
 
     private var isCanceled = false

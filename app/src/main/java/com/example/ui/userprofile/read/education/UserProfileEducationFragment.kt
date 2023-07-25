@@ -14,17 +14,16 @@ import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataEducationItem
 import com.example.holders.ProfileDataEducationLevelItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragmentNew
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileEducationFragment : BaseFragmentNew<FragmentUserProfileInterestsBinding>(),
+class UserProfileEducationFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileEducationContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()

@@ -9,7 +9,7 @@ import com.example.ui.auth.confirm.EmailConfirmFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.email.finish.FinishRegisterFragment
-import com.example.ui.auth.register.email.newbuild.RegisterEmailNewFragment
+import com.example.ui.auth.register.email.newbuild.RegisterEmailFragment
 import com.example.ui.auth.register.invite.InviteRegisterFragment
 import com.example.ui.auth.register.sn.RegisterSnFragment
 import com.example.ui.auth.welcome.WelcomeFragment
@@ -25,10 +25,8 @@ import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
 import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.location.buildingScheme.BuildingSchemeFragment
-import com.example.ui.event.location.buildingScheme.redesign.DestinationSchemeFragment
+import com.example.ui.event.location.buildingScheme.DestinationSchemeFragment
 import com.example.ui.event.location.map.MapFragment
-import com.example.ui.event.location.map.redesign.MapFragmentNew
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragment
@@ -75,14 +73,10 @@ import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragment
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubEventFragment
-import com.example.ui.subevent.users.SubeventUserListFragment
-import com.example.ui.tags.TagsFragment
 import com.example.ui.user.UserFragment
 import com.example.ui.userSessions.UserSessionsFragment
 import com.example.ui.userprofile.UserProfileFragment
-import com.example.ui.userprofile.academicdegree.EditDegreeFragment
 import com.example.ui.userprofile.edit.UserEditFragment
-import com.example.ui.userprofile.editfile.UserEditFileFragment
 import com.example.ui.userprofile.read.contacts.UserProfileContactsFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
@@ -127,7 +121,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeRegisterEmailFragment(): FinishRegisterFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeRegisterEmailNewFragment(): RegisterEmailNewFragment
+    abstract fun contributeRegisterEmailNewFragment(): RegisterEmailFragment
 
     @ContributesAndroidInjector
     abstract fun contributeRegisterSnFragment(): RegisterSnFragment
@@ -181,12 +175,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeSearchChatFragment(): SearchChatFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeMapFragment(): MapFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeBuildingSchemeFragment(): BuildingSchemeFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeNotificationsFragment(): NotificationsFragment
 
     @ContributesAndroidInjector
@@ -215,9 +203,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSubeventFragment(): SubEventFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeUserListFragment(): SubeventUserListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeUserFragment(): UserFragment
@@ -259,9 +244,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeStoriesFragment(): StoriesFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeTagsFragment(): TagsFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeUserAgreementFragment(): UserAgreementFragment
 
     @ContributesAndroidInjector
@@ -275,12 +257,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeInviteRegisterFragment(): InviteRegisterFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeUserEditFileFragment(): UserEditFileFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeEditDegreeFragment(): EditDegreeFragment
 
     @ContributesAndroidInjector
     abstract fun contributeUserStateFragment(): UserStateFragment
@@ -307,7 +283,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeUserSpeakerFragment(): UserSpeakerFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeMapFragmentNew(): MapFragmentNew
+    abstract fun contributeMapFragmentNew(): MapFragment
 
     @ContributesAndroidInjector
     abstract fun contributeMyEventsFragmentNew(): MyEventsFragment
