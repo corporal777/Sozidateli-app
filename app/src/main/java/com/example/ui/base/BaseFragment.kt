@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import com.example.R
+import com.example.data.models.NewEventFormat
 import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
@@ -52,6 +53,18 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
             postponeEnterTransition()
             showEnterAnimation()
         }
+
+//        RxJavaPlugins.setErrorHandler { e ->
+//            e.printStackTrace()
+//            if (e is UndeliverableException) {
+//
+//            } else {
+//                Thread.currentThread().also { thread ->
+//                    e.printStackTrace()
+//                    thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
+//                }
+//            }
+//        }
     }
 
     override fun onCreateView(
@@ -59,18 +72,6 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        RxJavaPlugins.setErrorHandler { e ->
-            e.printStackTrace()
-            if (e is UndeliverableException) {
-
-            } else {
-                Thread.currentThread().also { thread ->
-                    thread.uncaughtExceptionHandler.uncaughtException(thread, e)
-                }
-            }
-        }
-
         if (::mBinding.isInitialized.not()) {
             mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
             mBinding.lifecycleOwner = viewLifecycleOwner
@@ -331,4 +332,38 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         } else data.invoke()
     }
 
+
+
+    fun updateAppBarViews(offset: Float) {
+        when {
+            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
+        }.apply {
+            when {
+                cashCollapseState != null && cashCollapseState != this -> {
+                    when (first) {
+                        TO_EXPANDED -> onExpandedState()
+                        TO_COLLAPSED -> onCollapsedState()
+                    }
+                    cashCollapseState = Pair(first, SWITCHED)
+                }
+                else -> cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
+            }
+        }
+    }
+
+    open fun onExpandedState() {}
+    open fun onCollapsedState() {}
+
+    private var cashCollapseState: Pair<Int, Int>? = null
+
+    companion object {
+        const val SWITCH_BOUND = 0.3f
+        const val TO_EXPANDED = 0
+        const val TO_COLLAPSED = 1
+        const val WAIT_FOR_SWITCH = 0
+        const val SWITCHED = 1
+    }
+
 }
+

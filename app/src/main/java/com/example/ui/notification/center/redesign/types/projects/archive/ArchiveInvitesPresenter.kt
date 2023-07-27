@@ -57,11 +57,15 @@ class ArchiveInvitesPresenter
         return mutableMapOf<String, Any>().apply {
             put(NotificationModel.NOTIFICATION_LIMIT, limit)
             put(NotificationModel.NOTIFICATION_OFFSET, offset)
+
+            put(NotificationModel.NOTIFICATION_SORT_FIELD, "createdDate")
+            put(NotificationModel.NOTIFICATION_SORT, "desc")
             put(NotificationModel.NOTIFICATION_USER, appData.getId())
             put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
-            put(NotificationModel.NOTIFICATION_SORT, "desc")
 
-            put(NotificationModel.NOTIFICATION_TYPE, "pgrf")
+
+            put(NotificationModel.NOTIFICATION_IS_INVITE, true)
+            put(NotificationModel.NOTIFICATION_IS_ARCHIVE, true)
         }
     }
 }

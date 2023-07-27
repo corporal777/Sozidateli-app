@@ -126,8 +126,24 @@ class AuthRepositoryImp
         return newApi.registerPhoneResend(appData.getId(), type, phone)
     }
 
-    override fun confirmPhoneCode(body: ConfirmCodeBody): Completable {
-        return callNewAuthCompletable(newApi.confirmPhoneCode(appData.getId(), body))
+
+    private fun callNewAuthCompletable(authRequest: Single<NewAuthResponse>): Completable {
+        return authRequest.doOnSuccess {
+            val token = it?.token
+            if (token != null) {
+                appData.login(token)
+                appData.saveId(it.id)
+            }
+        }.doOnSuccess { appData.token = it.token }.map { it }.ignoreElement()
+    }
+
+    private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
+        return call(authRequest.doOnSuccess {
+            val token = it.session?.token
+            if (token != null) {
+                appData.login(token)
+            }
+        }).ignoreElement()
     }
 
     override fun confirmEmailCode(body: EmailCodeBody): Completable =
@@ -135,6 +151,13 @@ class AuthRepositoryImp
             appData.login(it.token)
             appData.saveId(it.id)
         }.ignoreElement()
+
+    override fun confirmPhoneCode(body: ConfirmCodeBody): Completable {
+        return newApi.confirmPhoneCode(appData.getId(), body).doOnSuccess {
+            if (!it.token.isNullOrEmpty()) appData.login(it.token)
+            if (it.id != null) appData.saveId(it.id)
+        }.ignoreElement()
+    }
 
     /*override fun registerSnResend(email: String, token: String): Completable {
         return callAuthCompletable(api.registerSnResend(email, token))
@@ -217,25 +240,6 @@ class AuthRepositoryImp
                 }
             })
         }
-    }
-
-    private fun callNewAuthCompletable(authRequest: Single<NewAuthResponse>): Completable {
-        return authRequest.doOnSuccess {
-            val token = it?.token
-            if (token != null) {
-                appData.login(token)
-                appData.saveId(it.id)
-            }
-        }.doOnSuccess { appData.token = it.token }.map { it }.ignoreElement()
-    }
-
-    private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return call(authRequest.doOnSuccess {
-            val token = it.session?.token
-            if (token != null) {
-                appData.login(token)
-            }
-        }).ignoreElement()
     }
 
     override fun checkRecoveryCodeNew(type: String, code: String): Completable {

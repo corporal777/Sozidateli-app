@@ -177,8 +177,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 is ProfileFragment,
                 is MyEventsFragment,
                 is NotificationsFragment,
-                is ChatListTabsFragment ->
-                    findNavController().popBackStack(R.id.recommendations_fragment, false)
+                is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
                 is RecommendationsFragment, is AuthorizationFragment -> finish()
                 else -> findNavController().navigateUp()
             }

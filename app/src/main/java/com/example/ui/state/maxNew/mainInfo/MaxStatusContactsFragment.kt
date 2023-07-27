@@ -6,7 +6,7 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
-import com.example.holders.MaxStateMainInfoEditItem
+import com.example.holders.MaxStateContactsEditItem
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
 import com.example.ui.views.InfoDialog
 import com.example.util.PHONE_PERSONAL
@@ -33,7 +33,7 @@ class MaxStatusContactsFragment : BaseMaxStateFragment<MaxStatusContactsPresente
 
     override fun setPersonalData(user: UserDetail) {
         if (!isGoToNextStep(user)) {
-            contentSection.updateItem(MaxStateMainInfoEditItem(
+            contentSection.updateItem(MaxStateContactsEditItem(
                 1,
                 requireContext(),
                 user.phone?.firstOrNull { it.type == PHONE_PERSONAL },
@@ -41,7 +41,7 @@ class MaxStatusContactsFragment : BaseMaxStateFragment<MaxStatusContactsPresente
                 user.contactInformation.socialLinks,
                 user.contactInformation.site,
                 user.notes,
-                user.contactInformation.emails ?: emptyList(),
+                user.contactInformation.emails,
                 { showWhyUserShouldAddDataToNotesField() }, {
                     isOtherInfoValid = it
                     buttonNextEnabled(it)
@@ -52,11 +52,11 @@ class MaxStatusContactsFragment : BaseMaxStateFragment<MaxStatusContactsPresente
     }
 
     private fun saveData() {
-        val item = contentSection.findItemBy<MaxStateMainInfoEditItem> { true }
+        val item = contentSection.findItemBy<MaxStateContactsEditItem> { true }
         if (item != null) {
             if (item.workPhoneIsValid()) {
                 mBinding.recyclerView.requestFocus()
-                presenter.updateFiles(item.getDataToSave())
+                presenter.saveContactsClick(item.getDataToSave())
             } else item.notValidWorkPhoneError()
         }
     }

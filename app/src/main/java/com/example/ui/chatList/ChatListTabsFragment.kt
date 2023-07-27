@@ -12,6 +12,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.adapters.PagerStateAdapter
+import com.example.ui.views.toolbar.AppBarLayoutContent
 import offsetChangedListener
 import onPageChanged
 import javax.inject.Inject
@@ -52,7 +53,8 @@ class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
             btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
             fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
-                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+
             }
         }
     }
@@ -96,62 +98,35 @@ class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
         findNavController().navigate(R.id.chat_search_fragment)
     }
 
-    private var cashCollapseState: Pair<Int, Int>? = null
-    private fun updateViews(offset: Float) {
-        when {
-            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-        }.apply {
-            when {
-                cashCollapseState != null && cashCollapseState != this -> {
-                    when (first) {
-                        TO_EXPANDED -> {
-                            mBinding.apply {
-                                tvLabelSmall.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                                tvLabelLarge.apply {
-                                    visibility = View.VISIBLE
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                }
-                            }
-                        }
-                        TO_COLLAPSED -> {
-                            mBinding.apply {
-                                tvLabelSmall.apply {
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                    tvLabelSmall.visibility = View.VISIBLE
-                                }
-                                tvLabelLarge.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                            }
-
-                        }
-                    }
-                    cashCollapseState = Pair(first, SWITCHED)
-                }
-                else -> {
-                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
-                }
+    override fun onExpandedState() {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                alpha = 1F
+                animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
+            tvLabelLarge.apply {
+                visibility = View.VISIBLE
+                alpha = 0F
+                animate().setDuration(500).alpha(1.0f)
             }
         }
     }
 
-    companion object {
-        const val SWITCH_BOUND = 0.3f
-        const val TO_EXPANDED = 0
-        const val TO_COLLAPSED = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
+    override fun onCollapsedState() {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                alpha = 0F
+                animate().setDuration(500).alpha(1.0f)
+                tvLabelSmall.visibility = View.VISIBLE
+            }
+            tvLabelLarge.apply {
+                alpha = 1F
+                animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
+        }
     }
-
 
     override fun layout() = R.layout.fragment_chat_list_tabs
 }

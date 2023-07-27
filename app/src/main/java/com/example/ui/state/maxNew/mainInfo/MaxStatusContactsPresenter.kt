@@ -43,7 +43,7 @@ class MaxStatusContactsPresenter
                 })
     }
 
-    override fun updateFiles(data: MutableMap<String, Any?>) {
+    override fun saveContactsClick(data: MutableMap<String, Any?>) {
         if (data.isEmpty()) {
             viewState.navigateUp()
             return

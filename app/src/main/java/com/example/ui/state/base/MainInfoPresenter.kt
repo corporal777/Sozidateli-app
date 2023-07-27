@@ -1,5 +1,6 @@
 package com.example.ui.state.base
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.FieldDetails
@@ -34,7 +35,6 @@ class MainInfoPresenter
 
     lateinit var type: UserState
     var screen: Int = 1
-    var isUpdatePhoto = false
     var isImageUpdating = false
     private var canGoNext = false
     private var isFirstLaunch = true
@@ -44,6 +44,12 @@ class MainInfoPresenter
         super.onFirstViewAttach()
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
+            .let { single ->
+                if (isFirstLaunch){
+                    isFirstLaunch = false
+                    single.withProgressBarLoadingDialog(viewState)
+                } else single
+            }
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -52,33 +58,13 @@ class MainInfoPresenter
                 onNext = {
                     val user = it.value
                     if (user != null) {
-                        compositeDisposable += userRepository.searchAddress(
-                            user.address?.getShortAddress() ?: ""
-                        )
-                            .performOnBackgroundOutOnMain()
-                            .let { single ->
-                                if (isFirstLaunch){
-                                    isFirstLaunch = false
-                                    single.withProgressBarLoadingDialog(viewState)
-                                } else single
-                            }
-                            .subscribeSimple(
-                                onError = {
-                                    if (!isImageUpdating) viewState.setPersonalData(user)
-                                    isImageUpdating = false
-                                }, onSuccess = { add ->
-                                    if (add.data?.isNotEmpty() == true)
-                                        user.address?.shortAddres = add.data[0].region
-                                    if (!isImageUpdating) viewState.setPersonalData(user)
-                                    isImageUpdating = false
-                                })
+                        if (!isImageUpdating) viewState.setPersonalData(user)
+                        isImageUpdating = false
                     }
                 })
     }
 
-    override fun onClickClose() {
-        viewState.navigateUp()
-    }
+
 
     override fun updateFiles(data: MutableMap<String, Any?>) {
         if (data.isNullOrEmpty()) {
@@ -89,18 +75,14 @@ class MainInfoPresenter
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
-                    onError = {
-                        onReceiveError(it)
-                    },
+                    onError = { onReceiveError(it) },
                     onSuccess = {
                         compositeDisposable += userRepository.checkUserProfileSingle()
                             .performOnBackgroundOutOnMain()
                             .subscribeSimple(
-                                onError = {
-                                    viewState.goToNext()
-                                }, onSuccess = {
-                                    viewState.goToNext()
-                                })
+                                onError = { viewState.goToNext() },
+                                onSuccess = { viewState.goToNext() }
+                            )
 
                     })
         }
@@ -177,7 +159,6 @@ class MainInfoPresenter
     override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
 
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
-        isUpdatePhoto = true
         isImageUpdating = true
         compositeDisposable += takePhotoRequest
             .firstOrError()
@@ -205,7 +186,6 @@ class MainInfoPresenter
     }
 
     override fun onRemovePhotoClick() {
-        isUpdatePhoto = true
         isImageUpdating = true
         compositeDisposable += userRepository.deleteImage()
             .doOnComplete { appData.getUserNew().image = null }
@@ -220,6 +200,10 @@ class MainInfoPresenter
                     viewState.photoUpdated(null)
                 }
             )
+    }
+
+    override fun onClickClose() {
+        viewState.navigateUp()
     }
 
     fun setCanGoNext(can: Boolean) {

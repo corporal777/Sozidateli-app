@@ -41,8 +41,7 @@ class MainInfoEditItem(
     private val birthday: String?,
     private val address: UserAddress,
     private val phone: List<FieldDetails>?,
-    private val showBirthday: Boolean,
-    private val canEditName: Boolean,
+    private val showBirthday: Boolean?,
     private val image: String?,
     private val isEnableNext: (isEnable: Boolean) -> Unit,
     private val confirmPhoneClick: (String?) -> Unit,
@@ -60,15 +59,11 @@ class MainInfoEditItem(
 
     private var mGender = gender?.value?.firstLetterToUppercase()
     private var mGenderShow = gender?.showInProfile ?: true
-    var mBirthday = birthday?.formatToDefaultDate()
+    private var mBirthday = birthday?.formatToDefaultDate()
     private var mAddress = address
     private var mAddressShow = address.showInProfile ?: true
-    private var mShowBirthday = showBirthday
+    private var mShowBirthday = showBirthday ?: false
 
-
-    //private var mNoMiddleNameChecked = noMiddleName/*middleName == USER_DATA_EMPTY*/
-
-    private val isCanChangeName = !canEditName//middleName.isNullOrEmpty()
 
     private lateinit var viewHolder: GroupieViewHolder
 
@@ -105,28 +100,20 @@ class MainInfoEditItem(
                 checkDataValid()
             }
             tilBirthday.initAsDatePicker(
-                if (!mBirthday.isNullOrEmpty()) {
-                    defaultDateFormatter.parse(mBirthday)
-                } else {
-                    null
-                },
+                startDate = if (!mBirthday.isNullOrEmpty()) defaultDateFormatter.parse(mBirthday)
+                else null,
                 //mBirthday?.let { defaultDateFormatter.parse(it) },
-                maxDate = Calendar.getInstance().apply {
-                    add(Calendar.YEAR, -14)
-                }.time
+                maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -14) }.time
             ) { year, month, day ->
                 checkDataValid()
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
             }
 
             etCity.apply {
-                val city = if (mAddress.city != null) {
-                    mAddress.city
-                } else if (mAddress.district != null) {
-                    mAddress.district
-                } else {
-                    mAddress.address
-                }
+                val city = if (mAddress.city != null) mAddress.city
+                else if (mAddress.district != null) mAddress.district
+                else mAddress.address
+
                 setTextWithoutSearch(city)
                 onDataSelectedListener = {
                     mAddress = UserAddress.fromDaDataItem(it)
@@ -177,40 +164,6 @@ class MainInfoEditItem(
             btnPhoneConfirm.isVisible = !mIsPhoneConfirmed
             tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
         }
-    }
-
-    private fun TextInputLayout.initNameInput(
-        text: String?,
-        onTextChanged: (text: CharSequence?) -> Unit
-    ) {
-        editText?.setText(text)
-        error = null
-        isEnabled = true
-        if (isCanChangeName) {
-            editText?.isEnabled = true
-            editText?.onTextChanged {
-                if (it?.isNotEmpty() == true) error = null
-                onTextChanged(it)
-            }
-            setEndIconDrawable(0)
-        } else {
-            editText?.isEnabled = false
-        }
-    }
-
-    private fun TextInputLayout.initEmailInput(
-        text: String?,
-        onTextChanged: (text: CharSequence?) -> Unit
-    ) {
-        editText?.setText(text)
-        error = null
-        isEnabled = true
-        editText?.isEnabled = true
-        editText?.onTextChanged {
-            if (it?.isNotEmpty() == true) error = null
-            onTextChanged(it)
-        }
-        setEndIconDrawable(0)
     }
 
     private fun setAvatar() {
@@ -306,27 +259,10 @@ class MainInfoEditItem(
         }
     }
 
-    fun setPhoneNumberValid(isValid: Boolean) {
-        mIsPhoneConfirmed = isValid
-        notifyChanged()
-    }
-
     fun setImage(image: ImageModel?) {
         mImage = image?.uri
         checkDataValid()
         setAvatar()
-    }
-
-    fun updatePhone(phone: List<FieldDetails>?) {
-        mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
-        mIsPhoneConfirmed = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
-        updatePhoneConfirmationStatus(viewHolder)
-        viewHolder.etMobilePhone.apply {
-            initInput(mMobilePhone) {
-
-            }
-            addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        }
     }
 
     fun updatePhoneConfirmation(isConfirmed: Boolean) {

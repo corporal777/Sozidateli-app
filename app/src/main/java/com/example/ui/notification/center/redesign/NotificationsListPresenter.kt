@@ -119,97 +119,53 @@ class NotificationsListPresenter
 
 
     override fun onNotificationAcceptClick(notification: Notification) {
+        val entityId = notification.entity?.id.toString()
         when (notification.notificationMainType) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
-                approvePgrf(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approvePgrf(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
-                approveAssistance(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approveAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                approveOrgMember(notification.entity?.id ?: 0)
+                updateNotification(
+                    userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
+                    notification.id
+                )
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
-                approveEventMember(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approveEventMember(entityId), notification.id)
             }
         }
     }
 
-    private fun approveEventMember(id: Int) {
-        updateNotification(userRepository.approveEventMember(id.toString()), id)
-    }
-
-    private fun approveOrgMember(id: Int) {
-        updateNotification(
-            userRepository.approveOrgMember(
-                id.toString(),
-                ApproveBody(appData.getId())
-            ), id
-        )
-    }
-
-    private fun approvePgrf(id: Int) {
-        updateNotification(userRepository.approvePgrf(id.toString()), id)
-    }
-
-    private fun approveAssistance(id: Int) {
-        updateNotification(userRepository.approveAssistance(id.toString()), id)
-    }
 
     override fun onNotificationCancelClick(notification: Notification) {
-        //updateNotification(userRepository.notificationsInviteDecline(notification.id), notification.id)
+        val entityId = notification.entity?.id.toString()
         when (notification.notificationMainType) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
-                declinePgrf(notification.entity?.id ?: 0)
+                updateNotification(userRepository.declinePgrf(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
-                declineAssistance(notification.entity?.id ?: 0)
+                updateNotification(userRepository.declineAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                declineOrgMember(notification.entity?.id ?: 0)
+                updateNotification(
+                    userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
+                    notification.id
+                )
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
-                declineEventMember(notification.entity?.id ?: 0)
+                updateNotification(userRepository.declineEventMember(entityId), notification.id)
             }
         }
-    }
-
-    private fun declineOrgMember(id: Int) {
-        updateNotification(
-            userRepository.declineOrgMember(
-                id.toString(),
-                DeclineBody(appData.getId())
-            ), id
-        )
-    }
-
-    private fun declinePgrf(id: Int) {
-        updateNotification(userRepository.declinePgrf(id.toString()), id)
-    }
-
-    private fun declineAssistance(id: Int) {
-        updateNotification(userRepository.declineAssistance(id.toString()), id)
-    }
-
-    private fun declineEventMember(id: Int) {
-        updateNotification(userRepository.declineEventMember(id.toString()), id)
-    }
-
-    private fun cancelEvMember(id: Int) {
-        updateNotification(
-            userRepository.cancelEventMember(
-                id.toString(),
-                CancelBody(appData.getId())
-            ), id
-        )
-    }
-
-    override fun onNotificationRateClick(eventId: String) {
     }
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
     }
+
+    override fun onNotificationRateClick(eventId: String) {}
 
     private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += Completable.fromAction { blockInvalidation = true }

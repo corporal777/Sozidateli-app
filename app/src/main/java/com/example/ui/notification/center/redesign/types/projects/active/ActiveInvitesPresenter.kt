@@ -53,13 +53,13 @@ class ActiveInvitesPresenter
 
 
     override fun onNotificationAcceptClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.approvePgrf(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.approvePgrf(entityId), notification.id)
     }
 
     override fun onNotificationCancelClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.declinePgrf(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.declinePgrf(entityId), notification.id)
     }
 
     override fun onReadAllClick() {
@@ -72,11 +72,15 @@ class ActiveInvitesPresenter
         return mutableMapOf<String, Any>().apply {
             put(NotificationModel.NOTIFICATION_LIMIT, limit)
             put(NotificationModel.NOTIFICATION_OFFSET, offset)
+
+            put(NotificationModel.NOTIFICATION_SORT_FIELD, "createdDate")
+            put(NotificationModel.NOTIFICATION_SORT, "desc")
             put(NotificationModel.NOTIFICATION_USER, appData.getId())
             put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
-            put(NotificationModel.NOTIFICATION_SORT, "desc")
 
-            put(NotificationModel.NOTIFICATION_TYPE, "pgrf")
+
+            put(NotificationModel.NOTIFICATION_IS_INVITE, true)
+            put(NotificationModel.NOTIFICATION_IS_ARCHIVE, false)
         }
     }
 

@@ -57,22 +57,18 @@ class OrganizerNotificationsPresenter
     }
 
     override fun onNotificationAcceptClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
+        val entityId = notification.entity?.id.toString()
         updateNotification(
-            userRepository.approveOrgMember(
-                id.toString(),
-                ApproveBody(appData.getId())
-            ), id
+            userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
+            notification.id
         )
     }
 
     override fun onNotificationCancelClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
+        val entityId = notification.entity?.id.toString()
         updateNotification(
-            userRepository.declineOrgMember(
-                id.toString(),
-                DeclineBody(appData.getId())
-            ), id
+            userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
+            notification.id
         )
     }
 

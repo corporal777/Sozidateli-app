@@ -37,9 +37,7 @@ class MaxStatusEducationPresenter
             }
             .subscribe({
                 val user = it.value ?: throw RuntimeException("Edit null user")
-                viewState.apply {
-                    setEducationData(user)
-                }
+                viewState.setEducationData(user)
             }, {
                 it.printStackTrace()
                 viewState.navigateUp()
@@ -61,8 +59,7 @@ class MaxStatusEducationPresenter
             .subscribe({
                 checkNextScreen()
             }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
+                onReceiveError(it)
             })
     }
 

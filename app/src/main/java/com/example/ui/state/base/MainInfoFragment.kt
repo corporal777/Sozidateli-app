@@ -12,6 +12,7 @@ import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -76,7 +77,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
     }
 
     override fun setPersonalData(user: UserDetail) {
-        adapter.update(listOf(
+        adapter.updateItem(
             MainInfoEditItem(
                 1,
                 requireActivity(),
@@ -84,20 +85,13 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                 user.birthday?.value,
                 DaDataUtil.formatSavedLocation(requireContext(), user.address),
                 user.phone,
-                user.birthday?.isVisible ?: false,
-                user.state?.nameEdited ?: false,
+                user.birthday?.isVisible,
                 user.loadUserImage(),
-                isEnableNext = { isEnable ->
-                    mBinding.btnSave.isEnabled = isEnable
-                }, confirmPhoneClick = {
-                    onConfirmClick?.invoke(it)
-                },
-                onImageClick = {
-                    showChangePhoto(it)
-                }).apply {
-                dataItem = this
-            }
-        ))
+                isEnableNext = { isEnable -> mBinding.btnSave.isEnabled = isEnable },
+                confirmPhoneClick = { onConfirmClick?.invoke(it) },
+                onImageClick = { showChangePhoto(it) }
+            ).apply { dataItem = this }
+        )
 
         onConfirmClick = {
             presenter.setCanGoNext(false)
@@ -109,12 +103,9 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                 if (user.phone?.firstOrNull()?.isConfirmed == true) {
                     if (dataItem.newPhoneIsConfirmed()) {
                         presenter.updateFiles(dataItem.getDataToSave())
-                    } else {
-                        showCheckPassword(dataItem.getValidatedPhone())
-                    }
-                } else {
-                    presenter.updateFiles(dataItem.getDataToSave())
-                }
+                    } else showCheckPassword(dataItem.getValidatedPhone())
+
+                } else presenter.updateFiles(dataItem.getDataToSave())
             }
 
         }
@@ -206,9 +197,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             getString(R.string.revoke),
             getString(R.string.confirm_phone_positive)
         ).setSelectCallback {
-            if (it) {
-                presenter.onShowPhoneConfirm(phone)
-            }
+            if (it) presenter.onShowPhoneConfirm(phone)
         }
     }
 
@@ -218,9 +207,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
         )
             .setSelectCallback {
-                if (it) {
-                    presenter.onShowEmailConfirm(email)
-                }
+                if (it) presenter.onShowEmailConfirm(email)
             }
     }
 

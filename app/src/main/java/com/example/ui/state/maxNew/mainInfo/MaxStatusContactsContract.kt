@@ -11,6 +11,6 @@ interface MaxStatusContactsContract {
         fun setPersonalData(user: UserDetail)
     }
     interface Presenter : BaseMaxStateContract.Presenter {
-        fun updateFiles(data: MutableMap<String, Any?>)
+        fun saveContactsClick(data: MutableMap<String, Any?>)
     }
 }

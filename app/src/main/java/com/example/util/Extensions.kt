@@ -279,23 +279,11 @@ fun getMonthName(calendar: Calendar?): String {
     }
 }
 
-//@SuppressLint("HardwareIds")
-//fun getDeviceId(context: Context): String {
-//    val deviceId = Settings.Secure.getString(
-//        context.contentResolver,
-//        Settings.Secure.ANDROID_ID
-//    )
-//    val md = MessageDigest.getInstance("MD5")
-//    val encryptedId = BigInteger(1, md.digest(deviceId.toByteArray())).toString(16).padStart(32, '0')
-//    return encryptedId
-//}
-
 fun getDeviceName(): String {
     val manufacturer: String = Build.MANUFACTURER
     val model: String = Build.MODEL
-    return if (model.startsWith(manufacturer)) {
-        capitalize(model)
-    } else capitalize(manufacturer) + " " + model
+    return if (model.startsWith(manufacturer)) capitalize(model)
+    else capitalize(manufacturer) + " " + model
 }
 
 fun getAppVersion(): String {

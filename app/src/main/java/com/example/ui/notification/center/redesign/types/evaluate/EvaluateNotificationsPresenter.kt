@@ -54,13 +54,13 @@ class EvaluateNotificationsPresenter
     }
 
     override fun onNotificationAcceptClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.approveAssistance(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.approveAssistance(entityId), notification.id)
     }
 
     override fun onNotificationCancelClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.declineAssistance(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.declineAssistance(entityId), notification.id)
     }
 
 

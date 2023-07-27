@@ -57,13 +57,13 @@ class ProjectNotificationsPresenter
 
 
     override fun onNotificationAcceptClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.approvePgrf(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.approvePgrf(entityId), notification.id)
     }
 
     override fun onNotificationCancelClick(notification: Notification) {
-        val id = notification.entity?.id ?: 0
-        updateNotification(userRepository.declinePgrf(id.toString()), id)
+        val entityId = notification.entity?.id.toString()
+        updateNotification(userRepository.declinePgrf(entityId), notification.id)
     }
 
 

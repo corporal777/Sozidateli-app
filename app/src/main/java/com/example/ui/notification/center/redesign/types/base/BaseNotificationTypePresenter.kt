@@ -113,7 +113,7 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
         var titleDate : String? = ""
         var wasRead = false
         list.forEach { note ->
-            val noteDate = note.date?.split(" ")?.get(0)
+            val noteDate = note.date.split(" ").firstOrNull()
             if (titleDate == noteDate && wasRead == note.wasRead) titleDate = ""
             else titleDate = noteDate
 

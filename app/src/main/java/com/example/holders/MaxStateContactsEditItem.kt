@@ -32,10 +32,9 @@ import kotlinx.android.synthetic.main.item_max_state_main_info.scSite
 import kotlinx.android.synthetic.main.item_max_state_main_info.sitesError
 import kotlinx.android.synthetic.main.item_max_state_main_info.tilAdditionalNumber
 import kotlinx.android.synthetic.main.item_max_state_main_info.tilWorkPhone
-import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
 import onTextChanged
 
-class MaxStateMainInfoEditItem(
+class MaxStateContactsEditItem(
     id: Long,
     private val context: Context,
     private val mobilePhone: FieldDetails?,
@@ -43,7 +42,7 @@ class MaxStateMainInfoEditItem(
     private val socialNetworks: LinksModel?,
     private val site: LinksModel?,
     private val notes: ToggleStringModel?,
-    private val emails: List<EmailsModel>,
+    private val emails: List<EmailsModel>?,
     private val addInfoClick:() -> Unit,
     private val enableNextButton:(enable: Boolean) -> Unit
 ) : Item(id) {
@@ -369,7 +368,7 @@ class MaxStateMainInfoEditItem(
     }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
-        if (other !is MaxStateMainInfoEditItem) return false
+        if (other !is MaxStateContactsEditItem) return false
         if (mobilePhone != other.mobilePhone) return false
         if (workPhone != other.workPhone) return false
         if (socialNetworks != other.socialNetworks) return false

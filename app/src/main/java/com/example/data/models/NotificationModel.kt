@@ -38,6 +38,7 @@ data class NotificationModel(
         const val NOTIFICATION_IS_IN_APP = "isInApp"
 
         const val NOTIFICATION_IS_INVITE = "isInvite"
+        const val NOTIFICATION_IS_ARCHIVE = "isArchive"
         const val NOTIFICATION_TYPE = "type"
     }
 }
