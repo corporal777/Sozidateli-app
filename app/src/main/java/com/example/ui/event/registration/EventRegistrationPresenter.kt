@@ -1,11 +1,8 @@
 package com.example.ui.event.registration
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -17,16 +14,16 @@ import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.registration.items.*
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
 import fileName
 import fromJson
-import io.reactivex.*
+import io.reactivex.Completable
+import io.reactivex.CompletableEmitter
+import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -38,10 +35,8 @@ import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
-import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
-import kotlin.Comparator
 
 @InjectViewState
 class EventRegistrationPresenter

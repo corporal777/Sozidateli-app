@@ -1,32 +1,23 @@
 package com.example.ui.event.activities
 
-import android.annotation.SuppressLint
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
-import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.notification.center.redesign.NotificationsSortedData
-import com.example.util.getDaysFromDateToDate
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withProgressBarLoadingDialog
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @InjectViewState
 class ActivitiesPresenter

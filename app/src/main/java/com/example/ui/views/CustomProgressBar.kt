@@ -186,6 +186,7 @@ class CustomProgressBar : View {
 
     fun setSize(value: Int) {
         size = value
+        progressPaint.strokeWidth = dp(10f).toFloat()
         invalidate()
     }
 
@@ -242,7 +243,7 @@ class CustomProgressBar : View {
 
     init {
         size = 35.dp
-        progressColor = ContextCompat.getColor(context!!, R.color.main_brown_color_new)
+        progressColor = ContextCompat.getColor(context, R.color.main_brown_color_new)
         decelerateInterpolator = DecelerateInterpolator()
         accelerateInterpolator = AccelerateInterpolator()
         progressPaint = Paint(Paint.ANTI_ALIAS_FLAG)

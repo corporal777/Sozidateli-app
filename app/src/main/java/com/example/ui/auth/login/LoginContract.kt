@@ -28,9 +28,6 @@ interface LoginContract {
         fun showWrongPasswordError()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showEmailRegistration()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnRegistration(snUser: SnUser)
 
 
@@ -38,9 +35,9 @@ interface LoginContract {
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onClickBack()
-        fun onChangeLoginText(login: String)
-        fun onChangePasswordText(password: String)
-        fun onClickLogin(login: String, password: String, invite: Int)
+        fun onChangeLoginText(value: String)
+        fun onChangePasswordText(value: String)
+        fun onClickLogin(invite: Int)
         fun onClickRecoverPassword()
     }
 }

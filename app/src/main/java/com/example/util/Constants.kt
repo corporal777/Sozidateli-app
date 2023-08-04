@@ -26,9 +26,6 @@ const val AUTH_CONFIRM_EMAIL = "email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
 const val AUTH_CONFIRM_INVITE_ID = "invite"
 
-var QR_CODE_TO_AUTH_WEB = ""
-var EVENT_ID = ""
-
 const val RECOVERY_EMAIL = "recover_email"
 const val CHANGE_EMAIL = "email"
 const val USIP = "usip"
@@ -59,6 +56,7 @@ const val PASSWORD_RECOVERY = "password-recovery"
 const val PATH_CONFIRM_EMAIL = "email-confirm"
 const val LINKED_REGISTER = "external-registration-confirm"
 const val PGRF = "pgrf"
+const val ASSISTANT = "assistant"
 const val PATH_HIDDEN = "hidden"
 
 const val REQUEST_CODE_SELECT_PDF = 12

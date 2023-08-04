@@ -1,6 +1,5 @@
 package com.example.ui.userprofile.read.interests
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.InterestNew
@@ -10,8 +9,6 @@ import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
-import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

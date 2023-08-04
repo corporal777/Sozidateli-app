@@ -1,6 +1,5 @@
 package com.example.ui.event.about
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
@@ -8,9 +7,10 @@ import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
-import com.example.data.models.*
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventUserFavorite
+import com.example.data.models.createMapInfo
 import com.example.repository.EventRepository
-import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.about.items.AboutEventData
 import com.google.gson.Gson
@@ -22,7 +22,6 @@ import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
-import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

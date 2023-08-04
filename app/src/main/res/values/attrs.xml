@@ -7,6 +7,14 @@
         <attr name="password_hint_state_incorrect" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CustomLoadingButton">
+        <attr name="buttonBackground" format="reference" />
+        <attr name="buttonTextColor" format="reference" />
+        <attr name="buttonMinHeight" format="dimension"/>
+        <attr name="buttonTextSize" format="dimension" />
+        <attr name="buttonText" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="UserSubscribeButton">
         <attr name="subscribeAction">
             <enum name="subscribe" value="0" />

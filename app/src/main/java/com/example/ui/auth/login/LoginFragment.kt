@@ -1,18 +1,22 @@
 package com.example.ui.auth.login
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
+import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.main.MainActivity
+import com.example.ui.views.loading.LoadingIndicatorView
+import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -28,14 +32,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
     @Inject
     lateinit var presenterProvider: Provider<LoginPresenter>
 
-    private val args: LoginFragmentArgs by navArgs()
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenterProvider.get().apply {
-        args.apply {
-            isRegister = isRegistered
-            invite = inviteId
-            (requireActivity() as MainActivity).invite = inviteId
-            login = email ?: ""
+        LoginFragmentArgs.fromBundle(requireArguments()).let { args ->
+            isRegister = args.isRegistered
+            invite = args.inviteId
+            login = args.email ?: ""
         }
     }
 
@@ -54,16 +56,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
             }
             btnLogin.setOnClickListener {
                 hideKeyboard()
-                if (invite != -1) (requireActivity() as MainActivity).setIgnoreDeeplink(true)
-                presenter.onClickLogin(
-                    etLogin.text?.toString() ?: "", etPassword.text?.toString()
-                        ?: "", invite ?: -1
-                )
+                presenter.onClickLogin(invite ?: -1)
             }
-            ibVk.setOnClickListener { presenter.authVk() }
-            ibFacebook.setOnClickListener { presenter.authFb() }
-            ibOk.setOnClickListener { presenter.authOk() }
             ibClose.setOnClickListener { presenter.onClickBack() }
+
+//            ibVk.setOnClickListener { presenter.authVk() }
+//            ibFacebook.setOnClickListener { presenter.authFb() }
+//            ibOk.setOnClickListener { presenter.authOk() }
         }
 
     }
@@ -77,28 +76,31 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
         mBinding.btnLogin.isEnabled = isEnable
     }
 
-    override fun showEmailRegistration() {
-        findNavController().navigate(LoginFragmentDirections.loginToRegisterEmailNewAction())
-    }
-
-    override fun showSnRegistration(snUser: SnUser) {
-        findNavController().navigate(LoginFragmentDirections.loginToRegisterSnAction(snUser))
-    }
-
-    override fun showRecoveryPassword(email: String) {
-        findNavController().navigate(LoginFragmentDirections.loginToRecoveryAction(email))
-    }
-
     override fun showLoginError(show: Boolean) {
-        mBinding.tilLogin.error = if (show) getString(R.string.auth_error_wrong_login) else null
+        mBinding.tilLogin.apply {
+            if (show) showError(getString(R.string.auth_error_wrong_login))
+            else showError(null)
+        }
     }
 
     override fun showPasswordError(show: Boolean) {
-        mBinding.tilPassword.error = if (show) getString(
-            if (mBinding.etPassword.text.isNullOrEmpty()) R.string.auth_error_no_password
-            else R.string.auth_error_short_password
-        ) else null
+        mBinding.tilPassword.apply {
+            if (show)
+                if (mBinding.etPassword.text.isNullOrEmpty()) showError(getString(R.string.auth_error_no_password))
+                else showError(getString(R.string.auth_error_short_password))
+            else showError(null)
+        }
     }
+
+    override fun showSnRegistration(snUser: SnUser) {
+
+    }
+
+    override fun showRecoveryPassword(email: String) {
+        val args = RecoveryPasswordFragmentArgs.Builder(email).build().toBundle()
+        findNavController().navigate(R.id.recovery_password_fragment, args)
+    }
+
 
     override fun showWrongPasswordError() {
         AlertDialog.Builder(requireContext())
@@ -110,6 +112,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
             .show()
     }
 
+
+    override fun showProgressBarLoadingDialog() {
+        mBinding.apply {
+            btnLogin.showProgressLoading(true)
+        }
+    }
+
+    override fun hideProgressBarLoadingDialog(){
+        mBinding.apply {
+            btnLogin.showProgressLoading(false)
+        }
+    }
 
     override fun layout() = R.layout.fragment_login
 }

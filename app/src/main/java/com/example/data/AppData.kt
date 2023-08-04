@@ -63,9 +63,7 @@ class AppData(
                 if (value.isNullOrEmpty()) {
                     field = null
                     appPrefs.userToken = null
-                    if (!isLoggedOut) {
-                        logout()
-                    }
+                    if (!isLoggedOut) logout()
                     tokenChangeSubject.onNext(Optional())
                 } else if (!isLoggedOut) {
                     field = value

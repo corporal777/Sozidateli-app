@@ -6,8 +6,6 @@ import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationMemberModel
-import com.example.data.models.OrganizationNewMemberModel
-import com.example.data.models.UserDetail
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
@@ -18,7 +16,6 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

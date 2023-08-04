@@ -13,18 +13,7 @@
     <fragment
         android:id="@+id/account_auth_fragment"
         android:name="com.example.ui.accountChange.AccountAuthFragment"
-        android:label="Auth">
-
-        <action
-            android:id="@+id/login_to_login_email_action"
-            app:destination="@id/login_fragment" />
-        <action
-            android:id="@+id/authorization_fragment_to_register_email_new_fragment"
-            app:destination="@id/register_email_new_fragment" />
-        <action
-            android:id="@+id/authorization_fragment_to_register_sn_fragment"
-            app:destination="@id/register_sn_fragment" />
-    </fragment>
+        android:label="Auth"></fragment>
 
     <fragment
         android:id="@+id/authorization_fragment"
@@ -45,25 +34,6 @@
         android:id="@+id/login_fragment"
         android:name="com.example.ui.auth.login.LoginFragment"
         android:label="Login email">
-
-        <action
-            android:id="@+id/login_to_mail"
-            app:destination="@+id/recommendations_fragment" />
-
-
-        <action
-            android:id="@+id/login_to_register_email_new_action"
-            app:destination="@id/register_email_new_fragment"
-            app:popUpTo="@id/authorization_fragment" />
-
-        <action
-            android:id="@+id/login_to_register_sn_action"
-            app:destination="@id/register_sn_fragment"
-            app:popUpTo="@id/authorization_fragment" />
-
-        <action
-            android:id="@+id/login_to_recovery_action"
-            app:destination="@id/recovery_password_fragment" />
 
         <argument
             android:name="isRegistered"
@@ -86,12 +56,6 @@
         android:name="com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment"
         android:label="@string/recovery_password_title">
 
-        <action
-            android:id="@+id/recovery_password_to_email_login"
-            app:destination="@id/login_fragment"
-            app:popUpTo="@id/login_fragment"
-            app:popUpToInclusive="true" />
-
         <argument
             android:name="email"
             app:argType="string"
@@ -102,12 +66,6 @@
         android:id="@+id/to_invite_register"
         android:name="com.example.ui.auth.register.invite.InviteRegisterFragment"
         android:label="Register">
-
-        <action
-            android:id="@+id/invite_register_to_mail"
-            app:destination="@+id/recommendations_fragment"
-            app:popUpTo="@id/main_navigation" />
-
         <argument
             android:name="code"
             app:argType="string"
@@ -136,11 +94,6 @@
             android:name="invite"
             android:defaultValue="0"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_to_invite_register_to_login_fragment"
-            app:destination="@id/login_fragment"
-            app:popUpTo="@id/main_navigation" />
-
     </fragment>
 
 
@@ -193,8 +146,7 @@
     <fragment
         android:id="@+id/register_email_new_fragment"
         android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailFragment"
-        android:label="Register">
-    </fragment>
+        android:label="Register"></fragment>
 
     <fragment
         android:id="@+id/register_sn_fragment"
@@ -251,8 +203,7 @@
 
     <fragment
         android:id="@+id/organizations_fragment"
-        android:name="com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment">
-    </fragment>
+        android:name="com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment"></fragment>
 
 
     <fragment
@@ -415,8 +366,7 @@
     <fragment
         android:id="@+id/banned_fragment"
         android:name="com.example.ui.banned.BannedFragment"
-        android:label="@string/profile_banned">
-    </fragment>
+        android:label="@string/profile_banned"></fragment>
 
     <fragment
         android:id="@+id/chat_list_tabs_fragment"
@@ -567,8 +517,7 @@
     <fragment
         android:id="@+id/search_tabs_fragment"
         android:name="com.example.ui.search.tabs.SearchTabsFragment"
-        tools:layout="@layout/fragment_search_tabs">
-    </fragment>
+        tools:layout="@layout/fragment_search_tabs"></fragment>
 
     <fragment
         android:id="@+id/qr_scanner_fragment"
@@ -659,7 +608,7 @@
     <fragment
         android:id="@+id/userStateFragment"
         android:name="com.example.ui.state.UserStateFragment"
-        android:label="UserStateFragment"/>
+        android:label="UserStateFragment" />
 
     <fragment
         android:id="@+id/mainInfoFragment"
@@ -749,7 +698,7 @@
         android:id="@+id/qrScannerToAuthWebSiteFragment"
         android:name="com.example.ui.qrscanner.QrScannerToAuthWebFragment"
         android:label="QrScannerToAuthWebFragment"
-        tools:layout="@layout/fragment_auth_web"/>
+        tools:layout="@layout/fragment_auth_web" />
 
     <fragment
         android:id="@+id/authWebsiteFragment"
@@ -831,10 +780,6 @@
             android:id="@+id/change_account_fragment_to_authFragment"
             app:destination="@id/account_auth_fragment" />
 
-        <action
-            android:id="@+id/change_account_fragment_to_loginFragment"
-            app:destination="@id/login_fragment" />
-
         <argument
             android:name="deepLink"
             app:argType="string"
@@ -864,32 +809,32 @@
 
     <fragment
         android:id="@+id/system_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment" />
 
     <fragment
         android:id="@+id/project_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment" />
 
     <fragment
         android:id="@+id/active_invites_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment" />
 
     <fragment
         android:id="@+id/archive_invites_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment" />
 
 
     <fragment
         android:id="@+id/event_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment" />
 
     <fragment
         android:id="@+id/organizer_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment" />
 
     <fragment
         android:id="@+id/evaluate_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment"/>
+        android:name="com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment" />
 
 
     <fragment

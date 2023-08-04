@@ -360,7 +360,10 @@ class UserRepositoryImp
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },
                 it.totalUnreadInvites,
-                it.totalUnread
+                it.totalUnread,
+                it.allUnread,
+                it.activeInvites,
+                it.archiveInvites
             )
         }
     }

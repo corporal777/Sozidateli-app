@@ -301,14 +301,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-    override fun showShimmerLoading() {
+    override fun showProgressBarLoadingDialog() {
         mBinding.apply {
             shimmerView.isVisible = true
             clHeader.isVisible = false
         }
     }
 
-    override fun hideShimmerLoading() {
+    override fun hideProgressBarLoadingDialog() {
         mBinding.apply {
             shimmerView.isVisible = false
             clHeader.isVisible = true

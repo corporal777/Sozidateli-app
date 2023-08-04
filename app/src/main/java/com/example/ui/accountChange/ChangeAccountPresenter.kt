@@ -15,10 +15,7 @@ import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class ChangeAccountPresenter

@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import retrofit2.HttpException
+
 class ApiError(
         var code: Int,
         val session: Session?,

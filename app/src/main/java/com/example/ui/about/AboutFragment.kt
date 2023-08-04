@@ -13,6 +13,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import onBackPressedCallback
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
@@ -33,6 +34,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.Vi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startPostponedEnterTransition()
+
         mBinding.apply {
             tvAppVersion.text = getString(R.string.about_version).format(BuildConfig.VERSION_NAME)
             tvDeveloperSite.apply {
@@ -40,6 +42,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.Vi
                 removeUrlUnderline(textColors.defaultColor)
             }
         }
+
     }
 
     override fun layout() = R.layout.fragment_about

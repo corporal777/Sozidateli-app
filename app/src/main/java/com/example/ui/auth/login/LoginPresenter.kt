@@ -2,6 +2,7 @@ package com.example.ui.auth.login
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
+import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
@@ -24,11 +25,15 @@ import com.example.util.getDeviceName
 import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withLoadingDialog
+import withProgressBarLoadingDialog
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -46,12 +51,12 @@ class LoginPresenter
     }
 
     var login = ""
-    var password = ""
-    var loginType = "email"
-    var deviceId = appData.deviceId
-    var deviceModel = getDeviceName()
-    var appVersion = getAppVersion()
-    var appCode = getAppVersionCode()
+    private var password = ""
+    private var loginType = "email"
+    private var deviceId = appData.deviceId
+    private var deviceModel = getDeviceName()
+    private var appVersion = getAppVersion()
+    private var appCode = getAppVersionCode()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -60,14 +65,14 @@ class LoginPresenter
 
     override fun onClickBack() = viewState.navigateUp()
 
-    override fun onChangeLoginText(login: String) {
-        this.login = login
+    override fun onChangeLoginText(value: String) {
+        this.login = value
         viewState.showLoginError(false)
         performDataChange()
     }
 
-    override fun onChangePasswordText(password: String) {
-        this.password = password
+    override fun onChangePasswordText(value: String) {
+        this.password = value
         viewState.showPasswordError(false)
         performDataChange()
     }
@@ -77,26 +82,35 @@ class LoginPresenter
         viewState.showRecoveryPassword(email)
     }
 
-    override fun onClickLogin(login: String, password: String, invite: Int) {
-       compositeDisposable += Completable.defer {
-            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-            if (invite != -1) {
-                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
-                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
-            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
-        }
+    override fun onClickLogin(invite: Int) {
+        Log.e("SHOW", "show")
+        compositeDisposable += Observable.timer(10000, TimeUnit.MILLISECONDS)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-                    if (hasApiError == true) viewState.showWrongPasswordError()
-                    else onReceiveError(it)
-                },
-                onComplete = {
-                    Shake.registerUser(appData.getId().toString())
-                })
+            .withProgressBarLoadingDialog(viewState)
+            .subscribeSimple {
+
+            }
+
+
+//       compositeDisposable += Completable.defer {
+//            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
+//            if (invite != -1) {
+//                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
+//                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
+//            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
+//        }
+//            .performOnBackgroundOutOnMain()
+//            .withCustomProgressBarLoadingDialog(viewState)
+//            .subscribeSimple(
+//                onError = {
+//                    it.printStackTrace()
+//                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+//                    if (hasApiError == true) viewState.showWrongPasswordError()
+//                    else onReceiveError(it)
+//                },
+//                onComplete = {
+//                    Shake.registerUser(appData.getId().toString())
+//                })
     }
 
     private fun performDataChange() {

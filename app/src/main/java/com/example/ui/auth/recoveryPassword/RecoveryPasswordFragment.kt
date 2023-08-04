@@ -16,6 +16,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmCodeDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
+import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
 import javax.inject.Inject
@@ -117,18 +118,8 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
 
     override fun showWrongEmailError() {
         val type = if (presenter.loginType == "email") "E-mail" else "телефон"
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.error_title)
-            .setMessage(
-                requireContext().resources.getString(
-                    R.string.recovery_password_wrong_email_error,
-                    type
-                )
-            )
-            .setPositiveButton(R.string.ok) { _, _ ->
-                // do nothing
-            }
-            .show()
+        val message = getString(R.string.recovery_password_wrong_email_error, type)
+        showErrorMessage(false, message)
     }
 
     override fun showPasswordSuccessUpdated() {

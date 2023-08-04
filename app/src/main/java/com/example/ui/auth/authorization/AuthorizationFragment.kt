@@ -55,10 +55,8 @@ class AuthorizationFragment : BaseFragment<FragmentAuthorizationBinding>(),
     }
 
     override fun showLogin() {
-        findNavController().navigate(
-            R.id.login_fragment,
-            LoginFragmentArgs.Builder("").build().toBundle()
-        )
+        val args = LoginFragmentArgs.Builder("").build().toBundle()
+        findNavController().navigate(R.id.login_fragment, args)
     }
 
     override fun showEmailRegistration() {

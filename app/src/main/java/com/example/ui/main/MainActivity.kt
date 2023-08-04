@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -73,9 +74,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
-
-    private var ignoreDeeplink = false
-    var invite = -1
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -210,23 +208,60 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         splashScreen.setKeepVisibleCondition { false }
     }
 
+    private fun wasLaunchedFromResents(intent: Intent): Boolean {
+        val fromHistory = Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
+        return intent.flags and fromHistory == fromHistory
+    }
+
+    override fun checkIntent() {
+        handleIntent(intent)
+    }
+
+    override fun clearIntentData() {
+        intent.data = null
+    }
 
     override fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents(intent)) return
-
-        val appLinkAction = intent.action
-        if (Intent.ACTION_VIEW == appLinkAction) {
-
+        if (Intent.ACTION_VIEW == intent.action) {
             intent.data?.also {
                 val authCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
+                Log.e("CODE", authCode?:"null")
+                Log.e("PATHS", paths.toString())
+                Log.e("LAST PATHS", lastPath?:"null")
+
                 //catch path auth
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
-                    val redirectLink = it.getQueryParameter("redirect") ?: ""
+                    val redirectLink = it.getQueryParameter("redirect")
                     if (!redirectLink.isNullOrEmpty()) {
                         presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
+                    }
+                }
+                //catch path qr code
+                else if (lastPath == PATH_QR) {
+                    val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
+                    if (!code.isNullOrEmpty()) presenter.onHandleAuthWebsite(code)
+                }
+                //catch path event
+                else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_EVENT)) {
+                    if (lastPath.contains(PATH_HIDDEN)) presenter.onHandleEventCode(authCode)
+                    else presenter.onHandleEvent(lastPath)
+                }
+                //catch path password recovery
+                else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
+                    val indexLastPath = paths.indexOf(lastPath)
+                    val userId = if (indexLastPath > 0) paths[indexLastPath - 1]
+                    else ""
+                    presenter.onHandleRecoverPasswordLink(userId, authCode)
+                }
+                //catch path sn authorization
+                else if (lastPath == PATH_SN_AUTHORIZATION) {
+                    val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
+                    if (userId != null && authCode != null) {
+                        presenter.onHandleSocialNetworkConfirm(userId, authCode)
                     }
                 }
                 //catch path event member
@@ -239,78 +274,28 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         "",
                         "",
                         "",
-                        0
+                        -1
                     )
                 }
-                //catch path qr code
-                else if (lastPath == PATH_QR) {
-                    val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
-                    if (!code.isNullOrEmpty()) {
-                        presenter.openAuthWebsiteFragment(code)
-                    }
-                }
-                //catch path event
-                else if (lastPath != null && paths.contains(PATH_EVENT)) {
-                    EVENT_ID = lastPath
-                    if (lastPath.contains(PATH_HIDDEN)) {
-                        presenter.onHandleEventCode(authCode ?: "")
-                    } else {
-                        presenter.onHandleEvent(lastPath)
-                    }
-                }
-                //catch path password recovery
-                else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
-                    val indexLastPath = paths.indexOf(lastPath)
-                    val userId = if (indexLastPath > 0) {
-                        paths[indexLastPath - 1]
-                    } else ""
-                    presenter.onHandleRecoverPasswordLink(userId, authCode)
-                }
-                //catch path sn authorization
-                else if (lastPath == PATH_SN_AUTHORIZATION) {
-                    val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
-                    if (userId != null && authCode != null) {
-                        presenter.onHandleSocialNetworkConfirm(userId, authCode)
-                    }
-                }
-                //catch path linked register
-                else if (lastPath == LINKED_REGISTER) {
+                //catch path pgrf, assistant
+                else if (lastPath == PGRF || lastPath == ASSISTANT || lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
-
                     val text = String(base, StandardCharsets.UTF_8)
                     val json = JSONObject(text)
+                    val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
+
                     presenter.onInviteRegister(
                         json["email"].toString(),
                         authCode ?: "",
                         if (json["name"].toString() != "null") json["name"].toString() else "",
                         if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
                         if (json["middleName"].toString() != "null") json["middleName"].toString() else "",
-                        0
+                        invite?.toInt() ?: -1
                     )
-                }
-                //catch path pgrf
-                else if (lastPath == PGRF) {
-                    val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
-                    val text = String(base, StandardCharsets.UTF_8)
-                    val json = JSONObject(text)
-                    val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
-                    if (!ignoreDeeplink)
-                        presenter.onInviteRegister(
-                            json["email"].toString(),
-                            authCode
-                                ?: "",
-                            if (json["name"].toString() != "null") json["name"].toString() else "",
-                            if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
-                            if (json["middleName"].toString() != "null") json["middleName"].toString() else "",
-                            invite?.toInt()
-                                ?: 0
-                        )
-                    ignoreDeeplink = false
                 }
             }
         } else {
             val extras = intent.extras ?: return
-
             when {
                 extras.containsKey(FIELD_CHAT) -> {
                     intent.getBundleExtra(FIELD_CHAT)?.let {
@@ -319,27 +304,24 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
                         if (chatId != null && userName != null) {
                             presenter.onHandleChat(chatId, userName, notificationId)
+                            clearIntentData()
                         }
                     }
                 }
                 extras.containsKey(FIELD_EVENT) -> {
                     val eventId = extras.getString(FIELD_EVENT)
-                    if (eventId != null) {
-                        presenter.onHandleEvent(eventId)
-                    }
+                    if (eventId != null) presenter.onHandleEvent(eventId)
                 }
                 extras.containsKey(FIELD_NOTIFICATION) -> {
                     extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
                         presenter.onHandleNotification(it)
+                        clearIntentData()
                     }
                 }
             }
         }
     }
 
-    fun setIgnoreDeeplink(isIgnore: Boolean) {
-        ignoreDeeplink = isIgnore
-    }
 
     override fun showAccountChangeFragment(url: String, type: AuthType) {
         findNavController().navigate(
@@ -368,15 +350,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 .setPopUpTo(R.id.main_navigation, true)
                 .build()
         )
-    }
-
-
-    private fun wasLaunchedFromResents(intent: Intent): Boolean {
-        return intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
-    }
-
-    override fun checkIntent() {
-        handleIntent(intent)
     }
 
     override fun showDialogRecoverPassword(userId: String, code: String) {
@@ -408,17 +381,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showGreetings() = findNavController().navigate(
-        R.id.welcome_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build()
+        R.id.welcome_fragment, null,
+        navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
     )
 
     override fun showLogin() {
         if (findNavController().currentDestination?.id != R.id.authorization_fragment) {
             findNavController().navigate(
-                R.id.authorization_fragment, null, NavOptions.Builder()
-                    .setPopUpTo(R.id.main_navigation, true)
-                    .build()
+                R.id.authorization_fragment, null,
+                navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
             )
         }
     }
@@ -426,14 +397,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showRecommendations() {
         if (findNavController().currentDestination?.id != R.id.fragment_finish_register) {
             findNavController().navigate(
-                R.id.recommendations_fragment, null, NavOptions.Builder()
-                    .setPopUpTo(R.id.main_navigation, true)
-                    .build()
+                R.id.recommendations_fragment, null,
+                navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
             )
-            if (invite != -1) {
-                presenter.openPgrfFromInvite(invite.toString())
-                invite = -1
-            }
         }
     }
 
@@ -463,13 +429,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
     }
 
-    override fun showNotification(notification: Notification) {
-        findNavController().navigate(
-            R.id.notification_fragment,
-            NotificationFragmentArgs.Builder(notification).build().toBundle()
-        )
-    }
-
     override fun showRating(event: String) {
         findNavController().navigate(
             R.id.event_rating_fragment,
@@ -492,25 +451,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         inAppNotification.show(supportFragmentManager, "inAppDialog")
     }
 
-    @SuppressLint("InflateParams")
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {
-//            val mustGoToEvent = try {
-//                findNavController().getBackStackEntry(R.id.event_tabs_fragment)
-//                true
-//            } catch (e: IllegalArgumentException) {
-//                false
-//            }
+
             BottomSheetDialog(this).apply {
                 val dialogBinding = LayoutNoInternetBinding.inflate(layoutInflater)
                 dialogBinding.apply {
-//                    this.btnAction.text =
-//                        getString(if (mustGoToEvent) R.string.no_internet_action_to_calendar else R.string.no_internet_action_retry)
-//                    this.btnAction.setOnClickListener {
-//                        if (mustGoToEvent) this@MainActivity.findNavController()
-//                            .popBackStack(R.id.event_tabs_fragment, false)
-//                        else presenter.onRetryConnectionClick()
-//                    }
                     this.btnAction.text = getString(R.string.no_internet_action_retry)
                     this.btnAction.setOnClickListener {
                         presenter.onRetryConnectionClick()
@@ -694,9 +640,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 R.id.main -> {
                     if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
                         findNavController().navigate(R.id.recommendations_fragment, null,
-                            navOptions {
-                                popUpTo(R.id.main_navigation) { inclusive = true }
-                            })
+                            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } })
                     }
                     true
                 }

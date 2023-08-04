@@ -16,6 +16,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
@@ -47,25 +48,18 @@ class RecoveryPasswordPresenter
             else Utils.validatePhoneBeforeSend(email)
 
             compositeDisposable += authRepository.sendRecoveryEmail(loginType, res)
-                .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
                     onError = {
-                        if ((it as? ApiError)?.hasError(USER_NOT_REGISTERED_ERROR) == true) {
-                            viewState.showWrongEmailError()
-                        } else {
-                            onReceiveError(it)
-                        }
+                       catchError(it)
                     },
                     onSuccess = {
                         viewState.showRecoveryNotification(email, it.userId)
                         if (loginType != "email") startTimer()
                     }
                 )
-        } else {
-            viewState.showEmailError(true)
-        }
+        } else viewState.showEmailError(true)
     }
 
     override fun sendCodeAgain() {
@@ -146,6 +140,13 @@ class RecoveryPasswordPresenter
 
     private fun performDataChange() = viewState.enableRecoveryBtn(isDataValid())
     override fun onCloseClick() = viewState.navigateUp()
+
+    private fun catchError(it : Throwable){
+        if (it is HttpException && it.code() == 404) viewState.showWrongEmailError()
+        else if ((it as? ApiError)?.hasError(USER_NOT_REGISTERED_ERROR) == true) {
+            viewState.showWrongEmailError()
+        } else onReceiveError(it)
+    }
 
     companion object {
         private const val USER_NOT_REGISTERED_ERROR = "User is not registered yet"

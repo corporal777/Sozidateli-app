@@ -132,9 +132,6 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         mActivity?.hideCustomProgressDialog()
     }
 
-    override fun showShimmerLoading() {}
-    override fun hideShimmerLoading() {}
-
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
     }
@@ -179,9 +176,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
         MessageDialogWithGreenButton(requireContext(), message).setSelectCallback {
-            if (canGoBack) {
-                findNavController().navigateUp()
-            }
+            if (canGoBack) findNavController().navigateUp()
         }
     }
 

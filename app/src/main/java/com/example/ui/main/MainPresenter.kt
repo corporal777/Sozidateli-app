@@ -68,22 +68,19 @@ class MainPresenter
     lateinit var photoMessageText: String
     lateinit var chatAcceptMessageText: String
 
+    private val timerCompositeDisposable = CompositeDisposable()
     private val chatCompositeDisposable = CompositeDisposable()
     private val errorMessageDisposable = CompositeDisposable().apply {
         compositeDisposable += this
     }
-    private val timerCompositeDisposable = CompositeDisposable()
 
     private var isAuthRequired = false
-    private var isFromQr = false
     private var canShowBrowser = false
-    private var inappList: Deque<NotificationModel>? = null
+    private var inAppList: Deque<NotificationModel>? = null
     private val inAppListNew = arrayListOf<Notification>()
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true
-    var isSplashShown = true
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -111,6 +108,7 @@ class MainPresenter
     }
 
     override fun onStoriesComplete() {
+        initInternetConnectionCheck()
         subscribeToTokenUpdates()
         checkAppUpdate()
     }
@@ -160,7 +158,6 @@ class MainPresenter
                 onSuccess = { user ->
                     updateUserInShake(user)
                     disposable += Completable.merge(listOf(getInAppRequest(), getAdditionalData()))
-                        .andThen(Completable.defer { checkInternetConnected() })
                         .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })
                         .subscribeSimple(
@@ -181,7 +178,6 @@ class MainPresenter
                         showLogin()
                         checkIntent()
                     }
-                    initInternetConnectionCheck()
                 },
                 onComplete = {
                     viewState.apply {
@@ -191,7 +187,6 @@ class MainPresenter
                         checkIntent()
                     }
                     showNextInApp()
-                    initInternetConnectionCheck()
                 }
             )
     }
@@ -324,23 +319,6 @@ class MainPresenter
             })
     }
 
-    private fun checkInternetConnected(): Completable {
-        return Completable.create { emitter ->
-            val connection = connectivityProvider.observeNetworkConnectivity()
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    isInternetConnected = it
-                    if (it || appData.getUser().default_event != null) {
-                        if (!emitter.isDisposed) emitter.onComplete()
-                    } else checkInternetConnection()
-                }, {
-                    if (!emitter.isDisposed) emitter.onError(it)
-                })
-
-            emitter.setDisposable(connection)
-        }
-    }
-
     private fun checkShowGreetings(): Completable {
         return if (isAuthRequired) {
             isAuthRequired = false
@@ -365,8 +343,9 @@ class MainPresenter
         viewState.showChat(chatId, userName)
     }
 
-    override fun onHandleEventCode(event: String) {
-        if (isAuthRequired) viewState.showLogin()
+    override fun onHandleEventCode(event: String?) {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else if (event.isNullOrEmpty()) return
         else {
             compositeDisposable += eventRepository.getEventsList(
                 mapOf(
@@ -374,50 +353,62 @@ class MainPresenter
                     EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
                     EventNew.EVENT_CODE to event
                 )
-            )
+            ).map { it.data }
                 .performOnBackgroundOutOnMain()
                 .withCustomProgressBarLoadingDialog(viewState)
                 .subscribe({
-                    if (!it.data.isNullOrEmpty())
-                        viewState.showAboutEvent(it.data.first()?.id.toString())
-                }, {
-                    it.printStackTrace()
-                })
+                    if (!it.isNullOrEmpty()) viewState.showAboutEvent(it.first()?.id.toString())
+                    viewState.clearIntentData()
+                }, { it.printStackTrace() })
         }
 
     }
 
-    override fun onHandleEvent(event: String) {
-        if (isAuthRequired) viewState.showLogin()
-        else viewState.showAboutEvent(event)
+    override fun onHandleEvent(event: String?) {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else if (event.isNullOrEmpty()) return
+        else viewState.apply {
+            showAboutEvent(event)
+            clearIntentData()
+        }
     }
 
     override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
-        if (isAuthRequired) {
+        if (isAuthRequired || appData.isLoggedOut) {
             viewState.showLogin()
             canShowBrowser = true
         } else {
-            if (canShowBrowser) observeDeeplink(url, type)
+            if (canShowBrowser) observeDeeplink(url)
             else viewState.showAccountChangeFragment(url, type)
+            viewState.clearIntentData()
         }
     }
 
-    override fun onInviteRegister(
-        email: String,
-        code: String,
-        name: String,
-        lastName: String,
-        middleName: String,
-        invite: Int
-    ) {
-        viewState.showInviteRegister(email, code, name, lastName, middleName, invite)
+    override fun onHandleAuthWebsite(code: String) {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else {
+            viewState.apply {
+                showAuthWebsiteFragment(code)
+                clearIntentData()
+            }
+        }
+    }
+
+    override fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int) {
+        viewState.apply {
+            showInviteRegister(email, code, name, lastName, middleName, invite)
+            clearIntentData()
+        }
     }
 
     override fun onHandleRecoverPasswordLink(userId: String, code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                viewState.showDialogRecoverPassword(userId, code)
+                viewState.apply {
+                    showDialogRecoverPassword(userId, code)
+                    clearIntentData()
+                }
             }.call(compositeDisposable)
     }
 
@@ -435,42 +426,6 @@ class MainPresenter
 
     override fun onHandleNotification(notification: RemoteNotification) {
         if (isAuthRequired) return
-        showNotification(notification.id)
-    }
-
-    private fun showNotification(notificationId: Int) {
-        compositeDisposable += userRepository.getNotificationDetail(notificationId.toString(), true)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
-            .subscribeSimple { viewState.showNotification(Notification.fromRemoteNotification(it)) }
-    }
-
-    override fun openPgrfFromInvite(inviteId: String) {
-        compositeDisposable += userRepository.getNotificationsList(
-            mapOf(
-                NotificationModel.NOTIFICATION_LIMIT to 5,
-                NotificationModel.NOTIFICATION_OFFSET to 0,
-                NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_LOAD_MODEL to true,
-                NotificationModel.NOTIFICATION_SORT to "desc",
-                NotificationModel.NOTIFICATION_ENTITY_TYPE to "invitePgfr",
-                NotificationModel.NOTIFICATION_EVENT_ID to inviteId
-            )
-        )
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (!it.data.isNullOrEmpty()) {
-                    viewState.showNotification(it.data[0])
-                }
-            }
-    }
-
-    override fun openAuthWebsiteFragment(code: String) {
-        if (!isAuthRequired) viewState.showAuthWebsiteFragment(code)
-        else {
-            isFromQr = true
-            viewState.showLogin()
-        }
     }
 
     override fun onDestroy() {
@@ -532,9 +487,7 @@ class MainPresenter
         isIgnoreToken = isIgnore
     }
 
-    override fun onBackClick() {
-        if (!appData.isLoggedOut) viewState.navigateUp()
-    }
+    override fun onBackClick() = viewState.navigateUp()
 
     fun startUpdateTimer(time: Long?, isRequired: Boolean) {
         var counter = time ?: 0
@@ -560,19 +513,13 @@ class MainPresenter
             }
     }
 
-    private fun observeDeeplink(url: String, type: AuthType) {
-        when (type) {
-            AuthType.OTHER_PLATFORM -> {
-                val uri = Uri.parse(url)
-                    .buildUpon()
-                    .appendQueryParameter("new_session", "true")
-                    .appendQueryParameter("access_token", appData.token)
-                    .build()
-                viewState.showBrowser(uri.toString())
-            }
-            else -> {
-            }
-        }
+    private fun observeDeeplink(url: String) {
+        val uri = Uri.parse(url)
+            .buildUpon()
+            .appendQueryParameter("new_session", "true")
+            .appendQueryParameter("access_token", appData.token)
+            .build()
+        viewState.showBrowser(uri.toString())
     }
 
     private fun getInAppRequest(): Completable {
@@ -582,10 +529,9 @@ class MainPresenter
                 NotificationModel.NOTIFICATION_USER to appData.getId(),
                 NotificationModel.NOTIFICATION_IS_IN_APP to true,
                 NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-                //NotificationModel.NOTIFICATION_ACKNOWLEDGED to true
             )
         ).doOnSuccess {
-            inappList = LinkedList(it)
+            inAppList = LinkedList(it)
             inAppListNew.addAll(it.map { n ->
                 Notification.fromRemoteNotification(n)
             })

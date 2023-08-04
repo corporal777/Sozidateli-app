@@ -4,10 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.CommonRepository
 import com.example.ui.base.BasePresenter
-import io.reactivex.rxkotlin.plusAssign
-import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

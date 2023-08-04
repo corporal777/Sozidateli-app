@@ -2,11 +2,9 @@ package com.example.ui.notification.center.redesign
 
 import android.app.NotificationManager
 import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
-import com.example.data.bodies.CancelBody
 import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
@@ -15,23 +13,16 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.notification.center.NotificationsContract
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withProgressBarLoadingDialog
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.math.abs
 
 @InjectViewState
 class NotificationsListPresenter
@@ -86,10 +77,7 @@ class NotificationsListPresenter
 
     private fun loadNotifications() {
         compositeDisposable += Observable.create(pagination)
-            .map {
-                //groupData(it)
-                transformData(it)
-            }
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },

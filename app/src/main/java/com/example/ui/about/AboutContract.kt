@@ -5,5 +5,6 @@ import com.example.ui.base.BaseContract
 interface AboutContract {
     interface View : BaseContract.View
 
-    interface Presenter : BaseContract.Presenter
+    interface Presenter : BaseContract.Presenter {
+    }
 }

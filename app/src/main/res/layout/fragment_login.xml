@@ -46,10 +46,10 @@
                 fontPath="fonts/sf_pro_text_semibold.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
                 android:gravity="center_horizontal"
+                android:includeFontPadding="false"
                 android:letterSpacing="-0.02"
                 android:lineSpacingExtra="2dp"
                 android:text="@string/auth_label_login"
@@ -127,104 +127,41 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
                 android:visibility="gone"
-                tools:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llInput" />
+                app:layout_constraintTop_toBottomOf="@+id/llInput"
+                tools:visibility="visible" />
 
 
-            <androidx.appcompat.widget.AppCompatButton
-                style="@style/BtnBrownStyle"
+            <!--            <androidx.appcompat.widget.AppCompatButton-->
+            <!--                android:id="@+id/btn_login"-->
+            <!--                style="@style/BtnBrownStyle"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginHorizontal="@dimen/margin_horizontal_default"-->
+            <!--                android:layout_marginTop="30dp"-->
+            <!--                android:gravity="center"-->
+            <!--                android:minHeight="@dimen/auth_button_min_height"-->
+            <!--                android:text="@string/auth_label_login"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword" />-->
+
+            <com.example.ui.views.loading.CustomLoadingButton
                 android:id="@+id/btn_login"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="30dp"
-                android:minHeight="@dimen/auth_button_min_height"
-                android:text="@string/auth_label_login"
+                app:buttonBackground="@drawable/custom_btn_brown_selectable"
+                app:buttonMinHeight="@dimen/auth_button_min_height"
+                app:buttonText="@string/auth_label_login"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clSn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="24dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_login"
-                app:layout_constraintVertical_bias="1.0">
 
-                <TextView
-                    android:id="@+id/tvSnRegistration"
-                    fontPath="fonts/Roboto-Light.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/auth_login_with_sn"
-                    android:textColor="@color/auth_title_text"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingPrefix" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/ibVk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/background_circle"
-                    android:contentDescription="@string/content_description_vk"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_vk"
-                    android:theme="@style/ViewBackgroundVk"
-                    app:layout_constraintEnd_toStartOf="@+id/ibFacebook"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSnRegistration" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/ibOk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_circle"
-                    android:contentDescription="@string/content_description_ok"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_ok"
-                    android:theme="@style/ViewBackgroundOk"
-                    app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ibFacebook"
-                    app:layout_constraintTop_toTopOf="@+id/ibVk" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/ibFacebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/background_circle"
-                    android:contentDescription="@string/content_description_facebook"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_facebook"
-                    android:theme="@style/ViewBackgroundFacebook"
-                    app:layout_constraintBottom_toBottomOf="@+id/ibVk"
-                    app:layout_constraintEnd_toStartOf="@+id/ibOk"
-                    app:layout_constraintStart_toEndOf="@+id/ibVk"
-                    app:layout_constraintTop_toTopOf="@+id/ibVk" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

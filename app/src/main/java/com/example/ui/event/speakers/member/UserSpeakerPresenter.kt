@@ -1,12 +1,17 @@
 package com.example.ui.event.speakers.member
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.*
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
-import com.example.data.models.*
+import com.example.data.bodies.AddToFavoriteModel
+import com.example.data.bodies.CreateChatBody
+import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
+import com.example.data.models.Event
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventUserFavorite
+import com.example.data.models.UserDetail
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
@@ -17,9 +22,7 @@ import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class UserSpeakerPresenter

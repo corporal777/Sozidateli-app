@@ -7,6 +7,7 @@ import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
+import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.Completable
@@ -20,7 +21,8 @@ class InAppNotificationPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
     private val appData: AppData,
-    private val notificationManager: NotificationManager
+    private val notificationManager: NotificationManager,
+    private val socket: SocketIOManager,
 ) : BaseBottomSheetPresenter<InAppNotificationContract.View>(appData),
     InAppNotificationContract.Presenter {
 
@@ -33,82 +35,47 @@ class InAppNotificationPresenter
 
 
     override fun onNotificationAcceptClick(notification: Notification) {
+        val entityId = notification.entity?.id.toString()
         when (notification.notificationMainType) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
-                approvePgrf(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approvePgrf(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
-                approveAssistance(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approveAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                approveOrgMember(notification.entity?.id ?: 0)
+                updateNotification(
+                    userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
+                    notification.id
+                )
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
-                approveEventMember(notification.entity?.id ?: 0)
+                updateNotification(userRepository.approveEventMember(entityId), notification.id)
             }
         }
-    }
-
-    private fun approveEventMember(id: Int) {
-        updateNotification(userRepository.approveEventMember(id.toString()), id)
-    }
-
-    private fun approveOrgMember(id: Int) {
-        updateNotification(
-            userRepository.approveOrgMember(
-                id.toString(),
-                ApproveBody(appData.getId())
-            ), id
-        )
-    }
-
-    private fun approvePgrf(id: Int) {
-        updateNotification(userRepository.approvePgrf(id.toString()), id)
-    }
-
-    private fun approveAssistance(id: Int) {
-        updateNotification(userRepository.approveAssistance(id.toString()), id)
     }
 
 
     override fun onNotificationCancelClick(notification: Notification) {
+        val entityId = notification.entity?.id.toString()
         when (notification.notificationMainType) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
-                declinePgrf(notification.entity?.id)
+                updateNotification(userRepository.declinePgrf(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
-                declineAssistance(notification.entity?.id)
+                updateNotification(userRepository.declineAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                declineOrgMember(notification.entity?.id)
+                updateNotification(
+                    userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
+                    notification.id
+                )
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
-                declineEventMember(notification.entity?.id)
+                updateNotification(userRepository.declineEventMember(entityId), notification.id)
             }
         }
     }
-
-    private fun declineOrgMember(id: Int?) {
-        updateNotification(
-            userRepository.declineOrgMember(
-                id.toString(),
-                DeclineBody(appData.getId())
-            ), id ?: 0
-        )
-    }
-
-    private fun declinePgrf(id: Int?) {
-        updateNotification(userRepository.declinePgrf(id.toString()), id ?: 0)
-    }
-
-    private fun declineAssistance(id: Int?) {
-        updateNotification(userRepository.declineAssistance(id.toString()), id ?: 0)
-    }
-
-    private fun declineEventMember(id: Int?) {
-        updateNotification(userRepository.declineEventMember(id.toString()), id ?: 0)
-    }
-
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
@@ -117,6 +84,7 @@ class InAppNotificationPresenter
 
     private fun updateNotification(request: Completable, notificationId: Int) {
         compositeDisposable += request
+            .andThen(socket.connectToUpdates())
             .andThen(userRepository.getNotificationDetail(notificationId.toString(),true))
             .map { Notification.fromRemoteNotification(it) }
             .doOnSuccess { newNote ->
@@ -136,11 +104,7 @@ class InAppNotificationPresenter
             )
     }
 
-    override fun onNotificationRateClick(eventId: String) {
-    }
-
-    override fun onNotificationUrlClick(url: String) {
-        viewState.showUrl(url)
-    }
+    override fun onNotificationRateClick(eventId: String) {}
+    override fun onNotificationUrlClick(url: String) = viewState.showUrl(url)
 
 }

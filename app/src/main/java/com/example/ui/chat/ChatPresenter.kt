@@ -6,8 +6,10 @@ import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
-import com.example.data.models.*
+import com.example.data.models.ChatMessage
 import com.example.data.models.ChatModel.Companion.CHAT_BINDS
+import com.example.data.models.Message
+import com.example.data.models.MessageModel
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.*
 import com.example.repository.ChatRepository
@@ -16,9 +18,9 @@ import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
 import com.example.util.IMAGE_MAX_SIZE_CHAT
 import com.example.util.convertBitmapToFile
-import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
@@ -34,8 +36,6 @@ import okhttp3.RequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withProgressBarLoadingDialog
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeUnit

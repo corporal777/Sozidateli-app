@@ -94,55 +94,11 @@ fun <T> Observable<T>.performOnMain(): Observable<T> {
     return this.subscribeOn(AndroidSchedulers.mainThread())
 }
 
-fun <T> Maybe<T>.withShimmerLoading(baseView: BaseContract.LoadingView): Maybe<T> {
-    val loadingDisposable = Completable.complete()
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnComplete {
-            baseView.showShimmerLoading()
-        }
-        .doOnDispose {
-            baseView.hideShimmerLoading()
-        }
-        .subscribe()
-    val actionHide = Action {
-        if (loadingDisposable.isDisposed) baseView.hideShimmerLoading()
-        else loadingDisposable.dispose()
-    }
-    fun <T> actionConsumer() = Consumer<T> {
-        if (loadingDisposable.isDisposed) baseView.hideShimmerLoading()
-        else loadingDisposable.dispose()
-    }
-    return this.doFinally(actionHide)
-        .doOnDispose(actionHide)
-        .doOnSuccess(actionConsumer())
-        .doOnError(actionConsumer())
-}
-
 fun Completable.withLoadingDialog(baseView: BaseContract.LoadingView): Completable {
     val loadingDisposable = getLoadingDisposable(baseView)
     return this.doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
         .doFinally(getHideLoadingAction(baseView, loadingDisposable))
         .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
-
-
-}
-
-fun Completable.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Completable {
-    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
-    return this.doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
-
-
-}
-
-fun Completable.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Completable {
-    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
-    return this.doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
-
-
 }
 
 fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
@@ -151,57 +107,7 @@ fun <T> Single<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Single<
         .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
         .doOnSuccess(getHideLoadingConsumer(baseView, loadingDisposable))
         .doOnError(getHideLoadingConsumer(baseView, loadingDisposable))
-
 }
-
-fun <T> Single<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
-    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
-    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
-        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
-}
-
-fun <T> Single<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
-    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
-    return this.doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnSuccess(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
-        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
-}
-
-fun <T> Single<T>.withDelay(time: Long): Single<T> {
-    return delay(time, TimeUnit.MILLISECONDS)
-}
-
-fun <T> Maybe<T>.withDelay(time: Long): Maybe<T> {
-    return delay(time, TimeUnit.MILLISECONDS)
-}
-
-fun <T> Observable<T>.withDelay(time: Long): Observable<T> {
-    return delay(time, TimeUnit.MILLISECONDS)
-}
-
-fun Completable.withDelay(time: Long): Completable {
-    return delay(time, TimeUnit.MILLISECONDS)
-}
-
-fun <T> Maybe<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
-    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
-    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
-        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
-}
-
-fun <T> Maybe<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
-    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
-    return this.doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
-        .doOnSuccess(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
-        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
-}
-
 
 fun <T> Maybe<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
     val loadingDisposable = getLoadingDisposable(baseView)
@@ -239,6 +145,30 @@ fun <T> Observable<T>.withLoadingDialog(baseView: BaseContract.LoadingView): Obs
         .doOnDispose(getHideLoadingAction(baseView, loadingDisposable))
 }
 
+
+fun Completable.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Completable {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
+fun <T> Single<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
+fun <T> Maybe<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
 fun <T> Observable<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
     val loadingDisposable = getLoadingProgressBarDisposable(baseView)
     var isFirstHidden = false
@@ -251,6 +181,29 @@ fun <T> Observable<T>.withProgressBarLoadingDialog(baseView: BaseContract.Loadin
         }
         .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
         .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+}
+
+fun Completable.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Completable {
+    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
+    return this.doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
+fun <T> Single<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
+    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
+fun <T> Maybe<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Maybe<T> {
+    val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
+    return this.doFinally(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnSuccess(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnError(getHideCustomProgressBarLoadingConsumer(baseView, loadingDisposable))
 }
 
 fun <T> Observable<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Observable<T> {
@@ -267,9 +220,27 @@ fun <T> Observable<T>.withCustomProgressBarLoadingDialog(baseView: BaseContract.
         .doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))
 }
 
+
+
+fun <T> Single<T>.withDelay(time: Long): Single<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+fun <T> Maybe<T>.withDelay(time: Long): Maybe<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+fun <T> Observable<T>.withDelay(time: Long): Observable<T> {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+fun Completable.withDelay(time: Long): Completable {
+    return delay(time, TimeUnit.MILLISECONDS)
+}
+
+
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
-        //.delay(300, TimeUnit.MILLISECONDS, Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnComplete { baseView.showLoadingDialog() }
         .doOnDispose { baseView.hideLoadingDialog() }

@@ -15,3 +15,6 @@ val Int.sp: Int
     get() = this.toFloat().sp.toInt()
 val Int.px: Int
     get() = this.toFloat().px.toInt()
+
+val Int.inverseSp: Float
+    get() = (this / Resources.getSystem().displayMetrics.scaledDensity - 0.5f).toFloat()

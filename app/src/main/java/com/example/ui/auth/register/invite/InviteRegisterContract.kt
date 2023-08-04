@@ -8,18 +8,14 @@ import com.example.ui.auth.base.BaseAuthContract
 
 interface InviteRegisterContract {
     interface View : BaseAuthContract.View {
+        @StateStrategyType(AddToEndSingleStrategy::class)
+        fun setData(firstName: String?, lastName: String?, middleName: String?, email: String?)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showUserAgreement()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun enableRegisterBtn(isEnable: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showPasswordConfirmError(show: Boolean)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showPasswordError(show: Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showFirstNameError(show: Boolean)
@@ -30,67 +26,31 @@ interface InviteRegisterContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showEmailError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showWrongPhoneError(show: Boolean)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showPhoneConfirm(phone: String)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun phoneConfirmEnabled(enabled: Boolean)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updatePhoneConfirmationStatus(confirmed: Boolean)
-
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun enableMiddleNameInput(enable: Boolean)
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun updateFieldsInUI(firstName: String, lastName: String, middleName: String, email: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun showEmailDialog(email: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun unblockTokenListener()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
         fun openHome()
 
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun blockTokenListener()
-
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun logedout()
+        fun loggedOut()
     }
 
     interface Presenter : BaseAuthContract.Presenter {
-        fun onClickRegister(
-                email: String?,
-                firstName: String?,
-                lastName: String?,
-                password: String?,
-                isAgree: Boolean
-                //passwordConfirm: String?
-        )
+        fun onClickRegister()
 
         fun onClickClose()
         fun onClickUserAgreement()
-        fun onSaveCode(code: String)
 
         fun onNoMiddleNameChecked(checked: Boolean)
         fun onAgreeChecked(checked: Boolean)
 
-        fun onSaveEmailText(email: String, name: String, lastName: String, middleName: String, invite: Int)
-        fun onChangeEmailText(email: String)
-        fun onChangeFirstNameText(firstName: String)
-        fun onChangeLastNameText(lastName: String)
-        fun onChangeMiddleNameText(middleName: String)
-        fun onChangePasswordText(password: String, isValid: Boolean)
-        fun onChangePasswordConfirmText(password: String)
-        fun onChangePhoneText(phone: String)
-        fun onPhoneConfirmClick()
-        fun getData()
-        fun logout()
+        fun onChangeFirstNameText(value: String)
+        fun onChangeLastNameText(value: String)
+        fun onChangeMiddleNameText(value: String)
+        fun onChangePasswordText(value: String?, isValid: Boolean)
     }
 }

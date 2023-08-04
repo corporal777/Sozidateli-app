@@ -31,9 +31,6 @@ interface MainContract {
         fun showOrganization(organization: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showNotification(notification: Notification)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showRating(event: String)
 
         @StateStrategyType(SkipStrategy::class)
@@ -83,6 +80,9 @@ interface MainContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun setAppBarElevation(value: Float)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun clearIntentData()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -92,8 +92,8 @@ interface MainContract {
         fun onOpenCheckConnectionDestination(check: Boolean)
         fun onHandleRecoverPasswordLink(userId: String, code: String)
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
-        fun onHandleEventCode(event: String)
-        fun onHandleEvent(event: String)
+        fun onHandleEventCode(event: String?)
+        fun onHandleEvent(event: String?)
         fun onHandleAuthToOtherPlatform(url: String, type : AuthType)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
@@ -106,8 +106,7 @@ interface MainContract {
 
         fun onStoriesComplete()
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
-        fun openPgrfFromInvite(inviteId: String)
-        fun openAuthWebsiteFragment(code : String)
+        fun onHandleAuthWebsite(code : String)
 
         fun onBackClick()
     }

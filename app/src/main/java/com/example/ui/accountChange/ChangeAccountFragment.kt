@@ -14,6 +14,7 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.items.*
+import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.showCustomTabsBrowser
@@ -108,9 +109,8 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
     }
 
     override fun showLoginFragment(login: String) {
-        findNavController().navigate(
-            ChangeAccountFragmentDirections.changeAccountFragmentToLoginFragment(login)
-        )
+        val args = LoginFragmentArgs.Builder(login).build().toBundle()
+        findNavController().navigate(R.id.login_fragment, args)
     }
 
     private fun showAccountActionDialog(session: UserSessionModel) {

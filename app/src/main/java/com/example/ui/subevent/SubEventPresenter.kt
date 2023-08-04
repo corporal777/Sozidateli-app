@@ -17,13 +17,10 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
-import withDelay
-import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

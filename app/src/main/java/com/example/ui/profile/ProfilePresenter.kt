@@ -28,7 +28,7 @@ import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withDelay
-import withShimmerLoading
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -48,11 +48,10 @@ class ProfilePresenter
         compositeDisposable += userRepository.getUserShortNew()
             .doOnSuccess { getAdditionalData() }
             .performOnBackgroundOutOnMain()
-            .withShimmerLoading(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    Log.e("PROFILE", it.state.toString())
                     viewState.apply {
                         setUser(it)
                         setUserLink(it)

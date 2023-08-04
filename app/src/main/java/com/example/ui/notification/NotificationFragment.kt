@@ -265,13 +265,6 @@ class NotificationFragment : BaseFragment<FragmentNotificationBinding>(),
     override val title: CharSequence by lazy { getString(R.string.notification_label) }
     override fun actionIconContainer(view: ViewGroup) {}
 
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.nestedScrollView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
