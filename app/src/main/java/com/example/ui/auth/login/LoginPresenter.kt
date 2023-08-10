@@ -83,34 +83,25 @@ class LoginPresenter
     }
 
     override fun onClickLogin(invite: Int) {
-        Log.e("SHOW", "show")
-        compositeDisposable += Observable.timer(10000, TimeUnit.MILLISECONDS)
+       compositeDisposable += Completable.defer {
+            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
+            if (invite != -1) {
+                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
+                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
+            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
+        }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-
-            }
-
-
-//       compositeDisposable += Completable.defer {
-//            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-//            if (invite != -1) {
-//                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
-//                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
-//            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
-//        }
-//            .performOnBackgroundOutOnMain()
-//            .withCustomProgressBarLoadingDialog(viewState)
-//            .subscribeSimple(
-//                onError = {
-//                    it.printStackTrace()
-//                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-//                    if (hasApiError == true) viewState.showWrongPasswordError()
-//                    else onReceiveError(it)
-//                },
-//                onComplete = {
-//                    Shake.registerUser(appData.getId().toString())
-//                })
+            .subscribeSimple(
+                onError = {
+                    it.printStackTrace()
+                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+                    if (hasApiError == true) viewState.showWrongPasswordError()
+                    else onReceiveError(it)
+                },
+                onComplete = {
+                    Shake.registerUser(appData.getId().toString())
+                })
     }
 
     private fun performDataChange() {

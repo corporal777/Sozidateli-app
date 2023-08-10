@@ -121,7 +121,7 @@ data class Notification(
                 when (state) {
                     "confirmed", "approved", "accepted" -> AcceptState.ACCEPTED
                     "declined" -> AcceptState.CANCELED
-                    "canceled" -> AcceptState.DISABLED
+                    "canceled", "cancelled" -> AcceptState.DISABLED
                     else -> AcceptState.NONE
                 },
                 rateId,

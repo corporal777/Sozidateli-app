@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -39,6 +40,7 @@ class AcceptNotificationItemNew(
         notification: Notification
     ) {
         viewBinding.apply {
+            Log.e("Status", notification.acceptState.name)
             when (notification.acceptState) {
                 Notification.AcceptState.NONE -> {
                     lnDecline.isVisible = false
