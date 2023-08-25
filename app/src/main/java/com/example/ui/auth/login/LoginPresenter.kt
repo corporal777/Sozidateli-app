@@ -31,6 +31,7 @@ import isValidPhoneNumber
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
+import withInfinityProgressLoading
 import withLoadingDialog
 import withProgressBarLoadingDialog
 import java.util.concurrent.TimeUnit
@@ -83,7 +84,7 @@ class LoginPresenter
     }
 
     override fun onClickLogin(invite: Int) {
-       compositeDisposable += Completable.defer {
+        compositeDisposable += Completable.defer {
             val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
             if (invite != -1) {
                 authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
@@ -91,7 +92,7 @@ class LoginPresenter
             } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
         }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withInfinityProgressLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -133,7 +134,7 @@ class LoginPresenter
         )
     }
 
-    private fun getInviteBody(auth : NewAuthResponse): RebaseInviteBody {
+    private fun getInviteBody(auth: NewAuthResponse): RebaseInviteBody {
         return RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
     }
 }

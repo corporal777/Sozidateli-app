@@ -10,7 +10,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SearchFilter
-import com.example.data.models.SearchUserData
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.databinding.LayoutFilterUserBinding

@@ -12,6 +12,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -20,6 +21,7 @@ import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withCustomProgressBarLoadingDialog
 import withLoadingDialog
+import withProgressBarLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -44,16 +46,15 @@ class RecoveryPasswordPresenter
 
     override fun onRecoveryClick() {
         if (isDataValid()) {
-            val res = if (loginType == "email") email
-            else Utils.validatePhoneBeforeSend(email)
-
-            compositeDisposable += authRepository.sendRecoveryEmail(loginType, res)
+            compositeDisposable += Maybe.fromCallable {
+                if (loginType == "email") email
+                else Utils.validatePhoneBeforeSend(email)
+            }
+                .flatMap { authRepository.sendRecoveryEmail(loginType, it) }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarLoadingDialog(viewState)
                 .subscribeSimple(
-                    onError = {
-                       catchError(it)
-                    },
+                    onError = { catchError(it) },
                     onSuccess = {
                         viewState.showRecoveryNotification(email, it.userId)
                         if (loginType != "email") startTimer()
@@ -141,8 +142,8 @@ class RecoveryPasswordPresenter
     private fun performDataChange() = viewState.enableRecoveryBtn(isDataValid())
     override fun onCloseClick() = viewState.navigateUp()
 
-    private fun catchError(it : Throwable){
-        if (it is HttpException && it.code() == 404) viewState.showWrongEmailError()
+    private fun catchError(it: Throwable) {
+        if (it is HttpException) viewState.showWrongEmailError()
         else if ((it as? ApiError)?.hasError(USER_NOT_REGISTERED_ERROR) == true) {
             viewState.showWrongEmailError()
         } else onReceiveError(it)

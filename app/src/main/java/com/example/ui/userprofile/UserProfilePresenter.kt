@@ -1,5 +1,6 @@
 package com.example.ui.userprofile
 
+import android.net.Uri
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -39,6 +40,7 @@ class UserProfilePresenter @Inject constructor(
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
     override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
+    override fun onTakePhotoFromListClick(uri: Uri) = takePhoto(takePhoto.takeListImage(uri))
 
     private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
         compositeDisposable += takePhotoRequest

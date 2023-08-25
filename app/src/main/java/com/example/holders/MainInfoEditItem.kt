@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.item_edit_main_info.tilMobilePhone
 import kotlinx.android.synthetic.main.item_edit_main_info.tvPhoneConfirmed
 import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.etMobilePhone
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etBirthday
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etCity
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilBirthday
 import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tvGender
 import onTextChanged

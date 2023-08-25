@@ -15,6 +15,9 @@ import com.example.databinding.FragmentUserProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
+import com.example.ui.views.galleryView.GalleryBottomPresenter
+import com.example.ui.views.galleryView.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage
 import setOnClickListener
@@ -64,20 +67,33 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
     }
 
     override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.photo_alert_title)
-            .apply {
-                if (canRemove) {
-                    setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                        showEditWarning(isBase, isMax, false, true) {
-                            presenter.onRemovePhotoClick()
-                        }
-                    }
+
+//        AlertDialog.Builder(requireContext())
+//            .setTitle(R.string.photo_alert_title)
+//            .apply {
+//                if (canRemove) {
+//                    setNeutralButton(R.string.photo_alert_remove) { _, _ ->
+//                        showEditWarning(isBase, isMax, false, true) {
+//                            presenter.onRemovePhotoClick()
+//                        }
+//                    }
+//                }
+//            }
+//            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
+//            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
+//            .show()
+
+        GalleryBottomSheet()
+            .setGalleryCallback { presenter.onTakePhotoFromGalleryClick() }
+            .setCameraCallback { presenter.onTakePhotoFromCameraClick() }
+            .setImageCallback { presenter.onTakePhotoFromListClick(it) }
+            .setRemoveCallback { fr ->
+                showEditWarning(isBase, isMax, false, true) {
+                    presenter.onRemovePhotoClick()
+                    fr.dismiss()
                 }
             }
-            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-            .show()
+            .show(childFragmentManager)
     }
 
     override fun showMainData() {

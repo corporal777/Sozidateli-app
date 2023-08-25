@@ -54,4 +54,10 @@ class CommonRepositoryImpl
             }
         }.map { it.mapIndexed { index, s -> s.apply { id = index } } }
     }
+
+    override fun getSettlements(region: String): Maybe<List<SearchRegion>> {
+        return newApi.getSettlements(region).map {
+            it.data.mapIndexed { index, s -> SearchRegion(index, s) }
+        }
+    }
 }

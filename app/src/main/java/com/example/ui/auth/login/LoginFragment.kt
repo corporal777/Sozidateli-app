@@ -103,13 +103,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
 
 
     override fun showWrongPasswordError() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.error_title)
-            .setMessage(R.string.auth_register_wrong_password_error)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                // do nothing
-            }
-            .show()
+        val message = getString(R.string.auth_register_wrong_password_error)
+        showErrorMessage(false, message)
     }
 
 

@@ -1,10 +1,14 @@
 package com.example.ui.userprofile.read.maindata
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
+import android.text.Spannable
+import android.text.TextPaint
+import android.text.style.URLSpan
+import android.text.style.UnderlineSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.parseAsHtml
@@ -18,13 +22,13 @@ import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import onScrolled
+import parseAsHtmlWithoutUnderline
+import removeUrlUnderline
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -52,22 +56,24 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
 
     override fun onUserUpdated(user: UserDetail?, state: String) {
         user ?: return
-        val jObject = DaDataUtil.getLocationJson(requireContext())
-
         mBinding.apply {
             tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
             tvGender.text = setGender(user)
+            tvRegion.text = user.address?.region
+            tvCity.text = user.address?.city
 
-//            tvAddress.text = DaDataUtil.formatParam(user.address?.country, jObject)
-//                ?: DaDataUtil.formatParam(user.address?.country, jObject)
-            tvAddress.text = user.address?.fullValue ?: user.address?.shortAddres
             tvAdditional.text = user.notes?.value
 
-            var filesText = ""
-            user.binds?.recommendationFile?.forEach { file ->
-                filesText += "<a href='${file.uri}'>${file.name}</a><br>"
+
+
+            tvFiles.apply {
+                var filesText = ""
+                user.binds?.recommendationFile?.forEach { file ->
+                    filesText += "<a href='${file.uri}'>${file.name}</a><br><br>"
+                }
+                text = filesText.parseAsHtmlWithoutUnderline()
+
             }
-            tvFiles.text = filesText.parseAsHtml()
         }
         BetterLinkMovementMethod.linkifyHtml(mBinding.tvFiles)
             .setOnLinkClickListener { _, url ->
@@ -100,14 +106,6 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
     override fun actionIconContainer(view: ViewGroup) {}
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.nestedScrollView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

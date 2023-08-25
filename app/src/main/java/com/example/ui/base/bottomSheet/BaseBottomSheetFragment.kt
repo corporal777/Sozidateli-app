@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.example.R
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseActivity
 import com.example.ui.views.StateType
@@ -22,7 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int = 0) :
+abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
+    val type: Int = 0,
+    val lightDim: Boolean = false,
+    val isTransparent : Boolean = false
+) :
     MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
 
     lateinit var mBinding: binding
@@ -48,18 +53,18 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(val type: Int 
             dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            if (type == 1) {
-                dialog.setOnShowListener {
-                    setupFullHeight(dialog)
-                }
-            }
+            if (type == 1) { dialog.setOnShowListener { setupFullHeight(dialog) } }
+            if (lightDim) dialog.window?.setDimAmount(0.3f)
         }
         return dialog
     }
 
+    override fun getTheme(): Int {
+        if (isTransparent) return R.style.TransparentBottomSheetDialogTheme
+        else return super.getTheme()
+    }
 
-
-    fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
+    private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet: FrameLayout =
             dialog!!.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)

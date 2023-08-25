@@ -26,6 +26,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withProgressBarLoadingDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -156,7 +157,7 @@ class FinishRegisterPresenter
         }
             .doOnComplete { viewState.connectToSocket() }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     if (it is CodeInvalidException) viewState.codeError()

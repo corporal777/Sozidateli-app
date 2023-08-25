@@ -8,6 +8,7 @@ object CropCallbackHelper {
     private val cropRequests = mutableMapOf<String, SingleSubject<Bitmap>>()
 
     fun createRequest(key: String): SingleSubject<Bitmap> {
+        cropRequests.clear()
         return cropRequests.getOrPut(key) { SingleSubject.create() }
     }
 

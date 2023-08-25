@@ -324,7 +324,7 @@
     <style name="Profile" />
 
     <style name="Profile.Title">
-        <item name="fontPath">fonts/sf_pro_text_regular.ttf</item>
+        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
         <item name="android:textColor">@color/profile_title_text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginTop">20dp</item>
@@ -338,9 +338,22 @@
         <item name="android:layout_marginTop">0dp</item>
     </style>
 
+    <style name="Profile.Data.Main">
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:textColor">@color/profile_name_text</item>
+        <item name="android:textColorLink">@color/profile_data_text_link</item>
+        <item name="android:textColorHint">@color/profile_data_text_hint</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_main_data</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_main_data</item>
+    </style>
+
+
     <style name="Profile.Data">
         <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:textColor">@color/profile_data_text</item>
         <item name="android:textColorLink">@color/profile_data_text_link</item>
         <item name="android:textColorHint">@color/profile_data_text_hint</item>
@@ -349,6 +362,8 @@
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
+
+
 
     <style name="Profile.User.Data" parent="Profile.Data">
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
@@ -1000,6 +1015,60 @@
         <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
         <item name="android:background">@drawable/custom_btn_write_speaker_selectable</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <style name="ProfileData" />
+
+    <style name="ProfileData.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxBackgroundColor">#33C3996C</item>
+        <item name="boxStrokeColor">#33C3996C</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/background_large_corners_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/background_large_corners_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/background_large_corners_radius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/background_large_corners_radius</item>
+        <item name="hintEnabled">false</item>
+        <item name="errorTextColor">@color/attention_action</item>
+    </style>
+
+    <style name="ProfileData.EditText">
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:backgroundTint">@color/background_input_edit_text</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
+        <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="ProfileData.TextView">
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:background">@drawable/background_input_text_field_new</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="ClickableTextView">
+        <item name="fontPath">fonts/sf_pro_display_bold.ttf</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_color_action_text</item>
+        <item name="android:background">@drawable/custom_text_background_selectable</item>
     </style>
 
 </resources>

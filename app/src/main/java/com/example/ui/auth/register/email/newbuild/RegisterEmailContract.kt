@@ -64,13 +64,9 @@ interface RegisterEmailContract {
         fun onChangeMiddleNameText(middleName: String)
         fun onNoMiddleNameChecked(checked: Boolean)
 
-        fun onChangePasswordConfirmText(password: String)
         fun onChangePasswordText(password: String, isValid: Boolean)
 
         fun onClickAgree(isAgree: Boolean)
-
-        fun checkPhoneEmailIsUnique(email: String, )
-
-        fun register()
+        fun register(withCheck : Boolean)
     }
 }

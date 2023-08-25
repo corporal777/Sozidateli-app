@@ -153,6 +153,13 @@ fun Completable.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView)
         .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
 }
 
+fun Completable.withInfinityProgressLoading(baseView: BaseContract.LoadingView): Completable {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    return this
+        .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+}
+
 fun <T> Single<T>.withProgressBarLoadingDialog(baseView: BaseContract.LoadingView): Single<T> {
     val loadingDisposable = getLoadingProgressBarDisposable(baseView)
     return this.doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))

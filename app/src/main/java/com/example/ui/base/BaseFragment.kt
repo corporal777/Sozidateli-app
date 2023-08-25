@@ -262,6 +262,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         hideCustomProgressDialog()
     }
 
+
     class PermissionsParams {
         var permissionsToRequest = arrayOf<String>()
         var permissionsGrantedCallback: () -> Unit = {}

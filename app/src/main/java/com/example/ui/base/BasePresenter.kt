@@ -134,18 +134,7 @@ open class BasePresenter<V : BaseContract.View>
 
                             }
                         }
-                        401 -> {
-//                            RxJavaPlugins.setErrorHandler { e ->
-//                                if (e is UndeliverableException) {
-//                                    Log.e("ERROR UNDELIVERABLE", e.message?:"")
-//                                    onReceiveError(e)
-//                                } else {
-//                                    Thread.currentThread().also { thread ->
-//                                        thread.uncaughtExceptionHandler.uncaughtException(thread, e)
-//                                    }
-//                                }
-//                            }
-                        }
+                        401 -> {}
                         403 -> {
                             try {
                                 val error = Gson().fromJson(

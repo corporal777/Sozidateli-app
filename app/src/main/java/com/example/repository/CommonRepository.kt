@@ -13,4 +13,5 @@ interface CommonRepository {
 
     fun getFilterRegions() : Maybe<List<SearchRegion>>
     fun getFilterTowns(type : String, region : String) : Maybe<List<SearchTown>>
+    fun getSettlements(region : String) : Maybe<List<SearchRegion>>
 }

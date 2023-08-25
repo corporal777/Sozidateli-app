@@ -6,15 +6,21 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.extensions.dp
+import com.example.ui.userprofile.edit.items.AboutAdditionalInfoBottomSheet
 import com.google.android.material.textfield.TextInputLayout
 
 class CustomTextInputLayout : TextInputLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         findViewById<View>(R.id.text_input_end_icon)?.apply {
@@ -25,7 +31,7 @@ class CustomTextInputLayout : TextInputLayout {
     }
 
 
-    fun showError(text : CharSequence?){
+    fun showError(text: CharSequence?) {
         isErrorEnabled = !text.isNullOrBlank()
         error = text
     }
@@ -36,11 +42,25 @@ class CustomTextInputLayout : TextInputLayout {
         if (!enabled) return
         findViewById<TextView>(R.id.textinput_error)?.apply {
             (parent as? ViewGroup)?.apply {
-                this.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                this.layoutParams = LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
                     this.gravity = Gravity.CENTER
                 }
             }
             this.gravity = Gravity.CENTER
+        }
+    }
+
+    fun setInformationIconVisibility(show: Boolean, onClick: () -> Unit) {
+        if (show) {
+            endIconDrawable = ContextCompat.getDrawable(context, R.drawable.ic_about_session)
+            endIconMode = END_ICON_CUSTOM
+            setEndIconOnClickListener { onClick.invoke() }
+        } else {
+            endIconDrawable = null
+            endIconMode = END_ICON_NONE
         }
     }
 }

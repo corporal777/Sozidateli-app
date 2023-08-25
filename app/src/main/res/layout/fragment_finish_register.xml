@@ -213,18 +213,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
 
-            <androidx.appcompat.widget.AppCompatButton
+
+            <com.example.ui.views.loading.CustomLoadingButton
                 android:id="@+id/ibRegister"
-                style="@style/BtnBrownStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="30dp"
-                android:minHeight="@dimen/auth_button_min_height"
-                android:text="@string/auth_action_register"
+                app:buttonBackground="@drawable/custom_btn_brown_selectable"
+                app:buttonMinHeight="@dimen/auth_button_min_height"
+                app:buttonText="@string/auth_action_register"
                 app:layout_constraintBottom_toTopOf="@+id/ibCancel"
                 app:layout_constraintTop_toBottomOf="@+id/btnResend" />
-
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ibCancel"

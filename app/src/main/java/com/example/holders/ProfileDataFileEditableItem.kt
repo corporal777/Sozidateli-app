@@ -31,13 +31,17 @@ class ProfileDataFileEditableItem(
 
     override fun bind(viewBinding: ItemProfileDataEditableFileBinding, position: Int) {
         viewBinding.apply {
-            etFileName.apply {
+            tilFile.apply {
+                setEndIconOnClickListener {
+                    onRemoveClick(file)
+                }
+            }
+            etFile.apply {
                 setText(fileName)
                 textWatcher = onTextChanged(textChangeListener)
             }
 
-            tvFileName.apply {
-                text = file.name
+            tvShowFile.apply {
                 setOnClickListener {
                     onFileClick(file)
                 }
@@ -46,17 +50,13 @@ class ProfileDataFileEditableItem(
             scFile.initSwitch(file.showInProfile ?: false) {
                 file.showInProfile = it
             }
-            btnDelete.setOnClickListener {
-                onRemoveClick(file)
-            }
-
         }
     }
 
     override fun unbind(viewHolder: GroupieViewHolder<ItemProfileDataEditableFileBinding>) {
         viewHolder.apply {
             viewHolder.binding.apply {
-                etFileName.apply {
+                etFile.apply {
                     textWatcher?.let { removeTextChangedListener(it) }
                 }
             }

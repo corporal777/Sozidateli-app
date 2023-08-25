@@ -45,6 +45,8 @@ interface UserProfileContract {
 
         fun onTakePhotoFromGalleryClick()
         fun onTakePhotoFromCameraClick()
+        fun onTakePhotoFromListClick(uri : Uri)
+
         fun onRemovePhotoClick()
     }
 }

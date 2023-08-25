@@ -506,6 +506,9 @@ interface NewApi {
     @GET("v1/address/cities-orgs")
     fun getOrganizationsTowns(@Query("query") region: String): Maybe<List<SearchTown>>
 
+    @GET("v1/address/settlements")
+    fun getSettlements(@Query("query") region: String): Maybe<SearchResponseData<String>>
+
     //+
     @GET("v1/event-agreement/{id}")
     fun checkRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>

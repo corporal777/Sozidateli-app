@@ -15,7 +15,7 @@ interface UserEditContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPlaceholder(type : UserEditDataType)
+        fun setPlaceholder(type : UserEditDataType)
 
         @StateStrategyType(SkipStrategy::class)
         fun showUpdateError(message: String? = null)
@@ -108,6 +108,6 @@ interface UserEditContract {
         fun onSaveInterestsClick(data: List<InterestNew>)
         fun onNavigateUpRequest()
 
-        fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
+        fun onSavePersonalDataClick(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
     }
 }

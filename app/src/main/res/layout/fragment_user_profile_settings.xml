@@ -14,11 +14,11 @@
 
 
         <LinearLayout
-            android:background="@color/main_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
+            android:background="@color/main_background"
             android:orientation="vertical">
 
             <LinearLayout
@@ -93,8 +93,8 @@
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/sc_no_middle_name"
                     style="@style/Profile.Edit.Switch"
-                    android:enabled="false"
                     android:layout_marginBottom="1dp"
+                    android:enabled="false"
                     android:text="@string/profile_edit_user_no_middle_name" />
 
                 <TextView

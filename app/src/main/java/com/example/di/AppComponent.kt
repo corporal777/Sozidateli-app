@@ -5,11 +5,13 @@ import com.example.App
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.galleryView.GalleryBottomSheet
 import com.example.ui.views.notifications.NotificationsView
 import com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
 import dagger.BindsInstance
 import dagger.Component
@@ -46,6 +48,8 @@ interface AppComponent {
     fun inject(view: EventOrgBottomSheet)
 
     fun inject(view: SearchRegionBottomSheet)
+
+    fun inject(view: SearchSettlementBottomSheet)
 
     fun inject(view: SearchTownBottomSheet)
 

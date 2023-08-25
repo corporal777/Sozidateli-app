@@ -11,11 +11,9 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.text.Editable
-import android.text.InputFilter
-import android.text.Layout
-import android.text.TextWatcher
+import android.text.*
 import android.text.style.URLSpan
+import android.text.style.UnderlineSpan
 import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
@@ -100,6 +98,19 @@ fun TextView.removeUrlUnderline(textColor: Int? = null) {
             set(start..end, URLSpanNoUnderline(it.url, textColor))
         }
     }
+}
+
+fun String.parseAsHtmlWithoutUnderline(): Spannable? {
+    if (this.isNullOrEmpty()) return null
+    val s: Spannable = Html.fromHtml(this) as Spannable
+    for (u in s.getSpans(0, s.length, URLSpan::class.java)) {
+        s.setSpan(object : UnderlineSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.isUnderlineText = false
+            }
+        }, s.getSpanStart(u), s.getSpanEnd(u), 0)
+    }
+    return s
 }
 
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
@@ -494,8 +505,8 @@ private fun TextInputLayout.initAsDatePicker(
             .show()
     }
 
-    setEndIconDrawable(R.drawable.ic_calendar)
-    setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
+    //setEndIconDrawable(R.drawable.ic_calendar)
+    //setEndIconTintMode(PorterDuff.Mode.MULTIPLY)
     setEndIconOnClickListener { showDatePicker() }
     errorIconDrawable = null
     editText?.apply {

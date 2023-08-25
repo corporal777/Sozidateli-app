@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.R
+import com.example.databinding.ItemProfileAttachFileBinding
 import com.example.databinding.ItemProfileButtonEditBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -14,24 +15,18 @@ import kotlinx.android.synthetic.main.item_profile_button_edit.*
 class ProfileDataFileAddItem(
     private val isButtonEditable : Boolean,
     private val onClickListener: () -> Unit
-) : BindableItem<ItemProfileButtonEditBinding>(-1001L) {
+) : BindableItem<ItemProfileAttachFileBinding>(-1001L) {
 
     private var isEditable = isButtonEditable
 
-    override fun bind(viewBinding: ItemProfileButtonEditBinding, position: Int) {
+    override fun bind(viewBinding: ItemProfileAttachFileBinding, position: Int) {
         viewBinding.apply {
-            tvHelp.visibility = View.VISIBLE
-            btnEdit.apply {
-                updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    marginStart = resources.getDimensionPixelSize(R.dimen.profile_data_margin_compact)
-                }
-                text = context.getString(R.string.add_file)
+            tvEdit.apply {
                 isEnabled = isEditable
                 setOnClickListener {
                     onClickListener.invoke()
                 }
             }
-            divider.isVisible = false
         }
     }
 
@@ -41,5 +36,5 @@ class ProfileDataFileAddItem(
     }
 
 
-    override fun getLayout() = R.layout.item_profile_button_edit
+    override fun getLayout() = R.layout.item_profile_attach_file
 }

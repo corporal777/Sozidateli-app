@@ -108,7 +108,7 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
     }
 
 
-    override fun showPlaceholder(type: UserEditDataType) {
+    override fun setPlaceholder(type: UserEditDataType) {
         when (type) {
             UserEditDataType.PERSONAL -> adapter.updateItem(PlaceholderItem(PlaceholderItem.Type.CONTACTS))
             UserEditDataType.CONTACTS -> adapter.updateItem(PlaceholderItem(PlaceholderItem.Type.CONTACTS))
@@ -122,11 +122,10 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
             user.id.toLong(),
             requireContext(),
             user.gender,
-            user.birthday?.value,
-            user.birthday?.isVisible ?: false,
+            user.birthday,
             DaDataUtil.formatSavedLocation(requireContext(), user.address),
             user.notes,
-        ) { showWhyUserShouldAddDataToNotesField() }
+        )
 
         val files = ProfileDataFileEditableGroup(
             user.binds?.recommendationFile ?: emptyList(),
@@ -140,17 +139,15 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
 
         onSaveClick = {
             mBinding.recyclerView.requestFocus()
-            if (dataItem.checkDataValid()) {
-                showEditWarning(
-                    presenter.getBaseUserState(),
-                    presenter.getMaxUserState(),
-                    dataItem.checkBaseFieldsValid(),
-                    dataItem.checkMaxFieldsValid()
-                ) {
-                    val dataToSave = dataItem.getDataToSave() as MutableMap
-                    val file = files.getCurrentFilesToSave()
-                    presenter.updateFiles(file.toMutableList(), dataToSave)
-                }
+            showEditWarning(
+                presenter.getBaseUserState(),
+                presenter.getMaxUserState(),
+                dataItem.checkBaseFieldsValid(),
+                dataItem.checkMaxFieldsValid()
+            ) {
+                val dataToSave = dataItem.getDataToSave() as MutableMap
+                val file = files.getCurrentFilesToSave()
+                presenter.onSavePersonalDataClick(file.toMutableList(), dataToSave)
             }
         }
     }
@@ -318,14 +315,6 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showWhyUserShouldAddDataToNotesField() {
-        InfoDialog(
-            requireContext(),
-            getString(R.string.profile_edit_additional_notes_data),
-            requireActivity()
-        )
-            .setSelectCallback { }
-    }
 
 
     override fun showFileSelector() {

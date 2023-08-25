@@ -17,6 +17,7 @@ import com.example.ui.views.ConfirmCodeDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
 import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
+import com.example.util.getEmailFilter
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged
 import javax.inject.Inject
@@ -30,26 +31,19 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
 
     @Inject
     lateinit var presenterProvider: Provider<RecoveryPasswordPresenter>
-    private var dialog: ConfirmCodeDialog? = null
-
-    private val emailFilter = arrayOf(InputFilter { source, _, _, _, _, _ ->
-        source.toString().filter {
-            it.isLetter() || it.isDigit() || it == '.' || it == '@' || it == '_' || it == '+'
-        }
-    })
 
     @ProvidePresenter
     fun providePresenter(): RecoveryPasswordPresenter = presenterProvider.get().apply {
-        arguments?.let {
-            email = RecoveryPasswordFragmentArgs.fromBundle(it).email ?: ""
-        }
+        email = RecoveryPasswordFragmentArgs.fromBundle(requireArguments()).email ?: ""
     }
+
+    private var dialog: ConfirmCodeDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             etEmail.apply {
-                filters = emailFilter
+                filters = getEmailFilter()
                 onTextChanged { it?.toString()?.let { text -> presenter.onChangeEmailText(text) } }
             }
 
@@ -124,6 +118,18 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
 
     override fun showPasswordSuccessUpdated() {
         showToast(getString(R.string.profile_password_change_complete))
+    }
+
+    override fun showProgressBarLoadingDialog() {
+        mBinding.apply {
+            btnRecovery.showProgressLoading(true)
+        }
+    }
+
+    override fun hideProgressBarLoadingDialog(){
+        mBinding.apply {
+            btnRecovery.showProgressLoading(false)
+        }
     }
 
     override fun layout() = R.layout.fragment_recovery_password

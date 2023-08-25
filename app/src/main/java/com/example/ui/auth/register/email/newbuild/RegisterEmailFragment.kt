@@ -134,7 +134,7 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
             getString(R.string.confirm_email_text, email),
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.register() }
+        ).setSelectCallback { if (it) presenter.register(false) }
     }
 
     override fun showPhoneNotUnique(email: String) {
@@ -144,7 +144,7 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
 
-        ).setSelectCallback { if (it) presenter.register() }
+        ).setSelectCallback { if (it) presenter.register(false) }
     }
 
 
@@ -210,5 +210,17 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
 
     private fun showUserAgreement() =
         showCustomTabsBrowser(requireContext(), getString(R.string.auth_agree_address))
+
+    override fun showProgressBarLoadingDialog() {
+        mBinding.apply {
+            ibRegister.showProgressLoading(true)
+        }
+    }
+
+    override fun hideProgressBarLoadingDialog(){
+        mBinding.apply {
+            ibRegister.showProgressLoading(false)
+        }
+    }
 
 }

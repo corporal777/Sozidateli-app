@@ -5,16 +5,22 @@ import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
+import com.example.exceptions.CodeInvalidException
+import com.example.exceptions.EmailNotUniqueException
+import com.example.exceptions.PhoneNotUniqueException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.shakebugs.shake.Shake
 import io.reactivex.Completable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCustomProgressBarLoadingDialog
+import withProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -33,10 +39,9 @@ class RegisterEmailPresenter
     private var noMiddleNameChecked = middleName == USER_DATA_EMPTY
     private var email: String = ""
     private var password: String = ""
-    private var passwordConfirm: String = ""
-
-    private var isAgree: Boolean = false
     private var isPasswordValid: Boolean = false
+    private var isAgree: Boolean = false
+
     private var loginType = "email"
 
     private val deviceId = appData.deviceId
@@ -47,31 +52,6 @@ class RegisterEmailPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         performDataChange()
-    }
-
-
-    override fun onClickRegister() {
-        if (isDataValid(firstName, lastName, email, password, isAgree))
-            checkPhoneEmailIsUnique(email)
-        else showErrors()
-    }
-
-    override fun checkPhoneEmailIsUnique(email: String) {
-        compositeDisposable += Completable.defer {
-            if (loginType == "email") userRepository.checkEmailPhone(email, null)
-            else userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
-        }
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    if (loginType == "email") viewState.showEmailNotUnique(email)
-                    else viewState.showPhoneNotUnique(email)
-                },
-                onComplete = {
-                    register()
-                })
     }
 
     override fun onChangeEmailText(email: String) {
@@ -118,31 +98,53 @@ class RegisterEmailPresenter
         performDataChange()
     }
 
-    override fun onChangePasswordConfirmText(password: String) {
-        this.passwordConfirm = password
-        performDataChange()
-    }
 
     private fun performDataChange() {
-        viewState?.apply {
-            enableRegisterBtn(isDataValid(firstName, lastName, email, password, isAgree))
-        }
+        viewState?.apply { enableRegisterBtn(isDataValid()) }
+    }
+
+    override fun onClickRegister() {
+        if (isDataValid()) register(true)
+        else showErrors()
+    }
+
+    private fun checkPhoneEmailIsUnique(withCheck: Boolean): Completable {
+        return if (withCheck) Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += if (loginType == "email") {
+                userRepository.checkEmailPhone(email, null)
+                    .subscribeSimple(
+                        onError = { emitter.onError(EmailNotUniqueException()) },
+                        onComplete = { emitter.onComplete() })
+            } else {
+                userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
+                    .subscribeSimple(
+                        onError = { emitter.onError(PhoneNotUniqueException()) },
+                        onComplete = { emitter.onComplete() })
+            }
+            emitter.setDisposable(disposable)
+        } else Completable.complete()
     }
 
 
-    override fun register() {
+    override fun register(withCheck: Boolean) {
         viewState.setIgnoreTokenListener(true)
-        compositeDisposable += authRepository.registerUser(getRegisterBody())
+        compositeDisposable += checkPhoneEmailIsUnique(withCheck)
+            .andThen(authRepository.registerUser(getRegisterBody()))
             .andThen(Completable.defer {
                 if (loginType == "email") authRepository.registerEmailResend(email)
                 else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
             })
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarLoadingDialog(viewState)
             .subscribeSimple(
                 onError = {
                     viewState.setIgnoreTokenListener(false)
-                    it.printStackTrace()
+                    when (it) {
+                        is PhoneNotUniqueException -> viewState.showPhoneNotUnique(email)
+                        is EmailNotUniqueException -> viewState.showEmailNotUnique(email)
+                        else -> onReceiveError(it)
+                    }
                 },
                 onComplete = {
                     viewState.apply {
@@ -210,20 +212,14 @@ class RegisterEmailPresenter
             }
     }
 
-    private fun isDataValid(
-        firstName: String?,
-        lastName: String?,
-        email: String?,
-        password: String?,
-        isAgree: Boolean
-    ): Boolean {
+    private fun isDataValid(): Boolean {
         val firstNameValid = !firstName.isNullOrBlank()
         val lastNameValid = !lastName.isNullOrBlank()
-        val passwordValid = password?.let { AuthValidateUtil.isValidPassword(it) } ?: false
+        val passwordValid = password.let { AuthValidateUtil.isValidPassword(it) }
         val emailValid =
-            if (loginType == "email") (AuthValidateUtil.isValidEmail(email.toString())) else Utils.newPhoneValidator(
-                email ?: ""
-            )
+            if (loginType == "email") (AuthValidateUtil.isValidEmail(email))
+            else Utils.newPhoneValidator(email)
+
         val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
         return firstNameValid
                 && lastNameValid

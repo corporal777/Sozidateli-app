@@ -24,7 +24,6 @@ class ProfileDataFileEditableGroup(
         addAll(files.map { createFileItem(it) })
     }
 
-    private val headerItem = ProfileDataFileHeaderItem(1)
     private val addFileItem = ProfileDataFileAddItem(
         filesCount < 10,
         addFileClickListener
@@ -34,7 +33,6 @@ class ProfileDataFileEditableGroup(
     init {
         fileGroup.update(fileItems)
 
-        headerItem.registerGroupDataObserver(this)
         fileGroup.registerGroupDataObserver(this)
         addFileItem.registerGroupDataObserver(this)
     }
@@ -76,23 +74,21 @@ class ProfileDataFileEditableGroup(
 
     override fun getGroup(position: Int): Group {
         return when (position) {
-            0 -> headerItem
-            1 -> fileGroup
-            2 -> addFileItem
+            0 -> fileGroup
+            1 -> addFileItem
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
         }
     }
 
     override fun getPosition(group: Group): Int {
         return when (group) {
-            headerItem -> 0
-            fileGroup -> 1
-            addFileItem -> 2
+            fileGroup -> 0
+            addFileItem -> 1
             else -> -1
         }
     }
 
-    override fun getGroupCount() = 3
+    override fun getGroupCount() = 2
 
 
     fun getCurrentFilesToSave(): List<FileModel> {

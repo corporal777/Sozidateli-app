@@ -2,6 +2,7 @@ package com.example.util.rxtakephoto.rx_image_picker.ui.camera
 
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -18,6 +19,8 @@ import io.reactivex.subjects.PublishSubject
 import java.text.SimpleDateFormat
 import com.example.util.rxtakephoto.rx_image_picker.entity.Result
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 
 class BasicCameraFragment : BaseSystemPickerFragment(), ICameraCustomPickerView {
@@ -52,7 +55,8 @@ class BasicCameraFragment : BaseSystemPickerFragment(), ICameraCustomPickerView 
     }
 
     override fun startPickImage() {
-        cameraPictureUrl = createImageUri()
+        //cameraPictureUrl = createImageUri()
+        cameraPictureUrl = createImageCacheUri()
         val pictureChooseIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         pictureChooseIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraPictureUrl)
         launchedImage.launch(pictureChooseIntent)
@@ -68,5 +72,18 @@ class BasicCameraFragment : BaseSystemPickerFragment(), ICameraCustomPickerView 
         val cv = ContentValues()
         cv.put(MediaStore.Images.Media.TITLE, timeStamp)
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
+    }
+
+    private fun createImageCacheUri(): Uri? {
+        val imagesFolder = File(requireContext().cacheDir, "images")
+        var uri: Uri? = null
+        try {
+            imagesFolder.mkdirs()
+            val file = File(imagesFolder, "camera_image.png")
+            uri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", file)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return uri
     }
 }

@@ -6,7 +6,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
+import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import com.example.R
 import com.isseiaoki.simplecropview.CropImageView
@@ -35,7 +37,6 @@ class CropActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crop)
-
         val extras = intent.extras!!
         uri = extras.getParcelable(ARG_URI)!!
         rotation = extras.getInt(ARG_ROTATION, 0)
@@ -108,6 +109,12 @@ class CropActivity : AppCompatActivity() {
         finish()
     }
 
+    override fun onBackPressed() {
+        flLoading.isVisible = false
+        intent.removeExtra(uri.toString())
+        cropSubject.onError(NullPointerException("Cancel crop pressed!"))
+        super.onBackPressed()
+    }
 
     override fun onDestroy() {
         super.onDestroy()

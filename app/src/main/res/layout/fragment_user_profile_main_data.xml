@@ -32,7 +32,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvBirthday"
-                    style="@style/Profile.User.Data"
+                    style="@style/Profile.Data.Main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_profile_additional_hint" />
@@ -41,11 +41,12 @@
                     style="@style/Profile.User.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/user_profile_gender" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvGender"
-                    style="@style/Profile.User.Data"
+                    style="@style/Profile.Data.Main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_profile_additional_hint" />
@@ -54,11 +55,20 @@
                     style="@style/Profile.User.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/user_profile_address" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvAddress"
-                    style="@style/Profile.User.Data"
+                    android:id="@+id/tvRegion"
+                    style="@style/Profile.Data.Main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:hint="@string/user_profile_additional_hint" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvCity"
+                    style="@style/Profile.Data.Main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_profile_additional_hint" />
@@ -67,11 +77,13 @@
                     style="@style/Profile.User.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_profile_additional" />
+                    android:layout_marginTop="10dp"
+                    android:text="@string/profile_additional_data_and_files" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAdditional"
-                    style="@style/Profile.User.Data"
+                    style="@style/Profile.Data.Main"
+                    android:textColor="@color/profile_title_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -79,14 +91,8 @@
                     android:maxLines="5" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/user_profile_files" />
-
-                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvFiles"
-                    style="@style/Profile.User.Data"
+                    style="@style/Profile.Data.Main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_profile_files_hint" />

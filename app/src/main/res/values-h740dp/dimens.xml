@@ -10,6 +10,8 @@
 
 
     <!--  new margins  -->
+    <dimen name="margin_horizontal_main_data">25dp</dimen>
+
     <dimen name="event_added_to_favorite_dialog_size">220dp</dimen>
     <dimen name="event_added_to_favorite_dialog_icon_size">75dp</dimen>
 

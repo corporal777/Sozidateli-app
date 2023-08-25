@@ -64,7 +64,7 @@ class CustomLoadingButton : ConstraintLayout {
         buttonInitText = buttonText.toString()
         loadingView.progressLoad.apply {
             setProgressColor(buttonTextColor)
-            setSize(30.dp)
+            setSize(25.dp)
         }
     }
 

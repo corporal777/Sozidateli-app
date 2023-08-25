@@ -142,7 +142,7 @@ class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
                 hideKeyboard()
                 if (presenter.isConfirmCodeValid(etCode.text?.length ?: 0)) {
                     presenter.onHandleAuthLink()
-                } else tilCode.error = resources.getString(R.string.auth_error_no_code)
+                } else tilCode.error = getString(R.string.auth_error_no_code)
             }
         }
     }
@@ -272,6 +272,18 @@ class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
 
     override fun connectToSocket() {
         (requireActivity() as MainActivity).connectToSocket()
+    }
+
+    override fun showProgressBarLoadingDialog() {
+        mBinding.apply {
+            ibRegister.showProgressLoading(true)
+        }
+    }
+
+    override fun hideProgressBarLoadingDialog(){
+        mBinding.apply {
+            ibRegister.showProgressLoading(false)
+        }
     }
 
     override fun layout() = R.layout.fragment_finish_register

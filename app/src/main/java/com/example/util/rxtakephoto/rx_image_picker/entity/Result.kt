@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
 
-class Result private constructor(builder: Builder) {
+class Result constructor(builder: Builder) {
 
     val uri: Uri
     private val extraData: Bundle

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        tools:ignore="MissingPrefix">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_bottom_sheet_label"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:letterSpacing="-0.02"
+            android:text="@string/profile_additional_data_and_files"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view" />
+
+
+        <TextView
+            android:id="@+id/tvHowEdit"
+            style="@style/ClickableTextView"
+            android:layout_below="@id/tv_bottom_sheet_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/additional_data_edit_title"
+            tools:ignore="MissingPrefix" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btnSave"
+            android:layout_below="@+id/tvHowEdit"
+            android:overScrollMode="never"
+            android:paddingVertical="10dp">
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_data"
+                style="@style/Profile.Edit.PasswordNew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                app:errorIconDrawable="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_data"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:gravity="start|top"
+                    android:hint="@string/additional_data_hint"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="500"
+                    android:minHeight="200dp"
+                    android:singleLine="false" />
+
+            </com.example.ui.views.CustomTextInputLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSave"
+            style="@style/BtnBrownStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="@dimen/margin_fifteen"
+            android:layout_marginBottom="10dp"
+            android:minHeight="48dp"
+            android:text="@string/save" />
+
+    </RelativeLayout>
+</layout>

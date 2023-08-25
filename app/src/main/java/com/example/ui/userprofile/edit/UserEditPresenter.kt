@@ -48,7 +48,7 @@ class UserEditPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showPlaceholder(editType)
+        viewState.setPlaceholder(editType)
 
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
@@ -81,70 +81,49 @@ class UserEditPresenter
 
 
     override fun onSaveContactsClick(data: MutableMap<String, Any?>) {
-        onEditSaveNew(data) {
-            appData.userNewChangeSubject.onNext(appData.getUserNew().apply {
-                phone = it.phone
-                contactInformation.socialLinks = it.contactInformation.socialLinks
-                email = it.email
-                contactInformation.site = it.contactInformation.site
-            }.asOptional())
-            true
-        }
+        compositeDisposable += userRepository.updateProfile(appData.getId(), data)
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onSuccess = {
+                    viewState.navigateUp()
+                })
     }
-
-    fun getBaseUserState() = appData.hasBaseState
-    fun getMaxUserState() = appData.hasMaxState
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
-        updateUserNew(
-            userRepository.updateUserProfile(
-                appData.getId(),
-                mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
-            )
-        ) {
-            //it.interests = data.map { item -> item.id ?: 0 }
-            true
-        }
+        compositeDisposable += userRepository.updateProfile(
+            appData.getId(),
+            mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
+        )
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onSuccess = {
+                    viewState.navigateUp()
+                })
     }
 
 
-    override fun updateFiles(data: MutableList<FileModel>, d: MutableMap<String, Any?>) {
-        if (data.isEmpty()) {
-            onEditSaveNew(d) {
-                appData.updateUserNew {
-                    name = it.name
-                    middleName = it.middleName
-                    lastName = it.lastName
-                    birthday = it.birthday
-                    gender = it.gender
-                    notes = it.notes
-                }
-                true
+    override fun onSavePersonalDataClick(data: MutableList<FileModel>, d: MutableMap<String, Any?>) {
+        compositeDisposable += Completable.defer {
+            if (data.isEmpty()) Completable.complete()
+            else {
+                updatedFilesRequestBody(data)
+                    .flatMap { userRepository.changeRecommendedFiles(it) }
+                    .doOnSuccess { it.forEach { res -> appData.updateUserFiles(res) } }
+                    .ignoreElement()
             }
-        } else {
-            compositeFilesDisposable += updatedFilesRequestBody(data)
-                .flatMap { userRepository.changeRecommendedFiles(it) }
-                .doOnSuccess {
-                    it.forEach { res ->
-                        appData.updateUserFiles(res)
-                    }
-                }
-                .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
-                .subscribeSimple {
-                    onEditSaveNew(d) {
-                        appData.updateUserNew {
-                            name = it.name
-                            middleName = it.middleName
-                            lastName = it.lastName
-                            birthday = it.birthday
-                            gender = it.gender
-                            notes = it.notes
-                        }
-                        true
-                    }
-                }
         }
+            .andThen(userRepository.updateProfile(appData.getId(), d))
+            .performOnBackgroundOutOnMain()
+            .withCustomProgressBarLoadingDialog(viewState)
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onSuccess = {
+                    viewState.navigateUp()
+                })
     }
 
 
@@ -272,37 +251,6 @@ class UserEditPresenter
         return groups
     }
 
-    private fun onEditSaveNew(data: MutableMap<String, Any?>, onComplete: (UserDetail) -> Boolean) {
-        if (data.isEmpty()) {
-            viewState.navigateUp()
-            return
-        }
-
-        updateUserNew(userRepository.updateUserProfile(appData.getId(), data), onComplete)
-    }
-
-    private fun updateUserNew(request: Single<UserDetail>, onComplete: (UserDetail) -> Boolean) {
-        compositeDisposable += request
-            .doOnSuccess { appData.getUserNew().apply { phone = it.phone } }
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                },
-                onSuccess = {
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribe({ state ->
-                            if (onComplete(it)) viewState.navigateUp()
-                        }, { error ->
-                            error.printStackTrace()
-                            if (onComplete(it)) viewState.navigateUp()
-                        })
-                })
-    }
 
     private fun fileRequestBody(file: File, field: String, mimeType: String): MultipartBody.Part? {
         file.asRequestBody(mimeType.toMediaTypeOrNull())
@@ -332,6 +280,8 @@ class UserEditPresenter
         }
     }
 
+    fun getBaseUserState() = appData.hasBaseState
+    fun getMaxUserState() = appData.hasMaxState
 
     fun canUpdate(can: Boolean) {
         this.withUpdate = can

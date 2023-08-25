@@ -27,7 +27,8 @@ import javax.inject.Provider
 class SearchTownBottomSheet(
     context: Context,
     private val selectedRegion: String?,
-    private val selectedType: String
+    private val selectedType: String,
+    private val title : String = "Город"
 ) : BottomSheetDialog(context), SearchTownBottomSheetContract.View {
 
     private val mBinding = BottomSheetEventFormatBinding.inflate(LayoutInflater.from(context))
@@ -65,7 +66,7 @@ class SearchTownBottomSheet(
         }
 
         mBinding.apply {
-            tvBottomSheetLabel.text = context.getString(R.string.search_filter_city)
+            tvBottomSheetLabel.text = title
             ivBack.setOnClickListener { dismiss() }
             btnClear.apply {
                 btnClear.isVisible = !etSearch.text.isNullOrEmpty()
