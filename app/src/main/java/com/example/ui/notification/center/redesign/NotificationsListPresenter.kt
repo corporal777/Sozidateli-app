@@ -21,7 +21,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -162,7 +162,7 @@ class NotificationsListPresenter
             .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
             .map { Notification.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
@@ -177,7 +177,7 @@ class NotificationsListPresenter
             .andThen(userRepository.markAllNotificationsAsRead(null))
             .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {

@@ -19,6 +19,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.SingleSubject
 import kotlinx.android.synthetic.main.activity_crop.*
+import withDelay
 
 
 class CropActivity : AppCompatActivity() {
@@ -40,10 +41,9 @@ class CropActivity : AppCompatActivity() {
         val extras = intent.extras!!
         uri = extras.getParcelable(ARG_URI)!!
         rotation = extras.getInt(ARG_ROTATION, 0)
-        cropMode = (extras.getSerializable(ARG_CROP_MODE) as? CropImageView.CropMode)
-                ?: CROP_MODE_DEFAULT
-        outputMaxHeight = extras.getInt(ARG_MAX_HEIGHT, 0)
-        outputMaxWidth = extras.getInt(ARG_MAX_WIDTH, 0)
+        cropMode = CropImageView.CropMode.SQUARE
+        outputMaxHeight = 1024
+        outputMaxWidth = 1024
         outputQuality = extras.getInt(ARG_OUTPUT_QUALITY, 100)
 
         val cropSubject = CropCallbackHelper.getRequest(uri.toString())
@@ -124,12 +124,14 @@ class CropActivity : AppCompatActivity() {
     companion object {
         val CROP_MODE_DEFAULT = CropImageView.CropMode.CUSTOM
 
-        private const val ARG_URI = "uri"
-        private const val ARG_ROTATION = "rotation"
-        private const val ARG_CROP_MODE = "crop mode"
-        private const val ARG_MAX_WIDTH = "max width"
-        private const val ARG_MAX_HEIGHT = "max height"
-        private const val ARG_OUTPUT_QUALITY = "output quality"
+         const val ARG_URI = "uri"
+         const val ARG_ROTATION = "rotation"
+         const val ARG_CROP_MODE = "crop mode"
+         const val ARG_MAX_WIDTH = "max width"
+         const val ARG_MAX_HEIGHT = "max height"
+         const val ARG_OUTPUT_QUALITY = "output quality"
+         const val ARG_TRANSITION_NAME = "transition_name"
+         const val ARG_URL = "url"
 
         fun getStartIntent(
                 context: Context,

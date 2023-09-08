@@ -1,8 +1,6 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
-import android.content.Context
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -11,26 +9,20 @@ import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.base.BaseContract
 import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.phoneToServer
 import com.shakebugs.shake.Shake
-import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
-import withProgressBarLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
-import kotlin.math.abs
 
 
 @InjectViewState
@@ -48,7 +40,7 @@ class ProfilePresenter
         compositeDisposable += userRepository.getUserShortNew()
             .doOnSuccess { getAdditionalData() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
@@ -93,7 +85,7 @@ class ProfilePresenter
                 notificationManager.cancelAll()
             }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeBy(
                 onError = {
                     it.printStackTrace()
@@ -150,7 +142,7 @@ class ProfilePresenter
         ).ignoreElement()
             .andThen(authRepository.registerEmailResend(email))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email = FieldDetails(value = email)
@@ -176,7 +168,7 @@ class ProfilePresenter
     override fun onShowPhoneConfirm(phone: String) {
         compositeDisposable += authRepository.registerPhoneResend("personal", phone)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.showPhoneConfirmation(phone)
             }
@@ -196,7 +188,7 @@ class ProfilePresenter
             )
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.codeSuccess()
             }

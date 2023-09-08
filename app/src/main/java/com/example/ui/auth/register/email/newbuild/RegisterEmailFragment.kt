@@ -211,13 +211,13 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
     private fun showUserAgreement() =
         showCustomTabsBrowser(requireContext(), getString(R.string.auth_agree_address))
 
-    override fun showProgressBarLoadingDialog() {
+    override fun showCustomLoading() {
         mBinding.apply {
             ibRegister.showProgressLoading(true)
         }
     }
 
-    override fun hideProgressBarLoadingDialog(){
+    override fun hideCustomLoading(){
         mBinding.apply {
             ibRegister.showProgressLoading(false)
         }

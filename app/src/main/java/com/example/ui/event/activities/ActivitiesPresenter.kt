@@ -15,7 +15,7 @@ import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.util.*
 import javax.inject.Inject
 
@@ -168,7 +168,7 @@ class ActivitiesPresenter
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple { viewState.updateSubEvent(subEvent) }
     }
 

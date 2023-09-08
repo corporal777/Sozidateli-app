@@ -120,13 +120,13 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
         showToast(getString(R.string.profile_password_change_complete))
     }
 
-    override fun showProgressBarLoadingDialog() {
+    override fun showCustomLoading() {
         mBinding.apply {
             btnRecovery.showProgressLoading(true)
         }
     }
 
-    override fun hideProgressBarLoadingDialog(){
+    override fun hideCustomLoading(){
         mBinding.apply {
             btnRecovery.showProgressLoading(false)
         }

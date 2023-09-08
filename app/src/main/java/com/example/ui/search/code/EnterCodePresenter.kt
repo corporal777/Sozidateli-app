@@ -7,7 +7,7 @@ import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -27,7 +27,7 @@ class EnterCodePresenter
             )
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     viewState.showEventNotFoundError()

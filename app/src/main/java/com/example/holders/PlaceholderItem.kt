@@ -53,6 +53,9 @@ class PlaceholderItem(
         Type.REGISTER_HEADER -> R.layout.item_event_register_header_placeholder
         Type.REGISTER_FIELD -> R.layout.item_event_register_field_placeholder
 
+        Type.SEARCH_ITEM -> R.layout.item_region_search_placeholder
+
+        Type.MAIN_INFO_EDIT -> R.layout.item_main_info_edit_placeholder
     }
 
     enum class Type {
@@ -93,7 +96,10 @@ class PlaceholderItem(
         OTHER_SESSIONS,
 
         REGISTER_HEADER,
-        REGISTER_FIELD
+        REGISTER_FIELD,
 
+        SEARCH_ITEM,
+
+        MAIN_INFO_EDIT
     }
 }

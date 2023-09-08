@@ -35,7 +35,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -257,7 +257,7 @@ class ChatPresenter
     override fun onAcceptChatClick() {
         compositeDisposable += chatRepository.acceptChat(chatId.toInt())
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({ viewState.showChatInput(true) }, {})
     }
 
@@ -268,7 +268,7 @@ class ChatPresenter
     override fun onBlockChatConfirm() {
         compositeDisposable += chatRepository.chatBann(CreateChatBody(chatId.toInt()))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({
                 viewState.navigateUp()
             }, { it.printStackTrace() })
@@ -338,7 +338,7 @@ class ChatPresenter
                 .flatMapSingle { chatRepository.sendChatMessage(it) }
                 .flatMapMaybe { prepareListOfMessages(listOf(it)) }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = {
                         onReceiveError(it)

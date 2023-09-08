@@ -16,14 +16,13 @@ import com.example.extensions.buildList
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -118,7 +117,7 @@ class ChatListPresenter
         if (chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(uid))
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple {
                     viewState.openChat(it.id, userName, avatar)
                 }

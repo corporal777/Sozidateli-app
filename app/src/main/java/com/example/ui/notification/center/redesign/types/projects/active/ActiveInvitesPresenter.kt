@@ -9,11 +9,9 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.notification.center.redesign.NotificationType
 import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypePresenter
-import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsContract
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

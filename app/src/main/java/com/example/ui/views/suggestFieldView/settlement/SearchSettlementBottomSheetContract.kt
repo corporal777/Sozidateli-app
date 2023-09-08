@@ -11,7 +11,7 @@ class SearchSettlementBottomSheetContract {
 
     interface View : MvpView {
         @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setSettlements(list: List<SearchRegion>)
+        fun setSettlements(list: List<SearchRegion?>)
 
         @StateStrategyType(SkipStrategy::class)
         fun performOnItemSelected(item: SearchRegion?)

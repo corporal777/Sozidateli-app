@@ -15,8 +15,7 @@ import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -64,7 +63,7 @@ class BannedPresenter
     override fun onUnblockLick(userChat: UserChat) {
         compositeDisposable += chatRepository.deleteBan(userChat.id)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({ pagination.invalidate() }, { it.printStackTrace() })
     }
 

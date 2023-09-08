@@ -10,9 +10,9 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
-import withProgressBarLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -32,7 +32,7 @@ class AuthWebsitePresenter
             .withDelay(300)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
@@ -53,7 +53,7 @@ class AuthWebsitePresenter
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, true))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)
@@ -68,7 +68,7 @@ class AuthWebsitePresenter
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, false))
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()

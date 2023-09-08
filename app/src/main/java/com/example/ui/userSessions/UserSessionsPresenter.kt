@@ -2,14 +2,12 @@ package com.example.ui.userSessions
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.UserSessionModel
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withDelay
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -40,7 +38,7 @@ class UserSessionsPresenter
         compositeDisposable += userRepository.killAllUsersOtherSessions()
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.apply {
                     updateKillSessionsButton(!it.userSessions.isNullOrEmpty())
@@ -53,7 +51,7 @@ class UserSessionsPresenter
         compositeDisposable += userRepository.killUsersDeviceSession(id)
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.apply {
                     updateKillSessionsButton(!it.userSessions.isNullOrEmpty())

@@ -11,7 +11,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withProgressBarLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -53,7 +53,7 @@ class QrScannerPresenter
                 )
             }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()

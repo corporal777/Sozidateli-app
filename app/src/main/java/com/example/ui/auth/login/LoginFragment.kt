@@ -108,13 +108,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
     }
 
 
-    override fun showProgressBarLoadingDialog() {
+    override fun showCustomLoading() {
         mBinding.apply {
             btnLogin.showProgressLoading(true)
         }
     }
 
-    override fun hideProgressBarLoadingDialog(){
+    override fun hideCustomLoading(){
         mBinding.apply {
             btnLogin.showProgressLoading(false)
         }

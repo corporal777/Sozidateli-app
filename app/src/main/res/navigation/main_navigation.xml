@@ -846,4 +846,21 @@
             app:argType="string"
             app:nullable="false" />
     </fragment>
+
+    <activity
+        android:id="@+id/image_crop_activity"
+        android:name="com.example.ui.views.galleryView.cropImage.CropImageActivity"
+        tools:layout="@layout/activity_crop">
+
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="transition_name"
+            app:argType="string"
+            app:nullable="true" />
+    </activity>
+
 </navigation>

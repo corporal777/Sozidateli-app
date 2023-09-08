@@ -1,7 +1,6 @@
 package com.example.ui.userprofile.edit
 
 import android.Manifest
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
@@ -21,9 +20,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.io.File
 import javax.inject.Inject
 
@@ -83,7 +80,7 @@ class UserEditPresenter
     override fun onSaveContactsClick(data: MutableMap<String, Any?>) {
         compositeDisposable += userRepository.updateProfile(appData.getId(), data)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onSuccess = {
@@ -97,7 +94,7 @@ class UserEditPresenter
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onSuccess = {
@@ -118,7 +115,7 @@ class UserEditPresenter
         }
             .andThen(userRepository.updateProfile(appData.getId(), d))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onSuccess = {
@@ -157,7 +154,7 @@ class UserEditPresenter
     override fun onShowPhoneConfirm(phone: String) {
         compositeDisposable += authRepository.registerPhoneResend("personal", phone)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.showPhoneConfirm(phone)
             }
@@ -185,7 +182,7 @@ class UserEditPresenter
             .flatMap { f -> userRepository.uploadRecommendedFile(f).map { it.toFileModel() } }
             .map { newFile -> appData.updateFilesWithAdd(newFile) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.addUserFile(it, appData.getUserNew().filesCount) }
@@ -196,7 +193,7 @@ class UserEditPresenter
         compositeDisposable += userRepository.deleteRecommendedFile(file.id?.toInt()?:0)
             .andThen(Maybe.just(appData.updateFilesWithDelete(file)))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.deleteUserFile(it, appData.getUserNew().filesCount ) }

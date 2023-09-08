@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.finish
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
@@ -25,8 +24,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withCustomLoading
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -83,7 +82,7 @@ class FinishRegisterPresenter
                 else userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login))
             }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = {
                         it.printStackTrace()
@@ -126,7 +125,7 @@ class FinishRegisterPresenter
             else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(login))
         }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onComplete = {
@@ -157,7 +156,7 @@ class FinishRegisterPresenter
         }
             .doOnComplete { viewState.connectToSocket() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
                     if (it is CodeInvalidException) viewState.codeError()

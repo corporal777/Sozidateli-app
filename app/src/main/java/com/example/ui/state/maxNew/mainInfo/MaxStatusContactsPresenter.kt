@@ -7,8 +7,8 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -29,7 +29,7 @@ class MaxStatusContactsPresenter
             .let {
                 if (isFirstLaunch) {
                     isFirstLaunch = false
-                    it.withProgressBarLoadingDialog(viewState)
+                    it.withProgressBarLoading(viewState)
                 } else it
             }
             .subscribeSimple(
@@ -50,7 +50,7 @@ class MaxStatusContactsPresenter
         } else {
             compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     checkNextScreen()
                 }, {

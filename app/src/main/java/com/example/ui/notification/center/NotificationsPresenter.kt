@@ -18,7 +18,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -202,7 +202,7 @@ class NotificationsPresenter
         compositeDisposable += Completable.fromAction { blockInvalidation = true }
             .andThen(request)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     blockInvalidation = false

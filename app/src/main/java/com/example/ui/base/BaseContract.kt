@@ -84,6 +84,12 @@ interface BaseContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideAllLoadingDialogs()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showCustomLoading()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideCustomLoading()
     }
 
     interface Presenter {

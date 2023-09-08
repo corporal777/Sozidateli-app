@@ -1,21 +1,16 @@
 package com.example.ui.editeducation
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
 import com.example.data.models.ToggleIntModel
-import com.example.data.models.WorkExperienceServerModel
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import ru.ok.android.sdk.LOG_TAG
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class EditEducationPresenter
@@ -58,7 +53,7 @@ class EditEducationPresenter
         )
             .map { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.navigateUp() }

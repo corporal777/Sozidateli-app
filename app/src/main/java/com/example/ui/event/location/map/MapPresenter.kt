@@ -7,7 +7,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
-import withLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -31,7 +31,7 @@ class MapPresenter
         viewState.initializeMap()
         if (lat != null && lon != null) {
             compositeDisposable += Completable.fromAction { viewState.initializeMap() }
-                .withLoadingDialog(viewState)
+                .withProgressBarLoading(viewState)
                 .subscribe()
                 .apply { mapInitializeDisposable = this }
         } else {

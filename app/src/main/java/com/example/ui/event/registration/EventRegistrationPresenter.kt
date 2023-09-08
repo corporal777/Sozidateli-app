@@ -33,7 +33,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
 import java.util.*
 import javax.inject.Inject
@@ -232,7 +232,7 @@ class EventRegistrationPresenter
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .let {
-                if (withLoading) it.withCustomProgressBarLoadingDialog(viewState)
+                if (withLoading) it.withProgressBarDialogLoading(viewState)
                 else it
             }
             .subscribeSimple(
@@ -342,7 +342,7 @@ class EventRegistrationPresenter
             .flatMap { eventRepository.eventRegisterNew(it) }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     val group = selectedGroup
@@ -369,7 +369,7 @@ class EventRegistrationPresenter
             .flatMap { body -> eventRepository.saveEventFormResultDraft(body) }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.navigateUp() }

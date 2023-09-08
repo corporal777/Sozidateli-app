@@ -1,9 +1,11 @@
 package com.example.ui.auth.register.invite
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.*
+import com.example.data.bodies.AuthBody
+import com.example.data.bodies.EmailCodeBody
+import com.example.data.bodies.LoginModel
+import com.example.data.bodies.PasswordBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
@@ -12,17 +14,11 @@ import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
-import com.shakebugs.shake.Shake
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
-import isValidPhoneNumber
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState
@@ -120,7 +116,7 @@ class InviteRegisterPresenter
             .andThen(userRepository.updateProfile(appData.getId(), getUpdateBody()))
             .flatMapCompletable { authRepository.confirmEmailCode(getConfirmBody()) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onComplete = {
@@ -153,7 +149,7 @@ class InviteRegisterPresenter
                 appData.logout()
             }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)

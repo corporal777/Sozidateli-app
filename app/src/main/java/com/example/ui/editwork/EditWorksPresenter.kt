@@ -7,7 +7,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -40,7 +40,7 @@ class EditWorksPresenter
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {
         compositeDisposable += userRepository.updateWorkExperience(data)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({
                 viewState.navigateUp()
             }, {

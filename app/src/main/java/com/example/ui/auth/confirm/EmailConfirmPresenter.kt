@@ -15,7 +15,7 @@ import io.reactivex.functions.Predicate
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -51,7 +51,7 @@ class EmailConfirmPresenter
         compositeDisposable += request
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple { startTimer() }
     }
 

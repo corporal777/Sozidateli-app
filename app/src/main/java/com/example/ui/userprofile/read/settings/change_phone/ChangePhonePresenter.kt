@@ -8,12 +8,13 @@ import com.example.data.models.UserDetail.Companion.USER_PHONE
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.phoneToServer
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -59,14 +60,9 @@ class ChangePhonePresenter
 
     override fun onSaveNewPhoneClick(phone: String) {
         if (phoneField?.isConfirmed == true) {
-            if (this.isConfirmed) {
-                updatePhoneData()
-            } else {
-                viewState.showEnterPassword(phone)
-            }
-        } else {
-            updatePhoneData()
-        }
+            if (this.isConfirmed) updatePhoneData()
+            else viewState.showEnterPassword(phone)
+        } else updatePhoneData()
     }
 
     override fun checkPassword(password: String, phone: String) {
@@ -84,7 +80,7 @@ class ChangePhonePresenter
     override fun checkPhoneIsUnique(phone: String) {
         compositeDisposable += userRepository.checkEmailPhone(null, phone)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { viewState.showPhoneNotUnique(phone) },
                 onComplete = { onShowPhoneConfirm(phone) }
@@ -94,7 +90,7 @@ class ChangePhonePresenter
     override fun onShowPhoneConfirm(phone: String) {
         compositeDisposable += authRepository.registerPhoneResend("personal", phone)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.showPhoneConfirmation(phone)
             }
@@ -104,36 +100,30 @@ class ChangePhonePresenter
     override fun updatePhoneData() {
         compositeDisposable += updatePhoneRequest()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = {
+                onError = { onReceiveError(it) },
+                onSuccess = { user ->
+                    val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
                     viewState.apply {
-                        showPhoneIsUpdatedSuccessfully()
+                        showPhoneIsUpdatedSuccessfully(phone)
                     }
                 })
     }
 
-    private fun getDataToSave(): Map<String, Any?> {
-        return mapOf(
-            USER_PHONE to arrayListOf(
-                FieldDetails(
-                    value = Utils.validatePhoneBeforeSend(mobilePhone.phoneToServer()?:""),
-                    type = phoneField?.type,
-                    isVisible = isVisible,
-                    isConfirmed = isConfirmed,
-                )
-            )
-        )
-    }
 
     private fun updatePhoneRequest(): Single<UserDetail> {
-        return userRepository.updateUserProfile(
-            appData.getId(),
-            getDataToSave()
-        )
+        return userRepository.updateUserProfileField(
+            mapOf(
+                USER_PHONE to arrayListOf(
+                    FieldDetails(
+                        value = Utils.validatePhoneBeforeSend(mobilePhone.phoneToServer() ?: ""),
+                        type = phoneField?.type,
+                        isVisible = isVisible
+                    )
+                )
+            )
+        ).doOnSuccess { new -> appData.updateUserNew { this.phone = new.phone } }
     }
 
     fun isWithUpdate(): Boolean = withUpdate

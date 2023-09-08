@@ -2,28 +2,23 @@ package com.example.ui.notification.center.redesign.types.base
 
 import android.app.NotificationManager
 import android.net.Uri
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.UnacceptedInviteNotification
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildList
-import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.notification.center.redesign.NotificationType
-import com.example.ui.notification.center.redesign.NotificationsListContract
 import com.example.ui.notification.center.redesign.NotificationsSortedData
-import com.example.ui.state.maxNew.base.BaseMaxStateContract
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import kotlin.math.abs
 
 abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.View>(
@@ -80,7 +75,7 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
             .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
             .map { Notification.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {

@@ -11,8 +11,7 @@ import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -114,7 +113,7 @@ class RegisterSnPresenter
     private fun checkEmailRegistered() {
         compositeDisposable += authRepository.checkRegisterStatus(null, null, email)
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 if (it.user_by_email_found) {
                     register()
@@ -144,7 +143,7 @@ class RegisterSnPresenter
         )
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     if (it is ApiError && it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {

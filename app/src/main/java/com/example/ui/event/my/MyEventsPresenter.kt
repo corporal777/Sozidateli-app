@@ -3,19 +3,16 @@ package com.example.ui.event.my
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.*
-import com.example.extensions.buildList
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import java.net.UnknownHostException
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -76,7 +73,7 @@ class MyEventsPresenter
             .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .let {
-                if (loading == 1) it.withCustomProgressBarLoadingDialog(viewState)
+                if (loading == 1) it.withProgressBarDialogLoading(viewState)
                 else it
             }
             .subscribeSimple(

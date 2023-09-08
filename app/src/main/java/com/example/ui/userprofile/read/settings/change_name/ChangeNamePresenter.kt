@@ -1,23 +1,17 @@
 package com.example.ui.userprofile.read.settings.change_name
 
-import android.app.NotificationManager
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_LAST_NAME
 import com.example.data.models.UserDetail.Companion.USER_NAME
-import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordContract
-import com.example.util.AuthValidateUtil
-import com.example.util.Utils
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -67,7 +61,7 @@ class ChangeNamePresenter
                     }
                 }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = { viewState.hideBottomSheetDialog() }

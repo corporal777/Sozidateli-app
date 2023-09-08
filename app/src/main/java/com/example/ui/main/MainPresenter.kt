@@ -1,19 +1,13 @@
 package com.example.ui.main
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
-import android.location.Location
 import android.net.Uri
-import android.os.Looper
 import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
-import com.example.data.UserEventData
-import com.example.data.bodies.EventCalendarBody
 import com.example.data.models.*
 import com.example.data.models.Notification
 import com.example.data.socket.SocketConnectionState
@@ -24,14 +18,11 @@ import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BasePresenter
-import com.example.util.*
+import com.example.util.ChatHelper
+import com.example.util.ConnectivityProvider
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -39,9 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -355,7 +344,7 @@ class MainPresenter
                 )
             ).map { it.data }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     if (!it.isNullOrEmpty()) viewState.showAboutEvent(it.first()?.id.toString())
                     viewState.clearIntentData()
@@ -416,7 +405,7 @@ class MainPresenter
     override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
         compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({
                 // do nothing
             }, {

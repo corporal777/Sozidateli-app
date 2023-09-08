@@ -6,17 +6,13 @@ import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.data.socket.SocketIOManager
-import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.notification.center.redesign.NotificationType
-import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypeContract
 import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypePresenter
-import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsContract
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -69,7 +65,7 @@ class EventNotificationsPresenter
     override fun onReadAllClick() {
         compositeDisposable += readAllNotificationsRequest(NotificationType.EVENTS)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {

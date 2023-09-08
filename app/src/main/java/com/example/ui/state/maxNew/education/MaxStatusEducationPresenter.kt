@@ -10,8 +10,8 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -32,7 +32,7 @@ class MaxStatusEducationPresenter
             .let {
                 if (isFirstLaunch) {
                     isFirstLaunch = false
-                    it.withProgressBarLoadingDialog(viewState)
+                    it.withProgressBarLoading(viewState)
                 } else it
             }
             .subscribe({
@@ -55,7 +55,7 @@ class MaxStatusEducationPresenter
             degree
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({
                 checkNextScreen()
             }, {

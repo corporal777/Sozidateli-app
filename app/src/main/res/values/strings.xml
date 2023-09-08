@@ -444,6 +444,7 @@
     <string name="profile_upload_document">Загрузить документ</string>
     <string name="profile_save_required_error">Вы не заполнили или заполнили не верно поле "%s"</string>
     <string name="profile_gender">Пол</string>
+    <string name="profile_choose_gender">Выберите пол</string>
     <string name="gender_not_selected">Пол не указан</string>
     <string name="profile_gender_male">Мужской</string>
     <string name="profile_gender_female">Женский</string>
@@ -482,6 +483,7 @@
     <string name="profile_files">Файлы</string>
     <string name="show_file">Посмотреть файл</string>
     <string name="profile_edit_title">Редактирование</string>
+    <string name="profile_add_photo">Добавить фото</string>
     <string name="edit_title">Редактировать</string>
     <string name="additional_data_edit_title">Как заполнить этот раздел?</string>
     <string name="profile_edit_name_and_photo">ФИО и фото</string>
@@ -697,6 +699,7 @@
     <string name="user_profile_edit">Редактировать</string>
     <string name="user_profile_save">Сохранить</string>
     <string name="user_profile_main_info">Основная информация</string>
+    <string name="user_profile_increase_base_state">Повысить статус до базового</string>
     <string name="user_profile_contacts">Контакты</string>
     <string name="user_profile_interests">Интересы</string>
     <string name="user_profile_education">Образование</string>

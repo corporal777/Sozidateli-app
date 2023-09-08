@@ -3,17 +3,12 @@ package com.example.ui.partner
 import android.graphics.Bitmap
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Optional
 import com.example.data.models.PartnerModel
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.loadBitmap
-import io.reactivex.Maybe
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

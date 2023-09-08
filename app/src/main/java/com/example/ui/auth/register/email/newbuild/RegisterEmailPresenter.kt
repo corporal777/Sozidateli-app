@@ -5,7 +5,6 @@ import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
-import com.example.exceptions.CodeInvalidException
 import com.example.exceptions.EmailNotUniqueException
 import com.example.exceptions.PhoneNotUniqueException
 import com.example.repository.AuthRepository
@@ -14,13 +13,11 @@ import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.shakebugs.shake.Shake
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withCustomLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -136,7 +133,7 @@ class RegisterEmailPresenter
                 else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
             })
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
                     viewState.setIgnoreTokenListener(false)

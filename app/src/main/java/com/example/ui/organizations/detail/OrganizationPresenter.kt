@@ -2,7 +2,6 @@ package com.example.ui.organizations.detail
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.UserEventData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_ORGANIZATION
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
@@ -12,15 +11,13 @@ import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.views.UserSubscribeButton
 import com.example.util.pagination.PaginationResponse
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 
@@ -137,7 +134,7 @@ class OrganizationPresenter
         else {
             compositeDisposable += eventRepository.checkRegistrationAgreement(event)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = {
@@ -152,7 +149,7 @@ class OrganizationPresenter
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
             .andThen(eventRepository.getEventDetails(event))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.updateEvent(it.event)
             }
@@ -161,7 +158,7 @@ class OrganizationPresenter
     override fun onAcceptRegistrationAgreement(event: String) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }

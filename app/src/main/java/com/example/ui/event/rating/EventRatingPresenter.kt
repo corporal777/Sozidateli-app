@@ -24,7 +24,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
+import withProgressBarLoading
 import java.util.*
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ class EventRatingPresenter
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple { event ->
                 //approvingMode = event.state?.rating?.approvingMode
                 rating = event.state?.rating?.askDelay ?: 0
@@ -93,7 +93,7 @@ class EventRatingPresenter
                             put(EventFormModel.FORM_TYPE, "rating")
                         }).withCheckInternetConnectivity()
                         .performOnBackgroundOutOnMain()
-                        .withLoadingDialog(viewState)
+                        .withProgressBarLoading(viewState)
                         .subscribeSimple { fields ->
                             if (fields.data.isNotEmpty()) {
                                 val form =
@@ -117,7 +117,7 @@ class EventRatingPresenter
                                     }
                                 ).withCheckInternetConnectivity()
                                     .performOnBackgroundOutOnMain()
-                                    .withLoadingDialog(viewState)
+                                    .withProgressBarLoading(viewState)
                                     .subscribeSimple { fieldsResult ->
                                         val fieldsResultList = mapFieldsResult(
                                             fieldsResult.data.firstOrNull { it.form == formId }?.fields,
@@ -414,7 +414,7 @@ class EventRatingPresenter
             }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple(
                 onSuccess = {
                     viewState.apply {

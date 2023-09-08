@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/Profile.Edit.InputContainer"
+            android:layout_marginTop="15dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/photo_title"
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/placeholder_background"
+                android:text="@string/profile_photo"
+                android:textColor="@color/placeholder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <View
+                android:id="@+id/ivAvatar"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/placeholder_background"
+                android:contentDescription="@string/content_description_avatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photo_title"
+                tools:src="@drawable/avatar_placeholder_rectangle" />
+
+            <TextView
+                android:id="@+id/btnEdit"
+                style="@style/ClickableTextView"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/placeholder_background"
+                android:text="@string/edit_title"
+                android:textColor="@color/placeholder"
+                app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+                app:layout_constraintStart_toEndOf="@id/ivAvatar"
+                app:layout_constraintTop_toTopOf="@id/ivAvatar"
+                tools:ignore="MissingPrefix" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <LinearLayout
+            style="@style/Profile.Edit.InputContainer"
+            android:layout_marginTop="25dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/placeholder_background"
+                android:text="@string/profile_birthday"
+                android:textColor="@color/placeholder" />
+
+            <View
+                android:id="@+id/tilBirthday"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/placeholder_background">
+
+            </View>
+
+            <View
+                android:id="@+id/scBirthday"
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/placeholder_background" />
+
+        </LinearLayout>
+
+
+        <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/placeholder_background"
+                android:text="@string/profile_birthday"
+                android:textColor="@color/placeholder" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/placeholder_background" />
+
+            <View
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/placeholder_background" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/Profile.Edit.InputContainer">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Profile.Edit.TextViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/placeholder_background"
+                android:text="@string/profile_city"
+                android:textColor="@color/placeholder" />
+
+            <View
+                style="@style/ProfileData.TextView"
+                android:layout_height="48dp"
+                android:background="@drawable/placeholder_background"
+                android:drawableEnd="@drawable/ic_drop_down_right"
+                android:hint="@string/search_filter_region" />
+
+            <View
+                android:layout_marginTop="10dp"
+                style="@style/ProfileData.TextView"
+                android:layout_height="48dp"
+                android:background="@drawable/placeholder_background"
+                android:drawableEnd="@drawable/ic_drop_down_right"
+                android:hint="@string/search_filter_region" />
+
+
+            <View
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/placeholder_background"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

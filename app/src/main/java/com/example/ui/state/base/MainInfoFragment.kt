@@ -8,12 +8,14 @@ import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
+import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.state.UserState
@@ -22,6 +24,7 @@ import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
 import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
+import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
@@ -42,7 +45,6 @@ import javax.inject.Provider
 class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContract.View,
     ToolbarFragment {
 
-    private lateinit var passwordDialog: SetPasswordDialog
     private lateinit var dialog: AddPhoneEmailDialog
 
     private lateinit var dataItem: MainInfoEditItem
@@ -62,8 +64,6 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
     }
 
     private var onSaveClick: (() -> Unit)? = null
-    private var onConfirmClick: ((phone: String?) -> Unit)? = null
-    private var onImageClick: ((canRemove: Boolean) -> Unit)? = null
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -76,11 +76,14 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
+    override fun setPlaceholder() {
+        adapter.updateItem(PlaceholderItem(PlaceholderItem.Type.MAIN_INFO_EDIT))
+    }
+
     override fun setPersonalData(user: UserDetail) {
         adapter.updateItem(
             MainInfoEditItem(
                 1,
-                requireActivity(),
                 user.gender,
                 user.birthday?.value,
                 DaDataUtil.formatSavedLocation(requireContext(), user.address),
@@ -88,26 +91,13 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                 user.birthday?.isVisible,
                 user.loadUserImage(),
                 isEnableNext = { isEnable -> mBinding.btnSave.isEnabled = isEnable },
-                confirmPhoneClick = { onConfirmClick?.invoke(it) },
+                onEditPhoneClick = { presenter.onShowPhoneEdit(it) },
                 onImageClick = { showChangePhoto(it) }
             ).apply { dataItem = this }
         )
 
-        onConfirmClick = {
-            presenter.setCanGoNext(false)
-            presenter.checkPhoneIsUnique(dataItem.getValidatedPhone())
-        }
         onSaveClick = {
-            presenter.setCanGoNext(true)
-            if (dataItem.checkDataValid()) {
-                if (user.phone?.firstOrNull()?.isConfirmed == true) {
-                    if (dataItem.newPhoneIsConfirmed()) {
-                        presenter.updateFiles(dataItem.getDataToSave())
-                    } else showCheckPassword(dataItem.getValidatedPhone())
-
-                } else presenter.updateFiles(dataItem.getDataToSave())
-            }
-
+            if (dataItem.checkDataValid()) presenter.onSaveData(dataItem.getDataToSave())
         }
     }
 
@@ -122,27 +112,32 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                     MaxStateScreenType.BASE ->
                         findNavController().navigate(
                             R.id.maxStatusContactsFragment,
-                            MaxStatusContactsFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
+                            MaxStatusContactsFragmentArgs.Builder().setScreen(presenter.screen)
+                                .build().toBundle()
                         )
                     MaxStateScreenType.INTERESTS ->
                         findNavController().navigate(
                             R.id.maxStatusInterestsFragment,
-                            MaxStatusInterestsFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
+                            MaxStatusInterestsFragmentArgs.Builder().setScreen(presenter.screen)
+                                .build().toBundle()
                         )
                     MaxStateScreenType.EDUCATION ->
                         findNavController().navigate(
                             R.id.maxStatusEducationFragment,
-                            MaxStatusEducationFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
+                            MaxStatusEducationFragmentArgs.Builder().setScreen(presenter.screen)
+                                .build().toBundle()
                         )
                     MaxStateScreenType.WORK ->
                         findNavController().navigate(
                             R.id.maxStatusWorkFragment,
-                            MaxStatusWorkFragmentArgs.Builder().setScreen(presenter.screen).build().toBundle()
+                            MaxStatusWorkFragmentArgs.Builder().setScreen(presenter.screen).build()
+                                .toBundle()
                         )
                     MaxStateScreenType.DONE -> {
                         MessageDialogWithBrownButton(
                             requireContext(),
-                            getString(R.string.you_got_max_state)
+                            getString(R.string.you_got_max_state),
+                            false
                         )
                             .setSelectCallback {
                                 when (presenter.screen) {
@@ -176,10 +171,9 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
     private fun baseActionsWithSuccess() {
         MessageDialogWithBrownButton(
             requireContext(),
-            getString(R.string.you_got_base_state)
-        ).setSelectCallback {
-            baseActions()
-        }
+            getString(R.string.you_got_base_state),
+            false
+        ).setSelectCallback { baseActions() }
     }
 
     private fun baseActions() {
@@ -190,16 +184,13 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         }
     }
 
-    override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(
-            requireContext(),
-            getString(R.string.confirm_phone_text, phone),
-            getString(R.string.revoke),
-            getString(R.string.confirm_phone_positive)
-        ).setSelectCallback {
-            if (it) presenter.onShowPhoneConfirm(phone)
-        }
+    override fun showPhoneEdit(phone: String?) {
+        ChangePhoneFragment(presenter.getPhone())
+            .setPhoneChangedCallback {
+                adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhone(it)
+            }.show(requireActivity().supportFragmentManager)
     }
+
 
     override fun showEmailNotUnique(email: String) {
         ConfirmPhoneDialog(
@@ -211,46 +202,13 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             }
     }
 
-
-    override fun showCheckPassword(phone: String?) {
-        passwordDialog = SetPasswordDialog(requireActivity())
-            .setSelectCallback {
-                presenter.checkPassword(it, phone ?: "")
-            }
-    }
-
-    override fun hideCheckPassword() {
-        passwordDialog.hideDialog()
-    }
-
-    override fun showPhoneConfirm(phone: String) {
-        val confirmPhone = ConfirmEmailPhoneFragment(phone)
-        confirmPhone.show(requireActivity().supportFragmentManager, "main_info_phone_dialog")
-        confirmPhone.setConfirmCallback {
-            updatePhoneConfirmation(phone)
-        }
-    }
-
     override fun showEmailConfirm(email: String) {
         val confirmPhone = ConfirmEmailPhoneFragment(email)
         confirmPhone.show(requireActivity().supportFragmentManager, "main_info_email_dialog")
         confirmPhone.setConfirmCallback {
-            showChangeEmailComplete(email)
+            baseActions()
         }
     }
-
-    override fun updatePhoneConfirmation(phone: String) {
-        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }
-            ?.updatePhoneConfirmation(true)
-        if (presenter.isCanGoNext()) {
-            presenter.updateFiles(dataItem.getDataToSave())
-        }
-    }
-
-    override fun showChangeEmailComplete(email: String) {
-        baseActions()
-    }
-
 
     private fun showChangePhoto(change: Boolean) {
         AlertDialog.Builder(requireContext())
@@ -267,7 +225,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             .show()
     }
 
-    override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
+    override val title: CharSequence by lazy { getString(R.string.user_profile_increase_base_state) }
     override fun actionIconContainer(view: ViewGroup) {
         view.apply {
             addView(ToolbarIconView(context).apply {
@@ -276,6 +234,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             })
         }
     }
+
     override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

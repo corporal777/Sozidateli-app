@@ -132,6 +132,12 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         mActivity?.hideCustomProgressDialog()
     }
 
+    override fun showCustomLoading() {
+    }
+
+    override fun hideCustomLoading() {
+    }
+
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
     }

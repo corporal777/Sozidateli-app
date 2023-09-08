@@ -19,7 +19,7 @@ interface ChangePhoneContract {
         fun setUserPhoneIsVisible(isVisible : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showPhoneIsUpdatedSuccessfully()
+        fun showPhoneIsUpdatedSuccessfully(phone : FieldDetails?)
 
         @StateStrategyType(SkipStrategy::class)
         fun showEnterPassword(phone: String)

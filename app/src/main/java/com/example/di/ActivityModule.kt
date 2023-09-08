@@ -3,6 +3,7 @@ package com.example.di
 import com.example.ui.image.ImageViewActivity
 import com.example.ui.main.MainActivity
 import com.example.ui.snAuth.SnAuthActivity
+import com.example.ui.views.galleryView.cropImage.CropImageActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -18,4 +19,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeImageViewActivity(): ImageViewActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeCropImageActivity(): CropImageActivity
 }

@@ -14,8 +14,8 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -33,7 +33,7 @@ class NotificationPresenter
         super.onFirstViewAttach()
         compositeDisposable += userRepository.getNotificationDetail(notification.id.toString(), true)
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -189,14 +189,14 @@ class NotificationPresenter
     private fun updateNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple { notificationManager.cancel(notificationId) }
     }
 
     private fun acceptNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -211,7 +211,7 @@ class NotificationPresenter
     private fun cancelNotificationInvite(request: Completable, notificationId: Int) {
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()

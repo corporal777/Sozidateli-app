@@ -6,23 +6,11 @@ import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventUserFavorite
 import com.example.data.models.OrganizationNew
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_AREA
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_CITY
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_COUNTRY
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_FEDERAL
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_FLAT
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_HOUSE
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_INDEX
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_REGION
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_SETTLEMENT
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_STREET
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_BINDS
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_LEGAL_INFORMATION_INN
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_LEGAL_INFORMATION_NAME_SHORT
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_LIMIT
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_OFFSET
 import com.example.data.models.SearchFilter
-import com.example.data.models.UserDetail
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
@@ -30,7 +18,6 @@ import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
 import javax.inject.Inject
 
 @InjectViewState

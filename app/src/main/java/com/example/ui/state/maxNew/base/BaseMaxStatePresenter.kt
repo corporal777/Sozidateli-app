@@ -9,7 +9,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.Utils
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 
 abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
     private val appData: AppData,
@@ -42,7 +42,7 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
 
     override fun checkEmailIsUnique(email: String) {
         compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.showEmailIsNotUnique(email) },
@@ -58,7 +58,7 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
         ).ignoreElement()
             .andThen(authRepository.registerEmailResend(email))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email = FieldDetails(value = email)

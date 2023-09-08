@@ -1,22 +1,12 @@
 package com.example.ui.search.user
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_AREA
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_CITY
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_COUNTRY
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_FEDERAL
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_FLAT
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_HOUSE
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_INDEX
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_REGION
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_SETTLEMENT
-import com.example.data.models.UserDetail.Companion.USER_ADDRESS_STREET
-import com.example.data.models.UserDetail.Companion.USER_BINDS
 import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.models.UserDetail.Companion.USER_OFFSET
 import com.example.data.models.UserDetail.Companion.USER_SEARCH
@@ -24,13 +14,12 @@ import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
-import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -116,7 +105,7 @@ class SearchUserPresenter
             compositeDisposable += Completable.complete()
                 .timeout(3, TimeUnit.SECONDS)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     showFilter()
                 }, {

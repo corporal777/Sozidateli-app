@@ -19,7 +19,7 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface UserRepository {
-    fun getUser(): Maybe<UserDetail>
+    fun getUserInternal(): Maybe<UserDetail>
     fun getUserShortNew(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserByIdNew(id: String): Maybe<UserDetail>

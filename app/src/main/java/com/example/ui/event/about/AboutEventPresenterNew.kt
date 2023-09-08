@@ -20,7 +20,7 @@ import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
 import javax.inject.Inject
 
@@ -133,7 +133,7 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .doOnSuccess { aboutEventData.event = it.event }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.setActionButton(it.event)
             }
@@ -144,7 +144,7 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .doOnSuccess { aboutEventData.event = it.event }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.setActionButton(it.event)
             }
@@ -197,7 +197,7 @@ class AboutEventPresenterNew
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.updateSubEvent(subEvent)
             }
@@ -251,7 +251,7 @@ class AboutEventPresenterNew
         else {
             compositeDisposable += eventRepository.checkRegistrationAgreement(eventId)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = {
@@ -268,7 +268,7 @@ class AboutEventPresenterNew
             .andThen(eventRepository.getEventDetails(eventId))
             .doOnSuccess { aboutEventData.event = it.event }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.setActionButton(it.event)
             }
@@ -277,7 +277,7 @@ class AboutEventPresenterNew
     override fun onAcceptRegistrationAgreement(event: String) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }

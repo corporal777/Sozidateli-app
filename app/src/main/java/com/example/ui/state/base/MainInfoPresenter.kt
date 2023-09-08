@@ -3,14 +3,12 @@ package com.example.ui.state.base
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.FieldDetails
-import com.example.data.models.ImageModel
-import com.example.data.models.UserDetail
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
+import com.example.util.PHONE_PERSONAL
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.isseiaoki.simplecropview.CropImageView
@@ -18,9 +16,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 
@@ -35,21 +31,16 @@ class MainInfoPresenter
 
     lateinit var type: UserState
     var screen: Int = 1
-    var isImageUpdating = false
-    private var canGoNext = false
+    private var isImageUpdating = false
+    private var isPhoneUpdating = false
     private var isFirstLaunch = true
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.setPlaceholder()
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
-            .let { single ->
-                if (isFirstLaunch){
-                    isFirstLaunch = false
-                    single.withProgressBarLoadingDialog(viewState)
-                } else single
-            }
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -58,33 +49,30 @@ class MainInfoPresenter
                 onNext = {
                     val user = it.value
                     if (user != null) {
-                        if (!isImageUpdating) viewState.setPersonalData(user)
-                        isImageUpdating = false
+                        if (isPhoneUpdating) isPhoneUpdating = false
+                        else if (isImageUpdating) isImageUpdating = false
+                        else viewState.setPersonalData(user)
                     }
                 })
     }
 
 
-
-    override fun updateFiles(data: MutableMap<String, Any?>) {
+    override fun onSaveData(data: MutableMap<String, Any?>) {
         if (data.isNullOrEmpty()) {
             viewState.navigateUp()
             return
         } else {
             compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
+                .flatMap { userRepository.checkUserProfileSingle() }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onSuccess = {
-                        compositeDisposable += userRepository.checkUserProfileSingle()
-                            .performOnBackgroundOutOnMain()
-                            .subscribeSimple(
-                                onError = { viewState.goToNext() },
-                                onSuccess = { viewState.goToNext() }
-                            )
-
-                    })
+                    onError = {
+                        onReceiveError(it)
+                        viewState.goToNext()
+                    },
+                    onSuccess = { viewState.goToNext() }
+                )
         }
     }
 
@@ -93,66 +81,29 @@ class MainInfoPresenter
         compositeDisposable += userRepository.checkEmailPhone(email, null)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
-                onError = {
-                    viewState.showEmailNotUnique(email)
-                },
-                onComplete = {
-                    onShowEmailConfirm(email)
-                })
+                onError = { viewState.showEmailNotUnique(email) },
+                onComplete = { onShowEmailConfirm(email) }
+            )
     }
 
     override fun onShowEmailConfirm(email: String) {
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-        ).ignoreElement()
-            .andThen(authRepository.registerEmailResend(email))
+        isPhoneUpdating = true
+        compositeDisposable += authRepository.registerEmailResend(email)
+            .andThen(userRepository.getUserInternal())
+            .doOnSuccess { new -> appData.updateUserNew { this.email = new.email } }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                appData.updateUserNew {
-                    this.email = FieldDetails(value = email)
-                }
                 viewState.showEmailConfirm(email)
             }
     }
 
-    fun getEmail() = appData.getUserNew().email
 
-    override fun checkPassword(password: String, phone: String) {
-        compositeDisposable += userRepository.checkPasswordNew(password)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    viewState.hideCheckPassword()
-                }, onComplete = {
-                    viewState.apply {
-                        hideCheckPassword()
-                        checkPhoneIsUnique(phone)
-                    }
-                })
-    }
-
-    override fun checkPhoneIsUnique(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    viewState.showPhoneNotUnique(phone)
-                }, onComplete = {
-                    onShowPhoneConfirm(phone)
-                })
-    }
-
-    override fun onShowPhoneConfirm(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
-            .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
-            .subscribeSimple {
-                viewState.showPhoneConfirm(phone)
-            }
+    override fun onShowPhoneEdit(phone: String?) {
+        isPhoneUpdating = true
+        viewState.showPhoneEdit(phone)
     }
 
     override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
@@ -173,7 +124,7 @@ class MainInfoPresenter
             .flatMap { userRepository.changeUserImage(it) }
             .doOnSuccess { appData.getUserNew().image = it }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onSuccess = {
                     compositeDisposable += userRepository.checkUserProfileSingle()
@@ -190,7 +141,7 @@ class MainInfoPresenter
         compositeDisposable += userRepository.deleteImage()
             .doOnComplete { appData.getUserNew().image = null }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onComplete = {
                     compositeDisposable += userRepository.checkUserProfileSingle()
@@ -202,13 +153,7 @@ class MainInfoPresenter
             )
     }
 
-    override fun onClickClose() {
-        viewState.navigateUp()
-    }
-
-    fun setCanGoNext(can: Boolean) {
-        this.canGoNext = can
-    }
-
-    fun isCanGoNext() = canGoNext
+    fun getEmail() = appData.getUserNew().email
+    fun getPhone() = appData.getUserNew().phone?.firstOrNull { it.type == PHONE_PERSONAL }
+    override fun onClickClose() = viewState.navigateUp()
 }

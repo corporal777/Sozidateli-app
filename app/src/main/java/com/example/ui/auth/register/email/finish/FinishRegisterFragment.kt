@@ -274,13 +274,13 @@ class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
         (requireActivity() as MainActivity).connectToSocket()
     }
 
-    override fun showProgressBarLoadingDialog() {
+    override fun showCustomLoading() {
         mBinding.apply {
             ibRegister.showProgressLoading(true)
         }
     }
 
-    override fun hideProgressBarLoadingDialog(){
+    override fun hideCustomLoading(){
         mBinding.apply {
             ibRegister.showProgressLoading(false)
         }

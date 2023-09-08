@@ -1,12 +1,7 @@
 package com.example.ui.auth.register.invite
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.InputFilter
 import android.view.View
-import android.widget.Toast
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -17,8 +12,6 @@ import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
-import com.example.ui.main.MainActivity
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.util.getNameFilter
 import com.example.util.showCustomTabsBrowser
 import onBackPressedCallback

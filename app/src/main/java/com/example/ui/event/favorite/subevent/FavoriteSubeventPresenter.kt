@@ -6,7 +6,6 @@ import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventUserFavorite
-import com.example.data.models.SubEvent
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.parseToDate
 import com.example.extensions.startOfDay
@@ -14,7 +13,7 @@ import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -72,7 +71,7 @@ class FavoriteSubeventPresenter @Inject constructor(
                 )
             )
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple({
                     viewState.showRequestErrorMessage()
                 }) {
@@ -83,7 +82,7 @@ class FavoriteSubeventPresenter @Inject constructor(
         else
             compositeDisposable += eventRepository.deleteFromFavorite(subevent.binds.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple({
                     viewState.showRequestErrorMessage()
                 }) {

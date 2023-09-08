@@ -3,6 +3,7 @@ package com.example.ui.userprofile.read.settings.change_phone
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -23,6 +24,8 @@ class ChangePhoneFragment(
 ) : BaseBottomSheetFragment<BottomSheetChangePhoneBinding>(),
     ChangePhoneContract.View {
 
+
+    private var onPhoneChanged: (phone : FieldDetails?) -> Unit = {}
 
     @InjectPresenter(type = PresenterType.WEAK, tag = CHANGE_PHONE_FRAGMENT_TAG)
     lateinit var presenter: ChangePhonePresenter
@@ -97,9 +100,15 @@ class ChangePhoneFragment(
         }
     }
 
-    override fun showPhoneIsUpdatedSuccessfully() {
+    override fun showPhoneIsUpdatedSuccessfully(phone: FieldDetails?) {
         showToast(getString(R.string.phone_mobile_is_updated_successfully))
+        onPhoneChanged.invoke(phone)
         dismiss()
+    }
+
+    fun setPhoneChangedCallback(block: (phone : FieldDetails?) -> Unit): ChangePhoneFragment {
+        onPhoneChanged = block
+        return this
     }
 
     override fun showEnterPassword(phone: String) {
@@ -121,9 +130,7 @@ class ChangePhoneFragment(
             getString(R.string.confirm_phone_positive)
         )
             .setSelectCallback {
-                if (it) {
-                    presenter.onShowPhoneConfirm(phone)
-                }
+                if (it) presenter.onShowPhoneConfirm(phone)
             }
     }
 
@@ -154,6 +161,10 @@ class ChangePhoneFragment(
         return isValid
     }
 
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, "change_phone_fragment")
+    }
 
     companion object {
         const val CHANGE_PHONE_FRAGMENT_TAG = "change_phone_tag"

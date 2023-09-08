@@ -11,10 +11,9 @@ import com.example.App
 import com.example.R
 import com.example.data.models.SearchRegion
 import com.example.databinding.BottomSheetEventFormatBinding
-import com.example.ui.views.suggestFieldView.region.SearchItem
-import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
-import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheetContract
-import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheetPresenter
+import com.example.extensions.updateItem
+import com.example.holders.PlaceholderItem
+import com.example.ui.views.suggestFieldView.region.*
 import com.example.util.SimpleTextWatcher
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -26,7 +25,7 @@ import javax.inject.Provider
 
 class SearchSettlementBottomSheet(
     context: Context,
-    val data : String?
+    val data: String?
 ) : BottomSheetDialog(context), SearchSettlementBottomSheetContract.View {
 
     private val mBinding = BottomSheetEventFormatBinding.inflate(LayoutInflater.from(context))
@@ -47,9 +46,7 @@ class SearchSettlementBottomSheet(
 
     private val simpleTextWatcher = SimpleTextWatcher().setAfterTextChangeRunnable {
         presenter.onSettlementChange(it.toString())
-        mBinding.apply {
-            btnClear.isVisible = !it.toString().isNullOrEmpty()
-        }
+        mBinding.btnClear.isVisible = !it.toString().isNullOrEmpty()
     }
 
     private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
@@ -66,7 +63,7 @@ class SearchSettlementBottomSheet(
             tvBottomSheetLabel.text = context.getString(R.string.search_filter_settlement)
             ivBack.setOnClickListener { dismiss() }
             btnClear.apply {
-                btnClear.isVisible = !etSearch.text.isNullOrEmpty()
+                isVisible = !etSearch.text.isNullOrEmpty()
                 setOnClickListener { etSearch.text = null }
             }
             etSearch.apply {
@@ -79,22 +76,24 @@ class SearchSettlementBottomSheet(
                 }
             }
             listContent.adapter = groupAdapter
-
         }
     }
 
-    override fun setSettlements(list: List<SearchRegion>) {
-        groupAdapter.apply {
-            update(list.map {
-                SearchItem(
-                    it.id,
-                    it.name,
-                ) { region ->
-                    presenter.onSettlementSelected(region)
-                }
-            })
+    override fun setSettlements(list: List<SearchRegion?>) {
+        if (list.isEmpty()) {
+            groupAdapter.updateItem(SearchEmptyItem("В выбранном регионе населенных пунктов нет"))
+        } else {
+            groupAdapter.apply {
+                updateAsync(list.map {
+                    if (it == null) {
+                        groupAdapter.updateItem(null)
+                        return
+                    } else SearchItem(it.id, it.name) { r -> presenter.onSettlementSelected(r) }
+                })
+            }
         }
     }
+
 
     override fun performOnItemSelected(item: SearchRegion?) {
         setTextWithoutSearch(item?.name)

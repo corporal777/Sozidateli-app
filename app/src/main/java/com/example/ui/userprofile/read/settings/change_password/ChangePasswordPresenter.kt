@@ -12,7 +12,7 @@ import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import withDelay
 import javax.inject.Inject
 
@@ -70,7 +70,7 @@ class ChangePasswordPresenter
             userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
         }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onComplete = { viewState.showPasswordSuccessUpdated() }
@@ -88,7 +88,7 @@ class ChangePasswordPresenter
                 notificationManager.cancelAll()
             }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeBy(
                 onError = {
                     it.printStackTrace()

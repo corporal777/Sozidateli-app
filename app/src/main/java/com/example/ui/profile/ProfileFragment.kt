@@ -121,6 +121,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
 
         mBinding.stateTitle.apply {
+            if (!hasBase && !hasMax) setTextColor(ContextCompat.getColor(requireContext(),R.color.red_new))
+            else setTextColor(ContextCompat.getColor(requireContext(),R.color.main_brown_color_new))
+
             text = newState
             setOnClickListener { showStates() }
         }

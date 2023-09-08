@@ -2,25 +2,14 @@ package com.example.ui.organizations.events
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.UserEventData
 import com.example.data.models.EventNew
-import com.example.data.models.UserProfileFields
-import com.example.di.Connectivity
-import com.example.extensions.buildList
 import com.example.repository.EventRepository
-import com.example.repository.UserRepository
-import com.example.ui.base.BasePresenter
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.PaginationList
-import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @InjectViewState

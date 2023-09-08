@@ -1,7 +1,6 @@
 package com.example.ui.userprofile
 
 import android.net.Uri
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
@@ -14,7 +13,7 @@ import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -55,7 +54,7 @@ class UserProfilePresenter @Inject constructor(
             }
             .flatMap { userRepository.changeUserImage(it) }
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -74,7 +73,7 @@ class UserProfilePresenter @Inject constructor(
     override fun onRemovePhotoClick() {
         compositeDisposable += userRepository.deleteImage()
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onComplete = {
                     compositeDisposable += userRepository.checkUserProfileSingle()

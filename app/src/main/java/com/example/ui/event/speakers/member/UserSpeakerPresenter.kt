@@ -21,7 +21,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.zipWith
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -81,7 +81,7 @@ class UserSpeakerPresenter
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = {
@@ -176,7 +176,7 @@ class UserSpeakerPresenter
         compositeDisposable += request
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)

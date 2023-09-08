@@ -3,7 +3,13 @@ package com.example.ui.views.galleryView
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.os.bundleOf
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -11,9 +17,9 @@ import com.example.R
 import com.example.databinding.BottomSheetGalleryBinding
 import com.example.extensions.*
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.util.rxtakephoto.CropActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -65,8 +71,9 @@ class GalleryBottomSheet() :
                 dismiss()
             },
             images.map {
-                GalleryItem(it) {
+                GalleryItem(it) { uri, view ->
                     onImageClick.invoke(it)
+                    //showCropActivity(uri, view)
                     dismiss()
                 }
             })
@@ -98,6 +105,23 @@ class GalleryBottomSheet() :
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, "gallery")
+    }
+
+    private fun showCropActivity(uri : Uri, view : ImageView){
+        val opt = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            requireActivity(),
+            Pair(view, view.transitionName)
+        )
+
+        findNavController().navigate(
+            R.id.image_crop_activity,
+            bundleOf(
+                CropActivity.ARG_URL to uri.toString(),
+                CropActivity.ARG_TRANSITION_NAME to view.transitionName
+            ),
+            null,
+            ActivityNavigatorExtras(opt)
+        )
     }
 
     companion object {

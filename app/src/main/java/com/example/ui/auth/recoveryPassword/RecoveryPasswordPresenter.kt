@@ -1,6 +1,5 @@
 package com.example.ui.auth.recoveryPassword
 
-import android.util.Log
 import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -11,17 +10,14 @@ import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
 import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
-import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
-import withProgressBarLoadingDialog
+import withCustomLoading
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -52,7 +48,7 @@ class RecoveryPasswordPresenter
             }
                 .flatMap { authRepository.sendRecoveryEmail(loginType, it) }
                 .performOnBackgroundOutOnMain()
-                .withProgressBarLoadingDialog(viewState)
+                .withCustomLoading(viewState)
                 .subscribeSimple(
                     onError = { catchError(it) },
                     onSuccess = {
@@ -67,7 +63,7 @@ class RecoveryPasswordPresenter
         val phone = Utils.validatePhoneBeforeSend(email)
         compositeDisposable += authRepository.sendRecoveryEmail(loginType, phone)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribe({
                 startTimer()
             }, { it.printStackTrace() })
@@ -124,7 +120,7 @@ class RecoveryPasswordPresenter
             )
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     onReceiveError(it)

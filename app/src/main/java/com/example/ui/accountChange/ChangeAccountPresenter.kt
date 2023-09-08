@@ -14,7 +14,7 @@ import com.shakebugs.shake.Shake
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -60,7 +60,7 @@ class ChangeAccountPresenter
             .doOnSuccess { s -> transformData(s.userSessions) }
             .flatMapCompletable { clearAppData(session) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onComplete = {
@@ -77,7 +77,7 @@ class ChangeAccountPresenter
             .doOnComplete { loggedSessions.remove(session) }
             .andThen(clearAppData(session))
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onComplete = {
@@ -92,7 +92,7 @@ class ChangeAccountPresenter
         compositeDisposable += userRepository.killUsersDeviceSession(session.sessionId.toInt())
             .doOnComplete { unLoggedSessions.remove(session) }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onComplete = {

@@ -13,53 +13,38 @@ import com.example.ui.base.BaseContract
 interface MainInfoContract {
     interface View : BaseContract.View {
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun setPlaceholder()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun setPersonalData(user: UserDetail)
 
         @StateStrategyType(SkipStrategy::class)
         fun goToNext()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneConfirm(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showEmailConfirm(email: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showChangeEmailComplete(email: String)
 
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun photoUpdated(photo: ImageModel?)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showPhoneNotUnique(phone: String)
-
-        @StateStrategyType(SkipStrategy::class)
         fun showEmailNotUnique(email : String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun updatePhoneConfirmation(phone : String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showCheckPassword(phone: String?)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideCheckPassword()
+        fun showPhoneEdit(phone : String?)
     }
     interface Presenter : BaseContract.Presenter  {
         fun onClickClose()
-        fun updateFiles(data: MutableMap<String, Any?>)
+        fun onSaveData(data: MutableMap<String, Any?>)
 
         fun checkEmailIsUnique(email: String)
-        fun checkPhoneIsUnique(phone: String)
 
         fun onShowEmailConfirm(email: String)
-        fun onShowPhoneConfirm(phone: String)
+        fun onShowPhoneEdit(phone: String?)
 
 
         fun onTakePhotoFromGalleryClick()
         fun onTakePhotoFromCameraClick()
         fun onRemovePhotoClick()
-
-        fun checkPassword(password: String, phone: String)
     }
 }

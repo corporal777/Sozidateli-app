@@ -8,7 +8,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,7 +26,7 @@ class PagePresenter
         compositeDisposable += eventRepository.getPageDetails(dataPageId)
                 .withCheckInternetConnectivity()
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withProgressBarLoading(viewState)
                 .subscribeSimple {
                     viewState.setContent(/*it.picture*/"", it.name?: "", it.title, it.content, it.files)
                 }

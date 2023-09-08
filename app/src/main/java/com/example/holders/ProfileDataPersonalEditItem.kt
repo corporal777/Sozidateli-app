@@ -69,6 +69,18 @@ class ProfileDataPersonalEditItem(
             }
             scBirthday.initSwitch(mShowBirthday) { mShowBirthday = it }
 
+            scGender.apply {
+                isChecked = mGenderShow
+                setOnCheckedChangeListener { _, isChecked ->
+                    mGenderShow = isChecked
+                }
+            }
+            tvGender.apply {
+                mGender = setGender()
+                initDropDownAdapter(mutableListOf(genderMale, genderFemale))
+                initInput(mGender) { mGender = it.toString() }
+            }
+
             tvRegion.apply {
                 text = mAddressRegion
                 setOnClickListener {
@@ -76,6 +88,10 @@ class ProfileDataPersonalEditItem(
                         .setRegionSelectedCallback {
                             mAddressRegion = it?.name
                             text = mAddressRegion
+                            if (mAddressRegion != address.region){
+                                mAddressCity = null
+                                tvCity.text = mAddressCity
+                            }
                         }.show()
                 }
             }
@@ -91,25 +107,6 @@ class ProfileDataPersonalEditItem(
                 }
             }
             scCity.initSwitch(mAddressShow) { mAddressShow = it }
-
-            scGender.apply {
-                isChecked = mGenderShow
-                setOnCheckedChangeListener { _, isChecked ->
-                    mGenderShow = isChecked
-                }
-            }
-            tvGender.apply {
-                keyListener = null
-                setAdapter(
-                    NoFilterArrayAdapter(
-                        context,
-                        android.R.layout.simple_list_item_1,
-                        mutableListOf(genderMale, genderFemale)
-                    )
-                )
-                mGender = setGender()
-                initInput(mGender) { mGender = it.toString() }
-            }
 
             scNotes.apply {
                 isVisible = notes?.value?.isNullOrEmpty() == false

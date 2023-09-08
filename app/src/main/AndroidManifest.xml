@@ -45,6 +45,7 @@
         </activity>
 
         <activity android:name=".util.rxtakephoto.CropActivity" />
+        <activity android:name=".ui.views.galleryView.cropImage.CropImageActivity" />
 
         <activity
             android:name=".ui.snAuth.SnAuthActivity"

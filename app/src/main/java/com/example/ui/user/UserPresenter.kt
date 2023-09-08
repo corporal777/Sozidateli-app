@@ -2,10 +2,8 @@ package com.example.ui.user
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.CreateChatBody
@@ -15,14 +13,12 @@ import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.loadBitmap
 import com.example.util.loadBitmapNew
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -74,7 +70,7 @@ class UserPresenter
         if (user.binds?.chatRoomWithMe == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple {
                     viewState.openChat(user.fullName, user.loadUserImage(), it.id.toString())
                 }
@@ -121,7 +117,7 @@ class UserPresenter
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
                 .flatMapCompletable { chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1) }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = null
                     viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
@@ -130,7 +126,7 @@ class UserPresenter
         } else {
             compositeDisposable += chatRepository.deleteBan(user.binds?.isUserInBan?.id ?: 1)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = null
                     viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
@@ -149,7 +145,7 @@ class UserPresenter
             compositeDisposable += chatRepository.createChat(CreateChatBody(userId.toInt()))
                 .flatMap { chatRepository.chatBann(CreateChatBody(userId.toInt())) }
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = it
                     viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
@@ -158,7 +154,7 @@ class UserPresenter
         } else {
             compositeDisposable += chatRepository.chatBann(CreateChatBody(userId.toInt()))
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     profileUserData.user.binds?.isUserInBan = it
                     viewState.setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())

@@ -1,6 +1,5 @@
 package com.example.ui.userprofile.read.settings.confirm_phone_email
 
-import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
@@ -14,7 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class ConfirmEmailPhonePresenter
 @Inject constructor(
     private val appData: AppData,
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) : BaseBottomSheetPresenter<ConfirmEmailPhoneContract.View>(appData),
     ConfirmEmailPhoneContract.Presenter {
 
@@ -48,7 +47,7 @@ class ConfirmEmailPhonePresenter
             authRepository.registerPhoneResend("personal", mobilePhone)
         }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 startTimer()
             }
@@ -75,42 +74,29 @@ class ConfirmEmailPhonePresenter
     }
 
     override fun confirmEmailPhone(email: String, code: String) {
-        compositeDisposable += Completable.create { emitter ->
-            val disposable = CompositeDisposable()
-            if (loginType == "email") {
-                authRepository.confirmEmailCode(EmailCodeBody(code = code, email = email))
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onComplete = {
-                            appData.updateUserNew {
-                                this.email?.value = email
-                                this.email?.isConfirmed = true
-                                this.email?.onConfirmation = null
-                            }
-                            emitter.onComplete()
-                        }
-                    ).call(disposable)
-            } else {
-                authRepository.confirmPhoneCode(ConfirmCodeBody("personal", email, code))
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onComplete = { emitter.onComplete() }
-                    ).call(disposable)
-            }
-            emitter.setDisposable(disposable)
+        compositeDisposable += Completable.defer {
+            if (loginType == "email") authRepository.confirmEmailCode(EmailCodeBody(code, email))
+            else authRepository.confirmPhoneCode(ConfirmCodeBody("personal", email, code))
         }
+            .andThen(userRepository.getUserInternal())
+            .doOnSuccess { new ->
+                appData.updateUserNew {
+                    this.email = new.email
+                    this.phone = new.phone
+                }
+            }
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
                     viewState.setCodeError(true)
-                }, onComplete = {
+                }, onSuccess = {
                     viewState.setEmailPhoneIsConfirmed()
                 })
     }
 
-    fun initLoginType(email : String){
+    fun initLoginType(email: String) {
         this.mobilePhone = email
         loginType = if (Utils.isPhone(email) && !Utils.isContainLetters(email)) "phone"
         else "email"

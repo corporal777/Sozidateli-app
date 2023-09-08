@@ -3,21 +3,15 @@ package com.example.ui.notification.center.redesign.types.system
 import android.app.NotificationManager
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.data.socket.SocketIOManager
-import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.notification.center.redesign.NotificationType
-import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypeContract
 import com.example.ui.notification.center.redesign.types.base.BaseNotificationTypePresenter
-import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
-import com.example.ui.state.maxNew.education.MaxStatusEducationContract
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -60,7 +54,7 @@ class SystemNotificationsPresenter
     override fun onReadAllClick() {
         compositeDisposable += readAllNotificationsRequest(NotificationType.SYSTEM)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {

@@ -10,7 +10,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pdfToUri
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withProgressBarLoadingDialog
+import withProgressBarLoading
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -38,7 +38,7 @@ class DestinationSchemePresenter
             .map { it.event.binds?.destinationScheme?.map { s -> s.toPlace() } }
             .doOnSuccess { checkPlaceImages(it) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarLoadingDialog(viewState)
+            .withProgressBarLoading(viewState)
             .subscribeSimple {
                 if (!it.isNullOrEmpty()) viewState.setScheme(it, 0)
             }

@@ -6,14 +6,13 @@ import com.example.data.models.InterestNew
 import com.example.data.models.UserDetail
 import com.example.data.models.UserInterest
 import com.example.repository.AuthRepository
-import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withCustomProgressBarLoadingDialog
-import withProgressBarLoadingDialog
+import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -36,7 +35,7 @@ class MaxStatusInterestsPresenter
             .let {
                 if (isFirstLaunch) {
                     isFirstLaunch = false
-                    it.withProgressBarLoadingDialog(viewState)
+                    it.withProgressBarLoading(viewState)
                 } else it
             }
             .subscribeSimple(
@@ -84,7 +83,7 @@ class MaxStatusInterestsPresenter
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { checkNextScreen() }

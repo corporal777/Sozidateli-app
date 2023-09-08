@@ -15,7 +15,7 @@ import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -52,7 +52,7 @@ class UserProfileSettingsPresenter @Inject constructor(
         compositeDisposable += authRepository.deleteConfirmEmail(email)
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email?.onConfirmation = null
@@ -64,7 +64,7 @@ class UserProfileSettingsPresenter @Inject constructor(
         compositeDisposable += authRepository.registerEmailResend("")
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 appData.updateUserNew {
                     this.email?.value = null
@@ -108,7 +108,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     override fun onDeleteProfileConfirm() {
         compositeDisposable += userRepository.deleteProfile(appData.getId())
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 //Shake.unregisterUser()
                 appData.isSubscribedToPush = false
@@ -121,7 +121,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     private fun updateUser(data: Map<String, Any?>, onComplete: (UserDetail) -> Unit) {
         compositeDisposable += userRepository.updateProfile(appData.getId(), data)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
@@ -147,7 +147,7 @@ class UserProfileSettingsPresenter @Inject constructor(
     override fun onShowEmailConfirm(email: String) {
         compositeDisposable += authRepository.registerEmailResend(email)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.showEmailConfirmation(email)
             }

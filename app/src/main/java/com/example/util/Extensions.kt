@@ -21,6 +21,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.ColorInt
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.FileProvider
@@ -35,6 +36,7 @@ import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
 import com.example.BuildConfig
 import com.example.R
+import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
@@ -67,6 +69,18 @@ fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Un
     setText(text)
     onTextChanged(onTextChanged)
 }
+
+fun <T> AppCompatAutoCompleteTextView.initDropDownAdapter(list : MutableList<T>) {
+    keyListener = null
+    setAdapter(
+        NoFilterArrayAdapter(
+            context,
+            android.R.layout.simple_list_item_1,
+            list
+        )
+    )
+}
+
 
 fun FragmentManager.showDatePicker(
     currentDate: String?,

@@ -1,8 +1,6 @@
 package com.example.ui.auth.login
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
@@ -11,7 +9,6 @@ import com.example.data.models.ApiError
 import com.example.data.models.NewAuthResponse
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
-import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
@@ -23,18 +20,10 @@ import com.example.util.getAppVersion
 import com.example.util.getAppVersionCode
 import com.example.util.getDeviceName
 import com.shakebugs.shake.Shake
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
-import isValidPhoneNumber
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withInfinityProgressLoading
-import withLoadingDialog
-import withProgressBarLoadingDialog
-import java.util.concurrent.TimeUnit
+import withInfinityCustomLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -92,7 +81,7 @@ class LoginPresenter
             } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
         }
             .performOnBackgroundOutOnMain()
-            .withInfinityProgressLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()

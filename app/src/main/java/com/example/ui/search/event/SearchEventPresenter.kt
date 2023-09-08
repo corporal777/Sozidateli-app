@@ -4,21 +4,7 @@ import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.EventCalendarBody.Companion.CALENDAR_EVENT
-import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
-import com.example.data.models.Event.Companion.FILTER_ADDRESS
-import com.example.data.models.Event.Companion.FILTER_CATEGORY
-import com.example.data.models.Event.Companion.FILTER_CONTENT
-import com.example.data.models.Event.Companion.FILTER_DATE_FINISH
-import com.example.data.models.Event.Companion.FILTER_DATE_START
-import com.example.data.models.Event.Companion.FILTER_FORMAT
-import com.example.data.models.Event.Companion.FILTER_NAME
-import com.example.data.models.Event.Companion.FILTER_REGISTRATION
-import com.example.data.models.Event.Companion.FILTER_SHOW_CANCELED
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_IS_SPECIAL
-import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_STATUS
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
@@ -29,13 +15,9 @@ import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
-import kotlinx.coroutines.processNextEventInCurrentThread
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
-import withCustomProgressBarLoadingDialog
-import withLoadingDialog
+import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -109,7 +91,7 @@ class SearchEventPresenter
         else {
             compositeDisposable += eventRepository.checkRegistrationAgreement(event)
                 .performOnBackgroundOutOnMain()
-                .withCustomProgressBarLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = {
@@ -124,7 +106,7 @@ class SearchEventPresenter
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
             .andThen(eventRepository.getEventDetails(event))
             .performOnBackgroundOutOnMain()
-            .withLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 pagination.invalidate()
             }
@@ -133,7 +115,7 @@ class SearchEventPresenter
     override fun onAcceptRegistrationAgreement(event: String) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
-            .withCustomProgressBarLoadingDialog(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
@@ -156,7 +138,7 @@ class SearchEventPresenter
             compositeDisposable += Completable.complete()
                 .timeout(3, TimeUnit.SECONDS)
                 .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
+                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     showFilter()
                 }, {

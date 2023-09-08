@@ -3,7 +3,6 @@ package com.example.ui.userprofile
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,8 +14,6 @@ import com.example.databinding.FragmentUserProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.views.galleryView.GalleryBottomPresenter
 import com.example.ui.views.galleryView.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage

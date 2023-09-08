@@ -3,72 +3,83 @@ package com.example.holders
 import android.app.Activity
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
-import android.util.Log
-import android.widget.Toast
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.*
+import com.example.databinding.ItemEditMainInfoBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.ui.main.MainActivity
+import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
-import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.databinding.BindableItem
 import initAsDatePicker
-import kotlinx.android.synthetic.main.item_edit_main_info.*
-import kotlinx.android.synthetic.main.item_edit_main_info.btnPhoneConfirm
-import kotlinx.android.synthetic.main.item_edit_main_info.scCity
-import kotlinx.android.synthetic.main.item_edit_main_info.scGender
-import kotlinx.android.synthetic.main.item_edit_main_info.tilMobilePhone
-import kotlinx.android.synthetic.main.item_edit_main_info.tvPhoneConfirmed
-import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.etMobilePhone
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.etBirthday
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tilBirthday
-import kotlinx.android.synthetic.main.item_profile_data_edit_personal_new.tvGender
-import onTextChanged
+import java.lang.reflect.Field
 import java.util.*
 
 
 class MainInfoEditItem(
     id: Long,
-    val activity: Activity,
     private val gender: ToggleStringModel?,
     private val birthday: String?,
-    private val address: UserAddress,
+    private val address: UserAddress?,
     private val phone: List<FieldDetails>?,
     private val showBirthday: Boolean?,
     private val image: String?,
     private val isEnableNext: (isEnable: Boolean) -> Unit,
-    private val confirmPhoneClick: (String?) -> Unit,
+    private val onEditPhoneClick: (String?) -> Unit,
     private val onImageClick: (canRemove: Boolean) -> Unit
-) : Item(id) {
+) : BindableItem<ItemEditMainInfoBinding>(id) {
 
-    private val genderMale = activity.getString(R.string.profile_gender_male)
-    private val genderFemale = activity.getString(R.string.profile_gender_female)
-    private val emptyInputError = activity.getString(R.string.profile_edit_empty_field_error)
+    private val genderMale = "Мужской"
+    private val genderFemale = "Женский"
+    private var mGender = gender?.value?.firstLetterToUppercase()
+    private var mGenderShow = gender?.showInProfile ?: true
+
     private var mImage = image
 
     private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
-    private var mIsPhoneConfirmed =
-        phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false
+    private var mMobilePhoneIsVisible = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isVisible
 
-    private var mGender = gender?.value?.firstLetterToUppercase()
-    private var mGenderShow = gender?.showInProfile ?: true
     private var mBirthday = birthday?.formatToDefaultDate()
-    private var mAddress = address
-    private var mAddressShow = address.showInProfile ?: true
     private var mShowBirthday = showBirthday ?: false
 
+    private var mAddressRegion = address?.region
+    private var mAddressCity = address?.city
+    private var mAddressShow = address?.showInProfile ?: true
 
-    private lateinit var viewHolder: GroupieViewHolder
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        this.viewHolder = viewHolder
-        viewHolder.apply {
+    private lateinit var mBinding: ItemEditMainInfoBinding
+
+    override fun bind(viewBinding: ItemEditMainInfoBinding, position: Int) {
+        mBinding = viewBinding
+        viewBinding.apply {
+            setAvatar()
+            tilBirthday.apply {
+                initAsDatePicker(
+                    startDate = if (!mBirthday.isNullOrEmpty()) defaultDateFormatter.parse(mBirthday) else null,
+                    maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -14) }.time
+                ) { year, month, day ->
+                    checkDataValid()
+                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
+                }
+                etBirthday.initInput(mBirthday) {
+                    mBirthday = it.toString()
+                    checkDataValid()
+                }
+            }
+
+            tvGender.apply {
+                mGender = setGender(context)
+                initDropDownAdapter(mutableListOf(genderMale, genderFemale))
+                initInput(mGender) {
+                    mGender = it.toString()
+                    checkDataValid()
+                }
+            }
             scGender.apply {
                 isChecked = mGenderShow
                 setOnCheckedChangeListener { _, isChecked ->
@@ -76,133 +87,69 @@ class MainInfoEditItem(
                 }
             }
 
-            tilMobilePhone.apply { error = null }
+            tvRegion.apply {
+                text = mAddressRegion
+                setOnClickListener {
+                    SearchRegionBottomSheet(context)
+                        .setRegionSelectedCallback {
+                            mAddressRegion = it?.name
+                            text = mAddressRegion
+                            tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
+                            if (mAddressRegion != address?.region) {
+                                mAddressCity = null
+                                tvCity.text = mAddressCity
+                            }
+                            checkDataValid()
+                        }.show()
+                }
+            }
+            tvCity.apply {
+                isEnabled = !mAddressRegion.isNullOrEmpty()
+                text = mAddressCity
+                setOnClickListener {
+                    SearchSettlementBottomSheet(context, mAddressRegion)
+                        .setSettlementSelectedCallback {
+                            mAddressCity = it?.name
+                            text = mAddressCity
+                        }.show()
+                }
+            }
+
             etMobilePhone.apply {
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
-                    if (it?.isNotEmpty() == true && tilMobilePhone.error != null) tilMobilePhone.error =
-                        null
-
-                    if (mIsPhoneConfirmed) {
-                        mIsPhoneConfirmed =
-                            mMobilePhone == phone?.firstOrNull { ph -> ph.type == PHONE_PERSONAL }?.value
-                        updatePhoneConfirmationStatus(viewHolder)
-                    }
                     checkDataValid()
                 }
-
-                addTextChangedListener(PhoneNumberFormattingTextWatcher())
-            }
-
-            etBirthday?.initInput(mBirthday) {
-                mBirthday = it.toString()
-                checkDataValid()
-            }
-            tilBirthday.initAsDatePicker(
-                startDate = if (!mBirthday.isNullOrEmpty()) defaultDateFormatter.parse(mBirthday)
-                else null,
-                //mBirthday?.let { defaultDateFormatter.parse(it) },
-                maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -14) }.time
-            ) { year, month, day ->
-                checkDataValid()
-                String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
-            }
-
-            etCity.apply {
-                val city = if (mAddress.city != null) mAddress.city
-                else if (mAddress.district != null) mAddress.district
-                else mAddress.address
-
-                setTextWithoutSearch(city)
-                onDataSelectedListener = {
-                    mAddress = UserAddress.fromDaDataItem(it)
-                    checkDataValid()
-                }
-            }
-            scCity.initSwitch(mAddressShow) { mAddressShow = it }
-            tvGender.apply {
-                keyListener = null
-                setAdapter(
-                    NoFilterArrayAdapter(
-                        context,
-                        android.R.layout.simple_list_item_1,
-                        mutableListOf(genderMale, genderFemale)
-                    )
-                )
-                mGender = setGender(context)
-                initInput(mGender) {
-                    mGender = it.toString()
-                    checkDataValid()
+                tvEditPhone.setOnClickListener {
+                    onEditPhoneClick.invoke(mMobilePhone)
                 }
             }
 
-            btnPhoneConfirm.apply {
-                setOnClickListener { v ->
-                    mMobilePhone = etMobilePhone.text.toString()
-                    if (Utils.newPhoneValidator(mMobilePhone.phoneToServer())) {
-                        (activity as MainActivity).hideKeyboard(v)
-                        confirmPhoneClick(mMobilePhone)
-                    } else {
-                        tilMobilePhone.apply {
-                            requestFocus()
-                        }
-                    }
-                }
-            }
-            setAvatar()
             btnEdit.setOnClickListener {
                 onImageClick(!mImage.isNullOrEmpty())
             }
-            updatePhoneConfirmationStatus(this)
         }
         checkDataValid()
     }
 
-    private fun updatePhoneConfirmationStatus(viewHolder: GroupieViewHolder) {
-        viewHolder.apply {
-            btnPhoneConfirm.isVisible = !mIsPhoneConfirmed
-            tvPhoneConfirmed.isVisible = mIsPhoneConfirmed
-        }
-    }
 
-    private fun setAvatar() {
-        this.viewHolder.ivAvatar.apply {
-            clipToOutline = true
-            transitionName = mImage
-            Picasso.get()
-                .load(mImage)
-                .placeholder(R.drawable.avatar_placeholder_rectangle)
-                .error(R.drawable.avatar_placeholder_rectangle)
-                .into(this)
-        }
-    }
+
 
     fun checkDataValid(): Boolean {
         var isValid = true
-        if (::viewHolder.isInitialized) {
-            viewHolder.apply {
-                if (mGender.isNullOrEmpty()) {
-                    isValid = false
-                }
-                if (mBirthday.isNullOrEmpty()) {
-                    isValid = false
-                }
-                if (mAddress.address.isNullOrEmpty() && mAddress.region.isNullOrEmpty() && mAddress.city.isNullOrEmpty()) {
-                    isValid = false
-                }
-                if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) {
-                    isValid = false
-                }
-                if (mImage.isNullOrEmpty()) isValid = false
-            }
-        }
+        if (mGender.isNullOrEmpty()) isValid = false
+        if (mBirthday.isNullOrEmpty()) isValid = false
+        if (mAddressRegion.isNullOrEmpty()) isValid = false
+        if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) isValid = false
+        if (mImage.isNullOrEmpty()) isValid = false
+
         isEnableNext(isValid)
         return isValid
     }
 
     private fun getPersonalPhone() = mMobilePhone?.phoneToServer() ?: ""
     private fun isPhoneValid(): Boolean = Utils.isNewPhoneIsValid(getPersonalPhone())
-    fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone())
+    private fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone())
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
@@ -213,29 +160,14 @@ class MainInfoEditItem(
                 put(UserDetail.USER_BIRTHDAY, FieldDetails(value = it, isVisible = mShowBirthday))
             }
 
-            if (address != mAddress) {
-                mAddress.showInProfile = mAddressShow
-                put(UserDetail.USER_ADDRESS, mAddress)
-            }
+            if (checkAddressIsEqual()) put(UserDetail.USER_ADDRESS, getNewAddress())
 
-
-            val personal = phone?.firstOrNull { it.type == PHONE_PERSONAL }
-            val work = phone?.firstOrNull { it.type == PHONE_WORK }
             put(
                 UserDetail.USER_PHONE, arrayListOf(
                     FieldDetails(
                         value = getValidatedPhone(),
                         type = PHONE_PERSONAL,
-                        isConfirmed = mIsPhoneConfirmed,
-                        isVisible = personal?.isVisible,
-                        absent = false
-                    ),
-                    FieldDetails(
-                        value = work?.value,
-                        type = PHONE_WORK,
-                        isVisible = work?.isVisible,
-                        absent = work?.absent,
-                        additional = work?.additional
+                        isVisible = mMobilePhoneIsVisible
                     )
                 )
             )
@@ -258,19 +190,55 @@ class MainInfoEditItem(
         }
     }
 
+    private fun setAvatar() {
+        if (::mBinding.isInitialized) {
+            mBinding.apply {
+                btnEdit.text =
+                    if (!mImage.isNullOrEmpty()) root.context.getString(R.string.edit_title)
+                    else root.context.getString(R.string.profile_add_photo)
+
+                ivAvatar.apply {
+                    clipToOutline = true
+                    transitionName = mImage
+                    Picasso.get()
+                        .load(mImage)
+                        .placeholder(R.drawable.avatar_placeholder_rectangle)
+                        .error(R.drawable.avatar_placeholder_rectangle)
+                        .into(this)
+                }
+            }
+        }
+    }
+
     fun setImage(image: ImageModel?) {
         mImage = image?.uri
         checkDataValid()
         setAvatar()
     }
 
-    fun updatePhoneConfirmation(isConfirmed: Boolean) {
-        this.mIsPhoneConfirmed = isConfirmed
-        updatePhoneConfirmationStatus(viewHolder)
+    fun setPhone(phone: FieldDetails?) {
+        if (::mBinding.isInitialized) {
+            mMobilePhone = phone?.value
+            mMobilePhoneIsVisible = phone?.isVisible
+            mBinding.etMobilePhone.setText(mMobilePhone)
+        }
     }
 
-    fun newPhoneIsConfirmed(): Boolean {
-        return mIsPhoneConfirmed
+    private fun checkAddressIsEqual(): Boolean {
+        return address?.region != mAddressRegion
+                || address?.city != mAddressCity
+                || address?.showInProfile != mAddressShow
+    }
+
+    private fun getNewAddress(): UserAddress {
+        return UserAddress(
+            index = address?.index,
+            region = mAddressRegion,
+            city = mAddressCity,
+            fullValue = address?.fullValue,
+            shortValue = address?.shortValue,
+            showInProfile = mAddressShow
+        )
     }
 
     override fun getLayout(): Int = R.layout.item_edit_main_info

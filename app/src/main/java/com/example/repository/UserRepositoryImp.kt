@@ -28,8 +28,13 @@ class UserRepositoryImp
     private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
-    override fun getUser(): Maybe<UserDetail> {
-        return newApi.getUserShort(appData.getId(), emptyList())
+    override fun getUserInternal(): Maybe<UserDetail> {
+        return Maybe.zip(
+            newApi.getUserShort(appData.getId(), emptyList()),
+            checkUserProfile(),
+            BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
+                return@BiFunction user
+            })
     }
 
     override fun getUserShortData(): Maybe<UserDetail> =
@@ -112,24 +117,6 @@ class UserRepositoryImp
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
         newApi.searchAddress(query, 20)
 
-    /*override fun getUserFull(): Maybe<User> = call(api.getUserFull()).doOnSuccess { appData.setUser(it) }
-
-    override fun getLastNotification() = call(api.getLastNotification())
-
-    override fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>> {
-        return callPagination(api.getUserNotifications(limit, offset))
-    }
-
-    override fun getNotification(id: Int): Maybe<RemoteNotification> {
-        return call(api.getUserNotification(id))
-    }
-
-    override fun markNotificationsAsRead(ids: List<Int>): Completable {
-        return call(api.markNotificationsAsRead(ids)).doOnSuccess {
-            appData.notificationsCount = it.unreadCount
-            ids.forEach { id -> appData.notificationReadSubject.onNext(id to Notification.AcceptState.NONE) }
-        }.ignoreElement()
-    }*/
 
     override fun getAllUsersSessions(deviceId: String): Maybe<UserSessions> =
         newApi.getAllUsersSessions()
