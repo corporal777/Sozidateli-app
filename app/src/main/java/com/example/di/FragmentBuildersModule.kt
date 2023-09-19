@@ -89,7 +89,9 @@ import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFr
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
-import com.example.ui.views.galleryView.GalleryBottomSheet
+import com.example.ui.gallery.GalleryBottomSheet
+import com.example.ui.gallery.GalleryFragment
+import com.example.ui.gallery.camera.CustomCameraActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -366,4 +368,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeGalleryBottomSheet(): GalleryBottomSheet
+
+    @ContributesAndroidInjector
+    abstract fun contributeGalleryFragment(): GalleryFragment
 }

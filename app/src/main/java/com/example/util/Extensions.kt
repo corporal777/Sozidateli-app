@@ -24,8 +24,14 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.FileProvider
+import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.core.view.isInvisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -70,7 +76,7 @@ fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Un
     onTextChanged(onTextChanged)
 }
 
-fun <T> AppCompatAutoCompleteTextView.initDropDownAdapter(list : MutableList<T>) {
+fun <T> AppCompatAutoCompleteTextView.initDropDownAdapter(list: MutableList<T>) {
     keyListener = null
     setAdapter(
         NoFilterArrayAdapter(
@@ -255,15 +261,6 @@ fun ImageRequest.Builder.setParams(
     if (!transformations.isNullOrEmpty())
         transformations(transformations)
     scale(Scale.FILL)
-}
-
-@ColorInt
-fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
-    val alpha = Math.round(Color.alpha(color) * factor)
-    val red = Color.red(color)
-    val green = Color.green(color)
-    val blue = Color.blue(color)
-    return Color.argb(alpha, red, green, blue)
 }
 
 fun getMonthName(calendar: Calendar?): String {
@@ -558,7 +555,7 @@ fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): Fil
 
     //Convert bitmap to byte array
     val bos = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
     val bitMapData = bos.toByteArray()
 
     //write the bytes in file
@@ -604,4 +601,25 @@ fun getPhoneFilter(): Array<InputFilter> {
         })
 }
 
+fun imageCaptureCallback(
+    onError: (t: Throwable) -> Unit,
+    onSaved: (output: ImageCapture.OutputFileResults) -> Unit
+): ImageCapture.OnImageSavedCallback {
+    return object : ImageCapture.OnImageSavedCallback {
+        override fun onError(exc: ImageCaptureException) {
+            onError.invoke(exc)
+        }
+
+        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+            onSaved.invoke(output)
+        }
+    }
+}
+
+fun Fragment.getMakeSceneTransition(view : View): ActivityOptionsCompat {
+    return ActivityOptionsCompat.makeSceneTransitionAnimation(
+        requireActivity(),
+        Pair(view, view.transitionName)
+    )
+}
 

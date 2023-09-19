@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -33,7 +34,7 @@
             android:name="com.example.ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/SplashTheme.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -45,7 +46,8 @@
         </activity>
 
         <activity android:name=".util.rxtakephoto.CropActivity" />
-        <activity android:name=".ui.views.galleryView.cropImage.CropImageActivity" />
+        <activity android:name=".ui.gallery.cropImage.CropImageActivity" />
+        <activity android:name=".ui.gallery.camera.CustomCameraActivity" />
 
         <activity
             android:name=".ui.snAuth.SnAuthActivity"

@@ -1,14 +1,12 @@
-package com.example.ui.views.galleryView
+package com.example.ui.gallery
 
 import android.net.Uri
-import com.arellomobile.mvp.MvpView
+import android.widget.ImageView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.ProfileUserData
-import com.example.ui.base.BaseContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
-import com.example.ui.views.calendarView.CalendarDay
+import io.reactivex.Single
 import java.util.*
 
 interface GalleryBottomContract {
@@ -18,9 +16,21 @@ interface GalleryBottomContract {
         fun setGalleryImages(images : List<Uri>)
 
         @StateStrategyType(SkipStrategy::class)
+        fun updateCameraPreviewItem()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideGalleryFragment()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showCameraActivity(uri: Uri?, imageView : ImageView)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showCropActivity(uri: Uri, imageView : ImageView?)
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {
+        fun onGalleryClick()
+        fun onRemovePhotoClick()
+        fun observeCropFinished(request : Single<Boolean>)
     }
 }

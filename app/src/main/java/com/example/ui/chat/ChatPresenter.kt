@@ -14,6 +14,7 @@ import com.example.data.socket.SocketIOManager
 import com.example.extensions.*
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
 import com.example.util.IMAGE_MAX_SIZE_CHAT
@@ -24,7 +25,6 @@ import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
-import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single

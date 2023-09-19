@@ -186,9 +186,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private lateinit var splashScreen: SplashScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        splashScreen = installSplashScreen().apply {
-            setKeepVisibleCondition { true }
-        }
+        showSplashScreen()
         super.onCreate(savedInstanceState)
 
         registerFragmentLifecycleCallback()
@@ -202,6 +200,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return false
+    }
+
+    override fun showSplashScreen() {
+        splashScreen = installSplashScreen().apply { setKeepVisibleCondition { true } }
     }
 
     override fun hideSplashScreen() {

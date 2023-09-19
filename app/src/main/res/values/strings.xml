@@ -363,6 +363,7 @@
     <string name="user_avatar">Аватар</string>
 
     <string name="image_transition_name">image_open_transition</string>
+    <string name="camera_transition_name">camera_transition</string>
 
     <string name="recovery_password_title">Восстановление пароля</string>
     <string name="recovery_password_btn">Восстановить</string>

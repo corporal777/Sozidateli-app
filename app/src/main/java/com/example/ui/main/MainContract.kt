@@ -76,6 +76,9 @@ interface MainContract {
         fun showUpdateApp(isRequired : Boolean)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSplashScreen()
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun hideSplashScreen()
 
         @StateStrategyType(SkipStrategy::class)

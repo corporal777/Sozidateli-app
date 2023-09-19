@@ -5,11 +5,11 @@ import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
 import com.example.repository.UserRepository
+import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
-import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain

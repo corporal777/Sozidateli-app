@@ -18,6 +18,7 @@ import com.example.R
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseActivity
 import com.example.ui.views.StateType
+import com.example.ui.views.WarningDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
@@ -27,8 +28,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
     val type: Int = 0,
     val lightDim: Boolean = false,
     val isTransparent : Boolean = false
-) :
-    MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
+) : MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
 
     lateinit var mBinding: binding
 
@@ -37,9 +37,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is BaseActivity) {
-            this.mActivity = context
-        }
+        if (context is BaseActivity) this.mActivity = context
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,6 +115,21 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
                 if (canShow) showKeyboard(this)
             }
         }
+    }
+
+    protected fun <T> showEditWarning(
+        isBase: Boolean,
+        isMax: Boolean,
+        isEmptyBaseFields: Boolean,
+        isEmptyMaxFields: Boolean,
+        data: () -> T?
+    ) {
+        if ((isBase && isEmptyBaseFields) || (isMax && isEmptyMaxFields)) {
+            WarningDialog(requireActivity(), resources.getString(R.string.warning_dialog_text))
+                .setSelectCallback {
+                    if (it) data.invoke()
+                }
+        } else data.invoke()
     }
 
     override fun showLoadingDialog() {

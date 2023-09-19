@@ -203,7 +203,19 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="crop_image_fragment">
+                  <entry key="custom_camera_activity">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="d_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

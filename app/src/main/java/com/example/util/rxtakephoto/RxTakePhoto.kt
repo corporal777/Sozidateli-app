@@ -6,11 +6,11 @@ import android.net.Uri
 import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.FragmentActivity
+import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.util.rxtakephoto.CropActivity.Companion.CROP_MODE_DEFAULT
 import com.example.util.rxtakephoto.rx_image_picker.core.RxImagePicker
 import com.example.util.rxtakephoto.rx_image_picker.entity.Result
 import com.example.util.saveImageToGallery
-import com.isseiaoki.simplecropview.CropImageView
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
 import io.reactivex.Observable

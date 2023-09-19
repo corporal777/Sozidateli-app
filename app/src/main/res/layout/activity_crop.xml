@@ -14,7 +14,7 @@
         android:background="@android:color/black"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.isseiaoki.simplecropview.CropImageView
+        <com.example.ui.gallery.cropImage.cropHelper.CropImageView
             android:id="@+id/cropView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

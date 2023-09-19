@@ -14,7 +14,7 @@ import com.example.databinding.FragmentUserProfileBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.galleryView.GalleryBottomSheet
+import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage
 import setOnClickListener
@@ -80,18 +80,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
 //            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
 //            .show()
 
-        GalleryBottomSheet()
-            .setGalleryCallback { presenter.onTakePhotoFromGalleryClick() }
-            .setCameraCallback { presenter.onTakePhotoFromCameraClick() }
-            .setImageCallback { presenter.onTakePhotoFromListClick(it) }
-            .setRemoveCallback { fr ->
-                showEditWarning(isBase, isMax, false, true) {
-                    presenter.onRemovePhotoClick()
-                    fr.dismiss()
-                }
-            }
-            .show(childFragmentManager)
+        GalleryBottomSheet().show(childFragmentManager)
     }
+
 
     override fun showMainData() {
         findNavController().navigate(UserProfileFragmentDirections.profileToMainData())
@@ -120,6 +111,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: (value: Int) -> Unit) {
+        scroll.invoke(0)
+    }
+
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

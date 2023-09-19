@@ -1,4 +1,4 @@
-package com.example.ui.views.galleryView.cropImage
+package com.example.ui.gallery.camera
 
 import android.net.Uri
 import androidx.core.net.toUri
@@ -6,7 +6,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.repository.UserRepository
-import com.isseiaoki.simplecropview.CropImageView
+import com.example.ui.gallery.cropImage.CropImageContract
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -16,16 +16,16 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
-class CropImagePresenter
+class CustomCameraPresenter
 @Inject constructor(
     val appData: AppData,
     private val userRepository: UserRepository,
-) : MvpPresenter<CropImageContract.View>(), CropImageContract.Presenter {
+) : MvpPresenter<CustomCameraContract.View>(), CustomCameraContract.Presenter {
 
     var imageUrl: String? = null
     var customTransitionName: String? = null
+    var capturedImageUri: Uri? = null
     private val compositeDisposable = CompositeDisposable()
-
     private val timerCompositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
@@ -40,34 +40,22 @@ class CropImagePresenter
         }
     }
 
-    override fun onShowImageCrop(uri: Uri?) {
-        timerCompositeDisposable += Observable.timer(1000, TimeUnit.MILLISECONDS)
+    override fun onStartPreview() {
+        timerCompositeDisposable += Observable.timer(500, TimeUnit.MILLISECONDS)
             .performOnBackgroundOutOnMain()
             .subscribeBy(
                 onError = {
+                    viewState.startCameraPreview()
                     timerCompositeDisposable.clear()
                 },
                 onNext = {
-                    viewState.showImageCrop(uri)
+                    viewState.startCameraPreview()
                     timerCompositeDisposable.clear()
                 })
     }
 
-    override fun saveCroppedImage(cropView: CropImageView) {
-        compositeDisposable += cropView.cropAsSingle()
-            .flatMap { userRepository.changeUserImage(it) }
-            .performOnBackgroundOutOnMain()
-            .subscribe({
-                appData.getUserNew().image = it
-            }, {
-
-            })
-
-    }
-
 
     override fun onDestroy() {
-        timerCompositeDisposable.clear()
         compositeDisposable.clear()
         super.onDestroy()
     }

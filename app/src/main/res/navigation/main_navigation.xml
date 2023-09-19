@@ -849,7 +849,7 @@
 
     <activity
         android:id="@+id/image_crop_activity"
-        android:name="com.example.ui.views.galleryView.cropImage.CropImageActivity"
+        android:name="com.example.ui.gallery.cropImage.CropImageActivity"
         tools:layout="@layout/activity_crop">
 
         <argument
@@ -863,4 +863,25 @@
             app:nullable="true" />
     </activity>
 
+    <activity
+        android:id="@+id/custom_camera_activity"
+        android:name="com.example.ui.gallery.camera.CustomCameraActivity"
+        tools:layout="@layout/activity_custom_camera">
+
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="transition_name"
+            app:argType="string"
+            app:nullable="true" />
+    </activity>
+
+    <fragment
+        android:id="@+id/gallery_fragment"
+        android:name="com.example.ui.gallery.GalleryFragment"
+        tools:layout="@layout/bottom_sheet_gallery">
+    </fragment>
 </navigation>

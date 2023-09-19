@@ -83,12 +83,7 @@ class LoginPresenter
             .performOnBackgroundOutOnMain()
             .withInfinityCustomLoading(viewState)
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-                    if (hasApiError == true) viewState.showWrongPasswordError()
-                    else onReceiveError(it)
-                },
+                onError = { catchError(it) },
                 onComplete = {
                     Shake.registerUser(appData.getId().toString())
                 })
@@ -125,5 +120,13 @@ class LoginPresenter
 
     private fun getInviteBody(auth: NewAuthResponse): RebaseInviteBody {
         return RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
+    }
+
+    private fun catchError(it: Throwable) {
+        it.printStackTrace()
+        val hasApiError =
+            (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+        if (hasApiError == true) viewState.showWrongPasswordError()
+        else onReceiveError(it)
     }
 }

@@ -11,8 +11,8 @@ import androidx.core.os.bundleOf
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import com.example.R
-import com.isseiaoki.simplecropview.CropImageView
-import com.isseiaoki.simplecropview.util.Utils
+import com.example.ui.gallery.cropImage.cropHelper.CropImageView
+import com.example.ui.gallery.cropImage.cropHelper.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign

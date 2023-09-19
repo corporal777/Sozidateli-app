@@ -30,6 +30,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
+import withCheckInternetConnectivity
 import withProgressBarDialogLoading
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -133,7 +134,6 @@ class MainPresenter
                             showLogin()
                             checkIntent()
                         }
-
                     } else loadUser()
                 }
             }

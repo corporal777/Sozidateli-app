@@ -6,12 +6,12 @@ import com.example.data.AppData
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.ui.state.UserState
 import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.PHONE_PERSONAL
 import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
-import com.isseiaoki.simplecropview.CropImageView
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
