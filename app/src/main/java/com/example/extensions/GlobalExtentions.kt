@@ -6,7 +6,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
@@ -135,21 +134,12 @@ fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.O
     return watcher
 }
 
-fun ViewPager2.onPageChanged(
-    onPageChanged: (
-        position: Int,
-        positionOffset: Float,
-        positionOffsetPixels: Int
-    ) -> Unit
-): ViewPager2.OnPageChangeCallback {
+fun onPageSelected(onPageChanged: (position: Int) -> Unit): ViewPager2.OnPageChangeCallback {
     val listener = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageScrolled(
-            position: Int,
-            positionOffset: Float,
-            positionOffsetPixels: Int
-        ) = onPageChanged(position, positionOffset, positionOffsetPixels)
+        override fun onPageSelected(position: Int){
+            onPageChanged(position)
+        }
     }
-    registerOnPageChangeCallback(listener)
     return listener
 }
 

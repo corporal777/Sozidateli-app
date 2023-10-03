@@ -19,7 +19,6 @@ import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.getAppVersion
 import com.example.util.getAppVersionCode
 import com.example.util.getDeviceName
-import com.shakebugs.shake.Shake
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -84,9 +83,7 @@ class LoginPresenter
             .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { catchError(it) },
-                onComplete = {
-                    Shake.registerUser(appData.getId().toString())
-                })
+                onComplete = {})
     }
 
     private fun performDataChange() {
@@ -124,8 +121,7 @@ class LoginPresenter
 
     private fun catchError(it: Throwable) {
         it.printStackTrace()
-        val hasApiError =
-            (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
+        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
         if (hasApiError == true) viewState.showWrongPasswordError()
         else onReceiveError(it)
     }

@@ -3,12 +3,10 @@ package com.example.ui.state.base
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
@@ -18,18 +16,18 @@ import com.example.holders.MainInfoEditItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
-import com.example.ui.views.SetPasswordDialog
 import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
@@ -37,7 +35,6 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -92,17 +89,13 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                 user.loadUserImage(),
                 isEnableNext = { isEnable -> mBinding.btnSave.isEnabled = isEnable },
                 onEditPhoneClick = { presenter.onShowPhoneEdit(it) },
-                onImageClick = { showChangePhoto(it) }
+                onImageClick = { presenter.onShowImageEdit() }
             ).apply { dataItem = this }
         )
 
         onSaveClick = {
             if (dataItem.checkDataValid()) presenter.onSaveData(dataItem.getDataToSave())
         }
-    }
-
-    override fun photoUpdated(photo: ImageModel?) {
-        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setImage(photo)
     }
 
     override fun goToNext() {
@@ -210,19 +203,14 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         }
     }
 
-    private fun showChangePhoto(change: Boolean) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.photo_alert_title)
-            .apply {
-                if (change) {
-                    setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-                        presenter.onRemovePhotoClick()
-                    }
-                }
-            }
-            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-            .show()
+    override fun showChangeImage() {
+        GalleryBottomSheet()
+            .setPhotoUpdated { photoUpdated(it) }
+            .show(childFragmentManager)
+    }
+
+    override fun photoUpdated(photo: ImageModel?) {
+        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setImage(photo)
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_increase_base_state) }

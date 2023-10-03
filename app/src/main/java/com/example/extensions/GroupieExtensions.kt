@@ -20,6 +20,14 @@ inline fun <VH : GroupieViewHolder, reified I : NestedGroup> GroupAdapter<VH>.fi
     return null
 }
 
+inline fun <reified I : NestedGroup> GroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>.findGroup(selector: (I) -> Boolean): I? {
+    for (i in 0 until this.groupCount) {
+        val group = getGroup(i)
+        if (group is I && selector(group)) return group
+    }
+    return null
+}
+
 inline fun <VH : GroupieViewHolder, reified I : Item<*>> GroupAdapter<VH>.findItemAdapterPositionBy(selector: (I) -> Boolean): Int {
     val item = this.findItemBy(selector)
     return if (item == null) -1 else this.getAdapterPosition(item)

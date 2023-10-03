@@ -2,6 +2,7 @@ package com.example.ui.profile
 
 import android.content.Intent
 import android.content.Intent.*
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -15,6 +16,11 @@ import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.UserDetail
@@ -33,8 +39,6 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils
 import com.example.util.firstLetterToUppercase
 import com.example.util.setImage
-import com.shakebugs.shake.Shake
-import com.shakebugs.shake.ShakeScreen
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -75,7 +79,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             tvSessions.setOnClickListener { presenter.onSessionsClick() }
             tvRate.setOnClickListener { presenter.onRateClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
-            tvProblem.setOnClickListener { Shake.show(ShakeScreen.HOME) }
+            tvProblem.setOnClickListener {  }
             tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
             tvChangeAccount.setOnClickListener { presenter.onChangeAccountClick() }
             tvLogout.setOnClickListener { presenter.onLogoutClick() }
@@ -84,12 +88,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
 
     override fun setUser(user: UserDetail) {
-        mBinding.ivAvatar.apply {
-            setImage(
-                image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
-                transformations = listOf(RoundedCornersTransformation(10f.dp))
-            )
-        }
+        mBinding.ivAvatar.setImage(
+            image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
+            transformations = listOf(RoundedCornersTransformation(10f.dp))
+        )
         mBinding.tvName.text = user.nameLastName
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -121,8 +123,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
 
         mBinding.stateTitle.apply {
-            if (!hasBase && !hasMax) setTextColor(ContextCompat.getColor(requireContext(),R.color.red_new))
-            else setTextColor(ContextCompat.getColor(requireContext(),R.color.main_brown_color_new))
+            if (!hasBase && !hasMax) setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.red_new
+                )
+            )
+            else setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.main_brown_color_new
+                )
+            )
 
             text = newState
             setOnClickListener { showStates() }

@@ -42,11 +42,5 @@ interface UserProfileContract {
         fun onInterestsClick()
         fun onEducationClick()
         fun onExperienceClick()
-
-        fun onTakePhotoFromGalleryClick()
-        fun onTakePhotoFromCameraClick()
-        fun onTakePhotoFromListClick(uri : Uri)
-
-        fun onRemovePhotoClick()
     }
 }

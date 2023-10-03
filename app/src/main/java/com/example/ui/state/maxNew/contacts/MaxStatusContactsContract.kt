@@ -1,4 +1,4 @@
-package com.example.ui.state.maxNew.mainInfo
+package com.example.ui.state.maxNew.contacts
 
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType

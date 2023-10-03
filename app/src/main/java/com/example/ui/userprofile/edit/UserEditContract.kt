@@ -35,6 +35,9 @@ interface UserEditContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun deleteUserFile(file: FileModel, fileCount : Int)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun hideDeleteUserFile(file: FileModel)
+
         @StateStrategyType(SkipStrategy::class)
         fun showChangeEmail()
 
@@ -59,7 +62,6 @@ interface UserEditContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun navigateUpChecked()
 
-
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setPersonalTitle()
 
@@ -78,12 +80,17 @@ interface UserEditContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setInterestsTitle()
 
-
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun saveOnClick(saveOnClick: Boolean)
 
         @StateStrategyType(SkipStrategy::class)
         fun showPhoneNotUnique(phone: String)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showFileUploadLoading()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideFileUploadLoading()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -108,6 +115,6 @@ interface UserEditContract {
         fun onSaveInterestsClick(data: List<InterestNew>)
         fun onNavigateUpRequest()
 
-        fun onSavePersonalDataClick(data: MutableList<FileModel>, d: MutableMap<String, Any?>)
+        fun onSavePersonalDataClick(data: List<FileModel>, d: Map<String, Any?>)
     }
 }

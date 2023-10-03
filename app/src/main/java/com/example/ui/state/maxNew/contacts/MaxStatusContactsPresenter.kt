@@ -1,4 +1,4 @@
-package com.example.ui.state.maxNew.mainInfo
+package com.example.ui.state.maxNew.contacts
 
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
@@ -7,6 +7,7 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
@@ -38,25 +39,26 @@ class MaxStatusContactsPresenter
                     viewState.navigateUp()
                 },
                 onNext = {
-                    val user = it.value ?: throw RuntimeException("Edit null user")
-                    viewState.setPersonalData(user)
+                    val user = it.value
+                    if (user == null) viewState.navigateUp()
+                    else if (isUpdating) isUpdating = false
+                    else viewState.setPersonalData(user)
                 })
     }
 
     override fun saveContactsClick(data: MutableMap<String, Any?>) {
+        isUpdating = true
         if (data.isEmpty()) {
             viewState.navigateUp()
             return
         } else {
             compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
                 .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribe({
-                    checkNextScreen()
-                }, {
-                    it.printStackTrace()
-                    viewState.showUpdateError(it.message)
-                })
+                .withInfinityCustomLoading(viewState)
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onSuccess = { checkNextScreen() }
+                )
         }
     }
 

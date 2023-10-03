@@ -37,65 +37,12 @@ class UserProfilePresenter @Inject constructor(
         viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
     }
 
-    override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
-    override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
-    override fun onTakePhotoFromListClick(uri: Uri) = takePhoto(takePhoto.takeListImage(uri))
-
-    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
-        compositeDisposable += takePhotoRequest
-            .firstOrError()
-            .flatMap {
-                takePhoto.crop(
-                    resultRotation = it,
-                    outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
-                    outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
-                    cropMode = CropImageView.CropMode.SQUARE
-                )
-            }
-            .flatMap { userRepository.changeUserImage(it) }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onSuccess = {
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple(onSuccess = {})
-                    updateUserInternal {
-                        image = it
-                    }
-                })
-    }
-
-
-    override fun onRemovePhotoClick() {
-        compositeDisposable += userRepository.deleteImage()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onComplete = {
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple(onSuccess = {})
-                    updateUserInternal {
-                        image = ImageModel(null, null, null, null, null)
-                    }
-                }
-            )
-    }
-
     override fun onMainDataClick() = viewState.showMainData()
-
     override fun onContactsClick() = viewState.showContacts()
-
     override fun onInterestsClick() {
         if (!user.isHasInterests()) viewState.showEdit()
         else viewState.showInterests()
     }
-
     override fun onEducationClick() = viewState.showEducation()
-
     override fun onExperienceClick() = viewState.showExperience()
 }

@@ -8,18 +8,25 @@ import com.example.data.models.*
 import com.example.repository.AuthRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
+import com.example.ui.base.BaseContract
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import performOnBackgroundOutOnMain
+import withCustomLoading
+import withDelay
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import java.io.File
 import javax.inject.Inject
@@ -41,6 +48,7 @@ class UserEditPresenter
     private var isFileEdit = false
     private var isInterestsLoaded = false
     private var withUpdate = true
+    private var isUpdating = false
 
 
     override fun onFirstViewAttach() {
@@ -55,22 +63,26 @@ class UserEditPresenter
                     viewState.navigateUp()
                 },
                 onNext = {
-                    val user = it.value ?: throw RuntimeException("Edit null user")
-                    when (editType) {
-                        UserEditDataType.PERSONAL -> viewState.apply {
-                            setPersonalTitle()
-                            saveOnClick(true)
-                            setPersonalData(user, appData.getStateValue())
-                        }
-                        UserEditDataType.CONTACTS -> viewState.apply {
-                            setContactsTitle()
-                            setContactsData(user)
-                            saveOnClick(true)
-                        }
-                        UserEditDataType.INTERESTS -> viewState.apply {
-                            setInterestsTitle()
-                            getInterests(user)
-                            saveOnClick(true)
+                    val user = it.value
+                    if (user == null) viewState.navigateUp()
+                    else if (isUpdating) isUpdating = false
+                    else {
+                        when (editType) {
+                            UserEditDataType.PERSONAL -> viewState.apply {
+                                setPersonalTitle()
+                                saveOnClick(true)
+                                setPersonalData(user, appData.getStateValue())
+                            }
+                            UserEditDataType.CONTACTS -> viewState.apply {
+                                setContactsTitle()
+                                setContactsData(user)
+                                saveOnClick(true)
+                            }
+                            UserEditDataType.INTERESTS -> viewState.apply {
+                                setInterestsTitle()
+                                getInterests(user)
+                                saveOnClick(true)
+                            }
                         }
                     }
                 })
@@ -78,32 +90,34 @@ class UserEditPresenter
 
 
     override fun onSaveContactsClick(data: MutableMap<String, Any?>) {
-        compositeDisposable += userRepository.updateProfile(appData.getId(), data)
+        isUpdating = true
+        compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
+            .flatMap { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onSuccess = {
-                    viewState.navigateUp()
-                })
+                onSuccess = { viewState.navigateUp() })
     }
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
-        compositeDisposable += userRepository.updateProfile(
+        isUpdating = true
+        compositeDisposable += userRepository.updateUserProfile(
             appData.getId(),
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )
+            .flatMap { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onSuccess = {
-                    viewState.navigateUp()
-                })
+                onSuccess = { viewState.navigateUp() }
+            )
     }
 
 
-    override fun onSavePersonalDataClick(data: MutableList<FileModel>, d: MutableMap<String, Any?>) {
+    override fun onSavePersonalDataClick(data: List<FileModel>, d: Map<String, Any?>) {
+        isUpdating = true
         compositeDisposable += Completable.defer {
             if (data.isEmpty()) Completable.complete()
             else {
@@ -113,20 +127,18 @@ class UserEditPresenter
                     .ignoreElement()
             }
         }
-            .andThen(userRepository.updateProfile(appData.getId(), d))
+            .andThen(userRepository.updateUserProfile(appData.getId(), d))
+            .flatMap { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onSuccess = {
-                    viewState.navigateUp()
-                })
+                onSuccess = { viewState.navigateUp() }
+            )
     }
 
 
-    override fun onChangeEmailClick() {
-        viewState.showChangeEmail()
-    }
+    override fun onChangeEmailClick() = viewState.showChangeEmail()
 
     override fun checkPassword(password: String, phone: String) {
         compositeDisposable += userRepository.checkPasswordNew(password)
@@ -182,7 +194,7 @@ class UserEditPresenter
             .flatMap { f -> userRepository.uploadRecommendedFile(f).map { it.toFileModel() } }
             .map { newFile -> appData.updateFilesWithAdd(newFile) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withUploadFileLoading()
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.addUserFile(it, appData.getUserNew().filesCount) }
@@ -190,13 +202,15 @@ class UserEditPresenter
     }
 
     override fun onDeleteFilesClick(file: FileModel) {
-        compositeDisposable += userRepository.deleteRecommendedFile(file.id?.toInt()?:0)
+        compositeDisposable += userRepository.deleteRecommendedFile(file.id?.toInt() ?: 0)
             .andThen(Maybe.just(appData.updateFilesWithDelete(file)))
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { viewState.deleteUserFile(it, appData.getUserNew().filesCount ) }
+                onError = {
+                    onReceiveError(it)
+                    viewState.hideDeleteUserFile(file)
+                },
+                onSuccess = { viewState.deleteUserFile(it, appData.getUserNew().filesCount) }
             )
     }
 
@@ -250,7 +264,7 @@ class UserEditPresenter
 
 
     private fun fileRequestBody(file: File, field: String, mimeType: String): MultipartBody.Part? {
-        file.asRequestBody(mimeType.toMediaTypeOrNull())
+        //file.asRequestBody(mimeType.toMediaTypeOrNull())
         // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
         val body = file.asRequestBody(mimeType.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(field, file.name, body)
@@ -259,7 +273,7 @@ class UserEditPresenter
     private fun textRequestBody(text: String?, fieldName: String): MultipartBody.Part? =
         MultipartBody.Part.createFormData(fieldName, text ?: "")
 
-    private fun updatedFilesRequestBody(data: MutableList<FileModel>): Single<RequestBody> {
+    private fun updatedFilesRequestBody(data: List<FileModel>): Single<RequestBody> {
         return Single.fromCallable {
             MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -286,5 +300,26 @@ class UserEditPresenter
 
     fun isWithUpdate(): Boolean {
         return withUpdate
+    }
+
+    private fun <T> Single<T>.withUploadFileLoading(): Single<T> {
+        val loadingDisposable = Completable.complete()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { viewState.showFileUploadLoading() }
+            .doOnDispose { viewState.hideFileUploadLoading() }
+            .subscribe()
+        val actionHide = Action {
+            if (loadingDisposable.isDisposed) viewState.hideFileUploadLoading()
+            else loadingDisposable.dispose()
+        }
+
+        fun <T> actionConsumer() = Consumer<T> {
+            if (loadingDisposable.isDisposed) viewState.hideFileUploadLoading()
+            else loadingDisposable.dispose()
+        }
+        return this.doFinally(actionHide)
+            .doOnDispose(actionHide)
+            .doOnSuccess(actionConsumer())
+            .doOnError(actionConsumer())
     }
 }

@@ -18,19 +18,29 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
 ) : BasePresenter<V>(appData), BaseMaxStateContract.Presenter {
 
     var screen = -1
-
+    var isUpdating = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.buttonNextEnabled(false)
     }
 
-    fun checkNextScreen(){
+    fun checkNextScreen() {
         compositeDisposable += userRepository.checkUserProfileSingle()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { viewState.goToNextScreen(Utils.maxStateScreen(getUserData())) },
-                onSuccess = { viewState.goToNextScreen(Utils.maxStateScreenNew(it)) }
+                onError = {
+                    viewState.apply {
+                        hideCustomLoading()
+                        goToNextScreen(Utils.maxStateScreen(getUserData()))
+                    }
+                },
+                onSuccess = {
+                    viewState.apply {
+                        hideCustomLoading()
+                        goToNextScreen(Utils.maxStateScreenNew(it))
+                    }
+                }
             )
     }
 

@@ -75,7 +75,7 @@ class ProfileDataAcademicDegreeEditItem(
 
     private fun setupDropDown(
         textView: AutoCompleteTextView,
-        textInputLayout: TextInputLayout,
+        baseTextInputLayout: TextInputLayout,
         variants: List<EducationLevel>,
         initialVariant: String?,
         onSelect: (EducationLevel?) -> Unit
@@ -90,7 +90,7 @@ class ProfileDataAcademicDegreeEditItem(
             )
             setText(initialVariant)
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                textInputLayout.error = null
+                baseTextInputLayout.error = null
                 onSelect(variants.getOrNull(position))
             }
         }

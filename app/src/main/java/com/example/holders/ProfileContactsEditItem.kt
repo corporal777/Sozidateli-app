@@ -59,8 +59,7 @@ class ProfileContactsEditItem(
     private lateinit var viewHolder: GroupieViewHolder
 
     private val invalidNumberError = context.getString(R.string.invalid_phone_number_error)
-    private val invalidNumberSecondError =
-        context.getString(R.string.invalid_phone_number_second_error)
+    private val invalidNumberSecondError = context.getString(R.string.invalid_phone_number_second_error)
     private val invalidError = context.getString(R.string.fill_field)
 
     private var mMobilePhone = mobilePhone?.value
@@ -490,32 +489,33 @@ class ProfileContactsEditItem(
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-
-            //add personal phone
-            val list = mutableListOf<FieldDetails>()
-            list.add(
-                FieldDetails(
-                    Utils.validatePhoneBeforeSend(getPersonalPhone() ?: ""),
-                    type = PHONE_PERSONAL,
-                    mShowMobilePhone,
-                    mIsPhoneConfirmed,
-                    false
+            val list = mutableListOf<FieldDetails>().apply {
+                //add personal phone
+                add(
+                    FieldDetails(
+                        Utils.validatePhoneBeforeSend(getPersonalPhone() ?: ""),
+                        type = PHONE_PERSONAL,
+                        mShowMobilePhone,
+                        mIsPhoneConfirmed,
+                        false
+                    )
                 )
-            )
-
-            //add work phone
-            val workPhoneUpdate = if (mNoWorkPhone) null
-            else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer() ?: "")
-
-            list.add(
-                FieldDetails(
-                    value = workPhoneUpdate,
-                    type = PHONE_WORK,
-                    isVisible = mShowWorkPhone,
-                    absent = mNoWorkPhone,
-                    additional = mAdditionalPhone
+                //add work phone
+                val workPhoneValue = if (mNoWorkPhone) null
+                else {
+                    if (mWorkPhone.isNullOrEmpty()) null
+                    else Utils.validatePhoneBeforeSend(mWorkPhone.phoneToServer()!!)
+                }
+                add(
+                    FieldDetails(
+                        value = workPhoneValue,
+                        type = PHONE_WORK,
+                        isVisible = mShowWorkPhone,
+                        absent = mNoWorkPhone,
+                        additional = mAdditionalPhone
+                    )
                 )
-            )
+            }
             put(UserDetail.USER_PHONE, list)
 
 

@@ -17,10 +17,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.transition.AutoTransition
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.data.models.ImageModel
 import com.example.databinding.BottomSheetGalleryBinding
 import com.example.extensions.*
 import com.example.holders.ProfileContactsEditItem
@@ -56,7 +60,9 @@ class GalleryBottomSheet() :
     @ProvidePresenter(type = PresenterType.WEAK, tag = GALLERY_TAG)
     fun providePresenter(): GalleryBottomPresenter = presenterProvider.get()
 
-    private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+
+    private var onPhotoUpdated: (photo : ImageModel?) -> Unit = {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,6 +90,15 @@ class GalleryBottomSheet() :
         groupAdapter.findItemBy<GroupieViewHolder, CameraPreviewItem> { true }?.apply {
             notifyChanged(true)
         }
+    }
+
+    override fun setPhotoUpdated(image: ImageModel?) {
+        onPhotoUpdated.invoke(image)
+    }
+
+    fun setPhotoUpdated(block : (image : ImageModel?) -> Unit) : GalleryBottomSheet {
+        onPhotoUpdated = block
+        return this
     }
 
     override fun hideGalleryFragment() = dismiss()

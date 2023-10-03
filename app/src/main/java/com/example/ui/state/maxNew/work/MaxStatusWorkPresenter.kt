@@ -8,6 +8,7 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
@@ -39,20 +40,21 @@ class MaxStatusWorkPresenter
                     viewState.navigateUp()
                 },
                 onNext = {
-                    val user = it.value ?: throw RuntimeException("Edit null user")
-                    viewState.setWorkData(user)
+                    val user = it.value
+                    if (user == null) viewState.navigateUp()
+                    else if (isUpdating) isUpdating = false
+                    else viewState.setWorkData(user)
                 })
     }
 
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {
+        isUpdating = true
         compositeDisposable += userRepository.updateWorkExperience(data)
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribe({
-                checkNextScreen()
-            }, {
-                it.printStackTrace()
-                viewState.showUpdateError(it.message)
-            })
+            .withInfinityCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { checkNextScreen() }
+            )
     }
 }

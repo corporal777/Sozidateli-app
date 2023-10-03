@@ -5,8 +5,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/main_background"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/main_background">
 
         <View
             android:id="@+id/divider"
@@ -22,21 +22,22 @@
             android:layout_height="0dp"
             android:layout_marginBottom="15dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/btnEdit"
+            app:layout_constraintBottom_toTopOf="@+id/btnSave"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
             tools:listitem="@layout/item_profile_data_interest" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnEdit"
-            style="@style/BtnBrownStyle"
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btnSave"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
-            android:minHeight="@dimen/auth_button_min_height"
             android:layout_marginBottom="20dp"
-            android:text="@string/user_profile_save"
+            app:buttonBackground="@drawable/custom_btn_brown_selectable"
+            app:buttonMinHeight="@dimen/auth_button_min_height"
+            app:buttonText="@string/user_profile_save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

@@ -54,7 +54,7 @@ class CropImagePresenter
     }
 
     override fun onShowImageCrop(uri: Uri?, width: Int, height: Int) {
-        timerCompositeDisposable += Observable.timer(500, TimeUnit.MILLISECONDS)
+        timerCompositeDisposable += Observable.timer(200, TimeUnit.MILLISECONDS)
             .flatMapSingle { Single.defer { Single.just(createBitmap(uri, width, height)) } }
             .performOnBackgroundOutOnMain()
             .subscribe({

@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
-import com.shakebugs.shake.Shake
 import com.vk.sdk.VKSdk
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -33,22 +32,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     override fun onCreate() {
         super.onCreate()
 
-        //Shake bug init
-        if (!BuildConfig.DEBUG) {
-            Shake.getReportConfiguration().isScreenshotIncluded = false
-            Shake.getReportConfiguration().isInvokeShakeOnShakeDeviceEvent = false
-        }
-        Shake.setCrashReportingEnabled(true)
-        Shake.start(
-            this,
-            getString(R.string.shake_client_id),
-            getString(R.string.shake_client_secret)
-        )
-
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
         createNotificationChannels()
 

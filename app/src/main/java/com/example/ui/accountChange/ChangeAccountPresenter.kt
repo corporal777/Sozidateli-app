@@ -10,7 +10,6 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.accountChange.data.AuthType
 import com.example.ui.base.BasePresenter
-import com.shakebugs.shake.Shake
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
@@ -110,12 +109,10 @@ class ChangeAccountPresenter
                 viewState.showCustomProgressDialog()
                 if (!isCurrentUser(session.binds.user.id.toString())) {
                     compositeDisposable += Completable.fromAction {
-                        Shake.unregisterUser()
                         viewState.setIgnoreTokenListener(false)
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
-                        Shake.registerUser(appData.getId().toString())
                     }.doOnComplete { appData.token = session.sessionUid }
                         .performOnBackgroundOutOnMain()
                         .subscribeSimple {
@@ -187,7 +184,6 @@ class ChangeAccountPresenter
             canShowMenu = false
             userRepository.logout(appData.getId())
                 .doOnComplete {
-                    Shake.unregisterUser()
                     viewState.setIgnoreTokenListener(true)
                     appData.isSubscribedToPush = false
                     socket.disconnectFromSocket()

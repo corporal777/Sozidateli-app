@@ -17,7 +17,6 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.shakebugs.shake.Shake
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -146,11 +145,7 @@ class FinishRegisterPresenter
                     onSuccess = { user ->
                         disposable += confirmCodeRequest().subscribeSimple(
                             onError = { emitter.onError(CodeInvalidException()) },
-                            onComplete = {
-                                Shake.registerUser(user.id.toString())
-                                updateUserInShake(user)
-                                emitter.onComplete()
-                            })
+                            onComplete = { emitter.onComplete() })
                     })
             emitter.setDisposable(disposable)
         }

@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <com.example.ui.views.CustomProgressBar
+            android:id="@+id/progress_load"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tvEdit"
+            app:layout_constraintEnd_toEndOf="@id/tvEdit"
+            app:layout_constraintStart_toStartOf="@id/tvEdit"
+            app:layout_constraintTop_toTopOf="@id/tvEdit"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tvEdit"
@@ -13,6 +25,8 @@
             android:layout_marginHorizontal="@dimen/margin_horizontal_default"
             android:layout_marginTop="15dp"
             android:text="@string/attach_file"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -25,6 +39,7 @@
             android:lineSpacingExtra="10dp"
             android:text="@string/user_profile_upload_photo_help"
             android:textColor="@color/input_hint_text_color"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/tvEdit" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

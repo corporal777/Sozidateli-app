@@ -145,7 +145,6 @@ class MainPresenter
             disposable += userRepository.getUserShortNew().subscribeSimple(
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
-                    updateUserInShake(user)
                     disposable += Completable.merge(listOf(getInAppRequest(), getAdditionalData()))
                         .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })

@@ -12,6 +12,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.example.R
 import com.example.databinding.DialogBlurredEventAddedToFavoriteBinding
+import com.example.ui.views.blur.BlurHelper
 
 class EventAddedToFavoriteBlurredDialog (
     val action: Int = 0,

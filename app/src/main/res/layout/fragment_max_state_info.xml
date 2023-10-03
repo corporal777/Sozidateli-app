@@ -5,8 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -23,18 +22,19 @@
             tools:itemCount="1"
             tools:listitem="@layout/item_edit_main_info" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnSave"
-            style="@style/BtnBrownStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:minHeight="@dimen/auth_button_min_height"
-            android:text="@string/auth_action_continue"
+            app:buttonBackground="@drawable/custom_btn_brown_selectable"
+            app:buttonMinHeight="@dimen/auth_button_min_height"
+            app:buttonText="@string/auth_action_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

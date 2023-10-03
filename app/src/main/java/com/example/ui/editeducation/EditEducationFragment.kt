@@ -46,7 +46,7 @@ class EditEducationFragment : BaseFragment<FragmentEditEducationFragmentBinding>
             rvInterests.apply {
                 adapter = groupAdapter
             }
-            btnEdit.setOnClickListener { saveData() }
+            btnSave.setOnClickListener { saveData() }
         }
 
     }
@@ -94,19 +94,20 @@ class EditEducationFragment : BaseFragment<FragmentEditEducationFragmentBinding>
     }
 
     override fun buttonSaveEnabled(enable: Boolean) {
-        mBinding.btnEdit.isEnabled = enable
+        mBinding.btnSave.isEnabled = enable
     }
 
-    override fun showUpdateError(message: String?) {
-        val title = getString(R.string.profile_edit_request_error)
-        Toast.makeText(requireContext(), message?.let { "$title: $it" }
-            ?: title, Toast.LENGTH_SHORT).show()
+    override fun showCustomLoading() {
+        mBinding.apply { btnSave.showProgressLoading(true) }
+    }
+
+    override fun hideCustomLoading(){
+        mBinding.apply { btnSave.showProgressLoading(false) }
     }
 
     override fun layout(): Int = R.layout.fragment_edit_education_fragment
     override val title: CharSequence by lazy { getString(R.string.profile_title_education) }
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: (value: Int) -> Unit) {}
-
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

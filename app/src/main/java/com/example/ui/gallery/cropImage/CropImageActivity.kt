@@ -46,9 +46,7 @@ class CropImageActivity : BaseCustomActivity<ActivityImageCropBinding>(),
         mBinding.btnSave.setOnClickListener {
             presenter.saveCroppedImage(mBinding.customCropView.croppedImageRequest)
         }
-        mBinding.btnCancel.setOnClickListener {
-            onBackPressed()
-        }
+        mBinding.btnCancel.setOnClickListener { onBackPressed() }
 
         val cropSubject = CropCallbackHelper.getCropFinishedRequest()
         if (cropSubject == null) {
@@ -62,30 +60,26 @@ class CropImageActivity : BaseCustomActivity<ActivityImageCropBinding>(),
         Glide.with(this).load(uri)
             .signature(ObjectKey(System.currentTimeMillis()))
             .into(mBinding.imageView).getSize { width, height ->
-                startPostponedEnterTransition()
                 presenter.onShowImageCrop(uri, width, height)
                 isBackEnabled = false
             }
     }
 
     override fun showImageCrop(uri: Uri?, bitmap: Bitmap?) {
-        mBinding.apply {
-            imageView.isInvisible = true
-            customCropView.apply {
-                setAspectRatio(1, 1);
-                //setFixedAspectRatio(true);
-                setImageBitmap(bitmap)
-            }
-            isBackEnabled = true
+        mBinding.customCropView.apply {
+            setAspectRatio(1, 1);
+            setImageBitmap(bitmap)
         }
+        startPostponedEnterTransition()
+        isBackEnabled = true
     }
 
     override fun setCustomTransitionName(transitionName: String) {
-        mBinding.imageView.transitionName = transitionName
+        mBinding.customCropView.transitionName = transitionName
     }
 
     override fun setDefaultTransitionName() {
-        mBinding.imageView.transitionName = getString(R.string.image_transition_name)
+        mBinding.customCropView.transitionName = getString(R.string.image_transition_name)
     }
 
     override fun showProgressDialog() = mProgressDialog.showDialog()
@@ -93,11 +87,8 @@ class CropImageActivity : BaseCustomActivity<ActivityImageCropBinding>(),
     override fun closeCropActivity() = onBackPressed()
 
     override fun onBackPressed() {
-        if (isBackEnabled) {
-            mBinding.imageView.isInvisible = false
-            mBinding.customCropView.isInvisible = true
-            super.onBackPressed()
-        } else return
+        if (isBackEnabled) super.onBackPressed()
+        else return
     }
 
     override fun finish() {

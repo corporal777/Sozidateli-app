@@ -27,7 +27,7 @@ android {
         versionName "1.0.39"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
-        //renderscriptSupportModeEnabled true
+        renderscriptSupportModeEnabled true
     }
 
     buildFeatures {
@@ -232,7 +232,6 @@ dependencies {
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
-
     //ui
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
     implementation "com.github.lisawray.groupie:groupie:2.6.0"
@@ -289,7 +288,7 @@ dependencies {
     androidTestImplementation 'com.google.firebase:testlab-instr-lib:0.2'
 
     //Shake bugs
-    implementation 'com.shakebugs:shake:15.3.0'
+    //implementation 'com.shakebugs:shake:15.3.0'
 
     // CameraX
     implementation "androidx.camera:camera-camera2:1.0.0-rc01"

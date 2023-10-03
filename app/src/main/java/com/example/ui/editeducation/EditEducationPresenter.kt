@@ -1,5 +1,6 @@
 package com.example.ui.editeducation
 
+import call
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
@@ -9,6 +10,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -25,39 +27,27 @@ class EditEducationPresenter
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
-                val user = it.value ?: throw RuntimeException("Edit null user")
-                viewState.apply {
-                    setEducationData(user)
-                }
+                val user = it.value
+                if (user != null) viewState.setEducationData(user)
             }, {
                 it.printStackTrace()
                 viewState.navigateUp()
             })
     }
 
-    override fun attachView(view: EditEducationContract.View?) {
-        super.attachView(view)
-    }
-
-
     override fun onSaveEducationClick(
         educationLevel: ToggleIntModel?,
         educationsList: List<EducationModel>?,
         degree: List<AcademicDegreeModel>?
     ) {
-
-        compositeDisposable += userRepository.updateUserEducation(
-            educationLevel,
-            educationsList,
-            degree
-        )
+        userRepository.updateUserEducation(educationLevel, educationsList, degree)
             .map { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { viewState.navigateUp() }
-            )
+            ).call(compositeDisposable)
     }
 
     fun getBaseUserState() = appData.hasBaseState

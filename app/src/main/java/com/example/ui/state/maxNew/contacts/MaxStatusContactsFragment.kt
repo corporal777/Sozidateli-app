@@ -1,4 +1,4 @@
-package com.example.ui.state.maxNew.mainInfo
+package com.example.ui.state.maxNew.contacts
 
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -66,7 +66,7 @@ class MaxStatusContactsFragment : BaseMaxStateFragment<MaxStatusContactsPresente
         if (user.binds?.recommendationFile?.isEmpty() == true) isGoToNex = false
         if (user.phone?.firstOrNull { it.type == PHONE_WORK }?.value == null) isGoToNex = false
         if (user.contactInformation.socialLinks?.values?.isEmpty() == true) isGoToNex = false
-        if (user.contactInformation.site?.values?.isEmpty() == true) isGoToNex = false
+        //if (user.contactInformation.site?.values?.isEmpty() == true) isGoToNex = false
         if (user.email?.value.isNullOrEmpty()) isGoToNex = false
         if (user.notes?.value.isNullOrEmpty()) isGoToNex = false
         return isGoToNex

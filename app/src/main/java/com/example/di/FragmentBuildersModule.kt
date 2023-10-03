@@ -69,7 +69,7 @@ import com.example.ui.state.UserStateFragment
 import com.example.ui.state.base.MainInfoFragment
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragment
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragment
-import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragment
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragment
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubEventFragment
@@ -90,8 +90,7 @@ import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.gallery.GalleryBottomSheet
-import com.example.ui.gallery.GalleryFragment
-import com.example.ui.gallery.camera.CustomCameraActivity
+import com.example.ui.gallery.test.TestBlurFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -370,5 +369,5 @@ abstract class FragmentBuildersModule {
     abstract fun contributeGalleryBottomSheet(): GalleryBottomSheet
 
     @ContributesAndroidInjector
-    abstract fun contributeGalleryFragment(): GalleryFragment
+    abstract fun contributeTestBlurFragment(): TestBlurFragment
 }

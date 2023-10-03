@@ -10,6 +10,7 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
@@ -36,8 +37,10 @@ class MaxStatusEducationPresenter
                 } else it
             }
             .subscribe({
-                val user = it.value ?: throw RuntimeException("Edit null user")
-                viewState.setEducationData(user)
+                val user = it.value
+                if (user == null) viewState.navigateUp()
+                else if (isUpdating) isUpdating = false
+                else viewState.setEducationData(user)
             }, {
                 it.printStackTrace()
                 viewState.navigateUp()
@@ -49,18 +52,18 @@ class MaxStatusEducationPresenter
         educationsList: List<EducationModel>?,
         degree: List<AcademicDegreeModel>?
     ) {
+        isUpdating = true
         compositeDisposable += userRepository.updateUserEducation(
             educationLevel,
             educationsList,
             degree
         )
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribe({
-                checkNextScreen()
-            }, {
-                onReceiveError(it)
-            })
+            .withInfinityCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { checkNextScreen() }
+            )
     }
 
 }

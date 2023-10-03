@@ -62,7 +62,7 @@ class ImageUtil {
                 })
         }
 
-        fun getGalleryImages(context: Context): MutableList<Uri> {
+        fun getGalleryImages(context: Context): Maybe<MutableList<Uri>> {
             val fileList = mutableListOf<Uri>()
             val projection = arrayOf(MediaStore.Files.FileColumns._ID)
             val sortOrder = MediaStore.Images.Media._ID + " DESC"
@@ -87,7 +87,7 @@ class ImageUtil {
                     fileList.add(contentUri)
                 }
             }
-            return fileList
+            return Maybe.just(fileList)
         }
     }
 }

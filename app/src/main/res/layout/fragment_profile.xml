@@ -207,6 +207,7 @@
                 app:drawableStartCompat="@drawable/ic_profile_email_edit" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tvProblem"
                 style="@style/Profile.ButtonPages"
                 android:layout_marginTop="5dp"

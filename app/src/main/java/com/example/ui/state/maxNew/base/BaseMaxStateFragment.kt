@@ -13,7 +13,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
@@ -138,6 +138,18 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     fun getAdapter() = groupAdapter
+
+    override fun showCustomLoading() {
+        mBinding.apply {
+            btnSave.showProgressLoading(true)
+        }
+    }
+
+    override fun hideCustomLoading(){
+        mBinding.apply {
+            btnSave.showProgressLoading(false)
+        }
+    }
 
     override fun actionIconContainer(view: ViewGroup) {
         view.apply {

@@ -24,6 +24,9 @@ interface MainInfoContract {
         @StateStrategyType(SkipStrategy::class)
         fun showEmailConfirm(email: String)
 
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showChangeImage()
+
         @StateStrategyType(AddToEndSingleStrategy::class)
         fun photoUpdated(photo: ImageModel?)
 
@@ -41,10 +44,6 @@ interface MainInfoContract {
 
         fun onShowEmailConfirm(email: String)
         fun onShowPhoneEdit(phone: String?)
-
-
-        fun onTakePhotoFromGalleryClick()
-        fun onTakePhotoFromCameraClick()
-        fun onRemovePhotoClick()
+        fun onShowImageEdit()
     }
 }

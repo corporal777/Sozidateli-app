@@ -3,9 +3,6 @@ package com.example.ui.gallery
 import android.Manifest
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.ImageView
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
@@ -22,7 +19,6 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -45,10 +41,10 @@ class GalleryBottomPresenter
             Manifest.permission.CAMERA
         )
             .flatMapMaybe {
-                if (it) Maybe.just(ImageUtil.getGalleryImages(context))
-                    .doOnSuccess { imagesList = it }
+                if (it) Maybe.defer { ImageUtil.getGalleryImages(context) }
                 else Maybe.error(PermissionNotGrantedException())
             }
+            .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.hideGalleryFragment() },
                 onNext = { viewState.setGalleryImages(it) }
@@ -79,7 +75,12 @@ class GalleryBottomPresenter
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onSuccess = { viewState.hideGalleryFragment() }
+                onSuccess = {
+                    viewState.apply {
+                        setPhotoUpdated(appData.getUserNew().image)
+                        hideGalleryFragment()
+                    }
+                }
             )
     }
 
@@ -87,11 +88,15 @@ class GalleryBottomPresenter
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it) viewState.hideGalleryFragment()
+                viewState.apply {
+                    if (it) {
+                        setPhotoUpdated(appData.getUserNew().image)
+                        hideGalleryFragment()
+                    }
+                }
             }
     }
 
 
     fun isHasAnyState() = appData.hasBaseState || appData.hasMaxState
-
 }

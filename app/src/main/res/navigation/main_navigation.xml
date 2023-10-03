@@ -627,7 +627,7 @@
 
     <fragment
         android:id="@+id/maxStatusContactsFragment"
-        android:name="com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragment"
+        android:name="com.example.ui.state.maxNew.contacts.MaxStatusContactsFragment"
         android:label="MaxStatusContactsFragment">
         <argument
             android:name="screen"
@@ -880,8 +880,9 @@
     </activity>
 
     <fragment
-        android:id="@+id/gallery_fragment"
-        android:name="com.example.ui.gallery.GalleryFragment"
+        android:id="@+id/test_blur_fragment"
+        android:name="com.example.ui.gallery.test.TestBlurFragment"
         tools:layout="@layout/bottom_sheet_gallery">
     </fragment>
+
 </navigation>

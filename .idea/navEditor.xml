@@ -215,18 +215,6 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="d_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="destination_scheme_fragment">
                     <value>
                       <LayoutPositions>
@@ -887,6 +875,18 @@
                     </value>
                   </entry>
                   <entry key="system_notifications_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="test_blur_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

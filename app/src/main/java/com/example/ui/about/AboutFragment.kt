@@ -21,7 +21,6 @@ import javax.inject.Provider
 class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.View,
     ToolbarFragment {
 
-
     @InjectPresenter
     lateinit var presenter: AboutPresenter
 

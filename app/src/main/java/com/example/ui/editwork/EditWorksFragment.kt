@@ -47,7 +47,7 @@ class EditWorksFragment : BaseFragment<FragmentEditWorkFragmentBinding>(),
             rvInterests.apply {
                 adapter = this@EditWorksFragment.groupAdapter
             }
-            btnEdit.setOnClickListener {
+            btnSave.setOnClickListener {
                 saveData()
             }
         }
@@ -72,7 +72,15 @@ class EditWorksFragment : BaseFragment<FragmentEditWorkFragmentBinding>(),
     }
 
     override fun buttonSaveEnabled(enable: Boolean) {
-        mBinding.btnEdit.isEnabled = enable
+        mBinding.btnSave.isEnabled = enable
+    }
+
+    override fun showCustomLoading() {
+        mBinding.apply { btnSave.showProgressLoading(true) }
+    }
+
+    override fun hideCustomLoading(){
+        mBinding.apply { btnSave.showProgressLoading(false) }
     }
 
 

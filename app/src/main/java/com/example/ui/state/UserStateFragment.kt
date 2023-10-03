@@ -1,6 +1,7 @@
 package com.example.ui.state
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -16,12 +17,15 @@ import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.mainInfo.MaxStatusContactsFragmentArgs
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
+import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.google.android.material.tabs.TabLayoutMediator
 import onBackPressedCallback
+import onPageChanged
+import onPageSelected
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -37,19 +41,25 @@ class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStat
     @ProvidePresenter
     fun providePresenter(): UserStatePresenter = presenterProvider.get()
 
+    private val onPageSelected = onPageSelected { selectTab(it) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startPostponedEnterTransition()
-        onBackPressedCallback(true) {
-            presenter.onClickClose()
+        mBinding.apply {
+            viewPager.run {
+                selectTab(currentItem)
+                registerOnPageChangeCallback(onPageSelected)
+            }
+            btnBase.setOnClickListener { viewPager.currentItem = 0 }
+            btnMax.setOnClickListener { viewPager.currentItem = 1 }
         }
     }
 
     override fun setStatesUI(states: List<StateItemModel>) {
-        val tabsList = listOf(getString(R.string.base), getString(R.string.max))
         val adapter = UserStateAdapter {
             when (it) {
-                UserState.BASE ->{
+                UserState.BASE -> {
                     findNavController().navigate(
                         R.id.mainInfoFragment,
                         MainInfoFragmentArgs.Builder().setType(it).setScreen(2).build().toBundle()
@@ -93,24 +103,21 @@ class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStat
                     else {
                         findNavController().navigate(
                             R.id.mainInfoFragment,
-                            MainInfoFragmentArgs.Builder().setType(it).setScreen(2).build().toBundle()
+                            MainInfoFragmentArgs.Builder().setType(it).setScreen(2).build()
+                                .toBundle()
                         )
                     }
                 }
             }
         }
         adapter.submitList(states)
-        mBinding.apply {
-            viewPager.adapter = adapter
-            TabLayoutMediator(tabs, viewPager) { tab, position ->
-                tab.text = tabsList[position]
-            }.attach()
-            for (tabIndex in 0 until tabs.tabCount) {
-                val tabTextView =
-                    ((tabs.getChildAt(0) as LinearLayout).getChildAt(tabIndex) as LinearLayout).getChildAt(
-                        1
-                    ) as TextView
-                tabTextView.isAllCaps = false
+        mBinding.viewPager.adapter = adapter
+    }
+
+    private fun selectTab(position: Int) {
+        mBinding.clTabs.apply {
+            for (p in 0 until childCount) {
+                getChildAt(p).isSelected = p == position
             }
         }
     }

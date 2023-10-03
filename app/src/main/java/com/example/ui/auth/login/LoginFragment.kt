@@ -15,7 +15,6 @@ import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.loading.LoadingIndicatorView
 import kotlinx.android.synthetic.main.fragment_login.*
 import onTextChanged
 import javax.inject.Inject

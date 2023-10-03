@@ -1,13 +1,7 @@
 package com.example.holders
 
-import android.content.Context
-import android.util.Log
-import com.example.R
 import com.example.data.models.FileModel
-import com.example.data.models.UserDetail
 import com.example.extensions.forEachGroups
-import com.example.extensions.updateItem
-import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -50,18 +44,28 @@ class ProfileDataFileEditableGroup(
     fun removeFileItem(file: FileModel, fileCount: Int) {
         val fileItem = fileItems.find { x -> x.id == file.id?.toLong() }
         if (fileItem != null) {
+            fileItem.hideLoadingIcon()
             fileItems.remove(fileItem)
             fileGroup.update(fileItems)
         }
         updateButton(fileCount)
     }
 
+    fun hideFileDeleteLoading(file: FileModel) {
+        fileItems.find { x -> x.id == file.id?.toLong() }?.hideLoadingIcon()
+    }
+
+    fun showUploadLoading() {
+        addFileItem.showLoading()
+        addFileItem.notifyChanged()
+    }
+    fun hideUploadLoading(){
+        addFileItem.hideLoading()
+        addFileItem.notifyChanged()
+    }
 
     private fun createFileItem(file: FileModel): ProfileDataFileEditableItem {
-        return ProfileDataFileEditableItem(
-            file,
-            onFileClick
-        ) {
+        return ProfileDataFileEditableItem(file, onFileClick) {
             deleteFile(it)
         }
     }

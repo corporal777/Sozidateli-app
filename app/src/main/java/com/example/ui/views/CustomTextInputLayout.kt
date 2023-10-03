@@ -1,16 +1,21 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import androidx.core.content.res.getDrawableOrThrow
 import com.example.R
 import com.example.extensions.dp
-import com.example.ui.userprofile.edit.items.AboutAdditionalInfoBottomSheet
 import com.google.android.material.textfield.TextInputLayout
 
 class CustomTextInputLayout : TextInputLayout {
@@ -22,6 +27,8 @@ class CustomTextInputLayout : TextInputLayout {
         defStyleAttr
     )
 
+    private var oldIconDrawable: Drawable? = null
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         findViewById<View>(R.id.text_input_end_icon)?.apply {
             minimumHeight = 42.dp
@@ -30,12 +37,10 @@ class CustomTextInputLayout : TextInputLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-
     fun showError(text: CharSequence?) {
         isErrorEnabled = !text.isNullOrBlank()
         error = text
     }
-
 
     override fun setErrorEnabled(enabled: Boolean) {
         super.setErrorEnabled(enabled)
@@ -63,4 +68,38 @@ class CustomTextInputLayout : TextInputLayout {
             endIconMode = END_ICON_NONE
         }
     }
+
+    fun showLoadingIcon() {
+        if (oldIconDrawable == null) oldIconDrawable = endIconDrawable
+        endIconDrawable = getProgressBarDrawable()
+    }
+
+    fun hideLoadingIcon() {
+        endIconDrawable = oldIconDrawable
+    }
+
+    private fun getProgressBarDrawable(): Drawable {
+        val value = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.progressBarStyleSmall, value, false)
+        val progressBarStyle = value.data
+        val attributes = intArrayOf(android.R.attr.indeterminateDrawable)
+        val array = context.obtainStyledAttributes(progressBarStyle, attributes)
+        val drawable = array.getDrawableOrThrow(0)
+        array.recycle()
+
+        (drawable as? Animatable)?.start()
+
+        setEndIconTintList(ContextCompat.getColorStateList(context, R.color.main_brown_color_new))
+        drawable.setTintList(ContextCompat.getColorStateList(context, R.color.main_brown_color_new))
+
+        return getResizedDrawable(drawable)
+    }
+
+
+    private fun getResizedDrawable(drawable: Drawable): Drawable {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            LayerDrawable(arrayOf(drawable)).also { it.setLayerSize(0, 25.dp, 25.dp) }
+        } else drawable
+    }
+
 }

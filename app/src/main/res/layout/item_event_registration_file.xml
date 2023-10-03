@@ -6,7 +6,7 @@
     android:layout_marginEnd="0dp">
 
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/baseTextInputLayout"
         style="@style/Profile.Edit.PasswordNew"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:minWidth="48dp"
         android:minHeight="42dp"
         android:src="@drawable/ic_delete"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/baseTextInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toTopOf="@+id/baseTextInputLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

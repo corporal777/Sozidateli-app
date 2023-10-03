@@ -1,6 +1,7 @@
 package com.example.ui.userprofile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
@@ -24,7 +25,6 @@ import javax.inject.Provider
 class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
     UserProfileContract.View, ToolbarFragment {
 
-
     override fun layout() = R.layout.fragment_user_profile
 
     @InjectPresenter
@@ -35,7 +35,6 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
 
     @ProvidePresenter
     fun providePresenter(): UserProfilePresenter = presenterProvider.get()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,25 +63,9 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
     }
 
     override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
-
-//        AlertDialog.Builder(requireContext())
-//            .setTitle(R.string.photo_alert_title)
-//            .apply {
-//                if (canRemove) {
-//                    setNeutralButton(R.string.photo_alert_remove) { _, _ ->
-//                        showEditWarning(isBase, isMax, false, true) {
-//                            presenter.onRemovePhotoClick()
-//                        }
-//                    }
-//                }
-//            }
-//            .setPositiveButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakePhotoFromGalleryClick() }
-//            .setNegativeButton(R.string.photo_alert_camera) { _, _ -> presenter.onTakePhotoFromCameraClick() }
-//            .show()
-
         GalleryBottomSheet().show(childFragmentManager)
+        //findNavController().navigate(R.id.test_blur_fragment)
     }
-
 
     override fun showMainData() {
         findNavController().navigate(UserProfileFragmentDirections.profileToMainData())
@@ -106,14 +89,10 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
 
     override fun showEdit() {
         findNavController().navigate(UserProfileFragmentDirections.profileToEdit(UserEditDataType.INTERESTS))
-
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        scroll.invoke(0)
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

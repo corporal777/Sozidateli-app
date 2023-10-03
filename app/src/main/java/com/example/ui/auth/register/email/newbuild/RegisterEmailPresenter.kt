@@ -105,25 +105,6 @@ class RegisterEmailPresenter
         else showErrors()
     }
 
-    private fun checkPhoneEmailIsUnique(withCheck: Boolean): Completable {
-        return if (withCheck) Completable.create { emitter ->
-            val disposable = CompositeDisposable()
-            disposable += if (loginType == "email") {
-                userRepository.checkEmailPhone(email, null)
-                    .subscribeSimple(
-                        onError = { emitter.onError(EmailNotUniqueException()) },
-                        onComplete = { emitter.onComplete() })
-            } else {
-                userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
-                    .subscribeSimple(
-                        onError = { emitter.onError(PhoneNotUniqueException()) },
-                        onComplete = { emitter.onComplete() })
-            }
-            emitter.setDisposable(disposable)
-        } else Completable.complete()
-    }
-
-
     override fun register(withCheck: Boolean) {
         viewState.setIgnoreTokenListener(true)
         compositeDisposable += checkPhoneEmailIsUnique(withCheck)
@@ -158,6 +139,24 @@ class RegisterEmailPresenter
                     }
                 })
 
+    }
+
+    private fun checkPhoneEmailIsUnique(withCheck: Boolean): Completable {
+        return if (withCheck) Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += if (loginType == "email") {
+                userRepository.checkEmailPhone(email, null)
+                    .subscribeSimple(
+                        onError = { emitter.onError(EmailNotUniqueException()) },
+                        onComplete = { emitter.onComplete() })
+            } else {
+                userRepository.checkEmailPhone(null, validatePhoneBeforeSend(email))
+                    .subscribeSimple(
+                        onError = { emitter.onError(PhoneNotUniqueException()) },
+                        onComplete = { emitter.onComplete() })
+            }
+            emitter.setDisposable(disposable)
+        } else Completable.complete()
     }
 
     private fun getRegisterBody(): RegisterBody {

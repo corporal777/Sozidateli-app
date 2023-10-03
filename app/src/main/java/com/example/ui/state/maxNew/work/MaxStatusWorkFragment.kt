@@ -37,9 +37,7 @@ class MaxStatusWorkFragment : BaseMaxStateFragment<MaxStatusWorkPresenter>(),
 
         contentSection.updateGroup(dataItem)
         onSaveClick = {
-            if (dataItem.checkDataValid()) {
-                presenter.onSaveWorkClick(dataItem.getDataToSave())
-            }
+            if (dataItem.checkDataValid()) presenter.onSaveWorkClick(dataItem.getDataToSave())
         }
     }
 }

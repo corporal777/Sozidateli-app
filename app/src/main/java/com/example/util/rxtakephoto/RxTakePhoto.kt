@@ -36,11 +36,6 @@ class RxTakePhoto(
             .findRotation()
     }
 
-    fun takeListImage(uri : Uri): Observable<ResultRotation>{
-        return Observable.just(Result(Result.Builder(uri)))
-            .findRotation()
-    }
-
     fun saveImage(image: Bitmap): Completable {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Completable.fromAction { saveImageToGallery(context, image, "sozidateli_images") }

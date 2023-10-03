@@ -13,8 +13,11 @@ import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.*
+import com.example.databinding.ItemMaxStateMainInfoBinding
+import com.example.databinding.ItemProfileSocialNetworkBinding
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_max_state_main_info.*
@@ -45,12 +48,10 @@ class MaxStateContactsEditItem(
     private val emails: List<EmailsModel>?,
     private val addInfoClick:() -> Unit,
     private val enableNextButton:(enable: Boolean) -> Unit
-) : Item(id) {
+) : BindableItem<ItemMaxStateMainInfoBinding>(id) {
 
     private val invalidNumberSecondError =
         context.getString(R.string.invalid_phone_number_second_error)
-
-    private lateinit var viewHolder: GroupieViewHolder
 
     private var mNotes = notes?.value
     private var mNotesShow = notes?.showInProfile?: true
@@ -64,8 +65,7 @@ class MaxStateContactsEditItem(
         .let {
             if (it.isEmpty()) it.plus(UserDataSite(value = "", showInProfile = false))
             else it
-        }
-        .toMutableList()
+        }.toMutableList()
     private val isSitesVisible = site?.values?.isEmpty() == true
     private var mNoSite = site?.absent?: false//user_site_absent
     private var mNoNetworks = socialNetworks?.absent?: false//user_social_links_absent
@@ -76,13 +76,14 @@ class MaxStateContactsEditItem(
         .let {
             if (it.isEmpty()) it.plus(UserDataSocialLink(value = "", showInProfile = false))
             else it
-        }
-        .toMutableList()
+        }.toMutableList()
     private val isNetworkVisible = socialNetworks?.values?.isEmpty() == true
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        this.viewHolder = viewHolder
-        viewHolder.apply {
 
+
+    private lateinit var mBinding: ItemMaxStateMainInfoBinding
+    override fun bind(viewBinding: ItemMaxStateMainInfoBinding, position: Int) {
+        this.mBinding = viewBinding
+        viewBinding.apply {
             layWorkPhone.isVisible = isWorkPhoneVisible
             if (isWorkPhoneVisible) {
                 etWorkPhone.apply {
@@ -115,13 +116,13 @@ class MaxStateContactsEditItem(
             layNetwork.isVisible = isNetworkVisible
             if (isNetworkVisible) {
                 llSocialNetworks.removeAllViews()
-                mSocialNetworks.forEach { initSocialNetworkInput(viewHolder, it) }
+                mSocialNetworks.forEach { initSocialNetworkInput(viewBinding, it) }
                 btnSocialNetworkAdd.apply {
                     setOnClickListener {
                         if (!mSocialNetworks.lastOrNull()?.value.isNullOrBlank()) {
                             UserDataSocialLink(value = "", showInProfile = false).apply {
                                 mSocialNetworks.add(this)
-                                initSocialNetworkInput(viewHolder, this)
+                                initSocialNetworkInput(viewBinding, this)
                             }
                         } else {
                             networksError.visibility = View.VISIBLE
@@ -139,13 +140,13 @@ class MaxStateContactsEditItem(
             laySites.isVisible = isSitesVisible
             if (isSitesVisible) {
                 llSites.removeAllViews()
-                mSite.forEach { initSiteInput(viewHolder, it) }
+                mSite.forEach { initSiteInput(viewBinding, it) }
                 btnSiteAdd.apply {
                     setOnClickListener {
                         if (!mSite.lastOrNull()?.value.isNullOrBlank()) {
                             UserDataSite(value = "", showInProfile = false).apply {
                                 mSite.add(this)
-                                initSiteInput(viewHolder, this)
+                                initSiteInput(viewBinding, this)
                             }
                         } else {
                             sitesError.visibility = View.VISIBLE
@@ -179,13 +180,14 @@ class MaxStateContactsEditItem(
     }
 
 
+
     private fun checkPhone() {
-        viewHolder.tilWorkPhone.isEnabled = !mNoWorkPhone
-        viewHolder.tilAdditionalNumber.isEnabled = !mNoWorkPhone
+        mBinding.tilWorkPhone.isEnabled = !mNoWorkPhone
+        mBinding.tilAdditionalNumber.isEnabled = !mNoWorkPhone
     }
 
     private fun checkSites() {
-        viewHolder.apply {
+        mBinding.apply {
             btnSiteAdd.isEnabled = !mNoSite
             llSites.isEnabled = !mNoSite
 
@@ -197,13 +199,12 @@ class MaxStateContactsEditItem(
                 }
             }
 
-            if (mNoSite)
-                sitesError.visibility = View.GONE
+            if (mNoSite) sitesError.visibility = View.GONE
         }
     }
 
     private fun checkNetworks() {
-        viewHolder.apply {
+        mBinding.apply {
             btnSocialNetworkAdd.isEnabled = !mNoNetworks
             llSocialNetworks.isEnabled = !mNoNetworks
 
@@ -215,15 +216,14 @@ class MaxStateContactsEditItem(
                 }
             }
 
-            if (mNoNetworks)
-                networksError.visibility = View.GONE
+            if (mNoNetworks) networksError.visibility = View.GONE
         }
     }
 
-    private fun initSocialNetworkInput(viewHolder: GroupieViewHolder, sn: UserDataSocialLink) {
+    private fun initSocialNetworkInput(viewBinging: ItemMaxStateMainInfoBinding, sn: UserDataSocialLink) {
         var csn = sn
-        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSocialNetworks, false)
-        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+        val parent = ItemProfileSocialNetworkBinding.inflate(LayoutInflater.from(context), viewBinging.llSites, false)
+        val etSn = parent.etSn.apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
                     it.isWhitespace()
@@ -236,12 +236,12 @@ class MaxStateContactsEditItem(
             }
         }
 
-        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+        parent.scNetwork.apply {
             isVisible = sn.value.isNotEmpty()
             initSwitch(sn.showInProfile) { sn.showInProfile = it }
         }
 
-        parent.findViewById<View>(R.id.btnDelete).apply {
+        parent.btnDelete.apply {
             setOnClickListener {
                 if (mSocialNetworks.remove(csn)) {
                     if (mSocialNetworks.isEmpty()) {
@@ -249,19 +249,19 @@ class MaxStateContactsEditItem(
                         mSocialNetworks.add(csn)
                         etSn.text?.clear()
                     } else {
-                        viewHolder.llSocialNetworks.removeView(it.parent as View)
+                        viewBinging.llSocialNetworks.removeView(it.parent as View)
                     }
-                    viewHolder.networksError.visibility = View.GONE
+                    viewBinging.networksError.visibility = View.GONE
                 }
             }
         }
 
-        viewHolder.llSocialNetworks.addView(parent)
+        viewBinging.llSocialNetworks.addView(parent.root)
     }
 
-    private fun initSiteInput(viewHolder: GroupieViewHolder, site: UserDataSite) {
-        val parent = LayoutInflater.from(context).inflate(R.layout.item_profile_social_network, viewHolder.llSites, false)
-        val etSn = parent.findViewById<EditText>(R.id.etSn).apply {
+    private fun initSiteInput(viewBinging: ItemMaxStateMainInfoBinding, site: UserDataSite) {
+        val parent = ItemProfileSocialNetworkBinding.inflate(LayoutInflater.from(context), viewBinging.llSites, false)
+        val etSn = parent.etSn.apply {
             filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
                 source.toString().filterNot {
                     it.isWhitespace()
@@ -274,12 +274,12 @@ class MaxStateContactsEditItem(
                 checkDataValid()
             }
         }
-        parent.findViewById<AppCompatCheckBox>(R.id.scNetwork).apply {
+        parent.scNetwork.apply {
             isVisible = site.value.isNotEmpty()
             initSwitch(site.showInProfile) { site.showInProfile = it }
         }
 
-        parent.findViewById<View>(R.id.btnDelete).apply {
+        parent.btnDelete.apply {
             setOnClickListener {
                 if (mSite.remove(site)) {
                     if (mSite.isEmpty()) {
@@ -287,14 +287,13 @@ class MaxStateContactsEditItem(
                         mSite.add(site)
                         etSn.text?.clear()
                     } else {
-                        viewHolder.llSites.removeView(it.parent as View)
+                        viewBinging.llSites.removeView(it.parent as View)
                     }
-                    viewHolder.sitesError.visibility = View.GONE
+                    viewBinging.sitesError.visibility = View.GONE
                 }
             }
         }
-
-        viewHolder.llSites.addView(parent)
+        viewBinging.llSites.addView(parent.root)
     }
 
     fun workPhoneIsValid(): Boolean{
@@ -303,8 +302,7 @@ class MaxStateContactsEditItem(
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {
-            viewHolder.tilWorkPhone.apply {
-                //error = invalidError
+            mBinding.tilWorkPhone.apply {
                 error = invalidNumberSecondError
                 requestFocus()
             }
@@ -314,8 +312,7 @@ class MaxStateContactsEditItem(
     }
 
     fun notValidWorkPhoneError(){
-        viewHolder.tilWorkPhone.apply {
-            //error = invalidError
+        mBinding.tilWorkPhone.apply {
             error = invalidNumberSecondError
             requestFocus()
         }
@@ -325,9 +322,8 @@ class MaxStateContactsEditItem(
         var isValid = true
         if (!mNoWorkPhone && mWorkPhone.isNullOrEmpty()) isValid = false
         if (!mNoNetworks && mSocialNetworks[0].value.isNullOrEmpty()) isValid = false
-        if (!mNoSite && mSite[0].value.isNullOrEmpty()) isValid = false
+        //if (!mNoSite && mSite[0].value.isNullOrEmpty()) isValid = false
         if (mNotes.isNullOrEmpty()) isValid = false
-        //if (mImage.uri.isNullOrEmpty()) isValid = false
         enableNextButton(isValid)
         return isValid
     }

@@ -384,6 +384,24 @@ fun <T> Maybe<T>.withInfinityCustomLoading(baseView: BaseContract.LoadingView): 
     return this.doOnDispose(actionHide).doOnError(actionConsumer())
 }
 
+fun <T> Single<T>.withInfinityCustomLoading(baseView: BaseContract.LoadingView): Single<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { baseView.showCustomLoading() }
+        .doOnDispose { baseView.hideCustomLoading() }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+    return this.doOnDispose(actionHide).doOnError(actionConsumer())
+}
+
 fun <T> Maybe<T>.withCustomLoading(baseView: BaseContract.LoadingView): Maybe<T> {
     val loadingDisposable = Completable.complete()
         .observeOn(AndroidSchedulers.mainThread())

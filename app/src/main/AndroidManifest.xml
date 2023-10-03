@@ -34,7 +34,7 @@
             android:name="com.example.ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -45,9 +45,15 @@
             <nav-graph android:value="@navigation/main_navigation" />
         </activity>
 
-        <activity android:name=".util.rxtakephoto.CropActivity" />
-        <activity android:name=".ui.gallery.cropImage.CropImageActivity" />
-        <activity android:name=".ui.gallery.camera.CustomCameraActivity" />
+        <activity
+            android:name=".util.rxtakephoto.CropActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.gallery.cropImage.CropImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.gallery.camera.CustomCameraActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.snAuth.SnAuthActivity"

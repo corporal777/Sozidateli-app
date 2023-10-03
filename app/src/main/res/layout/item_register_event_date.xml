@@ -4,7 +4,7 @@
     style="@style/EventRegistrationItemContainer">
 
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/baseTextInputLayout"
         style="@style/Profile.Edit.PasswordNew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

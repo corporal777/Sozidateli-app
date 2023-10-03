@@ -7,6 +7,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -23,29 +24,23 @@ class EditWorksPresenter
         compositeDisposable += appData.userNewChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
-                val user = it.value ?: throw RuntimeException("Edit null user")
-                viewState.apply {
-                    setWorkData(user)
-                }
+                val user = it.value
+                if (user != null) viewState.setWorkData(user)
             }, {
                 it.printStackTrace()
                 viewState.navigateUp()
             })
     }
 
-    override fun attachView(view: EditWorksContract.View?) {
-        super.attachView(view)
-    }
-
     override fun onSaveWorkClick(data: WorkExperienceServerModel) {
         compositeDisposable += userRepository.updateWorkExperience(data)
+            .map { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribe({
-                viewState.navigateUp()
-            }, {
-                onReceiveError(it)
-            })
+            .withInfinityCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.navigateUp() }
+            )
     }
 
     fun getBaseUserState() = appData.hasBaseState

@@ -13,14 +13,13 @@ import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import com.example.util.phoneToServer
-import com.shakebugs.shake.Shake
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withProgressBarDialogLoading
 import withDelay
+import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
 
@@ -76,9 +75,8 @@ class ProfilePresenter
     override fun onLogoutClick() {
         viewState.setIgnoreTokenListener(false)
         compositeDisposable += userRepository.logout(appData.getId())
-            .withDelay(500)
+            .withDelay(300)
             .doOnComplete {
-                Shake.unregisterUser()
                 appData.isSubscribedToPush = false
                 socket.disconnectFromSocket()
                 appData.logout()

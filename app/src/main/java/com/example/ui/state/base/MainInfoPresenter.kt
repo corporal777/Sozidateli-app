@@ -52,7 +52,7 @@ class MainInfoPresenter
                         if (isPhoneUpdating) isPhoneUpdating = false
                         else if (isImageUpdating) isImageUpdating = false
                         else viewState.setPersonalData(user)
-                    }
+                    } else viewState.navigateUp()
                 })
     }
 
@@ -106,51 +106,9 @@ class MainInfoPresenter
         viewState.showPhoneEdit(phone)
     }
 
-    override fun onTakePhotoFromGalleryClick() = takePhoto(takePhoto.takeGalleryImage())
-    override fun onTakePhotoFromCameraClick() = takePhoto(takePhoto.takeCameraImage())
-
-    private fun takePhoto(takePhotoRequest: Observable<ResultRotation>) {
+    override fun onShowImageEdit() {
         isImageUpdating = true
-        compositeDisposable += takePhotoRequest
-            .firstOrError()
-            .flatMap {
-                takePhoto.crop(
-                    resultRotation = it,
-                    outputMaxWidth = IMAGE_MAX_SIZE_AVATAR,
-                    outputMaxHeight = IMAGE_MAX_SIZE_AVATAR,
-                    cropMode = CropImageView.CropMode.SQUARE
-                )
-            }
-            .flatMap { userRepository.changeUserImage(it) }
-            .doOnSuccess { appData.getUserNew().image = it }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onSuccess = {
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple(onSuccess = {})
-
-                    viewState.photoUpdated(it)
-                }
-            )
-    }
-
-    override fun onRemovePhotoClick() {
-        isImageUpdating = true
-        compositeDisposable += userRepository.deleteImage()
-            .doOnComplete { appData.getUserNew().image = null }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onComplete = {
-                    compositeDisposable += userRepository.checkUserProfileSingle()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple(onSuccess = {})
-
-                    viewState.photoUpdated(null)
-                }
-            )
+        viewState.showChangeImage()
     }
 
     fun getEmail() = appData.getUserNew().email

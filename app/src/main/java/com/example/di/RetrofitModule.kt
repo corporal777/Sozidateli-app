@@ -10,7 +10,6 @@ import com.example.api.NewApi
 import com.example.data.AppData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.shakebugs.shake.network.ShakeNetworkInterceptor
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -127,11 +126,10 @@ class RetrofitModule {
         if (BuildConfig.DEBUG) {
             val logInterceptor = HttpLoggingInterceptor { message ->
                 //Timber.tag("API_T").d(message)
-                Log.e("REQUEST INFO", message)
+                Log.e("REQUEST INFO: ", message)
             }
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
-            clientBuilder.addInterceptor(ShakeNetworkInterceptor())
         }
 
         clientBuilder.addNetworkInterceptor {

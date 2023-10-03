@@ -36,14 +36,20 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.BuildConfig
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
+import com.example.extensions.dp
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -261,6 +267,7 @@ fun ImageRequest.Builder.setParams(
     if (!transformations.isNullOrEmpty())
         transformations(transformations)
     scale(Scale.FILL)
+    diskCachePolicy(CachePolicy.ENABLED)
 }
 
 fun getMonthName(calendar: Calendar?): String {
@@ -616,7 +623,7 @@ fun imageCaptureCallback(
     }
 }
 
-fun Fragment.getMakeSceneTransition(view : View): ActivityOptionsCompat {
+fun Fragment.getMakeSceneTransition(view: View): ActivityOptionsCompat {
     return ActivityOptionsCompat.makeSceneTransitionAnimation(
         requireActivity(),
         Pair(view, view.transitionName)

@@ -1,6 +1,5 @@
 package com.example.ui.editeducation
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
-import com.example.data.models.EducationLevel
 import com.example.databinding.*
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
@@ -23,18 +21,12 @@ import com.example.ui.editeducation.EditEducationModel.Companion.ADD_HIGHT_LEVEL
 import com.example.ui.editeducation.EditEducationModel.Companion.EDUCATION_ITEM
 import com.example.ui.editeducation.EditEducationModel.Companion.EDUCATION_LEVEL
 import com.example.ui.editeducation.EditEducationModel.Companion.HIGHT_LEVEL_ITEM
-import com.example.ui.editwork.EditWorksModel
 import com.example.ui.state.ViewHolder
 import com.example.ui.views.educationlist.EducationPopupWindow
 import com.example.util.*
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsMonthYearPicker
-import initDropDownView
-import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
-import kotlinx.android.synthetic.main.item_profile_data_edit_education.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class EditEducationAdapter(
     private val addHigthLevelClick: () -> Unit,
@@ -394,7 +386,7 @@ class EditEducationAdapter(
 
     private fun setupDegreeDropDown(
         textView: AutoCompleteTextView,
-        textInputLayout: TextInputLayout,
+        baseTextInputLayout: TextInputLayout,
         variants: List<EducationLevelNew>,
         initialVariant: String?,
         onSelect: (EducationLevelNew?) -> Unit
@@ -409,7 +401,7 @@ class EditEducationAdapter(
             )
             setText(initialVariant)
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                textInputLayout.error = null
+                baseTextInputLayout.error = null
                 onSelect(variants.getOrNull(position))
             }
         }

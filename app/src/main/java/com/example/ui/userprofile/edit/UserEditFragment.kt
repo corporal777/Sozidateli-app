@@ -16,9 +16,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.FragmentUserEditBinding
-import com.example.extensions.findGroupBy
-import com.example.extensions.findItemBy
-import com.example.extensions.updateItem
+import com.example.extensions.*
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -44,7 +42,7 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
 
     private lateinit var passwordDialog: SetPasswordDialog
 
-    var mimeTypes = arrayOf("image/*", "application/pdf")
+    private val mimeTypes = arrayOf("image/*", "application/pdf")
 
     private lateinit var data: ProfileContactsEditItem
     private lateinit var toolbarContent: ToolbarContent
@@ -73,9 +71,7 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
                         val path = UriUtils.pickedExistingPicture(requireContext(), file).path
                         val type = UriUtils.getMimeType(requireContext(), file) ?: ""
                         presenter.onFilePicked(path, type)
-                    } else {
-                        presenter.onFilePicked(filePath, mimeType)
-                    }
+                    } else presenter.onFilePicked(filePath, mimeType)
                 }
             }
         }
@@ -178,11 +174,8 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
                         titleItem.apply {
                             badgeCount = count
                             notifyChanged(count)
-
                         }
-                        if (count > 0) {
-                            mBinding.btnSave.isEnabled = true
-                        }
+                        if (count > 0) mBinding.btnSave.isEnabled = true
                     }
                 }
 
@@ -195,9 +188,6 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
                 presenter.getBaseUserState(),
                 presenter.getMaxUserState(), false, userInterests.isEmpty()
             ) {
-                if (userInterests.isNullOrEmpty()) {
-                    mBinding.btnSave.isEnabled = false
-                }
                 presenter.onSaveInterestsClick(userInterests)
             }
         }
@@ -220,9 +210,7 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
             presenter::onChangeEmailClick
         ) {
             onConfirmClick?.invoke(it)
-        }.apply {
-            data = this
-        }
+        }.apply { data = this }
         adapter.updateItem(item)
 
         onSaveClick = {
@@ -238,12 +226,8 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
                         ) {
                             presenter.onSaveContactsClick(item.getDataToSave())
                         }
-                    } else {
-                        showEnterPassword(item.getValidatedPhone())
-                    }
-                } else {
-                    presenter.onSaveContactsClick(item.getDataToSave())
-                }
+                    } else showEnterPassword(item.getValidatedPhone())
+                } else presenter.onSaveContactsClick(item.getDataToSave())
             }
         }
         onConfirmClick = {
@@ -315,8 +299,6 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
             ?: title, Toast.LENGTH_SHORT).show()
     }
 
-
-
     override fun showFileSelector() {
         val intent = Intent()
         intent.type = "*/*"
@@ -335,18 +317,32 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
     }
 
     override fun addUserFile(file: FileModel, fileCount: Int) {
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataFileEditableGroup> {
-            true
-        }?.addFileItem(file, fileCount)
+        adapter.findGroup<ProfileDataFileEditableGroup> { true }?.addFileItem(file, fileCount)
     }
 
     override fun deleteUserFile(file: FileModel, fileCount: Int) {
-        adapter.findGroupBy<GroupieViewHolder, ProfileDataFileEditableGroup> {
-            true
-        }?.removeFileItem(file, fileCount)
+        adapter.findGroup<ProfileDataFileEditableGroup> { true }?.removeFileItem(file, fileCount)
     }
 
+    override fun hideDeleteUserFile(file: FileModel) {
+        adapter.findGroup<ProfileDataFileEditableGroup> { true }?.hideFileDeleteLoading(file)
+    }
 
+    override fun showFileUploadLoading() {
+        adapter.findGroup<ProfileDataFileEditableGroup> { true }?.showUploadLoading()
+    }
+
+    override fun hideFileUploadLoading() {
+        adapter.findGroup<ProfileDataFileEditableGroup> { true }?.hideUploadLoading()
+    }
+
+    override fun showCustomLoading() {
+        mBinding.apply { btnSave.showProgressLoading(true) }
+    }
+
+    override fun hideCustomLoading(){
+        mBinding.apply { btnSave.showProgressLoading(false) }
+    }
 
     override fun setPersonalTitle() = setTitle(getString(R.string.user_profile_main_info))
     override fun setContactsTitle() = setTitle(getString(R.string.user_profile_contacts))
@@ -356,22 +352,12 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
     override fun setInterestsTitle() = setTitle(getString(R.string.profile_interests))
 
 
-    private fun setTitle(title: String) {
-        toolbarContent.setToolbarTitle(title)
-    }
-
-    override fun navigateUp() {
-        presenter.onNavigateUpRequest()
-    }
-
-    override fun navigateUpChecked() {
-        super.navigateUp()
-    }
-
+    private fun setTitle(title: String) = toolbarContent.setToolbarTitle(title)
+    override fun navigateUp() = presenter.onNavigateUpRequest()
+    override fun navigateUpChecked() = super.navigateUp()
     override fun saveOnClick(saveOnClick: Boolean) {
         mBinding.btnSave.isVisible = saveOnClick
     }
-
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: (value: Int) -> Unit) {}

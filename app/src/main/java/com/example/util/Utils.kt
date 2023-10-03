@@ -114,13 +114,11 @@ object Utils {
     fun maxStateScreen(user: UserDetail): MaxStateScreenType {
         val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }
         val isWorkPhone = if (workPhone?.absent == true) false else workPhone?.value.isNullOrEmpty()
-        val sites = user.contactInformation.site
-        val isSite = if (sites?.absent == true) false else sites?.values?.isNullOrEmpty()
         val links = user.contactInformation.socialLinks
         val isLinks = if (links?.absent == true) false else links?.values?.isNullOrEmpty()
         val works = user.binds?.workExperience
         val isWork = if (works?.absent == true) false else works?.models?.isNullOrEmpty()
-        return if (user.notes?.value.isNullOrEmpty() || (isSite == true) || (isLinks == true) || isWorkPhone || user.image?.uri.isNullOrEmpty()) MaxStateScreenType.BASE
+        return if (user.notes?.value.isNullOrEmpty() || (isLinks == true) || isWorkPhone) MaxStateScreenType.BASE
         else if (!user.isHasInterests()) MaxStateScreenType.INTERESTS
         else if (isWork == true) MaxStateScreenType.WORK
         else if (user.binds?.education.isNullOrEmpty()) MaxStateScreenType.EDUCATION

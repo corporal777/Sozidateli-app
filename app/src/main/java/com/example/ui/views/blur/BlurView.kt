@@ -1,4 +1,4 @@
-package com.example.ui.views.dialogs_new.blur
+package com.example.ui.views.blur
 
 import android.app.Application
 import android.graphics.Bitmap

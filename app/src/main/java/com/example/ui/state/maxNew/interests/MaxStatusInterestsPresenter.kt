@@ -11,6 +11,7 @@ import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
@@ -44,7 +45,8 @@ class MaxStatusInterestsPresenter
                     viewState.navigateUp()
                 },
                 onNext = {
-                    viewState.setInterestsData(it)
+                    if (isUpdating) isUpdating = false
+                    else viewState.setInterestsData(it)
                 })
 
     }
@@ -78,12 +80,13 @@ class MaxStatusInterestsPresenter
     }
 
     override fun onSaveInterestsClick(data: List<InterestNew>) {
+        isUpdating = true
         compositeDisposable += userRepository.updateUserProfile(
             appData.getId(),
             mapOf(UserDetail.USER_INTERESTS to data.map { item -> item.id })
         )
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { checkNextScreen() }
