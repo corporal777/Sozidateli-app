@@ -24,7 +24,7 @@ class ClickableSpan(
 class ClickableSpanNew(
     private val textView: TextView,
     private val onClick: () -> Unit
-) : ClickableSpan(), NoCopySpan {
+) : ClickableSpan() {
 
     override fun updateDrawState(ds: TextPaint) {
         ds.color = ds.linkColor

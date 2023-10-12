@@ -3,6 +3,7 @@ package com.example.ui.profile.shortName
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -17,8 +18,7 @@ import javax.inject.Provider
 class ChangeShortNameFragment(
     val id: Int?,
     val shortName: String?
-) :
-    BaseBottomSheetFragment<BottomSheetChangeShortNameBinding>(), ChangeShortNameContract.View {
+) : BaseBottomSheetFragment<BottomSheetChangeShortNameBinding>(), ChangeShortNameContract.View {
 
     private var setUserShortName: (user: UserDetail) -> Unit = {}
 
@@ -97,6 +97,8 @@ class ChangeShortNameFragment(
     override fun updateUserShortNameInProfile(user: UserDetail) {
         setUserShortName.invoke(user)
     }
+
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "change_short_name")
 
     companion object {
         const val CHANGE_SHORT_NAME_FRAGMENT_TAG = "change_short_name_tag"

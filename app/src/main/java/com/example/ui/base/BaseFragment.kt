@@ -36,8 +36,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     lateinit var mBinding: binding
 
     private val params = PermissionsParams()
-    protected var mActivity: BaseActivity? = null
-        private set
+    private var mActivity: BaseActivity? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -132,11 +131,9 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         mActivity?.hideCustomProgressDialog()
     }
 
-    override fun showCustomLoading() {
-    }
+    override fun showCustomLoading() {}
 
-    override fun hideCustomLoading() {
-    }
+    override fun hideCustomLoading() {}
 
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
@@ -187,7 +184,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateDialog(requireContext(), type)
+        ChangeStateDialog(requireActivity(), type)
             .setClickCallback {
                 when (it) {
                     ClickType.INFO -> {
@@ -262,10 +259,10 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mBinding.unbind()
         hideKeyboard()
         hideAllLoadingDialogs()
         hideCustomProgressDialog()
+        mBinding.unbind()
     }
 
 
@@ -333,7 +330,6 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
                 }
         } else data.invoke()
     }
-
 
 
     fun updateAppBarViews(offset: Float) {

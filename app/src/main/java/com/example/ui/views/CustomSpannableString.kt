@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
@@ -35,14 +36,16 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
         val clickableSpan = ClickableSpanNew(textView) {
             onClick.invoke()
         }
-        setSpan(clickableSpan, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        if (length < 0) return
+        setSpan(clickableSpan, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun setClickSpanWithLength(textView: TextView, start: Int, end: Int, onClick: () -> Unit) {
         val clickableSpan = ClickableSpanNew(textView) {
             onClick.invoke()
         }
-        setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        if (length < 0) return
+        setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun setFontSpan(res: String, context: Context) {

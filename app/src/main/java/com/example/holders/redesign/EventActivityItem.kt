@@ -62,8 +62,11 @@ class EventActivityItem(
             tvLectureName.text = subEvent.title
 
             auditoryContainer.apply {
-                isVisible = !subEvent.binds?.auditorium?.name.isNullOrEmpty()
-                tvLectureAuditory.text = subEvent.binds?.auditorium?.name
+                if (!subEvent.binds?.auditorium?.name.isNullOrEmpty())
+                    tvLectureAuditory.text = subEvent.binds?.auditorium?.name
+                else if (!subEvent.auditorium.isNullOrEmpty())
+                    tvLectureAuditory.text = subEvent.auditorium
+                else isVisible = false
             }
 
             tvLectureDesc.apply {
@@ -71,7 +74,6 @@ class EventActivityItem(
                 limitedMaxLines = 5
                 expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
             }
-
 
             decorActionButton(canShowButton, btnAddToTimetable, subEvent)
 
@@ -89,17 +91,12 @@ class EventActivityItem(
                 if (!selectedTags.isNullOrEmpty() && !subEvent.tag.isNullOrEmpty()) {
                     listTags.isVisible = true
                     val tags = subEvent.tag
-                    tags.forEach { tag ->
-                        selectedTags.forEach { selectedTag ->
-                            if (tag == selectedTag.id.toInt()) {
-                                addView(createChip(selectedTag), 0)
-                            }
-                        }
+                    selectedTags.forEach { tag ->
+                        if (tags.any { x -> x.id == tag.id.toInt() })
+                            addView(createChip(tag), 0)
                     }
                 }
             }
-
-
         }
     }
 

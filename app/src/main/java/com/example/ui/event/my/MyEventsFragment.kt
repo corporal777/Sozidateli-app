@@ -106,7 +106,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, offset ->
-                updateViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
             }
         }
 
@@ -378,54 +378,21 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         }
     }
 
-
-    private fun updateViews(offset: Float) {
-
-        when {
-            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-        }.apply {
-            when {
-                cashCollapseState != null && cashCollapseState != this -> {
-                    when (first) {
-                        TO_EXPANDED -> {
-                            mBinding.apply {
-                                tvLabelLarge.apply {
-                                    visibility = View.VISIBLE
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                }
-                            }
-                        }
-                        TO_COLLAPSED -> {
-                            mBinding.apply {
-                                tvLabelLarge.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                            }
-
-                        }
-                    }
-                    cashCollapseState = Pair(first, SWITCHED)
-                }
-                else -> {
-                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
-                }
-            }
+    override fun onExpandedState() {
+        mBinding.tvLabelLarge.apply {
+            visibility = View.VISIBLE
+            alpha = 0F
+            animate().setDuration(500).alpha(1.0f)
         }
     }
 
-    companion object {
-        const val SWITCH_BOUND = 0.3f
-        const val TO_EXPANDED = 0
-        const val TO_COLLAPSED = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
-        private var cashCollapseState: Pair<Int, Int>? = null
+    override fun onCollapsedState() {
+        mBinding.tvLabelLarge.apply {
+            alpha = 1F
+            animate().setDuration(500).alpha(0.0f)
+            visibility = View.GONE
+        }
     }
-
 
     override fun layout(): Int = R.layout.fragment_my_events
 }

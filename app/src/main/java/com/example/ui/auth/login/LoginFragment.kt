@@ -56,12 +56,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
             btnLogin.setOnClickListener {
                 hideKeyboard()
                 presenter.onClickLogin(invite ?: -1)
+                //presenter.authVk()
+                //presenter.authOk()
             }
             ibClose.setOnClickListener { presenter.onClickBack() }
-
-//            ibVk.setOnClickListener { presenter.authVk() }
-//            ibFacebook.setOnClickListener { presenter.authFb() }
-//            ibOk.setOnClickListener { presenter.authOk() }
         }
 
     }

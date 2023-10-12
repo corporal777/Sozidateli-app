@@ -74,7 +74,9 @@ open class SubEventItem(
 
                 removeAllViews()
                 val tags = subEvent.binds?.tag ?: emptyList()
-                tags.forEach { if (subEvent.tag?.contains(it.id) == true) addView(createChip(it))  }
+                tags.forEach {
+                    if (subEvent.tag?.any { x -> x.id == it.id } == true) addView(createChip(it))
+                }
             }
         }
     }

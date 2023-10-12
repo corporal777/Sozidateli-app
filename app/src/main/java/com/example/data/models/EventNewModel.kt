@@ -471,8 +471,8 @@ data class EventActivityModel(
     val hide: Boolean,
     @SerializedName("holdingDate")
     val holdingDate: DateModel? = null,
-    val tag: List<Int>? = null,
-    val auditorium: Int? = null,
+    val tag: List<Tags>? = null,
+    val auditorium: String? = null,
     val member: List<EventActivityMember>? = null,
     val binds: EventActivityBinds? = null,
     var mNoEvent: Boolean = false,

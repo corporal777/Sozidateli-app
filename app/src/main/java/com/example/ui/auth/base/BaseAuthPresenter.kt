@@ -1,5 +1,6 @@
 package com.example.ui.auth.base
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser

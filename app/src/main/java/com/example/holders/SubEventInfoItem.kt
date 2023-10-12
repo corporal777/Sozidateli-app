@@ -58,15 +58,11 @@ class SubEventInfoItem(
 
             tagsGroup.apply {
                 removeAllViews()
-                val listTags = subEvent?.binds?.tag
-                val needTags = subEvent.tag
-                if (!listTags.isNullOrEmpty() && !needTags.isNullOrEmpty()) {
+                val listTags = subEvent.binds?.tag
+                if (!listTags.isNullOrEmpty() && !subEvent.tag.isNullOrEmpty()) {
                     listTags.forEach { tag ->
-                        needTags.forEach { id ->
-                            if (tag.id == id) addView(createChip(context, tag))
-                        }
+                        if (subEvent.tag.any { x -> x.id == tag.id }) addView(createChip(context, tag))
                     }
-
                 }
             }
         }

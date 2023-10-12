@@ -33,7 +33,6 @@ class RecommendationsFragment :
     @Inject
     lateinit var presenterProvider: Provider<RecommendationsPresenter>
 
-    private var cashCollapseState: Pair<Int, Int>? = null
 
     @ProvidePresenter
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
@@ -64,7 +63,7 @@ class RecommendationsFragment :
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
-                updateViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
         }
     }
@@ -108,60 +107,34 @@ class RecommendationsFragment :
         findNavController().navigate(R.id.profile_fragment, args)
     }
 
-    private fun updateViews(offset: Float) {
-
-        when {
-            offset < SWITCH_BOUND -> Pair(TO_EXPANDED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-            else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-        }.apply {
-            when {
-                cashCollapseState != null && cashCollapseState != this -> {
-                    when (first) {
-                        TO_EXPANDED -> {
-                            mBinding.apply {
-                                tvLabelSmall.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                                tvLabelLarge.apply {
-                                    visibility = View.VISIBLE
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                }
-                            }
-                        }
-                        TO_COLLAPSED -> {
-                            mBinding.apply {
-                                tvLabelSmall.apply {
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                    tvLabelSmall.visibility = View.VISIBLE
-                                }
-                                tvLabelLarge.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                            }
-
-                        }
-                    }
-                    cashCollapseState = Pair(first, SWITCHED)
-                }
-                else -> {
-                    cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
-                }
+    override fun onExpandedState() {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                alpha = 1F
+                animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
+            tvLabelLarge.apply {
+                visibility = View.VISIBLE
+                alpha = 0F
+                animate().setDuration(500).alpha(1.0f)
             }
         }
     }
 
-    companion object {
-        const val SWITCH_BOUND = 0.3f
-        const val TO_EXPANDED = 0
-        const val TO_COLLAPSED = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
+    override fun onCollapsedState() {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                alpha = 0F
+                animate().setDuration(500).alpha(1.0f)
+                tvLabelSmall.visibility = View.VISIBLE
+            }
+            tvLabelLarge.apply {
+                alpha = 1F
+                animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
+        }
     }
 
     override fun layout(): Int = R.layout.fragment_recommendations

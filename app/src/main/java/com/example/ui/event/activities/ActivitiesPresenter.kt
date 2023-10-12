@@ -206,7 +206,7 @@ class ActivitiesPresenter
     }
 
     private fun isEventHasTag(event: EventActivityModel, tags: List<Tag>): Boolean {
-        return !tags.filter { x -> event.tag?.contains(x.id.toInt()) == true }.isNullOrEmpty()
+        return !tags.filter { x -> event.tag?.any { e -> e.id == x.id.toInt() } == true }.isNullOrEmpty()
     }
 
 

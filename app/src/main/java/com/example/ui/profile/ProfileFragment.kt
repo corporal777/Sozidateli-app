@@ -10,6 +10,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -79,7 +80,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             tvSessions.setOnClickListener { presenter.onSessionsClick() }
             tvRate.setOnClickListener { presenter.onRateClick() }
             tvSupport.setOnClickListener { presenter.onSupportClick() }
-            tvProblem.setOnClickListener {  }
+            tvProblem.setOnClickListener { }
             tvAboutApplication.setOnClickListener { presenter.onAboutApplicationClick() }
             tvChangeAccount.setOnClickListener { presenter.onChangeAccountClick() }
             tvLogout.setOnClickListener { presenter.onLogoutClick() }
@@ -88,11 +89,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
 
     override fun setUser(user: UserDetail) {
-        mBinding.ivAvatar.setImage(
-            image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
-            transformations = listOf(RoundedCornersTransformation(10f.dp))
-        )
-        mBinding.tvName.text = user.nameLastName
+        mBinding.apply {
+            ivAvatar.setImage(
+                image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
+                transformations = listOf(RoundedCornersTransformation(10f.dp))
+            )
+            tvName.text = user.nameLastName
+        }
 
         if (isShowPopup && !::dialog.isInitialized) {
             dialog = AddPhoneEmailDialog(
@@ -123,19 +126,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
 
         mBinding.stateTitle.apply {
-            if (!hasBase && !hasMax) setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red_new
-                )
-            )
-            else setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.main_brown_color_new
-                )
-            )
-
+            if (!hasBase && !hasMax) setTextColor(getColor(requireContext(), R.color.red_new))
+            else setTextColor(getColor(requireContext(), R.color.main_brown_color_new))
             text = newState
             setOnClickListener { showStates() }
         }
@@ -175,32 +167,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_email_text, email),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    presenter.onShowEmailConfirm(email)
-                }
-            }
+        ).setSelectCallback { if (it) presenter.onShowEmailConfirm(email) }
     }
 
     override fun showPhoneNotUnique(phone: String) {
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_phone_text, phone),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    presenter.onShowPhoneConfirm(phone)
-                }
-            }
+        ).setSelectCallback { if (it) presenter.onShowPhoneConfirm(phone) }
     }
 
     override fun showChangeUserShortNameDialog(user: UserDetail) {
-        val changeShortNameDialog = ChangeShortNameFragment(user.id, user.shortName)
-        changeShortNameDialog.show(requireActivity().supportFragmentManager, "change_short_name")
-        changeShortNameDialog.getUpdatedUserShortName {
-            setUserLink(it)
-        }
+        ChangeShortNameFragment(user.id, user.shortName)
+            .getUpdatedUserShortName { setUserLink(it) }
+            .show(requireActivity().supportFragmentManager)
     }
 
     override fun showUserProfileLinkDialog(user: UserDetail) {
@@ -214,10 +194,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }
 
-    override fun hideAddPhoneEmailDialog() {
-        dialog.hideDialog()
-    }
-
+    override fun hideAddPhoneEmailDialog() = dialog.hideDialog()
 
     override fun showPhoneConfirmation(phone: String) {
         val confirmPhone = ConfirmEmailPhoneFragment(phone)
@@ -235,11 +212,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-
     override fun codeSuccess() = showUserStateDialog()
 
     private fun showUserStateDialog() {
-        ChangeStateDialog(requireContext(), StateType.SUCCESS)
+        ChangeStateDialog(requireActivity(), StateType.SUCCESS)
             .setClickCallback {
                 if (it == ClickType.INFO) showStates()
             }

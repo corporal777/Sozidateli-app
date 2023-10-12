@@ -54,7 +54,7 @@ class EventDetailActionItem(
                 if (eventData?.description.isNullOrEmpty()) isVisible = false
                 else {
                     isCanExpand = false
-                    originalText = eventDescription
+                    originalText = eventDescription ?: ""
                     limitedMaxLines = 4
                     expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
                     onExpandClick = {
@@ -253,17 +253,20 @@ class EventDetailActionItem(
     private fun getMarkdownFormattedText(
         context: Context,
         description: String?
-    ): SpannableStringBuilder {
-        val spanned = markWon(context).toMarkdown(description?.replace("\n", " ") ?: "")
-        return SpannableStringBuilder(spanned).apply {
-            val urls = getSpans<URLSpan>()
-            urls.forEach {
-                val start = getSpanStart(it)
-                val end = getSpanEnd(it)
-                removeSpan(it)
-                set(start..end, URLSpanNoUnderline(it.url))
+    ): SpannableStringBuilder? {
+        if (description.isNullOrEmpty()) return null
+        else {
+            val spanned = markWon(context).toMarkdown(description?.replace("\n", " ") ?: "")
+            return SpannableStringBuilder(spanned).apply {
+                val urls = getSpans<URLSpan>()
+                urls.forEach {
+                    val start = getSpanStart(it)
+                    val end = getSpanEnd(it)
+                    removeSpan(it)
+                    set(start..end, URLSpanNoUnderline(it.url))
+                }
+                replace(Regex("[\\t\\n\\r]+"), " ")
             }
-            replace(Regex("[\\t\\n\\r]+"), " ")
         }
     }
 

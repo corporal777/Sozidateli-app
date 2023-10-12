@@ -3,6 +3,7 @@ package com.example.ui.snAuth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import com.facebook.AccessToken
