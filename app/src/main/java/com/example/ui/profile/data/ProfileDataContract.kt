@@ -28,12 +28,6 @@ interface ProfileDataContract {
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showSnackBarMessage(message : String, icon : Int)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showQrCodeLoadingProgress()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideQrCodeLoadingProgress()
     }
 
     interface Presenter : BaseBottomSheetContract.Presenter {

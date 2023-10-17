@@ -29,10 +29,10 @@ import javax.inject.Provider
 
 class ProfileDataFragment(
     val user: Int,
-    val name : String,
-    val imageUrl : String?,
-    val codeUrl : String?,
-    val shortName : String?
+    val name: String,
+    val imageUrl: String?,
+    val codeUrl: String?,
+    val shortName: String?
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
 
@@ -42,15 +42,12 @@ class ProfileDataFragment(
     @Inject
     lateinit var presenterProvider: Provider<ProfileDataPresenter>
 
-
     @ProvidePresenter(type = PresenterType.WEAK, tag = PROFILE_DATA_FRAGMENT_TAG)
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
-        userId = user
         userName = name
-        userShortName = shortName?:""
-        userImageUrl = imageUrl?:""
-        userCodeUrl = codeUrl?:""
-        context = requireContext()
+        userImageUrl = imageUrl ?: ""
+        userCodeUrl = codeUrl ?: ""
+        userLink = if (shortName.isNullOrEmpty()) getUrl() + user else getUrl() + "@" + shortName
     }
 
 
@@ -79,7 +76,6 @@ class ProfileDataFragment(
     override fun setName(userName: String, userLink: String) {
         mBinding.apply {
             tvUserName.text = userName
-            //tvLink.text = userLink
             tvLink.text = StringBuilder(userLink).substring(8, userLink.length)
             clCopy.setOnClickListener {
                 copyTextToBuffer(requireContext(), userLink)
@@ -101,21 +97,27 @@ class ProfileDataFragment(
         snack.show()
     }
 
-    override fun showQrCodeLoadingProgress() {
-        mBinding.qrProgressBar.isVisible = true
+    override fun showCustomLoading() {
+        mBinding.apply {
+            ivQrCode.isVisible = false
+            shimmerQrCode.isVisible = true
+        }
     }
 
-    override fun hideQrCodeLoadingProgress() {
-        mBinding.qrProgressBar.isVisible = false
+    override fun hideCustomLoading() {
+        mBinding.apply {
+            ivQrCode.isVisible = true
+            shimmerQrCode.isVisible = false
+        }
     }
 
     override fun showShareImage(uri: Uri) {
-
         try {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.putExtra(Intent.EXTRA_STREAM, uri)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.setType("image/png")
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                type = "image/png"
+            }
             val chooser = Intent.createChooser(intent, "Share File")
             val resInfoList: List<ResolveInfo> = requireActivity().packageManager
                 .queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY)
@@ -138,9 +140,10 @@ class ProfileDataFragment(
 
     override fun showShareLink(link: String) {
         try {
-            val shareApp = Intent(Intent.ACTION_SEND)
-            shareApp.type = "text/plain"
-            shareApp.putExtra(Intent.EXTRA_TEXT, link)
+            val shareApp = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, link)
+            }
             startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
         } catch (e: Exception) {
             e.printStackTrace()

@@ -263,8 +263,7 @@ fun ImageRequest.Builder.setParams(
     if (crossfad != null) crossfade(crossfad)
     if (placeholder != null) placeholder(placeholder)
     if (error != null) error(error)
-    if (!transformations.isNullOrEmpty())
-        transformations(transformations)
+    if (!transformations.isNullOrEmpty()) transformations(transformations)
     scale(Scale.FILL)
     diskCachePolicy(CachePolicy.ENABLED)
 }

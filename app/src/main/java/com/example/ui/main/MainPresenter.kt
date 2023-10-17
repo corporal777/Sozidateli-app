@@ -28,6 +28,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -123,32 +124,34 @@ class MainPresenter
 
     private fun subscribeToTokenUpdates() {
         compositeDisposable += appData.tokenChangeSubject
+            .flatMap {
+                if (!isIgnoreToken) Observable.just(it)
+                else Observable.empty()
+            }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 unsubscribeChat()
-                if (!isIgnoreToken) {
-                    if (token.value == null) {
-                        isAuthRequired = true
-                        viewState.apply {
-                            hideSplashScreen()
-                            showLogin()
-                            checkIntent()
-                        }
-                    } else loadUser()
-                }
+                if (token.value == null) {
+                    isAuthRequired = true
+                    viewState.apply {
+                        hideSplashScreen()
+                        showLogin()
+                        checkIntent()
+                    }
+                } else loadUser()
             }
     }
 
     private fun loadUser() {
         compositeDisposable += Completable.create { emitter ->
             val disposable = CompositeDisposable()
-            disposable += userRepository.getUserShortNew().subscribeSimple(
+            disposable += userRepository.getUserFullData().subscribeBy(
                 onError = { emitter.onError(it) },
                 onSuccess = { user ->
                     disposable += Completable.merge(listOf(getInAppRequest(), getAdditionalData()))
                         .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })
-                        .subscribeSimple(
+                        .subscribeBy(
                             onError = { emitter.onError(it) },
                             onComplete = { emitter.onComplete() }
                         )
@@ -337,13 +340,12 @@ class MainPresenter
         else {
             compositeDisposable += eventRepository.getEventsList(
                 mapOf(
-                    EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                    EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
+                    EventNew.EVENT_LIMIT to 1,
+                    EventNew.EVENT_OFFSET to 0,
                     EventNew.EVENT_CODE to event
                 )
             ).map { it.data }
                 .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
                 .subscribe({
                     if (!it.isNullOrEmpty()) viewState.showAboutEvent(it.first()?.id.toString())
                     viewState.clearIntentData()
@@ -361,6 +363,15 @@ class MainPresenter
         }
     }
 
+    override fun onHandleUser(userId: String?) {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else if (userId.isNullOrEmpty()) return
+        else viewState.apply {
+            showUser(userId)
+            clearIntentData()
+        }
+    }
+
     override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
         if (isAuthRequired || appData.isLoggedOut) {
             viewState.showLogin()
@@ -374,15 +385,20 @@ class MainPresenter
 
     override fun onHandleAuthWebsite(code: String) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
-        else {
-            viewState.apply {
+        else viewState.apply {
                 showAuthWebsiteFragment(code)
                 clearIntentData()
             }
-        }
     }
 
-    override fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int) {
+    override fun onInviteRegister(
+        email: String,
+        code: String,
+        name: String,
+        lastName: String,
+        middleName: String,
+        invite: Int
+    ) {
         viewState.apply {
             showInviteRegister(email, code, name, lastName, middleName, invite)
             clearIntentData()

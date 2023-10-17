@@ -31,7 +31,10 @@ interface NewApi {
 
     //+
     @GET("v1/user/get-by-short-name")
-    fun getUserByShortName(@Query("shortName") shortName: String): Maybe<UserDetail>
+    fun getUserByShortName(
+        @Query("shortName") shortName: String,
+        @Query("binds") binds: List<String>?
+    ): Maybe<UserDetail>
 
     //+
     @POST("v1/user")
@@ -96,7 +99,10 @@ interface NewApi {
 
     @Multipart
     @PATCH("v1/user/{id}/image")
-    fun changeUserImage(@Path("id") id: Int, @Part image: MultipartBody.Part?): Single<ImageResponse>
+    fun changeUserImage(
+        @Path("id") id: Int,
+        @Part image: MultipartBody.Part?
+    ): Single<ImageResponse>
 
     @DELETE("v1/user/{id}/image")
     fun deleteImage(@Path("id") id: Int): Completable
@@ -279,7 +285,10 @@ interface NewApi {
     fun getUserNotifications(@QueryMap map: Map<String, Any>): Maybe<NotificationsResponse<NotificationModel>>
 
     @GET("v1/user/password/recover/send")
-    fun sendEmailRecovery(@Query("type") type: String, @Query("value") value: String): Maybe<RecoverPasswordResponse>
+    fun sendEmailRecovery(
+        @Query("type") type: String,
+        @Query("value") value: String
+    ): Maybe<RecoverPasswordResponse>
 
     @GET("v1/user/password/recover/check")
     fun checkPasswordRecover(@Query("type") type: String, @Query("code") code: String): Completable
@@ -377,7 +386,7 @@ interface NewApi {
     ): Single<EventActivityModel>
 
     //++
-    fun registerFcmToken() : Completable
+    fun registerFcmToken(): Completable
 
     @GET("v1/user-notification/{id}")
     fun getNotificationDetail(
@@ -425,10 +434,10 @@ interface NewApi {
     fun cancelEvMember(@Path("id") evMemberId: String, @Body body: CancelBody): Completable
 
     @PATCH("v1/event-member/{id}/approve")
-    fun approveEventMember(@Path("id") memberId: String) : Completable
+    fun approveEventMember(@Path("id") memberId: String): Completable
 
     @PATCH("v1/event-member/{id}/decline")
-    fun declineEventMember(@Path("id") memberId: String) : Completable
+    fun declineEventMember(@Path("id") memberId: String): Completable
 
     @PATCH("v1/user-external-invite/pgrf/{id}/rebase")
     fun rebaseInvite(@Path("id") id: Int, @Body body: RebaseInviteBody): Completable
@@ -489,7 +498,8 @@ interface NewApi {
     fun getOrganizationsWithActiveEvents(): Maybe<SearchResponseData<OrganizationNew>>
 
     @GET("v1/app-version/check")
-    fun checkAppVersion(@Query("version") version: String, @Query("os") os: String
+    fun checkAppVersion(
+        @Query("version") version: String, @Query("os") os: String
     ): Maybe<AppUpdateModel>
 
 

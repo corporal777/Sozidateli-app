@@ -28,6 +28,9 @@ interface MainContract {
         fun showAboutEvent(event: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showUser(userId: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
         fun showOrganization(organization: String)
 
         @StateStrategyType(OneExecutionStateStrategy::class)
@@ -97,6 +100,7 @@ interface MainContract {
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEventCode(event: String?)
         fun onHandleEvent(event: String?)
+        fun onHandleUser(userId: String?)
         fun onHandleAuthToOtherPlatform(url: String, type : AuthType)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)

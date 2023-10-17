@@ -58,7 +58,7 @@ class UserRepositoryImp
             appData.setAllUserInfo(it)
         }
 
-    override fun getUserShortNew(): Maybe<UserDetail> =
+    override fun getUserFullData(): Maybe<UserDetail> =
         Maybe.zip(
             getUserShortData(),
             checkUserProfile(),
@@ -71,7 +71,7 @@ class UserRepositoryImp
             appData.checkUserState(state.fields)
         }
 
-    override fun getUserByIdNew(id: String): Maybe<UserDetail> = newApi.getUserShort(
+    override fun getUserById(id: String): Maybe<UserDetail> = newApi.getUserShort(
         id.toInt(),
         arrayListOf(
             "rights",
@@ -87,8 +87,26 @@ class UserRepositoryImp
         )
     ).map { it }
 
+    override fun getUserByExternalId(name: String): Maybe<UserDetail> {
+        return newApi.getUserByShortName(
+            name,
+            arrayListOf(
+                "rights",
+                "education",
+                "academic-degree",
+                "work-experience",
+                "recommendation-file",
+                "organization",
+                "userOrganizationRights",
+                "userFavorite",
+                "chat-room-with-me",
+                "is-user-in-ban"
+            )
+        )
+    }
+
     override fun getUserByShortName(name: String): Maybe<UserDetail> {
-        return newApi.getUserByShortName(name)
+        return newApi.getUserByShortName(name, emptyList())
     }
 
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =

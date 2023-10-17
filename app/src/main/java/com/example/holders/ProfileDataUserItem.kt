@@ -3,10 +3,13 @@ package com.example.holders
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
+import coil.transform.RoundedCornersTransformation
 import com.example.R
 import com.example.databinding.ItemProfileDataUserBinding
+import com.example.extensions.dp
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -15,7 +18,6 @@ import kotlinx.android.synthetic.main.item_profile_data_user.*
 class ProfileDataUserItem(
         id: Long,
         private val avatarUrl: String?,
-        private val avatar: Bitmap?,
         private val name: String,
         private val uid: Int,
         private var subscribeAction: UserSubscribeButton.Action,
@@ -27,10 +29,10 @@ class ProfileDataUserItem(
         viewBinding.apply {
             ivAvatar.apply {
                 transitionName = avatarUrl
-                clipToOutline = true
-                if (avatar != null) setImageBitmap(avatar)
-                else setImageResource(R.drawable.avatar_placeholder_rectangle)
-
+                setImage(
+                    image = avatarUrl ?: R.drawable.avatar_placeholder_rectangle,
+                    transformations = listOf(RoundedCornersTransformation(10f.dp))
+                )
                 setOnClickListener { onAvatarClick(this) }
             }
             tvName.text = name
@@ -65,7 +67,6 @@ class ProfileDataUserItem(
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is ProfileDataUserItem) return false
         if (avatarUrl != other.avatarUrl) return false
-        if (avatar != other.avatar) return false
         if (name != other.name) return false
         if (uid != other.uid) return false
         if (subscribeAction != other.subscribeAction) return false

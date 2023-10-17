@@ -60,6 +60,7 @@ import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
+import com.example.ui.user.UserFragmentArgs
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs_new.UpdateAppBottomSheet
@@ -92,7 +93,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private val navBarColorDefault by lazy { ContextCompat.getColor(this, R.color.main_background) }
-    private val navBarColorBottomNav by lazy { ContextCompat.getColor(this, R.color.bottom_navigation_view_background_color) }
+    private val navBarColorBottomNav by lazy {
+        ContextCompat.getColor(
+            this,
+            R.color.bottom_navigation_view_background_color
+        )
+    }
 
     private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
         onFragmentStopped = { },
@@ -158,7 +164,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     appBar.isVisible = true
                     toolbar.apply {
                         toolbarLabel.text = f.title
-                        f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
+                        f.setupToolbarContent(
+                            ToolbarContent(
+                                ivBack,
+                                toolbarLabel,
+                                toolbarContainer
+                            )
+                        )
                         f.actionIconContainer(toolbarContainer)
                     }
                     getBehavior()?.setScrollChangeCallback { presenter.changeScrollingOffset(it) }
@@ -168,8 +180,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
 
-    private val backClick = onBackPressedCallback(true){
-        val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+    private val backClick = onBackPressedCallback(true) {
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val fr = navHost.childFragmentManager.fragments.firstOrNull()
         //val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
         if (fr != null) {
@@ -177,7 +190,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 is ProfileFragment,
                 is MyEventsFragment,
                 is NotificationsFragment,
-                is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
+                is ChatListTabsFragment -> findNavController().popBackStack(
+                    R.id.recommendations_fragment,
+                    false
+                )
                 is RecommendationsFragment, is AuthorizationFragment -> finish()
                 else -> findNavController().navigateUp()
             }
@@ -233,10 +249,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 val paths = it.pathSegments
                 val lastPath = it.lastPathSegment
 
-                Log.e("CODE", authCode?:"null")
-                Log.e("PATHS", paths.toString())
-                Log.e("LAST PATHS", lastPath?:"null")
-
                 //catch path auth
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
                     val redirectLink = it.getQueryParameter("redirect")
@@ -253,6 +265,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_EVENT)) {
                     if (lastPath.contains(PATH_HIDDEN)) presenter.onHandleEventCode(authCode)
                     else presenter.onHandleEvent(lastPath)
+                }
+                //catch path user
+                else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_USER)) {
+                    presenter.onHandleUser(lastPath)
                 }
                 //catch path password recovery
                 else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
@@ -386,14 +402,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showGreetings() = findNavController().navigate(
         R.id.welcome_fragment, null,
-        navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
+        navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
     )
 
     override fun showLogin() {
         if (findNavController().currentDestination?.id != R.id.authorization_fragment) {
             findNavController().navigate(
                 R.id.authorization_fragment, null,
-                navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
+                navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
             )
         }
     }
@@ -402,7 +418,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         if (findNavController().currentDestination?.id != R.id.fragment_finish_register) {
             findNavController().navigate(
                 R.id.recommendations_fragment, null,
-                navOptions { popUpTo(R.id.main_navigation) { inclusive = true} }
+                navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
             )
         }
     }
@@ -411,6 +427,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().navigate(
             R.id.about_event_fragment_new,
             AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+        )
+    }
+
+    override fun showUser(userId: String) {
+        findNavController().navigate(
+            R.id.user_fragment,
+            UserFragmentArgs.Builder(userId).build().toBundle()
         )
     }
 

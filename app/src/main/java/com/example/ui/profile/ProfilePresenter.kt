@@ -36,7 +36,7 @@ class ProfilePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += userRepository.getUserShortNew()
+        compositeDisposable += userRepository.getUserShortData()
             .doOnSuccess { getAdditionalData() }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoading(viewState)
@@ -85,28 +85,9 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeBy(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showRequestErrorMessage()
-                },
+                onError = { onReceiveError(it) },
                 onComplete = {}
             )
-        /*compositeDisposable += userRepository.getFcmToken()
-                .flatMapCompletable { userRepository.notificationsUnregister(it.token) }
-                .doOnComplete {
-                    appData.isSubscribedToPush = false
-                    haChat.disconnect()
-                    appData.logout()
-                    notificationManager.cancelAll()
-                }
-                .performOnBackgroundOutOnMain()
-                .withLoadingDialog(viewState)
-                .subscribeBy(
-                        onError = {
-                            it.printStackTrace()
-                            viewState.showRequestErrorMessage()
-                        }
-                )*/
     }
 
     private fun getAdditionalData() {
@@ -237,6 +218,6 @@ class ProfilePresenter
 
     private fun getUserRequest(): Maybe<UserDetail> {
         return Maybe.defer { Maybe.just(appData.getUserNew()) }
-            .onErrorResumeNext(userRepository.getUserShortNew())
+            .onErrorResumeNext(userRepository.getUserShortData())
     }
 }

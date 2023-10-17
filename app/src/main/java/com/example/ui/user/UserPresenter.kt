@@ -33,8 +33,6 @@ class UserPresenter
 
     lateinit var userId: String
     private lateinit var profileUserData: ProfileUserData
-    lateinit var context: Context
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -42,7 +40,17 @@ class UserPresenter
     }
 
     private fun loadUserData() {
-        compositeDisposable += userLoadRequest()
+        val userRequest =
+            if (userId.first() == '@')
+                userRepository.getUserByExternalId(userId.substring(1, userId.length))
+            else userRepository.getUserById(userId)
+
+        compositeDisposable += Maybe.zip(userRequest, commonRepository.getInterests()) { user, i ->
+            ProfileUserData(user).apply {
+                setUserInterests(i)
+                profileUserData = this
+            }
+        }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -50,17 +58,13 @@ class UserPresenter
                     viewState.showUserHiddenDialog()
                 },
                 onSuccess = {
-                    compositeDisposable += userAddressRequest()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple {
-                            viewState.apply {
-                                setUser(profileUserData)
-                                if (profileUserData.user.state?.isRegistered == true) {
-                                    setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                                    setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
-                                }
-                            }
+                    viewState.apply {
+                        setUser(profileUserData)
+                        if (profileUserData.user.state?.isRegistered == true) {
+                            setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
+                            setSubscribeBlockAction(profileUserData.user.getUserSubscribeAction())
                         }
+                    }
                 })
     }
 
@@ -92,7 +96,13 @@ class UserPresenter
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += eventRepository.addToFavorites(AddToFavoriteModel.toBody(appData.getId(), FAVORITE_SPEAKER, userId.toInt()))
+        compositeDisposable += eventRepository.addToFavorites(
+            AddToFavoriteModel.toBody(
+                appData.getId(),
+                FAVORITE_SPEAKER,
+                userId.toInt()
+            )
+        )
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
@@ -163,48 +173,7 @@ class UserPresenter
         }
     }
 
-
-    private fun String?.loadAvatarNew(): Bitmap? {
-        return loadBitmapNew(context)
-    }
-
     private fun isCurrentUser() = userId == appData.getId().toString()
 
     override fun onRefreshRequest() = loadUserData()
-
-    private fun userAddressRequest(): Completable {
-        return userRepository.searchAddress(
-            profileUserData.user.address?.getShortAddress() ?: ""
-        ).doOnSuccess { profileUserData.setUserShortAddress(it) }
-            .ignoreElement().onErrorResumeNext { Completable.complete() }
-    }
-
-    private fun userLoadRequest(): Maybe<ProfileUserData> {
-        return Maybe.zip(
-            userRepository.getUserByIdNew(userId),
-            commonRepository.getInterests()
-        ) { user, interests ->
-            val userInterests = if (user.isHasInterests() && !interests.isNullOrEmpty()) {
-                mutableMapOf<InterestNew, MutableList<InterestNew>>().apply {
-                    interests.filter { it.parent == 0 }.forEach {
-                        val parent = interests.filter { parent -> parent.parent == it.id }
-                        parent.let { it1 ->
-                            user.interests?.forEach { usIn ->
-                                val isUserInterest = it1.find { it2 -> it2.id == usIn }
-                                if (isUserInterest != null)
-                                    getOrPut(it) { mutableListOf() }.add(isUserInterest)
-                            }
-                        }
-                    }
-                }
-            } else mutableMapOf()
-
-            ProfileUserData(
-                user,
-                user.loadUserImage().loadAvatarNew(),
-                userInterests
-            ).apply { profileUserData = this }
-        }
-    }
-
 }

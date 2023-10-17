@@ -535,8 +535,8 @@ object FileUtils {
         }
     }
 
-    fun generateFileName(name: String?, directory: File?): File? {
-        var name = name ?: return null
+    fun generateFileName(value: String?, directory: File?): File? {
+        var name = value ?: return null
         var file = File(directory, name)
         if (file.exists()) {
             file.delete()

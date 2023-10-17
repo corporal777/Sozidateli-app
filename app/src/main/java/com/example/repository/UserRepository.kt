@@ -20,12 +20,11 @@ import retrofit2.http.*
 
 interface UserRepository {
     fun getUserInternal(): Maybe<UserDetail>
-    fun getUserShortNew(): Maybe<UserDetail>
+    fun getUserFullData(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
-    fun getUserByIdNew(id: String): Maybe<UserDetail>
+    fun getUserById(id: String): Maybe<UserDetail>
+    fun getUserByExternalId(name: String): Maybe<UserDetail>
     fun getUserByShortName(name: String): Maybe<UserDetail>
-    //fun getUserShort(): Maybe<UserShort>
-    //fun getUserFull(): Maybe<User>
     //fun getLastNotification(): Single<List<Notification>>
     //fun getNotifications(limit: Int, offset: Int): Maybe<PaginationResponse<RemoteNotification>>
     //fun getNotification(id: Int): Maybe<RemoteNotification>

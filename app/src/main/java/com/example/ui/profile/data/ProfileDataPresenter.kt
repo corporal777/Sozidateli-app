@@ -12,6 +12,7 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.AppData
 import com.example.repository.UserRepository
+import com.example.ui.base.BaseContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.example.util.saveImageToCache
@@ -27,10 +28,16 @@ import com.generator.qrcodegenerator.vector.style.QrVectorColor
 import com.generator.qrcodegenerator.vector.style.QrVectorFrameShape
 import com.generator.qrcodegenerator.vector.style.QrVectorPixelShape
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
+import withCustomLoading
+import withDelay
 import javax.inject.Inject
 
 @InjectViewState
@@ -38,64 +45,32 @@ class ProfileDataPresenter
 @Inject constructor(
     private val takePhoto: RxTakePhoto,
     private val appData: AppData,
+    private val context: Context
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
-    var userId = 0
-    var userImageUrl = ""
-    var userCodeUrl = ""
-    var userName = ""
-    var userShortName = ""
-    var context: Context? = null
+    var userImageUrl: String = ""
+    var userCodeUrl: String = ""
+    var userName: String = ""
+    var userLink : String = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        val userLink =
-            if (userShortName.isNullOrEmpty()) BuildConfig.SHARE_URL + "portal/user/" + userId
-            else BuildConfig.SHARE_URL + "portal/user/" + userShortName
         viewState.setName(userName, userLink)
-
-        if (context != null) {
-            compositeDisposable += getQrCodeBitmapFromDrawable(context!!, userLink, userImageUrl)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                    onError = {
-                        it.printStackTrace()
-                        viewState.showQrCodeLoadingProgress()
-                        compositeDisposable += getQrCodeBitmap(context!!, userLink, userImageUrl)
-                            .onErrorResumeNext(getQrCodeBitmapFromUrl(context!!, userCodeUrl))
-                            .performOnBackgroundOutOnMain()
-                            .subscribeSimple(
-                                onError = {
-                                    it.printStackTrace()
-                                    viewState.hideQrCodeLoadingProgress()
-                                },
-                                onSuccess = { bm ->
-                                    viewState.apply {
-                                        hideQrCodeLoadingProgress()
-                                        setImage(bm)
-                                    }
-                                })
-
-                    },
-                    onSuccess = {
-                        viewState.setImage(it)
-                    }
-                )
-
-        }
-
-
+        compositeDisposable += getQrCodeImageFromDrawable(context, userLink, userImageUrl)
+            .onErrorResumeNext(getQrCodeImageFromBitmap(context, userLink, userImageUrl))
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onSuccess = { viewState.setImage(it) }
+            )
     }
 
     override fun shareImageClick(context: Context, image: Bitmap) {
         compositeDisposable += Single.create<Uri> {
             val uri = saveImageToCache(context, image)
-            if (uri != null) {
-                it.onSuccess(uri)
-            } else {
-                it.onError(Exception("Uri is null"))
-            }
+            if (uri != null) it.onSuccess(uri)
+            else it.onError(Exception("Uri is null"))
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -103,25 +78,27 @@ class ProfileDataPresenter
             }
     }
 
-    override fun shareLinkClick(text: String) {
-        viewState.showShareLink(text)
-    }
+    override fun shareLinkClick(text: String) = viewState.showShareLink(text)
 
     override fun saveImageToGalleryClick(context: Context, image: Bitmap) {
         compositeDisposable += takePhoto.saveImage(image)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                }, onComplete = {
+                onError = { it.printStackTrace() },
+                onComplete = {
                     viewState.showSnackBarMessage(
                         context.getString(R.string.qr_code_is_saved),
                         R.drawable.ic_profile_code_save_filled
                     )
-                })
+                }
+            )
     }
 
-    private fun getQrCodeBitmap(context: Context, link: String, uri: String): Maybe<Bitmap> {
+    private fun getQrCodeImageFromBitmap(
+        context: Context,
+        link: String,
+        uri: String
+    ): Maybe<Bitmap> {
         return Maybe.fromCallable {
             val data = QrData.Url(link)
             val opt = createQrOptions(1400, 1400, .1f) {
@@ -158,7 +135,7 @@ class ProfileDataPresenter
         }
     }
 
-    private fun getQrCodeBitmapFromDrawable(
+    private fun getQrCodeImageFromDrawable(
         ct: Context,
         link: String,
         uri: String
@@ -205,13 +182,5 @@ class ProfileDataPresenter
         }
     }
 
-    private fun getQrCodeBitmapFromUrl(context: Context, uri: String): Maybe<Bitmap> {
-        return Maybe.fromCallable {
-            val str = StringBuilder(uri)
-            val l = str.delete(0, 22)
-            val imageByteArray = Base64.decode(l.toString(), Base64.DEFAULT)
-            Glide.with(context).asBitmap().load(imageByteArray)
-                .submit().get()
-        }
-    }
+    fun getUrl() = BuildConfig.SHARE_URL + "portal/user/"
 }

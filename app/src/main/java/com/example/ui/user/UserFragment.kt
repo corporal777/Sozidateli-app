@@ -75,7 +75,6 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     fun providePresenter(): UserPresenter = presenterProvider.get().apply {
         val args = UserFragmentArgs.fromBundle(requireArguments())
         userId = args.userId
-        context = requireContext()
     }
 
     private val onOrganizationClickListener: (OrganizationNew) -> Unit = {
@@ -131,11 +130,9 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
 
     override fun setUser(profileUserData: ProfileUserData) {
         val user = profileUserData.user
-        val avatar = profileUserData.avatar
         val interests = profileUserData.interests
 
-
-        mainDataSection.updateItem(initProfileItem(user, avatar))
+        mainDataSection.updateItem(initProfileItem(user))
         personalDataSection.updateGroup(initPersonalDataItem(user))
         educationDataSection.updateGroup(initEducationDataItem(user))
         workDataSection.updateGroup(initWorkExperience(user))
@@ -154,23 +151,6 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-
-    private fun initProfileItem(user: UserDetail, avatar: Bitmap?): ProfileDataUserItem {
-        return ProfileDataUserItem(
-            HEADER_ITEM_ID,
-            user.image?.uri,
-            avatar,
-            user.nameLastName,
-            user.id,
-            user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
-            { presenter.onWriteMessageClick() },
-            { imageView ->
-                val url = user.image?.uri ?: return@ProfileDataUserItem
-                onAvatarClick(imageView, url)
-            }
-        )
-    }
-
     private fun onAvatarClick(imageView: ImageView, url: String) {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
             requireActivity(),
@@ -183,6 +163,21 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
                 .toBundle(),
             null,
             ActivityNavigatorExtras(options)
+        )
+    }
+
+    private fun initProfileItem(user: UserDetail): ProfileDataUserItem {
+        return ProfileDataUserItem(
+            HEADER_ITEM_ID,
+            user.loadUserImage(),
+            user.nameLastName,
+            user.id,
+            user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
+            { presenter.onWriteMessageClick() },
+            { imageView ->
+                val url = user.image?.uri ?: return@ProfileDataUserItem
+                onAvatarClick(imageView, url)
+            }
         )
     }
 

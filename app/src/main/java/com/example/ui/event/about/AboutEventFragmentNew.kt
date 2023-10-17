@@ -218,12 +218,12 @@ class AboutEventFragmentNew() : BaseFragment<FragmentAboutEventNewBinding>(),
                 )
             })
         }
-        if (eventData.showMoreSubEvents) {
-            list.add(EventDetailShowActivitiesItem {
+        eventProgramSection.apply {
+            update(list)
+            setFooter(EventDetailShowActivitiesItem {
                 mPresenter.onShowEventActivitiesClick()
             })
         }
-        eventProgramSection.update(list)
     }
 
     override fun setPartnersData(partners: List<PartnerModel>) {

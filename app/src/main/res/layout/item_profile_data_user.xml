@@ -13,7 +13,6 @@
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:layout_marginTop="22dp"
-            android:background="@drawable/background_corners"
             android:contentDescription="@string/content_description_avatar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -60,15 +60,25 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:background="@drawable/background_corners"
-                    android:scaleType="centerCrop" />
-
-
-                <com.example.ui.views.CustomProgressBar
-                    android:id="@+id/qr_progress_bar"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer_qr_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:shimmer_duration="1500">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/background_corners"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/qr_code_placeholder" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
 
@@ -166,10 +176,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="50dp"
+                    android:ellipsize="end"
                     android:gravity="center"
                     android:letterSpacing="-0.01"
                     android:maxLines="1"
-                    android:ellipsize="end"
                     android:textColor="@color/main_brown_color_new"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"

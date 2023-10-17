@@ -41,12 +41,9 @@ class ChangeShortNamePresenter
         compositeDisposable += userRepository.getUserByShortName(short)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.setUserShortNameUnique(true)
-                }, onSuccess = {
-                    viewState.setUserShortNameUnique(false)
-                })
+                onError = { viewState.setUserShortNameUnique(true) },
+                onSuccess = { viewState.setUserShortNameUnique(false) }
+            )
     }
 
     override fun updateUserShortName(short: String) {
