@@ -54,21 +54,6 @@
                     android:host="alfa.sozidateli.ru"
                     android:pathPrefix="/switch-account"
                     android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/portal/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/qr"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/event"
-                    android:scheme="https" />
             </intent-filter>
         </activity>
 
