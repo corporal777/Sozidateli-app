@@ -175,7 +175,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
             user.getUserSubscribeAction() ?: UserSubscribeButton.Action.FAVORITE,
             { presenter.onWriteMessageClick() },
             { imageView ->
-                val url = user.image?.uri ?: return@ProfileDataUserItem
+                val url = user.loadUserImage() ?: return@ProfileDataUserItem
                 onAvatarClick(imageView, url)
             }
         )

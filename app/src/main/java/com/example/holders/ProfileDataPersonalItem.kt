@@ -7,17 +7,17 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.LinksModel
+import com.example.data.models.OrganizationNew
+import com.example.databinding.ItemProfileDataPersonalBinding
 import com.example.extensions.parsePhone
 import com.example.util.ClickableSpan
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_personal.*
+import com.xwray.groupie.databinding.BindableItem
 import removeUrlUnderline
 import setTextDataOrHide
 
 class ProfileDataPersonalItem(
-        private val organizations: List</*Organization*/OrganizationNew>?,
+        private val organizations: List<OrganizationNew>?,
         private val email: String?,
         private val workPhone: String?,
         private val mobilePhone: String?,
@@ -27,11 +27,11 @@ class ProfileDataPersonalItem(
         private val city: String?,
         private val socialNetworks: LinksModel?,
         private val user_phone_work_additional: String?,
-        private val onOrganizationClick: (/*Organization*/OrganizationNew) -> Unit
-) : Item() {
+        private val onOrganizationClick: (OrganizationNew) -> Unit
+) : BindableItem<ItemProfileDataPersonalBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataPersonalBinding, position: Int) {
+        viewBinding.apply {
             tvOrganization.movementMethod = LinkMovementMethod.getInstance()
 
             val organizationStringBuilder = SpannableStringBuilder()
@@ -66,6 +66,7 @@ class ProfileDataPersonalItem(
             tvPhoneConfirmed.isVisible = mobilePhoneConfirmed
         }
     }
+
 
     override fun getLayout() = R.layout.item_profile_data_personal
 }
