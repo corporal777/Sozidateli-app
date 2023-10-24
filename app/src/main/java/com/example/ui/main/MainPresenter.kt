@@ -147,8 +147,8 @@ class MainPresenter
             val disposable = CompositeDisposable()
             disposable += userRepository.getUserFullData().subscribeBy(
                 onError = { emitter.onError(it) },
-                onSuccess = { user ->
-                    disposable += Completable.merge(listOf(getInAppRequest(), getAdditionalData()))
+                onSuccess = {
+                    disposable += Completable.merge(listOf(getAdditionalData()))
                         .doOnComplete { connectToSocket() }
                         .andThen(Completable.defer { checkShowGreetings() })
                         .subscribeBy(
@@ -171,13 +171,13 @@ class MainPresenter
                     }
                 },
                 onComplete = {
+                    showNextInApp()
                     viewState.apply {
                         hideSplashScreen()
                         hideLoadingDialog()
                         showRecommendations()
                         checkIntent()
                     }
-                    showNextInApp()
                 }
             )
     }
@@ -326,7 +326,19 @@ class MainPresenter
 
 
     private fun showNextInApp() {
-        if (!inAppListNew.isNullOrEmpty()) viewState.showInAppNew(inAppListNew)
+        compositeDisposable += userRepository.getInAppList(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 50,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )
+        )
+            .map { it.map { n -> Notification.fromRemoteNotification(n) } }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (!it.isNullOrEmpty()) viewState.showInAppNew(it)
+            }
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
@@ -386,9 +398,9 @@ class MainPresenter
     override fun onHandleAuthWebsite(code: String) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else viewState.apply {
-                showAuthWebsiteFragment(code)
-                clearIntentData()
-            }
+            showAuthWebsiteFragment(code)
+            clearIntentData()
+        }
     }
 
     override fun onInviteRegister(
@@ -524,22 +536,6 @@ class MainPresenter
             .appendQueryParameter("access_token", appData.token)
             .build()
         viewState.showBrowser(uri.toString())
-    }
-
-    private fun getInAppRequest(): Completable {
-        return userRepository.getInAppList(
-            mapOf(
-                NotificationModel.NOTIFICATION_LIMIT to 50,
-                NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-            )
-        ).doOnSuccess {
-            inAppList = LinkedList(it)
-            inAppListNew.addAll(it.map { n ->
-                Notification.fromRemoteNotification(n)
-            })
-        }.ignoreElement()
     }
 
     private fun getAdditionalData(): Completable {

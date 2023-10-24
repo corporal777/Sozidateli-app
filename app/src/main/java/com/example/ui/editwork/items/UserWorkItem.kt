@@ -118,7 +118,7 @@ class UserWorkItem(
                     showError(context.getString(R.string.profile_work_finish_error))
                 }
                 if (!isOrganizationValid()) tilProject.apply {
-                    if ((mOrganization?.length ?: 0) < 4 && (mOrganization?.length ?: 0) > 0)
+                    if ((mOrganization?.length ?: 0) < 5 && (mOrganization?.length ?: 0) > 0)
                         showError(context.getString(R.string.ten_letters_error))
                     else showError(context.getString(R.string.enter_organization))
                 }
@@ -201,10 +201,9 @@ class UserWorkItem(
         }
     }
 
-    private fun isOrganizationValid(): Boolean = (mOrganization?.length ?: 0) >= 4
+    private fun isOrganizationValid(): Boolean = (mOrganization?.length ?: 0) >= 5
     private fun isPositionValid(): Boolean = (mPosition?.length ?: 0) >= 4
-    fun isDataValid() =
-        isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid()
+    fun isDataValid() = isStartValid() && isFinishValid() && isOrganizationValid() && isPositionValid()
 
     fun isDataNotEmpty(): Boolean {
         return !mOrganization.isNullOrEmpty() || !mPosition.isNullOrEmpty() || !mStart.isNullOrBlank() || !mFinish.isNullOrBlank()
