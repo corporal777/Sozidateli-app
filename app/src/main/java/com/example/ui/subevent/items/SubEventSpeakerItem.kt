@@ -1,12 +1,10 @@
 package com.example.ui.subevent.items
 
-import android.util.Log
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemSubEventSpeakerBinding
-import com.example.holders.redesign.EventActivityItem
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem

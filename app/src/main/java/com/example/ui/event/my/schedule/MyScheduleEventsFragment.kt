@@ -13,7 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.*
@@ -26,9 +26,9 @@ import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.event.my.schedule.items.*
-import com.example.ui.views.dialogs_new.CustomProgressDialog
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
+import com.example.ui.views.dialogs.CustomProgressDialog
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.util.SearchInput
 import com.example.util.getMonthName
 import com.xwray.groupie.GroupAdapter

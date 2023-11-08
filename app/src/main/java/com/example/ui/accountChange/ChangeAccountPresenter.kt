@@ -8,7 +8,7 @@ import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
-import com.example.ui.accountChange.data.AuthType
+import com.example.data.models.AuthType
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign

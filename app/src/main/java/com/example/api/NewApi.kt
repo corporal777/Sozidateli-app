@@ -1,9 +1,8 @@
 package com.example.api
 
-import androidx.room.Delete
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.ui.chat.body.MessageBodyNew
+import com.example.data.bodies.MessageBodyNew
 import com.example.ui.event.registration.items.ProfileFieldsData
 import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
@@ -525,4 +524,10 @@ interface NewApi {
 
     @PATCH("v1/event-agreement/{id}")
     fun acceptRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
+
+    @GET("v1/support")
+    fun getSupportData(): Maybe<List<SupportData>>
+
+    @POST("v1/form/feedback-send")
+    fun sendSupportData(@Body body: RequestBody): Completable
 }

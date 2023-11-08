@@ -146,7 +146,7 @@
     <fragment
         android:id="@+id/register_email_new_fragment"
         android:name="com.example.ui.auth.register.email.newbuild.RegisterEmailFragment"
-        android:label="Register"></fragment>
+        android:label="Register" />
 
     <fragment
         android:id="@+id/register_sn_fragment"
@@ -157,35 +157,6 @@
             android:name="snUser"
             app:argType="com.example.data.models.SnUser"
             app:nullable="false" />
-
-        <action
-            android:id="@+id/sn_register_to_email_confirm"
-            app:destination="@id/email_confirm_fragment"
-            app:popUpTo="@id/register_sn_fragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/email_confirm_fragment"
-        android:name="com.example.ui.auth.confirm.EmailConfirmFragment">
-
-        <argument
-            android:name="email"
-            app:argType="string" />
-
-        <argument
-            android:name="password"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="SnUser"
-            app:argType="com.example.data.models.SnUser"
-            app:nullable="true" />
-
-        <!--app:popUpTo="@id/register_sn_fragment"
-        app:popUpToInclusive="true" />-->
-
     </fragment>
 
     <fragment
@@ -203,7 +174,7 @@
 
     <fragment
         android:id="@+id/organizations_fragment"
-        android:name="com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment"></fragment>
+        android:name="com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment" />
 
 
     <fragment
@@ -305,68 +276,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/notifications_fragment"
-        android:name="com.example.ui.notification.center.NotificationsFragment"
-        android:label="@string/notifications_label">
-
-        <action
-            android:id="@+id/notifications_center_to_notification"
-            app:destination="@id/notification_fragment" />
-
-        <action
-            android:id="@+id/notifications_center_to_event_rating"
-            app:destination="@id/event_rating_fragment" />
-
-        <action
-            android:id="@+id/notification_to_about_event_fragment"
-            app:destination="@id/about_event_fragment_new" />
-    </fragment>
-
-    <fragment
         android:id="@+id/notifications_list_fragment"
-        android:name="com.example.ui.notification.center.redesign.NotificationsListFragment"
-        android:label="@string/notifications_label">
-
-        <action
-            android:id="@+id/notifications_center_to_notification"
-            app:destination="@id/notification_fragment" />
-
-        <action
-            android:id="@+id/notifications_center_to_event_rating"
-            app:destination="@id/event_rating_fragment" />
-
-        <action
-            android:id="@+id/notification_to_about_event_fragment"
-            app:destination="@id/about_event_fragment_new" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/notification_fragment"
-        android:name="com.example.ui.notification.NotificationFragment">
-
-        <argument
-            android:name="notification"
-            app:argType="com.example.data.models.Notification"
-            app:nullable="false" />
-
-        <action
-            android:id="@+id/notification_to_event_rating"
-            app:destination="@id/event_rating_fragment" />
-
-        <action
-            android:id="@+id/notification_to_about_event_fragment"
-            app:destination="@id/about_event_fragment_new" />
-
-        <action
-            android:id="@+id/notification_to_organization_fragment"
-            app:destination="@id/organization_fragment_new" />
-
-    </fragment>
+        android:name="com.example.ui.notification.NotificationsListFragment"
+        android:label="@string/notifications_label" />
 
     <fragment
         android:id="@+id/banned_fragment"
         android:name="com.example.ui.banned.BannedFragment"
-        android:label="@string/profile_banned"></fragment>
+        android:label="@string/profile_banned" />
 
     <fragment
         android:id="@+id/chat_list_tabs_fragment"
@@ -517,7 +434,7 @@
     <fragment
         android:id="@+id/search_tabs_fragment"
         android:name="com.example.ui.search.tabs.SearchTabsFragment"
-        tools:layout="@layout/fragment_search_tabs"></fragment>
+        tools:layout="@layout/fragment_search_tabs" />
 
     <fragment
         android:id="@+id/qr_scanner_fragment"
@@ -787,7 +704,7 @@
 
         <argument
             android:name="authType"
-            app:argType="com.example.ui.accountChange.data.AuthType"
+            app:argType="com.example.data.models.AuthType"
             app:nullable="false" />
 
         <argument
@@ -809,32 +726,32 @@
 
     <fragment
         android:id="@+id/system_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment" />
+        android:name="com.example.ui.notification.types.system.SystemNotificationsFragment" />
 
     <fragment
         android:id="@+id/project_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment" />
+        android:name="com.example.ui.notification.types.projects.ProjectNotificationsFragment" />
 
     <fragment
         android:id="@+id/active_invites_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment" />
+        android:name="com.example.ui.notification.types.projects.active.ActiveInvitesFragment" />
 
     <fragment
         android:id="@+id/archive_invites_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment" />
+        android:name="com.example.ui.notification.types.projects.archive.ArchiveInvitesFragment" />
 
 
     <fragment
         android:id="@+id/event_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment" />
+        android:name="com.example.ui.notification.types.event.EventNotificationsFragment" />
 
     <fragment
         android:id="@+id/organizer_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment" />
+        android:name="com.example.ui.notification.types.organizator.OrganizerNotificationsFragment" />
 
     <fragment
         android:id="@+id/evaluate_notifications_fragment"
-        android:name="com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment" />
+        android:name="com.example.ui.notification.types.evaluate.EvaluateNotificationsFragment" />
 
 
     <fragment
@@ -883,6 +800,28 @@
         android:id="@+id/test_blur_fragment"
         android:name="com.example.ui.gallery.test.TestBlurFragment"
         tools:layout="@layout/bottom_sheet_gallery">
+    </fragment>
+
+    <fragment
+        android:id="@+id/supportCenterFragment"
+        android:name="com.example.ui.support.SupportCenterFragment"
+        android:label="SupportCenterFragment" />
+
+    <fragment
+        android:id="@+id/supportSearchFragment"
+        android:name="com.example.ui.support.search.SupportSearchFragment"
+        android:label="SupportSearchFragment" />
+
+    <fragment
+        android:id="@+id/supportDetailFragment"
+        android:name="com.example.ui.support.detail.SupportQuestionDetailFragment"
+        android:label="SupportQuestionDetailFragment">
+
+
+        <argument
+            android:name="supportData"
+            app:argType="com.example.data.models.SupportData"
+            app:nullable="false" />
     </fragment>
 
 </navigation>

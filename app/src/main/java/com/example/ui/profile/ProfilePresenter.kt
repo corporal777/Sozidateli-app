@@ -123,7 +123,7 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                appData.updateUserNew {
+                appData.updateUser {
                     this.email = FieldDetails(value = email)
                 }
                 viewState.showEmailConfirmation(email)
@@ -184,8 +184,8 @@ class ProfilePresenter
     override fun onAboutApplicationClick() = viewState.showAboutApp()
 
 
-    override fun onSupportClick() = viewState.openSupportEmail(appData.getId().toString())
-
+    override fun onSupportClick() = viewState.showSupport()
+    override fun onWriteEmailClick() = viewState.openSupportEmail(appData.getId().toString())
     override fun onRateClick() = viewState.openPlayMarket()
 
     override fun onSessionsClick() = viewState.showSessions()
@@ -217,7 +217,7 @@ class ProfilePresenter
 
 
     private fun getUserRequest(): Maybe<UserDetail> {
-        return Maybe.defer { Maybe.just(appData.getUserNew()) }
+        return Maybe.defer { Maybe.just(appData.getUser()) }
             .onErrorResumeNext(userRepository.getUserShortData())
     }
 }

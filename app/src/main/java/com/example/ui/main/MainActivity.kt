@@ -1,6 +1,5 @@
 package com.example.ui.main
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
@@ -8,15 +7,12 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
@@ -37,7 +33,7 @@ import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
-import com.example.ui.accountChange.data.AuthType
+import com.example.data.models.AuthType
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
@@ -50,9 +46,7 @@ import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
-import com.example.ui.notification.NotificationFragmentArgs
-import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.notification.center.redesign.NotificationsListFragment
+import com.example.ui.notification.NotificationsListFragment
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
@@ -63,13 +57,12 @@ import com.example.ui.stories.StoriesFragment
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.UpdateAppBottomSheet
+import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import getFragmentLifecycleCallback
-import kotlinx.android.synthetic.main.activity_main.*
 import onBackPressedCallback
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
@@ -136,8 +129,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 is ChatListTabsFragment,
                 is ProfileFragment,
                 is MyScheduleEventsFragment,
-                is NotificationsListFragment,
-                is NotificationsFragment -> showNavBar()
+                is NotificationsListFragment -> showNavBar()
                 else -> hideNavBar()
             }
 
@@ -189,12 +181,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             when (fr) {
                 is ProfileFragment,
                 is MyEventsFragment,
-                is NotificationsFragment,
-                is ChatListTabsFragment -> findNavController().popBackStack(
-                    R.id.recommendations_fragment,
-                    false
-                )
-                is RecommendationsFragment, is AuthorizationFragment -> finish()
+                is NotificationsListFragment,
+                is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
+                is RecommendationsFragment,
+                is AuthorizationFragment -> finish()
                 else -> findNavController().navigateUp()
             }
         }
@@ -641,10 +631,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 R.id.notification -> {
                     val frag =
                         supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (findNavController().currentDestination?.id == R.id.notifications_fragment) {
+                    if (findNavController().currentDestination?.id == R.id.notifications_list_fragment) {
                         if (frag != null) {
-                            val note =
-                                frag.childFragmentManager.primaryNavigationFragment as NotificationsFragment
+                            val note = frag.childFragmentManager.primaryNavigationFragment as NotificationsListFragment
                             note.smoothScrollToFirstItem()
                         }
                     }
@@ -654,8 +643,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         supportFragmentManager.primaryNavigationFragment as NavHostFragment
                     if (findNavController().currentDestination?.id == R.id.chat_list_tabs_fragment) {
                         if (frag != null) {
-                            val chats =
-                                frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
+                            val chats = frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
                             chats.smoothScrollToFirstItem()
                         }
                     }
@@ -682,7 +670,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     true
                 }
                 R.id.notification -> {
-                    //findNavController(R.id.navHostFragment).navigate(R.id.notifications_fragment)
                     findNavController().navigate(R.id.notifications_list_fragment)
                     true
                 }
@@ -716,7 +703,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             is ChatListTabsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.chats).isChecked = true
             }
-            is NotificationsFragment -> {
+            is NotificationsListFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.notification).isChecked = true
             }
             is MyEventsFragment -> {
@@ -748,13 +735,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showProgressView() = mBinding.progressView.showProgressBar()
     override fun hideProgressView() = mBinding.progressView.hideProgressBar()
     override fun showBrowser(url: String) = showCustomTabsBrowser(this, url)
-
-    override fun layout() = R.layout.activity_main
-
-    override fun setMainTheme() {
-        window.navigationBarColor = navBarColorDefault
-        setTheme(R.style.AppTheme)
-    }
 
     private fun registerFragmentLifecycleCallback() {
         val fr = (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)

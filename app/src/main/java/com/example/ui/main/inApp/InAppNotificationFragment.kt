@@ -1,44 +1,28 @@
 package com.example.ui.main.inApp
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.animation.AlphaAnimation
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.text.parseAsHtml
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.PresenterType
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.BottomSheetInAppNotificationBinding
-import com.example.extensions.defaultDateTimeFormatter
-import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.findItemBy
-import com.example.extensions.parseAndFormat
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.notification.center.redesign.items.AcceptNotificationItemNew
-import com.example.ui.notification.center.redesign.items.NotificationItemNew
-import com.example.ui.notification.center.redesign.items.RateNotificationItemNew
-import com.example.ui.notification.center.redesign.items.SimpleNotificationItemNew
+import com.example.ui.notification.items.AcceptNotificationItem
+import com.example.ui.notification.items.NotificationItem
+import com.example.ui.notification.items.RateNotificationItem
+import com.example.ui.notification.items.SimpleNotificationItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
-import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
 import com.example.util.showCustomTabsBrowser
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.Item
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -63,7 +47,7 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
     }
 
 
-    private val onNotificationListener = object : NotificationItemNew.OnNotificationActionListener {
+    private val onNotificationListener = object : NotificationItem.OnNotificationActionListener {
 
         override fun onOpenEventClickListener(eventId: String) = showAboutEvent(eventId)
         override fun onReadClickListener(id: Int) = presenter.onNotificationReadClick(id)
@@ -102,17 +86,17 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
     override fun setNotifications(notifications: List<Notification>) {
         notificationsSection.update(notifications.map {
             when (it.type) {
-                Notification.Type.SIMPLE -> SimpleNotificationItemNew(
+                Notification.Type.SIMPLE -> SimpleNotificationItem(
                     requireContext(),
                     it,
                     onNotificationListener
                 )
-                Notification.Type.ACCEPTABLE -> AcceptNotificationItemNew(
+                Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
                     requireContext(),
                     it,
                     onNotificationListener
                 )
-                Notification.Type.RATE -> RateNotificationItemNew(
+                Notification.Type.RATE -> RateNotificationItem(
                     requireContext(),
                     it,
                     onNotificationListener
@@ -124,7 +108,7 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
 
     override fun onNotificationNeedUpdate(notification: Notification) {
         val idLong = id.toLong()
-        groupAdapter.findItemBy { item: SimpleNotificationItemNew -> item.id == idLong }?.apply {
+        groupAdapter.findItemBy { item: SimpleNotificationItem -> item.id == idLong }?.apply {
             notifyChanged(notification)
         }
     }

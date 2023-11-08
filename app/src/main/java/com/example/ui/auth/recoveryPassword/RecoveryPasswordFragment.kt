@@ -1,7 +1,6 @@
 package com.example.ui.auth.recoveryPassword
 
 import android.os.Bundle
-import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
@@ -16,7 +15,6 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmCodeDialog
 import com.example.ui.views.NewPasswordDialog
 import com.example.ui.views.RegisterDataType
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
 import com.example.util.getEmailFilter
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import onTextChanged

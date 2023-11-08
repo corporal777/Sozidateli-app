@@ -3,15 +3,12 @@ package com.example.ui.base.bottomSheet
 import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.ApiError
-import com.example.exceptions.NoInternetConnectionException
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
-import performOnBackgroundOutOnMain
 import retrofit2.HttpException
-import withCheckInternetConnectivity
 
 abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(
     private val appData: AppData
@@ -32,7 +29,7 @@ abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(
     }
 
 
-    fun getUserData() = appData.getUserNew()
+    fun getUserData() = appData.getUser()
 
     fun getHasBase() = appData.hasBaseState
 

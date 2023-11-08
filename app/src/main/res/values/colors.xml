@@ -249,4 +249,7 @@
 
     <color name="notification_decline_view_background_color">#F5F0E9</color>
     <color name="notification_decline_text_color">#858585</color>
+
+
+    <color name="support_add_file_item_background_color">#33C3996C</color>
 </resources>

@@ -30,7 +30,7 @@ import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.items.*
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
-import com.example.ui.views.dialogs_new.EventRegistrationRequestDialog
+import com.example.ui.views.dialogs.EventRegistrationRequestDialog
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.*
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

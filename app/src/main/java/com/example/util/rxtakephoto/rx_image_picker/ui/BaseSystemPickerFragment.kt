@@ -41,7 +41,7 @@ abstract class BaseSystemPickerFragment : Fragment() {
     private val launchedPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             var isGranted = false
-           isGranted = permissions.entries.find { x -> !x.value }?.value == false
+            isGranted = permissions.entries.find { x -> !x.value }?.value == false
             if (!isGranted) startPickImage()
             else {
                 publishSubject.onError(PermissionNotGrantedException())
@@ -62,11 +62,8 @@ abstract class BaseSystemPickerFragment : Fragment() {
     }
 
     private fun requestPickImage() {
-        if (!isAdded) {
-            attachedSubject.subscribe { startRequest() }
-        } else {
-            startRequest()
-        }
+        if (!isAdded) attachedSubject.subscribe { startRequest() }
+        else startRequest()
     }
 
     abstract fun startRequest()
@@ -75,9 +72,7 @@ abstract class BaseSystemPickerFragment : Fragment() {
     abstract fun getActivityResultUri(data: Intent?): Uri?
 
     private fun onImagePicked(uri: Uri?) {
-        if (uri != null) {
-            publishSubject.onNext(parseResultNoExtraData(uri))
-        }
+        if (uri != null) publishSubject.onNext(parseResultNoExtraData(uri))
         publishSubject.onComplete()
         closure()
     }
@@ -107,7 +102,8 @@ abstract class BaseSystemPickerFragment : Fragment() {
         var granted = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (readPermission != PackageManager.PERMISSION_GRANTED ||
-                cameraPermission != PackageManager.PERMISSION_GRANTED) {
+                cameraPermission != PackageManager.PERMISSION_GRANTED
+            ) {
                 launchedPermissions.launch(
                     arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
                 )
@@ -115,7 +111,8 @@ abstract class BaseSystemPickerFragment : Fragment() {
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             if (writePermission != PackageManager.PERMISSION_GRANTED ||
-                cameraPermission != PackageManager.PERMISSION_GRANTED) {
+                cameraPermission != PackageManager.PERMISSION_GRANTED
+            ) {
                 launchedPermissions.launch(
                     arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 )
@@ -140,10 +137,16 @@ abstract class BaseSystemPickerFragment : Fragment() {
     }
 
     private val readPermission by lazy {
-        ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+        ContextCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
     }
     private val writePermission by lazy {
-        ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        ContextCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
     private val cameraPermission by lazy {
         ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA)

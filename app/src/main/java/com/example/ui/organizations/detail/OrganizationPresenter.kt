@@ -167,7 +167,7 @@ class OrganizationPresenter
 
     override fun onUserClick(user: String?) {
         if (appData.isCurrentUser(user.toString())) {
-            viewState.showCurrentUser(appData.getUserNew().id.toString())
+            viewState.showCurrentUser(appData.getUser().id.toString())
         } else viewState.showUser(user.toString())
     }
 

@@ -212,7 +212,7 @@ class ChatPresenter
     }
 
     private fun createChatMessages(messages: MutableList<Message>): List<ChatMessage> {
-        val userId = appData.getUserNew().id.toString()
+        val userId = appData.getUser().id.toString()
         val formattedMessages = arrayListOf<ChatMessage>()
         messages.sortedByDescending { x -> x.createdAt }.forEach {
             if (it.type == Message.MessageType.SERVICE && it.message == CHAT_SERVICE_MESSAGE_ACCEPT) {

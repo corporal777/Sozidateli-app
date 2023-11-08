@@ -1,8 +1,6 @@
 package com.example.ui.event.my.schedule
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
-import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
@@ -15,7 +13,7 @@ import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.activities.SubEventsData
-import com.example.ui.event.my.schedule.items.EventScheduleData
+import com.example.data.models.EventScheduleData
 import com.example.util.getMonthName
 import com.google.gson.Gson
 import io.reactivex.Completable

@@ -31,7 +31,7 @@ import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.dialogs_new.BlockingChatDialog
+import com.example.ui.views.dialogs.BlockingChatDialog
 import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar

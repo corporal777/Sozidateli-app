@@ -273,35 +273,13 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/confidence_label" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+            <com.example.ui.views.CustomCheckView
+                android:id="@+id/iv_privacy_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
-
-                <com.example.ui.views.dialogs_new.CustomCheckView
-                    android:id="@+id/iv_privacy_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:src="@drawable/drawable_switch"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.BlockTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/user_profile_privacy_hidden"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_privacy_profile"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_marginStart="10dp"
+                app:checkViewText="@string/user_profile_privacy_hidden" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.Edit.TextViewTitle"
@@ -311,94 +289,28 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/control_sending" />
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.example.ui.views.CustomCheckView
+                android:id="@+id/iv_block_project"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
+                android:layout_marginStart="10dp"
+                app:checkViewText="@string/user_profile_off_messaging_projects" />
 
-                <com.example.ui.views.dialogs_new.CustomCheckView
-                    android:id="@+id/iv_block_project"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:src="@drawable/drawable_switch"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.BlockTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/user_profile_off_messaging_projects"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_block_project"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.example.ui.views.CustomCheckView
+                android:id="@+id/iv_block_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                app:checkViewText="@string/user_profile_off_messaging_events" />
 
-                <com.example.ui.views.dialogs_new.CustomCheckView
-                    android:id="@+id/iv_block_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:src="@drawable/drawable_switch"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.BlockTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/user_profile_off_messaging_events"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_block_event"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.example.ui.views.CustomCheckView
+                android:id="@+id/iv_block_org"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
-
-                <com.example.ui.views.dialogs_new.CustomCheckView
-                    android:id="@+id/iv_block_org"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:src="@drawable/drawable_switch"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.BlockTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/user_profile_off_messaging_organizations"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_block_org"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                app:checkViewText="@string/user_profile_off_messaging_organizations" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDeleteProfile"

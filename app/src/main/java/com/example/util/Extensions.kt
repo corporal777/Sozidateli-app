@@ -3,6 +3,7 @@ package com.example.util
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.*
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -21,16 +22,19 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -76,7 +80,7 @@ fun AppCompatCheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked:
     setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
 }
 
-fun EditText.initInput(text: String?, onTextChanged: (text: CharSequence?) -> Unit) {
+fun EditText.initInput(text: String? = null, onTextChanged: (text: CharSequence?) -> Unit) {
     setText(text)
     onTextChanged(onTextChanged)
 }
@@ -190,6 +194,9 @@ object InsetUtil {
 
 }
 
+fun ImageView.setTint(@ColorRes colorRes: Int) {
+    ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(ContextCompat.getColor(context, colorRes)))
+}
 
 fun ImageView.setImage(
     image: Any?, crossfad: Int? = 500,

@@ -8,7 +8,6 @@ import com.example.data.models.*
 import com.example.repository.AuthRepository
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
-import com.example.ui.base.BaseContract
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
@@ -24,8 +23,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import performOnBackgroundOutOnMain
-import withCustomLoading
-import withDelay
 import withInfinityCustomLoading
 import withProgressBarDialogLoading
 import java.io.File
@@ -55,7 +52,7 @@ class UserEditPresenter
         super.onFirstViewAttach()
         viewState.setPlaceholder(editType)
 
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -197,7 +194,7 @@ class UserEditPresenter
             .withUploadFileLoading()
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { viewState.addUserFile(it, appData.getUserNew().filesCount) }
+                onSuccess = { viewState.addUserFile(it, appData.getUser().filesCount) }
             )
     }
 
@@ -210,7 +207,7 @@ class UserEditPresenter
                     onReceiveError(it)
                     viewState.hideDeleteUserFile(file)
                 },
-                onSuccess = { viewState.deleteUserFile(it, appData.getUserNew().filesCount) }
+                onSuccess = { viewState.deleteUserFile(it, appData.getUser().filesCount) }
             )
     }
 
@@ -264,7 +261,6 @@ class UserEditPresenter
 
 
     private fun fileRequestBody(file: File, field: String, mimeType: String): MultipartBody.Part? {
-        //file.asRequestBody(mimeType.toMediaTypeOrNull())
         // val body = RequestBody.create(mimeType.toMediaTypeOrNull(), file)
         val body = file.asRequestBody(mimeType.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(field, file.name, body)

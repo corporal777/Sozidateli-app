@@ -1,4 +1,4 @@
-package com.example.ui.views.dialogs_new.blur
+package com.example.ui.views.dialogs.blur
 
 import android.content.Context
 import android.graphics.*

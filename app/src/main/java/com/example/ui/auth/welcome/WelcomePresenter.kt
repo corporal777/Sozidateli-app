@@ -13,7 +13,7 @@ class WelcomePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val name = appData.getUserNew().name?: ""
+        val name = appData.getUser().name?: ""
         viewState.setUserName(name)
     }
 }

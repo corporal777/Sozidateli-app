@@ -192,6 +192,7 @@
     <string name="add_record">Добавить запись</string>
     <string name="add_file">Добавить файл</string>
     <string name="attach_file">Прикрепить файл</string>
+    <string name="attach_image_or_file">Прикрепить фото или файл</string>
     <string name="_file">Добавить файл</string>
     <string name="site">Сайт</string>
     <string name="social_networks">Соцсети</string>
@@ -1045,8 +1046,29 @@
 Обращаем внимание, что данный раздел является очень важным при подаче заявки на конкурс президентских грантов, поскольку эти сведения могут помочь экспертам убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта.</string>
 
 
-    <string name="asset_statements">
-      [{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]
-    </string>
+    <string name="asset_statements">[{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]</string>
     <string name="no_education">Нет образования</string>
+
+
+    <string name="support_directory">Справочник</string>
+    <string name="support_my_questions">Мои вопросы</string>
+    <string name="support_help">Помощь</string>
+    <string name="give_me_question_title">Задайте нам вопрос</string>
+    <string name="do_you_need_help_or_information">Нужна другая информация или помощь?</string>
+    <string name="support_question_theme">Тема вопроса *</string>
+    <string name="choose_support_question_theme">Выберите тему вопроса</string>
+    <string name="support_contact_email">Контактный email *</string>
+    <string name="support_contact_email_hint">На него мы пришлем ответ</string>
+    <string name="describe_support_problem_title">Опишите проблему в двух словах *</string>
+    <string name="tell_about_support_full_problem">Расскажите о проблеме чуть подробнее *</string>
+    <string name="new_support_question_bottom_sheet_title">Новый вопрос</string>
+    <string name="support_file_image_privacy_text">Направляя фото/скан документов и личные фотографии, я даю согласие на обработку паспортных и биометрических данных</string>
+    <string name="support_info_privacy_text">Я подтверждаю, что ознакомлен(а) и принимаю условия положения о порядке обработки и защиты персональных данных</string>
+    <string name="support_header_title">Здесь вы можете задать любой вопрос о Созидателях</string>
+    <string name="enter_your_request">Введите ваш вопрос</string>
+    <string name="choose_file">Выбрать файл</string>
+    <string name="support_upload_file_title">PDF, JPEG, PNG, TIFF; не более 10 МБ</string>
+    <string name="support_search_data_not_found">К сожалению, ничего не найдено.\nПопробуйте изменить поисковой запрос.</string>
+
+    <item name="mcv_pager" type="id"/>
 </resources>

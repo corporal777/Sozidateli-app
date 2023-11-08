@@ -89,7 +89,7 @@ class OrganizationMembersPresenter
 
     override fun onMemberClick(memberId: Int?) {
         if (appData.isCurrentUser(memberId.toString())) {
-            viewState.showCurrentUser(appData.getUserNew().id.toString())
+            viewState.showCurrentUser(appData.getUser().id.toString())
         } else viewState.showUser(memberId.toString())
     }
 

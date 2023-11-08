@@ -16,7 +16,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
-import com.example.ui.accountChange.data.AuthType
+import com.example.data.models.AuthType
 import com.example.ui.base.BasePresenter
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
@@ -31,7 +31,6 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withProgressBarDialogLoading
 import java.util.*
 import java.util.concurrent.TimeUnit

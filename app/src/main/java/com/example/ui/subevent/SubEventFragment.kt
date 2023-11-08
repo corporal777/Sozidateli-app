@@ -21,7 +21,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section

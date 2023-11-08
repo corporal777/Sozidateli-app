@@ -6,7 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
-import com.example.ui.event.about.items.AboutEventData
+import com.example.data.models.AboutEventData
 
 interface AboutEventContractNew {
     interface View : BaseContract.View {

@@ -10,7 +10,7 @@ import com.example.R
 import com.example.databinding.FragmentAuthWebBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -9,7 +9,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentNewArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementRegisterDialog
 
 abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBinding> :
     BaseFragment<T>(), EventListContract.View {

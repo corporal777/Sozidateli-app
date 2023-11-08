@@ -1,18 +1,13 @@
 package com.example.ui.state.base
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.ui.state.UserState
-import com.example.util.IMAGE_MAX_SIZE_AVATAR
 import com.example.util.PHONE_PERSONAL
-import com.example.util.rxtakephoto.ResultRotation
 import com.example.util.rxtakephoto.RxTakePhoto
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -39,7 +34,7 @@ class MainInfoPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setPlaceholder()
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -92,7 +87,7 @@ class MainInfoPresenter
         isPhoneUpdating = true
         compositeDisposable += authRepository.registerEmailResend(email)
             .andThen(userRepository.getUserInternal())
-            .doOnSuccess { new -> appData.updateUserNew { this.email = new.email } }
+            .doOnSuccess { new -> appData.updateUser { this.email = new.email } }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
@@ -111,7 +106,7 @@ class MainInfoPresenter
         viewState.showChangeImage()
     }
 
-    fun getEmail() = appData.getUserNew().email
-    fun getPhone() = appData.getUserNew().phone?.firstOrNull { it.type == PHONE_PERSONAL }
+    fun getEmail() = appData.getUser().email
+    fun getPhone() = appData.getUser().phone?.firstOrNull { it.type == PHONE_PERSONAL }
     override fun onClickClose() = viewState.navigateUp()
 }

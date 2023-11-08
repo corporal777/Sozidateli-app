@@ -9,7 +9,6 @@ import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
-import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class MaxStatusWorkPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
             .performOnBackgroundOutOnMain()
             .let {
                 if (isFirstLaunch) {

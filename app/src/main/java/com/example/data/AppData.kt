@@ -1,11 +1,9 @@
 package com.example.data
 
-import android.util.Log
 import com.example.BuildConfig
 import com.example.data.models.*
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
-import com.example.util.PHONE_PERSONAL
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -109,8 +107,8 @@ class AppData(
             if (changed) notificationsCountSubject.onNext(value)
         }
 
-    var interests: List<Interest>? = null
-    var interestsNew: List<InterestNew>? = null
+    var interests: List<InterestNew>? = null
+    var supportQuestions: List<SupportData> = emptyList()
     val filterRegionsList = arrayListOf<SearchRegion>()
 
     private var user: User? = null
@@ -126,23 +124,20 @@ class AppData(
     var defaultEvent: Int? = null
     var isNeedUpdateApp = false
 
-    val userChangeSubject = BehaviorSubject.createDefault(user.asOptional())
-    val userNewChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
+    val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val chatUnreadMessageSubject = BehaviorSubject.createDefault(newChatMessage.asOptional())
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
     val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
-    val userPhoneConfirmedSubject = BehaviorSubject.createDefault(false)
     private var eventFormats: List<NewEventFormat>? = null
 
     //new notifications subjects
     private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
     private var notificationsInvites = NotificationInviteModel(0, 0, 0)
-    val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
-    val notificationsInvitesSubject =
-        BehaviorSubject.createDefault(notificationsInvites.asOptional())
+    private val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
+    private val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
 
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
@@ -150,19 +145,11 @@ class AppData(
 
     fun getEventFormats() = eventFormats
 
-    fun setUser(user: User) {
-        val changed = this.user != user
-        this.user = user
-        appPrefs.userId = user.user_id
-        if (changed) userChangeSubject.onNext(user.asOptional())
-        notificationsCount = user.notification_unread
-    }
-
     fun setAllUserInfo(user: UserDetail) {
         val changed = this.newUser != user
         this.newUser = user
         appPrefs.userId = user.id
-        if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+        if (changed) userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun setNewChatMessage(message: MessageModel?) {
@@ -188,7 +175,7 @@ class AppData(
         hasMaxState = (max?.filter { it.filled == false }?.size ?: 0) == 0
     }
 
-    fun setUserShortNew(user: UserDetail) {
+    fun setUserShort(user: UserDetail) {
         val changed = this.newUser != user
         val binds = this.newUser?.binds
         val educationLevelList = this.newUser?.educationLevelList
@@ -200,23 +187,23 @@ class AppData(
         this.newUser?.speciality = speciality
         this.newUser?.academicDegrees = academicDegrees
         appPrefs.userId = user.id
-        if (changed) userNewChangeSubject.onNext(newUser.asOptional())
+        if (changed) userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun updateWorkExperience(data: WorkExperienceServerModel) {
         this.newUser?.binds?.workExperience?.absent = data.absent
         this.newUser?.binds?.workExperience?.models = data.data
-        userNewChangeSubject.onNext(newUser.asOptional())
+        userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun updateEducationLevel(data: List<EducationLevel>?) {
         this.newUser?.educationLevelList = data
-        userNewChangeSubject.onNext(newUser.asOptional())
+        userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun updateSpeciality(data: List<EducationLevel>?) {
         this.newUser?.speciality = data
-        userNewChangeSubject.onNext(newUser.asOptional())
+        userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun updateUserEducation(data: List<EducationModel>?) {
@@ -229,17 +216,14 @@ class AppData(
 
     fun updateAcademicDegrees(data: List<EducationLevel>?) {
         this.newUser?.academicDegrees = data
-        userNewChangeSubject.onNext(newUser.asOptional())
+        userChangeSubject.onNext(newUser.asOptional())
     }
 
-    fun getUserNew(): UserDetail = newUser
+    fun getUser(): UserDetail = newUser
         ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
-    fun getUser(): User = user
-        ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
-
-    fun updateUserNew(update: UserDetail.() -> Unit) {
-        userNewChangeSubject.onNext(getUserNew().apply(update).asOptional())
+    fun updateUser(update: UserDetail.() -> Unit) {
+        userChangeSubject.onNext(getUser().apply(update).asOptional())
     }
 
     fun updateUserFiles(newFile: FileModel) {
@@ -272,14 +256,10 @@ class AppData(
         notificationsCount = 0
         chatRequestsCount = 0
         chatUnreadMessageCount = 0
-        userChangeSubject.onNext(Optional(null))
-        userPhoneConfirmedSubject.onNext(false)
         token = null
     }
 
-    fun isCurrentUser(id: String): Boolean {
-        return newUser?.id.toString() == id
-    }
+    fun isCurrentUser(id: String): Boolean = newUser?.id.toString() == id
 
     fun getStateValue(): String {
         return if (hasMaxState && hasBaseState) "Максимальный"
@@ -288,32 +268,40 @@ class AppData(
 
     fun updateFilesWithAdd(newFile: FileModel): FileModel {
         val userFiles = mutableListOf<FileModel>()
-        userFiles.addAll(getUserNew().binds?.recommendationFile ?: mutableListOf())
+        userFiles.addAll(getUser().binds?.recommendationFile ?: mutableListOf())
         userFiles.add(newFile)
         this.newUser?.binds?.recommendationFile = userFiles
 
-        var userFilesCount = getUserNew().filesCount ?: 0
+        var userFilesCount = getUser().filesCount ?: 0
         userFilesCount += 1
-        getUserNew().filesCount = userFilesCount
+        getUser().filesCount = userFilesCount
         return newFile
     }
 
     fun updateFilesWithDelete(newFile: FileModel): FileModel {
         val userFiles = mutableListOf<FileModel>()
-        userFiles.addAll(getUserNew().binds?.recommendationFile ?: mutableListOf())
+        userFiles.addAll(getUser().binds?.recommendationFile ?: mutableListOf())
         val file = userFiles.find { x -> x.id == newFile.id }
         if (file != null) userFiles.remove(file)
         this.newUser?.binds?.recommendationFile = userFiles
 
-        var userFilesCount = getUserNew().filesCount ?: 0
+        var userFilesCount = getUser().filesCount ?: 0
         if (userFilesCount > 0) {
             userFilesCount -= 1
-            getUserNew().filesCount = userFilesCount
+            getUser().filesCount = userFilesCount
         }
         return newFile
     }
 
     fun getUserFiles(): List<FileModel> {
-        return getUserNew().binds?.recommendationFile ?: emptyList()
+        return getUser().binds?.recommendationFile ?: emptyList()
+    }
+
+    fun isUserEmailConfirmed() : Boolean{
+        val email = getUser().email
+        if (email == null) return false
+        else if(email.value.isNullOrEmpty()) return false
+        else if (email.isConfirmed == false) return false
+        else return true
     }
 }

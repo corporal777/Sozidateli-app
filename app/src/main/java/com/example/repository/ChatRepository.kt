@@ -3,16 +3,12 @@ package com.example.repository
 import android.graphics.Bitmap
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
-import com.example.data.models.user.User
-import com.example.ui.chat.body.MessageBodyNew
+import com.example.data.bodies.MessageBodyNew
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.Path
-import retrofit2.http.QueryMap
 
 interface ChatRepository {
 

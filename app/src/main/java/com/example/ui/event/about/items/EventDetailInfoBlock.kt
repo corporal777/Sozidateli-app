@@ -36,7 +36,7 @@ class EventDetailInfoBlock(
             if (!address.isNullOrEmpty()){
                 add(
                     EventPageItem(
-                        1,
+                        101,
                         "Как добраться"
                     ) { mapClick() })
             }

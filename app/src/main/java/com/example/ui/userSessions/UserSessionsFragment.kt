@@ -15,8 +15,8 @@ import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userSessions.items.*
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.SessionBottomSheet
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.SessionBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter

@@ -8,18 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ActivityMainBinding
 import com.example.databinding.LayoutBottomNavBadgeBinding
-import com.example.ui.views.dialogs_new.CustomProgressDialog
+import com.example.ui.views.dialogs.CustomProgressDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
@@ -163,10 +160,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
-
-
-    @LayoutRes
-    abstract fun layout(): Int
 
     abstract fun showProgressView()
     abstract fun hideProgressView()

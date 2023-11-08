@@ -5,10 +5,9 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
 import com.example.ui.base.BaseContract
-import com.example.ui.event.my.schedule.items.EventScheduleData
+import com.example.data.models.EventScheduleData
 import com.example.util.AddToEndSingleByTagStateStrategy
 
 interface MyScheduleEventsContract {

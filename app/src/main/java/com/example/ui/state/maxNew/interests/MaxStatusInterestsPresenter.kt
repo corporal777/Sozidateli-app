@@ -12,7 +12,6 @@ import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
-import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
 
@@ -30,7 +29,7 @@ class MaxStatusInterestsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
             .flatMapMaybe { loadInterests(it.value) }
             .performOnBackgroundOutOnMain()
             .let {

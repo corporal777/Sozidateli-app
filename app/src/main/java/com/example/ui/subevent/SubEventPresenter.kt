@@ -11,7 +11,7 @@ import com.example.data.models.MemberModel
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.subevent.items.AboutSubEventData
+import com.example.data.models.AboutSubEventData
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Single

@@ -1,29 +1,17 @@
 package com.example.ui.editeducation.items
 
-import android.content.Context
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.EducationLevel
-import com.example.data.models.InterestNew
 import com.example.data.models.ToggleIntModel
-import com.example.databinding.ItemProfileDataEditEducationLevelBinding
 import com.example.databinding.ItemUserEducationLevelBinding
 import com.example.ui.views.ClearDegreeDialog
-import com.example.ui.views.dialogs_new.TitleMessageDialog
 import com.example.util.initSwitch
-import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.databinding.BindableItem
-import initDropDownView
-import kotlinx.android.synthetic.main.item_profile_data_edit_education_level.*
-import onTextChanged
 
 class UserEducationLevelItem(
     private val educationLevel: Int?,

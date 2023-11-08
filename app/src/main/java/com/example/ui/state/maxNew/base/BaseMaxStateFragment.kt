@@ -19,7 +19,7 @@ import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmail
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter

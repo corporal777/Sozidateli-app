@@ -13,7 +13,6 @@ import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -68,7 +67,7 @@ class GalleryBottomPresenter
     override fun onRemovePhotoClick() {
         compositeDisposable += userRepository.deleteImage()
             .doOnComplete {
-                appData.updateUserNew { image = ImageModel(null, null, null, null, null) }
+                appData.updateUser { image = ImageModel(null, null, null, null, null) }
             }
             .andThen(userRepository.checkUserProfileSingle())
             .performOnBackgroundOutOnMain()
@@ -77,7 +76,7 @@ class GalleryBottomPresenter
                 onError = { it.printStackTrace() },
                 onSuccess = {
                     viewState.apply {
-                        setPhotoUpdated(appData.getUserNew().image)
+                        setPhotoUpdated(appData.getUser().image)
                         hideGalleryFragment()
                     }
                 }
@@ -90,7 +89,7 @@ class GalleryBottomPresenter
             .subscribeSimple {
                 viewState.apply {
                     if (it) {
-                        setPhotoUpdated(appData.getUserNew().image)
+                        setPhotoUpdated(appData.getUser().image)
                         hideGalleryFragment()
                     }
                 }

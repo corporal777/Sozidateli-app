@@ -1,22 +1,9 @@
 package com.example.ui.base
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.example.databinding.ActivityImageCropBinding
-import com.example.ui.gallery.cropImage.CropImageActivityArgs
-import com.example.ui.gallery.cropImage.CropImagePresenter
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
-import com.example.ui.state.maxNew.base.BaseMaxStateContract
-import com.example.ui.views.dialogs_new.CustomProgressDialog
+import com.example.ui.views.dialogs.CustomProgressDialog
 import dagger.android.AndroidInjection
-import javax.inject.Inject
-import javax.inject.Provider
 
 abstract class BaseCustomActivity<B : ViewBinding> : MvpAppCompatActivity() {
 

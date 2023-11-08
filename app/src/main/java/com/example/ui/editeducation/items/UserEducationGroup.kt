@@ -8,12 +8,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.forEachGroups
 import com.example.extensions.updateItem
 import com.example.holders.ButtonAddMore
-import com.example.holders.ProfileButtonEditItem
-import com.example.holders.ProfileDataAcademicDegreeEditItem
-import com.example.holders.ProfileDataEducationEditItem
-import com.example.util.DEGREES_MAX_SIZE
 import com.xwray.groupie.Group
-import com.xwray.groupie.Item
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 

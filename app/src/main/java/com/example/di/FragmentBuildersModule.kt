@@ -23,7 +23,6 @@ import com.example.ui.editwork.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragmentNew
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
-import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.buildingScheme.DestinationSchemeFragment
 import com.example.ui.event.location.map.MapFragment
@@ -33,27 +32,29 @@ import com.example.ui.event.rating.EventRatingFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.event.speakers.list.EventSpeakersFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragment
+import com.example.ui.favoritesTab.FavoriteTabsFragment
+import com.example.ui.favoritesTab.events.FavoriteEventsFragment
+import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
+import com.example.ui.favoritesTab.users.FavoriteUsersFragment
+import com.example.ui.gallery.GalleryBottomSheet
+import com.example.ui.gallery.test.TestBlurFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
-import com.example.ui.notification.NotificationFragment
-import com.example.ui.notification.center.NotificationsFragment
-import com.example.ui.notification.center.redesign.NotificationsListFragment
-import com.example.ui.notification.center.redesign.invites.InviteNotificationsBottomSheet
-import com.example.ui.notification.center.redesign.types.evaluate.EvaluateNotificationsFragment
-import com.example.ui.notification.center.redesign.types.event.EventNotificationsFragment
-import com.example.ui.notification.center.redesign.types.organizator.OrganizerNotificationsFragment
-import com.example.ui.notification.center.redesign.types.projects.ProjectNotificationsFragment
-import com.example.ui.notification.center.redesign.types.projects.active.ActiveInvitesFragment
-import com.example.ui.notification.center.redesign.types.projects.archive.ArchiveInvitesFragment
-import com.example.ui.notification.center.redesign.types.system.SystemNotificationsFragment
+import com.example.ui.notification.NotificationsListFragment
+import com.example.ui.notification.invites.InviteNotificationsBottomSheet
+import com.example.ui.notification.types.evaluate.EvaluateNotificationsFragment
+import com.example.ui.notification.types.event.EventNotificationsFragment
+import com.example.ui.notification.types.organizator.OrganizerNotificationsFragment
+import com.example.ui.notification.types.projects.ProjectNotificationsFragment
+import com.example.ui.notification.types.projects.active.ActiveInvitesFragment
+import com.example.ui.notification.types.projects.archive.ArchiveInvitesFragment
+import com.example.ui.notification.types.system.SystemNotificationsFragment
 import com.example.ui.organizations.detail.OrganizationFragment
 import com.example.ui.organizations.events.OrganizationEventsFragment
-import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.organizations.members.OrganizationMembersFragment
 import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.favoritesTab.FavoriteTabsFragment
 import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
@@ -67,12 +68,16 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserStateFragment
 import com.example.ui.state.base.MainInfoFragment
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragment
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragment
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragment
-import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragment
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.subevent.SubEventFragment
+import com.example.ui.support.SupportCenterFragment
+import com.example.ui.support.detail.SupportQuestionDetailFragment
+import com.example.ui.support.search.SupportSearchFragment
+import com.example.ui.support.sendFile.SupportFilesBottomSheet
 import com.example.ui.user.UserFragment
 import com.example.ui.userSessions.UserSessionsFragment
 import com.example.ui.userprofile.UserProfileFragment
@@ -88,9 +93,6 @@ import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.favoritesTab.users.FavoriteUsersFragment
-import com.example.ui.gallery.GalleryBottomSheet
-import com.example.ui.gallery.test.TestBlurFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -177,13 +179,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeSearchChatFragment(): SearchChatFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeNotificationsFragment(): NotificationsFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeNotificationsListFragment(): NotificationsListFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeNotificationFragment(): NotificationFragment
 
     @ContributesAndroidInjector
     abstract fun contributeQrScannerFragment(): QrScannerFragment
@@ -370,4 +366,16 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeTestBlurFragment(): TestBlurFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSupportCenterFragment(): SupportCenterFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSupportSearchFragment(): SupportSearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSupportDetailFragment(): SupportQuestionDetailFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSupportFilesBottomSheet(): SupportFilesBottomSheet
 }

@@ -47,7 +47,7 @@ class ChangeEmailPresenter
     override fun onShowEmailConfirm(email: String) {
         compositeDisposable += authRepository.registerEmailResend(email)
             .andThen(userRepository.getUserInternal())
-            .doOnSuccess { new -> appData.updateUserNew { this.email = new.email } }
+            .doOnSuccess { new -> appData.updateUser { this.email = new.email } }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {

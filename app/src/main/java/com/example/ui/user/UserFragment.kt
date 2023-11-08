@@ -2,7 +2,6 @@ package com.example.ui.user
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -33,7 +32,7 @@ import com.example.ui.user.items.ProfileDataDividerItem
 import com.example.ui.user.items.UserProfileActionsItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.UserSubscribeImageView
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL

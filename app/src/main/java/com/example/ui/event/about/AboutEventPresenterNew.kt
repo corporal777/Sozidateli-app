@@ -12,7 +12,7 @@ import com.example.data.models.EventUserFavorite
 import com.example.data.models.createMapInfo
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.event.about.items.AboutEventData
+import com.example.data.models.AboutEventData
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe

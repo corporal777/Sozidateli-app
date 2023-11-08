@@ -45,7 +45,7 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
     }
 
     override fun checkUserEmail() {
-        if (appData.getUserNew().email?.value != null && appData.getUserNew().email?.isConfirmed != null) {
+        if (appData.getUser().email?.value != null && appData.getUser().email?.isConfirmed != null) {
             onShowMaxStateDone()
         } else viewState.showAddEmailDialog()
     }
@@ -70,7 +70,7 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                appData.updateUserNew {
+                appData.updateUser {
                     this.email = FieldDetails(value = email)
                 }
                 viewState.showEmailConfirmation(email)

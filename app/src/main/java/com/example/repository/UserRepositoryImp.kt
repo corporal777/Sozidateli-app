@@ -1,14 +1,12 @@
 package com.example.repository
 
 import android.graphics.Bitmap
-import androidx.navigation.fragment.findNavController
-import com.example.R
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.ui.notification.center.redesign.NotificationType
+import com.example.ui.notification.NotificationType
 import com.example.util.pagination.NotificationsResponse
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
@@ -116,7 +114,7 @@ class UserRepositoryImp
 
     override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
         newApi.updateProfile(id, map).doOnSuccess {
-            appData.setUserShortNew(it)
+            appData.setUserShort(it)
         }
 
     override fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail> {
@@ -302,19 +300,19 @@ class UserRepositoryImp
         newApi.getInterestsList(200, ids)
 
     override fun getEducationLevel(): Single<EducationLevelModel> {
-        val education = appData.getUserNew().educationLevelList
+        val education = appData.getUser().educationLevelList
         return if (education != null) Single.just(EducationLevelModel(education, 6))
         else newApi.getEducationLevel().doOnSuccess { appData.updateEducationLevel(it.data) }
     }
 
     override fun getSpeciality(): Single<EducationLevelModel> {
-        val speciality = appData.getUserNew().speciality
+        val speciality = appData.getUser().speciality
         return if (speciality != null) Single.just(EducationLevelModel(speciality, 23))
         else newApi.getSpeciality(100).doOnSuccess { appData.updateSpeciality(it.data) }
     }
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
-        val academicDegrees = appData.getUserNew().academicDegrees
+        val academicDegrees = appData.getUser().academicDegrees
         return if (academicDegrees != null) Single.just(EducationLevelModel(academicDegrees, 4))
         else newApi.getAcademicDegrees().doOnSuccess { appData.updateAcademicDegrees(it.data) }
     }

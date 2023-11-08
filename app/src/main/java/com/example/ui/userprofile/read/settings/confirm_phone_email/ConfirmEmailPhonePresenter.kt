@@ -80,7 +80,7 @@ class ConfirmEmailPhonePresenter
         }
             .andThen(userRepository.getUserInternal())
             .doOnSuccess { new ->
-                appData.updateUserNew {
+                appData.updateUser {
                     this.email = new.email
                     this.phone = new.phone
                 }

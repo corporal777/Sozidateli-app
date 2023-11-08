@@ -120,7 +120,6 @@
                 android:textColor="@color/vk_black"
                 android:letterSpacing="-0.01"
                 android:text="@string/search_events"
-
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnTabOrganizations"
                 app:layout_constraintStart_toStartOf="parent"

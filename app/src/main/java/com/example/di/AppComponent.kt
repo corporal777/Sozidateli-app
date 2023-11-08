@@ -3,6 +3,7 @@ package com.example.di
 import android.app.Application
 import com.example.App
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
+import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
 import com.example.ui.views.notifications.NotificationsView
@@ -55,4 +56,6 @@ interface AppComponent {
     fun inject(view: NotificationsView)
 
     fun inject(dialog : CalendarBottomSheet)
+
+    fun inject(dialog : SupportQuestionBottomSheet)
 }

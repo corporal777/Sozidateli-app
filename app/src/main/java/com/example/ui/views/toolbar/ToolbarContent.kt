@@ -4,6 +4,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isInvisible
+import com.example.R
+import com.example.util.setTint
 
 class ToolbarContent(
     private val backButton : ImageView,
@@ -12,6 +14,7 @@ class ToolbarContent(
 ) {
     init {
         backButton.isInvisible = false
+        backButton.setTint(R.color.vk_black)
         toolbarContainer.removeAllViews()
     }
 

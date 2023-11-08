@@ -16,6 +16,7 @@ class ConfigProcessor(private val schedulers: IRxImagePickerSchedulers) {
                 }
                 when (configProvider.sourcesFrom) {
                     SourcesFrom.GALLERY,
+                    SourcesFrom.FILE,
                     SourcesFrom.CAMERA -> configProvider.pickerView.pickImage()
                 }
             }

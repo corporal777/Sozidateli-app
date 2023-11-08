@@ -156,7 +156,6 @@ class RegisterSnFragment : BaseFragment<FragmentRegisterSnBinding>(), RegisterSn
     }
 
     override fun showEmailConfirmation(email: String, snUser: SnUser?) {
-        findNavController().navigate(RegisterSnFragmentDirections.snRegisterToEmailConfirm(email, null, snUser))
     }
 
     override fun showUserAgreement() {

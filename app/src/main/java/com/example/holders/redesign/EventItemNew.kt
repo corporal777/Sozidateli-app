@@ -1,11 +1,9 @@
 package com.example.holders.redesign
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -14,11 +12,8 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.EventNew
-import com.example.data.models.EventRegistrationStateModel
-import com.example.data.models.EventStateModel
 import com.example.databinding.ItemEventNewBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import parseColor

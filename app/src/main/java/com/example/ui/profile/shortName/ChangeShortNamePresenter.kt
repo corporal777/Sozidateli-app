@@ -49,7 +49,7 @@ class ChangeShortNamePresenter
     override fun updateUserShortName(short: String) {
         compositeDisposable += userRepository.updateUserProfileField(mapOf(UserDetail.USER_SHORT_NAME to short))
             .doOnSuccess { new ->
-                appData.updateUserNew { this.shortName = new.shortName }
+                appData.updateUser { this.shortName = new.shortName }
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)

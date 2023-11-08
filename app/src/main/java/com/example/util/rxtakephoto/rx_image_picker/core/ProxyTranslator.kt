@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.example.util.rxtakephoto.rx_image_picker.entity.ConfigProvider
 import com.example.util.rxtakephoto.rx_image_picker.entity.sources.Camera
+import com.example.util.rxtakephoto.rx_image_picker.entity.sources.File
 import com.example.util.rxtakephoto.rx_image_picker.entity.sources.Gallery
 import com.example.util.rxtakephoto.rx_image_picker.entity.sources.SourcesFrom
 import com.example.util.rxtakephoto.rx_image_picker.ui.ActivityPickerViewController
@@ -53,6 +54,9 @@ class ProxyTranslator {
             SourcesFrom.GALLERY -> {
                 method.getAnnotation(Gallery::class.java).openAsFragment
             }
+            SourcesFrom.FILE -> {
+                method.getAnnotation(File::class.java).openAsFragment
+            }
         }
     }
 
@@ -64,17 +68,23 @@ class ProxyTranslator {
             SourcesFrom.GALLERY -> {
                 method.getAnnotation(Gallery::class.java).componentClazz
             }
+            SourcesFrom.FILE -> {
+                method.getAnnotation(File::class.java).componentClazz
+            }
         }
     }
 
     private fun streamSourcesFrom(method: Method): SourcesFrom {
         val camera = method.getAnnotation(Camera::class.java) != null
         val gallery = method.getAnnotation(Gallery::class.java) != null
-        return if (camera && !gallery) {
+        val file = method.getAnnotation(File::class.java) != null
+        return if (camera && !gallery && !file) {
             SourcesFrom.CAMERA
-        } else if (gallery && !camera) {
+        } else if (gallery && !camera && !file) {
             SourcesFrom.GALLERY
-        } else if (!camera) {
+        } else if (file && !gallery && !camera)
+            SourcesFrom.FILE
+        else if (!camera) {
             throw IllegalArgumentException("Did you forget to add the @Galley or the @Camera annotation?")
         } else {
             throw IllegalArgumentException("You should not add two conflicting annotation to this method: @Galley and @Camera.")
@@ -88,6 +98,9 @@ class ProxyTranslator {
             }
             SourcesFrom.GALLERY -> {
                 method.getAnnotation(Gallery::class.java).containerViewId
+            }
+            SourcesFrom.FILE -> {
+                method.getAnnotation(File::class.java).containerViewId
             }
         }
     }

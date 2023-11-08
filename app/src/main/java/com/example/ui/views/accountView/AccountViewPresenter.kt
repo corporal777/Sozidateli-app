@@ -40,7 +40,7 @@ class AccountViewPresenter @Inject constructor(
                     viewState.showCounter(false)
                 })
 
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
                 .performOnBackgroundOutOnMain()
                 .subscribe({
                     val avatar = it.value?.image?.uri

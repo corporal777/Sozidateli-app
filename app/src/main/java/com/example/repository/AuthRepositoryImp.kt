@@ -1,19 +1,14 @@
 package com.example.repository
 
-import android.util.Log
 import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.data.models.user.User
-import com.example.data.models.user.UserResp
-import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
-import com.example.util.ApiErrorParser
 import com.facebook.AccessToken
 import com.facebook.GraphRequest
 import com.vk.sdk.api.VKApi
@@ -27,10 +22,8 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.json.JSONObject
-import retrofit2.http.Field
 import ru.ok.android.sdk.Odnoklassniki
 import ru.ok.android.sdk.OkListener
-import java.net.ConnectException
 import javax.inject.Inject
 
 
@@ -97,7 +90,7 @@ class AuthRepositoryImp
 
     override fun register(body: RegisterBody): Completable {
         return newApi.registerEmail(body).doOnSuccess {
-            appData.setUserShortNew(it)
+            appData.setUserShort(it)
         }.ignoreElement()
     }
 

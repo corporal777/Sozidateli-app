@@ -5,7 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
-import com.example.ui.accountChange.data.AuthType
+import com.example.data.models.AuthType
 import com.example.ui.base.BaseContract
 import com.example.util.OneExecutionByTagStateStrategy
 
@@ -65,9 +65,6 @@ interface MainContract {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun showBadgeChat(count : Int)
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun setMainTheme()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class)
         fun showAccountChangeFragment(url : String, type : AuthType)

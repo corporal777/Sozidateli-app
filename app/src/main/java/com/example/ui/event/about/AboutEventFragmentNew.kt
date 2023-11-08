@@ -31,9 +31,9 @@ import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.GridLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.blur.EventAddedToFavoriteBlurredDialog
+import com.example.ui.views.dialogs.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.blur.EventAddedToFavoriteBlurredDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section

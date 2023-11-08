@@ -52,7 +52,7 @@ open class BasePresenter<V : BaseContract.View>
     }
 
 
-    fun getUserData() = appDat.getUserNew()
+    fun getUserData() = appDat.getUser()
 
     fun getHasBase() = appDat.hasBaseState
 

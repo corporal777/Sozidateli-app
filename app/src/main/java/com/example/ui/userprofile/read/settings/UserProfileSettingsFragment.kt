@@ -1,11 +1,9 @@
 package com.example.ui.userprofile.read.settings
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
@@ -24,12 +22,11 @@ import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
 import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
 import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
-import com.example.ui.views.BottomDialog
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs_new.TitleMessageDialog
+import com.example.ui.views.CustomCheckView
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.TitleMessageDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
-import onScrolled
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -66,12 +63,9 @@ class UserProfileSettingsFragment :
             tvEditShortName.setOnClickListener(presenter::showChangeShortNameClick)
 
             ivPrivacyProfile.setOnClickListener {
-                if (mUser.state?.isHidden.toBoolean()) {
-                    presenter.onChangePrivacyConfirm(false)
-                } else {
-                    presenter.onChangePrivacyConfirm(true)
-                }
-
+                if (mUser.state?.isHidden.toBoolean())
+                    presenter.onChangePrivacyConfirm(false, ivPrivacyProfile)
+                else presenter.onChangePrivacyConfirm(true, ivPrivacyProfile)
             }
 
             ivBlockProject.setOnClickListener {
@@ -80,7 +74,7 @@ class UserProfileSettingsFragment :
                     getString(R.string.block_notification_project_title),
                     getString(R.string.block_notification_project_message)
                 ) {
-                    presenter.onBlockProjectNotificationsClick(it)
+                    presenter.onBlockProjectNotificationsClick(it, ivBlockProject)
                 }
             }
             ivBlockEvent.setOnClickListener {
@@ -89,7 +83,7 @@ class UserProfileSettingsFragment :
                     getString(R.string.block_notification_event_title),
                     getString(R.string.block_notification_event_message)
                 ) { state ->
-                    presenter.onBlockEventNotificationsClick(state)
+                    presenter.onBlockEventNotificationsClick(state, ivBlockEvent)
                 }
             }
             ivBlockOrg.setOnClickListener {
@@ -98,7 +92,7 @@ class UserProfileSettingsFragment :
                     getString(R.string.block_notification_org_title),
                     getString(R.string.block_notification_org_message)
                 ) { state ->
-                    presenter.onBlockOrganizationNotificationsClick(state)
+                    presenter.onBlockOrganizationNotificationsClick(state, ivBlockOrg)
                 }
             }
         }
@@ -117,7 +111,8 @@ class UserProfileSettingsFragment :
                 tvUserMiddleName.text = ""
             } else {
                 scNoMiddleName.isChecked = false
-                tvUserMiddleName.text = user.getMiddleName() ?: getString(R.string.user_profile_additional_hint)
+                tvUserMiddleName.text =
+                    user.getMiddleName() ?: getString(R.string.user_profile_additional_hint)
             }
 
             tvPhoneMobile.apply {
@@ -139,10 +134,10 @@ class UserProfileSettingsFragment :
                 user.email?.value
             }
 
-            ivPrivacyProfile.setImage(user.state?.isHidden.toBoolean())
-            ivBlockEvent.setImage(user.blockedNotifications?.event ?: false)
-            ivBlockProject.setImage(user.blockedNotifications?.projects ?: false)
-            ivBlockOrg.setImage(user.blockedNotifications?.organizations ?: false)
+            ivPrivacyProfile.setChecked(user.state?.isHidden.toBoolean())
+            ivBlockEvent.setChecked(user.blockedNotifications?.event ?: false)
+            ivBlockProject.setChecked(user.blockedNotifications?.projects ?: false)
+            ivBlockOrg.setChecked(user.blockedNotifications?.organizations ?: false)
 
 
             ivInfo.isVisible =
@@ -161,11 +156,8 @@ class UserProfileSettingsFragment :
                         user.email?.onConfirmation ?: user.email?.value ?: ""
                     )
                 }.setNegativeSelectCallback {
-                    if (user.email?.value == null) {
-                        presenter.onDeleteEmail()
-                    } else {
-                        presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
-                    }
+                    if (user.email?.value == null) presenter.onDeleteEmail()
+                    else presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
                 }
             }
         }
@@ -185,13 +177,6 @@ class UserProfileSettingsFragment :
     override fun showChangeEmail(email: String?) {
         val changeEmailDialog = ChangeEmailFragment(email)
         changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
-    }
-
-
-    override fun showUpdateError(message: String?) {
-        val title = getString(R.string.profile_edit_request_error)
-        Toast.makeText(requireContext(), message?.let { "$title: $it" }
-            ?: title, Toast.LENGTH_SHORT).show()
     }
 
     override fun showChangePassword() {
@@ -234,26 +219,6 @@ class UserProfileSettingsFragment :
         )
     }
 
-    override fun showChangePrivacy() {
-        BottomDialog(requireContext()).apply {
-            setTitle(R.string.user_profile_privacy_title)
-            positiveButton {
-                text = getString(R.string.user_profile_privacy_visible)
-                clickListener = {
-                    presenter.onChangePrivacyConfirm(false)
-                    true
-                }
-            }
-            negativeButton {
-                text = getString(R.string.user_profile_privacy_hidden)
-                clickListener = {
-                    presenter.onChangePrivacyConfirm(true)
-                    true
-                }
-            }
-        }.show()
-    }
-
     override fun showDeleteProfile() {
         TitleMessageDialog(
             requireContext(),
@@ -279,28 +244,22 @@ class UserProfileSettingsFragment :
                 requireContext(),
                 title,
                 message
-            ).setPositiveSelectCallback {
-                onAction.invoke(true)
-            }.setNegativeSelectCallback {
-                onAction.invoke(false)
-            }
+            )
+                .setPositiveSelectCallback { onAction.invoke(true) }
+                .setNegativeSelectCallback { onAction.invoke(false) }
         } else {
             onAction.invoke(false)
         }
     }
 
+    override fun showBlockingLoading(show: Boolean, checkView: CustomCheckView) {
+        checkView.showProgressLoading(show)
+    }
+
     override fun layout() = R.layout.fragment_user_profile_settings
     override val title: CharSequence by lazy { getString(R.string.profile_settings) }
     override fun actionIconContainer(view: ViewGroup) {}
-
-    @SuppressLint("RestrictedApi")
-    override fun scrollValue(scroll: (value: Int) -> Unit) {
-        mBinding.nestedScrollView.apply {
-            scroll.invoke(computeVerticalScrollOffset())
-            onScrolled { _, _, _, _ -> scroll.invoke(computeVerticalScrollOffset()) }
-        }
-    }
-
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
 

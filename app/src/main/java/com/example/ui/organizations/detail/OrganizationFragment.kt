@@ -29,7 +29,7 @@ import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementRegisterDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section

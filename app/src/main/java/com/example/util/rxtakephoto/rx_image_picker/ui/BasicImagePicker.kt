@@ -5,6 +5,7 @@ import com.example.util.rxtakephoto.rx_image_picker.entity.sources.Camera
 import com.example.util.rxtakephoto.rx_image_picker.entity.sources.Gallery
 import io.reactivex.Observable
 import com.example.util.rxtakephoto.rx_image_picker.entity.Result
+import com.example.util.rxtakephoto.rx_image_picker.entity.sources.File
 
 interface BasicImagePicker {
 
@@ -13,4 +14,7 @@ interface BasicImagePicker {
 
     @Camera
     fun openCamera(context: Context): Observable<Result>
+
+    @File
+    fun openFile(context: Context): Observable<Result>
 }

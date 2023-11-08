@@ -16,13 +16,11 @@ import com.example.ui.base.BaseContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.example.util.saveImageToCache
-import com.generator.qrcodegenerator.QrCodeGenerator
-import com.generator.qrcodegenerator.QrData
-import com.generator.qrcodegenerator.QrErrorCorrectionLevel
-import com.generator.qrcodegenerator.createQrOptions
+import com.generator.qrcodegenerator.*
 import com.generator.qrcodegenerator.style.*
 import com.generator.qrcodegenerator.vector.QrCodeDrawable
 import com.generator.qrcodegenerator.vector.createQrVectorOptions
+import com.generator.qrcodegenerator.vector.createReadyVectorQrOptions
 import com.generator.qrcodegenerator.vector.style.QrVectorBallShape
 import com.generator.qrcodegenerator.vector.style.QrVectorColor
 import com.generator.qrcodegenerator.vector.style.QrVectorFrameShape
@@ -51,13 +49,13 @@ class ProfileDataPresenter
     var userImageUrl: String = ""
     var userCodeUrl: String = ""
     var userName: String = ""
-    var userLink : String = ""
+    var userLink: String = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setName(userName, userLink)
-        compositeDisposable += getQrCodeImageFromDrawable(context, userLink, userImageUrl)
-            .onErrorResumeNext(getQrCodeImageFromBitmap(context, userLink, userImageUrl))
+        compositeDisposable += getQrCodeImageFromDrawable(userLink, userImageUrl)
+            .onErrorResumeNext(getQrCodeImageFromBitmap(userLink, userImageUrl))
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(
@@ -94,89 +92,32 @@ class ProfileDataPresenter
             )
     }
 
-    private fun getQrCodeImageFromBitmap(
-        context: Context,
-        link: String,
-        uri: String
-    ): Maybe<Bitmap> {
+    private fun getQrCodeImageFromBitmap(link: String, uri: String): Maybe<Bitmap> {
         return Maybe.fromCallable {
             val data = QrData.Url(link)
-            val opt = createQrOptions(1400, 1400, .1f) {
-                logo {
-                    val drawableSource: DrawableSource
-                    val drawableShape: QrLogoShape
-                    if (!uri.isNullOrEmpty()) {
-                        drawableShape = QrLogoShape.RoundCorners(.30f)
-                        val bm = Glide.with(context).asBitmap().load(uri).submit().get()
-                        drawableSource = DrawableSource.DecodedBitmap(bm)
-                    } else {
-                        drawableShape = QrLogoShape.Circle
-                        drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
-                    }
-                    drawable = drawableSource
-                    size = .25f
-                    padding = QrLogoPadding.Accurate(.1f)
-                    shape = drawableShape
-                }
-                colors {
-                    dark =
-                        QrColor.Solid(ContextCompat.getColor(context, R.color.qr_code_pixels_color))
-                }
-                shapes {
-//                    darkPixel = QrPixelShape.RoundCorners()
-//                    ball = QrBallShape.RoundCorners(.30f)
-//                    frame = QrFrameShape.RoundCorners(.30f)
-                    darkPixel = QrPixelShape.Default
-                    ball = QrBallShape.Default
-                    frame = QrFrameShape.Default
-                }
-            }
+            val opt = createReadyBitmapQrOptions(
+                uri,
+                Glide.with(context).asBitmap().load(uri).submit().get(),
+                R.drawable.ic_about_app,
+                ContextCompat.getColor(context, R.color.qr_code_pixels_color)
+            )
             QrCodeGenerator(context).generateQrCode(data, opt)
         }
     }
 
-    private fun getQrCodeImageFromDrawable(
-        ct: Context,
-        link: String,
-        uri: String
-    ): Maybe<Bitmap> {
+    private fun getQrCodeImageFromDrawable(link: String, uri: String): Maybe<Bitmap> {
         return Maybe.fromCallable {
             val data = QrData.Url(link)
-            val options = createQrVectorOptions {
-                padding = .1f
-                logo {
-                    val drawableSource: DrawableSource
-                    val drawableShape: QrLogoShape
-                    if (!uri.isNullOrEmpty()) {
-                        drawableShape = QrLogoShape.RoundCorners(.30f)
-                        val bm = Glide.with(ct).asBitmap().load(uri).submit().get()
-                        drawableSource = DrawableSource.DecodedBitmap(bm)
-                    } else {
-                        drawableShape = QrLogoShape.Circle
-                        drawableSource = DrawableSource.Resource(R.drawable.ic_about_app)
-                    }
-                    drawable = drawableSource
-                    size = .25f
-                    shape = drawableShape
-                }
-                colors {
-                    dark = QrVectorColor
-                        .Solid(ContextCompat.getColor(ct, R.color.qr_code_pixels_color))
-                }
-                shapes {
-//                    darkPixel = QrVectorPixelShape.RoundCorners(.5f)
-//                    ball = QrVectorBallShape.RoundCorners(.30f)
-//                    frame = QrVectorFrameShape.RoundCorners(.30f)
-                    darkPixel = QrVectorPixelShape.Default
-                    ball = QrVectorBallShape.Default
-                    frame = QrVectorFrameShape.Default
-                }
-                errorCorrectionLevel = QrErrorCorrectionLevel.Medium
-            }
-            val drawable = QrCodeDrawable(ct!!, data, options)
+            val options = createReadyVectorQrOptions(
+                uri,
+                Glide.with(context).asBitmap().load(uri).submit().get(),
+                R.drawable.ic_about_app,
+                ContextCompat.getColor(context, R.color.qr_code_pixels_color)
+            )
             val bitmap = Bitmap.createBitmap(1054, 1054, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+            val drawable = QrCodeDrawable(context, data, options)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)
             bitmap
         }

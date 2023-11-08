@@ -2,6 +2,7 @@ package com.example.holders.redesign
 
 import com.example.R
 import com.example.databinding.ItemEventPageNewBinding
+import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 
 class EventPageItem(
@@ -18,6 +19,12 @@ class EventPageItem(
                 onPageClick(id)
             }
         }
+    }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is EventPageItem) return false
+        if (name != other.name) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_event_page_new

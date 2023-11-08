@@ -25,6 +25,10 @@ class RxTakePhoto(
     private val rxPermissions = RxPermissions(context)
     private val rxImagePicker = RxImagePicker.create()
 
+    fun takeFile() : Observable<Result> {
+        return rxImagePicker.openFile(context)
+    }
+
     fun takeCameraImage(): Observable<ResultRotation> {
         return rxImagePicker.openCamera(context)
             .findRotation()

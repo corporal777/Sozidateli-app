@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.models.user.User
-import com.example.ui.notification.center.redesign.NotificationType
+import com.example.ui.notification.NotificationType
 import com.example.util.pagination.NotificationsResponse
 import com.example.util.pagination.PaginationResponse
 import com.google.firebase.iid.FirebaseInstanceIdReceiver

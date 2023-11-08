@@ -6,35 +6,24 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
-import com.example.data.models.EventFormat
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
-import com.example.extensions.dateFormatterShortDayFullMothShortYear
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.parseAndFormat
 import com.example.ui.views.CustomSpannableString
-import com.example.ui.views.dialogs_new.EventAgreementRegisterDialog
-import com.example.ui.views.dialogs_new.EventDescriptionBottomSheet
+import com.example.ui.views.dialogs.EventDescriptionBottomSheet
 import com.example.util.URLSpanNoUnderline
 import com.example.util.markWon
-import com.generator.qrcodegenerator.style.Color
 import com.xwray.groupie.databinding.BindableItem
 import onClickListener
-import setOnClickListener
-import java.util.*
 
 
 class EventDetailActionItem(

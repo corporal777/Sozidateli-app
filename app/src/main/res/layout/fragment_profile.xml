@@ -189,16 +189,26 @@
                 android:layout_marginTop="15dp" />
 
             <TextView
-                android:id="@+id/tvRate"
+                android:id="@+id/tvSupport"
                 style="@style/Profile.ButtonPages"
                 android:layout_marginTop="15dp"
                 android:drawablePadding="25dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/support_help"
+                app:drawableStartCompat="@drawable/ic_support" />
+
+
+            <TextView
+                android:id="@+id/tvRate"
+                style="@style/Profile.ButtonPages"
+                android:drawablePadding="25dp"
+                android:layout_marginTop="5dp"
                 android:paddingHorizontal="20dp"
                 android:text="@string/profile_rate"
                 app:drawableStartCompat="@drawable/ic_profile_rate_edit" />
 
             <TextView
-                android:id="@+id/tvSupport"
+                android:id="@+id/tvWriteEmail"
                 style="@style/Profile.ButtonPages"
                 android:layout_marginTop="5dp"
                 android:drawablePadding="25dp"

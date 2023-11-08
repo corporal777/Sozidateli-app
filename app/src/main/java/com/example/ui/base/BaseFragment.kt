@@ -16,18 +16,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import com.example.R
-import com.example.data.models.NewEventFormat
 import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
-import com.example.ui.views.dialogs_new.EventAddedToFavoriteDialog
-import com.example.ui.views.dialogs_new.MessageDialogWithGreenButton
+import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
+import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.util.Utils
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.exceptions.UndeliverableException
-import io.reactivex.plugins.RxJavaPlugins
 
 abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean = false) :
     MvpAppCompatFragment(),

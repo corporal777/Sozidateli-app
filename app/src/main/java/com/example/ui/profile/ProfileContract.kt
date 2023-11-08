@@ -37,9 +37,11 @@ interface ProfileContract {
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun showAboutApp()
 
-
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openSupportEmail(uid: String)
+
+        @StateStrategyType(OneExecutionStateStrategy::class)
+        fun showSupport()
 
         @StateStrategyType(OneExecutionStateStrategy::class)
         fun openPlayMarket()
@@ -85,6 +87,7 @@ interface ProfileContract {
         fun onChangeAccountClick()
         fun onAboutApplicationClick()
         fun onSupportClick()
+        fun onWriteEmailClick()
         fun onRateClick()
         fun onLogoutClick()
         fun onSettingsClick()

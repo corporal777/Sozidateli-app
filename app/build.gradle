@@ -251,6 +251,7 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'io.coil-kt:coil:1.1.1'
     implementation 'com.github.Commit451.coil-transformations:transformations:1.0.0'
+    implementation "com.airbnb.android:lottie:3.4.0"
 
     //utils
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'

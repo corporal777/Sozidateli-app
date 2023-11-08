@@ -31,11 +31,6 @@ class EmailConfirmFragment : BaseFragment<FragmentEmailConfirmBinding>(), EmailC
 
     @ProvidePresenter
     fun providePresenter(): EmailConfirmPresenter = presenterProvider.get().apply {
-        navArgs<EmailConfirmFragmentArgs>().value.also {
-            email = it.email
-            password = it.password ?: ""
-            snUser = it.snUser
-        }
     }
 
     private val timerMessage by lazy {

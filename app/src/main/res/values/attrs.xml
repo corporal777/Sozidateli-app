@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="viewBackground" format="reference" />
+
+    <declare-styleable name="CustomCheckView">
+        <attr name="checkViewText" format="string" />
+        <attr name="isCheckable" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="CustomLoadingButton">
         <attr name="buttonBackground" format="reference" />
         <attr name="buttonTextColor" format="reference" />

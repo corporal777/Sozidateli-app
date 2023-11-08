@@ -8,7 +8,6 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
-import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -21,7 +20,7 @@ class EditWorksPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += appData.userNewChangeSubject
+        compositeDisposable += appData.userChangeSubject
             .performOnBackgroundOutOnMain()
             .subscribe({
                 val user = it.value

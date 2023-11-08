@@ -22,9 +22,8 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.InfoDialog
 import com.example.ui.views.SetPasswordDialog
-import com.example.ui.views.dialogs_new.TitleMessageDialog
+import com.example.ui.views.dialogs.TitleMessageDialog
 import com.example.ui.views.suggestFieldView.address.DaDataUtil
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.FileUtils
@@ -155,7 +154,6 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
         }
 
         var userInterests = findUserInterests()
-
         if (userInterests.isNullOrEmpty()) mBinding.btnSave.isEnabled = false
 
         adapter.update(interests.map {
@@ -178,7 +176,6 @@ class UserEditFragment : BaseFragment<FragmentUserEditBinding>(), UserEditContra
                         if (count > 0) mBinding.btnSave.isEnabled = true
                     }
                 }
-
                 addAll(interestsItems)
             }
         })

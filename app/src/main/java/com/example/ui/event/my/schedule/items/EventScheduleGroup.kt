@@ -1,6 +1,6 @@
 package com.example.ui.event.my.schedule.items
 
-import com.example.extensions.findItemBy
+import com.example.data.models.EventScheduleData
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.xwray.groupie.Group

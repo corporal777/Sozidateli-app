@@ -4,9 +4,9 @@ import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.models.*
-import com.example.extensions.groupByNotNull
+import io.reactivex.Completable
 import io.reactivex.Maybe
-import java.util.*
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class CommonRepositoryImpl
@@ -17,11 +17,11 @@ class CommonRepositoryImpl
 ) : ApiRepository(appData), CommonRepository {
 
     override fun getInterests(): Maybe<List<InterestNew>> {
-        val cachedInterests = appData.interestsNew
+        val cachedInterests = appData.interests
         return if (cachedInterests.isNullOrEmpty()) newApi.getInterestsList(200, null)
             .map { interests ->
                 val capitalizedInterests = interests.data
-                appData.interestsNew = capitalizedInterests
+                appData.interests = capitalizedInterests
                 capitalizedInterests
             } else Maybe.just(cachedInterests)
     }
@@ -59,5 +59,16 @@ class CommonRepositoryImpl
         return newApi.getSettlements(region).map {
             it.data.mapIndexed { index, s -> SearchRegion(index, s) }
         }
+    }
+
+    override fun getSupportData(): Maybe<List<SupportData>> {
+        if (appData.supportQuestions.isNullOrEmpty()){
+            return newApi.getSupportData().doOnSuccess { appData.supportQuestions = it }
+        } else return Maybe.just(appData.supportQuestions)
+
+    }
+
+    override fun sendSupportQuestion(body: RequestBody): Completable {
+        return newApi.sendSupportData(body)
     }
 }

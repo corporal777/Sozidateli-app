@@ -17,6 +17,7 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
@@ -653,4 +654,5 @@ fun Activity.onBackPressedCallback(
         }
     }
 }
+
 

@@ -1,17 +1,16 @@
 package com.generator.qrcodegenerator.vector
 
+import android.graphics.Bitmap
 import androidx.annotation.FloatRange
+import androidx.core.content.ContextCompat
 import com.generator.qrcodegenerator.QrErrorCorrectionLevel
+import com.generator.qrcodegenerator.R
 import com.generator.qrcodegenerator.SerializationProvider
 import com.generator.qrcodegenerator.SerializersModuleFromProviders
-import com.generator.qrcodegenerator.style.QrLogo
-import com.generator.qrcodegenerator.style.QrLogoBuilder
-import com.generator.qrcodegenerator.style.QrOffset
-import com.generator.qrcodegenerator.style.QrOffsetBuilder
+import com.generator.qrcodegenerator.style.*
 import com.generator.qrcodegenerator.vector.dsl.InternalQrVectorOptionsBuilderScope
 import com.generator.qrcodegenerator.vector.dsl.QrVectorOptionsBuilderScope
-import com.generator.qrcodegenerator.vector.style.QrVectorColors
-import com.generator.qrcodegenerator.vector.style.QrVectorShapes
+import com.generator.qrcodegenerator.vector.style.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -79,5 +78,37 @@ fun createQrVectorOptions(block : QrVectorOptionsBuilderScope.() -> Unit) : QrVe
     val builder = QrVectorOptions.Builder()
     InternalQrVectorOptionsBuilderScope(builder).apply(block)
     return builder.build()
+}
+
+fun createReadyVectorQrOptions(uri : String, bm : Bitmap, icon : Int, color : Int): QrVectorOptions {
+    return createQrVectorOptions {
+        padding = .1f
+        logo {
+            val drawableSource: DrawableSource
+            val drawableShape: QrLogoShape
+            if (!uri.isNullOrEmpty()) {
+                drawableShape = QrLogoShape.RoundCorners(.30f)
+                drawableSource = DrawableSource.DecodedBitmap(bm)
+            } else {
+                drawableShape = QrLogoShape.Circle
+                drawableSource = DrawableSource.Resource(icon)
+            }
+            drawable = drawableSource
+            size = .25f
+            shape = drawableShape
+        }
+        colors {
+            dark = QrVectorColor.Solid(color)
+        }
+        shapes {
+//                    darkPixel = QrVectorPixelShape.RoundCorners(.5f)
+//                    ball = QrVectorBallShape.RoundCorners(.30f)
+//                    frame = QrVectorFrameShape.RoundCorners(.30f)
+            darkPixel = QrVectorPixelShape.Default
+            ball = QrVectorBallShape.Default
+            frame = QrVectorFrameShape.Default
+        }
+        errorCorrectionLevel = QrErrorCorrectionLevel.Medium
+    }
 }
 

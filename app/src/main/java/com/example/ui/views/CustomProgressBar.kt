@@ -53,10 +53,6 @@ class CustomProgressBar : View {
     private var toCircleProgress = 0f
     private var noProgress = true
 
-    fun setUseSelfAlpha(value: Boolean) {
-        useSelfAlpha = value
-    }
-
     @Keep
     override fun setAlpha(alpha: Float) {
         super.setAlpha(alpha)

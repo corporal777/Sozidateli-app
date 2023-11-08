@@ -2,7 +2,6 @@ package com.example.ui.userprofile.read.settings.change_password
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -14,8 +13,7 @@ import com.example.databinding.BottomSheetChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.main.MainActivity
-import com.example.ui.views.dialogs_new.MessageDialogWithBrownButton
-import onTextChanged
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import javax.inject.Inject
 import javax.inject.Provider
 

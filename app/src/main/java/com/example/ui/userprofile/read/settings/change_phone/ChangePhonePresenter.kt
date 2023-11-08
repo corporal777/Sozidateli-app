@@ -123,7 +123,7 @@ class ChangePhonePresenter
                     )
                 )
             )
-        ).doOnSuccess { new -> appData.updateUserNew { this.phone = new.phone } }
+        ).doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }
     }
 
     fun isWithUpdate(): Boolean = withUpdate

@@ -54,7 +54,7 @@ class ChangeNamePresenter
                 }
             )
                 .doOnSuccess { new ->
-                    appData.updateUserNew {
+                    appData.updateUser {
                         this.name = new.name
                         this.lastName = new.lastName
                         this.middleName = new.middleName
