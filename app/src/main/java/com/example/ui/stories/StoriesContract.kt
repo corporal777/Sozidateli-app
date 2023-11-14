@@ -1,15 +1,11 @@
 package com.example.ui.stories
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
-import com.example.util.OneExecutionByTagStateStrategy
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface StoriesContract {
     interface View : BaseContract.View {
-
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        @OneExecution
         fun showAuthorization()
     }
 

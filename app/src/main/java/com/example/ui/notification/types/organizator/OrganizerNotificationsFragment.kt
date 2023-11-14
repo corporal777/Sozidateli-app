@@ -1,13 +1,13 @@
 package com.example.ui.notification.types.organizator
 
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.ui.notification.NotificationsSortedData
 import com.example.ui.notification.items.*
 import com.example.ui.notification.types.base.BaseNotificationTypeFragment
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -2,16 +2,16 @@ package com.example.ui.accountChange
 
 import android.app.NotificationManager
 import android.net.Uri
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
+import com.example.data.models.AuthType
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
-import com.example.data.models.AuthType
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

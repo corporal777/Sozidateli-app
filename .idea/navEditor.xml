@@ -8,7 +8,7 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="about_event_fragment_new">
+                  <entry key="about_event_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -796,7 +796,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="supportSFragment">
+                  <entry key="supportSearchFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

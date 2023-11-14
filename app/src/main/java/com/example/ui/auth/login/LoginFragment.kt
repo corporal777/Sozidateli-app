@@ -1,21 +1,16 @@
 package com.example.ui.auth.login
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_login.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider

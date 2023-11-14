@@ -8,8 +8,6 @@ import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.data.models.InterestNew
@@ -33,6 +31,8 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initAsDatePicker
 import initDropDownView
 import kotlinx.android.synthetic.main.layout_filter_event.view.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import offsetChangedListener
 import onTextChanged
 import javax.inject.Inject

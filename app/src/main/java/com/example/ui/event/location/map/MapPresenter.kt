@@ -1,12 +1,12 @@
 package com.example.ui.event.location.map
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.MapInfo
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import withProgressBarLoading
 import javax.inject.Inject
 

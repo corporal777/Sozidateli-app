@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.PagerStateAdapter
 import com.example.databinding.FragmentSearchTabsBinding
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
@@ -15,7 +14,8 @@ import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
 import com.example.ui.search.user.SearchUserFragment
 import com.example.util.SearchInput
-import com.example.adapters.PagerStateAdapter
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider

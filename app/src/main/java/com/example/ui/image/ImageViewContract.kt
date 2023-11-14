@@ -2,25 +2,25 @@ package com.example.ui.image
 
 import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.MvpView
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.SingleState
 
 interface ImageViewContract {
     interface View : MvpView {
-        @StateStrategyType(SingleStateStrategy::class)
+        @SingleState
         fun setImage(bitmap: Bitmap)
 
-        @StateStrategyType(SingleStateStrategy::class)
+        @SingleState
         fun showError()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun findImageBitmap(url: String)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun findImageBitmap(@DrawableRes resource: Int)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")

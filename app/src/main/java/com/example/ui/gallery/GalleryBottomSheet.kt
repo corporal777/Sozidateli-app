@@ -1,47 +1,29 @@
 package com.example.ui.gallery
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
-import androidx.core.util.Pair
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.transition.AutoTransition
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ImageModel
 import com.example.databinding.BottomSheetGalleryBinding
-import com.example.extensions.*
-import com.example.holders.ProfileContactsEditItem
-import com.example.ui.about.AboutFragment
+import com.example.extensions.findItemBy
+import com.example.extensions.updateItems
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.gallery.camera.CustomCameraActivity
 import com.example.ui.gallery.items.CameraPreviewItem
 import com.example.ui.gallery.items.GalleryItem
 import com.example.ui.views.WarningDialog
 import com.example.util.getMakeSceneTransition
 import com.example.util.rxtakephoto.CropActivity
 import com.example.util.rxtakephoto.CropCallbackHelper
-import com.example.util.rxtakephoto.RxTakePhoto
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.layout_inapp.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -51,13 +33,13 @@ class GalleryBottomSheet() :
 
     override fun layout(): Int = R.layout.bottom_sheet_gallery
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = GALLERY_TAG)
+    @InjectPresenter(tag = GALLERY_TAG)
     lateinit var presenter: GalleryBottomPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<GalleryBottomPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = GALLERY_TAG)
+    @ProvidePresenter(tag = GALLERY_TAG)
     fun providePresenter(): GalleryBottomPresenter = presenterProvider.get()
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()

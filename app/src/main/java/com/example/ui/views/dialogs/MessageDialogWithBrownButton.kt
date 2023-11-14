@@ -6,8 +6,12 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.example.R
 import com.example.databinding.DialogMessageWithGrayButtonBinding
+import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import removeUrlUnderline
 
 class MessageDialogWithBrownButton(
     val context: Context,
@@ -28,8 +32,10 @@ class MessageDialogWithBrownButton(
         mBuilder.setCancelable(isCancelable)
 
         mBinding.tvMessage.apply {
+            highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
             text = message
             movementMethod = BetterLinkMovementMethod.getInstance()
+            removeUrlUnderline()
         }
         mBinding.btnAction.setOnClickListener {
             clickAction.invoke()

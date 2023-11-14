@@ -1,7 +1,6 @@
 package com.example.ui.editeducation
 
 import call
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
@@ -9,6 +8,7 @@ import com.example.data.models.ToggleIntModel
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
 import javax.inject.Inject

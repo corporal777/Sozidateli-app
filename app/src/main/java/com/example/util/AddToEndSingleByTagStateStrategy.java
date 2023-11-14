@@ -1,11 +1,17 @@
 package com.example.util;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Iterator;
 import java.util.List;
 
-import com.arellomobile.mvp.MvpView;
-import com.arellomobile.mvp.viewstate.ViewCommand;
-import com.arellomobile.mvp.viewstate.strategy.StateStrategy;
+import moxy.MvpView;
+import moxy.viewstate.ViewCommand;
+import moxy.viewstate.strategy.OneExecutionStateStrategy;
+import moxy.viewstate.strategy.StateStrategy;
+import moxy.viewstate.strategy.StateStrategyType;
 
 public class AddToEndSingleByTagStateStrategy implements StateStrategy {
 
@@ -30,3 +36,4 @@ public class AddToEndSingleByTagStateStrategy implements StateStrategy {
         // pass
     }
 }
+

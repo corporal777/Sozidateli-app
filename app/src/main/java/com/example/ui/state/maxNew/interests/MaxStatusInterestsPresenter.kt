@@ -1,6 +1,5 @@
 package com.example.ui.state.maxNew.interests
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.InterestNew
 import com.example.data.models.UserDetail
@@ -10,6 +9,7 @@ import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
 import withProgressBarLoading

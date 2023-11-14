@@ -1,8 +1,6 @@
 package com.example.ui.support.newQuestion
 
 import android.content.Context
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.SupportFile
 import com.example.repository.CommonRepository
@@ -14,6 +12,8 @@ import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody

@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.finish
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
@@ -22,6 +21,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCustomLoading
 import withProgressBarDialogLoading

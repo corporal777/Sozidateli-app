@@ -1,34 +1,31 @@
 package com.example.ui.support.newQuestion
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SupportFile
 import com.example.ui.base.BaseContract
-import com.example.ui.views.calendarView.CalendarDay
-import java.util.*
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 class SupportQuestionContract {
 
     interface View : MvpView {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setFiles(files: List<SupportFile>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setFields(themes: List<String>, isHasConfirmedEmail : Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showCustomLoading()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideCustomLoading()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideSupportQuestion()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun enableBtnSend(enable: Boolean)
     }
 

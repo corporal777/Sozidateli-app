@@ -1,6 +1,5 @@
 package com.example.ui.organizations.members
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
@@ -15,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

@@ -1,39 +1,36 @@
 package com.example.ui.state.base
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.FieldDetails
-import com.example.data.models.FileModel
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface MainInfoContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setPersonalData(user: UserDetail)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun goToNext()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEmailConfirm(email: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showChangeImage()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @OneExecution
         fun photoUpdated(photo: ImageModel?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEmailNotUnique(email : String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showPhoneEdit(phone : String?)
     }
     interface Presenter : BaseContract.Presenter  {

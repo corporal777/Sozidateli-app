@@ -1,8 +1,5 @@
 package com.example.ui.user
 
-import android.content.Context
-import android.graphics.Bitmap
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
 import com.example.data.bodies.AddToFavoriteModel
@@ -13,10 +10,9 @@ import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.loadBitmapNew
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

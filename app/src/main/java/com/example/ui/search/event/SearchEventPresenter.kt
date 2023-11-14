@@ -1,7 +1,6 @@
 package com.example.ui.search.event
 
 import android.util.Log
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.*
@@ -16,6 +15,7 @@ import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit

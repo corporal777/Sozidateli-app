@@ -1,19 +1,18 @@
 package com.example.ui.auth.authorization
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface AuthorizationContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showLogin()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmailRegistration()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSnRegistration(snUser: SnUser)
     }
 

@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
-import setSelectableItemBackgroundBorderless
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -26,13 +24,13 @@ class ChatView : FrameLayout, ChatViewContract.View {
 
     private val mvpDelegate by lazy { MvpDelegate(this) }
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
+    @InjectPresenter(tag = CHAT_VIEW_TAG)
     lateinit var presenter: ChatViewPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ChatViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = CHAT_VIEW_TAG)
+    @ProvidePresenter(tag = CHAT_VIEW_TAG)
     fun providePresenter(): ChatViewPresenter = presenterProvider.get()
 
     private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true)

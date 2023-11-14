@@ -1,7 +1,6 @@
 package com.example.ui.auth.recoveryPassword
 
 import call
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.models.ApiError
@@ -14,6 +13,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCustomLoading
@@ -31,7 +31,6 @@ class RecoveryPasswordPresenter
     var email = ""
     var loginType = "email"
 
-    private var onUserUnderstandEverything = false
     private val timerCompositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
@@ -42,10 +41,9 @@ class RecoveryPasswordPresenter
 
     override fun onRecoveryClick() {
         if (isDataValid()) {
-            compositeDisposable += Maybe.fromCallable {
-                if (loginType == "email") email
-                else Utils.validatePhoneBeforeSend(email)
-            }
+            compositeDisposable += Maybe.just(
+                if (loginType == "email") email else Utils.validatePhoneBeforeSend(email)
+            )
                 .flatMap { authRepository.sendRecoveryEmail(loginType, it) }
                 .performOnBackgroundOutOnMain()
                 .withCustomLoading(viewState)
@@ -102,22 +100,10 @@ class RecoveryPasswordPresenter
         }
     }
 
-    override fun onUserUnderstand() {
-        if (!onUserUnderstandEverything) {
-            onUserUnderstandEverything = true
-            viewState.navigateUp()
-        }
-    }
-
     override fun onSetPassword(code: String, password: String, userId: String) {
         viewState.setIgnoreTokenListener(true)
         authRepository.recoverPasswordNew(
-            RecoverPasswordBody(
-                "phone",
-                code,
-                password,
-                userId
-            )
+            RecoverPasswordBody("phone", code, password, userId)
         )
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)

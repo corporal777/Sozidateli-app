@@ -2,18 +2,17 @@ package com.example.ui.gallery.cropImage
 
 import android.graphics.Bitmap
 import android.net.Uri
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
 import com.example.util.AddToEndSingleByTagStateStrategy
 import io.reactivex.Maybe
+import moxy.MvpView
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.SingleState
+import moxy.viewstate.strategy.alias.Skip
 
 interface CropImageContract {
     interface View : MvpView {
-        @StateStrategyType(SingleStateStrategy::class)
+        @SingleState
         fun setImage(uri: Uri?)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")
@@ -22,16 +21,16 @@ interface CropImageContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")
         fun setDefaultTransitionName()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showImageCrop(uri: Uri?, bitmap: Bitmap?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun closeCropActivity()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showProgressDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideProgressDialog()
     }
 

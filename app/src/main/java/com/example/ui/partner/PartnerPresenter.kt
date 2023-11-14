@@ -1,12 +1,12 @@
 package com.example.ui.partner
 
 import android.graphics.Bitmap
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.PartnerModel
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import javax.inject.Inject

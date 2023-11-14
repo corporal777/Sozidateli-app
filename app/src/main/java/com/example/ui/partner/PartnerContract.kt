@@ -1,14 +1,13 @@
 package com.example.ui.partner
 
-import android.graphics.Bitmap
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.PartnerModel
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface PartnerContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setData(partner: PartnerModel)
     }
 

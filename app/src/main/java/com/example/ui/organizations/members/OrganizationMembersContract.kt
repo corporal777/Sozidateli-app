@@ -1,24 +1,20 @@
 package com.example.ui.organizations.members
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationMemberModel
-import com.example.data.models.OrganizationNewMemberModel
-import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface OrganizationMembersContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setData(members: List<OrganizationMemberModel?>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showUser(userId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showCurrentUser(userId: String)
     }
 

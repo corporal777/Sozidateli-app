@@ -6,8 +6,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.FragmentNotificationsListBinding
@@ -15,7 +13,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
 import com.example.ui.notification.items.*
@@ -25,6 +23,8 @@ import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -164,8 +164,8 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
     override fun showAboutEvent(eventId: String) {
         if (!eventId.isNullOrEmpty()) {
             findNavController().navigate(
-                R.id.about_event_fragment_new,
-                AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
+                R.id.about_event_fragment,
+                AboutEventFragmentArgs.Builder(eventId).build().toBundle()
             )
         }
     }

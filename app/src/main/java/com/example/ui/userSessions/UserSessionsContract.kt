@@ -1,29 +1,23 @@
 package com.example.ui.userSessions
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EventActivityModel
-import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
-import com.example.data.models.UserSessions
 import com.example.ui.base.BaseContract
-import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserSessionsContract {
 
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setCurrentSession(session: UserSessionModel, isHasSessions : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setOtherSessions(sessions: List<UserSessionModel?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun showSessionsLoadingPlaceholder()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun updateKillSessionsButton(isHasSessions : Boolean)
     }
 

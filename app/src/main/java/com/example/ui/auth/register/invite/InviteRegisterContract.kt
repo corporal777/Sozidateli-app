@@ -1,41 +1,39 @@
 package com.example.ui.auth.register.invite
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.auth.base.BaseAuthContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface InviteRegisterContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setData(firstName: String?, lastName: String?, middleName: String?, email: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUserAgreement()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableRegisterBtn(isEnable: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFirstNameError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showLastNameError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmailError(show: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun enableMiddleNameInput(enable: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun showEmailDialog(email: String)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun openHome()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun loggedOut()
     }
 

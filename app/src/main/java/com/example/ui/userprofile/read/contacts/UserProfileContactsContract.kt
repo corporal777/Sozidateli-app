@@ -1,14 +1,12 @@
 package com.example.ui.userprofile.read.contacts
 
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.ui.base.BaseContract
 import com.example.ui.userprofile.base.BaseUserProfileContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface UserProfileContactsContract {
     interface View : BaseUserProfileContract.View {
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEdit()
     }
 

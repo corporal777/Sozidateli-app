@@ -1,50 +1,49 @@
 package com.example.ui.event.activities
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
 import com.example.data.models.Tag
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface ActivitiesContract {
 
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setContentPlaceholder()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setDays(days: Map<Int, List<EventScheduleDay>>)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setTags(tags: List<Tag>?)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setSubEvents(isApproved : Boolean, data: List<SubEventsData>)
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun selectDay(day: EventScheduleDay)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun scrollContent(day: EventScheduleDay)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showSubEvent(eventId: String, subEventId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateSubEvent(subEvent: EventActivityModel)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setSchemeButton(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showScheme(eventId: String)
     }
 

@@ -1,18 +1,20 @@
 package com.example.ui.event.rating
 
 import android.net.Uri
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventFile
+import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventRegistration
+import com.example.data.models.FileModel
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface EventRatingContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
-        //fun setFields(event: EventData, fieldsData: List<EventRegisterFieldData<*>>, rating: Int)
         fun setFields(
                 event: EventRegistration,
                 fieldsData: List<EventRegisterFieldData<*>>,
@@ -20,22 +22,22 @@ interface EventRatingContract {
                 files: List<FileModel>?
         )
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun enableActionButton(enable: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openFileSelector()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateFileField(fieldId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showSuccessRate()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openUrl(url: String)
     }
 

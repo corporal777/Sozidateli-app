@@ -1,19 +1,18 @@
 package com.example.ui.support
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SupportData
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface SupportCenterContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setQuestions(questions: Map<String, List<SupportData>>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSupportQuestionAnswer(data: SupportData)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSupportSearch()
     }
     interface Presenter : BaseContract.Presenter {

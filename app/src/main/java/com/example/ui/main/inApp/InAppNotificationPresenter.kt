@@ -1,7 +1,6 @@
 package com.example.ui.main.inApp
 
 import android.app.NotificationManager
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.DeclineBody
@@ -12,6 +11,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

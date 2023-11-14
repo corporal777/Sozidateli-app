@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.text.util.Linkify.WEB_URLS
 import android.view.View
 import android.view.ViewGroup
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
 import com.example.databinding.FragmentAboutBinding
@@ -13,7 +11,9 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import onBackPressedCallback
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import moxy.presenter.ProvidePresenterTag
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider

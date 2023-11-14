@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
@@ -19,6 +17,8 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -47,8 +47,7 @@ class UserProfileEducationFragment : BaseFragment<FragmentUserProfileInterestsBi
         }
     }
 
-    override fun onUserUpdated(user: UserDetail?, state: String) {
-        user ?: return
+    override fun setUserData(user: UserDetail, state: String) {
         val educationLevel =
             user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()

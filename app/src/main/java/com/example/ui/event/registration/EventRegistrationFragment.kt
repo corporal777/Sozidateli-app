@@ -9,10 +9,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EventRegisterData
+import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventRegistration
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_APPROVE
 import com.example.data.models.EventRegistration.Companion.MODERATION_AUTO_DISMISS
 import com.example.data.models.EventRegistration.Companion.MODERATION_MANUAL
@@ -26,14 +26,21 @@ import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.PlaceholderItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.event.registration.items.*
+import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.event.registration.items.ProfileFieldsFormResult
+import com.example.ui.event.registration.items.RegisterEventImageHeaderItem
+import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.example.ui.views.BottomDialog
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.dialogs.EventRegistrationRequestDialog
 import com.example.util.showCustomTabsBrowser
-import com.xwray.groupie.*
+import com.xwray.groupie.Group
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.NestedGroup
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import onScrolled
 import java.util.*
@@ -391,15 +398,15 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
 
     override fun showEvent(eventId: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(eventId).build().toBundle(),
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(eventId).build().toBundle(),
             navOptions {
                 popUpTo(R.id.request_fragment) { inclusive = true }
             })
     }
 
     override fun showEditProfile() {
-        findNavController().navigate(EventRegistrationFragmentDirections.requestToUserProfile())
+        findNavController().navigate(R.id.user_profile_fragment)
     }
 
 

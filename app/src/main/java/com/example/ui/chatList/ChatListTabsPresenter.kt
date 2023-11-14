@@ -1,12 +1,11 @@
 package com.example.ui.chatList
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
-import kotlin.math.abs
 
 @InjectViewState
 class ChatListTabsPresenter

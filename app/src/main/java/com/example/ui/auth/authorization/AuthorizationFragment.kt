@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
@@ -15,6 +13,8 @@ import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.FinishRegisterDialog
 import com.example.util.AuthBackground
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

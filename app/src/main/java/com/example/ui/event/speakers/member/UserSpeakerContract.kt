@@ -1,43 +1,42 @@
 package com.example.ui.event.speakers.member
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserSpeakerContract{
     interface View : BaseContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun openChat(userName: String, userAvatar: String?, chatId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setSpeakersMainInfo(speaker: MemberModel, isCurrentUser : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateSpeaker(speaker: UserDetail)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setSpeakerActivities(canShow : Boolean, data: Map<String?, List<EventActivityModel>>?)
 
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setEmptyMainDataPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateSubEvent(subEvent: EventActivityModel)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showSubEvent(eventId: String, subEventId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUserProfile(userId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showCurrentUserProfile()
     }
 

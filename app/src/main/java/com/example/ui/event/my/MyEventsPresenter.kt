@@ -1,8 +1,9 @@
 package com.example.ui.event.my
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.MyEventsFilter
+import com.example.data.models.SearchFilter
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
@@ -11,6 +12,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

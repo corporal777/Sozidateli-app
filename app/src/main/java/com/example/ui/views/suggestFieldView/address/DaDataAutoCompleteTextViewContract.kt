@@ -1,20 +1,18 @@
 package com.example.ui.views.suggestFieldView.address
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.DaDataItem
 import com.example.data.models.NewUserAddress
 import com.example.ui.base.BaseContract
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.Skip
 
 class DaDataAutoCompleteTextViewContract {
 
     interface View : MvpView {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setSuggested(list: List<NewUserAddress>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun performOnItemSelected(item: NewUserAddress)
     }
 

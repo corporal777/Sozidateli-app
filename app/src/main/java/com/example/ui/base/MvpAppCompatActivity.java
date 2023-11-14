@@ -2,10 +2,10 @@ package com.example.ui.base;
 
 import android.os.Bundle;
 
-import com.arellomobile.mvp.MvpDelegate;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import moxy.MvpDelegate;
 
 /**
  * Date: 17.12.2015

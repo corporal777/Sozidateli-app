@@ -3,19 +3,20 @@ package com.example.ui.favoritesTab.organizations
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationNew
 import com.example.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
-import com.example.holders.*
+import com.example.holders.OrganizationItem
+import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

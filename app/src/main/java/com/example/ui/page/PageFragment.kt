@@ -1,13 +1,10 @@
 package com.example.ui.page
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
@@ -20,7 +17,8 @@ import com.example.util.showCustomTabsBrowser
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider

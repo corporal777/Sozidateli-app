@@ -1,11 +1,9 @@
 package com.example.ui.support.detail
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.CommonRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.support.SupportCenterContract
-import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

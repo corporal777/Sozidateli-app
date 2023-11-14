@@ -1,23 +1,18 @@
 package com.example.holders
 
-import android.app.Activity
 import android.content.Context
-import android.telephony.PhoneNumberFormattingTextWatcher
 import com.example.R
-import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.*
 import com.example.databinding.ItemEditMainInfoBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import initAsDatePicker
-import java.lang.reflect.Field
 import java.util.*
 
 

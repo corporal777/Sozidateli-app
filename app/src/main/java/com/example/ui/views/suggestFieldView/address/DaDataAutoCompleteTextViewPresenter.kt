@@ -1,12 +1,12 @@
 package com.example.ui.views.suggestFieldView.address
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.models.NewUserAddress
 import com.example.repository.DaDataRepository
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

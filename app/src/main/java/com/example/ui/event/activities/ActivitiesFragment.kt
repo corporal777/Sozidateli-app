@@ -9,8 +9,6 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
@@ -32,6 +30,8 @@ import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onScrollStateChanged
 import onScrolled
 import onTextChanged

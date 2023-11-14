@@ -1,17 +1,15 @@
 package com.example.ui.event.favorite.subevent
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
-import com.example.data.models.SubEvent
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface FavoriteSubeventContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setData(data: Map<Long?, List<EventActivityModel>>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSubEvent(eventId: String, subEventId: String)
     }
 

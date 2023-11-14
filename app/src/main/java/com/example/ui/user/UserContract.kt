@@ -1,45 +1,43 @@
 package com.example.ui.user
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
+import com.example.data.models.FileModel
+import com.example.data.models.OrganizationNew
+import com.example.data.models.ProfileUserData
 import com.example.ui.base.BaseContract
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.OneExecutionByTagStateStrategy
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setUser(profileUserData: ProfileUserData)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun openChat(userName: String, userAvatar: String?, chatId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setSubscribeFavoriteAction(action: UserSubscribeButton.Action?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setEnableAddToFavoriteButton(enabled : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setSubscribeBlockAction(action: UserSubscribeButton.Action?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun downloadFile(file: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showOrganization(organization: /*Organization*/OrganizationNew)
+        @Skip
+        fun showOrganization(organization: OrganizationNew)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showBlockConfirmation()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUpdateError(message: String? = null)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUserHiddenDialog()
     }
 

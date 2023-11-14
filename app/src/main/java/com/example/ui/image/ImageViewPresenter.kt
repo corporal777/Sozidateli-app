@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Base64
 import androidx.annotation.DrawableRes
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.bumptech.glide.Glide
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

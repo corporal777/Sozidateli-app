@@ -3,8 +3,6 @@ package com.example.ui.event.favorite.subevent
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.databinding.LayoutListBinding
@@ -17,6 +15,8 @@ import com.example.ui.subevent.items.SubEventItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

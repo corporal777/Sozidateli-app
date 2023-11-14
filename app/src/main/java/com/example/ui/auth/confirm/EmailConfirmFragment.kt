@@ -9,15 +9,14 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
-import androidx.navigation.fragment.navArgs
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentEmailConfirmBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.FinishRegisterDialog
 import com.example.util.Utils
 import kotlinx.android.synthetic.main.fragment_email_confirm.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

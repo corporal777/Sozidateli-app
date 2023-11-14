@@ -4,9 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SupportFile
 import com.example.databinding.BottomSheetSupportFilesBinding
@@ -16,6 +13,8 @@ import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.gallery.items.GalleryItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -25,13 +24,13 @@ class SupportFilesBottomSheet () :
 
     override fun layout(): Int = R.layout.bottom_sheet_support_files
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = GALLERY_TAG)
+    @InjectPresenter(tag = GALLERY_TAG)
     lateinit var presenter: SupportFilesPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SupportFilesPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = GALLERY_TAG)
+    @ProvidePresenter(tag = GALLERY_TAG)
     fun providePresenter(): SupportFilesPresenter = presenterProvider.get()
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -76,7 +75,6 @@ class SupportFilesBottomSheet () :
     }
 
 
-    override fun hideGalleryFragment() = dismiss()
     fun show(fragmentManager: FragmentManager) = show(fragmentManager, "support_files")
 
 

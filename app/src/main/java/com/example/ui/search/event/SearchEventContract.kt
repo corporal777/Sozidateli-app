@@ -1,19 +1,19 @@
 package com.example.ui.search.event
 
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.SearchFilter
 import com.example.ui.search.SearchContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface SearchEventContract {
     interface View : SearchContract.View<EventNew, SearchFilter.EventNew> {
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAboutEvent(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEventRequest(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAgreementRegisterDialog(event: String, url : String)
     }
 

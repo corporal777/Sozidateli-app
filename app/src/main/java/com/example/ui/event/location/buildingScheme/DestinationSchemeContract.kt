@@ -1,23 +1,20 @@
 package com.example.ui.event.location.buildingScheme
 
-import android.graphics.Bitmap
-import android.util.SparseIntArray
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Place
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface DestinationSchemeContract {
 
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setScheme(places: List<Place>, page: Int)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showImage(url: String?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setAppBarShadow(value: Float)
     }
 

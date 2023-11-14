@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.invite
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.EmailCodeBody
@@ -16,9 +15,10 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
 import withDelay
+import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState

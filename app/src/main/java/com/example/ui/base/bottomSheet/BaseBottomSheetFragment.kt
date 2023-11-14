@@ -103,9 +103,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
     }
 
 
-    override fun hideBottomSheetDialog() {
-        dismiss()
-    }
+    override fun hideBottomSheetDialog() = dismiss()
 
     fun focusOnInput(view: TextInputEditText, canShow: Boolean) {
         view.apply {

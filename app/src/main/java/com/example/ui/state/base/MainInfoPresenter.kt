@@ -1,6 +1,5 @@
 package com.example.ui.state.base
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -9,6 +8,7 @@ import com.example.ui.state.UserState
 import com.example.util.PHONE_PERSONAL
 import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarDialogLoading

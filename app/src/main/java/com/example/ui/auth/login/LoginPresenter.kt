@@ -1,6 +1,5 @@
 package com.example.ui.auth.login
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
@@ -21,6 +20,7 @@ import com.example.util.getAppVersionCode
 import com.example.util.getDeviceName
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
 import javax.inject.Inject

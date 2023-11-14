@@ -1,7 +1,6 @@
 package com.example.ui.event.list.recommendations
 
 import android.util.Log
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.EventNew.Companion.EVENT_BINDS
@@ -18,6 +17,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

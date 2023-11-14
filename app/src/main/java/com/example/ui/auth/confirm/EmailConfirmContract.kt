@@ -1,15 +1,14 @@
 package com.example.ui.auth.confirm
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface EmailConfirmContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setTimeLeft(seconds: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setCanResend(canResend: Boolean)
     }
 

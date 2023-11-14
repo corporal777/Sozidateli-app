@@ -6,25 +6,21 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isInvisible
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.BottomSheetCalendarBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.dp
 import com.example.extensions.longToDate
 import com.example.ui.views.calendarView.CalendarDay
 import com.example.ui.views.calendarView.DayViewDecorator
 import com.example.ui.views.calendarView.DayViewFacade
 import com.example.ui.views.calendarView.spans.DotSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -42,13 +38,13 @@ class CalendarBottomSheet(
     private val mvpDelegate by lazy { MvpDelegate<CalendarBottomSheet>(this) }
 
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = CALENDAR_TAG)
+    @InjectPresenter(tag = CALENDAR_TAG)
     lateinit var presenter: CalendarBottomSheetPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<CalendarBottomSheetPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = CALENDAR_TAG)
+    @ProvidePresenter(tag = CALENDAR_TAG)
     fun providePresenter(): CalendarBottomSheetPresenter = presenterProvider.get().apply {
         this.selectedDay = day
         this.eventDays = days

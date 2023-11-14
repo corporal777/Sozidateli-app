@@ -1,38 +1,37 @@
 package com.example.ui.state.maxNew.base
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.ui.state.maxNew.MaxStateScreenType
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface BaseMaxStateContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun goToNextScreen(screenType: MaxStateScreenType)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showMaxStateDone(screen: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @Skip
         fun setClickClose(type : Int)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUpdateError(message: String? = null)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun buttonNextEnabled(enabled: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAddEmailDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun hideAddEmailDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEmailIsNotUnique(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEmailConfirmation(email: String)
     }
 

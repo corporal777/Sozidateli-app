@@ -1,34 +1,30 @@
 package com.example.ui.event.my
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.ui.event.list.EventListContract
-import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface MyEventsContract {
-
-
     interface View : EventListContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setData(data: List<EventNew?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFilters()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setFiltersChosen(isChosen : Boolean)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @AddToEndSingle
         fun showEmptyListPlaceholder(isFirst : Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @OneExecution
         fun setActionButton(event: EventNew?)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setShowMyScheduleButton(canShow: Boolean)
     }
 

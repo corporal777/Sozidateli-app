@@ -15,7 +15,7 @@ import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
 import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType

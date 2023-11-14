@@ -1,82 +1,80 @@
 package com.example.ui.profile
 
-import android.content.Context
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface ProfileContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setUser(user: UserDetail)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setUserState(hasBase: Boolean, hasMax: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setUserLink(user: UserDetail)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setChangeOrAddNewAccount(description : Int, icon : Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showProfile(uid: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showChangeAccount()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showStates()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFavorites()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutApp()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun openSupportEmail(uid: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSupport()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun openPlayMarket()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSettings()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSessions()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun codeSuccess()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEmailNotUnique(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showPhoneNotUnique(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showPhoneConfirmation(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideAddPhoneEmailDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEmailConfirmation(email: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showQrScannerToAuthWebSite()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUserProfileLinkDialog(user: UserDetail)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showChangeUserShortNameDialog(user: UserDetail)
     }
 

@@ -3,24 +3,20 @@ package com.example.ui.support.detail
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.navArgs
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.SupportData
 import com.example.databinding.FragmentSupportQuestionDetailBinding
 import com.example.extensions.updateItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.support.SupportCenterPresenter
 import com.example.ui.support.items.SupportFooterItem
-import com.example.ui.support.items.SupportHeaderItem
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

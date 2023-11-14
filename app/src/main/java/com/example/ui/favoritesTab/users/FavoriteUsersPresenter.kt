@@ -1,6 +1,5 @@
 package com.example.ui.favoritesTab.users
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.UserDetail
 import com.example.data.models.UsersFavoriteModel
@@ -11,6 +10,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

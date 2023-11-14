@@ -1,11 +1,12 @@
 package com.example.ui.accountChange
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.SkipStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface ChangeAccountContract {
     interface View : BaseContract.View {

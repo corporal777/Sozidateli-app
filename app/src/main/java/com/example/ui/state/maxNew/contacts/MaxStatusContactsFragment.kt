@@ -1,7 +1,5 @@
 package com.example.ui.state.maxNew.contacts
 
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.extensions.findItemBy
@@ -11,6 +9,8 @@ import com.example.ui.state.maxNew.base.BaseMaxStateFragment
 import com.example.ui.views.InfoDialog
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

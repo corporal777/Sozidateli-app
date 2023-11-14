@@ -1,28 +1,25 @@
 package com.example.ui.userprofile.read.interests
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Interest
-import com.example.data.models.UserDetail
 import com.example.data.models.InterestNew
-import com.example.data.models.InterestsModel
-import com.example.data.models.user.User
-import com.example.ui.base.BaseContract
+import com.example.data.models.UserDetail
 import com.example.ui.userprofile.base.BaseUserProfileContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserProfileInterestsContract {
     interface View : BaseUserProfileContract.View {
 
-        override fun onUserUpdated(user: UserDetail?, state: String) = Unit
+        @Skip
+        override fun setUserData(user: UserDetail, state: String) = Unit
 
-        @StateStrategyType(SkipStrategy::class)
+        @AddToEndSingle
         fun showInterestsPlaceholder()
 
-        @StateStrategyType(AddToEndStrategy::class)
+        @AddToEndSingle
         fun onInterestsUpdated(interests: Map<InterestNew, List<InterestNew>>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEdit()
     }
 

@@ -8,12 +8,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SupportData
 import com.example.databinding.FragmentSupportCenterBinding
-import com.example.extensions.updateItem
 import com.example.holders.OnGroupExpandChange
 import com.example.holders.redesign.EventPageItem
 import com.example.interfaces.ToolbarFragment
@@ -27,6 +24,8 @@ import com.example.util.setTint
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

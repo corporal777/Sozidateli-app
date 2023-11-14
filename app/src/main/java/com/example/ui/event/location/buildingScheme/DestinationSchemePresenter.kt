@@ -1,7 +1,6 @@
 package com.example.ui.event.location.buildingScheme
 
 import android.content.Context
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Place
 import com.example.repository.EventRepository
@@ -9,6 +8,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pdfToUri
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarLoading
 import javax.inject.Inject

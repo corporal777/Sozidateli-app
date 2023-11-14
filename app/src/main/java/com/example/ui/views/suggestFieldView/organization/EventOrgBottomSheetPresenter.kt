@@ -1,16 +1,16 @@
 package com.example.ui.views.suggestFieldView.organization
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
-import com.example.data.models.*
+import com.example.data.models.LegalInformationModel
+import com.example.data.models.LegalInformationNameModel
+import com.example.data.models.OrganizationNew
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
-import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheetContract
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

@@ -1,17 +1,16 @@
 package com.example.ui.chatList.invites
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserChat
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface InviteListContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openChat(chatId: Int, userName: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setInvitesData(chats: List<UserChat?>)
     }
 

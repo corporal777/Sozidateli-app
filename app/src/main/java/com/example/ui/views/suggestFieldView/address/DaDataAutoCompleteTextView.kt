@@ -3,14 +3,14 @@ package com.example.ui.views.suggestFieldView.address
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.NewUserAddress
 import com.example.util.SimpleTextWatcher
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

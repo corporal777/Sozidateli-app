@@ -1,7 +1,6 @@
 package com.example.ui.notification.types.event
 
 import android.app.NotificationManager
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
@@ -11,6 +10,7 @@ import com.example.ui.notification.NotificationType
 import com.example.ui.notification.types.base.BaseNotificationTypePresenter
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

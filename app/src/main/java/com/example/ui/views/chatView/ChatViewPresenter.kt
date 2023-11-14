@@ -1,12 +1,12 @@
 package com.example.ui.views.chatView
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.util.BADGE_COUNT_MAX
 import com.example.util.BADGE_TEXT_IF_MORE_THAN_MAX
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

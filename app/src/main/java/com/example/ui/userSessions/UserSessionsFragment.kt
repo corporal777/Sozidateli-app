@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentUserSessionsBinding
@@ -14,7 +12,9 @@ import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.userSessions.items.*
+import com.example.ui.userSessions.items.CurrentSessionItem
+import com.example.ui.userSessions.items.OtherSessionItem
+import com.example.ui.userSessions.items.SessionsHeaderItem
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs.SessionBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
@@ -22,6 +22,8 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -1,14 +1,13 @@
 package com.example.ui.state.maxNew.interests
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.InterestNew
 import com.example.data.models.UserInterest
 import com.example.ui.state.maxNew.base.BaseMaxStateContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface MaxStatusInterestsContract {
     interface View : BaseMaxStateContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
     }
 

@@ -1,6 +1,5 @@
 package com.example.ui.banned
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.BannedUsersModel.Companion.BANNED_BINDS
 import com.example.data.models.BannedUsersModel.Companion.BANNED_LIMIT
@@ -14,6 +13,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

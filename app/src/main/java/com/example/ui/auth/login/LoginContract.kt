@@ -1,33 +1,30 @@
 package com.example.ui.auth.login
 
-import android.content.Context
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface LoginContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setLoginAndPassword(login: String, password: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showRecoveryPassword(email: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableLoginBtn(isEnable: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showLoginError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showPasswordError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showWrongPasswordError()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSnRegistration(snUser: SnUser)
 
 

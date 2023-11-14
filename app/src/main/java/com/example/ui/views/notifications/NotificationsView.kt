@@ -5,13 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -23,23 +22,27 @@ class NotificationsView : FrameLayout, NotificationsViewContract.View {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val mvpDelegate by lazy { MvpDelegate<NotificationsView>(this) }
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = NOTIFICATIONS_TAG_VIEW)
+    @InjectPresenter(tag = NOTIFICATIONS_TAG_VIEW)
     lateinit var presenter: NotificationsViewPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<NotificationsViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = NOTIFICATIONS_TAG_VIEW)
+    @ProvidePresenter(tag = NOTIFICATIONS_TAG_VIEW)
     fun providePresenter(): NotificationsViewPresenter = presenterProvider.get()
 
     private var view: View = LayoutInflater.from(context)
-            .inflate(R.layout.image_with_badge, this, true).apply {
-                ivImage.setImageResource(R.drawable.ic_profile_notification)
-            }
+        .inflate(R.layout.image_with_badge, this, true).apply {
+            ivImage.setImageResource(R.drawable.ic_profile_notification)
+        }
 
     init {
         (context.applicationContext as App).appComponent.inject(this)
@@ -49,8 +52,8 @@ class NotificationsView : FrameLayout, NotificationsViewContract.View {
         view.apply {
             tvBadge.visibility = if (show) View.VISIBLE else View.GONE
             ivImage.setImageResource(
-                    if (show) R.drawable.ic_profile_notification
-                    else R.drawable.ic_notifications_none
+                if (show) R.drawable.ic_profile_notification
+                else R.drawable.ic_notifications_none
             )
         }
     }

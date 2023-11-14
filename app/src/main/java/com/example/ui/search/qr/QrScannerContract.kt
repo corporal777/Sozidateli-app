@@ -1,11 +1,10 @@
 package com.example.ui.search.qr
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Event
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface QrScannerContract {
     interface View : BaseContract.View {
@@ -15,16 +14,16 @@ interface QrScannerContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "preview")
         fun showNoPermission()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showAppSettings()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEvent(eventId: /*Event*/String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEnterCode()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEventNotFoundError()
     }
 

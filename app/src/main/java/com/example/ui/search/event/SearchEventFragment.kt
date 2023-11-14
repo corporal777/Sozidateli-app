@@ -6,15 +6,13 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.data.models.SearchFilter
 import com.example.databinding.LayoutFilterEventSearchBinding
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
@@ -24,6 +22,8 @@ import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -52,8 +52,8 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event).build().toBundle()
         )
     }
 

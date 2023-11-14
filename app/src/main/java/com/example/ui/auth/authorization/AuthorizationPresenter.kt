@@ -1,11 +1,11 @@
 package com.example.ui.auth.authorization
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

@@ -3,20 +3,15 @@ package com.example.ui.gallery.cropImage
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.core.view.isInvisible
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.example.R
 import com.example.databinding.ActivityImageCropBinding
 import com.example.ui.base.BaseCustomActivity
-import com.example.ui.gallery.cropImage.cropView.cropWindow.util.CustomCropCallback
 import com.example.util.rxtakephoto.CropCallbackHelper
 import io.reactivex.subjects.SingleSubject
-import kotlinx.android.synthetic.main.activity_crop.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

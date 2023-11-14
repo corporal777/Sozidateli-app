@@ -1,34 +1,29 @@
 package com.example.ui.base.bottomSheet
 
-import android.graphics.drawable.Drawable
-import androidx.annotation.StringRes
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
-import com.example.ui.views.StateType
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface BaseBottomSheetContract {
     interface View : MvpView, BaseContract.LoadingView {
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showRequestErrorMessage()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showKeyboard(v: android.view.View?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideKeyboard(v: android.view.View?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideBottomSheetDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showToast(message : String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun navigateUp()
     }
 

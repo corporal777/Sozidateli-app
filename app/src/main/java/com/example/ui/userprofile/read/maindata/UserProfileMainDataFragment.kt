@@ -4,17 +4,9 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
-import android.text.Spannable
-import android.text.TextPaint
-import android.text.style.URLSpan
-import android.text.style.UnderlineSpan
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.parseAsHtml
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
@@ -27,8 +19,9 @@ import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import parseAsHtmlWithoutUnderline
-import removeUrlUnderline
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -54,8 +47,7 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
         }
     }
 
-    override fun onUserUpdated(user: UserDetail?, state: String) {
-        user ?: return
+    override fun setUserData(user: UserDetail, state: String) {
         mBinding.apply {
             tvBirthday.text = user.birthday?.value?.formatToDefaultDate()
             tvGender.text = setGender(user)

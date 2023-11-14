@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
+import com.example.adapters.PagerStateAdapter
 import com.example.databinding.FragmentFavoriteBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -14,7 +13,8 @@ import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.adapters.PagerStateAdapter
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider

@@ -14,8 +14,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Scene
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentRegisterSnBinding
@@ -27,6 +25,8 @@ import kotlinx.android.synthetic.main.scene_register_sn_email.view.*
 import kotlinx.android.synthetic.main.scene_register_sn_password.*
 import kotlinx.android.synthetic.main.scene_register_sn_password.view.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onTextChanged
 import setCircleImage
 import javax.inject.Inject

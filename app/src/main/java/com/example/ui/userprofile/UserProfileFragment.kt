@@ -1,13 +1,10 @@
 package com.example.ui.userprofile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import coil.transform.RoundedCornersTransformation
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
@@ -18,6 +15,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,9 +47,8 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
         }
     }
 
-    override fun onUserUpdated(user: UserDetail?, state: String) {
+    override fun setUserData(user: UserDetail, state: String) {
         startPostponedEnterTransition()
-        user ?: return
         mBinding.ivAvatar.apply {
             val avatarUrl = user.loadUserImage()
             transitionName = avatarUrl
@@ -64,7 +62,6 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
 
     override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
         GalleryBottomSheet().show(childFragmentManager)
-        //findNavController().navigate(R.id.test_blur_fragment)
     }
 
     override fun showMainData() {

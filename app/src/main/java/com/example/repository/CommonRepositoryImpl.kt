@@ -62,10 +62,12 @@ class CommonRepositoryImpl
     }
 
     override fun getSupportData(): Maybe<List<SupportData>> {
-        if (appData.supportQuestions.isNullOrEmpty()){
-            return newApi.getSupportData().doOnSuccess { appData.supportQuestions = it }
-        } else return Maybe.just(appData.supportQuestions)
+        return newApi.getSupportData().doOnSuccess { appData.supportQuestions = it }
+    }
 
+    override fun getSupportQuestion(id: String): Maybe<SupportData> {
+        return newApi.getSupportData().doOnSuccess { appData.supportQuestions = it }
+            .map { it.find { x -> x.id == id.toInt() } }
     }
 
     override fun sendSupportQuestion(body: RequestBody): Completable {

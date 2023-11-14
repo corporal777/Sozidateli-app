@@ -8,8 +8,6 @@ import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
@@ -30,6 +28,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import initDropDownView
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onScrolled
 import onTextChanged
 import javax.inject.Inject

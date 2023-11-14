@@ -1,72 +1,72 @@
 package com.example.ui.event.registration
 
 import android.net.Uri
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventFile
+import com.example.data.models.EventRegisterData
+import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventRegistration
 import com.example.ui.base.BaseContract
-import com.example.ui.event.registration.items.ProfileFieldsFormModel
 import com.example.ui.event.registration.items.ProfileFieldsFormResult
-import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface EventRegistrationContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setContentPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setFormHeader(event: EventRegistration)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun updateProfileFields(profileForm : ProfileFieldsFormResult)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setFormFields(
-                event: EventRegistration,
-                fieldsData: List<EventRegisterFieldData<*>>,
-                withConfirm: Boolean
+            event: EventRegistration,
+            fieldsData: List<EventRegisterFieldData<*>>,
+            withConfirm: Boolean
         )
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
+        fun updateProfileFields(profileForm : ProfileFieldsFormResult)
+
+        @Skip
         fun showEventRegisterConfirmation()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showSaveFormResultDraftDialog()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showLoadSavedFormResultDraftDialog(result : EventRegisterData)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun enableActionButton(enable: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openFileSelector()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateFileField(fieldId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showSuccessRegister(moderation: String?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun openUrl(url: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEventLists()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEditProfile()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEvent(eventId : String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun updateAppBarBackgroundColorValue(offset : Int)
     }
 

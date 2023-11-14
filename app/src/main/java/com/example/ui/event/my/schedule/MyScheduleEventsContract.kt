@@ -1,67 +1,61 @@
 package com.example.ui.event.my.schedule
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventActivityModel
+import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.ui.base.BaseContract
-import com.example.data.models.EventScheduleData
-import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface MyScheduleEventsContract {
     interface View : BaseContract.View {
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setContentPlaceholder()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setHeaderCalendar(days: List<List<EventScheduleDay>>)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setMonthCalendar(
-            dates: List<EventScheduleDay>,
-            month : String
-        )
+        @AddToEndSingle
+        fun setMonthCalendar(dates: List<EventScheduleDay>, month: String)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setContent(data: List<EventScheduleData>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun scrollToDay(day: EventScheduleDay)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun scrollContent(day: EventScheduleDay)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @Skip
         fun selectDay(day: EventScheduleDay)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAboutEvent(eventId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showMessageDialog(message: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateSubEvent(subEvent: EventActivityModel)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showSubEvent(eventId: String, subEventId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun getResultForUpdate()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showErrorMessage(eventId: String, message: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @Skip
         fun showLoadingAlertDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @Skip
         fun hideLoadingAlertDialog()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @AddToEndSingle
         fun showEmptyListPlaceholder()
     }
 

@@ -1,23 +1,22 @@
 package com.example.ui.qrscanner.auth
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.QrAuthResponse
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface AuthWebsiteContract {
 
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setEnterData(data : QrAuthResponse)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEventList()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showContent()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideContent()
     }
 

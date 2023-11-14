@@ -1,38 +1,35 @@
 package com.example.ui.auth.recoveryPassword
 
-import android.content.Context
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface RecoveryPasswordContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableRecoveryBtn(isEnable: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setEmail(email: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmailError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showRecoveryNotification(email: String, userId : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showWrongEmailError()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setTimeLeft(seconds: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showPasswordSuccessUpdated()
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onRecoveryClick()
         fun onChangeEmailText(email: String)
-        fun onUserUnderstand()
         fun onCloseClick()
         fun onSetPassword(code: String, password: String, userId: String)
         fun sendCodeAgain()

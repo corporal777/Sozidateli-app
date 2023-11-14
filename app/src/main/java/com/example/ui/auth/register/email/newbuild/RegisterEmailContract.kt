@@ -1,21 +1,20 @@
 package com.example.ui.auth.register.email.newbuild
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface RegisterEmailContract {
     interface View : BaseAuthContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableRegisterBtn(isEnable: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSnRegistration(snUser: SnUser)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFinishRegister(
             name: String,
             lastName: String,
@@ -25,31 +24,31 @@ interface RegisterEmailContract {
             isNoMiddleName: Boolean
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFirstNameError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showLastNameError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmailError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAgreementError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showWrongPhoneError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableMiddleNameInput(enable: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEmailNotUnique(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showPhoneNotUnique(email: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showAgreementSelection(isValid: Boolean)
     }
 

@@ -1,20 +1,18 @@
 package com.example.ui.views.suggestFieldView.organization
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.NewEventFormat
 import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 class EventOrgBottomSheetContract {
 
     interface View : MvpView {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @OneExecution
         fun setOrganizations(list: List<OrganizationNew>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun performOnItemSelected(item: OrganizationNew?)
     }
 

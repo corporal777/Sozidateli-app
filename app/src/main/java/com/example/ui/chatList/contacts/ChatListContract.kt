@@ -1,29 +1,28 @@
 package com.example.ui.chatList.contacts
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatRoomWithMeModel
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface ChatListContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openChat(chatId: Int, userName: String, avatar : String?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun openSearch()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setChatsData(chats: List<UserChat?>, favorites: List</*User*/UserDetail>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setChatUnreadMessageCount(chatId: String, count: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setChatUnreadMessage(chatId: String, message: String)
     }
 

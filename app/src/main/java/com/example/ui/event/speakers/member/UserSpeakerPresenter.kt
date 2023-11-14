@@ -1,6 +1,5 @@
 package com.example.ui.event.speakers.member
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
@@ -19,6 +18,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.zipWith
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarDialogLoading

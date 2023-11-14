@@ -1,12 +1,12 @@
 package com.example.ui.state.maxNew.work
 
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.extensions.updateGroup
 import com.example.ui.editwork.items.UserWorksGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

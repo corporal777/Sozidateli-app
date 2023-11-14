@@ -1,13 +1,17 @@
 package com.example.ui.main
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
+import com.example.data.models.AuthType
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
-import com.example.data.models.AuthType
+import com.example.data.models.SupportData
 import com.example.ui.base.BaseContract
+import com.example.util.OneExecutionByTag
 import com.example.util.OneExecutionByTagStateStrategy
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.SkipStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface MainContract {
     interface View : BaseContract.View {
@@ -24,67 +28,79 @@ interface MainContract {
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showChat(chatId: String, userName: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showAboutEvent(event: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showUser(userId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showCurrentUser()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showOrganization(organization: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showRating(event: String)
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showDialogRecoverPassword(userId: String, code: String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun checkIntent()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showStories()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showInAppNew(listInApp: List<Notification>)
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
-        fun showErrorMessage(message: String)
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "error message")
-        fun hideErrorMessage()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showAuthWebsiteFragment(code : String)
 
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun showBadgeNotification(count : Int)
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
-        fun showBadgeChat(count : Int)
-
-        @StateStrategyType(OneExecutionByTagStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showAccountChangeFragment(url : String, type : AuthType)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showSupportQuestion(data : SupportData)
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showProfileSettings()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showPasswordRecovery()
+
+        @Skip
+        fun showDialogChangePassword(userId: String, code: String)
+
+        @OneExecution
+        fun checkIntent()
+
+        @OneExecution
+        fun showStories()
+
+        @OneExecution
+        fun showInAppNew(listInApp: List<Notification>)
+
+        @Skip
+        fun showErrorMessage(message: String)
+
+        @Skip
+        fun hideErrorMessage()
+
+        @Skip
+        fun showBadgeNotification(count : Int)
+
+        @Skip
+        fun showBadgeChat(count : Int)
+
+        @OneExecution
         fun showBrowser(url : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUpdateApp(isRequired : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSplashScreen()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideSplashScreen()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setAppBarElevation(value: Float)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun clearIntentData()
     }
 
@@ -93,14 +109,19 @@ interface MainContract {
         fun onOpenNotStartDestination()
         fun onOpenChatDestination(chatId: String?)
         fun onOpenCheckConnectionDestination(check: Boolean)
-        fun onHandleRecoverPasswordLink(userId: String, code: String)
+        fun onHandleChangePasswordLink(userId: String, code: String)
+        fun onHandleRecoverPasswordLink()
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEventCode(event: String?)
         fun onHandleEvent(event: String?)
         fun onHandleUser(userId: String?)
-        fun onHandleAuthToOtherPlatform(url: String, type : AuthType)
+        fun onHandleAuthToOtherPlatform(url: String?, type : AuthType)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
+
+        fun onHandleSupportQuestionLink(id : String?)
+        fun onHandleProfileSettingsLink()
+        fun onHandleProfileLink()
 
 
         fun onRetryConnectionClick()
@@ -110,7 +131,7 @@ interface MainContract {
 
         fun onStoriesComplete()
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
-        fun onHandleAuthWebsite(code : String)
+        fun onHandleAuthWebsite(code : String?)
 
         fun onBackClick()
     }

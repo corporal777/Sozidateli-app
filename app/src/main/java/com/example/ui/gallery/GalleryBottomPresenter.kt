@@ -3,7 +3,6 @@ package com.example.ui.gallery
 import android.Manifest
 import android.content.Context
 import android.net.Uri
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ImageModel
 import com.example.repository.UserRepository
@@ -16,6 +15,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

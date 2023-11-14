@@ -3,7 +3,6 @@ package com.example.ui.event.registration
 import android.Manifest
 import android.content.ContentResolver
 import android.net.Uri
-import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -26,6 +25,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
+import moxy.InjectViewState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -33,8 +33,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
-import withProgressBarDialogLoading
 import withDelay
+import withProgressBarDialogLoading
 import java.util.*
 import javax.inject.Inject
 

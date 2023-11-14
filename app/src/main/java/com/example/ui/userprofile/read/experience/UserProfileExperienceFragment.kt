@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
@@ -16,6 +14,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -44,9 +44,7 @@ class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsB
         }
     }
 
-    override fun onUserUpdated(user: UserDetail?, state: String) {
-        user ?: return
-
+    override fun setUserData(user: UserDetail, state: String) {
         val work = user.binds?.workExperience?.models ?: emptyList()
         if (work.isEmpty()) {
             adapter.update(
@@ -65,7 +63,6 @@ class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsB
 
     override fun showEdit() {
         findNavController().navigate(R.id.editWorksFragment)
-        //findNavController().navigate(UserProfileExperienceFragmentDirections.toEdit(UserEditDataType.WORK))
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_experience) }

@@ -3,7 +3,6 @@ package com.example.ui.chat
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.ChatMessage
@@ -30,6 +29,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

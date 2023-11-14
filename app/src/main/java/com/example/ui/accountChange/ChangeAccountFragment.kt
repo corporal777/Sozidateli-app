@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserSessionModel
 import com.example.databinding.FragmentChangeAccountBinding
@@ -21,6 +19,8 @@ import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
@@ -105,7 +105,7 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
     }
 
     override fun showAuthorizationFragment() {
-        findNavController().navigate(ChangeAccountFragmentDirections.changeAccountFragmentToAuthFragment())
+        findNavController().navigate(R.id.account_auth_fragment)
     }
 
     override fun showLoginFragment(login: String) {

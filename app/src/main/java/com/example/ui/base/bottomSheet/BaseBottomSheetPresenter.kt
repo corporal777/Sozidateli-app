@@ -1,6 +1,5 @@
 package com.example.ui.base.bottomSheet
 
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import io.reactivex.*
@@ -8,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import moxy.MvpPresenter
 import retrofit2.HttpException
 
 abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(

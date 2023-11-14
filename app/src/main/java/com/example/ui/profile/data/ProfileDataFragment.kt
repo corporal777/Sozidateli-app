@@ -4,25 +4,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetProfileDataBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.profile.shortName.ChangeShortNameFragment
 import com.example.ui.views.CustomSnackBar
 import com.example.util.copyTextToBuffer
 import com.example.util.setImage
 import com.google.android.material.snackbar.Snackbar
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -36,13 +30,13 @@ class ProfileDataFragment(
 ) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
 
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = PROFILE_DATA_FRAGMENT_TAG)
+    @InjectPresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
     lateinit var presenter: ProfileDataPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ProfileDataPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = PROFILE_DATA_FRAGMENT_TAG)
+    @ProvidePresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
         userName = name
         userImageUrl = imageUrl ?: ""

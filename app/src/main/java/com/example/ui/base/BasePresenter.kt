@@ -1,6 +1,5 @@
 package com.example.ui.base
 
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.exceptions.NoInternetConnectionException
@@ -11,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity

@@ -3,9 +3,6 @@ package com.example.ui.views.suggestFieldView.format
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.data.models.NewEventFormat
@@ -15,6 +12,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onFocusChanged
 import javax.inject.Inject
 import javax.inject.Provider

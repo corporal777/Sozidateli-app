@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -18,28 +19,25 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
-import com.example.data.models.Notification
-import com.example.data.models.RemoteNotification
-import com.example.data.models.UserDetail
+import com.example.data.models.*
 import com.example.databinding.LayoutNoInternetBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
-import com.example.data.models.AuthType
 import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.about.AboutEventFragmentNew
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
@@ -54,8 +52,9 @@ import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
+import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
+import com.example.ui.userprofile.edit.password.ChangePasswordFragment
 import com.example.ui.views.*
 import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
@@ -63,6 +62,8 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import getFragmentLifecycleCallback
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
@@ -73,7 +74,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
-
 
     @Inject
     lateinit var presenterProvider: Provider<MainPresenter>
@@ -96,7 +96,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
         onFragmentStopped = { },
         onFragmentStarted = { f ->
-            if (f is AboutEventFragmentNew || f is EventRegistrationFragment) {
+            if (f is AboutEventFragment || f is EventRegistrationFragment) {
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 setWindowTransparency()
             } else if (f is StoriesFragment) doEdgeWindow()
@@ -176,13 +176,15 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         val navHost =
             supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val fr = navHost.childFragmentManager.fragments.firstOrNull()
-        //val fr = navHostFragment.childFragmentManager.fragments.firstOrNull()
         if (fr != null) {
             when (fr) {
                 is ProfileFragment,
                 is MyEventsFragment,
                 is NotificationsListFragment,
-                is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
+                is ChatListTabsFragment -> findNavController().popBackStack(
+                    R.id.recommendations_fragment,
+                    false
+                )
                 is RecommendationsFragment,
                 is AuthorizationFragment -> finish()
                 else -> findNavController().navigateUp()
@@ -223,13 +225,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         return intent.flags and fromHistory == fromHistory
     }
 
-    override fun checkIntent() {
-        handleIntent(intent)
-    }
-
-    override fun clearIntentData() {
-        intent.data = null
-    }
+    override fun checkIntent() = handleIntent(intent)
+    override fun clearIntentData() = intent.let { it.data = null }
 
     override fun handleIntent(intent: Intent) {
         if (wasLaunchedFromResents(intent)) return
@@ -242,30 +239,40 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path auth
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
                     val redirectLink = it.getQueryParameter("redirect")
-                    if (!redirectLink.isNullOrEmpty()) {
-                        presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
-                    }
+                    presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
                 }
                 //catch path qr code
                 else if (lastPath == PATH_QR) {
                     val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
-                    if (!code.isNullOrEmpty()) presenter.onHandleAuthWebsite(code)
+                    presenter.onHandleAuthWebsite(code)
                 }
                 //catch path event
                 else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_EVENT)) {
                     if (lastPath.contains(PATH_HIDDEN)) presenter.onHandleEventCode(authCode)
                     else presenter.onHandleEvent(lastPath)
                 }
+                //catch path profile settings
+                else if (lastPath == PATH_SETTINGS) presenter.onHandleProfileSettingsLink()
+                //catch path profile
+                else if (lastPath == PATH_PROFILE) presenter.onHandleProfileLink()
                 //catch path user
-                else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_USER)) {
+                else if (paths.contains(PATH_USER) && !lastPath.isNullOrBlank()) {
                     presenter.onHandleUser(lastPath)
                 }
-                //catch path password recovery
+                //catch path support center question
+                else if (lastPath == PATH_SUPPORT_CENTER) {
+                    val question = it.getQueryParameter("question")
+                    presenter.onHandleSupportQuestionLink(question)
+                }
+                //catch path recover password
+                else if (lastPath == PATH_LP) {
+                    if (it.fragment == "recover-password") presenter.onHandleRecoverPasswordLink()
+                }
+                //catch path password change
                 else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
                     val indexLastPath = paths.indexOf(lastPath)
-                    val userId = if (indexLastPath > 0) paths[indexLastPath - 1]
-                    else ""
-                    presenter.onHandleRecoverPasswordLink(userId, authCode)
+                    val userId = if (indexLastPath > 0) paths[indexLastPath - 1] else ""
+                    presenter.onHandleChangePasswordLink(userId, authCode)
                 }
                 //catch path sn authorization
                 else if (lastPath == PATH_SN_AUTHORIZATION) {
@@ -290,8 +297,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path pgrf, assistant
                 else if (lastPath == PGRF || lastPath == ASSISTANT || lastPath == LINKED_REGISTER) {
                     val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
-                    val text = String(base, StandardCharsets.UTF_8)
-                    val json = JSONObject(text)
+                    val json = JSONObject(String(base, StandardCharsets.UTF_8))
                     val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
 
                     presenter.onInviteRegister(
@@ -314,7 +320,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
                         if (chatId != null && userName != null) {
                             presenter.onHandleChat(chatId, userName, notificationId)
-                            clearIntentData()
                         }
                     }
                 }
@@ -325,7 +330,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 extras.containsKey(FIELD_NOTIFICATION) -> {
                     extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
                         presenter.onHandleNotification(it)
-                        clearIntentData()
                     }
                 }
             }
@@ -338,6 +342,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             R.id.change_account_fragment,
             ChangeAccountFragmentArgs.Builder(url, type, true).build().toBundle()
         )
+    }
+
+    override fun showProfileSettings() {
+        findNavController().navigate(R.id.user_profile_settings_fragment)
     }
 
     override fun showInviteRegister(
@@ -362,9 +370,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
     }
 
-    override fun showDialogRecoverPassword(userId: String, code: String) {
-        val changePasswordDialog = ChangePasswordFragment(true, code, userId)
-        changePasswordDialog.show(supportFragmentManager, "change_password_dialog")
+    override fun showDialogChangePassword(userId: String, code: String) {
+        ChangePasswordFragment(true, code, userId).show(supportFragmentManager)
+    }
+
+    override fun showPasswordRecovery() {
+        val args = RecoveryPasswordFragmentArgs.Builder("").build().toBundle()
+        findNavController().navigate(R.id.recovery_password_fragment, args)
     }
 
     override fun showChat(chatId: String, userName: String) {
@@ -415,8 +427,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event).build().toBundle()
         )
     }
 
@@ -427,11 +439,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
     }
 
+    override fun showCurrentUser() {
+        findNavController().navigate(R.id.user_profile_fragment)
+    }
+
     override fun showAuthWebsiteFragment(code: String) {
         findNavController().navigate(
             R.id.authWebsiteFragment,
             AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
         )
+    }
+
+    override fun showSupportQuestion(data: SupportData) {
+        val args = SupportQuestionDetailFragmentArgs.Builder(data).build().toBundle()
+        findNavController().navigate(R.id.supportDetailFragment, args)
     }
 
 
@@ -633,7 +654,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         supportFragmentManager.primaryNavigationFragment as NavHostFragment
                     if (findNavController().currentDestination?.id == R.id.notifications_list_fragment) {
                         if (frag != null) {
-                            val note = frag.childFragmentManager.primaryNavigationFragment as NotificationsListFragment
+                            val note =
+                                frag.childFragmentManager.primaryNavigationFragment as NotificationsListFragment
                             note.smoothScrollToFirstItem()
                         }
                     }
@@ -643,7 +665,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         supportFragmentManager.primaryNavigationFragment as NavHostFragment
                     if (findNavController().currentDestination?.id == R.id.chat_list_tabs_fragment) {
                         if (frag != null) {
-                            val chats = frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
+                            val chats =
+                                frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
                             chats.smoothScrollToFirstItem()
                         }
                     }

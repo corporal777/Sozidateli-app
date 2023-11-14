@@ -1,19 +1,18 @@
 package com.example.ui.event.my.schedule
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
+import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.activities.SubEventsData
-import com.example.data.models.EventScheduleData
 import com.example.util.getMonthName
 import com.google.gson.Gson
 import io.reactivex.Completable
@@ -21,6 +20,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity

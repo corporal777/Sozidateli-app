@@ -1,9 +1,9 @@
 package com.example.ui.agreement
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.CommonRepository
 import com.example.ui.base.BasePresenter
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

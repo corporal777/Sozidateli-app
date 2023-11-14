@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.BottomSheetInAppNotificationBinding
 import com.example.extensions.findItemBy
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.notification.items.AcceptNotificationItem
 import com.example.ui.notification.items.NotificationItem
 import com.example.ui.notification.items.RateNotificationItem
@@ -23,6 +20,8 @@ import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,13 +29,13 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
     BaseBottomSheetFragment<BottomSheetInAppNotificationBinding>(),
     InAppNotificationContract.View {
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = IN_APP_FRAGMENT_TAG)
+    @InjectPresenter(tag = IN_APP_FRAGMENT_TAG)
     lateinit var presenter: InAppNotificationPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<InAppNotificationPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = IN_APP_FRAGMENT_TAG)
+    @ProvidePresenter(tag = IN_APP_FRAGMENT_TAG)
     fun providePresenter(): InAppNotificationPresenter = presenterProvider.get().apply {
         this.notificationsList.addAll(inAppList)
     }
@@ -117,8 +116,8 @@ class InAppNotificationFragment(private val inAppList: List<Notification>) :
 
     override fun showAboutEvent(eventId: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(eventId).build().toBundle()
         )
     }
 

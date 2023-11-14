@@ -1,22 +1,21 @@
 package com.example.ui.editwork
 
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
 import com.example.data.models.WorkExperienceServerModel
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface EditWorksContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setWorkData(user: UserDetail)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUpdateError(message: String? = null)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun buttonSaveEnabled(enable : Boolean)
     }
 

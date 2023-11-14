@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.email.newbuild
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
@@ -16,6 +15,7 @@ import com.example.util.Utils.validatePhoneBeforeSend
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCustomLoading
 import javax.inject.Inject

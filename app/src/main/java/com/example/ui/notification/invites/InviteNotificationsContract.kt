@@ -1,28 +1,27 @@
 package com.example.ui.notification.invites
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import com.example.ui.notification.NotificationsSortedData
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface InviteNotificationsContract {
     interface View : BaseBottomSheetContract.View{
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setUnreadInvitesLabel(invites : Int)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setNotifications(notifications: List<NotificationsSortedData>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutEvent(eventId : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutOrganization(organizationId : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUrl(url: String)
     }
 

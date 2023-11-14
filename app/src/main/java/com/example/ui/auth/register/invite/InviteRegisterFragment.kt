@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentInviteRegisterBinding
 import com.example.extensions.showChangeEmailCompleteDialog
@@ -14,6 +12,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.util.getNameFilter
 import com.example.util.showCustomTabsBrowser
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import onTextChanged
 import javax.inject.Inject

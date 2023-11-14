@@ -10,8 +10,6 @@ import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterBinding
 import com.example.ui.base.BaseFragment
@@ -19,6 +17,8 @@ import com.example.ui.main.MainActivity
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.*
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import onFocusChanged
 import onTextChanged

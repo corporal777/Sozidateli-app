@@ -1,6 +1,5 @@
 package com.example.ui.userprofile.read.interests
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.InterestNew
 import com.example.data.models.UserDetail
@@ -8,6 +7,7 @@ import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -25,10 +25,10 @@ class UserProfileInterestsPresenter @Inject constructor(
     }
 
 
-    override fun onUserUpdated(user: UserDetail?) {
-        if (user?.isHasInterests() == false) viewState.onInterestsUpdated(emptyMap())
+    override fun onUserUpdated(user: UserDetail) {
+        if (!user.isHasInterests()) viewState.onInterestsUpdated(emptyMap())
         else {
-            val userInterests = user?.interests
+            val userInterests = user.interests
             compositeDisposable += commonRepository.getInterests()
                 .map { groupUserInterests(userInterests, it) }
                 .performOnBackgroundOutOnMain()

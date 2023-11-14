@@ -1,27 +1,21 @@
 package com.example.ui.search.organization
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
-import com.example.databinding.LayoutFilterEventBinding
-import com.example.databinding.LayoutFilterOrganizationBinding
 import com.example.databinding.LayoutFilterOrganizationSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
-import kotlinx.android.synthetic.main.layout_filter_organization.view.*
-import onTextChanged
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

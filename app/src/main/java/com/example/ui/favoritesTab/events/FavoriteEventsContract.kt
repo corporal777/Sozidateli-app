@@ -1,31 +1,28 @@
 package com.example.ui.favoritesTab.events
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Event
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
-import com.example.data.models.SubEvent
 import com.example.ui.base.BaseContract
-import com.example.ui.event.list.EventListContract
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface FavoriteEventsContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setData(events: List<EventNew?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateEventFavorite(eventId: String, isFavorite: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAboutEvent(event: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSubEvents(event: String, subEvents: List<EventActivityModel>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEmptyListPlaceholder()
     }
 

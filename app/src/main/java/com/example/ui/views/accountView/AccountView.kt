@@ -5,13 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import kotlinx.android.synthetic.main.image_with_badge.view.*
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
@@ -33,13 +32,13 @@ class AccountView : FrameLayout, AccountViewContract.View {
             }
         }
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
+    @InjectPresenter(tag = ACCOUNT_TAG_VIEW)
     lateinit var presenter: AccountViewPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<AccountViewPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = ACCOUNT_TAG_VIEW)
+    @ProvidePresenter(tag = ACCOUNT_TAG_VIEW)
     fun providePresenter(): AccountViewPresenter = presenterProvider.get().apply {
         canShowBadge = this@AccountView.canShowBadge
     }

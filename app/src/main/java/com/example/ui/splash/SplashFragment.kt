@@ -1,16 +1,12 @@
 package com.example.ui.splash
 
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.databinding.FragmentSplashBinding
-import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
-import com.example.util.AuthBackground
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

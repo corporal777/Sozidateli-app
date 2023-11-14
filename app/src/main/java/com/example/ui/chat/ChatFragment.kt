@@ -15,10 +15,6 @@ import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.*
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.arellomobile.mvp.presenter.ProvidePresenterTag
 import com.example.R
 import com.example.data.models.ChatMessage
 import com.example.data.models.Message
@@ -27,7 +23,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
@@ -39,6 +35,9 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.layout_chat_action_confirmation.*
 import kotlinx.android.synthetic.main.layout_chat_action_text.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import moxy.presenter.ProvidePresenterTag
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -49,15 +48,15 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
     @Inject
     lateinit var presenterProvider: Provider<ChatPresenter>
 
-    @InjectPresenter(type = PresenterType.WEAK)
+    @InjectPresenter
     lateinit var presenter: ChatPresenter
 
-    @ProvidePresenterTag(presenterClass = ChatPresenter::class, type = PresenterType.WEAK)
+    @ProvidePresenterTag(presenterClass = ChatPresenter::class)
     fun provideRepositoryPresenterTag(): String? {
         return chatId
     }
 
-    @ProvidePresenter(type = PresenterType.WEAK)
+    @ProvidePresenter
     fun providePresenter(): ChatPresenter = presenterProvider.get().apply {
         val presenter = this
         requireArguments().let { ChatFragmentArgs.fromBundle(it) }.apply {
@@ -192,8 +191,8 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
 
     override fun showEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event).build().toBundle()
         )
     }
 

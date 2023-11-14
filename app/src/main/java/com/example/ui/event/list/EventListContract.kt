@@ -1,28 +1,23 @@
 package com.example.ui.event.list
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.EmailAffiliation
-import com.example.data.models.Event
 import com.example.data.models.EventNew
-import com.example.data.models.EventPhoneModel
 import com.example.ui.base.BaseContract
-import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface EventListContract {
     interface View : BaseContract.View {
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEventRequest(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showAboutEvent(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showAgreementRegisterDialog(event: String, url : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateEvent(event: EventNew)
     }
 

@@ -1,19 +1,18 @@
 package com.example.ui.views.suggestFieldView.format
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.NewEventFormat
 import com.example.ui.base.BaseContract
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 class EventFormatBottomSheetContract {
 
     interface View : MvpView {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @OneExecution
         fun setFormats(list: List<NewEventFormat>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun performOnItemSelected(item: NewEventFormat?)
     }
 

@@ -16,7 +16,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
@@ -103,8 +103,8 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
     override fun showAboutEvent(eventId: String?) {
         if (!eventId.isNullOrEmpty()){
             findNavController().navigate(
-                R.id.about_event_fragment_new,
-                AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
+                R.id.about_event_fragment,
+                AboutEventFragmentArgs.Builder(eventId).build().toBundle()
             )
         }
     }

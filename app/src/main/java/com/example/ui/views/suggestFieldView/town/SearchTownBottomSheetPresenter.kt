@@ -1,13 +1,13 @@
 package com.example.ui.views.suggestFieldView.town
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.models.SearchTown
 import com.example.repository.CommonRepository
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

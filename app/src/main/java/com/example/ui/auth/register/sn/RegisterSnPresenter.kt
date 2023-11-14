@@ -1,6 +1,5 @@
 package com.example.ui.auth.register.sn
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.data.models.SnUser
@@ -9,6 +8,7 @@ import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarDialogLoading

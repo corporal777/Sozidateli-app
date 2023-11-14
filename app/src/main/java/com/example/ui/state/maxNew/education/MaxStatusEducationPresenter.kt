@@ -1,6 +1,5 @@
 package com.example.ui.state.maxNew.education
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
@@ -9,6 +8,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.state.maxNew.base.BaseMaxStatePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
 import withProgressBarLoading

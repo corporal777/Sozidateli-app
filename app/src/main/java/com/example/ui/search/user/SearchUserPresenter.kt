@@ -1,6 +1,5 @@
 package com.example.ui.search.user
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
@@ -18,6 +17,7 @@ import com.example.ui.search.SearchPresenter
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit

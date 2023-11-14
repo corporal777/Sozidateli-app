@@ -1,17 +1,16 @@
 package com.example.ui.views.accountView
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.AddToEndSingle
 
 class AccountViewContract {
 
     interface View : MvpView {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun showCounter(show: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setAvatar(url: String?)
     }
 

@@ -1,7 +1,6 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
-import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.FieldDetails
@@ -16,6 +15,7 @@ import com.example.util.phoneToServer
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withDelay

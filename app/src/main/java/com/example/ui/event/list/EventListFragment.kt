@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs.EventAgreementRegisterDialog
@@ -31,8 +31,8 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event).build().toBundle()
         )
     }
 

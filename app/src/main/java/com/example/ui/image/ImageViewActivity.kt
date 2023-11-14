@@ -8,15 +8,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.ui.base.MvpAppCompatActivity
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_image_view.*
-import java.lang.RuntimeException
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt

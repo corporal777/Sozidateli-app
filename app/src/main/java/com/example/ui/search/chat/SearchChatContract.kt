@@ -1,47 +1,46 @@
 package com.example.ui.search.chat
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
-import com.example.ui.search.user.SearchUserContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface SearchChatContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "list data")
-        //fun setUsersData(favorites: List<UserDetail>, chats: List<UserDetail>, another: List<UserDetail>)
         fun setUsersData(users: List<UserDetail?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showUser(user: UserDetail)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun showCurrentUser()
-
-        @StateStrategyType(SkipStrategy::class)
+        @AddToEndSingle
         fun showEmptyDataPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
+        fun showUser(user: UserDetail)
+
+        @OneExecution
+        fun showCurrentUser()
+
+        @OneExecution
         fun showFilter(filter: SearchFilter.UserNew)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun setFiltersChosen(isChosen : Boolean)
+        @OneExecution
+        fun setFiltersChosen(isChosen: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun changeAppBarElevation(value : Float)
+        @Skip
+        fun changeAppBarElevation(value: Float)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback, BaseContract.OnChangeElevation {
+    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback,
+        BaseContract.OnChangeElevation {
         fun onUserClick(user: UserDetail)
         fun onFilterClick()
         fun onFilterApplyClick()
         fun onRefreshRequest()
-        fun onSearchTextChange(text : String)
+        fun onSearchTextChange(text: String)
     }
 }

@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
@@ -19,12 +17,12 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
-import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
+import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.RegisterDataType
@@ -35,6 +33,8 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

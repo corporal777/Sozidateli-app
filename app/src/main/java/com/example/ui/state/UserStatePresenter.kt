@@ -1,9 +1,8 @@
 package com.example.ui.state
 
-import android.util.Log
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.ui.base.BasePresenter
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

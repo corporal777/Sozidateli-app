@@ -1,40 +1,38 @@
 package com.example.ui.auth.register.sn
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.snAuth.SnType
-import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface RegisterSnContract {
     interface View : BaseAuthContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setUserData(snType: SnType, name: String?, avatar: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setEmail(email: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setPassword(password: String?, passwordConfirm: String?)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun enableContinueButton(isEnable: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmailConfirmation(email: String, snUser: SnUser?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showPasswordError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showPasswordConfirmError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAgreementError(show: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUserAgreement()
     }
 

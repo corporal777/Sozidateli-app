@@ -1,10 +1,8 @@
 package com.example.ui.stories
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.ui.base.BasePresenter
-import com.example.ui.main.MainContract
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

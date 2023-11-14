@@ -1,11 +1,10 @@
 package com.example.ui.search.tabs
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.SearchFilter
-import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.search.SearchInterface
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

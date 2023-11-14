@@ -5,15 +5,16 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentChatListBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateItem
-import com.example.holders.*
+import com.example.holders.ChatListEmptyItem
+import com.example.holders.ListSectionNameItem
+import com.example.holders.PlaceholderItem
+import com.example.holders.UserItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.chatList.contacts.items.UserChatGroup
 import com.example.util.pagination.PaginationListGroupAdapter
@@ -21,6 +22,8 @@ import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

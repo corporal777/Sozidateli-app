@@ -1,10 +1,11 @@
 package com.example.ui.favoritesTab.organizations
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.models.*
+import com.example.data.models.EventUserFavorite
+import com.example.data.models.FavoriteModel
+import com.example.data.models.OrganizationNew
 import com.example.di.Connectivity
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
@@ -14,6 +15,7 @@ import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 

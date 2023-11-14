@@ -1,11 +1,11 @@
 package com.example.ui.userSessions
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject

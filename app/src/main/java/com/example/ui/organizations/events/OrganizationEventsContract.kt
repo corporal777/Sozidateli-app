@@ -1,10 +1,10 @@
 package com.example.ui.organizations.events
 
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.EventNew
 import com.example.ui.event.list.EventListContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.StateStrategyType
 
 interface OrganizationEventsContract {
     interface View : EventListContract.View {

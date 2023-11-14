@@ -2,7 +2,6 @@ package com.example.ui.search.qr
 
 import android.Manifest
 import android.net.Uri
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.repository.EventRepository
@@ -10,6 +9,7 @@ import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarLoading
 import javax.inject.Inject

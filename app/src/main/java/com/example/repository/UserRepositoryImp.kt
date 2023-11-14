@@ -247,7 +247,7 @@ class UserRepositoryImp
         return call(api.checkPassword(password))
     }*/
 
-    override fun checkPasswordNew(password: String): Completable {
+    override fun checkPassword(password: String): Completable {
         return newApi.checkPassword(appData.getId(), password)
     }
 

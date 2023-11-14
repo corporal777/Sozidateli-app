@@ -1,6 +1,5 @@
 package com.example.ui.event.activities
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
@@ -13,6 +12,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarDialogLoading

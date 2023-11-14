@@ -1,65 +1,59 @@
 package com.example.ui.userprofile.edit
 
-import android.graphics.Bitmap
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.*
-import com.example.data.models.user.RecommendationFile
-import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserEditContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(SkipStrategy::class)
-        fun setPlaceholder(type : UserEditDataType)
+        @AddToEndSingle
+        fun setPlaceholder(type: UserEditDataType)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showUpdateError(message: String? = null)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setPersonalData(user: UserDetail, state: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setContactsData(user: UserDetail)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setInterestsData(interests: Map<InterestNew, List<UserInterest>>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun addUserFile(file: FileModel, fileCount : Int)
+        @OneExecution
+        fun addUserFile(file: FileModel, fileCount: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun deleteUserFile(file: FileModel, fileCount : Int)
+        @OneExecution
+        fun deleteUserFile(file: FileModel, fileCount: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideDeleteUserFile(file: FileModel)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showChangeEmail()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showPhoneConfirm(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun updatePhoneConfirmation(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEnterPassword(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun hideEnterPassword()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showFileSelector()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun downloadFile(file: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun navigateUpChecked()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
@@ -80,17 +74,20 @@ interface UserEditContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "title")
         fun setInterestsTitle()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun saveOnClick(saveOnClick: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showPhoneNotUnique(phone: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showFileUploadLoading()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun hideFileUploadLoading()
+
+        @Skip
+        fun showUpdateError(message: String? = null)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -100,7 +97,7 @@ interface UserEditContract {
 
         fun onChangeEmailClick()
         fun checkPhoneIsUnique(phone: String)
-        fun checkPassword(password : String, phone: String)
+        fun checkPassword(password: String, phone: String)
         fun onShowPhoneConfirm(phone: String)
 
         //additional data

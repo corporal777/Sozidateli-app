@@ -1,7 +1,6 @@
 package com.example.ui.userprofile.edit
 
 import android.Manifest
-import com.arellomobile.mvp.InjectViewState
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -18,6 +17,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -138,7 +138,7 @@ class UserEditPresenter
     override fun onChangeEmailClick() = viewState.showChangeEmail()
 
     override fun checkPassword(password: String, phone: String) {
-        compositeDisposable += userRepository.checkPasswordNew(password)
+        compositeDisposable += userRepository.checkPassword(password)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

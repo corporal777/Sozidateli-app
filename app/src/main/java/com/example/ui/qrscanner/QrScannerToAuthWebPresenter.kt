@@ -2,13 +2,12 @@ package com.example.ui.qrscanner
 
 import android.Manifest
 import android.net.Uri
-import android.util.Log
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

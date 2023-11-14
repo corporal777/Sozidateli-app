@@ -1,41 +1,39 @@
 package com.example.ui.notification
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.BaseContract
-import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface NotificationsListContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setNotificationsPlaceholder()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setData(notifications: List<NotificationsSortedData>)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class)
+        @AddToEndSingle
         fun showEmptyListPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUrl(url: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun onNotificationNeedUpdate(data : Notification)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutEvent(eventId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutOrganization(id: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setNotReadButtonEnabled(enabled: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showInvitesBottomSheet()
     }
 

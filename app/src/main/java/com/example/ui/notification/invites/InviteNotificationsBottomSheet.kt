@@ -5,14 +5,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.BottomSheetInviteNotificationsBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.NotificationsSortedData
 import com.example.ui.notification.items.*
@@ -21,6 +18,8 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -28,13 +27,13 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
     BaseBottomSheetFragment<BottomSheetInviteNotificationsBinding>(),
     InviteNotificationsContract.View {
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = INVITES_FRAGMENT_TAG)
+    @InjectPresenter(tag = INVITES_FRAGMENT_TAG)
     lateinit var presenter: InviteNotificationsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<InviteNotificationsPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = INVITES_FRAGMENT_TAG)
+    @ProvidePresenter(tag = INVITES_FRAGMENT_TAG)
     fun providePresenter(): InviteNotificationsPresenter = presenterProvider.get().apply {
             type = notificationType
         }
@@ -135,8 +134,8 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
 
     override fun showAboutEvent(eventId: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(eventId).build().toBundle()
         )
     }
 

@@ -1,24 +1,25 @@
 package com.example.ui.favoritesTab.organizations
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface FavoriteOrganizationsContract {
     interface View : BaseContract.View {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
         fun setOrganizations(organizations: List<OrganizationNew/*Organization*/?>)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @AddToEndSingle
         fun showFavoritesEmptyListPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showOrganization(organization: OrganizationNew/*Organization*/)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun changeSubscription(organization: OrganizationNew/*Organization*/)
     }
 

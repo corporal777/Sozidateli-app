@@ -5,8 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.arellomobile.mvp.MvpDelegate;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import moxy.MvpDelegate;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
 public class MvpAppCompatBottomSheetFragment extends BottomSheetDialogFragment {

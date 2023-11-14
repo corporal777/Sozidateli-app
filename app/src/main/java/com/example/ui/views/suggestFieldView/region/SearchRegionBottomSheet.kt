@@ -3,10 +3,6 @@ package com.example.ui.views.suggestFieldView.region
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.data.models.SearchRegion
@@ -16,6 +12,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onFocusChanged
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,13 +28,13 @@ class SearchRegionBottomSheet (
 
     private var onRegionSelected: (region: SearchRegion?) -> Unit = {}
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = REGIONS_TAG_VIEW)
+    @InjectPresenter(tag = REGIONS_TAG_VIEW)
     lateinit var presenter: SearchRegionBottomSheetPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchRegionBottomSheetPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = REGIONS_TAG_VIEW)
+    @ProvidePresenter(tag = REGIONS_TAG_VIEW)
     fun providePresenter(): SearchRegionBottomSheetPresenter = presenterProvider.get().apply {
 
     }

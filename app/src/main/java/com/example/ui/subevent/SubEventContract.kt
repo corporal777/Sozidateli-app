@@ -1,29 +1,30 @@
 package com.example.ui.subevent
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventActivityModel
+import com.example.data.models.MemberModel
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface SubEventContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setSubEventPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setData(isApproved : Boolean, subEvent: EventActivityModel)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setSpeakers(speakers: List<MemberModel>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showSpeakerProfile(speaker: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun updateSubEvent(subEvent: EventActivityModel)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEventErrorMessageDialog(withResult : Boolean, id : String, message : String)
     }
 

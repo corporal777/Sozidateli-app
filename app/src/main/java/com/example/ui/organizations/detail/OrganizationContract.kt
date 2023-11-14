@@ -1,57 +1,57 @@
 package com.example.ui.organizations.detail
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.*
+import com.example.data.models.EventNew
+import com.example.data.models.OrganizationMemberModel
+import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
-import com.example.ui.views.UserSubscribeButton
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface OrganizationContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setMainData(organization: OrganizationNew)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setInformationData(organization: OrganizationNew)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setEventsData(events: List<EventNew>)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
-        fun setMembersData(members: List<OrganizationMemberModel>, totalSize : Int)
+        @AddToEndSingle
+        fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAllEvents(organizationId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun updateOrganizationSubscription(organization: OrganizationNew)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAllUsers(organizationId: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUser(id: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showCurrentUser(id: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun updateUserSubscription(userId : Int, isSubscribed: Boolean)
+        @Skip
+        fun updateUserSubscription(userId: Int, isSubscribed: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun updateEvent(event : EventNew)
+        @Skip
+        fun updateEvent(event: EventNew)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showAboutEvent(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEventRequest(event: String)
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showAgreementRegisterDialog(event: String, url : String)
+        @Skip
+        fun showAgreementRegisterDialog(event: String, url: String)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -60,13 +60,13 @@ interface OrganizationContract {
         fun onShowMoreUsersClick()
 
         fun onUserClick(user: String?)
-        fun onAddUserFavoriteCLick(member : OrganizationMemberModel)
+        fun onAddUserFavoriteCLick(member: OrganizationMemberModel)
         fun onAddOrganizationFavoriteClick(organization: OrganizationNew)
         fun onRefreshRequest()
 
-        fun onActionRegister(event: String, url : String?)
+        fun onActionRegister(event: String, url: String?)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-        fun onAcceptRegistrationAgreement(event : String)
+        fun onAcceptRegistrationAgreement(event: String)
     }
 }

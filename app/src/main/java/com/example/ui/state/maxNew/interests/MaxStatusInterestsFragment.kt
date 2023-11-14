@@ -1,8 +1,6 @@
 package com.example.ui.state.maxNew.interests
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.UserInterest
@@ -10,6 +8,8 @@ import com.example.holders.OnExpandChange
 import com.example.holders.ProfileDataInterestEditItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

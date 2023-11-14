@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.databinding.FragmentRecommendationsBinding
-import com.example.extensions.*
+import com.example.extensions.dp
+import com.example.extensions.findGroupBy
+import com.example.extensions.updateGroup
+import com.example.extensions.updateItem
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
@@ -18,6 +19,8 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider

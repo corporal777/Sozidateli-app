@@ -1,8 +1,8 @@
 package com.example.ui.userprofile.read.contacts
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.InterestNew
 import com.example.data.models.UserEditDataType
@@ -21,12 +19,25 @@ import com.example.ui.userprofile.edit.UserEditFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
 class UserProfileInterestsFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileInterestsContract.View, ToolbarFragment {
+
+    override fun layout() = R.layout.fragment_user_profile_interests
+
+    @InjectPresenter
+    lateinit var presenter: UserProfileInterestsPresenter
+
+    @Inject
+    lateinit var presenterProvider: Provider<UserProfileInterestsPresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): UserProfileInterestsPresenter = presenterProvider.get()
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
@@ -39,17 +50,6 @@ class UserProfileInterestsFragment : BaseFragment<FragmentUserProfileInterestsBi
             )
         }
     }
-
-    override fun layout() = R.layout.fragment_user_profile_interests
-
-    @InjectPresenter
-    lateinit var presenter: UserProfileInterestsPresenter
-
-    @Inject
-    lateinit var presenterProvider: Provider<UserProfileInterestsPresenter>
-
-    @ProvidePresenter
-    fun providePresenter(): UserProfileInterestsPresenter = presenterProvider.get()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

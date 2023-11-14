@@ -3,8 +3,6 @@ package com.example.ui.favoritesTab.events
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
@@ -14,12 +12,14 @@ import com.example.extensions.updateItem
 import com.example.holders.EventFavoriteItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -77,8 +77,8 @@ class FavoriteEventsFragment : BaseFragment<LayoutListBinding>(), FavoriteEvents
 
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(event).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(event).build().toBundle()
         )
     }
 

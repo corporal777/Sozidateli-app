@@ -1,33 +1,33 @@
 package com.example.ui.chat
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ChatMessage
 import com.example.data.models.Message
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface ChatContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showEmptyChatPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setChatPlaceholder()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun updateMessages(showAnim : Boolean, messages: List<ChatMessage>)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setUserNameAvatar(url: String, name : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun scrollListToPosition(position: Int, smooth : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun removeUnreadMessageLabel()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
@@ -45,10 +45,10 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input controls")
         fun showWaitForInviteAccept()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun focusOnInput(showKeyboard: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showChatBlockConfirmation()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
@@ -57,16 +57,16 @@ interface ChatContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "input actions")
         fun showAttachGroup()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun clearMessageInput()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun cancelNotificationByChatId(chatId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUser(userId: String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEvent(event: String)
     }
 

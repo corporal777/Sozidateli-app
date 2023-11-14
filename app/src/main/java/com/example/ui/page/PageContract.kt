@@ -1,15 +1,13 @@
 package com.example.ui.page
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import com.example.data.models.Document
 import com.example.data.models.FileModel
 import com.example.ui.base.BaseContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface PageContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setContent(
                 logo: String?,
                 contentTitle: String,
@@ -18,7 +16,7 @@ interface PageContract {
                 documents: List<FileModel>?
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun openLinkInBrowser(link: String)
     }
 

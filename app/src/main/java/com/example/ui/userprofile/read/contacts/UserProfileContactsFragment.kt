@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserEditDataType
@@ -18,6 +16,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
@@ -43,9 +43,7 @@ class UserProfileContactsFragment : BaseFragment<FragmentUserProfileContactsBind
         }
     }
 
-    override fun onUserUpdated(user: UserDetail?, state: String) {
-        user ?: return
-
+    override fun setUserData(user: UserDetail, state: String) {
         val phone =
             user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
         mBinding.apply {

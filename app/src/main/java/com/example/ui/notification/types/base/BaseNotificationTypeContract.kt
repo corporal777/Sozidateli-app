@@ -1,44 +1,44 @@
 package com.example.ui.notification.types.base
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.Notification
 import com.example.ui.base.BaseContract
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.NotificationsSortedData
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface BaseNotificationTypeContract {
     interface View : BaseContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setPlaceholder(notifications: List<Notification?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun setNotifications(notifications: List<NotificationsSortedData>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @AddToEndSingle
         fun showEmptyListPlaceholder()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showUrl(url: String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutEvent(eventId: String?)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAboutOrganization(organizationId: String?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setReadAllButton(show: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showInvitesBottomSheet(type: NotificationType)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun onNotificationNeedUpdate(data: Notification)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setAppBarElevation(shadow : Float)
     }
 

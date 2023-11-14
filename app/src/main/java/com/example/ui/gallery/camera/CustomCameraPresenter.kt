@@ -2,15 +2,14 @@ package com.example.ui.gallery.camera
 
 import android.net.Uri
 import androidx.core.net.toUri
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import com.example.data.AppData
 import com.example.repository.UserRepository
-import com.example.ui.gallery.cropImage.CropImageContract
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

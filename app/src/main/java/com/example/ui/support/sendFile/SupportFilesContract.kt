@@ -1,26 +1,22 @@
 package com.example.ui.support.sendFile
 
 import android.net.Uri
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SupportFile
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface SupportFilesContract {
     interface View : BaseBottomSheetContract.View {
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setGalleryImages(images : List<Uri>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun updateCameraPreviewItem()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun hideGalleryFragment()
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setFileUriReady(file : SupportFile)
     }
 

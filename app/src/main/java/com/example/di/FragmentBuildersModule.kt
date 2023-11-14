@@ -20,7 +20,7 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import com.example.ui.editeducation.EditEducationFragment
 import com.example.ui.editwork.EditWorksFragment
-import com.example.ui.event.about.AboutEventFragmentNew
+import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
@@ -55,7 +55,7 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.profile.shortName.ChangeShortNameFragment
+import com.example.ui.userprofile.edit.shortName.ChangeShortNameFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.search.chat.SearchChatFragment
@@ -87,12 +87,12 @@ import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
-import com.example.ui.userprofile.read.settings.UserProfileSettingsFragment
-import com.example.ui.userprofile.read.settings.change_email.ChangeEmailFragment
-import com.example.ui.userprofile.read.settings.change_name.ChangeNameFragment
-import com.example.ui.userprofile.read.settings.change_password.ChangePasswordFragment
-import com.example.ui.userprofile.read.settings.change_phone.ChangePhoneFragment
-import com.example.ui.userprofile.read.settings.confirm_phone_email.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.settings.UserProfileSettingsFragment
+import com.example.ui.userprofile.edit.email.ChangeEmailFragment
+import com.example.ui.userprofile.edit.name.ChangeNameFragment
+import com.example.ui.userprofile.edit.password.ChangePasswordFragment
+import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
+import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -143,7 +143,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeAboutFragment(): AboutFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeAboutEventFragment(): AboutEventFragmentNew
+    abstract fun contributeAboutEventFragment(): AboutEventFragment
 
     @ContributesAndroidInjector
     abstract fun contributeFavoriteSpeakersFragment(): FavoriteUsersFragment

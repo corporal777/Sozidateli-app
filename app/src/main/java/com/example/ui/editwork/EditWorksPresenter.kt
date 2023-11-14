@@ -1,11 +1,11 @@
 package com.example.ui.editwork
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.WorkExperienceServerModel
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withInfinityCustomLoading
 import javax.inject.Inject

@@ -17,11 +17,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.InterestNew
+import com.example.data.models.OrganizationNew
+import com.example.data.models.ProfileUserData
+import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserBinding
 import com.example.extensions.*
 import com.example.holders.*
@@ -42,6 +43,8 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 

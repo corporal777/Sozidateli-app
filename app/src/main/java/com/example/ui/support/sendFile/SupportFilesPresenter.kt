@@ -3,11 +3,9 @@ package com.example.ui.support.sendFile
 import android.Manifest
 import android.content.Context
 import android.net.Uri
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.SupportFile
 import com.example.data.models.SupportFileType
-import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.ImageUtil
 import com.example.util.rxtakephoto.PermissionNotGrantedException
@@ -16,6 +14,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -24,7 +23,6 @@ class SupportFilesPresenter @Inject constructor(
     private val appData: AppData,
     private val context: Context,
     private val rxPermissions: RxPermissions,
-    private val userRepository: UserRepository,
     private val rxTakePhoto: RxTakePhoto
 ) : BaseBottomSheetPresenter<SupportFilesContract.View>(appData), SupportFilesContract.Presenter {
 
@@ -42,7 +40,7 @@ class SupportFilesPresenter @Inject constructor(
             }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { viewState.hideGalleryFragment() },
+                onError = { viewState.hideBottomSheetDialog() },
                 onNext = { viewState.setGalleryImages(it) }
             )
     }

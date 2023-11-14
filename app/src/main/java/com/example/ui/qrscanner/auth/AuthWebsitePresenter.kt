@@ -1,17 +1,17 @@
 package com.example.ui.qrscanner.auth
 
 import android.app.NotificationManager
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.bodies.QrBody
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
-import withProgressBarDialogLoading
 import withDelay
+import withProgressBarDialogLoading
 import withProgressBarLoading
 import javax.inject.Inject
 

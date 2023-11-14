@@ -13,7 +13,7 @@
     <fragment
         android:id="@+id/account_auth_fragment"
         android:name="com.example.ui.accountChange.AccountAuthFragment"
-        android:label="Auth"></fragment>
+        android:label="Auth" />
 
     <fragment
         android:id="@+id/authorization_fragment"
@@ -184,10 +184,6 @@
         <argument
             android:name="eventId"
             app:argType="string" />
-
-        <action
-            android:id="@+id/request_to_user_profile"
-            app:destination="@+id/user_profile_fragment" />
     </fragment>
 
     <fragment
@@ -359,7 +355,7 @@
 
     <fragment
         android:id="@+id/user_profile_settings_fragment"
-        android:name="com.example.ui.userprofile.read.settings.UserProfileSettingsFragment"
+        android:name="com.example.ui.userprofile.settings.UserProfileSettingsFragment"
         tools:layout="@layout/fragment_user_profile_settings">
         <action
             android:id="@+id/to_edit"
@@ -448,7 +444,7 @@
 
         <action
             android:id="@+id/qr_scanner_to_about_event_fragment_new"
-            app:destination="@id/about_event_fragment_new" />
+            app:destination="@id/about_event_fragment" />
 
     </fragment>
 
@@ -459,7 +455,7 @@
 
         <action
             android:id="@+id/enter_event_code_fragment_to_about_event_fragment"
-            app:destination="@id/about_event_fragment_new" />
+            app:destination="@id/about_event_fragment" />
     </fragment>
 
     <fragment
@@ -643,8 +639,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/about_event_fragment_new"
-        android:name="com.example.ui.event.about.AboutEventFragmentNew"
+        android:id="@+id/about_event_fragment"
+        android:name="com.example.ui.event.about.AboutEventFragment"
         tools:layout="@layout/fragment_about_event_new">
         <argument
             android:name="eventId"
@@ -692,10 +688,6 @@
         android:name="com.example.ui.accountChange.ChangeAccountFragment"
         android:label="ChangeAccountFragment"
         tools:layout="@layout/fragment_change_account">
-
-        <action
-            android:id="@+id/change_account_fragment_to_authFragment"
-            app:destination="@id/account_auth_fragment" />
 
         <argument
             android:name="deepLink"

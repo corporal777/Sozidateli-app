@@ -1,22 +1,20 @@
 package com.example.ui.favoritesTab.users
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.UserDetail
-import com.example.data.models.user.User
 import com.example.ui.base.BaseContract
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.Skip
 
 interface FavoriteUsersContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setData(data: List<UserDetail?>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setUsersFavoriteEmptyPlaceholder()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showUser(user: UserDetail)
     }
 

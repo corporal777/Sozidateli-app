@@ -1,19 +1,18 @@
 package com.example.ui.views.suggestFieldView.town
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchTown
 import com.example.ui.base.BaseContract
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 class SearchTownBottomSheetContract {
 
     interface View : MvpView {
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @OneExecution
         fun setTowns(list: List<SearchTown?>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun performOnItemSelected(item: SearchTown?)
     }
 

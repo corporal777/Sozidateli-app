@@ -5,18 +5,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import call
-import com.arellomobile.mvp.InjectViewState
 import com.example.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.Notification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
-import com.example.repository.AuthRepository
-import com.example.repository.ChatRepository
-import com.example.repository.EventRepository
-import com.example.repository.UserRepository
-import com.example.data.models.AuthType
+import com.example.repository.*
 import com.example.ui.base.BasePresenter
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
@@ -30,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import java.util.*
@@ -49,6 +45,7 @@ class MainPresenter
     private val notificationManager: NotificationManager,
     private val connectivityProvider: ConnectivityProvider,
     private val eventRepository: EventRepository,
+    private val commonRepository: CommonRepository,
     private val socket: SocketIOManager,
     private val context: Context,
 ) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
@@ -341,8 +338,11 @@ class MainPresenter
     }
 
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
-        if (isAuthRequired) return
-        viewState.showChat(chatId, userName)
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else viewState.apply {
+            showChat(chatId, userName)
+            clearIntentData()
+        }
     }
 
     override fun onHandleEventCode(event: String?) {
@@ -383,21 +383,53 @@ class MainPresenter
         }
     }
 
-    override fun onHandleAuthToOtherPlatform(url: String, type: AuthType) {
+    override fun onHandleAuthToOtherPlatform(url: String?, type: AuthType) {
         if (isAuthRequired || appData.isLoggedOut) {
             viewState.showLogin()
             canShowBrowser = true
-        } else {
+        }
+        else if (url.isNullOrBlank()) return
+        else {
             if (canShowBrowser) observeDeeplink(url)
             else viewState.showAccountChangeFragment(url, type)
             viewState.clearIntentData()
         }
     }
 
-    override fun onHandleAuthWebsite(code: String) {
+    override fun onHandleAuthWebsite(code: String?) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else if (code.isNullOrBlank()) return
         else viewState.apply {
             showAuthWebsiteFragment(code)
+            clearIntentData()
+        }
+    }
+
+    override fun onHandleSupportQuestionLink(id: String?) {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else if (id.isNullOrEmpty()) return
+        else commonRepository.getSupportQuestion(id)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    showSupportQuestion(it)
+                    clearIntentData()
+                }
+            }.call(compositeDisposable)
+    }
+
+    override fun onHandleProfileSettingsLink() {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else viewState.apply {
+            showProfileSettings()
+            clearIntentData()
+        }
+    }
+
+    override fun onHandleProfileLink() {
+        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
+        else viewState.apply {
+            showCurrentUser()
             clearIntentData()
         }
     }
@@ -416,15 +448,22 @@ class MainPresenter
         }
     }
 
-    override fun onHandleRecoverPasswordLink(userId: String, code: String) {
+    override fun onHandleChangePasswordLink(userId: String, code: String) {
         authRepository.checkRecoveryCodeNew("email", code)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    showDialogRecoverPassword(userId, code)
+                    showDialogChangePassword(userId, code)
                     clearIntentData()
                 }
             }.call(compositeDisposable)
+    }
+
+    override fun onHandleRecoverPasswordLink() {
+        viewState.apply {
+            showPasswordRecovery()
+            clearIntentData()
+        }
     }
 
 
@@ -441,6 +480,7 @@ class MainPresenter
 
     override fun onHandleNotification(notification: RemoteNotification) {
         if (isAuthRequired) return
+        viewState.clearIntentData()
     }
 
     override fun onDestroy() {

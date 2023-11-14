@@ -1,9 +1,9 @@
 package com.example.ui.views.chatView
 
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.MvpView
+import moxy.viewstate.strategy.StateStrategyType
 
 class ChatViewContract {
 

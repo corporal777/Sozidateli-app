@@ -1,13 +1,12 @@
 package com.example.ui.support.search
 
-import com.arellomobile.mvp.InjectViewState
 import com.example.data.AppData
 import com.example.data.models.SupportData
 import com.example.repository.CommonRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.support.SupportCenterContract
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
+import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class SupportSearchPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += commonRepository.getSupportData()
+        compositeDisposable += Maybe.just(appData.supportQuestions)
             .doOnSuccess { listQuestions = it }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {

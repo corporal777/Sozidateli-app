@@ -1,28 +1,28 @@
 package com.example.ui.search
 
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.SearchFilter
 import com.example.ui.base.BaseContract
 import com.example.util.OneExecutionByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface SearchContract {
     interface View<I, F : SearchFilter> : BaseContract.View {
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "list data")
         fun setData(data: List<I?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showFilter(filter: F)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideFilter()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun clearFilter()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun setHasFilter()
     }
 

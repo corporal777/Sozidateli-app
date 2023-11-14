@@ -1,36 +1,32 @@
 package com.example.ui.userprofile
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.fragment.app.Fragment
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.userprofile.base.BaseUserProfileContract
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface UserProfileContract {
 
     interface View : BaseUserProfileContract.View {
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showMainData()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showContacts()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showInterests()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEducation()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showExperience()
 
-        @StateStrategyType(SkipStrategy::class)
+        @OneExecution
         fun showEdit()
     }
 

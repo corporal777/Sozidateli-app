@@ -9,23 +9,25 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
-import com.example.extensions.*
+import com.example.extensions.calendar
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.AboutEventFragmentNewArgs
-import com.example.ui.subevent.SubEventFragmentArgs
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
-import com.example.ui.event.my.schedule.items.*
+import com.example.ui.event.my.schedule.items.EventScheduleGroup
+import com.example.ui.event.my.schedule.items.NoScheduleEventItem
+import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs.MessageDialogWithGreenButton
@@ -34,6 +36,8 @@ import com.example.util.getMonthName
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import onScrollStateChanged
 import onScrolled
 import onTextChanged
@@ -252,8 +256,8 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
 
     override fun showAboutEvent(eventId: String) {
         findNavController().navigate(
-            R.id.about_event_fragment_new,
-            AboutEventFragmentNewArgs.Builder(eventId).build().toBundle()
+            R.id.about_event_fragment,
+            AboutEventFragmentArgs.Builder(eventId).build().toBundle()
         )
     }
 

@@ -3,10 +3,10 @@ package com.example.ui.base;
 
 import android.os.Bundle;
 
-import com.arellomobile.mvp.MvpDelegate;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import moxy.MvpDelegate;
 
 /**
  * Date: 19-Dec-15

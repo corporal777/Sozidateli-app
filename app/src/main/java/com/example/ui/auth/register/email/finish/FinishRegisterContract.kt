@@ -1,15 +1,14 @@
 package com.example.ui.auth.register.email.finish
 
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.auth.base.BaseAuthContract
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface FinishRegisterContract {
     interface View : BaseAuthContract.View {
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setData(
             email: String?,
             firstName: String?,
@@ -17,43 +16,43 @@ interface FinishRegisterContract {
             middleName: String?
         )
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setTimeLeft(seconds: Int)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setCanResend(canResend: Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun enableRegisterBtn(isEnable: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun enableMiddleNameInput(enable: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun codeError()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showWrongPhoneError(canShow : Boolean)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showWrongEmailError(canShow : Boolean)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setDescriptionText(loginType: String, login : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showHideDescriptionText(canShow: Boolean)
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun openHome()
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun logout()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showEmailPhoneNotUnique(email: String, loginType : String)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun connectToSocket()
 
     }

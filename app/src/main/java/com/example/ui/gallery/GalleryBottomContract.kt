@@ -2,34 +2,32 @@ package com.example.ui.gallery
 
 import android.net.Uri
 import android.widget.ImageView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.data.models.ImageModel
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import io.reactivex.Single
-import java.util.*
+import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface GalleryBottomContract {
     interface View : BaseBottomSheetContract.View {
 
-        @StateStrategyType(AddToEndSingleStrategy::class)
+        @AddToEndSingle
         fun setGalleryImages(images : List<Uri>)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun updateCameraPreviewItem()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun hideGalleryFragment()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setPhotoUpdated(image : ImageModel?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showCameraActivity(uri: Uri?, imageView : ImageView)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun showCropActivity(uri: Uri, imageView : ImageView?)
     }
 

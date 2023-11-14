@@ -1,30 +1,22 @@
 package com.example.ui.search.user
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.databinding.LayoutFilterEventSearchBinding
-import com.example.databinding.LayoutFilterUserBinding
 import com.example.databinding.LayoutFilterUserSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
-import com.example.ui.search.event.SearchEventPresenter
-import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
-import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
-import com.example.util.initInput
 import com.xwray.groupie.Group
 import initDropDownView
-import onTextChanged
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -72,15 +64,6 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     override fun createFilterView(filter: SearchFilter.UserNew): View {
         return LayoutFilterUserSearchBinding.inflate(LayoutInflater.from(requireContext()), null, false)
             .apply {
-//                etAddress.apply {
-//                    setTextWithoutSearch(filter.address)
-//                    onTextChanged {
-//                        filter.address = it.toString()
-//                        if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
-//                    }
-//                    onDataSelectedListener = { filter.setAddressFilter(it) }
-//                }
-
                 initRegions(filter, tvRegion, tilRegion, tilTown)
                 initTowns(filter, tvTown, tilTown)
 

@@ -1,24 +1,25 @@
 package com.example.ui.gallery.camera
 
 import android.net.Uri
-import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.ui.base.BaseContract
 import com.example.util.AddToEndSingleByTagStateStrategy
+import moxy.MvpView
+import moxy.viewstate.strategy.SingleStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.SingleState
+import moxy.viewstate.strategy.alias.Skip
 
 interface CustomCameraContract {
 
     interface View : MvpView {
 
-        @StateStrategyType(SingleStateStrategy::class)
+        @SingleState
         fun setImage(uri: Uri?)
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun startCameraPreview()
 
-        @StateStrategyType(SkipStrategy::class)
+        @Skip
         fun stopCameraPreview()
 
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "transition_name")

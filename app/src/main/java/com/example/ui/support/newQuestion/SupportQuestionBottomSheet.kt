@@ -1,20 +1,14 @@
 package com.example.ui.support.newQuestion
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import com.arellomobile.mvp.MvpDelegate
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.PresenterType
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.App
 import com.example.R
 import com.example.data.models.SupportFile
 import com.example.databinding.BottomSheetSupportQuestionBinding
 import com.example.ui.support.sendFile.SupportFilesBottomSheet
-import com.example.ui.views.CustomSpannableString
 import com.example.util.initDropDownAdapter
 import com.example.util.initInput
 import com.example.util.showCustomTabsBrowser
@@ -22,6 +16,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,13 +30,13 @@ class SupportQuestionBottomSheet(
     private val mvpDelegate by lazy { MvpDelegate<SupportQuestionBottomSheet>(this) }
     private val mBinding = BottomSheetSupportQuestionBinding.inflate(LayoutInflater.from(context))
 
-    @InjectPresenter(type = PresenterType.WEAK, tag = FILES_TAG)
+    @InjectPresenter(tag = FILES_TAG)
     lateinit var presenter: SupportQuestionPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SupportQuestionPresenter>
 
-    @ProvidePresenter(type = PresenterType.WEAK, tag = FILES_TAG)
+    @ProvidePresenter(tag = FILES_TAG)
     fun providePresenter(): SupportQuestionPresenter = presenterProvider.get()
 
     private var onSendClick: (data: String?) -> Unit = {}

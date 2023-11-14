@@ -1,17 +1,13 @@
 package com.example.ui.views.suggestFieldView.format
 
-import android.util.Log
-import androidx.annotation.ArrayRes
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
-import com.example.data.models.EventNew
 import com.example.data.models.NewEventFormat
 import com.example.repository.EventRepository
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
