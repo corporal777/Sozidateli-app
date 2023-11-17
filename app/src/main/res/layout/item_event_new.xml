@@ -118,7 +118,7 @@
                 android:minHeight="@dimen/action_button_height"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:textColor="@color/vk_black"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

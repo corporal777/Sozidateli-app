@@ -63,7 +63,7 @@
                 android:letterSpacing="-0.01"
                 android:minHeight="30dp"
                 android:text="@string/support_directory"
-                android:textColor="@color/vk_black" />
+                android:textColor="@color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnTabQuestions"
@@ -81,7 +81,7 @@
                 android:letterSpacing="-0.01"
                 android:minHeight="30dp"
                 android:text="@string/support_my_questions"
-                android:textColor="@color/vk_black" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

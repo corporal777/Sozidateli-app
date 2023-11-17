@@ -53,6 +53,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
                 presenter.onClickLogin(invite ?: -1)
                 //presenter.authVk()
                 //presenter.authOk()
+
             }
             ibClose.setOnClickListener { presenter.onClickBack() }
         }

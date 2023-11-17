@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="mcv_pager" type="id"/>
+    <color name="mcv_black">#000000</color>
+    <color name="text_color_weekend">#993C3C43</color>
+</resources>

@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:letterSpacing="-0.01"
-                android:textColor="@color/vk_black"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 tools:text="Lorem ipsum dolor sit amet," />
 

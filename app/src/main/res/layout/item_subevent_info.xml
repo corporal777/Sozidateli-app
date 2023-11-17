@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/chat_message_padding_vertical"
                 android:drawablePadding="10dp"
-                android:textColor="@color/vk_black"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:text="Павильон 1" />
 

@@ -1,5 +1,6 @@
 package com.example.ui.auth.login
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
@@ -101,7 +102,7 @@ class LoginPresenter
     }
 
     override fun onContinueWithSnRegistration(snUser: SnUser) {
-        viewState.showSnRegistration(snUser)
+        //viewState.showSnRegistration(snUser)
     }
 
     private fun getLoginBody(login: String): AuthBody {

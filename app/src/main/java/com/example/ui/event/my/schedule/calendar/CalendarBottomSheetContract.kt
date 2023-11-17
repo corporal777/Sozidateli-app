@@ -1,7 +1,7 @@
 package com.example.ui.event.my.schedule.calendar
 
 import com.example.ui.base.BaseContract
-import com.example.ui.views.calendarView.CalendarDay
+import com.pagercalendar.calendar.CalendarDay
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.OneExecution
 import java.util.*

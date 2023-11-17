@@ -1,4 +1,4 @@
-include ':app', ':filepicker', ':qrcodegenerator'
+include ':app', ':filepicker', ':qrcodegenerator', ':calendarpager'
 //include ':chat'
 //
 //project(':chat').projectDir = new File(getExternalModuleDir())
@@ -14,3 +14,4 @@ include ':app', ':filepicker', ':qrcodegenerator'
 //    }
 //    return externalModuleDir
 //}
+include ':calendarpager'

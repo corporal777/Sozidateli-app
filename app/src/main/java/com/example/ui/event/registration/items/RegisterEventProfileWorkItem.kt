@@ -61,13 +61,13 @@ class RegisterEventProfileWorkItem(
                 tvNoWorkExperience.apply {
                     isVisible = true
                     if (workExperienceAbsent){
-                        setTextColor(ContextCompat.getColor(context, R.color.vk_black))
+                        setTextColor(ContextCompat.getColor(context, R.color.black))
                         text = context.getString(R.string.no_experience)
                     }else {
                         if (isRequired) {
                             setTextColor(ContextCompat.getColor(context, R.color.red_new))
                         } else {
-                            setTextColor(ContextCompat.getColor(context, R.color.vk_black))
+                            setTextColor(ContextCompat.getColor(context, R.color.black))
                         }
                     }
                 }

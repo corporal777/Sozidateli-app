@@ -11,11 +11,6 @@ import com.example.ui.snAuth.SnAuthError
 import com.example.ui.snAuth.SnType
 import com.facebook.AccessToken
 import com.facebook.GraphRequest
-import com.vk.sdk.api.VKApi
-import com.vk.sdk.api.VKError
-import com.vk.sdk.api.VKRequest
-import com.vk.sdk.api.VKResponse
-import com.vk.sdk.api.model.VKUsersArray
 import getStringOrNull
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -36,9 +31,9 @@ class AuthRepositoryImp
 
     override fun authSocialNetwork(snAuth: SnAuth): Single<Pair<RegisterStatus, SnUser>> {
         val userRequest = when (snAuth.snType) {
-            SnType.VK -> getVkUser()
             SnType.FB -> getFbUser()
             SnType.OK -> getOkUser()
+            else -> {Single.error(NullPointerException())}
         }
 
         return userRequest
@@ -176,25 +171,6 @@ class AuthRepositoryImp
         return call(api.registerStatus(email, snType, snId))
     }
 
-    override fun getVkUser(): Single<SnUserData> {
-        return Single.create { emitter ->
-            VKApi.users().get().apply {
-                addExtraParameter("fields", "photo_200")
-            }.executeWithListener(object : VKRequest.VKRequestListener() {
-                override fun onComplete(response: VKResponse) {
-                    val user = VKUsersArray().let {
-                        it.parse(response.json)
-                        it[0]
-                    }
-                    emitter.onSuccess(SnUserData(user.id.toString(), user.first_name, user.last_name, user.photo_200, null))
-                }
-
-                override fun onError(error: VKError?) {
-                    emitter.onError(RuntimeException(error?.errorMessage ?: "Vk get user error"))
-                }
-            })
-        }
-    }
 
     override fun getFbUser(): Single<SnUserData> {
         val accessToken = AccessToken.getCurrentAccessToken()

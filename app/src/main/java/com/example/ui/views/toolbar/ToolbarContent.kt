@@ -14,7 +14,7 @@ class ToolbarContent(
 ) {
     init {
         backButton.isInvisible = false
-        backButton.setTint(R.color.vk_black)
+        backButton.setTint(R.color.black)
         toolbarContainer.removeAllViews()
     }
 

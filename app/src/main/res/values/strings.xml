@@ -1069,6 +1069,4 @@
     <string name="choose_file">Выбрать файл</string>
     <string name="support_upload_file_title">PDF, JPEG, PNG, TIFF; не более 10 МБ</string>
     <string name="support_search_data_not_found">К сожалению, ничего не найдено.\nПопробуйте изменить поисковой запрос.</string>
-
-    <item name="mcv_pager" type="id"/>
 </resources>

@@ -89,7 +89,7 @@ class EventDetailActionItem(
         var clickAction: (() -> Unit)? = null
         var btnText = R.string.event_action_participate
         var btnTextSize = 17f
-        var btnTextColor = R.color.vk_black
+        var btnTextColor = R.color.black
         var btnBackground = R.drawable.custom_btn_white_ghost_selectable
         val userAgreement = eventNew?.userAgreement?.uri
         val eventRegistrationState = eventNew?.binds?.eventRegistrationState
@@ -108,7 +108,7 @@ class EventDetailActionItem(
                                 tvCancel.isVisible = false
                                 btnText = R.string.event_action_participate
                                 btnBackground = R.drawable.custom_btn_white_ghost_selectable
-                                btnTextColor = R.color.vk_black
+                                btnTextColor = R.color.black
                                 clickAction = {
                                     eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
                                         clickListener.onActionRegister(userAgreement)
@@ -119,7 +119,7 @@ class EventDetailActionItem(
                                 tvCancel.isVisible = false
                                 btnText = R.string.event_action_cancel_request
                                 btnBackground = R.drawable.custom_btn_white_ghost_selectable
-                                btnTextColor = R.color.vk_black
+                                btnTextColor = R.color.black
                                 clickAction = {
                                     eventRegistrationState.prohibitions.profileLevelToLow?.value.checkStateLevel {
                                         clickListener.onActionCancel()

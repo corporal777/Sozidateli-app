@@ -4,7 +4,7 @@ import com.example.data.AppData
 import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.ui.views.calendarView.CalendarDay
+import com.pagercalendar.calendar.CalendarDay
 import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -29,32 +29,11 @@ class CalendarBottomSheetPresenter @Inject constructor(
         var currentDate: CalendarDay? = null
         var minDate: CalendarDay? = null
         var maxDate: CalendarDay? = null
-        compositeDisposable += Maybe.fromCallable {
-            eventDays.map {
-                val cal = defaultServerDateFormatter.parse(it.date).time.calendar()
-                setEventCalendarDays(cal)
-            }
-        }
+        compositeDisposable += Maybe.defer { Maybe.just(getCalendarDaysFromList()) }
             .doOnSuccess {
-                if (selectedDay != null) {
-                    val calendar = selectedDay!!.millis.calendar()
-                    currentDate = CalendarDay(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1,
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                    )
-                }
-
-            }
-            .doOnSuccess {
-                if (!it.isNullOrEmpty()) {
-                    minDate = CalendarDay(it.first().year, it.first().month, 1)
-                    maxDate = CalendarDay(
-                        it.last().year,
-                        it.last().month,
-                        it.last().date.month.length(it.last().date.isLeapYear)
-                    )
-                }
+                currentDate = CalendarDay.createCalendarDay(selectedDay?.millis?.calendar())
+                minDate = it.first().minDate
+                maxDate = it.last().maxDate
             }
             .performOnBackgroundOutOnMain()
             .subscribeBy {
@@ -74,12 +53,12 @@ class CalendarBottomSheetPresenter @Inject constructor(
         viewState.setDateSelected(cal)
     }
 
-    private fun setEventCalendarDays(cal: Calendar): CalendarDay {
-        return CalendarDay(
-            cal.get(Calendar.YEAR),
-            cal.get(Calendar.MONTH) + 1,
-            cal.get(Calendar.DAY_OF_MONTH)
-        )
+    private fun getCalendarDaysFromList(): List<CalendarDay> {
+        return eventDays.map {
+            val cal = defaultServerDateFormatter.parse(it.date)?.time?.calendar()
+            if (cal == null) return emptyList()
+            else CalendarDay.createCalendarDay(cal)
+        }
     }
 
     override fun onDestroy() {

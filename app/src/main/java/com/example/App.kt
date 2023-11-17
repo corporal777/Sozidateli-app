@@ -3,7 +3,6 @@ package com.example
 import android.app.*
 import android.content.Context
 import android.os.Build
-import androidx.core.view.ViewCompat
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.vk.sdk.VKSdk
@@ -35,25 +34,14 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
-        createNotificationChannels()
-
         appComponent = DaggerAppComponent.builder()
             .application(this)
             .build()
             .apply { inject(this@App) }
 
-        ViewPump.init(
-            ViewPump.builder()
-                .addInterceptor(
-                    CalligraphyInterceptor(
-                        CalligraphyConfig.Builder()
-                            .setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                            .setFontAttrId(R.attr.fontPath)
-                            .build()
-                    )
-                )
-                .build()
-        )
+        createNotificationChannels()
+        initViewPump()
+
         VKSdk.initialize(this)
     }
 
@@ -72,5 +60,19 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
         NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT).apply {
             notificationManager.createNotificationChannel(this)
         }
+    }
+
+    private fun initViewPump(){
+        ViewPump.init(
+            ViewPump.builder()
+                .addInterceptor(
+                    CalligraphyInterceptor(
+                        CalligraphyConfig.Builder()
+                            .setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                            .setFontAttrId(R.attr.fontPath)
+                            .build()
+                    )
+                ).build()
+        )
     }
 }

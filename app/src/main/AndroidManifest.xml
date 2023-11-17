@@ -94,12 +94,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <provider
-            android:name=".MaterialCalendarViewInitProvider"
-            android:authorities="${applicationId}.materialcalendarviewinitprovider"
-            android:enabled="true"
-            android:exported="false" />
-
         <service
             android:name=".services.FcmMessagingService"
             android:exported="true">

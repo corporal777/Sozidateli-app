@@ -17,7 +17,7 @@
             android:layout_marginTop="20dp"
             android:letterSpacing="0.02"
             android:text="Мероприятие проводит"
-            android:textColor="@color/vk_black"
+            android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/organization_cl"

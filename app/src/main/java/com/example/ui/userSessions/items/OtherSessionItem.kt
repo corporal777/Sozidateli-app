@@ -1,6 +1,5 @@
 package com.example.ui.userSessions.items
 
-import android.util.Log
 import android.widget.ImageView
 import com.example.R
 import com.example.data.models.UserSessionModel
@@ -8,16 +7,12 @@ import com.example.databinding.ItemOtherSessionBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.xwray.groupie.databinding.BindableItem
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 class OtherSessionItem(
     val session: UserSessionModel?,
     val onSessionClick: (session: UserSessionModel) -> Unit
-) : BindableItem<ItemOtherSessionBinding>(session?.sessionId?:0) {
+) : BindableItem<ItemOtherSessionBinding>(session?.sessionId ?: 0) {
 
 
     private var deviceName = ""
@@ -111,22 +106,23 @@ class OtherSessionItem(
 
     private fun getSessionDate(): String {
         //val format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX")
-        val format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-        val today = LocalDateTime.now()
-        val sessionDate = if (!session?.sessionEnd.isNullOrEmpty()){
-            LocalDateTime.parse(session?.sessionEnd, format)
-        } else if (!session?.sessionStart.isNullOrEmpty()){
-            LocalDateTime.parse(session?.sessionStart, format)
-        } else today
-        val status = if (today.dayOfMonth - sessionDate.dayOfMonth == 1){
-            "вчера"
-        } else if (today.dayOfMonth == sessionDate.dayOfMonth && today.monthValue == sessionDate.monthValue){
-            "сегодня"
-        } else {
-            sessionDate.dayOfMonth.toString() + "." + sessionDate.monthValue.toString() + "." + sessionDate.year
-        }
+//        val format: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+//        val today = LocalDateTime.now()
+//        val sessionDate = if (!session?.sessionEnd.isNullOrEmpty()){
+//            LocalDateTime.parse(session?.sessionEnd, format)
+//        } else if (!session?.sessionStart.isNullOrEmpty()){
+//            LocalDateTime.parse(session?.sessionStart, format)
+//        } else today
+//        val status = if (today.dayOfMonth - sessionDate.dayOfMonth == 1){
+//            "вчера"
+//        } else if (today.dayOfMonth == sessionDate.dayOfMonth && today.monthValue == sessionDate.monthValue){
+//            "сегодня"
+//        } else {
+//            sessionDate.dayOfMonth.toString() + "." + sessionDate.monthValue.toString() + "." + sessionDate.year
+//        }
 
-        return status
+//        return status
+        return ""
     }
 
 

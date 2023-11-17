@@ -26,7 +26,7 @@ class RegisterEventProfileEducationLevelItem(
                 if (isRequired) {
                     tvNoEducation.setTextColor(ContextCompat.getColor(context, R.color.red_new))
                 } else {
-                    tvNoEducation.setTextColor(ContextCompat.getColor(context, R.color.vk_black))
+                    tvNoEducation.setTextColor(ContextCompat.getColor(context, R.color.black))
                 }
             }
 

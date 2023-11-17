@@ -56,7 +56,7 @@
             android:gravity="center"
             android:letterSpacing="-0.01"
             android:text="@string/support_header_title"
-            android:textColor="@color/vk_black"
+            android:textColor="@color/black"
             android:textSize="24sp" />
 
     </LinearLayout>

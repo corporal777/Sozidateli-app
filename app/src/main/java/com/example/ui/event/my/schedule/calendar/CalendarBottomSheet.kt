@@ -13,10 +13,10 @@ import com.example.databinding.BottomSheetCalendarBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.longToDate
-import com.example.ui.views.calendarView.CalendarDay
-import com.example.ui.views.calendarView.DayViewDecorator
-import com.example.ui.views.calendarView.DayViewFacade
-import com.example.ui.views.calendarView.spans.DotSpan
+import com.pagercalendar.calendar.CalendarDay
+import com.pagercalendar.calendar.DayViewDecorator
+import com.pagercalendar.calendar.DayViewFacade
+import com.pagercalendar.calendar.spans.DotSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
@@ -157,7 +157,12 @@ class CalendarBottomSheet(
 
 
         override fun decorate(view: DayViewFacade) {
-            view.addSpan(DotSpan(7F, Color.WHITE))
+            view.addSpan(
+                DotSpan(
+                    7F,
+                    Color.WHITE
+                )
+            )
         }
 
         init {

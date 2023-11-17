@@ -19,7 +19,7 @@
             android:includeFontPadding="false"
             android:lineSpacingExtra="4dp"
             tools:text="Доступна новая версия приложения.\nНажмите ниже, чтобы обновить."
-            android:textColor="@color/vk_black"
+            android:textColor="@color/black"
             android:textSize="17sp" />
 
     </LinearLayout>

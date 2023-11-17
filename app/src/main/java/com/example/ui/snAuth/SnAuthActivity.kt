@@ -24,6 +24,7 @@ import ru.ok.android.sdk.util.OkAuthType
 import ru.ok.android.sdk.util.OkScope
 import javax.inject.Inject
 
+
 class SnAuthActivity : AppCompatActivity() {
 
     @Inject lateinit var snAuthManager: SnAuthManager
@@ -152,8 +153,8 @@ class SnAuthActivity : AppCompatActivity() {
         internal fun getStartIntent(context: Context, snType: SnType, vkScopes: Array<String>? = null): Intent {
             return Intent(context, SnAuthActivity::class.java).apply {
                 putExtras(bundleOf(
-                        ARG_AUTH_TYPE to snType,
-                        ARG_AUTH_VK_SCOPES to vkScopes
+                    ARG_AUTH_TYPE to snType,
+                    ARG_AUTH_VK_SCOPES to vkScopes
                 ))
             }
         }

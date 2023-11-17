@@ -69,7 +69,7 @@
                     android:layout_marginBottom="10dp"
                     android:breakStrategy="high_quality"
                     android:letterSpacing="-0.01"
-                    android:textColor="@color/vk_black"
+                    android:textColor="@color/black"
                     android:textSize="15sp"
                     tools:text="@string/code_email_dialog_text" />
 

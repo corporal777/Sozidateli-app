@@ -8,6 +8,8 @@
     <color name="navBarDefault">#FFFFFF</color>
     <color name="navBarTabs">#000000</color>
 
+    <color name="white">#fff</color>
+    <color name="black">#000000</color>
     <color name="red">#ed1c24</color>
     <color name="red_new">#FF0000</color>
     <color name="gray">#E4E4E4</color>
@@ -24,10 +26,6 @@
     <color name="input_background">#F7F7FA</color>
     <color name="input_focused_background">#E4E4E5</color>
     <color name="input_disabled_background">#FCFCFC</color>
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/input_background</color>
-    <color name="mtrl_textinput_disabled_color" tools:override="true">@color/input_disabled_background</color>
-    <color name="mtrl_textinput_focused_box_stroke_color" tools:override="true">@color/input_focused_background</color>
-    <color name="mtrl_textinput_hovered_box_stroke_color" tools:override="true">@color/input_focused_background</color>
     <color name="input_hint_text_color">#9A99A2</color>
     <color name="input_text_color">#000000</color>
     <color name="input_text_color_disabled">#999A99A2</color>
@@ -233,7 +231,6 @@
     <color name="color_green_button_new">#8CA26B</color>
     <color name="search_field_background_color">#1F767680</color>
     <color name="main_brown_color_new">#BE9B72</color>
-    <color name="text_color_weekend">#993C3C43</color>
 
     <color name="colorOverlay">#78ffffff</color>
     <color name="white_smoke_color">#F6F6F6</color>

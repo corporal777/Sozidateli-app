@@ -41,7 +41,6 @@ interface AuthRepository {
     //fun setPassword(email: String, code: String, password: String): Completable
 
     fun checkRegisterStatus(snType: String?, snId: String?, email: String?): Single<RegisterStatus>
-    fun getVkUser(): Single<SnUserData>
     fun getFbUser(): Single<SnUserData>
     fun getOkUser(): Single<SnUserData>
     //fun registerData(email: String, code: String): Single<UserResp>

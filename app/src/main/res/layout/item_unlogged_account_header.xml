@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:letterSpacing="0.01"
             android:text="@string/you_logged_out_from"
-            android:textColor="@color/vk_black"
+            android:textColor="@color/black"
             android:textSize="16sp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

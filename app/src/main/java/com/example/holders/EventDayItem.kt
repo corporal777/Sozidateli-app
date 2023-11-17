@@ -1,7 +1,6 @@
 package com.example.holders
 
 import com.example.R
-import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.ItemDayBinding
 import com.xwray.groupie.databinding.BindableItem
@@ -20,7 +19,7 @@ class EventDayItem(
                 tvDayName.setTextColor(root.resources.getColorStateList(R.color.input_text_color_disabled))
                 tvDayNumber.setTextColor(root.resources.getColorStateList(R.color.text_color_calendar_day_disabled))
             }else {
-                tvDayName.setTextColor(root.resources.getColorStateList(R.color.vk_black))
+                tvDayName.setTextColor(root.resources.getColorStateList(R.color.black))
                 tvDayNumber.setTextColor(root.resources.getColorStateList(R.color.text_color_calendar_day))
             }
 
