@@ -5,6 +5,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_action_button_small.*
 
+
 class ActionButtonItem(
         id: Long,
         private val action: Int,

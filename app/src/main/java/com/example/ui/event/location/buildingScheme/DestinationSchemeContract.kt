@@ -21,7 +21,6 @@ interface DestinationSchemeContract {
     interface Presenter : BaseContract.Presenter {
         fun onImageClick(url: String?)
         fun onScrollChangeOffset(scroll: Int)
-        fun onPageChange(position: Int)
     }
 
 }

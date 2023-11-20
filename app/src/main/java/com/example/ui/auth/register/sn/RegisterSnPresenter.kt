@@ -5,6 +5,7 @@ import com.example.data.models.ApiError
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import io.reactivex.rxkotlin.plusAssign
@@ -156,7 +157,7 @@ class RegisterSnPresenter
             )
     }
 
-    override fun onContinueWithSnRegistration(snUser: SnUser) {
+    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
 
     }
 

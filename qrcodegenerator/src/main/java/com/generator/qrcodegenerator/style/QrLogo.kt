@@ -2,7 +2,7 @@ package com.generator.qrcodegenerator.style
 
 import androidx.annotation.FloatRange
 import com.generator.qrcodegenerator.SerializationProvider
-import com.generator.qrcodegenerator.SerializersModuleFromProviders
+import com.generator.qrcodegenerator.serializersModuleFromProviders
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
@@ -31,7 +31,7 @@ data class QrLogo(
 
         @ExperimentalSerializationApi
         override val defaultSerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModuleFromProviders(
+            serializersModuleFromProviders(
                 DrawableSource,
                 QrLogoPadding,
                 QrLogoShape,

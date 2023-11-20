@@ -27,5 +27,4 @@ internal object QrUtil {
             (color1.blue * proportion + color2.blue * (1 - proportion)).roundToInt().coerceIn(0,255)
         )
     }
-
 }

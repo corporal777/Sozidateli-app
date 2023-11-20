@@ -10,6 +10,7 @@ import com.example.data.models.NewAuthResponse
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
@@ -101,7 +102,7 @@ class LoginPresenter
         }
     }
 
-    override fun onContinueWithSnRegistration(snUser: SnUser) {
+    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
         //viewState.showSnRegistration(snUser)
     }
 

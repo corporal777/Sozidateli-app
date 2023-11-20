@@ -6,7 +6,6 @@ import com.example.R
 import com.example.databinding.ItemSearchActivityBinding
 import com.example.databinding.ItemSearchEventBinding
 import com.example.util.SearchInput
-import com.facebook.internal.Utility.isNullOrEmpty
 import com.xwray.groupie.databinding.BindableItem
 import onTextChanged
 

@@ -2,6 +2,7 @@ package com.example.ui.event.location.buildingScheme
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -10,8 +11,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.Place
 import com.example.databinding.FragmentDestinationSchemeBinding
+import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.main.MainActivity
+import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -23,7 +27,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>(),
-    DestinationSchemeContract.View {
+    DestinationSchemeContract.View, ToolbarFragment {
 
 
     @InjectPresenter
@@ -46,12 +50,6 @@ class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            schemeToolbar.apply {
-                toolbarLabel.text = getString(R.string.scheme_of_building)
-                ivBack.setOnClickListener {
-                    findNavController().navigateUp()
-                }
-            }
             viewPager.apply {
                 adapter = groupAdapter
             }
@@ -95,8 +93,12 @@ class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>
     }
 
     override fun setAppBarShadow(value: Float) {
-        mBinding.schemeAppBar.changeAppBarElevation(value)
+        (requireActivity() as MainActivity).setAppBarElevation(value)
     }
 
     override fun layout(): Int = R.layout.fragment_destination_scheme
+    override val title: CharSequence by lazy { getString(R.string.scheme_of_building) }
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

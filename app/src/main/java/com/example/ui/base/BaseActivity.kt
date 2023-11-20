@@ -8,8 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.R
 import com.example.databinding.ActivityMainBinding
 import com.example.databinding.LayoutBottomNavBadgeBinding
@@ -126,23 +130,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         }
     }
 
-    override fun showCustomProgressDialog() {
-        mProgressDialog.showDialog()
-    }
-
-    override fun hideCustomProgressDialog() {
-        mProgressDialog.hideDialog()
-    }
-
-    override fun showCustomLoading() {
-    }
-
-    override fun hideCustomLoading() {
-    }
-
-    override fun hideKeyboard() {
-        hideKeyboard(currentFocus)
-    }
+    override fun showCustomProgressDialog() = mProgressDialog.showDialog()
+    override fun hideCustomProgressDialog() = mProgressDialog.hideDialog()
+    override fun showCustomLoading() {}
+    override fun hideCustomLoading() {}
+    override fun hideKeyboard() = hideKeyboard(currentFocus)
 
     override fun hideKeyboard(v: View?) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -159,6 +151,18 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     fun showKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun getNavHostFragment(): NavHostFragment {
+        return supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+    }
+
+    fun NavHostFragment.primaryNavFragment(): Fragment? {
+        return childFragmentManager.primaryNavigationFragment
+    }
+
+    fun isCurrentDestination(frag : Int): Boolean {
+        return findNavController(R.id.navHostFragment).currentDestination?.id == frag
     }
 
     abstract fun showProgressView()

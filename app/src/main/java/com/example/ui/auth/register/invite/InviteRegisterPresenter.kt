@@ -11,6 +11,7 @@ import com.example.data.models.UserDetail
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import io.reactivex.Completable
@@ -201,5 +202,5 @@ class InviteRegisterPresenter
 
     private fun performDataChange() = viewState.enableRegisterBtn(isDataValid())
     override fun onClickUserAgreement() = viewState.showUserAgreement()
-    override fun onContinueWithSnRegistration(snUser: SnUser) {}
+    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {}
 }

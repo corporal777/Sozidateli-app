@@ -84,10 +84,6 @@ class RegisterSnFragment : BaseFragment<FragmentRegisterSnBinding>(), RegisterSn
                 logo = R.drawable.ic_vk
                 theme = R.style.ViewBackgroundVk
             }
-            SnType.FB -> {
-                logo = R.drawable.ic_facebook
-                theme = R.style.ViewBackgroundFacebook
-            }
             SnType.OK -> {
                 logo = R.drawable.ic_ok
                 theme = R.style.ViewBackgroundOk

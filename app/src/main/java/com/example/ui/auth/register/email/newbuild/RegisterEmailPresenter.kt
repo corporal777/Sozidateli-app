@@ -9,6 +9,7 @@ import com.example.exceptions.PhoneNotUniqueException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
@@ -189,8 +190,7 @@ class RegisterEmailPresenter
 
     }
 
-    override fun onContinueWithSnRegistration(snUser: SnUser) {
-        viewState.showSnRegistration(snUser)
+    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
     }
 
     override fun onClickClose() {

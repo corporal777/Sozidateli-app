@@ -16,8 +16,6 @@ class SnAuthManager(private val context: Context) {
     }
 
     fun startAuthVk(scopes: Array<String>? = null) = start(SnType.VK, scopes)
-    fun startAuthFacebook() = start(SnType.FB)
-    fun startAuthOk() = start(SnType.OK)
 
     private fun start(snType: SnType, vkScopes: Array<String>? = null) {
         context.startActivity(SnAuthActivity.getStartIntent(context, snType, vkScopes).apply {

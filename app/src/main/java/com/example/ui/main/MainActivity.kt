@@ -173,22 +173,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     private val backClick = onBackPressedCallback(true) {
-        val navHost =
-            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-        val fr = navHost.childFragmentManager.fragments.firstOrNull()
-        if (fr != null) {
-            when (fr) {
-                is ProfileFragment,
-                is MyEventsFragment,
-                is NotificationsListFragment,
-                is ChatListTabsFragment -> findNavController().popBackStack(
-                    R.id.recommendations_fragment,
-                    false
-                )
-                is RecommendationsFragment,
-                is AuthorizationFragment -> finish()
-                else -> findNavController().navigateUp()
-            }
+        val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
+            ?: return@onBackPressedCallback
+        when (fragment) {
+            is ProfileFragment,
+            is MyEventsFragment,
+            is NotificationsListFragment,
+            is ChatListTabsFragment -> findNavController().popBackStack(
+                R.id.recommendations_fragment,
+                false
+            )
+            is RecommendationsFragment,
+            is AuthorizationFragment -> finish()
+            else -> findNavController().navigateUp()
         }
     }
 
@@ -621,21 +618,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     fun connectToSocket() = presenter.connectToSocket()
 
     private fun setupMainNavBar() {
-        val navHost =
-            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         //val navController = findNavController(navHost)
-        mBinding.mainNavBar.setupWithNavController(navHost.navController)
+        mBinding.mainNavBar.setupWithNavController(getNavHostFragment().navController)
         mBinding.mainNavBar.setOnItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.main -> {
-                    val frag =
-                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (findNavController().currentDestination?.id == R.id.recommendations_fragment) {
-                        if (frag != null) {
-                            val rec =
-                                frag.childFragmentManager.primaryNavigationFragment as RecommendationsFragment
-                            rec.smoothScrollToFirstItem()
-                        }
+                    val frag = supportFragmentManager.primaryNavigationFragment as NavHostFragment
+                    if (isCurrentDestination(R.id.recommendations_fragment)) {
+                        (frag.primaryNavFragment() as RecommendationsFragment).smoothScrollToFirstItem()
                     }
                 }
                 R.id.my_events -> {

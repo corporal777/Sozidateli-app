@@ -46,19 +46,23 @@ fun interface DrawableSource {
     @Serializable
     @SerialName("File")
     @Suppress("BlockingMethodInNonBlockingContext")
+
     data class File(val uri : String) : DrawableSource {
 
+        @SuppressWarnings("deprecation")
         override suspend fun get(context: Context): Drawable =
             withContext(Dispatchers.IO) {
-                if (Build.VERSION.SDK_INT < 28)
+                if (Build.VERSION.SDK_INT >= 29){
+                    ImageDecoder
+                        .decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri.toUri()))
+                        .copy(Bitmap.Config.ARGB_8888,false)
+                        .toDrawable(context.resources)
+                } else {
                     MediaStore.Images.Media
                         .getBitmap(context.contentResolver, uri.toUri())
                         .copy(Bitmap.Config.ARGB_8888,false)
                         .toDrawable(context.resources)
-                else ImageDecoder
-                    .decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri.toUri()))
-                    .copy(Bitmap.Config.ARGB_8888,false)
-                    .toDrawable(context.resources)
+                }
             }
     }
 

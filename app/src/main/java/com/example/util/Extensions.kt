@@ -25,7 +25,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
@@ -57,6 +56,8 @@ import com.example.extensions.dp
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.vincent.filepicker.BrowserUtil
+import com.vincent.filepicker.ToastUtil
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
@@ -418,16 +419,7 @@ fun LinearLayoutManager.smoothScrollToFirstItem(
     this.startSmoothScroll(mSmoothScroller)
 }
 
-fun showCustomTabsBrowser(context: Context, url: String) {
-    try {
-        val builder = CustomTabsIntent.Builder()
-        val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(context, Uri.parse(url))
-    } catch (e: Exception) {
-        Toast.makeText(context, R.string.link_open_error, Toast.LENGTH_LONG).show()
-    }
-
-}
+fun showCustomTabsBrowser(context: Context, url: String) = BrowserUtil.showBrowser(context, url)
 
 fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
     val filename = "${System.currentTimeMillis()}.png"

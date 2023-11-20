@@ -1,24 +1,13 @@
 package com.example.repository
 
-import androidx.core.os.bundleOf
 import com.example.api.Api
 import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthError
-import com.example.ui.snAuth.SnType
-import com.facebook.AccessToken
-import com.facebook.GraphRequest
-import getStringOrNull
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
-import org.json.JSONObject
-import ru.ok.android.sdk.Odnoklassniki
-import ru.ok.android.sdk.OkListener
 import javax.inject.Inject
 
 
@@ -29,21 +18,6 @@ class AuthRepositoryImp
         private val newApi: NewApi
 ) : ApiRepository(appData), AuthRepository {
 
-    override fun authSocialNetwork(snAuth: SnAuth): Single<Pair<RegisterStatus, SnUser>> {
-        val userRequest = when (snAuth.snType) {
-            SnType.FB -> getFbUser()
-            SnType.OK -> getOkUser()
-            else -> {Single.error(NullPointerException())}
-        }
-
-        return userRequest
-                .flatMap {
-                    val checkStatus = checkRegisterStatus(snAuth.snType.code, it.id, null)
-                    Single.zip<RegisterStatus, SnUserData, Pair<RegisterStatus, SnUser>>(checkStatus, Single.just(it), BiFunction { status, snUser ->
-                        status to SnUser(snAuth, snUser)
-                    })
-                }
-    }
 
     override fun authSocialNetwork(snType: String, token: String, email: String?, firstName: String?, lastName: String?, password: String?): Completable {
         return callAuthCompletable(
@@ -171,45 +145,6 @@ class AuthRepositoryImp
         return call(api.registerStatus(email, snType, snId))
     }
 
-
-    override fun getFbUser(): Single<SnUserData> {
-        val accessToken = AccessToken.getCurrentAccessToken()
-                ?: return Single.error(SnAuthError("No fb access token error"))
-
-        return Single.create<SnUserData> { emitter ->
-            GraphRequest.newMeRequest(accessToken) { json, _ ->
-                val id = json.getString("id")
-                val firstName = json.getStringOrNull("first_name")
-                val lastName = json.getStringOrNull("last_name")
-                val email = json.getStringOrNull("email")
-                val avatar = "https://graph.facebook.com/$id/picture?width=200&height=200"
-                emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, email))
-            }.apply {
-                parameters = bundleOf("fields" to "id,first_name,last_name,email")
-                executeAndWait()
-            }
-        }
-    }
-
-    override fun getOkUser(): Single<SnUserData> {
-        return Single.create { emitter ->
-            Odnoklassniki.instance.request("users.getCurrentUser", listener = object : OkListener {
-                override fun onError(error: String?) {
-                    emitter.onError(RuntimeException(error ?: "Ok get user error"))
-                }
-
-                override fun onSuccess(json: JSONObject) {
-                    val id = json.getString("uid")
-                    val firstName = json.getStringOrNull("first_name")
-                    val lastName = json.getStringOrNull("last_name")
-                    val avatar = json.getStringOrNull("pic_3") ?: json.getStringOrNull("pic_2")
-                    ?: json.getStringOrNull("pic_1")
-                    val email = json.getStringOrNull("email")
-                    emitter.onSuccess(SnUserData(id, firstName, lastName, avatar, email))
-                }
-            })
-        }
-    }
 
     override fun checkRecoveryCodeNew(type: String, code: String): Completable {
         return newApi.checkPasswordRecover(type, code)

@@ -1,44 +1,30 @@
 apply plugin: 'com.android.application'
-
-apply plugin: 'androidx.navigation.safeargs'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
-
+apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'com.google.gms.google-services'
-
 apply plugin: 'com.google.firebase.crashlytics'
-
 apply plugin: 'com.google.firebase.firebase-perf'
-
 apply plugin: "com.hiya.jacoco-android"
 
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 65
         versionName "1.0.39"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
-        renderscriptSupportModeEnabled true
     }
 
     buildFeatures {
         dataBinding = true
         viewBinding = true
     }
-    lintOptions {
-        abortOnError false
-        lintConfig file("../lint.xml")
-    }
-
     signingConfigs {
         release {
             storeFile file("fond.jks")
@@ -100,45 +86,15 @@ android {
         }
     }
 
-//    flavorDimensions "version"
-//    productFlavors {
-//        pro {
-//            dimension "version"
-//            buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
-//            buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
-//
-//            buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-//        }
-//        beta {
-//            dimension "version"
-//            buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
-//            buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
-//
-//            buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
-//        }
-//        "new" {
-//            dimension "version"
-//            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
-//            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-//
-//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
-//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
-//        }
-//    }
-
-
     variantFilter { variant ->
         if (variant.name == "debug") {
             setIgnore(true)
         }
+    }
+
+    lintOptions {
+        abortOnError false
+        lintConfig file("../lint.xml")
     }
 
     compileOptions {
@@ -150,18 +106,15 @@ android {
         jvmTarget = "1.8"
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-
     testOptions {
         unitTests.includeAndroidResources = true
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
-androidExtensions {
-    experimental = true
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -175,10 +128,10 @@ dependencies {
     }
 
     // support
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.7'
     implementation "androidx.activity:activity-ktx:1.2.0-beta01"
 
     // google
@@ -241,7 +194,6 @@ dependencies {
     implementation 'me.saket:better-link-movement-method:2.2.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
-    implementation 'com.romandanylyk:pageindicatorview:1.0.3'
     implementation 'com.github.shts:StoriesProgressView:3.0.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'io.coil-kt:coil:1.1.1'
@@ -254,7 +206,8 @@ dependencies {
     implementation 'com.hbb20:ccp:2.4.5'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
 
-    //markwon
+
+    //markdown
     implementation "io.noties.markwon:core:$markwon_version"
     implementation "io.noties.markwon:html:$markwon_version"
     implementation "io.noties.markwon:linkify:$markwon_version"
@@ -269,8 +222,6 @@ dependencies {
 
     // sn
     implementation 'com.vk:androidsdk:1.6.9'
-    implementation 'com.facebook.android:facebook-android-sdk:5.11.2'
-    implementation 'ru.ok:odnoklassniki-android-sdk:2.1.8'
 
     // tests
     androidTestImplementation 'androidx.test:runner:1.5.1'

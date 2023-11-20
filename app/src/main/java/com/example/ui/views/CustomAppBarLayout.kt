@@ -31,9 +31,4 @@ class CustomAppBarLayout : AppBarLayout {
         elevation = if (value <= 10f) value
         else 10f
     }
-
-    fun setScrollOffset(value : Int){
-       changeAppBarElevation(abs(value / 10f))
-    }
-
 }

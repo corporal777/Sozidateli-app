@@ -44,11 +44,6 @@ class DestinationSchemePresenter
             }
     }
 
-
-    override fun onPageChange(position: Int) {
-
-    }
-
     override fun onImageClick(url: String?) {
         if (!url.isNullOrEmpty()) viewState.showImage(url)
     }

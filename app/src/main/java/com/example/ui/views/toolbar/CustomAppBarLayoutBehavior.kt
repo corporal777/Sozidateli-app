@@ -33,16 +33,15 @@ class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
     ): Boolean {
         try {
             if (child is FragmentContainerView) {
-                val navHost = (parent.context as MainActivity).supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+                val navHost = (parent.context as MainActivity).getNavHostFragment()
                 val fr = navHost.childFragmentManager.fragments.firstOrNull()
-                if (fr != null && fr.view != null) {
-                    val rootView = fr.view
-                    if (rootView is NestedScrollView || rootView is RecyclerView) findView(rootView)
-                    else {
-                        val scrollView = rootView?.allViews?.find { x -> x is RecyclerView || x is NestedScrollView || x is ScrollView }
-                        if (scrollView != null) findView(scrollView)
-                        else onScrollChange.invoke(0)
-                    }
+                if (fr == null || fr.view == null) return super.onLayoutChild(parent, child, layoutDirection)
+
+                if (fr.view is NestedScrollView || fr.view is RecyclerView) findView(fr.view)
+                else {
+                    val scrollView = fr.view?.allViews?.find { x -> x is RecyclerView || x is NestedScrollView || x is ScrollView }
+                    if (scrollView != null) findView(scrollView)
+                    else onScrollChange.invoke(0)
                 }
             }
 
@@ -79,7 +78,8 @@ class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
                 view.onScrolled { _, _ ->
                     onScrollChange.invoke(view.computeVerticalScrollOffset())
                 }
-            } else onScrollChange.invoke(0)
+            }
+            else onScrollChange.invoke(0)
         }
     }
 
@@ -87,4 +87,6 @@ class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
         onScrollChange = scroll
         return this
     }
+
+    fun getScrollChange() = onScrollChange
 }

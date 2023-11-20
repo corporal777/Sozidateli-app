@@ -7,7 +7,5 @@ interface BaseAuthContract {
 
     interface Presenter : BaseContract.Presenter {
         fun authVk()
-        fun authFb()
-        fun authOk()
     }
 }

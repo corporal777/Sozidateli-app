@@ -4,6 +4,7 @@ import com.example.data.AppData
 import com.example.data.models.SnUser
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
+import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
 import moxy.InjectViewState
 import javax.inject.Inject
@@ -26,7 +27,6 @@ class AuthorizationPresenter
         viewState.showEmailRegistration()
     }
 
-    override fun onContinueWithSnRegistration(snUser: SnUser) {
-        viewState.showSnRegistration(snUser)
+    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
     }
 }

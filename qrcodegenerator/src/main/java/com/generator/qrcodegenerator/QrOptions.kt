@@ -1,10 +1,8 @@
 package com.generator.qrcodegenerator
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import androidx.core.content.ContextCompat
 import com.generator.qrcodegenerator.dsl.QrOptionsBuilderScope
 import com.generator.qrcodegenerator.style.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -81,7 +79,7 @@ data class QrOptions(
 
         @ExperimentalSerializationApi
         override val defaultSerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModuleFromProviders(
+            serializersModuleFromProviders(
                 QrColors,
                 QrLogo,
                 QrBackground,

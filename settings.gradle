@@ -1,17 +1,4 @@
-include ':app', ':filepicker', ':qrcodegenerator', ':calendarpager'
-//include ':chat'
-//
-//project(':chat').projectDir = new File(getExternalModuleDir())
-//
-//def getExternalModuleDir() {
-//    Properties properties = new Properties()
-//    properties.load(new File(rootDir.absolutePath + "/local.properties").newDataInputStream())
-//    def externalModuleDir = properties.getProperty('chat.module.dir', null)
-//    logger.info(externalModuleDir)
-//    if (externalModuleDir == null) {
-//        throw new GradleException(
-//                "Module location not found. Define location with module.dir in the local.properties file!")
-//    }
-//    return externalModuleDir
-//}
+include ':app'
+include ':filepicker'
+include ':qrcodegenerator'
 include ':calendarpager'

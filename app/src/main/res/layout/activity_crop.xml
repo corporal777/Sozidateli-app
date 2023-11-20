@@ -63,7 +63,6 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSave"
-                    style="@style/MessengerButton"
                     android:layout_width="0dp"
                     android:layout_height="43dp"
                     android:layout_marginStart="8dp"

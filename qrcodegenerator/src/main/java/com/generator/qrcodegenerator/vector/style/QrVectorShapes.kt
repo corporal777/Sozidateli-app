@@ -1,7 +1,7 @@
 package com.generator.qrcodegenerator.vector.style
 
 import com.generator.qrcodegenerator.SerializationProvider
-import com.generator.qrcodegenerator.SerializersModuleFromProviders
+import com.generator.qrcodegenerator.serializersModuleFromProviders
 import com.generator.qrcodegenerator.style.QrFrameShape
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -24,7 +24,7 @@ data class QrVectorShapes(
     companion object : SerializationProvider {
         @ExperimentalSerializationApi
         override val defaultSerializersModule: SerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModuleFromProviders(
+            serializersModuleFromProviders(
                 QrVectorPixelShape,
                 QrVectorBallShape,
                 QrFrameShape

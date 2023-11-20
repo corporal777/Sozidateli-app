@@ -2,11 +2,9 @@ package com.generator.qrcodegenerator.vector
 
 import android.graphics.Bitmap
 import androidx.annotation.FloatRange
-import androidx.core.content.ContextCompat
 import com.generator.qrcodegenerator.QrErrorCorrectionLevel
-import com.generator.qrcodegenerator.R
 import com.generator.qrcodegenerator.SerializationProvider
-import com.generator.qrcodegenerator.SerializersModuleFromProviders
+import com.generator.qrcodegenerator.serializersModuleFromProviders
 import com.generator.qrcodegenerator.style.*
 import com.generator.qrcodegenerator.vector.dsl.InternalQrVectorOptionsBuilderScope
 import com.generator.qrcodegenerator.vector.dsl.QrVectorOptionsBuilderScope
@@ -67,7 +65,7 @@ data class QrVectorOptions(
     companion object : SerializationProvider {
         @ExperimentalSerializationApi
         override val defaultSerializersModule: SerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModuleFromProviders(
+            serializersModuleFromProviders(
                 QrVectorShapes, QrVectorColors, QrLogo
             )
         }
