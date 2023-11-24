@@ -18,6 +18,7 @@ import com.xwray.groupie.databinding.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_register_event_input.*
 import onTextChanged
 
+
 class ProfileDataFileEditableItem(
     val file: FileModel,
     private val onFileClick: (file: FileModel) -> Unit,

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Созидатели</string>
     <string name="app_default_notification_channel_name">Уведомления</string>
     <string name="app_default_url_sozidateli_name">Sozidateli.ru</string>
@@ -796,7 +796,10 @@
     <string name="password_letters">- Строчные буквы</string>
     <string name="password_numbers">- Цифры</string>
     <string name="password_to_small">- Больше символов</string>
-    <string name="password_to_small_new">- 8 символов</string>
+    <string name="password_to_small_error">• 8 символов</string>
+    <string name="password_numbers_error">• Цифры</string>
+    <string name="password_letters_error">• Заглавные латинские буквы</string>
+
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальные символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>
     <string name="add_phone_dialog_text">Пожалуйста, укажите Ваш актуальный мобильный номер телефона. Вы сможете использовать этот номер для входа в аккаунт и восстановления пароля.\nМы будем использовать этот номер только для обеспечения безопасности вашего аккаунта. Номер не будет виден другим пользователям. При желании Вы сможете выбрать, нужно ли использовать его для других целей.</string>
@@ -981,6 +984,7 @@
     <string name="unblock_user">Разблокировать пользователя</string>
     <string name="block_user">Заблокировать пользователя</string>
     <string name="short_name_label">Короткое имя</string>
+    <string name="input_short_name_hint">Введите короткое имя</string>
     <string name="short_name_description">Короткое имя позволит другим людям быстрее найти вас или упомянуть в своих записях.</string>
     <string name="short_name_invalid_error">Адрес уже занят, пожалуйста, выберите другой вариант</string>
     <string name="your_short_name_link_in_sozidateli">Ваша ссылка в «Созидателях»:</string>
@@ -1069,4 +1073,7 @@
     <string name="choose_file">Выбрать файл</string>
     <string name="support_upload_file_title">PDF, JPEG, PNG, TIFF; не более 10 МБ</string>
     <string name="support_search_data_not_found">К сожалению, ничего не найдено.\nПопробуйте изменить поисковой запрос.</string>
+    <string name="auth_user_agreement">Я подтверждаю, что ознакомлен(а) и принимаю условия пользовательского соглашения</string>
+
+
 </resources>

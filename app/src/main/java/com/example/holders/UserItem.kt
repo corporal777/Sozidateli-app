@@ -3,32 +3,30 @@ package com.example.holders
 import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.databinding.ItemUserBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_user.*
-import setCircleImage
+import com.xwray.groupie.databinding.BindableItem
 
 class UserItem(
-        private val id: Int,
-        private val name: String,
-        private val description: String?,
-        private val avatar: String?,
-        private val onUserClick: () -> Unit,
-        var action: UserSubscribeButton.Action? = null,
-        private val onActionClick: (() -> Unit)? = null
-) : Item(id.toLong()) {
+    private val id: Int,
+    private val name: String,
+    private val description: String?,
+    private val avatar: String?,
+    private val onUserClick: () -> Unit,
+    var action: UserSubscribeButton.Action? = null,
+    private val onActionClick: (() -> Unit)? = null
+) : BindableItem<ItemUserBinding>(id.toLong()) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemUserBinding, position: Int) {
+        viewBinding.apply {
             tvUserName.text = name
             tvDescription.apply {
                 isVisible = !description.isNullOrEmpty()
                 text = description
             }
             ivUserAvatar.setCircleAvatar(avatar)
-            itemView.setOnClickListener { onUserClick.invoke() }
+            root.setOnClickListener { onUserClick.invoke() }
             btnAction.apply {
                 val action = this@UserItem.action
                 visibility = if (action != null) {
@@ -42,15 +40,17 @@ class UserItem(
         }
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) super.bind(viewHolder, position, payloads)
+
+    override fun bind(viewBinding: ItemUserBinding, position: Int, payloads: MutableList<Any>?) {
+        if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else {
             val payload = payloads.firstOrNull() ?: return
             if (payload is UserSubscribeButton.Action) {
-                viewHolder.btnAction.setAction(payload)
+                viewBinding.btnAction.setAction(payload)
             }
         }
     }
+
 
     override fun getLayout() = R.layout.item_user
 

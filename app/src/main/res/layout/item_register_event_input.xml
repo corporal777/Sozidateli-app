@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/EventRegistrationItemContainer">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/textInputLayout"
-        style="@style/Profile.Edit.PasswordNew"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:endIconMode="none">
+    <LinearLayout style="@style/EventRegistrationItemContainer">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEditText"
-            style="@style/Profile.Edit.InputEventRegister"
-            android:gravity="top"
-            tools:hint="@string/profile_phone_hint" />
-    </com.example.ui.views.CustomTextInputLayout>
-</LinearLayout>
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/textInputLayout"
+            style="@style/Profile.Edit.PasswordNew"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="none">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEditText"
+                style="@style/Profile.Edit.InputEventRegister"
+                android:gravity="top"
+                tools:hint="@string/profile_phone_hint" />
+        </com.example.ui.views.CustomTextInputLayout>
+    </LinearLayout>
+</layout>

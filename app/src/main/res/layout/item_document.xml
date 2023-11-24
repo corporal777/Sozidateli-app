@@ -1,72 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/background_highlight"
-    android:theme="@style/ViewBackgroundWhite">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/ivDownload"
-        android:layout_width="17dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_document"
-        app:layout_constraintBottom_toTopOf="@+id/tvFileData"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/tvFileData"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:lineSpacingExtra="0dp"
-        android:textSize="10sp"
-        android:transitionName="eventLabel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/ivDownload"
-        app:layout_constraintStart_toStartOf="@+id/ivDownload"
-        app:layout_constraintTop_toBottomOf="@+id/ivDownload"
-        tools:text="txt\n2 мб" />
+        android:background="@drawable/background_highlight"
+        android:theme="@style/ViewBackgroundWhite">
 
-    <TextView
-        android:id="@+id/tvDate"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-        android:textSize="12sp"
-        android:transitionName="eventLabel"
-        app:layout_constraintBottom_toTopOf="@+id/tvDocumentName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivDownload"
-        app:layout_constraintTop_toTopOf="@+id/ivDownload"
-        app:layout_constraintVertical_chainStyle="spread_inside"
-        tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/date/ddmmyy" />
+        <ImageView
+            android:id="@+id/ivDownload"
+            android:layout_width="17dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_document"
+            app:layout_constraintBottom_toTopOf="@+id/tvFileData"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvDocumentName"
-        fontPath="fonts/Roboto-Bold.ttf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-        android:maxLines="2"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp"
-        android:transitionName="eventLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/tvFileData"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivDownload"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate"
-        tools:ignore="MissingPrefix"
-        tools:text="@tools:sample/lorem" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvFileData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:lineSpacingExtra="0dp"
+            android:textSize="10sp"
+            android:transitionName="eventLabel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/ivDownload"
+            app:layout_constraintStart_toStartOf="@+id/ivDownload"
+            app:layout_constraintTop_toBottomOf="@+id/ivDownload"
+            tools:text="txt\n2 мб" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            fontPath="fonts/Roboto-Medium.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:textSize="12sp"
+            android:transitionName="eventLabel"
+            app:layout_constraintBottom_toTopOf="@+id/tvDocumentName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivDownload"
+            app:layout_constraintTop_toTopOf="@+id/ivDownload"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:ignore="MissingPrefix"
+            tools:text="@tools:sample/date/ddmmyy" />
+
+        <TextView
+            android:id="@+id/tvDocumentName"
+            fontPath="fonts/Roboto-Bold.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:maxLines="2"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:transitionName="eventLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFileData"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivDownload"
+            app:layout_constraintTop_toBottomOf="@+id/tvDate"
+            tools:ignore="MissingPrefix"
+            tools:text="@tools:sample/lorem" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -16,7 +16,7 @@ import parseColor
 import setOnClickListener
 
 class EventFavoriteItem(
-        val event: /*Event*/EventNew,
+        val event: EventNew,
         private val onEventClick: () -> Unit,
         private val onEventActionClick: () -> Unit,
         private val onEventSubeventsClick: () -> Unit

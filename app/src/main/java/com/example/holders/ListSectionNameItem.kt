@@ -4,20 +4,19 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.R
+import com.example.databinding.ItemListSectionNameBinding
 import com.example.extensions.dp
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_list_section_name.*
+import com.xwray.groupie.databinding.BindableItem
 
 class ListSectionNameItem(
-        id: Long,
-        private val name: String? = null
-) : Item(id) {
+    id: Long,
+    private val name: String? = null
+) : BindableItem<ItemListSectionNameBinding>(id) {
 
     var withTopMargin = false
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.tvName.apply {
+    override fun bind(viewBinding: ItemListSectionNameBinding, position: Int) {
+        viewBinding.tvName.apply {
             text = name
             isVisible = !name.isNullOrEmpty()
             updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -25,6 +24,7 @@ class ListSectionNameItem(
             }
         }
     }
+
 
     override fun getLayout() = R.layout.item_list_section_name
 }

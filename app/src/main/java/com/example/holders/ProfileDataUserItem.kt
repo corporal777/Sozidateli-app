@@ -15,6 +15,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_profile_data_user.*
 
+
 class ProfileDataUserItem(
         id: Long,
         private val avatarUrl: String?,

@@ -1,13 +1,14 @@
 package com.example.ui.auth.login
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
 import com.example.data.bodies.RebaseInviteBody
 import com.example.data.models.ApiError
 import com.example.data.models.NewAuthResponse
-import com.example.data.models.SnUser
+import com.example.extensions.getAppVersion
+import com.example.extensions.getAppVersionCode
+import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.ui.auth.base.BaseAuthPresenter
 import com.example.ui.snAuth.SnAuth
@@ -17,9 +18,6 @@ import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
 import com.example.util.Utils.newPhoneValidator
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.example.util.getAppVersion
-import com.example.util.getAppVersionCode
-import com.example.util.getDeviceName
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState

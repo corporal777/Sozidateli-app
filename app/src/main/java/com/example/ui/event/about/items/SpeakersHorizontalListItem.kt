@@ -1,12 +1,16 @@
 package com.example.ui.event.about.items
 
 import android.graphics.Color
+import com.example.R
 import com.example.data.models.MemberModel
+import com.example.databinding.ItemSpeakersHorizontalListBinding
 import com.example.holders.HorizontalListItem
+import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventSpeakerItem
 import com.example.holders.redesign.ShowAllSpeakersItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SpeakersHorizontalListItem(
@@ -14,7 +18,7 @@ class SpeakersHorizontalListItem(
     val canShowMore: Boolean,
     val onItemClick: (id: Int) -> Unit,
     val showAllSpeakers: () -> Unit
-) : HorizontalListItem<GroupieViewHolder>() {
+) : BindableItem<ItemSpeakersHorizontalListBinding>(-1006L) {
 
     val items = arrayListOf<Item<*>>().apply {
         addAll(data.map {
@@ -26,16 +30,27 @@ class SpeakersHorizontalListItem(
                 it.binds?.user?.state?.isRegistered ?: false
             ) { id -> onItemClick(id) }
         })
-        if (canShowMore) {
-            add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
+        if (canShowMore) add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
+    }
+
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            addAll(items)
         }
     }
 
-    init {
-        adapter = GroupAdapter<GroupieViewHolder>().apply {
-            addAll(items)
-            backgroundColor = Color.WHITE
+    override fun bind(viewBinding: ItemSpeakersHorizontalListBinding, position: Int) {
+        viewBinding.apply {
+            recyclerView.adapter = groupAdapter
         }
     }
+
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is SpeakersHorizontalListItem) return false
+        if (data != other.data) return false
+        return true
+    }
+
+    override fun getLayout(): Int = R.layout.item_speakers_horizontal_list
 
 }

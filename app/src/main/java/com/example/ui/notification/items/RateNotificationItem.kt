@@ -6,19 +6,20 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationRateNewBinding
+import com.example.databinding.ItemNotificationRateBinding
+import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class RateNotificationItem(
     private val context: Context,
     private val notification: Notification,
     private val listener: OnNotificationActionListener
-) : NotificationItem<ItemNotificationRateNewBinding>(
+) : NotificationItem<ItemNotificationRateBinding>(
     context,
     notification,
     listener
 ) {
 
-    override fun bind(viewBinding: ItemNotificationRateNewBinding, position: Int) {
+    override fun bind(viewBinding: ItemNotificationRateBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.apply {
             btnRate.apply {
@@ -34,7 +35,7 @@ class RateNotificationItem(
 
 
     override fun bind(
-        viewBinding: ItemNotificationRateNewBinding,
+        viewBinding: ItemNotificationRateBinding,
         position: Int,
         payloads: MutableList<Any>?
     ) {
@@ -43,37 +44,18 @@ class RateNotificationItem(
         else {
             if (payload is Notification) {
                 notification.wasRead = payload.wasRead
-                viewBinding.apply {
-                    btnRate.apply {
-                        isVisible = !notification.wasRead
-                        setOnClickListener {
-                            notification.rateId?.let {
-                                listener.onRateClickListener(it)
-                            }
-                        }
-                    }
-                }
+                viewBinding.btnRate.isVisible = !notification.wasRead
                 super.bind(viewBinding, position, payloads)
             }
         }
-
     }
 
-    override fun getTitleView(viewBinding: ItemNotificationRateNewBinding): TextView =
-        viewBinding.tvTitle
+    override fun getTitleView(binding: ItemNotificationRateBinding): TextView = binding.tvTitle
+    override fun getMessageView(binding: ItemNotificationRateBinding): CustomExpandableTextView = binding.tvMessage
+    override fun getReadMoreView(binding: ItemNotificationRateBinding): View = binding.tvReadMore
+    override fun getBadgeView(binding: ItemNotificationRateBinding): View = binding.viewBadge
+    override fun getRootView(binding: ItemNotificationRateBinding): View = binding.clRateNotification
 
-    override fun getMessageView(viewBinding: ItemNotificationRateNewBinding): TextView =
-        viewBinding.tvMessage
-
-    override fun getReadMoreView(viewBinding: ItemNotificationRateNewBinding): View =
-        viewBinding.tvReadMore
-
-    override fun getBadgeView(viewBinding: ItemNotificationRateNewBinding): View =
-        viewBinding.viewBadge
-
-    override fun getRootView(viewBinding: ItemNotificationRateNewBinding): View =
-        viewBinding.clRateNotification
-
-    override fun getLayout() = R.layout.item_notification_rate_new
+    override fun getLayout() = R.layout.item_notification_rate
 }
 

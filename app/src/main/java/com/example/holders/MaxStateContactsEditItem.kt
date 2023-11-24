@@ -15,6 +15,7 @@ import com.example.R
 import com.example.data.models.*
 import com.example.databinding.ItemMaxStateMainInfoBinding
 import com.example.databinding.ItemProfileSocialNetworkBinding
+import com.example.extensions.phoneToServer
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.xwray.groupie.databinding.BindableItem
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.item_max_state_main_info.sitesError
 import kotlinx.android.synthetic.main.item_max_state_main_info.tilAdditionalNumber
 import kotlinx.android.synthetic.main.item_max_state_main_info.tilWorkPhone
 import onTextChanged
+
 
 class MaxStateContactsEditItem(
     id: Long,

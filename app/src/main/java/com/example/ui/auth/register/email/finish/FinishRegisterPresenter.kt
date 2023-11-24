@@ -8,6 +8,9 @@ import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.exceptions.CodeInvalidException
+import com.example.extensions.getAppVersion
+import com.example.extensions.getAppVersionCode
+import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository

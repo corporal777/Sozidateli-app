@@ -7,11 +7,10 @@ import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
+import com.example.databinding.ItemProfileDataEditAcademicDegreeBinding
 import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_edit_academic_degree.*
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataAcademicDegreeEditItem(
     id: Int?,
@@ -21,7 +20,7 @@ class ProfileDataAcademicDegreeEditItem(
     private val availableSciences: List<EducationLevel>,
     private val showInProfile: Boolean?,
     private val onRemoveClickListener: (ProfileDataAcademicDegreeEditItem) -> Unit
-) : Item(id?.toLong() ?: 0) {
+) : BindableItem<ItemProfileDataEditAcademicDegreeBinding>(id?.toLong() ?: 0) {
 
     var isDeleteVisible = true
 
@@ -37,8 +36,8 @@ class ProfileDataAcademicDegreeEditItem(
     var mShowInProfile = showInProfile ?: false
         private set
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataEditAcademicDegreeBinding, position: Int) {
+        viewBinding.apply {
             setupDropDown(tvDegreesLevel, tilDegreesLevel, availableDegrees, mDegreesLevel) {
                 mDegreesLevel = it?.name
             }
@@ -50,28 +49,27 @@ class ProfileDataAcademicDegreeEditItem(
 
             scEducation.initSwitch(mShowInProfile) { mShowInProfile = it }
 
-            if (isDeleteVisible)
-                btnRemove.visibility = View.VISIBLE
-            else
-                btnRemove.visibility = View.GONE
+            if (isDeleteVisible) btnRemove.visibility = View.VISIBLE
+            else btnRemove.visibility = View.GONE
         }
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) super.bind(viewHolder, position, payloads)
+    override fun bind(viewBinding: ItemProfileDataEditAcademicDegreeBinding, position: Int, payloads: MutableList<Any>?) {
+        if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else {
             if (!isDegreeValid()) {
-                viewHolder.tilDegreesLevel.apply {
+                viewBinding.tilDegreesLevel.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)
                 }
             }
             if (!isSciencesValid()) {
-                viewHolder.tilSciencesLevel.apply {
+                viewBinding.tilSciencesLevel.apply {
                     error = resources.getString(R.string.profile_edit_empty_field_error)
                 }
             }
         }
     }
+
 
     private fun setupDropDown(
         textView: AutoCompleteTextView,

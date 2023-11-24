@@ -3,18 +3,18 @@ package com.example.holders
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.UserInterest
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_data_edit_interest.*
+import com.example.databinding.ItemProfileDataEditInterestBinding
+import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.databinding.GroupieViewHolder
 
 class ProfileDataInterestEditItem(
-        private val userInterest: UserInterest,
-        private val compactBottom: Boolean,
-        private val onCheckChanged: () -> Unit
-) : Item(userInterest.interest.id?.toLong()?: 0) {
+    private val userInterest: UserInterest,
+    private val compactBottom: Boolean,
+    private val onCheckChanged: () -> Unit
+) : BindableItem<ItemProfileDataEditInterestBinding>(userInterest.interest.id?.toLong() ?: 0) {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataEditInterestBinding, position: Int) {
+        viewBinding.apply {
             cbInterest.apply {
                 text = userInterest.interest.name
                 isChecked = userInterest.isUserInterest
@@ -27,12 +27,14 @@ class ProfileDataInterestEditItem(
         }
     }
 
-    override fun unbind(holder:GroupieViewHolder) {
-        holder.cbInterest.apply {
+
+    override fun unbind(viewHolder: GroupieViewHolder<ItemProfileDataEditInterestBinding>) {
+        viewHolder.binding.cbInterest.apply {
             setOnCheckedChangeListener(null)
         }
-        super.unbind(holder)
+        super.unbind(viewHolder)
     }
+
 
     override fun getLayout() = R.layout.item_profile_data_edit_interest
 }

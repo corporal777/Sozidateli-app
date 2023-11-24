@@ -38,7 +38,6 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
-import com.example.util.firstLetterToUppercase
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section

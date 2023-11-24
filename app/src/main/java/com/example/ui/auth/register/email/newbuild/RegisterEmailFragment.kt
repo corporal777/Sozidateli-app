@@ -12,12 +12,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentRegisterEmailNewBinding
+import com.example.extensions.removeFirstAndLastSpaces
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.CustomSpannableString
 import com.example.util.AuthValidateUtil
 import com.example.util.getNameFilter
-import com.example.util.removeFirstAndLastSpaces
+import com.example.util.initInput
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

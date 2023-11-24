@@ -4,9 +4,7 @@ import android.content.Context
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.ItemEditMainInfoBinding
-import com.example.extensions.defaultDateFormatter
-import com.example.extensions.formatToDefaultDate
-import com.example.extensions.formatToDefaultServerDate
+import com.example.extensions.*
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
@@ -14,6 +12,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import initAsDatePicker
 import java.util.*
+
 
 
 class MainInfoEditItem(

@@ -1,8 +1,6 @@
 package com.example.repository
 
-import android.graphics.Bitmap
 import com.example.api.Api
-import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
@@ -12,15 +10,13 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.RequestBody
-import toBodyPart
 import javax.inject.Inject
 
 
 class ChatRepositoryImpl
 @Inject constructor(
     private val appData: AppData,
-    private val api: Api,
-    private val newApi: NewApi
+    private val api: Api
 ) : ApiRepository(appData), ChatRepository {
 
     /*override fun loadChatList(limit: Int, offset: Int): Maybe<ApiResponse<ChatListResponse>> {
@@ -39,15 +35,6 @@ class ChatRepositoryImpl
         return call(api.chatStart(userId))
     }*/
 
-    override fun uploadImage(
-        chatId: String,
-        bitmap: Bitmap
-    ): Single<ApiResponseUpload<UploadImage>> {
-        return api.uploadChatImage(
-            chatId,
-            bitmap.toBodyPart("file[0]", "image.png")
-        )
-    }
 
     /*override fun getChat(chatId: String): Single<UserChat> {
         return call(api.getChat(chatId))
@@ -70,16 +57,16 @@ class ChatRepositoryImpl
     }*/
 
     override fun getChats(map: Map<String, Any>): Maybe<ApiNewResponse<List<ChatModel>>> =
-        newApi.getChats(map)
+        api.getChats(map)
 
     override fun getChatById(chatId: String, map: Map<String, Any>): Single<ChatModel> =
-        newApi.getChatById(chatId, map)
+        api.getChatById(chatId, map)
 
     override fun createChat(body: CreateChatBody): Single<CreatedChatModel> =
-        newApi.createChat(body)
+        api.createChat(body)
 
     override fun bannedList(map: Map<String, Any>): Maybe<PaginationResponse<UserChat>> =
-        newApi.bannedList(map).map {
+        api.bannedList(map).map {
             val result = mutableListOf<UserChat>()
             it.data.forEach { chat ->
                 result.add(
@@ -108,16 +95,16 @@ class ChatRepositoryImpl
         }
 
     override fun chatBann(body: CreateChatBody): Single<BannedUsersModel> =
-        newApi.chatBan(body)
+        api.chatBan(body)
 
     override fun deleteBan(id: Int): Completable =
-        newApi.deleteBan(id)
+        api.deleteBan(id)
 
     override fun acceptChat(id: Int): Completable =
-        newApi.acceptChat(id)
+        api.acceptChat(id)
 
     override fun getChatInvitesCount(): Single<ChatInvitesCount> =
-        newApi.getChatsCount(
+        api.getChatsCount(
             mapOf(
                 ChatModel.CHAT_SORT to "desc",
                 ChatModel.CHAT_LIMIT to 1,
@@ -131,22 +118,22 @@ class ChatRepositoryImpl
         }
 
     override fun sendChatMessage(body: RequestBody): Single<MessageModel> {
-        return newApi.sendChatMessage(body)
+        return api.sendChatMessage(body)
     }
 
     override fun sendChatMessageNew(body: MessageBodyNew): Single<MessageModel> {
-        return newApi.sendChatMessageNew(body)
+        return api.sendChatMessageNew(body)
     }
 
     override fun getChatMessages(map: Map<String, Any>): Single<ApiNewResponse<List<MessageModel>>> =
-        newApi.getChatMessages(map)
+        api.getChatMessages(map)
 
     override fun getChatMessagesPagination(map: Map<String, Any>): Maybe<PaginationResponse<MessageModel>> {
-        return newApi.getChatMessages(map).flatMapMaybe {
+        return api.getChatMessages(map).flatMapMaybe {
             Maybe.just(PaginationResponse(it.totalCount, it.data ?: arrayListOf()))
         }
     }
 
     override fun markMessageAsRead(id: Int): Completable =
-        newApi.markMessageAsRead(id)
+        api.markMessageAsRead(id)
 }

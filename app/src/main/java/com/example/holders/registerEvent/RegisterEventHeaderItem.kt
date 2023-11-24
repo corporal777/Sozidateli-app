@@ -2,10 +2,9 @@ package com.example.holders.registerEvent
 
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.util.markWon
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_register_event_header.*
+import com.example.databinding.ItemRegisterEventHeaderBinding
+import com.example.extensions.markWon
+import com.xwray.groupie.databinding.BindableItem
 
 open class RegisterEventHeaderItem(
         id: Long,
@@ -15,9 +14,10 @@ open class RegisterEventHeaderItem(
         private val finishDate: String?,
         private val formTitle: String?,
         private val formDescription: String?
-) : Item(id) {
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+) : BindableItem<ItemRegisterEventHeaderBinding>(id) {
+
+    override fun bind(viewBinding: ItemRegisterEventHeaderBinding, position: Int) {
+        viewBinding.apply {
             tvEventName.apply {
                 isVisible = !eventName.isNullOrEmpty()
                 text = eventName

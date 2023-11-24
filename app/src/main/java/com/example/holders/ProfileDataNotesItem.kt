@@ -1,16 +1,15 @@
 package com.example.holders
 
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_data_notes.*
+import com.example.databinding.ItemProfileDataNotesBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataNotesItem(
-        private val notes: String
-) : Item() {
+    private val notes: String
+) : BindableItem<ItemProfileDataNotesBinding>() {
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataNotesBinding, position: Int) {
+        viewBinding.apply {
             tvNotes.text = notes
         }
     }

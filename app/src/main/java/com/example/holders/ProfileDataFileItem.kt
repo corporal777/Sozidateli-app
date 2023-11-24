@@ -1,17 +1,16 @@
 package com.example.holders
 
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_file_name.*
+import com.example.databinding.ItemFileNameBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataFileItem(
-        private val name: String,
-        private val onFileClick: () -> Unit
-) : Item() {
+    private val name: String,
+    private val onFileClick: () -> Unit
+) : BindableItem<ItemFileNameBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemFileNameBinding, position: Int) {
+        viewBinding.apply {
             tvFileName.apply {
                 text = name
                 isClickable = false

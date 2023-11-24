@@ -4,87 +4,81 @@ import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationAcceptNewBinding
+import com.example.databinding.ItemNotificationAcceptBinding
 import com.example.ui.views.CtpDialog
+import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.ClickableSpanNew
 
 class AcceptNotificationItem(
     private val context: Context,
     private val notification: Notification,
     private val listener: OnNotificationActionListener
-) : NotificationItem<ItemNotificationAcceptNewBinding>(
+) : NotificationItem<ItemNotificationAcceptBinding>(
     context,
     notification,
     listener
 ) {
 
-    override fun bind(viewBinding: ItemNotificationAcceptNewBinding, position: Int) {
+    override fun bind(viewBinding: ItemNotificationAcceptBinding, position: Int) {
         super.bind(viewBinding, position)
         decorViews(viewBinding, notification)
     }
 
-    private fun decorViews(
-        viewBinding: ItemNotificationAcceptNewBinding,
-        notification: Notification
-    ) {
+    private fun decorViews(viewBinding: ItemNotificationAcceptBinding, notification: Notification) {
         viewBinding.apply {
+            tvDecline.apply {
+                highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+            btnAccept.setOnClickListener { listener.onAcceptClickListener(notification, true) }
+            btnCancel.setOnClickListener { listener.onAcceptClickListener(notification, false) }
+
             when (notification.acceptState) {
                 Notification.AcceptState.NONE -> {
-                    lnDecline.isVisible = false
-                    btnAccept.apply {
-                        isVisible = true
-                        setOnClickListener { listener.onAcceptClickListener(notification, true) }
-                    }
-                    btnCancel.apply {
-                        isVisible = true
-                        setOnClickListener { listener.onAcceptClickListener(notification, false) }
-                    }
+                    btnAccept.isVisible = true
+                    btnCancel.isVisible = true
+                    clActions.background = null
+                    tvDecline.isVisible = false
                 }
                 Notification.AcceptState.DISABLED -> {
-                    lnDecline.apply {
-                        isVisible = true
-                        tvDecline.text = resources.getString(R.string.notifications_state_disabled)
-                    }
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-
+                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    tvDecline.apply {
+                        isVisible = true
+                        text = context.getString(R.string.notifications_state_disabled)
+                    }
                 }
                 Notification.AcceptState.ACCEPTED -> {
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-                    lnDecline.isVisible = true
+                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
                     tvDecline.apply {
-                        highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
-                        text = getNotificationAcceptedText(this)
-                        movementMethod = LinkMovementMethod.getInstance()
+                        isVisible = true
+                        text = getNotificationAcceptedText(tvDecline)
                     }
                 }
                 Notification.AcceptState.CANCELED -> {
                     btnCancel.isVisible = false
                     btnAccept.isVisible = false
-                    lnDecline.isVisible = true
+                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
                     tvDecline.apply {
-                        highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
-                        text = getNotificationDeclinedText(this)
-                        movementMethod = LinkMovementMethod.getInstance()
+                        isVisible = true
+                        text = getNotificationDeclinedText(tvDecline)
                     }
                 }
             }
         }
     }
 
-    override fun bind(
-        viewBinding: ItemNotificationAcceptNewBinding,
-        position: Int,
-        payloads: MutableList<Any>?
-    ) {
+    override fun bind(viewBinding: ItemNotificationAcceptBinding, position: Int, payloads: MutableList<Any>?) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
@@ -97,14 +91,10 @@ class AcceptNotificationItem(
         }
     }
 
-    private fun showCancelInfo(context: Context) {
-        CtpDialog(context)
-            .setSelectCallback {}
-    }
 
     private fun getNotificationAcceptedText(textView: TextView): SpannableString {
         val clickableSpan = ClickableSpanNew(textView) {
-            showCancelInfo(textView.context)
+            CtpDialog(context).setSelectCallback {}
         }
         return when (notification.partitionType) {
             //"event" -> SpannableString("Приглашение было принято.")
@@ -132,20 +122,11 @@ class AcceptNotificationItem(
         }
     }
 
-    override fun getTitleView(viewBinding: ItemNotificationAcceptNewBinding): TextView =
-        viewBinding.tvTitle
+    override fun getTitleView(binding: ItemNotificationAcceptBinding): TextView = binding.tvTitle
+    override fun getMessageView(binding: ItemNotificationAcceptBinding): CustomExpandableTextView = binding.tvMessage
+    override fun getReadMoreView(binding: ItemNotificationAcceptBinding): View = binding.tvReadMore
+    override fun getBadgeView(binding: ItemNotificationAcceptBinding): View = binding.viewBadge
+    override fun getRootView(binding: ItemNotificationAcceptBinding): View = binding.lnAcceptNotification
 
-    override fun getMessageView(viewBinding: ItemNotificationAcceptNewBinding): TextView =
-        viewBinding.tvMessage
-
-    override fun getReadMoreView(viewBinding: ItemNotificationAcceptNewBinding): View =
-        viewBinding.tvReadMore
-
-    override fun getBadgeView(viewBinding: ItemNotificationAcceptNewBinding): View =
-        viewBinding.viewBadge
-
-    override fun getRootView(viewBinding: ItemNotificationAcceptNewBinding): View =
-        viewBinding.clAcceptNotification
-
-    override fun getLayout() = R.layout.item_notification_accept_new
+    override fun getLayout() = R.layout.item_notification_accept
 }

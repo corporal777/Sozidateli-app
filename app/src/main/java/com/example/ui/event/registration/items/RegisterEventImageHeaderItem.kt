@@ -2,19 +2,14 @@ package com.example.ui.event.registration.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemRegisterEventHeaderNewBinding
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToEventDatesIntervalOnMain
-import com.example.util.markWon
+import com.example.extensions.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
-import java.util.*
 
 class RegisterEventImageHeaderItem(
     id: Long,

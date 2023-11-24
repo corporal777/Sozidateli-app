@@ -1,15 +1,15 @@
 package com.example.holders
 
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_chat_list_empty.*
+import com.example.databinding.ItemEmptyBinding
+import com.xwray.groupie.databinding.BindableItem
 
-class EmptyItem(private val text: String): Item(-1L) {
+class EmptyItem(private val text: String) : BindableItem<ItemEmptyBinding>(-1L) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.tvNoChats.text = text
+    override fun bind(viewBinding: ItemEmptyBinding, position: Int) {
+        viewBinding.tvNoChats.text = text
     }
+
 
     override fun getLayout() = R.layout.item_empty
 

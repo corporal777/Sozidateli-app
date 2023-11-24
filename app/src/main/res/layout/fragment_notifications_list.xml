@@ -86,7 +86,7 @@
                 android:clipToPadding="false"
                 android:descendantFocusability="beforeDescendants"
                 android:paddingBottom="70dp"
-                tools:listitem="@layout/item_notification_simple_new" />
+                tools:listitem="@layout/item_notification_simple" />
         </com.example.ui.views.CustomSwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

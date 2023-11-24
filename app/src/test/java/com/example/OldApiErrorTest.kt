@@ -4,7 +4,7 @@ import com.example.data.models.ApiError
 import org.junit.Assert
 import org.junit.Test
 
-class ApiErrorTest {
+class OldApiErrorTest {
 
     private fun createApiError(
             errors: List<String>

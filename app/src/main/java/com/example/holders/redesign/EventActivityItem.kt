@@ -1,12 +1,11 @@
 package com.example.holders.redesign
 
 import android.content.Context
-import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
-import android.util.Log
-import android.util.TypedValue
+import android.view.View
 import android.widget.CompoundButton
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
@@ -18,15 +17,12 @@ import com.example.data.models.Tag
 import com.example.databinding.ItemLectureBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToIntervalNew
+import com.example.extensions.markWon
 import com.example.ui.views.TagChipNew
-import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.URLSpanNoUnderline
-import com.example.util.markWon
+import com.example.util.getDrawable
 import com.example.util.weak
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_lecture.*
 
 
 class EventActivityItem(
@@ -38,13 +34,11 @@ class EventActivityItem(
 ) : BindableItem<ItemLectureBinding>(subEvent.id?.toLong() ?: 0) {
 
     private val mClickListener by weak(clickListener)
-    private val mTime = subEvent.holdingDate?.from.formatToIntervalNew(
-        subEvent.holdingDate?.to,
-        defaultServerDateTimeFormatter,
-        true
-    )
-
+    private val mTime = subEvent.holdingDate?.from.formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
     private var canShowButton = false
+    private var isCollapsed = true
+    private var isMessageLong = false
+
 
     init {
         canShowButton = canShow
@@ -70,60 +64,49 @@ class EventActivityItem(
             }
 
             tvLectureDesc.apply {
-                originalText = getMarkdownFormattedText(root.context, subEvent.description)
-                limitedMaxLines = 5
-                expandAction = SpannableStringBuilder(context.getString(R.string.yet_btn_text))
+                isVisible = !subEvent.description.isNullOrEmpty()
+                isTextCollapsed = isCollapsed
+                originalText = fullMarkdownText(context, subEvent.description)
+            }
+            tvReadMore.apply {
+                isVisible = isMessageLong
+                changeTextReadMore(!isCollapsed)
+                setOnClickListener {
+                    tvLectureDesc.toggle()
+                    isCollapsed = !isCollapsed
+                    changeTextReadMore(!isCollapsed)
+                    tvLectureDesc.isTextCollapsed = isCollapsed
+                }
             }
 
-            decorActionButton(canShowButton, btnAddToTimetable, subEvent)
-
             tagGroup.apply {
-                val createChip: (Tag) -> CompoundButton = {
-                    TagChipNew(context).apply {
-                        id = it.id.toInt()
-                        text = it.name
-                        isChecked = true
-                        isClickable = false
-                    }
-                }
-
                 removeAllViews()
                 if (!selectedTags.isNullOrEmpty() && !subEvent.tag.isNullOrEmpty()) {
                     listTags.isVisible = true
-                    val tags = subEvent.tag
                     selectedTags.forEach { tag ->
-                        if (tags.any { x -> x.id == tag.id.toInt() })
+                        if (subEvent.tag.any { x -> x.id == tag.id.toInt() })
                             addView(createChip(tag), 0)
                     }
                 }
             }
+
+            decorActionButton(canShowButton, btnAddToTimetable, subEvent)
         }
     }
 
 
-    private fun decorActionButton(
-        canShow: Boolean,
-        button: AppCompatButton,
-        mSubEvent: EventActivityModel
-    ) {
+    private fun decorActionButton(show: Boolean, button: AppCompatButton, event: EventActivityModel) {
         button.apply {
-            isVisible = canShow
-            if (mSubEvent.binds?.userCalendar != null) {
+            isVisible = show
+            if (event.binds?.userCalendar != null) {
                 text = context.getString(R.string.sub_event_remove_from_schedule)
-                background =
-                    ContextCompat.getDrawable(context, R.drawable.custom_btn_gray_selectable)
-                setOnClickListener {
-                    mClickListener?.onRemoveFromScheduleClick(mSubEvent)
-                }
+                background = getDrawable(R.drawable.custom_btn_gray_selectable)
+                setOnClickListener { mClickListener?.onRemoveFromScheduleClick(event) }
             } else {
                 text = context.getString(R.string.sub_event_add_to_schedule)
-                background =
-                    ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
-                setOnClickListener {
-                    mClickListener?.onAddToScheduleClick(mSubEvent)
-                }
+                background = getDrawable(R.drawable.custom_btn_green_selectable)
+                setOnClickListener { mClickListener?.onAddToScheduleClick(event) }
             }
-
         }
     }
 
@@ -146,20 +129,36 @@ class EventActivityItem(
         }
     }
 
-
-    private fun getMarkdownFormattedText(
-        context: Context,
-        description: String?
-    ): SpannableStringBuilder {
-        val spanned = markWon(context).toMarkdown(description ?: "")
-        return SpannableStringBuilder(spanned).apply {
-            val urls = getSpans<URLSpan>()
-            urls.forEach {
-                val start = getSpanStart(it)
-                val end = getSpanEnd(it)
-                removeSpan(it)
-                set(start..end, URLSpanNoUnderline(it.url))
+    private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
+        if (message.isNullOrBlank()) return null
+        else {
+            val spanned = markWon(context).toMarkdown(message)
+            isMessageLong = spanned.length > 240
+            return SpannableStringBuilder(spanned).apply {
+                val urls = getSpans<URLSpan>()
+                urls.forEach {
+                    val start = getSpanStart(it)
+                    val end = getSpanEnd(it)
+                    removeSpan(it)
+                    set(start..end, URLSpanNoUnderline(it.url))
+                }
             }
+        }
+    }
+
+    private fun View.createChip(tag :Tag) : CompoundButton {
+        return TagChipNew(context).apply {
+            id = tag.id.toInt()
+            text = tag.name
+            isChecked = true
+            isClickable = false
+        }
+    }
+
+    private fun View.changeTextReadMore(isExpanded: Boolean) {
+        (this as TextView).apply {
+            if (isExpanded) text = context.getString(R.string.hide_all_sessions_history)
+            else text = context.getString(R.string.notifications_read_more)
         }
     }
 

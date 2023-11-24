@@ -18,10 +18,10 @@ import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailActionBlockBinding
+import com.example.extensions.markWon
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.EventDescriptionBottomSheet
 import com.example.util.URLSpanNoUnderline
-import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
 import onClickListener
 

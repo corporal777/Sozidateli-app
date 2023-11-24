@@ -94,6 +94,10 @@ class CustomCheckView : ConstraintLayout {
         }
     }
 
+    fun showError(show: Boolean){
+        checkView.errorCard.isVisible = show
+    }
+
     fun setOnCheckedListener(block: (isChecked: Boolean) -> Unit) {
         isCheckedListener = block
     }

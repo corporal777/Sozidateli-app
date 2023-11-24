@@ -816,4 +816,9 @@
             app:nullable="false" />
     </fragment>
 
+    <fragment
+        android:id="@+id/userRegistrationFragment"
+        android:name="com.example.ui.auth.register.UserRegistrationFragment"
+        android:label="UserRegistrationFragment"/>
+
 </navigation>

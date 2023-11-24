@@ -6,28 +6,25 @@ import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import com.vk.sdk.VKSdk
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasServiceInjector
+import dagger.android.*
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
 import timber.log.Timber
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector, HasServiceInjector {
+class App : Application(), HasAndroidInjector {
 
     @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-
-    @Inject
-    lateinit var serviceInjector: DispatchingAndroidInjector<Service>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     internal lateinit var calligraphyConfig: CalligraphyConfig
 
     lateinit var appComponent: AppComponent
         private set
+
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -44,11 +41,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
         VKSdk.initialize(this)
     }
-
-
-    override fun activityInjector() = activityInjector
-
-    override fun serviceInjector() = serviceInjector
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return

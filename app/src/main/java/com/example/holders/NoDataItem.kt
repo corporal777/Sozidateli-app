@@ -2,17 +2,16 @@ package com.example.holders
 
 import androidx.core.view.isVisible
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_no_data.*
+import com.example.databinding.ItemNoDataBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class NoDataItem(
-        private val title: String,
-        private val description: String? = null,
-        private val padding : Int = 0
-) : Item(-1000) {
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    private val title: String,
+    private val description: String? = null,
+    private val padding: Int = 0
+) : BindableItem<ItemNoDataBinding>(-1000) {
+    override fun bind(viewBinding: ItemNoDataBinding, position: Int) {
+        viewBinding.apply {
             tvTitle.text = title
             tvDescription.apply {
                 text = description
@@ -20,6 +19,7 @@ class NoDataItem(
             }
         }
     }
+
 
     override fun getLayout() = R.layout.item_no_data
 }

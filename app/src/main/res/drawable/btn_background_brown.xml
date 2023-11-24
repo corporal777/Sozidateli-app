@@ -6,6 +6,12 @@
             <corners android:radius="@dimen/action_button_radius" />
         </shape>
     </item>
+    <item android:state_selected="true">
+        <shape>
+            <solid android:color="@color/action_button_register_background_disabled" />
+            <corners android:radius="@dimen/action_button_radius" />
+        </shape>
+    </item>
     <item>
         <layer-list>
             <item>

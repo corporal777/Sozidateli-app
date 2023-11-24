@@ -1,9 +1,7 @@
 package com.example.holders
 
 import android.graphics.Color
-import com.example.data.models.EventScheduleCalendarDay
 import com.example.data.models.EventScheduleDay
-import com.example.ui.event.activities.items.HorizontalListItemNew
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
@@ -11,7 +9,7 @@ class EventDaysListItem (
     id: Int?,
     days: List<EventScheduleDay>,
     private val onDaySelect: (date: EventScheduleDay) -> Unit
-) : HorizontalListItemNew<GroupieViewHolder>(id?.toLong() ?: 0) {
+) : HorizontalListItem<GroupieViewHolder>(id?.toLong() ?: 0) {
 
 
     private val items = days.map { day -> EventDayItem(day, onDaySelect) }
@@ -23,6 +21,7 @@ class EventDaysListItem (
     init {
         adapter = groupAdapter
         backgroundColor = Color.WHITE
+        isScrollingEnabled = false
     }
 
     fun selectDay(day: EventScheduleDay) {

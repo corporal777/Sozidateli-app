@@ -16,6 +16,7 @@ import com.xwray.groupie.databinding.BindableItem
 import removeUrlUnderline
 import setTextDataOrHide
 
+
 class ProfileDataPersonalItem(
         private val organizations: List<OrganizationNew>?,
         private val email: String?,

@@ -2,22 +2,22 @@ package com.example.holders
 
 import android.content.Context
 import com.example.R
+import com.example.databinding.ItemChatDateBinding
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.extensions.isYesterday
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_chat_date.*
+import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChatDateItem(private val date: Long) : Item() {
+class ChatDateItem(private val date: Long) : BindableItem<ItemChatDateBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.tvChatMessageDate.apply {
+    override fun bind(viewBinding: ItemChatDateBinding, position: Int) {
+        viewBinding.tvChatMessageDate.apply {
             text = formatMessageDate(context)
         }
     }
+
 
     private fun formatMessageDate(context: Context): String {
         val messageCalendar = date.calendar()

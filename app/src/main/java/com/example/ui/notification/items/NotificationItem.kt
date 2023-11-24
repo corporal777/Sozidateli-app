@@ -1,10 +1,13 @@
 package com.example.ui.notification.items
 
 import android.content.Context
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
@@ -14,9 +17,12 @@ import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.R
 import com.example.data.models.Notification
+import com.example.extensions.markWon
 import com.example.ui.views.CustomSpannableString
+import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.ui.views.expandableTextView.ExpandableTextViewLayout
 import com.example.util.URLSpanNoUnderline
-import com.example.util.markWon
+import com.example.util.getDrawable
 import com.xwray.groupie.databinding.BindableItem
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
@@ -26,23 +32,15 @@ abstract class NotificationItem<T : ViewDataBinding>(
     private val listener: OnNotificationActionListener
 ) : BindableItem<T>(notification.id.toLong()) {
 
-    abstract fun getTitleView(viewBinding: T): TextView
-    abstract fun getMessageView(viewBinding: T): TextView
-    abstract fun getReadMoreView(viewBinding: T): View
-    abstract fun getBadgeView(viewBinding: T): View
-    abstract fun getRootView(viewBinding: T): View
+    abstract fun getTitleView(binding: T): TextView
+    abstract fun getMessageView(binding: T): CustomExpandableTextView
+    abstract fun getReadMoreView(binding: T): View
+    abstract fun getBadgeView(binding: T): View
+    abstract fun getRootView(binding: T): View
 
-
-    private var isExpanded = false
-    private val isMessageLong = isMessageTooLong(context, notification.message)
+    private var isCollapsed = true
+    private var isMessageLong = false
     private val fullMessage = fullMarkdownText(context, notification.message)
-    private val shortMessage = ellipsizeMarkdownText(context, notification.message)
-    private var actualMessage: SpannableStringBuilder? = null
-
-    init {
-        actualMessage = if (isMessageLong) shortMessage
-        else fullMessage
-    }
 
 
     @CallSuper
@@ -77,27 +75,21 @@ abstract class NotificationItem<T : ViewDataBinding>(
 
         getMessageView(viewBinding).apply {
             isVisible = !notification.message.isNullOrEmpty()
-            text = actualMessage
-            BetterLinkMovementMethod.linkifyHtml(this)
-                .setOnLinkClickListener { textView, url ->
-                    listener.onLinkClickListener(url)
-                    true
-                }
-        }
+            isTextCollapsed = isCollapsed
+            originalText = fullMessage
 
+            onLinkClickListener = {
+                listener.onLinkClickListener(it)
+            }
+        }
         getReadMoreView(viewBinding).apply {
             isVisible = isMessageLong
-            changeTextReadMore(isExpanded)
+            changeTextReadMore(!isCollapsed)
             setOnClickListener {
-                if (!isExpanded) {
-                    actualMessage = fullMessage
-                    isExpanded = true
-                } else {
-                    actualMessage = shortMessage
-                    isExpanded = false
-                }
-                getMessageView(viewBinding).text = actualMessage
-                changeTextReadMore(isExpanded)
+                getMessageView(viewBinding).toggle()
+                isCollapsed = !isCollapsed
+                changeTextReadMore(!isCollapsed)
+                getMessageView(viewBinding).isTextCollapsed = isCollapsed
             }
         }
     }
@@ -123,48 +115,20 @@ abstract class NotificationItem<T : ViewDataBinding>(
             if (payload is Notification) {
                 getRootView(viewBinding).apply {
                     background = if (!payload.wasRead)
-                        ContextCompat.getDrawable(context, R.drawable.background_notification_unread)
-                    else ContextCompat.getDrawable(context, R.drawable.background_notification_normal)
+                        getDrawable(R.drawable.background_notification_unread)
+                    else getDrawable(R.drawable.background_notification_normal)
                 }
-                getBadgeView(viewBinding).apply {
-                    isVisible = !payload.wasRead
-                }
+                getBadgeView(viewBinding).isVisible = !payload.wasRead
             }
         }
     }
 
-    private fun isMessageTooLong(context: Context, message: String?): Boolean {
-        return if (message.isNullOrEmpty()) false
-        else {
-            val spanned = markWon(context).toMarkdown(message)
-            spanned.length > 240
-        }
-    }
-
-    private fun ellipsizeMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
-        if (message.isNullOrBlank() || !isMessageLong) return null
-        else {
-            val spanned = markWon(context).toMarkdown(message)
-            val ellipsizedSpan =
-                SpannableStringBuilder(spanned.subSequence(0, 240)).append('.').append('.')
-                    .append('.')
-            ellipsizedSpan.apply {
-                val urls = getSpans<URLSpan>()
-                urls.forEach {
-                    val start = getSpanStart(it)
-                    val end = getSpanEnd(it)
-                    removeSpan(it)
-                    set(start..end, URLSpanNoUnderline(it.url))
-                }
-            }
-            return ellipsizedSpan
-        }
-    }
 
     private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
         if (message.isNullOrBlank()) return null
         else {
             val spanned = markWon(context).toMarkdown(message)
+            isMessageLong = spanned.length > 240
             return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {

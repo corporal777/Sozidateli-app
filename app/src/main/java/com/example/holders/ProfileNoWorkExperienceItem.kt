@@ -1,21 +1,21 @@
 package com.example.holders
 
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_no_work_data.*
+import com.example.databinding.ItemNoWorkDataBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileNoWorkExperienceItem(
-        private val message: String
-) : Item() {
+    private val message: String
+) : BindableItem<ItemNoWorkDataBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            tv_text.apply {
+    override fun bind(viewBinding: ItemNoWorkDataBinding, position: Int) {
+        viewBinding.apply {
+            tvText.apply {
                 text = message
             }
         }
     }
+
 
     override fun getLayout() = R.layout.item_no_work_data
 }

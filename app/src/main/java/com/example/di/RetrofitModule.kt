@@ -3,12 +3,9 @@ package com.example.di
 import android.content.Context
 import android.util.Log
 import com.example.BuildConfig
-import com.example.api.Api
 import com.example.api.AuthInterceptor
-import com.example.api.AuthInterceptorNew
-import com.example.api.NewApi
+import com.example.api.Api
 import com.example.data.AppData
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -22,7 +19,6 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -31,44 +27,22 @@ import javax.inject.Singleton
 class RetrofitModule {
 
     companion object {
-
         const val HEADER_CACHE_CONTROL = "Cache-Control"
     }
 
     @Provides
     @Singleton
-    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(builder: Retrofit.Builder): Retrofit {
-        return builder.baseUrl(BuildConfig.API_URL).build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitBuilder(converterFactory: Converter.Factory, client: OkHttpClient): Retrofit.Builder {
-        return Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(converterFactory)
-                .client(client)
-    }
-
-    @Provides
-    @Singleton
-    fun provideHttpClient(authInterceptor: AuthInterceptor, context: Context): OkHttpClient {
-        val clientBuilder = OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
+    fun provideApi(
+        authInterceptor: AuthInterceptor,
+        clientBuilder: OkHttpClient.Builder,
+        converterFactory : GsonConverterFactory,
+        context: Context
+    ): Api {
 
         clientBuilder.addInterceptor(authInterceptor)
 
         if (BuildConfig.DEBUG) {
-            val logInterceptor = HttpLoggingInterceptor { message ->
-                Timber.tag("API_T").d(message)
-            }
+            val logInterceptor = HttpLoggingInterceptor { m -> Log.e("REQUEST INFO: ", m) }
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
         }
@@ -77,17 +51,13 @@ class RetrofitModule {
             val response = it.proceed(it.request())
             val cacheControl: CacheControl = if (context.isConnectedToNetwork()) {
                 CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
-            } else {
-                CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS)
-                        .build()
-            }
+            } else CacheControl.Builder().maxStale(7, TimeUnit.DAYS).build()
 
             return@addNetworkInterceptor response.newBuilder()
-                    .removeHeader("Pragma")
-                    .removeHeader(HEADER_CACHE_CONTROL)
-                    .header(HEADER_CACHE_CONTROL, cacheControl.toString())
-                    .build()
+                .removeHeader("Pragma")
+                .removeHeader(HEADER_CACHE_CONTROL)
+                .header(HEADER_CACHE_CONTROL, cacheControl.toString())
+                .build()
         }
 
         clientBuilder.addInterceptor {
@@ -95,88 +65,24 @@ class RetrofitModule {
 
             if (!context.isConnectedToNetwork()) {
                 val cacheControl = CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS)
-                        .build()
+                    .maxStale(7, TimeUnit.DAYS)
+                    .build()
 
                 request = request.newBuilder()
-                        .removeHeader("Pragma")
-                        .removeHeader(HEADER_CACHE_CONTROL)
-                        .cacheControl(cacheControl)
-                        .build()
-            }
-
-            return@addInterceptor it.proceed(request)
-        }
-
-        return clientBuilder.build()
-    }
-
-    // New
-    @Provides
-    @Singleton
-    fun provideNewApi(converterFactory: Converter.Factory, authInterceptor: AuthInterceptorNew, context: Context): NewApi {
-        val clientBuilder = OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
-
-        clientBuilder.addInterceptor(authInterceptor)
-
-        if (BuildConfig.DEBUG) {
-            val logInterceptor = HttpLoggingInterceptor { message ->
-                //Timber.tag("API_T").d(message)
-                Log.e("REQUEST INFO: ", message)
-            }
-            logInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            clientBuilder.addInterceptor(logInterceptor)
-        }
-
-        clientBuilder.addNetworkInterceptor {
-            val response = it.proceed(it.request())
-            val cacheControl: CacheControl = if (context.isConnectedToNetwork()) {
-                CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
-            } else {
-                CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS)
-                        .build()
-            }
-
-            return@addNetworkInterceptor response.newBuilder()
                     .removeHeader("Pragma")
                     .removeHeader(HEADER_CACHE_CONTROL)
-                    .header(HEADER_CACHE_CONTROL, cacheControl.toString())
+                    .cacheControl(cacheControl)
                     .build()
-        }
-
-        clientBuilder.addInterceptor {
-            var request = it.request()
-
-            if (!context.isConnectedToNetwork()) {
-                val cacheControl = CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS)
-                        .build()
-
-                request = request.newBuilder()
-                        .removeHeader("Pragma")
-                        .removeHeader(HEADER_CACHE_CONTROL)
-                        .cacheControl(cacheControl)
-                        .build()
             }
-
             return@addInterceptor it.proceed(request)
         }
 
         return Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(converterFactory)
-                .client(clientBuilder.build()).baseUrl(BuildConfig.NEW_API_URL).build().create(NewApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthInterceptorNew(appData: AppData): AuthInterceptorNew {
-        return AuthInterceptorNew(appData)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(converterFactory)
+            .client(clientBuilder.build())
+            .baseUrl(BuildConfig.NEW_API_URL).build()
+            .create(Api::class.java)
     }
 
     @Provides
@@ -187,13 +93,17 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(gson: Gson): Converter.Factory {
-        return GsonConverterFactory.create(gson)
+    fun provideConverterFactory(): GsonConverterFactory {
+        return GsonConverterFactory.create(GsonBuilder().serializeNulls().create())
     }
 
     @Provides
     @Singleton
-    fun provideGson(): Gson {
-        return GsonBuilder().serializeNulls().create()
+    fun provideHttpClient(context: Context): OkHttpClient.Builder {
+        return OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
     }
 }

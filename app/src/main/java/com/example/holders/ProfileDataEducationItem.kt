@@ -3,23 +3,20 @@ package com.example.holders
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EducationModel
-import com.example.data.models.user.SocialRoles
+import com.example.databinding.ItemProfileDataEducationBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
-import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_education.*
+import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileDataEducationItem(
     private val education: EducationModel
-) : Item() {
+) : BindableItem<ItemProfileDataEducationBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileDataEducationBinding, position: Int) {
+        viewBinding.apply {
             tvDates.apply {
                 val format = SimpleDateFormat(
                     DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS,
@@ -49,6 +46,7 @@ class ProfileDataEducationItem(
             tvInstitution.text = education.organization
         }
     }
+
 
     override fun getLayout() = R.layout.item_profile_data_education
 }

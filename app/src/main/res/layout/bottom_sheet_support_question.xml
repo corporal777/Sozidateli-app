@@ -7,7 +7,6 @@
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="10dp"
         tools:ignore="MissingPrefix">
 
         <View
@@ -50,11 +49,11 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/btnSend"
             android:layout_below="@+id/tv_bottom_sheet_label"
+            android:layout_alignParentBottom="true"
+            android:isScrollContainer="false"
             android:overScrollMode="never"
-            android:paddingTop="10dp"
-            android:paddingBottom="5dp">
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -219,30 +218,29 @@
                     android:id="@+id/iv_info_privacy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:isCheckable="true"
                     android:layout_marginTop="15dp"
-                    app:checkViewText="@string/support_info_privacy_text" />
+                    app:checkViewText="@string/support_info_privacy_text"
+                    app:isCheckable="true" />
 
                 <com.example.ui.views.CustomCheckView
                     android:id="@+id/iv_file_privacy"
-                    app:isCheckable="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    app:checkViewText="@string/support_file_image_privacy_text" />
+                    app:checkViewText="@string/support_file_image_privacy_text"
+                    app:isCheckable="true" />
+
+                <com.example.ui.views.loading.CustomLoadingButton
+                    android:id="@+id/btnSend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_fifteen"
+                    android:layout_marginVertical="20dp"
+                    app:buttonBackground="@drawable/custom_btn_brown_selectable"
+                    app:buttonMinHeight="48dp"
+                    app:buttonText="@string/send" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
-        <com.example.ui.views.loading.CustomLoadingButton
-            android:id="@+id/btnSend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="@dimen/margin_fifteen"
-            android:layout_marginBottom="10dp"
-            app:buttonBackground="@drawable/custom_btn_brown_selectable"
-            app:buttonMinHeight="48dp"
-            app:buttonText="@string/send" />
     </RelativeLayout>
 </layout>

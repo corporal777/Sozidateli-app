@@ -6,12 +6,12 @@ import com.example.data.AppData
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
+import com.example.extensions.phoneToServer
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
-import com.example.util.phoneToServer
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy

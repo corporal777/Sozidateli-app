@@ -6,6 +6,7 @@ import com.example.databinding.ItemDayBinding
 import com.xwray.groupie.databinding.BindableItem
 import kotlinx.android.synthetic.main.item_day.*
 
+
 class EventDayItem(
     val day: EventScheduleDay,
     private val onDaySelect: (date: EventScheduleDay) -> Unit

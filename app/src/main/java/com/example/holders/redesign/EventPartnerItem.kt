@@ -2,7 +2,7 @@ package com.example.holders.redesign
 
 import com.example.R
 import com.example.databinding.ItemPartnerBinding
-import com.example.util.markWon
+import com.example.extensions.markWon
 import com.example.util.setImage
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem

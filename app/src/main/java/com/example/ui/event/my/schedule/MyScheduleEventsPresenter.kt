@@ -9,11 +9,11 @@ import com.example.data.models.EventNew
 import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
+import com.example.extensions.getMonthName
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.event.activities.SubEventsData
-import com.example.util.getMonthName
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe

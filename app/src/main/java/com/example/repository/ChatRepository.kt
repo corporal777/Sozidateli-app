@@ -20,8 +20,6 @@ interface ChatRepository {
 
     //fun startChat(userId: String): Single<ChatStartResponse>
 
-    fun uploadImage(chatId: String, bitmap: Bitmap): Single<ApiResponseUpload<UploadImage>>
-
     //fun getChat(chatId: String): Single<UserChat>
 
     //fun searchUser(limit: Int, offset: Int): Maybe<PaginationResponse<User?>>

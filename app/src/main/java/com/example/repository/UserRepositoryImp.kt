@@ -2,7 +2,6 @@ package com.example.repository
 
 import android.graphics.Bitmap
 import com.example.api.Api
-import com.example.api.NewApi
 import com.example.data.AppData
 import com.example.data.bodies.*
 import com.example.data.models.*
@@ -22,13 +21,12 @@ import javax.inject.Inject
 class UserRepositoryImp
 @Inject constructor(
     private val api: Api,
-    private val newApi: NewApi,
     private val appData: AppData
 ) : ApiRepository(appData), UserRepository {
 
     override fun getUserInternal(): Maybe<UserDetail> {
         return Maybe.zip(
-            newApi.getUserShort(appData.getId(), emptyList()),
+            api.getUserShort(appData.getId(), emptyList()),
             checkUserProfile(),
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
@@ -36,7 +34,7 @@ class UserRepositoryImp
     }
 
     override fun getUserShortData(): Maybe<UserDetail> =
-        newApi.getUserShort(
+        api.getUserShort(
             appData.getId(),
             arrayListOf(
                 "rights",
@@ -65,11 +63,11 @@ class UserRepositoryImp
             })
 
     override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
-        newApi.checkUserProfile(appData.getId().toString()).doOnSuccess { state ->
+        api.checkUserProfile(appData.getId().toString()).doOnSuccess { state ->
             appData.checkUserState(state.fields)
         }
 
-    override fun getUserById(id: String): Maybe<UserDetail> = newApi.getUserShort(
+    override fun getUserById(id: String): Maybe<UserDetail> = api.getUserShort(
         id.toInt(),
         arrayListOf(
             "rights",
@@ -86,7 +84,7 @@ class UserRepositoryImp
     ).map { it }
 
     override fun getUserByExternalId(name: String): Maybe<UserDetail> {
-        return newApi.getUserByShortName(
+        return api.getUserByShortName(
             name,
             arrayListOf(
                 "rights",
@@ -104,21 +102,21 @@ class UserRepositoryImp
     }
 
     override fun getUserByShortName(name: String): Maybe<UserDetail> {
-        return newApi.getUserByShortName(name, emptyList())
+        return api.getUserByShortName(name, emptyList())
     }
 
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
-        newApi.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
+        api.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
             appData.checkUserState(state.fields)
         }
 
     override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
-        newApi.updateProfile(id, map).doOnSuccess {
+        api.updateProfile(id, map).doOnSuccess {
             appData.setUserShort(it)
         }
 
     override fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail> {
-        return newApi.updateProfile(appData.getId(), map)
+        return api.updateProfile(appData.getId(), map)
     }
 
     override fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
@@ -131,21 +129,21 @@ class UserRepositoryImp
 
 
     override fun searchAddress(query: String?): Single<SearchAddressModel> =
-        newApi.searchAddress(query, 20)
+        api.searchAddress(query, 20)
 
 
     override fun getAllUsersSessions(deviceId: String): Maybe<UserSessions> =
-        newApi.getAllUsersSessions()
+        api.getAllUsersSessions()
 
     override fun getAllUsersSessionsFromCurrentDevice(deviceId: String): Maybe<UserSessions> =
-        newApi.getAllUsersSessionsFromCurrentDevice(deviceId, "user")
+        api.getAllUsersSessionsFromCurrentDevice(deviceId, "user")
 
     override fun deleteUsersDeviceSession(id: Int): Completable =
-        newApi.deleteUsersDeviceSession(id)
+        api.deleteUsersDeviceSession(id)
 
-    override fun killAllUsersOtherSessions(): Completable = newApi.killAllUsersOtherSessions()
+    override fun killAllUsersOtherSessions(): Completable = api.killAllUsersOtherSessions()
 
-    override fun killUsersDeviceSession(id: Int): Completable = newApi.killUsersDeviceSession(id)
+    override fun killUsersDeviceSession(id: Int): Completable = api.killUsersDeviceSession(id)
 
 //    override fun getFcmToken(): Maybe<InstanceIdResult> {
 //        return Maybe.create { emitter ->
@@ -153,41 +151,33 @@ class UserRepositoryImp
 //        }
 //    }
 
-    override fun notificationsRegister(token: String): Completable {
-        return call(api.notificationsRegister(token))
-    }
-
-    override fun notificationsUnregister(token: String): Completable {
-        return call(api.notificationsUnregister(token))
-    }
-
     override fun notificationsInviteAccept(id: Int): Completable {
-        return call(api.notificationsInviteAccept(id)).doOnSuccess {
-            appData.notificationsCount = it.unreadCount
-            appData.notificationReadSubject.onNext(id to Notification.AcceptState.ACCEPTED)
-        }.ignoreElement()
+//        return call(api.notificationsInviteAccept(id)).doOnSuccess {
+//            appData.notificationsCount = it.unreadCount
+//            appData.notificationReadSubject.onNext(id to Notification.AcceptState.ACCEPTED)
+//        }.ignoreElement()
+        return Completable.complete()
     }
 
     override fun notificationsInviteDecline(id: Int): Completable {
-        return call(api.notificationsInviteDecline(id)).doOnSuccess {
-            appData.notificationsCount = it.unreadCount
-            appData.notificationReadSubject.onNext(id to Notification.AcceptState.CANCELED)
-        }.ignoreElement()
+//        return call(api.notificationsInviteDecline(id)).doOnSuccess {
+//            appData.notificationsCount = it.unreadCount
+//            appData.notificationReadSubject.onNext(id to Notification.AcceptState.CANCELED)
+//        }.ignoreElement()
+        return Completable.complete()
     }
-
-    override fun updateUser(data: Map<String, Any?>) = call(api.updateUser(data))
 
     /*override fun uploadAvatar(photo: Bitmap?): Single<User> {
         return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
     }*/
 
     override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
-        return newApi.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
+        return api.changeUserImage(appData.getId(), photo?.toBodyPart("file", "image.png"))
             .map { it.toImageModel() }
     }
 
     override fun deleteImage(): Completable {
-        return newApi.deleteImage(appData.getId())
+        return api.deleteImage(appData.getId())
     }
 
     /*override fun uploadRecommendationFile(file: String, mimeType: String): Single<User> {
@@ -200,23 +190,23 @@ class UserRepositoryImp
     }*/
 
     override fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel> {
-        return newApi.uploadRecommendedFile(body)
+        return api.uploadRecommendedFile(body)
     }
 
     override fun changeRecommendedFile(
         fileId: Int,
         body: List<MultipartBody.Part?>
     ): Single<ImageModel> {
-        return newApi.changeRecommendedFile(fileId, body)
+        return api.changeRecommendedFile(fileId, body)
     }
 
     //+
     override fun changeRecommendedFiles(body: RequestBody): Single<List<FileModel>> {
-        return newApi.changeRecommendedFiles(appData.getId(), body).map { it.data }
+        return api.changeRecommendedFiles(appData.getId(), body).map { it.data }
     }
 
     override fun deleteRecommendedFile(fileId: Int): Completable {
-        return newApi.deleteRecommendedFile(fileId)
+        return api.deleteRecommendedFile(fileId)
     }
 
     /*override fun getFavoriteUsers(limit: Int, offset: Int): Maybe<PaginationResponse<User?>> {
@@ -248,7 +238,7 @@ class UserRepositoryImp
     }*/
 
     override fun checkPassword(password: String): Completable {
-        return newApi.checkPassword(appData.getId(), password)
+        return api.checkPassword(appData.getId(), password)
     }
 
     /*override fun sendStatusPhoneConfirmSms(password: String): Completable {
@@ -259,72 +249,59 @@ class UserRepositoryImp
         return call(api.sendStatusPhoneConfirmCode(code))
     }*/
 
-    override fun userEventCalendar(): Maybe<List<UserEventCalendar>> {
-        return call(api.eventCalendar())
-    }
-
-    override fun setUserAtEvent(
-        events: List<Int>,
-        atEvent: List<Boolean>,
-        lat: Double,
-        lon: Double
-    ): Completable {
-        return call(api.setUserAtEvent(events, atEvent, lat, lon))
-    }
-
     override fun deleteProfile(id: Int): Completable {
-        return newApi.deleteProfile(id)
+        return api.deleteProfile(id)
     }
 
     override fun deleteProfile(): Completable {
-        return newApi.deleteProfile(appData.getId())
+        return api.deleteProfile(appData.getId())
     }
 
     override fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel> =
-        newApi.getEventCalendar(data.toMap())
+        api.getEventCalendar(data.toMap())
 
-    override fun logout(id: Int): Completable = newApi.logout(id)
+    override fun logout(id: Int): Completable = api.logout(id)
 
     override fun changePassword(id: Int, body: PasswordBody): Completable =
-        newApi.changePassword(id, body)
+        api.changePassword(id, body)
 
     override fun checkIfPasswordValid(password: String): Completable =
-        newApi.checkIfPasswordValid(appData.getId(), password)
+        api.checkIfPasswordValid(appData.getId(), password)
 
     override fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel> =
-        newApi.updateWorkExperience(appData.getId(), body).doOnSuccess {
+        api.updateWorkExperience(appData.getId(), body).doOnSuccess {
             appData.updateWorkExperience(it)
         }
 
     override fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel> =
-        newApi.getInterestsList(200, ids)
+        api.getInterestsList(200, ids)
 
     override fun getEducationLevel(): Single<EducationLevelModel> {
         val education = appData.getUser().educationLevelList
         return if (education != null) Single.just(EducationLevelModel(education, 6))
-        else newApi.getEducationLevel().doOnSuccess { appData.updateEducationLevel(it.data) }
+        else api.getEducationLevel().doOnSuccess { appData.updateEducationLevel(it.data) }
     }
 
     override fun getSpeciality(): Single<EducationLevelModel> {
         val speciality = appData.getUser().speciality
         return if (speciality != null) Single.just(EducationLevelModel(speciality, 23))
-        else newApi.getSpeciality(100).doOnSuccess { appData.updateSpeciality(it.data) }
+        else api.getSpeciality(100).doOnSuccess { appData.updateSpeciality(it.data) }
     }
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
         val academicDegrees = appData.getUser().academicDegrees
         return if (academicDegrees != null) Single.just(EducationLevelModel(academicDegrees, 4))
-        else newApi.getAcademicDegrees().doOnSuccess { appData.updateAcademicDegrees(it.data) }
+        else api.getAcademicDegrees().doOnSuccess { appData.updateAcademicDegrees(it.data) }
     }
 
     private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
-        newApi.updateUserEducation(appData.getId(), body)
+        api.updateUserEducation(appData.getId(), body)
             .doOnSuccess {
                 appData.updateUserEducation(it.data)
             }
 
     private fun sendUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
-        newApi.updateUserAcademicDegree(appData.getId(), body)
+        api.updateUserAcademicDegree(appData.getId(), body)
             .doOnSuccess {
                 appData.updateUserAcademicDegree(it.data)
             }
@@ -346,7 +323,7 @@ class UserRepositoryImp
     }
 
     override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>> {
-        return newApi.getNotifications(map)
+        return api.getNotifications(map)
             .map {
                 PaginationResponse(
                     it.totalCount,
@@ -358,7 +335,7 @@ class UserRepositoryImp
     }
 
     override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
-        return newApi.getUserNotifications(map).map {
+        return api.getUserNotifications(map).map {
             NotificationsResponse(
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },
@@ -372,12 +349,12 @@ class UserRepositoryImp
     }
 
     override fun getInAppList(map: Map<String, Any>): Maybe<List<NotificationModel>> {
-        return newApi.getNotifications(map)
+        return api.getNotifications(map)
             .map { it.data }
     }
 
     override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
-        return newApi.getNotifications(map)
+        return api.getNotifications(map)
             .map { it.totalCount }
     }
 
@@ -386,7 +363,7 @@ class UserRepositoryImp
     }*/
 
     override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
-        return newApi.getUsers(map)
+        return api.getUsers(map)
             .map {
                 PaginationResponse(
                     it.totalCount,
@@ -396,12 +373,12 @@ class UserRepositoryImp
     }
 
     override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>> {
-        return newApi.getUsers(map)
+        return api.getUsers(map)
             .map { it.data }
     }
 
     override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
-        return newApi.getUsersFavoritesList(map)
+        return api.getUsersFavoritesList(map)
             .map {
                 it.data.forEach { org ->
                     org.entity?.model?.binds =
@@ -412,7 +389,7 @@ class UserRepositoryImp
     }
 
     override fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>> {
-        return newApi.getUsersFavoritesList(map)
+        return api.getUsersFavoritesList(map)
             .map {
                 it.data.forEach { org ->
                     org.entity?.model?.binds =
@@ -425,71 +402,71 @@ class UserRepositoryImp
     override fun getNotificationDetail(
         notificationId: String,
         loadModel: Boolean
-    ): Single<NotificationModel> = newApi.getNotificationDetail(notificationId, loadModel)
+    ): Single<NotificationModel> = api.getNotificationDetail(notificationId, loadModel)
 
-    override fun markAsRead(notificationId: String): Completable = newApi.markAsRead(notificationId)
+    override fun markAsRead(notificationId: String): Completable = api.markAsRead(notificationId)
 
     override fun markAllNotificationsAsRead(type: NotificationType?): Maybe<UnacceptedInviteNotification> {
         return when (type) {
             NotificationType.PROJECTS -> {
-                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "pgrf")
+                api.markAllTypeNotificationsAsRead(appData.getId().toString(), "pgrf")
             }
             NotificationType.ORGANIZER -> {
-                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "org")
+                api.markAllTypeNotificationsAsRead(appData.getId().toString(), "org")
             }
             NotificationType.ESTIMATES -> {
-                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "evaluate")
+                api.markAllTypeNotificationsAsRead(appData.getId().toString(), "evaluate")
             }
             NotificationType.EVENTS -> {
-                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "event")
+                api.markAllTypeNotificationsAsRead(appData.getId().toString(), "event")
             }
             NotificationType.SYSTEM -> {
-                newApi.markAllTypeNotificationsAsRead(appData.getId().toString(), "system")
+                api.markAllTypeNotificationsAsRead(appData.getId().toString(), "system")
             }
-            else -> newApi.markAllNotificationsAsRead(appData.getId().toString())
+            else -> api.markAllNotificationsAsRead(appData.getId().toString())
         }
 
     }
 
 
     override fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable =
-        newApi.approveOrgMember(orgMemberId, body)
+        api.approveOrgMember(orgMemberId, body)
 
     override fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable =
-        newApi.declineOrgMember(orgMemberId, body)
+        api.declineOrgMember(orgMemberId, body)
 
     override fun approvePgrf(pgrfId: String): Completable =
-        newApi.approvePgrf(pgrfId)
+        api.approvePgrf(pgrfId)
 
     override fun declinePgrf(pgrfId: String): Completable =
-        newApi.declinePgrf(pgrfId)
+        api.declinePgrf(pgrfId)
 
     override fun approveAssistance(assistanceId: String): Completable =
-        newApi.approveAssistance(assistanceId)
+        api.approveAssistance(assistanceId)
 
     override fun declineAssistance(assistanceId: String): Completable =
-        newApi.declineAssistance(assistanceId)
+        api.declineAssistance(assistanceId)
 
     override fun getAssistanceInviteDetail(assistanceId: String): Single<InviteDetail> =
-        newApi.getInviteAssistanceDetail(assistanceId)
+        api.getInviteAssistanceDetail(assistanceId)
 
     override fun cancelEventMember(evMemberId: String, body: CancelBody): Completable =
-        newApi.cancelEvMember(evMemberId, body)
+        api.cancelEvMember(evMemberId, body)
 
     override fun approveEventMember(memberId: String): Completable {
-        return newApi.approveEventMember(memberId)
+        return api.approveEventMember(memberId)
     }
 
     override fun declineEventMember(memberId: String): Completable {
-        return newApi.declineEventMember(memberId)
+        return api.declineEventMember(memberId)
     }
 
     override fun checkEmailPhone(email: String?, phone: String?): Completable =
-        newApi.checkEmailPhone(email, phone)
+        api.checkEmailPhone(email, phone)
 
 
     override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
-        return newApi.searchDataNew(map)
+        return api.searchDataNew(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
         //.map { it.users }
     }

@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
-        <TextView
+        <com.example.ui.views.expandableTextView.CustomExpandableTextView
             android:id="@+id/tvMessage"
             style="@style/Notification.MessageNew"
             android:ellipsize="end"
@@ -47,33 +47,28 @@
             app:layout_constraintVertical_bias="0.0"
             app:layout_goneMarginBottom="10dp"
             tools:ignore="MissingPrefix"
-            tools:maxLines="5"
-            tools:text="@string/lorem_ipsum_dolor" />
+            tools:text="@string/about_additional_info_text" />
 
 
         <TextView
             android:id="@+id/tvReadMore"
-            fontPath="fonts/sf_pro_text_bold.ttf"
+            style="@style/ClickableTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_text_background_selectable"
-            android:letterSpacing="-0.02"
             android:paddingVertical="5dp"
             android:text="@string/notifications_read_more"
-            android:textColor="#C3996C"
-            android:textSize="15sp"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/btnRate"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+            app:layout_goneMarginBottom="20dp"
             tools:ignore="MissingPrefix" />
 
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnRate"
-            android:text="@string/notifications_rate_event"
             style="@style/BtnBrownStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,6 +77,7 @@
             android:layout_marginBottom="20dp"
             android:minHeight="36dp"
             android:paddingHorizontal="10dp"
+            android:text="@string/notifications_rate_event"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

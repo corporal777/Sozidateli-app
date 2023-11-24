@@ -113,12 +113,6 @@
                         app:chipSpacingVertical="8dp" />
                 </HorizontalScrollView>
 
-                <androidx.legacy.widget.Space
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@id/tvLectureDesc" />
-
 
                 <com.example.ui.views.expandableTextView.CustomExpandableTextView
                     android:id="@+id/tvLectureDesc"
@@ -126,36 +120,43 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_marginVertical="15dp"
-                    android:maxLines="25"
+                    android:layout_marginTop="15dp"
+                    android:includeFontPadding="false"
+                    android:maxLines="55"
+                    android:textColor="@color/black"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@id/btnAddToTimetable"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/tvReadMore"
                     app:layout_constraintTop_toBottomOf="@id/listTags"
                     app:limitedMaxLines="5"
                     tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля" />
 
+                <TextView
+                    android:id="@+id/tvReadMore"
+                    style="@style/ClickableTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:paddingVertical="5dp"
+                    android:text="@string/notifications_read_more"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLectureDesc" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnAddToTimetable"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
+                    style="@style/BtnGreenStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/custom_btn_green_selectable"
-                    android:letterSpacing="-0.02"
+                    android:layout_marginVertical="10dp"
                     android:minWidth="200dp"
                     android:minHeight="40dp"
                     android:text="@string/add_to_timetable"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvLectureDesc"
+                    app:layout_constraintTop_toBottomOf="@id/tvReadMore"
+                    app:layout_goneMarginTop="15dp"
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -77,21 +77,6 @@ class EmailConfirmPresenter
                 })
     }
 
-    private fun checkConfirmed() {
-        compositeDisposable += Single.timer(5, TimeUnit.SECONDS)
-                .flatMap { authRepository.checkRegisterStatus(snUser?.snAuth?.snType?.code, snUser?.snUserData?.id, email) }
-                .map { it.user_by_email_confirmed_email || it.user_by_social_confirmed_email }
-                .doOnSuccess { if (!it) throw Throwable() }
-                .retry(Predicate { true })
-                .flatMapCompletable {
-                    val snUser = this.snUser
-                    if (snUser != null) authRepository.authSocialNetwork(snUser.snAuth.snType.code, snUser.snAuth.token)
-                    else authRepository.authEmailOrPhone(AuthBody(LoginModel(email, "email"), LoginModel(password, "common")))
-                }
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {}
-    }
-
     override fun onCloseClick() {
         viewState.navigateUp()
     }

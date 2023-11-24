@@ -1,26 +1,22 @@
 package com.example.holders
 
-import android.os.Handler
-import androidx.core.view.isVisible
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_chat_unread_label.*
+import com.example.databinding.ItemChatUnreadLabelBinding
+import com.xwray.groupie.databinding.BindableItem
 
 
 class ChatUnreadLabelItem(
     private val count: Int
-) : Item() {
+) : BindableItem<ItemChatUnreadLabelBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemChatUnreadLabelBinding, position: Int) {
+        viewBinding.apply {
             tvNewMessages.apply {
                 text =
                     resources.getQuantityString(R.plurals.chat_new_messages_count, count, count)
             }
         }
     }
-
 
 
     override fun getLayout() = R.layout.item_chat_unread_label

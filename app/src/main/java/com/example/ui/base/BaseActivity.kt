@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -65,6 +66,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
             }
         }
         return binding
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return false
     }
 
     override fun onNewIntent(intent: Intent) {

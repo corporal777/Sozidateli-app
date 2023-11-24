@@ -135,6 +135,7 @@
     <dimen name="sub_event_background_padding">16dp</dimen>
     <dimen name="tag_text_size">12sp</dimen>
     <dimen name="tag_text_size_new">15sp</dimen>
+    <dimen name="sub_event_text_size">14sp</dimen>
     <dimen name="tag_background_padding_horizontal">16dp</dimen>
     <dimen name="tag_background_padding_vertical">10dp</dimen>
     <dimen name="tag_corners_radius">12dp</dimen>

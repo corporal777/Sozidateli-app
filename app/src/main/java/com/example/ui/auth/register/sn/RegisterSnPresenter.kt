@@ -112,50 +112,9 @@ class RegisterSnPresenter
     }
 
     private fun checkEmailRegistered() {
-        compositeDisposable += authRepository.checkRegisterStatus(null, null, email)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                if (it.user_by_email_found) {
-                    register()
-                } else {
-                    step = STEP_PASSWORD
-                    viewState.setPassword(password, passwordConfirm)
-                    performDataChange()
-                }
-            }
     }
 
-    private fun register() {
-        val snUser = this.snUser
-        val email = this.email ?: return
-        val password = this.password
-        val firstName = snUser.snUserData.firstName
-        val lastName = snUser.snUserData.lastName
-        val snType = snUser.snAuth.snType.code
-        val snToken = snUser.snAuth.token
-        compositeDisposable += authRepository.authSocialNetwork(
-            snType,
-            snToken,
-            email,
-            firstName,
-            lastName,
-            password
-        )
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = {
-                    if (it is ApiError && it.hasError(ERROR_SENT_CONFIRM_EMAIL)) {
-                        viewState.showEmailConfirmation(email, snUser)
-                    } else {
-                        onReceiveError(it)
-                    }
-                },
-                onComplete = {}
-            )
-    }
+    private fun register() {}
 
     override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
 

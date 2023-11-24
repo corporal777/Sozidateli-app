@@ -1,14 +1,14 @@
 package com.example.ui.base
 
-import android.content.Intent
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-abstract class BaseFragmentActivity : BaseActivity(), HasSupportFragmentInjector {
+abstract class BaseFragmentActivity : BaseActivity(), HasAndroidInjector {
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
-    override fun supportFragmentInjector() = dispatchingAndroidInjector
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 }

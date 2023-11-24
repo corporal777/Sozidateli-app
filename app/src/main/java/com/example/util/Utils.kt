@@ -47,6 +47,12 @@ object Utils {
         return regex.containsMatchIn(text)
     }
 
+    fun isContainsNumbers(text: String?): Boolean {
+        if (text.isNullOrEmpty()) return false
+        val regex = Regex(pattern = "[0-9]+")
+        return regex.containsMatchIn(text)
+    }
+
     fun isContainLetters(text: String?): Boolean {
         if (text.isNullOrEmpty()) return false
         val regex = Regex(pattern = "[A-Za-z]+")

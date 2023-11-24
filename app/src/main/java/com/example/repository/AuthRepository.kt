@@ -14,9 +14,7 @@ import retrofit2.http.Query
 
 interface AuthRepository {
 
-    fun authSocialNetwork(snType: String, token: String, email: String? = null, firstName: String? = null, lastName: String? = null, password: String? = null): Completable
     //fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable
-    fun confirmEmailSocialNetwork(id: String, code: String): Completable
 
     fun authEmailOrPhone(login: AuthBody): Completable
     fun authEmailOrPhoneWithResult(login: AuthBody):Single<NewAuthResponse>
@@ -39,7 +37,6 @@ interface AuthRepository {
     //fun checkRecoveryCode(email: String, code: String): Completable
     //fun setPassword(email: String, code: String, password: String): Completable
 
-    fun checkRegisterStatus(snType: String?, snId: String?, email: String?): Single<RegisterStatus>
     //fun registerData(email: String, code: String): Single<UserResp>
     fun checkRecoveryCodeNew(type: String, code: String): Completable
     fun recoverPasswordNew(body: RecoverPasswordBody): Completable

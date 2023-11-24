@@ -157,11 +157,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     toolbar.apply {
                         toolbarLabel.text = f.title
                         f.setupToolbarContent(
-                            ToolbarContent(
-                                ivBack,
-                                toolbarLabel,
-                                toolbarContainer
-                            )
+                            ToolbarContent(ivBack, toolbarLabel, toolbarContainer)
                         )
                         f.actionIconContainer(toolbarContainer)
                     }
@@ -179,10 +175,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             is ProfileFragment,
             is MyEventsFragment,
             is NotificationsListFragment,
-            is ChatListTabsFragment -> findNavController().popBackStack(
-                R.id.recommendations_fragment,
-                false
-            )
+            is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
             is RecommendationsFragment,
             is AuthorizationFragment -> finish()
             else -> findNavController().navigateUp()
@@ -205,9 +198,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return false
-    }
 
     override fun showSplashScreen() {
         splashScreen = installSplashScreen().apply { setKeepVisibleCondition { true } }
@@ -618,49 +608,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     fun connectToSocket() = presenter.connectToSocket()
 
     private fun setupMainNavBar() {
-        //val navController = findNavController(navHost)
         mBinding.mainNavBar.setupWithNavController(getNavHostFragment().navController)
         mBinding.mainNavBar.setOnItemReselectedListener { item ->
+            val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
             when (item.itemId) {
-                R.id.main -> {
-                    val frag = supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (isCurrentDestination(R.id.recommendations_fragment)) {
-                        (frag.primaryNavFragment() as RecommendationsFragment).smoothScrollToFirstItem()
-                    }
-                }
-                R.id.my_events -> {
-                    val frag =
-                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (findNavController().currentDestination?.id == R.id.my_events_fragment_new) {
-                        if (frag != null) {
-                            val my =
-                                frag.childFragmentManager.primaryNavigationFragment as MyEventsFragment
-                            my.smoothScrollToFirstItem()
-                        }
-                    }
-                }
-                R.id.notification -> {
-                    val frag =
-                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (findNavController().currentDestination?.id == R.id.notifications_list_fragment) {
-                        if (frag != null) {
-                            val note =
-                                frag.childFragmentManager.primaryNavigationFragment as NotificationsListFragment
-                            note.smoothScrollToFirstItem()
-                        }
-                    }
-                }
-                R.id.chats -> {
-                    val frag =
-                        supportFragmentManager.primaryNavigationFragment as NavHostFragment
-                    if (findNavController().currentDestination?.id == R.id.chat_list_tabs_fragment) {
-                        if (frag != null) {
-                            val chats =
-                                frag.childFragmentManager.primaryNavigationFragment as ChatListTabsFragment
-                            chats.smoothScrollToFirstItem()
-                        }
-                    }
-                }
+                R.id.main -> if (fragment is RecommendationsFragment) fragment.scrollToFirstItem()
+                R.id.my_events -> if (fragment is MyEventsFragment) fragment.scrollToFirstItem()
+                R.id.notification -> if (fragment is NotificationsListFragment) fragment.scrollToFirstItem()
+                R.id.chats -> if (fragment is ChatListTabsFragment) fragment.scrollToFirstItem()
             }
         }
         mBinding.mainNavBar.setOnItemSelectedListener { item ->
@@ -750,16 +705,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun showBrowser(url: String) = showCustomTabsBrowser(this, url)
 
     private fun registerFragmentLifecycleCallback() {
-        val fr = (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
-        fr.childFragmentManager.registerFragmentLifecycleCallbacks(
-            navFragmentsLifecycleCallback,
-            false
-        )
+        getNavHostFragment().childFragmentManager
+            .registerFragmentLifecycleCallbacks(navFragmentsLifecycleCallback, false)
     }
 
     private fun unregisterFragmentLifecycleCallback() {
-        val fr = (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
-        fr.childFragmentManager.unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
+        getNavHostFragment().childFragmentManager
+            .unregisterFragmentLifecycleCallbacks(navFragmentsLifecycleCallback)
     }
 
     private fun getBehavior(): CustomAppBarLayoutBehavior? {

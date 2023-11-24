@@ -249,4 +249,6 @@
 
 
     <color name="support_add_file_item_background_color">#33C3996C</color>
+    <color name="password_errors_text_color">#80000000</color>
+    <color name="password_errors_text_color_valid">#8DB75B</color>
 </resources>

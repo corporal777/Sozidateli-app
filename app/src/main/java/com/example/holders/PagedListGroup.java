@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListUpdateCallback;
 
+
 public class PagedListGroup<T extends Item> implements Group, GroupDataObserver {
 
     private GroupDataObserver parentObserver;

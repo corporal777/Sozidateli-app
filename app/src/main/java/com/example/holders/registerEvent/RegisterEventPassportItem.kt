@@ -4,22 +4,22 @@ import android.text.TextWatcher
 import com.example.R
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
+import com.example.databinding.ItemRegisterEventPassportBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.setRequired
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.databinding.GroupieViewHolder
 import initAsDatePicker
-import kotlinx.android.synthetic.main.item_register_event_passport.*
 import onTextChanged
 import java.util.*
 
 class RegisterEventPassportItem(
-        private val fieldData: EventRegisterFieldData<EventPassport>,
-        private val editable: Boolean = true,
-        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem(fieldData, onDataChange) {
+    private val fieldData: EventRegisterFieldData<EventPassport>,
+    private val editable: Boolean = true,
+    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+) : BaseRegisterItem<ItemRegisterEventPassportBinding>(fieldData, onDataChange) {
 
     private var serialTextWatcher: TextWatcher? = null
     private var numberTextWatcher: TextWatcher? = null
@@ -27,8 +27,9 @@ class RegisterEventPassportItem(
     private var dateTextWatcher: TextWatcher? = null
     private var codeTextWatcher: TextWatcher? = null
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+
+    override fun bind(viewBinding: ItemRegisterEventPassportBinding, position: Int) {
+        viewBinding.apply {
             val passport = fieldData.value ?: EventPassport().apply { fieldData.value = this }
 
             etSerial.apply {
@@ -91,8 +92,8 @@ class RegisterEventPassportItem(
         }
     }
 
-    override fun unbind(viewHolder: GroupieViewHolder) {
-        viewHolder.apply {
+    override fun unbind(viewHolder: GroupieViewHolder<ItemRegisterEventPassportBinding>) {
+        viewHolder.binding.apply {
             etSerial.removeTextChangedListener(serialTextWatcher)
             etNumber.removeTextChangedListener(numberTextWatcher)
             etAgency.removeTextChangedListener(agencyTextWatcher)

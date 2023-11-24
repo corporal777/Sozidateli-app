@@ -7,7 +7,10 @@ import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.Tag
+import com.example.databinding.ItemTagsHorizontalListBinding
 import com.example.ui.views.TagChipNew
+import com.example.util.getDrawable
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
@@ -15,33 +18,19 @@ import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
 class TagsHorizontalListItem(
     private val tags: List<Tag>,
     private val onSelectedChange: () -> Unit
-) : Item(-1011L) {
+) : BindableItem<ItemTagsHorizontalListBinding>(-1011L) {
 
-    @SuppressLint("ResourceAsColor", "ResourceType")
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
 
+    @SuppressLint("ResourceType")
+    override fun bind(viewBinding: ItemTagsHorizontalListBinding, position: Int) {
+        viewBinding.apply {
             tagGroup.apply {
                 removeAllViews()
 
-                val chip: (Tag) -> CompoundButton = { tag ->
-                    TagChipNew(context).apply {
-                        id = tag.id.toInt()
-                        text = tag.name
-                        isChecked = tag.isSelected
-
-                        setOnCheckedChangeListener { _, isChecked ->
-                            tag.isSelected = isChecked
-                            onSelectedChange()
-                        }
-                    }
-                }
                 if (tags.size > 6) {
                     val otherSize = tags.size - 5
                     for (i in tags.indices) {
-                        tags[i].apply {
-                            addView(chip(this))
-                        }
+                        addView(createTagChip(tags[i]))
                         if (i == 5) break
                     }
                     addView(TagChipNew(context).apply {
@@ -49,13 +38,11 @@ class TagsHorizontalListItem(
                         text = "Еще $otherSize "
                         isChecked = false
                         isClickable = true
-                        val img = ContextCompat.getDrawable(context, R.drawable.ic_arrow_down_for_tags)
+                        val img = getDrawable(R.drawable.ic_arrow_down_for_tags)
                         setCompoundDrawablesWithIntrinsicBounds(null, null, img, null)
                         setOnClickListener {
                             for (i in 6 until tags.size) {
-                                tags[i].apply {
-                                    addView(chip(this))
-                                }
+                                addView(createTagChip(tags[i]))
                             }
                             visibility = View.GONE
                         }
@@ -63,9 +50,22 @@ class TagsHorizontalListItem(
                     })
                 } else {
                     tags.forEach { tag ->
-                        addView(chip(tag))
+                        addView(createTagChip(tag))
                     }
                 }
+            }
+        }
+    }
+
+    private fun View.createTagChip(tag : Tag) : CompoundButton {
+        return TagChipNew(context).apply {
+            id = tag.id.toInt()
+            text = tag.name
+            isChecked = tag.isSelected
+
+            setOnCheckedChangeListener { _, isChecked ->
+                tag.isSelected = isChecked
+                onSelectedChange()
             }
         }
     }

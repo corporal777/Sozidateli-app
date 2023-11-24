@@ -6,15 +6,16 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.EventActivityModel
+import com.example.data.models.Tags
 import com.example.databinding.ItemSubeventInfoBinding
 import com.example.extensions.*
 import com.example.ui.views.TagChipNew
 import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
-import com.example.util.markWon
 import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class SubEventInfoItem(
     private val isApproved: Boolean,

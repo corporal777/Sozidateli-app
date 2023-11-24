@@ -5,37 +5,37 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_register_event_checkbox.*
+import com.example.databinding.ItemRegisterEventCheckboxBinding
 
 open class RegisterEventCheckboxItem(
-        private val fieldData: EventRegisterFieldData<Set<String>>,
-        private val editable: Boolean = true,
-        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem(fieldData, onDataChange) {
+    private val fieldData: EventRegisterFieldData<Set<String>>,
+    private val editable: Boolean = true,
+    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+) : BaseRegisterItem<ItemRegisterEventCheckboxBinding>(fieldData, onDataChange) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+    override fun bind(viewBinding: ItemRegisterEventCheckboxBinding, position: Int) {
         val values = field.values ?: emptyList()
-        viewHolder.apply {
+        viewBinding.apply {
             checkGroup.apply {
                 isEnabled = editable
                 removeAllViews()
                 values.forEachIndexed { index, value ->
                     addView(
-                            createCheckbox(index, value),
-                            ViewGroup.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
+                        createCheckbox(index, value),
+                        ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
                     )
                 }
             }
         }
     }
 
+
     private fun ViewGroup.createCheckbox(index: Int, value: String): CheckBox {
         val checkbox = (LayoutInflater.from(context)
-                .inflate(R.layout.item_checkbox, this, false) as CheckBox)
+            .inflate(R.layout.item_checkbox, this, false) as CheckBox)
         return checkbox.apply {
             id = index
             text = value

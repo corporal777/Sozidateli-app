@@ -4,6 +4,7 @@ import com.example.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 
+
 class PlaceholderItem(
     private val type: Type
 ) : Item() {

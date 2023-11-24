@@ -68,8 +68,6 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
                     val datesCount = presenter.getTitleDatesCount()
                     if (position < (tagsCount + datesCount)) return
                     presenter.onItemTake(position - (tagsCount + datesCount))
-
-                    //presenter.onItemTake(position)
                 }
             })
         }
@@ -194,9 +192,9 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
 
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
-    fun smoothScrollToFirstItem() {
+    fun scrollToFirstItem() {
         val mLayoutManager =
-            mBinding.notificationsList.layoutManager as LinearLayoutManagerAccurateOffset
+            mBinding.notificationsList.layoutManager as LinearLayoutManager
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 

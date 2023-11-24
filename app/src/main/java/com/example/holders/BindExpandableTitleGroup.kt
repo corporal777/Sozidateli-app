@@ -4,6 +4,7 @@ import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
+
 abstract class BindExpandableTitleGroup <T : BindExpandableTitleItem<*>>(
     val titleItem: T,
     isInitiallyExpanded: Boolean = false,

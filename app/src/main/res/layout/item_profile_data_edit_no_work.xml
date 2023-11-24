@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/scNoExperience"
-        style="@style/Profile.Edit.Switch"
-        android:text="@string/no_experience"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginTop="12dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:layout_marginTop="12dp"/>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNoExperience"
+            style="@style/Profile.Edit.Switch"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="12dp"
+            android:text="@string/no_experience" />
 
-</LinearLayout>
+        <View
+            android:id="@+id/divider"
+            style="@style/ViewDivider.Horizontal"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</layout>

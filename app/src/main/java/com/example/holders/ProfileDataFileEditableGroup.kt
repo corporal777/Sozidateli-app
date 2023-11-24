@@ -6,6 +6,7 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
+
 class ProfileDataFileEditableGroup(
     val files: List<FileModel>,
     private val filesCount: Int,

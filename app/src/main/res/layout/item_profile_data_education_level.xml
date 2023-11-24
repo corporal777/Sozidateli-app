@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Profile.Edit.InputContainer">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Profile.Edit.InputTitle"
-        android:layout_marginBottom="0dp"
-        android:text="@string/profile_education_level" />
+    <LinearLayout style="@style/Profile.Edit.InputContainer">
 
-    <TextView
-        android:id="@+id/tvEducationLevel"
-        style="@style/Profile.Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        tools:text="Среднее профессиональное" />
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.InputTitle"
+            android:layout_marginBottom="0dp"
+            android:text="@string/profile_education_level" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvDegreesTitle"
-        style="@style/Profile.Edit.InputTitle"
-        android:layout_marginBottom="0dp"
-        android:text="@string/profile_degrees_level" />
+        <TextView
+            android:id="@+id/tvEducationLevel"
+            style="@style/Profile.Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            tools:text="Среднее профессиональное" />
 
-    <TextView
-        android:id="@+id/tvDegreesLevel"
-        style="@style/Profile.Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/user_profile_additional_hint"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        tools:text="Среднее профессиональное" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDegreesTitle"
+            style="@style/Profile.Edit.InputTitle"
+            android:layout_marginBottom="0dp"
+            android:text="@string/profile_degrees_level" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvSpecializationTitle"
-        style="@style/Profile.Edit.InputTitle"
-        android:layout_marginBottom="0dp"
-        android:text="@string/search_filter_specialization" />
+        <TextView
+            android:id="@+id/tvDegreesLevel"
+            style="@style/Profile.Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:hint="@string/user_profile_additional_hint"
+            tools:text="Среднее профессиональное" />
 
-    <TextView
-        android:id="@+id/tvSpecializationLevel"
-        style="@style/Profile.Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:hint="@string/user_profile_additional_hint"
-        tools:text="Среднее профессиональное" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSpecializationTitle"
+            style="@style/Profile.Edit.InputTitle"
+            android:layout_marginBottom="0dp"
+            android:text="@string/search_filter_specialization" />
 
-    <View style="@style/ViewDivider.Horizontal" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvSpecializationLevel"
+            style="@style/Profile.Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:hint="@string/user_profile_additional_hint"
+            tools:text="Среднее профессиональное" />
+
+        <View style="@style/ViewDivider.Horizontal" />
+    </LinearLayout>
+</layout>

@@ -6,28 +6,27 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_register_event_radio.*
+import com.example.databinding.ItemRegisterEventRadioBinding
 
 open class RegisterEventRadioBoxItem(
-        private val fieldData: EventRegisterFieldData<String>,
-        private val editable: Boolean = true,
-        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem(fieldData, onDataChange) {
+    private val fieldData: EventRegisterFieldData<String>,
+    private val editable: Boolean = true,
+    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+) : BaseRegisterItem<ItemRegisterEventRadioBinding>(fieldData, onDataChange) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+    override fun bind(viewBinding: ItemRegisterEventRadioBinding, position: Int) {
         val values = field.values ?: emptyList()
-        viewHolder.apply {
+        viewBinding.apply {
             radioGroup.apply {
                 isEnabled = editable
                 removeAllViews()
                 values.forEachIndexed { index, value ->
                     addView(
-                            createRadioButton(index, value),
-                            ViewGroup.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
+                        createRadioButton(index, value),
+                        ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
                     )
                 }
 
@@ -41,7 +40,7 @@ open class RegisterEventRadioBoxItem(
 
     private fun RadioGroup.createRadioButton(index: Int, value: String): RadioButton {
         val button = (LayoutInflater.from(context)
-                .inflate(R.layout.item_radio_button, this, false) as RadioButton)
+            .inflate(R.layout.item_radio_button, this, false) as RadioButton)
         return button.apply {
             isEnabled = editable
             id = index

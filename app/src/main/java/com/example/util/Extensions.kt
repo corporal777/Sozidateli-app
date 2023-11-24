@@ -70,12 +70,6 @@ import java.io.*
 import java.util.*
 
 
-fun String.firstLetterToUppercase(): String {
-    return if (this.isNotBlank())
-        this.substring(0, 1).toUpperCase() + this.substring(1).toLowerCase()
-    else this
-}
-
 fun AppCompatCheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
     isChecked = checked
     setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(isChecked) }
@@ -139,10 +133,6 @@ fun PopupWindow.settings() {
     inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
 }
 
-fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")
-
-
-@TargetApi(21)
 fun Activity.setWindowTransparency(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
     InsetUtil.removeSystemInsets(window.decorView, listener)
 //    window.navigationBarColor = Color.TRANSPARENT
@@ -197,6 +187,10 @@ object InsetUtil {
 
 fun ImageView.setTint(@ColorRes colorRes: Int) {
     ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(ContextCompat.getColor(context, colorRes)))
+}
+
+fun View.getDrawable(res : Int): Drawable? {
+    return ContextCompat.getDrawable(context, res)
 }
 
 fun ImageView.setImage(
@@ -275,108 +269,6 @@ fun ImageRequest.Builder.setParams(
     scale(Scale.FILL)
     diskCachePolicy(CachePolicy.ENABLED)
 }
-
-fun getMonthName(calendar: Calendar?): String {
-    var month = ""
-    val monthNames = arrayOf(
-        "Январь",
-        "Февраль",
-        "Март",
-        "Апрель",
-        "Май",
-        "Июнь",
-        "Июль",
-        "Август",
-        "Сентябрь",
-        "Октябрь",
-        "Ноябрь",
-        "Декабрь"
-    )
-
-    return if (calendar == null) ""
-    else {
-        month =
-            if (getCurrentYear() == calendar.get(Calendar.YEAR)) monthNames[calendar.get(Calendar.MONTH)]
-            else monthNames[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
-
-        month
-    }
-}
-
-fun getDeviceName(): String {
-    val manufacturer: String = Build.MANUFACTURER
-    val model: String = Build.MODEL
-    return if (model.startsWith(manufacturer)) capitalize(model)
-    else capitalize(manufacturer) + " " + model
-}
-
-fun getAppVersion(): String {
-    return BuildConfig.VERSION_NAME
-}
-
-fun getAppVersionCode(): String {
-    return BuildConfig.VERSION_CODE.toString()
-}
-
-private fun capitalize(str: String): String {
-    if (TextUtils.isEmpty(str)) {
-        return str
-    }
-    val arr = str.toCharArray()
-    var capitalizeNext = true
-    var phrase = ""
-    for (c in arr) {
-        if (capitalizeNext && Character.isLetter(c)) {
-            phrase += Character.toUpperCase(c)
-            capitalizeNext = false
-            continue
-        } else if (Character.isWhitespace(c)) {
-            capitalizeNext = true
-        }
-        phrase += c
-    }
-    return phrase
-}
-
-fun removeFirstAndLastSpaces(str: String?): String {
-    val reg = "[\\s]+$".toRegex()
-    val regLast = "^[\\s]+".toRegex()
-    val value = str?.replace(regLast, "")
-    return value?.replace(reg, "") ?: ""
-}
-
-fun String.removeAllDoubleSpaces(): String {
-    val newStr = this.trim().replace("[\\s]+".toRegex(), " ")
-    val sb = StringBuilder(newStr)
-    val currentChar = ' '
-    var counter = 0
-    sb.forEach {
-        if (it == currentChar) counter++
-    }
-    run loop@{
-        sb.forEachIndexed { index, c ->
-            if (currentChar == c && counter > 1) {
-                sb.deleteCharAt(index)
-                return@loop
-            }
-        }
-    }
-    return sb.toString()
-}
-
-fun markWon(context: Context): Markwon {
-    return Markwon.builder(context)
-        .usePlugins(
-            listOf(
-                SoftBreakAddsNewLinePlugin.create(),
-                LinkifyPlugin.create(),
-                HtmlPlugin.create(),
-                MarkwonInlineParserPlugin.create()
-            )
-        )
-        .build();
-}
-
 
 fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.YEAR)
 fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)

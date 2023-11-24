@@ -3,9 +3,9 @@ package com.example.holders.redesign
 import com.example.R
 import com.example.databinding.ItemEventTimetableBinding
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.firstLetterToUppercase
 import com.example.extensions.parseAndFormat
 import com.example.extensions.parseToLong
-import com.example.util.firstLetterToUppercase
 import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*

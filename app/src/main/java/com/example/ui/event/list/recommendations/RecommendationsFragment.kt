@@ -95,7 +95,7 @@ class RecommendationsFragment :
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    fun smoothScrollToFirstItem() {
+    fun scrollToFirstItem() {
         val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
         mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }

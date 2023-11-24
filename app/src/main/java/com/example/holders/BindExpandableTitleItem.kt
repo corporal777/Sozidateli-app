@@ -18,6 +18,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
+
 abstract class BindExpandableTitleItem<T : ViewDataBinding> (
     private val title: String
 ) : BindableItem<T>(title.hashCode().toLong()), ExpandableItem {

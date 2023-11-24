@@ -2,15 +2,14 @@ package com.example.ui.support.detail
 
 import android.content.Context
 import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import com.example.R
 import com.example.databinding.ItemSupportQuestionAnswerBinding
+import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
-import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.databinding.BindableItem
 import me.saket.bettermovementmethod.BetterLinkMovementMethod

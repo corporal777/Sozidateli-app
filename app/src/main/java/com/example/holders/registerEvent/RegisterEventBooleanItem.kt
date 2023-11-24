@@ -3,20 +3,18 @@ package com.example.holders.registerEvent
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
+import com.example.databinding.ItemRegisterEventBooleanBinding
 import com.example.extensions.setRequired
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_checkbox.*
-import kotlinx.android.synthetic.main.item_register_event_boolean.*
 
 open class RegisterEventBooleanItem(
-        private val fieldData: EventRegisterFieldData<Boolean>,
-        private val editable: Boolean = true,
-        onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem(fieldData, onDataChange) {
+    private val fieldData: EventRegisterFieldData<Boolean>,
+    private val editable: Boolean = true,
+    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+) : BaseRegisterItem<ItemRegisterEventBooleanBinding>(fieldData, onDataChange) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            checkbox.apply {
+    override fun bind(viewBinding: ItemRegisterEventBooleanBinding, position: Int) {
+        viewBinding.apply {
+            include.checkbox.apply {
                 isEnabled = editable
                 text = field.name
                 isChecked = fieldData.value ?: false

@@ -230,4 +230,13 @@ data class NotificationsSortedData(
     var titleDate: String?,
     var data: Notification
 ) {
+    override fun hashCode(): Int {
+        return data.id
+    }
+
+    override fun equals(other: Any?): Boolean {
+        other as NotificationsSortedData
+        if (data != other.data) return false
+        return true
+    }
 }

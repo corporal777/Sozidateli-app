@@ -2,20 +2,16 @@ package com.example.holders
 
 import android.content.Context
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
+import com.example.databinding.ItemChatBinding
 import com.example.extensions.*
-import com.example.holders.redesign.EventActivityItem
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_chat.*
-import kotlinx.android.synthetic.main.item_dropdown.*
+import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.databinding.GroupieViewHolder
 import java.util.*
 
 
@@ -25,16 +21,16 @@ class UserChatItem(
     private val onBind: ((UserChatItem) -> Unit)? = null,
     private val onUnBind: ((UserChatItem) -> Unit)? = null,
     private val withDivider: Boolean
-) : Item(userChat.id.toLong()) {
+) : BindableItem<ItemChatBinding>(userChat.id.toLong()) {
 
-    private lateinit var mViewHolder: GroupieViewHolder
+    private lateinit var mViewHolder: ItemChatBinding
     private var lastMessage = userChat.lastMessage
     private var messageCount = userChat.unreadMessageCount
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+    override fun bind(viewBinding: ItemChatBinding, position: Int) {
         onBind?.invoke(this)
-        mViewHolder = viewHolder
-        viewHolder.apply {
+        mViewHolder = viewBinding
+        viewBinding.apply {
             ivAvatar.setCircleAvatar(userChat.user.loadUserImage())
             tvName.text = userChat.user.nameLastName
             tvLastMessage.apply {
@@ -58,20 +54,13 @@ class UserChatItem(
                 }
             }
 
-            itemView.setOnClickListener { onClick(userChat) }
+            root.setOnClickListener { onClick(userChat) }
 
             updateBadge(messageCount)
             divider.isVisible = withDivider
         }
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewHolder, position, payloads)
-        else if (payload is Int) {
-            //updateBadge(viewHolder.tvBadge)
-        }
-    }
 
     fun updateBadge(count: Int) {
         if (this::mViewHolder.isInitialized) {
@@ -104,12 +93,10 @@ class UserChatItem(
         }
     }
 
-    override fun unbind(holder: GroupieViewHolder) {
-        super.unbind(holder)
+    override fun unbind(viewHolder: GroupieViewHolder<ItemChatBinding>) {
+        super.unbind(viewHolder)
         onUnBind?.invoke(this)
     }
-
-    override fun getLayout() = R.layout.item_chat
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -130,9 +117,5 @@ class UserChatItem(
         return userChat.hashCode()
     }
 
-    private fun setFadeAnimation(view: View) {
-        val anim = AlphaAnimation(0.0f, 1.0f)
-        anim.duration = 450
-        view.startAnimation(anim)
-    }
+    override fun getLayout() = R.layout.item_chat
 }

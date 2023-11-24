@@ -17,6 +17,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_organization.*
 import parseColor
 
+
 class OrganizationItem(
         private val organization: OrganizationNew,
         private val onOrganizationClick: () -> Unit,

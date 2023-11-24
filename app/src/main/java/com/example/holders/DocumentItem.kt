@@ -4,23 +4,21 @@ import android.content.Context
 import android.webkit.MimeTypeMap
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.Document
 import com.example.data.models.FileModel
+import com.example.databinding.ItemDocumentBinding
 import com.example.extensions.formatToDefaultDate
-import com.example.extensions.setUnderlineSpan
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_document.*
+import com.xwray.groupie.databinding.BindableItem
 import java.text.DecimalFormat
 import kotlin.math.log10
 import kotlin.math.pow
 
 class DocumentItem(
-        private val document: FileModel,
-        private val onClick: () -> Unit
-) : Item(document.id?.toLong()?: 0) {
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    private val document: FileModel,
+    private val onClick: () -> Unit
+) : BindableItem<ItemDocumentBinding>(document.id?.toLong() ?: 0) {
+
+    override fun bind(viewBinding: ItemDocumentBinding, position: Int) {
+        viewBinding.apply {
             tvDate.apply {
                 val date = document.createdDate?.formatToDefaultDate()
                 text = date
@@ -31,14 +29,16 @@ class DocumentItem(
             }
 
             tvFileData.apply {
-                val extension = MimeTypeMap.getFileExtensionFromUrl(document.uri)?.let { if (it.isEmpty()) null else it }
-                val fileSize = getSize(context, document.size?: 0)
+                val extension = MimeTypeMap.getFileExtensionFromUrl(document.uri)
+                    ?.let { if (it.isEmpty()) null else it }
+                val fileSize = getSize(context, document.size ?: 0)
                 text = listOfNotNull(extension, fileSize).joinToString("\n")
             }
 
-            itemView.setOnClickListener { onClick() }
+            root.setOnClickListener { onClick() }
         }
     }
+
 
     private fun getSize(context: Context, sizeBytes: Long): String {
         val units = arrayOf(R.string.size_b, R.string.size_kb, R.string.size_mb, R.string.size_gb)

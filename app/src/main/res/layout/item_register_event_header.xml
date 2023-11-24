@@ -1,144 +1,147 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/list_background"
-    android:orientation="vertical">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingBottom="16dp">
-
-        <TextView
-            android:id="@+id/tvEventName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:textSize="16sp"
-            tools:text="Полный текст названия мероприятия в любое количество строк - рограммирование - новый язык поколения Зет: что с этим делать." />
+        android:background="@color/list_background"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/llTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:orientation="horizontal">
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
             <TextView
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvEventName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/about_event_time"
-                android:textColor="@color/about_event_date"
-                android:textSize="14sp"
-                tools:ignore="MissingPrefix" />
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:textSize="16sp"
+                tools:text="Полный текст названия мероприятия в любое количество строк - рограммирование - новый язык поколения Зет: что с этим делать." />
 
-            <TextView
-                android:id="@+id/tvEventTime"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llTime"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:textColor="@color/about_event_date"
-                android:textSize="14sp"
-                tools:ignore="MissingPrefix"
-                tools:text="14:00" />
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:orientation="horizontal">
+
+                <TextView
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_event_time"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/tvEventTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="14:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:orientation="horizontal">
+
+                <TextView
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_event_date"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/tvEventDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="4 сентярбя - 7 октября 2019 г." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llRegistrationFinishDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/margin_horizontal_default"
+                android:orientation="horizontal">
+
+                <TextView
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_event_registration_finish"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/tvRegistrationFinishDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:textColor="@color/about_event_date"
+                    android:textSize="14sp"
+                    tools:ignore="MissingPrefix"
+                    tools:text="4 сентярбя 2000 г." />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llDate"
+            android:id="@+id/llFormTitleContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:orientation="horizontal">
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/profile_padding_start"
+            android:paddingTop="16dp"
+            android:paddingEnd="@dimen/profile_padding_start"
+            android:paddingBottom="16dp">
 
             <TextView
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvFormLabel"
+                fontPath="fonts/Roboto-Medium.ttf"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/about_event_date"
-                android:textColor="@color/about_event_date"
-                android:textSize="14sp"
-                tools:ignore="MissingPrefix" />
+                android:textSize="16sp"
+                tools:ignore="MissingPrefix"
+                tools:text="Анкета козоводов России, а также какой-то длинный заголовок анкеты" />
 
             <TextView
-                android:id="@+id/tvEventDate"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvFormDescription"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:textColor="@color/about_event_date"
+                android:layout_marginTop="16dp"
                 android:textSize="14sp"
                 tools:ignore="MissingPrefix"
-                tools:text="4 сентярбя - 7 октября 2019 г." />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llRegistrationFinishDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:orientation="horizontal">
-
-            <TextView
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_event_registration_finish"
-                android:textColor="@color/about_event_date"
-                android:textSize="14sp"
-                tools:ignore="MissingPrefix" />
-
-            <TextView
-                android:id="@+id/tvRegistrationFinishDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:textColor="@color/about_event_date"
-                android:textSize="14sp"
-                tools:ignore="MissingPrefix"
-                tools:text="4 сентярбя 2000 г." />
+                tools:text="Развитие сельского хозяйства для личных подсобных хозяйств и крестьянско-фермерских хозяйств" />
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llFormTitleContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/profile_padding_start"
-        android:paddingTop="16dp"
-        android:paddingEnd="@dimen/profile_padding_start"
-        android:paddingBottom="16dp">
-
-        <TextView
-            android:id="@+id/tvFormLabel"
-            fontPath="fonts/Roboto-Medium.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            tools:ignore="MissingPrefix"
-            tools:text="Анкета козоводов России, а также какой-то длинный заголовок анкеты" />
-
-        <TextView
-            android:id="@+id/tvFormDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="14sp"
-            tools:ignore="MissingPrefix"
-            tools:text="Развитие сельского хозяйства для личных подсобных хозяйств и крестьянско-фермерских хозяйств" />
-    </LinearLayout>
-</LinearLayout>
+</layout>

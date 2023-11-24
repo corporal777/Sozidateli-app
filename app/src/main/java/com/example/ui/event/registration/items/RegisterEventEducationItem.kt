@@ -52,11 +52,6 @@ class RegisterEventEducationItem(
                 val years = context.getString(R.string.profile_dates, startYear, endYear)
                 text = years
             }
-//            if (!educationIsNul){
-//
-//            }else {
-//                lnEducation.isVisible = false
-//            }
         }
     }
 

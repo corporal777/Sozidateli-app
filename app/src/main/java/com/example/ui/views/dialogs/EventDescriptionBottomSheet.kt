@@ -9,8 +9,8 @@ import androidx.core.text.getSpans
 import androidx.core.text.set
 import com.example.R
 import com.example.databinding.BottomSheetEventDescriptionBinding
+import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
-import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

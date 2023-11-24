@@ -12,10 +12,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.R
 import com.example.databinding.FragmentFinishRegisterBinding
+import com.example.extensions.removeFirstAndLastSpaces
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.util.*
+import com.example.util.AuthValidateUtil
+import com.example.util.Utils
+import com.example.util.getNameFilter
+import com.example.util.initSwitch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

@@ -24,14 +24,8 @@ interface UserRepository {
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
     //fun getFcmToken(): Maybe<InstanceIdResult>
-    fun notificationsRegister(token: String): Completable
-    fun notificationsUnregister(token: String): Completable
-    fun updateUser(data: Map<String, Any?>): Single<User>
 
     fun checkPassword(password: String): Completable
-
-    fun userEventCalendar(): Maybe<List<UserEventCalendar>>
-    fun setUserAtEvent(events: List<Int>, atEvent: List<Boolean>, lat: Double, lon: Double): Completable
 
     fun deleteProfile(id: Int): Completable
     fun updateProfile(id: Int, map: Map<String, Any?>): Single<UserDetail>

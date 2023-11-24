@@ -6,19 +6,20 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationSimpleNewBinding
+import com.example.databinding.ItemNotificationSimpleBinding
+import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class SimpleNotificationItem(
     private val context: Context,
     private val notification: Notification,
     private val listener: OnNotificationActionListener
-) : NotificationItem<ItemNotificationSimpleNewBinding>(
+) : NotificationItem<ItemNotificationSimpleBinding>(
     context,
     notification,
     listener
 ) {
 
-    override fun bind(viewBinding: ItemNotificationSimpleNewBinding, position: Int) {
+    override fun bind(viewBinding: ItemNotificationSimpleBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.btnMarkAsRead.apply {
             decorViews(this, notification)
@@ -30,7 +31,7 @@ class SimpleNotificationItem(
 
 
     override fun bind(
-        viewBinding: ItemNotificationSimpleNewBinding,
+        viewBinding: ItemNotificationSimpleBinding,
         position: Int,
         payloads: MutableList<Any>?
     ) {
@@ -54,24 +55,12 @@ class SimpleNotificationItem(
     }
 
 
-    override fun getBadgeView(viewBinding: ItemNotificationSimpleNewBinding): View =
-        viewBinding.viewBadge
+    override fun getBadgeView(binding: ItemNotificationSimpleBinding): View = binding.viewBadge
+    override fun getTitleView(binding: ItemNotificationSimpleBinding): TextView = binding.tvTitle
+    override fun getMessageView(binding: ItemNotificationSimpleBinding): CustomExpandableTextView = binding.tvMessage
+    override fun getReadMoreView(binding: ItemNotificationSimpleBinding): View = binding.tvReadMore
+    override fun getRootView(binding: ItemNotificationSimpleBinding): View = binding.clSimpleNotification
 
-    override fun getTitleView(viewBinding: ItemNotificationSimpleNewBinding): TextView =
-        viewBinding.tvTitle
-
-    override fun getMessageView(viewBinding: ItemNotificationSimpleNewBinding): TextView =
-        viewBinding.tvMessage
-
-    override fun getReadMoreView(viewBinding: ItemNotificationSimpleNewBinding): View =
-        viewBinding.tvReadMore
-
-    override fun getRootView(viewBinding: ItemNotificationSimpleNewBinding): View =
-        viewBinding.clSimpleNotification
-
-
-
-
-    override fun getLayout() = R.layout.item_notification_simple_new
+    override fun getLayout() = R.layout.item_notification_simple
 }
 

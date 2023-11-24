@@ -60,6 +60,7 @@ class AuthorizationFragment : BaseFragment<FragmentAuthorizationBinding>(),
     }
 
     override fun showEmailRegistration() {
+        //findNavController().navigate(R.id.userRegistrationFragment)
         findNavController().navigate(R.id.register_email_new_fragment)
     }
 

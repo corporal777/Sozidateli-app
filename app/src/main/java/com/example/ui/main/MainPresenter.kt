@@ -468,14 +468,6 @@ class MainPresenter
 
 
     override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
-        compositeDisposable += authRepository.confirmEmailSocialNetwork(userId, code)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribe({
-                // do nothing
-            }, {
-                it.printStackTrace()
-            })
     }
 
     override fun onHandleNotification(notification: RemoteNotification) {

@@ -8,11 +8,11 @@ import androidx.navigation.fragment.navArgs
 import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
+import com.example.extensions.markWon
 import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.markWon
 import com.example.util.showCustomTabsBrowser
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter

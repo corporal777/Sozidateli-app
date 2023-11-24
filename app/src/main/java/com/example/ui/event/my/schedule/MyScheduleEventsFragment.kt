@@ -14,10 +14,7 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
-import com.example.extensions.calendar
-import com.example.extensions.dp
-import com.example.extensions.findItemBy
-import com.example.extensions.updateItem
+import com.example.extensions.*
 import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
@@ -32,7 +29,6 @@ import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.util.SearchInput
-import com.example.util.getMonthName
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder

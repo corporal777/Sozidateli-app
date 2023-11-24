@@ -1,18 +1,17 @@
 package com.example.holders
 
 import com.example.R
-import com.example.data.models.Interest
 import com.example.data.models.InterestNew
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_interest.*
+import com.example.databinding.ItemProfileDataInterestBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataInterestItem(
-        private val interest: InterestNew
-) : Item() {
+    private val interest: InterestNew
+) : BindableItem<ItemProfileDataInterestBinding>() {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+
+    override fun bind(viewBinding: ItemProfileDataInterestBinding, position: Int) {
+        viewBinding.apply {
             tvInterest.text = interest.name
         }
     }

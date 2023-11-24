@@ -7,8 +7,8 @@ import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterFieldData
 import com.example.holders.ProfileButtonEditItem
 import com.xwray.groupie.Group
+import com.xwray.groupie.Item
 import com.xwray.groupie.NestedGroup
-import com.xwray.groupie.kotlinandroidextensions.Item
 
 class EventRegistrationFileGroup(
     context: Context,
@@ -24,7 +24,7 @@ class EventRegistrationFileGroup(
             compactMargin = true
         }
 
-    private val descriptions: MutableList<Item> = mutableListOf()
+    private val descriptions: MutableList<Item<*>> = mutableListOf()
 
     init {
         checkFile()

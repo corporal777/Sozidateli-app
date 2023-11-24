@@ -5,34 +5,25 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_button_edit.*
+import com.example.databinding.ItemProfileButtonEditBinding
+import com.xwray.groupie.databinding.BindableItem
 import setOnClickListener
 
-class ButtonAddMore : Item {
-
-    private val text: String
+class ButtonAddMore(
+    private val text: String,
     private val onClickListener: () -> Unit
+) : BindableItem<ItemProfileButtonEditBinding>() {
+
     private var isButtonVisible = View.GONE
     private var isButtonEnabled = true
 
-    constructor(text: String, onClickListener: () -> Unit) : super() {
-        this.text = text
-        this.onClickListener = onClickListener
-    }
-
-    constructor(id: Long, text: String,onClickListener: () -> Unit) : super(id) {
-        this.text = text
-        this.onClickListener = onClickListener
-    }
-
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemProfileButtonEditBinding, position: Int) {
+        viewBinding.apply {
             tvHelp.visibility = View.GONE
             btnEdit.apply {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    marginStart = resources.getDimensionPixelSize(R.dimen.profile_data_margin_compact)
+                    marginStart =
+                        resources.getDimensionPixelSize(R.dimen.profile_data_margin_compact)
                 }
                 text = this@ButtonAddMore.text
                 setOnClickListener(onClickListener)
@@ -48,7 +39,7 @@ class ButtonAddMore : Item {
         notifyChanged()
     }
 
-    fun setButtonEnabled(enabled : Boolean){
+    fun setButtonEnabled(enabled: Boolean) {
         isButtonEnabled = enabled
         notifyChanged()
     }

@@ -19,6 +19,7 @@ import com.example.extensions.dp
 import com.example.extensions.inverseSp
 import com.example.extensions.sp
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.getDrawable
 import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class CustomLoadingButton : ConstraintLayout {
@@ -78,8 +79,7 @@ class CustomLoadingButton : ConstraintLayout {
     ) {
         loadingView.btnLoad.apply {
             CalligraphyUtils.applyFontToTextView(context, this, "fonts/sf_pro_text_semibold.ttf")
-            background =
-                back ?: ContextCompat.getDrawable(context, R.drawable.custom_btn_brown_selectable)
+            background = back ?: getDrawable(R.drawable.custom_btn_brown_selectable)
             minimumHeight = buttonHeight
             minHeight = buttonHeight
             stateListAnimator = null
@@ -94,6 +94,10 @@ class CustomLoadingButton : ConstraintLayout {
 
     override fun setEnabled(enabled: Boolean) {
         loadingView.btnLoad.isEnabled = enabled
+    }
+
+    override fun setSelected(enabled: Boolean){
+        loadingView.btnLoad.isSelected = !enabled
     }
 
     fun setButtonText(buttonText: CharSequence) {

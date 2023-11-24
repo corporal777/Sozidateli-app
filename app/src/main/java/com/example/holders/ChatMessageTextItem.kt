@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.ChatMessage
-import com.example.util.markWon
+import com.example.extensions.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.item_chat_message_text.*
 
