@@ -21,7 +21,8 @@ class WeekDayValidator() : CalendarConstraints.DateValidator {
                 }
             }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(p0: Parcel, p1: Int) {
+
     }
 
     override fun isValid(date: Long): Boolean {
@@ -34,6 +35,8 @@ class WeekDayValidator() : CalendarConstraints.DateValidator {
     override fun describeContents(): Int {
         return 0
     }
+
+
 
     override fun hashCode(): Int {
         val hashedFields = arrayOf<Any>()

@@ -117,11 +117,11 @@ class ExpandableTextView : AppCompatTextView {
                     layoutParams = params
                 }
                 addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                         super.onAnimationStart(animation)
                     }
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
                         text = originalText
                         val params = layoutParams
