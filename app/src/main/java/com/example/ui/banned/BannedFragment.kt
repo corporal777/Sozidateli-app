@@ -82,6 +82,6 @@ class BannedFragment : BaseFragment<LayoutListBinding>(), BannedContract.View, T
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.profile_banned) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

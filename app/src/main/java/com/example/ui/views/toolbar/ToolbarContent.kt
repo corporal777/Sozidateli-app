@@ -13,8 +13,11 @@ class ToolbarContent(
     private val toolbarContainer : ViewGroup
 ) {
     init {
-        backButton.isInvisible = false
-        backButton.setTint(R.color.black)
+        backButton.apply {
+            isInvisible = false
+            alpha = 1f
+            setTint(R.color.black)
+        }
         toolbarContainer.removeAllViews()
     }
 

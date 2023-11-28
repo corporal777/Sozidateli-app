@@ -69,6 +69,6 @@ class EnterCodeFragment : BaseFragment<FragmentEnterCodeBinding>(), EnterCodeCon
     override fun layout() = R.layout.fragment_enter_code
     override val title: CharSequence by lazy { getString(R.string.code_input_label) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: Int) {  }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

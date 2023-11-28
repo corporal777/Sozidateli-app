@@ -10,33 +10,47 @@ interface UserRegistrationContract {
         @Skip
         fun enableRegisterBtn(isEnable: Boolean)
 
-        @OneExecution
+        @Skip
         fun showLastNameError(show: Boolean, error : String?)
 
-        @OneExecution
+        @Skip
         fun showFirstNameError(show: Boolean, error : String?)
 
-        @OneExecution
+        @Skip
         fun showMiddleNameError(show: Boolean, error : String?)
 
-        @OneExecution
+        @Skip
         fun showMobilePhoneError(show: Boolean)
 
-        @OneExecution
+        @Skip
         fun enableMiddleNameInput(enable: Boolean)
 
-        @OneExecution
+        @Skip
+        fun showPasswordError(show: Boolean)
+
+        @Skip
         fun showUserAgreementError(show: Boolean)
+
+        @Skip
+        fun showPhoneIsNotUnique(phone: String)
+
+        @OneExecution
+        fun showPhoneCodeConfirmation(phone: String)
+
+        @Skip
+        fun changeAppBarHeader(value: Float)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
         fun onChangeLastNameText(lastName : String)
         fun onChangeFirstNameText(firstName : String)
         fun onChangeMiddleNameText(middleName: String)
-        fun onNoMiddleNameChecked(checked: Boolean)
+        fun onMiddleNameIsAbsent(checked: Boolean)
         fun onChangeMobilePhoneText(phone: String)
         fun onChangePasswordText(password: String?, isValid: Boolean)
         fun onChangeUserAgreement(isAgree : Boolean)
-        fun registerUser()
+        fun registerUser(withCheck : Boolean)
+
+        fun onScrollChange(value : Int)
     }
 }

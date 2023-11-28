@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 app:checkViewText="@string/auth_user_agreement"
                 app:isCheckable="true" />
 

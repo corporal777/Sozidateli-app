@@ -30,7 +30,7 @@ class MainInfoEditItem(
 
     private val genderMale = "Мужской"
     private val genderFemale = "Женский"
-    private var mGender = gender?.value?.firstLetterToUppercase()
+    private var mGender = setGender()
     private var mGenderShow = gender?.showInProfile ?: true
 
     private var mImage = image
@@ -52,46 +52,35 @@ class MainInfoEditItem(
         mBinding = viewBinding
         viewBinding.apply {
             setAvatar()
-            tilBirthday.apply {
-                initAsDatePicker(
-                    startDate = if (!mBirthday.isNullOrEmpty()) defaultDateFormatter.parse(mBirthday) else null,
-                    maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -14) }.time
-                ) { year, month, day ->
-                    checkDataValid()
-                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
-                }
-                etBirthday.initInput(mBirthday) {
+            btnEdit.setOnClickListener {
+                onImageClick(!mImage.isNullOrEmpty())
+            }
+            etBirthday.apply {
+                initAsDateTimePicker(mBirthday){
                     mBirthday = it.toString()
                     checkDataValid()
                 }
+                initSwitch(mShowBirthday) { mShowBirthday = it }
             }
 
             tvGender.apply {
-                mGender = setGender(context)
-                initDropDownAdapter(mutableListOf(genderMale, genderFemale))
-                initInput(mGender) {
+                initAsDropDown(mGender, listOf(genderMale, genderFemale)){
                     mGender = it.toString()
                     checkDataValid()
                 }
-            }
-            scGender.apply {
-                isChecked = mGenderShow
-                setOnCheckedChangeListener { _, isChecked ->
-                    mGenderShow = isChecked
-                }
+                initSwitch(mGenderShow) { mGenderShow = it }
             }
 
             tvRegion.apply {
-                text = mAddressRegion
-                setOnClickListener {
+                initAsCustomMode(mAddressRegion){
                     SearchRegionBottomSheet(context)
                         .setRegionSelectedCallback {
                             mAddressRegion = it?.name
-                            text = mAddressRegion
-                            tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
+                            setText(mAddressRegion)
                             if (mAddressRegion != address?.region) {
                                 mAddressCity = null
-                                tvCity.text = mAddressCity
+                                tvCity.setText(mAddressCity)
+                                tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
                             }
                             checkDataValid()
                         }.show()
@@ -99,14 +88,14 @@ class MainInfoEditItem(
             }
             tvCity.apply {
                 isEnabled = !mAddressRegion.isNullOrEmpty()
-                text = mAddressCity
-                setOnClickListener {
+                initAsCustomMode(mAddressCity){
                     SearchSettlementBottomSheet(context, mAddressRegion)
                         .setSettlementSelectedCallback {
                             mAddressCity = it?.name
-                            text = mAddressCity
+                            setText(mAddressCity)
                         }.show()
                 }
+                initSwitch(mAddressShow) { mAddressShow = it }
             }
 
             etMobilePhone.apply {
@@ -117,10 +106,6 @@ class MainInfoEditItem(
                 tvEditPhone.setOnClickListener {
                     onEditPhoneClick.invoke(mMobilePhone)
                 }
-            }
-
-            btnEdit.setOnClickListener {
-                onImageClick(!mImage.isNullOrEmpty())
             }
         }
         checkDataValid()
@@ -142,7 +127,7 @@ class MainInfoEditItem(
     }
 
     private fun getPersonalPhone() = mMobilePhone?.phoneToServer() ?: ""
-    private fun isPhoneValid(): Boolean = Utils.isNewPhoneIsValid(getPersonalPhone())
+    private fun isPhoneValid(): Boolean = Utils.isPhoneNumberValid(getPersonalPhone())
     private fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone())
 
     fun getDataToSave(): MutableMap<String, Any?> {
@@ -176,10 +161,10 @@ class MainInfoEditItem(
         }
     }
 
-    private fun setGender(context: Context): String {
-        return when (mGender) {
-            GENDER_MALE, context.getString(R.string.profile_gender_male) -> genderMale
-            GENDER_FEMALE, context.getString(R.string.profile_gender_female) -> genderFemale
+    private fun setGender(): String {
+        return when (gender?.value) {
+            GENDER_MALE -> genderMale
+            GENDER_FEMALE -> genderFemale
             else -> ""
         }
     }

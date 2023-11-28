@@ -42,9 +42,6 @@ interface Api {
     @PATCH("v1/user/{id}")
     fun updateProfile(@Path("id") id: Int, @Body map: Map<String, Any?>): Single<UserDetail>
 
-    @POST("v1/user")
-    fun registerEmail(@Body body: RegisterBody): Single<UserDetail>
-
     @GET("v1/user/{id}/email/confirm/send")
     fun registerEmailResend(@Path("id") id: Int, @Query("email") email: String): Completable
 
@@ -60,9 +57,6 @@ interface Api {
 
     @POST("v1/user/{id}/email/confirm")
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
-
-    @GET("v1/user/{id}/phone/confirm")
-    fun sendPhoneCode(@Path("id") id: Int, @Query("phone") phone: String): Completable
 
     //+
     @GET("v1/user/get-sessions")

@@ -131,6 +131,6 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(true),
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

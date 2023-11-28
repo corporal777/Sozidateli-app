@@ -107,6 +107,6 @@ class EditEducationFragment : BaseFragment<FragmentEditEducationFragmentBinding>
     override fun layout(): Int = R.layout.fragment_edit_education_fragment
     override val title: CharSequence by lazy { getString(R.string.profile_title_education) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

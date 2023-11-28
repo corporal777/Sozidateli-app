@@ -1,4 +1,4 @@
-package com.example.ui.accountChange
+package com.example.ui.auth.authorization
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -8,8 +8,6 @@ import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.auth.authorization.AuthorizationContract
-import com.example.ui.auth.authorization.AuthorizationPresenter
 import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthBackground
@@ -35,8 +33,8 @@ class AccountAuthFragment : BaseFragment<FragmentAuthorizationBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            ibEmail.setOnClickListener { presenter.onEmailClick() }
-            ibLogin.setOnClickListener { presenter.onLoginClick() }
+            btnRegister.setOnClickListener { presenter.onRegisterClick() }
+            btnLogin.setOnClickListener { presenter.onLoginClick() }
         }
 
     }
@@ -46,7 +44,7 @@ class AccountAuthFragment : BaseFragment<FragmentAuthorizationBinding>(),
         findNavController().navigate(R.id.login_fragment, args)
     }
 
-    override fun showEmailRegistration() {
+    override fun showRegistration() {
         findNavController().navigate(R.id.register_email_new_fragment)
     }
 

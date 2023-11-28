@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/tvMessage"
-        fontPath="fonts/sf_pro_text.ttf"
+        fontPath="fonts/sf_pro_display.OTF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:letterSpacing="-0.01"

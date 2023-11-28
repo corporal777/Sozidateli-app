@@ -12,19 +12,21 @@ import com.example.extensions.removeAllDoubleSpaces
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.auth.register.email.newbuild.RegisterEmailContract
 import com.example.ui.snAuth.SnAuth
 import com.example.ui.snAuth.SnAuthManager
-import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.Utils
 import com.example.util.Utils.isContainsNumbers
+import com.example.util.Utils.isPhoneNumberValid
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
+import performOnBackgroundOutOnMain
+import withCustomLoading
 import javax.inject.Inject
+import kotlin.math.abs
 
 @InjectViewState
 class UserRegistrationPresenter
@@ -39,29 +41,36 @@ class UserRegistrationPresenter
     private var firstName: String? = ""
     private var lastName: String? = ""
     private var middleName: String? = ""
-    private var noMiddleNameChecked = middleName == USER_DATA_EMPTY
+    private var isMiddleNameAbsent = middleName == USER_DATA_EMPTY
     private var mobilePhone: String? = ""
     private var password: String? = ""
     private var isPasswordValid: Boolean = false
     private var isAgree: Boolean = false
 
-
-    private val deviceId = appData.deviceId
-    private val deviceModel = getDeviceName()
-    private val appVersion = getAppVersion()
-    private val appCode = getAppVersionCode()
-
+    private var scrollValue = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         performDataChange()
+        viewState.changeAppBarHeader(abs(scrollValue / 10f))
     }
 
-    override fun registerUser() {
+    override fun registerUser(withCheck: Boolean) {
         if (isDataValid()){
-
+            compositeDisposable += checkPhoneIsUnique(withCheck)
+                .andThen(authRepository.registerUser(getRegisterBody()))
+                .performOnBackgroundOutOnMain()
+                .withCustomLoading(viewState)
+                .subscribeSimple(
+                    onError = {
+                        if (it is PhoneNotUniqueException) viewState.showPhoneIsNotUnique(mobilePhone!!)
+                        else onReceiveError(it)
+                    },
+                    onComplete = { viewState.showPhoneCodeConfirmation(mobilePhone!!) }
+                )
         } else showErrors()
     }
+
 
     override fun onChangeLastNameText(lastName: String) {
         this.lastName = lastName
@@ -81,8 +90,8 @@ class UserRegistrationPresenter
         performDataChange()
     }
 
-    override fun onNoMiddleNameChecked(checked: Boolean) {
-        noMiddleNameChecked = checked
+    override fun onMiddleNameIsAbsent(checked: Boolean) {
+        isMiddleNameAbsent = checked
         viewState.enableMiddleNameInput(!checked)
         performDataChange()
     }
@@ -116,7 +125,7 @@ class UserRegistrationPresenter
     }
 
     fun onCheckMiddleNameValid() {
-        if (!noMiddleNameChecked) {
+        if (!isMiddleNameAbsent) {
             if (isContainsNumbers(middleName))
                 viewState.showMiddleNameError(true, "Отчество может содержать только буквы")
         }
@@ -128,11 +137,11 @@ class UserRegistrationPresenter
         val firstNameValid = !firstName.isNullOrBlank() && !isContainsNumbers(firstName)
         val lastNameValid = !lastName.isNullOrBlank() && !isContainsNumbers(lastName)
 
-        val middleNameValid = if (noMiddleNameChecked) true
-        else !middleName.isNullOrEmpty() && !isContainsNumbers(middleName)
+        val middleNameValid = if (isMiddleNameAbsent) true
+        else !middleName.isNullOrBlank() && !isContainsNumbers(middleName)
 
         val passwordValid = !password.isNullOrBlank() && isPasswordValid
-        val phoneValid = Utils.newPhoneValidator(mobilePhone)
+        val phoneValid = isPhoneNumberValid(mobilePhone)
         return firstNameValid && lastNameValid && middleNameValid && phoneValid && passwordValid && isAgree
     }
 
@@ -146,15 +155,50 @@ class UserRegistrationPresenter
                 viewState.showLastNameError(true, "Фамилия может содержать только буквы")
             else showLastNameError(lastName.isNullOrEmpty(), null)
 
-            if (!noMiddleNameChecked) {
+            if (!isMiddleNameAbsent) {
                 if (isContainsNumbers(middleName))
                     viewState.showMiddleNameError(true, "Отчество может содержать только буквы")
                 else showMiddleNameError(middleName.isNullOrEmpty(), null)
             }
-            showMobilePhoneError(!Utils.newPhoneValidator(mobilePhone))
+            showPasswordError(!isPasswordValid)
+            showMobilePhoneError(!isPhoneNumberValid(mobilePhone))
             showUserAgreementError(!isAgree)
         }
     }
+
+    private fun checkPhoneIsUnique(withCheck: Boolean): Completable {
+        return if (withCheck) Completable.create { emitter ->
+            val disposable = CompositeDisposable()
+            disposable += userRepository.checkEmailPhone(null, mobilePhone)
+                .subscribeSimple(
+                    onError = { emitter.onError(PhoneNotUniqueException()) },
+                    onComplete = { emitter.onComplete() })
+            emitter.setDisposable(disposable)
+        } else Completable.complete()
+    }
+
+    private fun getRegisterBody(): RegisterBody {
+        val midName = if (middleName.isNullOrEmpty()) null
+        else FieldDetails(value = middleName?.removeAllDoubleSpaces())
+
+        return RegisterBody(
+            password = password,
+            name = firstName?.removeAllDoubleSpaces(),
+            lastName = lastName?.removeAllDoubleSpaces(),
+            middleName = midName,
+            phone = FieldDetails(value = mobilePhone, type = PHONE_PERSONAL, isVisible = true).toList(),
+            deviceId = appData.deviceId ?: "",
+            deviceModel = getDeviceName(),
+            build = getAppVersionCode(),
+            version = getAppVersion()
+        )
+    }
+
+    override fun onScrollChange(value: Int) {
+        scrollValue = value
+        viewState.changeAppBarHeader(abs(scrollValue / 10f))
+    }
+
 
     override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
     }

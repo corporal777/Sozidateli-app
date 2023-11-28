@@ -24,31 +24,12 @@ class SupportHeaderItem(
     val onMicrophoneClick: () -> Unit
 ) : BindableItem<ItemSupportCenterHeaderBinding>(-1001L) {
 
-    private val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-    private val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-        putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-    }
-
     override fun bind(viewBinding: ItemSupportCenterHeaderBinding, position: Int) {
         viewBinding.apply {
             etSearch.apply {
                 setOnClickListener {
                     onSearchClick.invoke()
                 }
-            }
-            btnMicrophone.apply {
-//                VoiceInput(this, speechRecognizer, speechRecognizerIntent).apply {
-//                    setOnBeginListening {
-//
-//                    }
-//                    setOnFinishListening {
-//                        etSearch.setText(it)
-//                    }
-//                }
             }
         }
     }

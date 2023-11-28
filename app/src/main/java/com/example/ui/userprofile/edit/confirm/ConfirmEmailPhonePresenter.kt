@@ -76,7 +76,7 @@ class ConfirmEmailPhonePresenter
     override fun confirmEmailPhone(email: String, code: String) {
         compositeDisposable += Completable.defer {
             if (loginType == "email") authRepository.confirmEmailCode(EmailCodeBody(code, email))
-            else authRepository.confirmPhoneCode(ConfirmCodeBody("personal", email, code))
+            else authRepository.confirmPhoneCode(ConfirmCodeBody(email, code))
         }
             .andThen(userRepository.getUserInternal())
             .doOnSuccess { new ->

@@ -5,8 +5,6 @@ import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.toSpannable
-import androidx.core.view.doOnPreDraw
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
@@ -99,63 +97,32 @@ class UserProfileSettingsFragment :
     override fun setUserData(user: UserDetail, state: String) {
         startPostponedEnterTransition()
         mBinding.apply {
-            tvUserName.text = user.name
-            tvUserLastName.text = user.lastName
-
-            if (user.middleName?.absent == true || (user.middleName?.value == "-" || user.middleName?.value.isNullOrBlank())) {
-                scNoMiddleName.isChecked = true
-                tvUserMiddleName.text = ""
-            } else {
-                scNoMiddleName.isChecked = false
-                tvUserMiddleName.text =
-                    user.getMiddleName() ?: getString(R.string.user_profile_additional_hint)
+            tvUserName.setText(user.name)
+            tvUserLastName.setText(user.lastName)
+            tvUserMiddleName.apply {
+                setText(user.getMiddleName())
+                initSwitch(user.middleName?.value == "-" || user.middleName?.value.isNullOrBlank()){}
             }
 
             tvPhoneMobile.apply {
-                val phone =
-                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(
-                        requireContext()
-                    )
-                text = phone
+                val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
+                setText(phone)
             }
-            tvShortname.apply {
-                text = if (user.shortName.isNullOrEmpty() || user.shortName == user.id.toString()) {
-                    "@id" + user.id
-                } else "@" + user.shortName
-            }
+            tvPassword.setText("●●●●●●●●●")
+            tvShortname.setText(user.shortNameFormatted)
 
-            tvEmail.text = if (!user.email?.onConfirmation.isNullOrEmpty()) {
-                user.email?.onConfirmation
-            } else {
-                user.email?.value
+            tvEmail.apply {
+                setText(user.getUserEmail())
+                setIconVisibility(user.isHasEmailOnConfirmation())
+                getInputLayout().setEndIconOnClickListener {
+                    showEmailInformation(user)
+                }
             }
 
             ivPrivacyProfile.setChecked(user.state?.isHidden.toBoolean())
             ivBlockEvent.setChecked(user.blockedNotifications?.event ?: false)
             ivBlockProject.setChecked(user.blockedNotifications?.projects ?: false)
             ivBlockOrg.setChecked(user.blockedNotifications?.organizations ?: false)
-
-
-            ivInfo.isVisible =
-                !user.email?.onConfirmation.isNullOrEmpty() || user.email?.isConfirmed == false
-
-            ivInfo.setOnClickListener {
-                TitleMessageDialog(
-                    requireContext(),
-                    title = getString(R.string.wait_for_accept_title),
-                    message = getString(R.string.wait_for_accept_text),
-                    btnPositiveText = getString(R.string.wait_for_accept_positive_button),
-                    btnNegativeText = getString(R.string.content_description_delete),
-                    canShowCancel = true
-                ).setPositiveSelectCallback {
-                    presenter.onShowEmailConfirm(
-                        user.email?.onConfirmation ?: user.email?.value ?: ""
-                    )
-                }.setNegativeSelectCallback {
-                    if (user.email?.value == null) presenter.onDeleteEmail()
-                    else presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
-                }
-            }
         }
     }
 
@@ -244,6 +211,24 @@ class UserProfileSettingsFragment :
         }
     }
 
+    private fun showEmailInformation(user: UserDetail){
+        TitleMessageDialog(
+            requireContext(),
+            title = getString(R.string.wait_for_accept_title),
+            message = getString(R.string.wait_for_accept_text),
+            btnPositiveText = getString(R.string.wait_for_accept_positive_button),
+            btnNegativeText = getString(R.string.content_description_delete),
+            canShowCancel = true
+        ).setPositiveSelectCallback {
+            presenter.onShowEmailConfirm(
+                user.email?.onConfirmation ?: user.email?.value ?: ""
+            )
+        }.setNegativeSelectCallback {
+            if (user.email?.value == null) presenter.onDeleteEmail()
+            else presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
+        }
+    }
+
     override fun showBlockingLoading(show: Boolean, checkView: CustomCheckView) {
         checkView.showProgressLoading(show)
     }
@@ -251,7 +236,7 @@ class UserProfileSettingsFragment :
     override fun layout() = R.layout.fragment_user_profile_settings
     override val title: CharSequence by lazy { getString(R.string.profile_settings) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
 

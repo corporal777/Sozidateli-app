@@ -16,7 +16,7 @@ import com.example.ui.snAuth.SnAuthManager
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
-import com.example.util.Utils.newPhoneValidator
+import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
@@ -93,7 +93,7 @@ class LoginPresenter
     private fun isDataValid(): Boolean {
         return if (isPhone(login) && !isContainLetters(login)) {
             loginType = "phone"
-            newPhoneValidator(login) && password.isNotEmpty()
+            isPhoneNumberValid(login) && password.isNotEmpty()
         } else {
             loginType = "email"
             AuthValidateUtil.isValidEmail(login) && password.isNotEmpty()

@@ -7,8 +7,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.R
@@ -19,23 +17,6 @@ import com.example.extensions.phoneToServer
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_max_state_main_info.*
-import kotlinx.android.synthetic.main.item_max_state_main_info.btnSiteAdd
-import kotlinx.android.synthetic.main.item_max_state_main_info.btnSocialNetworkAdd
-import kotlinx.android.synthetic.main.item_max_state_main_info.etAdditionalNumber
-import kotlinx.android.synthetic.main.item_max_state_main_info.etWorkPhone
-import kotlinx.android.synthetic.main.item_max_state_main_info.llSites
-import kotlinx.android.synthetic.main.item_max_state_main_info.llSocialNetworks
-import kotlinx.android.synthetic.main.item_max_state_main_info.networksError
-import kotlinx.android.synthetic.main.item_max_state_main_info.scNoSocialNetworks
-import kotlinx.android.synthetic.main.item_max_state_main_info.scNoWorkPhone
-import kotlinx.android.synthetic.main.item_max_state_main_info.scShowWorkPhone
-import kotlinx.android.synthetic.main.item_max_state_main_info.scSite
-import kotlinx.android.synthetic.main.item_max_state_main_info.sitesError
-import kotlinx.android.synthetic.main.item_max_state_main_info.tilAdditionalNumber
-import kotlinx.android.synthetic.main.item_max_state_main_info.tilWorkPhone
 import onTextChanged
 
 
@@ -300,7 +281,7 @@ class MaxStateContactsEditItem(
 
     fun workPhoneIsValid(): Boolean{
         var isValid = true
-        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
+        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.isPhoneNumberValid(
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {

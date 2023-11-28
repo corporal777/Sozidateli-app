@@ -22,9 +22,9 @@ class AuthorizationPresenter
         viewState.showLogin()
     }
 
-    override fun onEmailClick() {
+    override fun onRegisterClick() {
         snAuthManager.removeOnSnAuthListener(snAuthListener)
-        viewState.showEmailRegistration()
+        viewState.showRegistration()
     }
 
     override fun onContinueWithSnRegistration(SnAuth: SnAuth) {

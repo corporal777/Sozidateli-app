@@ -93,7 +93,7 @@ class RecoveryPasswordPresenter
     private fun isDataValid(): Boolean {
         return if (Utils.isPhone(email) && !Utils.isContainLetters(email)) {
             loginType = "phone"
-            Utils.newPhoneValidator(email)
+            Utils.isPhoneNumberValid(email)
         } else {
             loginType = "email"
             AuthValidateUtil.isValidEmail(email)

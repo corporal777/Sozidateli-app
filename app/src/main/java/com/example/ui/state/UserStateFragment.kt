@@ -118,6 +118,6 @@ class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStat
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

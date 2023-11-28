@@ -160,7 +160,7 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
     override fun layout(): Int = R.layout.fragment_max_state_info
 }

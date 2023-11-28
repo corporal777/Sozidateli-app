@@ -8,6 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"
+        fontPath="fonts/sf_pro_display_regular.OTF"
         style="@style/Profile.Edit.TextViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,4 +53,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.526" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/scCheck"
+        style="@style/Profile.Edit.Switch"
+        android:layout_marginBottom="0dp"
+        android:background="@null"
+        android:text="@string/profile_show_in_profile"
+        android:visibility="gone" />
 </LinearLayout>

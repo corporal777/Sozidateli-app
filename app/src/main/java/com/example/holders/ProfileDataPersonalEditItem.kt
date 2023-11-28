@@ -1,6 +1,7 @@
 package com.example.holders
 
 import android.content.Context
+import android.util.Log
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.FieldDetails
@@ -33,7 +34,7 @@ class ProfileDataPersonalEditItem(
     private val genderMale = context.getString(R.string.profile_gender_male)
     private val genderFemale = context.getString(R.string.profile_gender_female)
 
-    private var mGender = gender?.value?.firstLetterToUppercase()
+    private var mGender = setGender()
     private var mGenderShow = gender?.showInProfile ?: true
 
     private var mBirthday = birthday?.value?.formatToDefaultDate()
@@ -51,83 +52,69 @@ class ProfileDataPersonalEditItem(
     override fun bind(viewBinding: ItemProfileDataEditPersonalBinding, position: Int) {
         this@ProfileDataPersonalEditItem.viewBinding = viewBinding
         viewBinding.apply {
-            etBirthday.initInput(mBirthday) { mBirthday = it.toString() }
-            tilBirthday.apply {
-                val date =
-                    if (!mBirthday.isNullOrBlank()) defaultDateFormatter.parse(mBirthday)
-                    else null
-                initAsDatePicker(
-                    startDate = date,
-                    maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -14) }.time
-                ) { year, month, day ->
-                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
+            etBirthday.apply {
+                initAsDateTimePicker(mBirthday) {
+                    mBirthday = it.toString()
                 }
+                initSwitch(mShowBirthday) { mShowBirthday = it }
             }
-            scBirthday.initSwitch(mShowBirthday) { mShowBirthday = it }
 
-            scGender.apply {
-                isChecked = mGenderShow
-                setOnCheckedChangeListener { _, isChecked ->
-                    mGenderShow = isChecked
-                }
-            }
             tvGender.apply {
-                mGender = setGender()
-                initDropDownAdapter(mutableListOf(genderMale, genderFemale))
-                initInput(mGender) { mGender = it.toString() }
+                initAsDropDown(mGender, listOf(genderMale, genderFemale)){
+                    mGender = it.toString()
+                }
+                initSwitch(mGenderShow) { mGenderShow = it }
             }
 
             tvRegion.apply {
-                text = mAddressRegion
-                setOnClickListener {
+                initAsCustomMode(mAddressRegion) {
                     SearchRegionBottomSheet(context)
                         .setRegionSelectedCallback {
                             mAddressRegion = it?.name
-                            text = mAddressRegion
-                            if (mAddressRegion != address.region){
+                            setText(mAddressRegion)
+                            if (mAddressRegion != address.region) {
                                 mAddressCity = null
-                                tvCity.text = mAddressCity
+                                tvCity.setText(mAddressCity)
+                                tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
                             }
                         }.show()
                 }
             }
             tvCity.apply {
                 isEnabled = !mAddressRegion.isNullOrEmpty()
-                text = mAddressCity
-                setOnClickListener {
+                initAsCustomMode(mAddressCity) {
                     SearchSettlementBottomSheet(context, mAddressRegion)
                         .setSettlementSelectedCallback {
                             mAddressCity = it?.name
-                            text = mAddressCity
+                            setText(mAddressCity)
                         }.show()
                 }
-            }
-            scCity.initSwitch(mAddressShow) { mAddressShow = it }
-
-            scNotes.apply {
-                isVisible = notes?.value?.isNullOrEmpty() == false
-                initSwitch(mNotesShow) { mNotesShow = it }
+                initSwitch(mAddressShow) { mAddressShow = it }
             }
 
-            setNotes(viewBinding)
-            tvEditNotes.setOnClickListener {
-                AdditionalInfoBottomSheet(root.context, mNotes)
-                    .setSaveClickCallback {
-                        if (mNotes != it) {
-                            mNotes = it
-                            setNotes(viewBinding)
-                        }
-                    }.show()
+            tvEditNotes.apply {
+                scNotes.apply {
+                    isVisible = notes?.value?.isNullOrEmpty() == false
+                    initSwitch(mNotesShow) { mNotesShow = it }
+                }
+                setOnClickListener {
+                    AdditionalInfoBottomSheet(root.context, mNotes)
+                        .setSaveClickCallback {
+                            if (mNotes != it) {
+                                mNotes = it
+                                setNotes(viewBinding)
+                            }
+                        }.show()
+                }
+                setNotes(viewBinding)
             }
-
-
         }
     }
 
 
-    private fun setNotes(viewBinding: ItemProfileDataEditPersonalBinding){
+    private fun setNotes(viewBinding: ItemProfileDataEditPersonalBinding) {
         viewBinding.tilNotes.apply {
-            setInformationIconVisibility(mNotes.isNullOrEmpty()){
+            setInformationIconVisibility(mNotes.isNullOrEmpty()) {
                 AboutAdditionalInfoBottomSheet(context).show()
             }
             viewBinding.etNotes.setText(mNotes)

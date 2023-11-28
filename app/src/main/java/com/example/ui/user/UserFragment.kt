@@ -432,6 +432,6 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

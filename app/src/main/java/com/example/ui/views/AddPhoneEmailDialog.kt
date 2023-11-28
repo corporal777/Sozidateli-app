@@ -1,6 +1,5 @@
 package com.example.ui.views
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.databinding.DataBindingUtil
 import com.example.R
 import com.example.databinding.DialogAddPhoneEmailBinding
 import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
@@ -18,7 +16,6 @@ import com.example.util.Utils.timerFormatter
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import kotlinx.android.synthetic.main.fragment_finish_register.*
 import performOnBackgroundOutOnMain
 import java.util.concurrent.TimeUnit
 
@@ -59,7 +56,7 @@ class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
                     binding.btnPositive.isEnabled = AuthValidateUtil.isValidEmail(it.toString())
                 }
                 RegisterDataType.PHONE -> {
-                    binding.btnPositive.isEnabled = Utils.newPhoneValidator(it.toString())
+                    binding.btnPositive.isEnabled = Utils.isPhoneNumberValid(it.toString())
                 }
             }
         }

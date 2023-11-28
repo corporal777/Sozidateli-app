@@ -13,7 +13,6 @@ import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import moxy.presenter.ProvidePresenterTag
 import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,6 +47,6 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.Vi
 
     override val title: CharSequence by lazy { getString(R.string.profile_about_app) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

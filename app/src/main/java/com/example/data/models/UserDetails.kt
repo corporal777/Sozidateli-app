@@ -75,8 +75,23 @@ data class UserDetail(
             return nameList.joinToString(" ")
         }
 
+    val shortNameFormatted: String
+        get() {
+            return if (shortName.isNullOrEmpty() || shortName == id.toString()) "@id$id"
+            else "@$shortName"
+        }
+
     fun getMiddleName(): String? {
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
+    }
+
+    fun getUserEmail(): String? {
+        if (!email?.onConfirmation.isNullOrEmpty()) return email?.onConfirmation
+        else return email?.value
+    }
+
+    fun isHasEmailOnConfirmation(): Boolean {
+        return !email?.onConfirmation.isNullOrEmpty() || email?.isConfirmed == false
     }
 
     fun isHasInterests(): Boolean {

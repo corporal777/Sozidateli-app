@@ -5,10 +5,10 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/svContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,10 +27,8 @@
                     android:src="@drawable/ic_app_logo_main"
                     app:layout_constraintBottom_toTopOf="@+id/tvJoinMessage"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.497"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="spread" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvJoinMessage"
@@ -45,87 +43,57 @@
                     android:text="@string/auth_title_login"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/auth_label_text_size"
-                    app:layout_constraintBottom_toTopOf="@id/llEmail"
+                    app:layout_constraintBottom_toTopOf="@id/btnRegister"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-                    app:layout_constraintVertical_chainStyle="spread_inside"
-                    tools:ignore="MissingPrefix" />
+                    app:layout_constraintVertical_chainStyle="spread_inside" />
 
-                <LinearLayout
-                    android:id="@+id/llEmail"
-                    android:layout_width="0dp"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRegister"
+                    style="@style/BtnBrownStyle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_marginBottom="54dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@+id/llLogin"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:minHeight="@dimen/auth_button_min_height"
+                    android:text="@string/auth_action_register"
+                    app:layout_constraintBottom_toTopOf="@+id/tvLogin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintVertical_chainStyle="spread_inside">
+                    app:layout_constraintVertical_chainStyle="spread_inside" />
 
-                    <TextView
-                        android:id="@+id/tvEmail"
-                        fontPath="fonts/Roboto-Medium.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:text="@string/auth_with_email"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/auth_block_label_text_size"
-                        android:visibility="gone"
-                        tools:ignore="MissingPrefix" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        style="@style/BtnBrownStyle"
-                        android:id="@+id/ibEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:minHeight="@dimen/auth_button_min_height"
-                        android:text="@string/auth_action_register" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llLogin"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tvLogin"
+                    fontPath="fonts/sf_pro_text_semibold.ttf"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_marginBottom="52dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:letterSpacing="-0.02"
+                    android:text="@string/auth_or_login"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@id/btnLogin"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvLogin"
-                        fontPath="fonts/sf_pro_text_semibold.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:letterSpacing="-0.02"
-                        android:text="@string/auth_or_login"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        tools:ignore="MissingPrefix" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnLogin"
+                    style="@style/BtnBrownCancelStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="50dp"
+                    android:minHeight="@dimen/auth_button_min_height"
+                    android:text="@string/auth_label_login"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/ibLogin"
-                        style="@style/BtnBrownCancelStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:minHeight="@dimen/auth_button_min_height"
-                        android:text="@string/auth_label_login"
-                        android:textSize="16sp" />
-                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

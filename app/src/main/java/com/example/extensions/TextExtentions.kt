@@ -159,3 +159,5 @@ fun getMonthName(calendar: Calendar?): String {
         month
     }
 }
+
+fun getSymbols() = "\\@\\#\\$\\_\\&\\-\\+\\(\\)\\/\\*\\\"\\'\\:\\;\\!\\?\\,\\.\\~\\`\\|\\÷\\×\\^\\=\\{\\}\\%\\<\\>"

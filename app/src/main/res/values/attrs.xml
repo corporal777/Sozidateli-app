@@ -2,6 +2,18 @@
 <resources>
     <attr name="viewBackground" format="reference" />
 
+    <declare-styleable name="CustomTextMenuView">
+        <attr name="inputTitleText" format="string" />
+        <attr name="inputHintText" format="string" />
+        <attr name="inputIconDrawable" format="reference" />
+        <attr name="inputIconMode">
+            <enum name="custom" value="-1"/>
+            <enum name="none" value="0"/>
+            <enum name="dropdown_menu" value="3"/>
+        </attr>
+        <attr name="inputHasCheckBox" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="CustomTextInputView">
         <attr name="titleText" format="string" />
         <attr name="hintText" format="string" />
@@ -18,6 +30,11 @@
             <flag name="number" value="0x00000002" />
             <flag name="phone" value="0x00000003" />
         </attr>
+        <attr name="inputMaxLines" format="integer" />
+        <attr name="inputMinLines" format="integer" />
+        <attr name="inputEnabled" format="boolean" />
+        <attr name="inputTextColor" format="reference" />
+        <attr name="inputCheckBoxVisible" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="CustomCheckView">

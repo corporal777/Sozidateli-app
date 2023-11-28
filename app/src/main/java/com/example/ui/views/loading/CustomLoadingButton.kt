@@ -105,6 +105,10 @@ class CustomLoadingButton : ConstraintLayout {
         buttonInitText = buttonText.toString()
     }
 
+    fun setButtonTextColor(buttonTextColor: Int) {
+        loadingView.btnLoad.setTextColor(ContextCompat.getColorStateList(context, buttonTextColor))
+    }
+
     fun showProgressLoading(show : Boolean) {
         isProgressVisible = show
         loadingView.apply {

@@ -12,23 +12,13 @@
 
     <fragment
         android:id="@+id/account_auth_fragment"
-        android:name="com.example.ui.accountChange.AccountAuthFragment"
+        android:name="com.example.ui.auth.authorization.AccountAuthFragment"
         android:label="Auth" />
 
     <fragment
         android:id="@+id/authorization_fragment"
         android:name="com.example.ui.auth.authorization.AuthorizationFragment"
-        android:label="Login">
-        <argument
-            android:name="showFinishRegister"
-            android:defaultValue="false"
-            app:argType="boolean" />
-
-        <action
-            android:id="@+id/authorization_fragment_to_register_sn_fragment"
-            app:destination="@id/register_sn_fragment" />
-
-    </fragment>
+        android:label="Login" />
 
     <fragment
         android:id="@+id/login_fragment"
@@ -820,5 +810,17 @@
         android:id="@+id/userRegistrationFragment"
         android:name="com.example.ui.auth.register.UserRegistrationFragment"
         android:label="UserRegistrationFragment"/>
+
+    <fragment
+        android:id="@+id/phoneCodeConfirmFragment"
+        android:name="com.example.ui.auth.confirm.ConfirmPhoneCodeFragment"
+        android:label="ConfirmPhoneCodeFragment">
+
+        <argument
+            android:name="phone"
+            app:argType="string"
+            app:nullable="false" />
+
+    </fragment>
 
 </navigation>

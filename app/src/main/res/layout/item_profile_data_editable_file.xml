@@ -37,7 +37,7 @@
                 android:id="@+id/etFile"
                 style="@style/ProfileData.EditText"
                 android:hint="@string/file_name"
-                android:imeOptions="actionSearch"
+                android:imeOptions="actionDone"
                 android:inputType="textCapSentences" />
         </com.example.ui.views.CustomTextInputLayout>
 

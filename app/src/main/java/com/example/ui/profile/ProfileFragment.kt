@@ -307,7 +307,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
     override fun layout() = R.layout.fragment_profile
     override val title: CharSequence = ""
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun actionIconContainer(view: ViewGroup) {
         view.apply {
             addView(ToolbarIconView(context).apply {

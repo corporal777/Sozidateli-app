@@ -85,6 +85,6 @@ class OrganizationMembersFragment : BaseFragment<LayoutListBinding>(),
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_members) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

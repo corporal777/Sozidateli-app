@@ -59,26 +59,7 @@ object Utils {
         return regex.containsMatchIn(text)
     }
 
-    fun newPhoneValidator(phone: String?): Boolean {
-        var isValid = true
-        if (!phone.isNullOrEmpty()) {
-            if (phone.contains("+")) {
-                if (phone.length == 12) {
-                    if (phone.substring(0, 3) != "+79") isValid = false
-                } else isValid = false
-            } else {
-                if (phone.length == 11) {
-                    val firstNumber = phone.substring(0, 2)
-                    if (firstNumber != "79" && firstNumber != "89") isValid = false
-                } else isValid = false
-            }
-        } else {
-            isValid = false
-        }
-        return isValid
-    }
-
-    fun isNewPhoneIsValid(phone: String?): Boolean {
+    fun isPhoneNumberValid(phone: String?): Boolean {
         var valid = true
         if (!phone.isNullOrEmpty()) {
             if (phone.contains("+")) {

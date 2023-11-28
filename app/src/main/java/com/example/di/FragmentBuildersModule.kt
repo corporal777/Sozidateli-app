@@ -1,11 +1,11 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
-import com.example.ui.accountChange.AccountAuthFragment
+import com.example.ui.auth.authorization.AccountAuthFragment
 import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.confirm.EmailConfirmFragment
+import com.example.ui.auth.confirm.ConfirmPhoneCodeFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.UserRegistrationFragment
@@ -234,9 +234,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeBannedFragment(): BannedFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeEmailConfirmFragment(): EmailConfirmFragment
-
-    @ContributesAndroidInjector
     abstract fun contributePageFragment(): PageFragment
 
     @ContributesAndroidInjector
@@ -382,4 +379,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeUserRegistrationFragment(): UserRegistrationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePhoneCodeConfirmFragment(): ConfirmPhoneCodeFragment
 }

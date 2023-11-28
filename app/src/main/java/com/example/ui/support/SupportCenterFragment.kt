@@ -103,7 +103,7 @@ class SupportCenterFragment : BaseFragment<FragmentSupportCenterBinding>(true), 
     override fun layout(): Int = R.layout.fragment_support_center
     override val title: CharSequence by lazy { getString(R.string.support_directory) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }

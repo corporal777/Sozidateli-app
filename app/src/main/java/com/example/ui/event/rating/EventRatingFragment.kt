@@ -230,6 +230,6 @@ class EventRatingFragment : BaseFragment<LayoutListBinding>(), ToolbarFragment, 
 
     override val title: CharSequence by lazy { getString(R.string.event_rating_title) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

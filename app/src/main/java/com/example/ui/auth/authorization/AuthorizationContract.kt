@@ -10,14 +10,14 @@ interface AuthorizationContract {
         fun showLogin()
 
         @OneExecution
-        fun showEmailRegistration()
+        fun showRegistration()
 
         @OneExecution
         fun showSnRegistration(snUser: SnUser)
     }
 
     interface Presenter : BaseAuthContract.Presenter {
-        fun onEmailClick()
+        fun onRegisterClick()
         fun onLoginClick()
     }
 }

@@ -102,5 +102,5 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
         this.toolbarContent = toolbarContent
     }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
 }

@@ -197,6 +197,6 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

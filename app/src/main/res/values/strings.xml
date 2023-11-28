@@ -105,6 +105,7 @@
     <string name="auth_error_no_code">Введите код</string>
     <string name="auth_error_no_call">Введите последние 4 цифры</string>
     <string name="auth_error_code">Неверный код</string>
+    <string name="auth_error_code_new">Неправильно, пожалуйста, попробуйте снова</string>
     <plurals name="seconds_timer">
         <item quantity="zero">%d секунд</item>
         <item quantity="one">%d секунду</item>
@@ -1074,6 +1075,9 @@
     <string name="support_upload_file_title">PDF, JPEG, PNG, TIFF; не более 10 МБ</string>
     <string name="support_search_data_not_found">К сожалению, ничего не найдено.\nПопробуйте изменить поисковой запрос.</string>
     <string name="auth_user_agreement">Я подтверждаю, что ознакомлен(а) и принимаю условия пользовательского соглашения</string>
+
+    <string name="confirm_phone_number_by_code">Подтвердите номер</string>
+    <string name="enter_last_four_numbers_of_call_number">Введите последние 4 цифры номера\n входящего звонка</string>
 
 
 </resources>

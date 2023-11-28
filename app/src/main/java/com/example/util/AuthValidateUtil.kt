@@ -1,6 +1,5 @@
 package com.example.util
 
-import android.util.Log
 import java.util.regex.Pattern
 
 
@@ -32,6 +31,6 @@ object AuthValidateUtil {
 
     fun isValidPassword(password: CharSequence) = PASSWORD_PATTERN.matcher(password).matches()
 
-    fun isValidPhone(phone: String) = Utils.isNewPhoneIsValid(phone)
+    fun isValidPhone(phone: String) = Utils.isPhoneNumberValid(phone)
 }
 

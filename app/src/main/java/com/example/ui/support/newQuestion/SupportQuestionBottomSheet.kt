@@ -59,13 +59,13 @@ class SupportQuestionBottomSheet(
                 isVisible = false
                 adapter = groupAdapter
             }
-            tvQuestionTheme.apply {
-                initDropDownAdapter(themes.toMutableList())
-                initInput(presenter.questionTheme) { presenter.onChangeTheme(it.toString()) }
+            etQuestionTheme.apply {
+                initAsDropDown(presenter.questionTheme, themes){
+                    presenter.onChangeTheme(it.toString())
+                }
             }
             etEmail.apply {
-                tilEmail.isVisible = !isHasConfirmedEmail
-                tvEmailTitle.isVisible = !isHasConfirmedEmail
+                isVisible = !isHasConfirmedEmail
                 initInput(presenter.questionEmail) {
                     presenter.onChangeEmail(it.toString())
                 }

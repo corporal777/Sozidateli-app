@@ -63,7 +63,7 @@ class SupportQuestionDetailFragment : BaseFragment<FragmentSupportQuestionDetail
     override fun layout(): Int = R.layout.fragment_support_question_detail
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }

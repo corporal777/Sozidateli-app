@@ -6,270 +6,152 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider">
+        android:layout_height="match_parent">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:background="@color/main_background"
             android:orientation="vertical">
 
-            <LinearLayout
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvUserLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:orientation="vertical">
+                app:hintText="@string/profile_edit_user_surname"
+                app:inputEnabled="false"
+                app:titleText="@string/user_profile_last_name" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/user_profile_last_name" />
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:hintText="@string/profile_edit_user_name"
+                app:inputEnabled="false"
+                app:titleText="@string/user_profile_name" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvUserLastName"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingStart="15dp"
-                    android:text="@string/profile_edit_user_surname" />
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvUserMiddleName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:inputCheckBoxVisible="true"
+                app:hintText="@string/profile_edit_user_middle_name"
+                app:inputEnabled="false"
+                app:titleText="@string/user_profile_middle_name" />
 
+            <TextView
+                android:id="@+id/tvEditName"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/edit_name_title"
+                android:textColor="@color/main_brown_color_new"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/user_profile_name" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvUserName"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/profile_edit_user_name" />
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_middle_name_title"
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/user_profile_middle_name" />
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvShortname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:hintText="@string/short_name_label"
+                app:inputEnabled="false"
+                app:titleText="@string/short_name_label" />
 
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvUserMiddleName"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/profile_edit_user_middle_name" />
+            <TextView
+                android:id="@+id/tvEditShortName"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/edit_title"
+                android:textColor="@color/main_brown_color_new"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvPhoneMobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:hintText="@string/profile_phone_mobile"
+                app:inputEnabled="false"
+                app:titleText="@string/profile_phone_mobile" />
+
+            <TextView
+                android:id="@+id/tvEditPhone"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/edit_title"
+                android:textColor="@color/main_brown_color_new"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/tvPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:hintText="●●●●●●●●●"
+                app:inputEnabled="false"
+                app:titleText="@string/user_profile_password_title" />
+
+            <TextView
+                android:id="@+id/tvEditPassword"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/profile_password_change"
+                android:textColor="@color/main_brown_color_new"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/sc_no_middle_name"
-                    style="@style/Profile.Edit.Switch"
-                    android:layout_marginBottom="1dp"
-                    android:enabled="false"
-                    android:text="@string/profile_edit_user_no_middle_name" />
+            <com.example.ui.views.CustomTextMenuView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:inputHintText="@string/user_profile_email_title"
+                app:inputIconMode="custom"
+                app:inputIconDrawable="@drawable/ic_info_us"
+                app:inputTitleText="@string/user_profile_email_title" />
 
-                <TextView
-                    android:id="@+id/tvEditName"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_text_background_selectable"
-                    android:text="@string/edit_name_title"
-                    android:textColor="@color/main_brown_color_new"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/short_name_label" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvShortname"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingHorizontal="15dp"
-                    android:text="@string/short_name_label" />
-
-                <TextView
-                    android:id="@+id/tvEditShortName"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_text_background_selectable"
-                    android:text="@string/edit_title"
-                    android:textColor="@color/main_brown_color_new"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/profile_phone_mobile" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPhoneMobile"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingHorizontal="15dp"
-                    android:text="@string/profile_phone_mobile" />
-
-                <TextView
-                    android:id="@+id/tvEditPhone"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_text_background_selectable"
-                    android:text="@string/edit_title"
-                    android:textColor="@color/main_brown_color_new"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/user_profile_password_title" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvPassword"
-                    style="@style/Profile.Edit.InputFieldNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_input_text_field_new"
-                    android:gravity="center_vertical"
-                    android:minHeight="45dp"
-                    android:paddingHorizontal="15dp"
-                    android:text="●●●●●●●●●" />
-
-                <TextView
-                    android:id="@+id/tvEditPassword"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_text_background_selectable"
-                    android:text="@string/profile_password_change"
-                    android:textColor="@color/main_brown_color_new"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/Profile.Edit.TextViewTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/user_profile_email_title" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvEmail"
-                        style="@style/Profile.Edit.InputFieldNew"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_input_text_field_new"
-                        android:gravity="center_vertical"
-                        android:minHeight="45dp"
-                        android:paddingHorizontal="15dp"
-                        android:text="@string/user_profile_email_title"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/ivInfo"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <ImageView
-                        android:id="@+id/ivInfo"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:padding="5dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tvEmail"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_info_us" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/tvEditEmail"
-                    fontPath="fonts/sf_pro_text_bold.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/custom_text_background_selectable"
-                    android:text="@string/edit_title"
-                    android:textColor="@color/main_brown_color_new"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvEditEmail"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_text_background_selectable"
+                android:text="@string/edit_title"
+                android:textColor="@color/main_brown_color_new"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/confidence_label" />
 
@@ -278,14 +160,12 @@
                 android:id="@+id/iv_privacy_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 app:checkViewText="@string/user_profile_privacy_hidden" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/control_sending" />
 
@@ -293,14 +173,12 @@
                 android:id="@+id/iv_block_project"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 app:checkViewText="@string/user_profile_off_messaging_projects" />
 
             <com.example.ui.views.CustomCheckView
                 android:id="@+id/iv_block_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 app:checkViewText="@string/user_profile_off_messaging_events" />
 
@@ -308,7 +186,6 @@
                 android:id="@+id/iv_block_org"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 app:checkViewText="@string/user_profile_off_messaging_organizations" />
 
@@ -317,7 +194,6 @@
                 fontPath="fonts/sf_pro_text_bold.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/custom_btn_white_smoke_selectable"

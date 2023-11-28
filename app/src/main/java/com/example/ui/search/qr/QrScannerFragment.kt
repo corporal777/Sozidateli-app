@@ -93,5 +93,5 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(), QrScannerCon
     override val title: CharSequence by lazy { getString(R.string.qr_scan_label) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) { scroll.invoke(0) }
+    override fun scrollValue(scroll: Int) {  }
 }

@@ -403,7 +403,7 @@ class ProfileContactsEditItem(
         if (mobilePhone?.value != mMobilePhone
             && !mMobilePhone.isNullOrEmpty()
             //&& !mMobilePhone.isValidPhoneNumber(context)
-            && !Utils.newPhoneValidator(mMobilePhone.phoneToServer())
+            && !Utils.isPhoneNumberValid(mMobilePhone.phoneToServer())
         ) {
             viewHolder.tilMobilePhone.apply {
                 error = invalidNumberSecondError
@@ -413,7 +413,7 @@ class ProfileContactsEditItem(
         }
 
 
-        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.newPhoneValidator(
+        if (!mNoWorkPhone && !mWorkPhone.isNullOrEmpty() && !Utils.isPhoneNumberValid(
                 mWorkPhone.phoneToServer() ?: ""
             )
         ) {
@@ -459,7 +459,7 @@ class ProfileContactsEditItem(
             }
             false
         } else {
-            Utils.isNewPhoneIsValid(getPersonalPhone())
+            Utils.isPhoneNumberValid(getPersonalPhone())
         }
     }
 

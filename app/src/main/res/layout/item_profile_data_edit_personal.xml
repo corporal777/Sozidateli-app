@@ -6,113 +6,56 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
         android:orientation="vertical">
 
-        <LinearLayout
-            style="@style/Profile.Edit.InputContainer"
-            android:layout_marginTop="15dp">
+        <com.example.ui.views.CustomTextMenuView
+            android:id="@+id/etBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:inputIconDrawable="@drawable/ic_calendar_new"
+            app:inputIconMode="custom"
+            app:inputHasCheckBox="true"
+            app:inputHintText="@string/profile_birthday"
+            app:inputTitleText="@string/profile_birthday" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Profile.Edit.TextViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_birthday" />
+        <com.example.ui.views.CustomTextMenuView
+            android:id="@+id/tvGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:inputHasCheckBox="true"
+            app:inputHintText="@string/profile_gender"
+            app:inputTitleText="@string/profile_gender" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/tilBirthday"
-                style="@style/ProfileData.InputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconDrawable="@drawable/ic_calendar_new"
-                app:endIconMode="custom"
-                app:endIconTint="#C3996C">
+        <com.example.ui.views.CustomTextMenuView
+            android:id="@+id/tvRegion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:inputHintText="@string/search_filter_region"
+            app:inputIconDrawable="@drawable/ic_arrow_right_brown"
+            app:inputIconMode="custom"
+            app:inputTitleText="@string/profile_city" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etBirthday"
-                    style="@style/ProfileData.EditText"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/profile_birthday"
-                    tools:text="20.05.2023" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/scBirthday"
-                style="@style/Profile.Edit.Switch"
-                android:layout_marginTop="5dp"
-                android:text="@string/profile_show_in_profile" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/Profile.Edit.InputContainer">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Profile.Edit.TextViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_gender" />
-
-            <com.example.ui.views.CustomTextInputLayout
-                style="@style/ProfileData.InputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconDrawable="@drawable/ic_drop_down_new"
-                app:endIconMode="dropdown_menu"
-                app:endIconTint="#C3996C">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/tvGender"
-                    style="@style/ProfileData.EditText"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/profile_gender"
-                    android:paddingStart="@dimen/profile_first_expand_margin_top"
-                    android:paddingEnd="@dimen/profile_first_expand_margin_top" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/scGender"
-                style="@style/Profile.Edit.Switch"
-                android:layout_marginTop="5dp"
-                android:text="@string/profile_show_in_profile" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/Profile.Edit.InputContainer">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Profile.Edit.TextViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_city" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvRegion"
-                style="@style/ProfileData.TextView"
-                android:drawableEnd="@drawable/ic_drop_down_right"
-                android:hint="@string/search_filter_region" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvCity"
-                style="@style/ProfileData.TextView"
-                android:layout_marginTop="10dp"
-                android:drawableEnd="@drawable/ic_drop_down_right"
-                android:enabled="false"
-                android:hint="@string/profile_locality" />
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/scCity"
-                style="@style/Profile.Edit.Switch"
-                android:layout_marginTop="5dp"
-                android:text="@string/profile_show_in_profile" />
-        </LinearLayout>
+        <com.example.ui.views.CustomTextMenuView
+            android:id="@+id/tvCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:inputHintText="@string/profile_locality"
+            app:inputHasCheckBox="true"
+            app:inputIconDrawable="@drawable/ic_arrow_right_brown"
+            app:inputIconMode="custom" />
 
         <LinearLayout
             style="@style/Profile.Edit.InputContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="0dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
@@ -120,6 +63,7 @@
                 style="@style/Profile.Edit.TextViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="@string/profile_additional_data_and_files" />
 
             <com.example.ui.views.CustomTextInputLayout

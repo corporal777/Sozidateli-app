@@ -3,7 +3,6 @@ package com.example.ui.auth.register.email.newbuild
 import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
-import com.example.data.models.SnUser
 import com.example.exceptions.EmailNotUniqueException
 import com.example.exceptions.PhoneNotUniqueException
 import com.example.extensions.getAppVersion
@@ -218,7 +217,7 @@ class RegisterEmailPresenter
         val passwordValid = password.let { AuthValidateUtil.isValidPassword(it) }
         val emailValid =
             if (loginType == "email") (AuthValidateUtil.isValidEmail(email))
-            else Utils.newPhoneValidator(email)
+            else Utils.isPhoneNumberValid(email)
 
         val middleNameValid = if (noMiddleNameChecked) true else !middleName.isNullOrEmpty()
         return firstNameValid
@@ -236,7 +235,7 @@ class RegisterEmailPresenter
             showLastNameError(lastName.isNullOrEmpty())
 
             if (loginType == "email") showEmailError(AuthValidateUtil.isValidEmail(email))
-            else showWrongPhoneError(Utils.isNewPhoneIsValid(email))
+            else showWrongPhoneError(Utils.isPhoneNumberValid(email))
 
             showAgreementError(!isAgree)
         }

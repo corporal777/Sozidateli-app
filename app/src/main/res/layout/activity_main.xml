@@ -47,25 +47,12 @@
             android:alpha="0.5"
             android:background="@android:color/white" />
 
-
         <com.example.ui.views.CustomProgressView
             android:id="@+id/progress_view"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center" />
-
-        <!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            app:indicatorColor="#BE9B72"-->
-        <!--            android:indeterminate="true"-->
-        <!--            app:trackCornerRadius="6dp"-->
-        <!--            app:trackThickness="4.1dp" />-->
-
     </FrameLayout>
-
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/error_container"

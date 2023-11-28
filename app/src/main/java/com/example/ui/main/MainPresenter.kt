@@ -16,8 +16,6 @@ import com.example.ui.base.BasePresenter
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.UpdateAvailability
 import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -578,20 +576,6 @@ class MainPresenter
     }
 
     fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
-
-    private fun checkAppUpdateAvailable(update: AppUpdateModel): Maybe<AppUpdateModel> {
-        return Maybe.create { emitter ->
-            val appUpdateManager = AppUpdateManagerFactory.create(context)
-            appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-                update.isAvailable =
-                    appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                emitter.onSuccess(update)
-            }
-            appUpdateManager.appUpdateInfo.addOnFailureListener {
-                emitter.onSuccess(update)
-            }
-        }
-    }
 
 
     companion object {

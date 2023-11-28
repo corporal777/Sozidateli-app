@@ -126,22 +126,6 @@
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabUp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:src="@drawable/ic_arrow_top"
-            android:visibility="gone"
-            app:backgroundTint="@color/colorAccent"
-            app:fabSize="normal"
-            app:layout_anchor="@id/events_list"
-            app:layout_anchorGravity="end|bottom|right"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-            app:tint="@color/colorPrimary"
-            app:useCompatPadding="true" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

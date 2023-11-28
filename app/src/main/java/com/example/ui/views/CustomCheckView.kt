@@ -95,7 +95,7 @@ class CustomCheckView : ConstraintLayout {
     }
 
     fun showError(show: Boolean){
-        checkView.errorCard.isVisible = show
+        checkView.scMobilePhone.isSelected = show
     }
 
     fun setOnCheckedListener(block: (isChecked: Boolean) -> Unit) {

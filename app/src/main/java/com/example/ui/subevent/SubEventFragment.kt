@@ -121,6 +121,6 @@ class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContra
     override fun layout() = R.layout.fragment_subevent
     override val title: CharSequence by lazy { getString(R.string.event) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

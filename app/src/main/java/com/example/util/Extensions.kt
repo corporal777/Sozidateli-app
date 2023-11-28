@@ -25,6 +25,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
@@ -189,8 +191,16 @@ fun ImageView.setTint(@ColorRes colorRes: Int) {
     ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(ContextCompat.getColor(context, colorRes)))
 }
 
+fun AppCompatImageButton.setTint(@ColorRes colorRes: Int) {
+    this.imageTintList = ContextCompat.getColorStateList(context, colorRes)
+}
+
 fun View.getDrawable(res : Int): Drawable? {
     return ContextCompat.getDrawable(context, res)
+}
+
+fun View.getColor(res : Int): Int {
+    return ContextCompat.getColor(context, res)
 }
 
 fun ImageView.setImage(

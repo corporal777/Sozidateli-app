@@ -99,7 +99,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             if (f is AboutEventFragment || f is EventRegistrationFragment) {
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 setWindowTransparency()
-            } else if (f is StoriesFragment) doEdgeWindow()
+            }
+            else if (f is StoriesFragment) doEdgeWindow()
             else if (f is MyEventsFragment || f is MyScheduleEventsFragment) {
                 cancelWindowTransparency()
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
@@ -112,17 +113,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             if (f is StoriesFragment) presenter.onStoriesComplete()
         },
         onViewCreated = { f ->
-            presenter.apply {
-                when (f) {
-                    is ChatFragment -> presenter.onOpenChatDestination(f.chatId)
-                    is SplashFragment,
-                    is AuthorizationFragment,
-                    is RecommendationsFragment -> onOpenStartDestination()
-                    else -> onOpenNotStartDestination()
-                }
-                onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
-            }
-
+            presenter.onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
             when (f) {
                 is RecommendationsFragment,
                 is MyEventsFragment,
@@ -134,34 +125,20 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
 
             setupNavBarItems(f)
-
-            val isLightStatus: Boolean
-            val bg: Drawable?
-            if (f is BackgroundImageFragment) {
-                bg = f.getFragmentBackgroundDrawable()
-                isLightStatus = f.isLightStatus
-            } else {
-                bg = null
-                isLightStatus = true
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.decorView.systemUiVisibility =
-                    if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
-            }
-
-            mBinding.root.background = bg
+            setupBackgroundImageFragment(f)
 
             if (f is ToolbarFragment) {
                 mBinding.run {
                     appBar.isVisible = true
                     toolbar.apply {
                         toolbarLabel.text = f.title
-                        f.setupToolbarContent(
-                            ToolbarContent(ivBack, toolbarLabel, toolbarContainer)
-                        )
+                        f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
                         f.actionIconContainer(toolbarContainer)
                     }
-                    getBehavior()?.setScrollChangeCallback { presenter.changeScrollingOffset(it) }
+                    getBehavior()?.setScrollChangeCallback {
+                        f.scrollValue(it)
+                        presenter.changeScrollingOffset(it)
+                    }
                 }
             } else mBinding.appBar.isVisible = false
         }

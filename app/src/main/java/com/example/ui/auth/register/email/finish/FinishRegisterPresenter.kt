@@ -4,7 +4,6 @@ import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
 import com.example.data.models.FieldDetails
-import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.exceptions.CodeInvalidException
@@ -229,7 +228,7 @@ class FinishRegisterPresenter
                 viewState.showWrongEmailError(true)
             }
         } else {
-            if (!Utils.isNewPhoneIsValid(validatePhoneBeforeSend(login))) {
+            if (!Utils.isPhoneNumberValid(validatePhoneBeforeSend(login))) {
                 viewState.showWrongPhoneError(true)
                 isValid = false
             }
@@ -249,13 +248,7 @@ class FinishRegisterPresenter
                 email = login
             )
         )
-        else authRepository.confirmPhoneCode(
-            ConfirmCodeBody(
-                "personal",
-                validatePhoneBeforeSend(login),
-                code
-            )
-        )
+        else authRepository.confirmPhoneCode(ConfirmCodeBody(validatePhoneBeforeSend(login), code))
     }
 
     private fun getUpdateRequestBody(): MutableMap<String, Any> {

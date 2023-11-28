@@ -17,7 +17,7 @@ class AuthRepositoryImp
 ) : ApiRepository(appData), AuthRepository {
 
     override fun authEmailOrPhone(login: AuthBody): Completable {
-        return callNewAuthCompletable(api.authEmailOrPhone(login))
+        return callAuthCompletable(api.authEmailOrPhone(login))
     }
 
     override fun authEmailOrPhoneWithResult(login: AuthBody): Single<NewAuthResponse> =
@@ -31,28 +31,10 @@ class AuthRepositoryImp
         return api.authWithQrCode(body)
     }
 
-    override fun register(body: RegisterBody): Completable {
-        return api.registerEmail(body).doOnSuccess {
-            appData.setUserShort(it)
-        }.ignoreElement()
-    }
-
     //+
     override fun registerUser(body: RegisterBody): Completable {
-        return api.registerUser(body).doOnSuccess {
-            appData.saveId(it.id)
-            if (it.token != null) appData.login(it.token)
-        }.ignoreElement()
+        return api.registerUser(body).doOnSuccess { appData.saveId(it.id) }.ignoreElement()
     }
-
-    /*override fun registerData(email: String, code: String): Single<UserResp> {
-        return call(api.registerData(email, code))
-    }
-
-    override fun registerConfirm(email: String, code: String, name: String,lastName: String,
-                                 middleName: String?, phone: String?, newEmail: String?, password: String?): Completable {
-        return callAuthCompletable(api.registerEmailConfirm(email, code, name, lastName, middleName, phone, newEmail, password))
-    }*/
 
     override fun registerEmailResend(email: String): Completable {
         return api.registerEmailResend(appData.getId(), email)
@@ -60,26 +42,6 @@ class AuthRepositoryImp
 
     override fun registerPhoneResend(type: String, phone: String): Completable {
         return api.registerPhoneResend(appData.getId(), type, phone)
-    }
-
-
-    private fun callNewAuthCompletable(authRequest: Single<NewAuthResponse>): Completable {
-        return authRequest.doOnSuccess {
-            val token = it?.token
-            if (token != null) {
-                appData.login(token)
-                appData.saveId(it.id)
-            }
-        }.doOnSuccess { appData.token = it.token }.map { it }.ignoreElement()
-    }
-
-    private fun callAuthCompletable(authRequest: Single<ApiResponse<AuthResponse>>): Completable {
-        return call(authRequest.doOnSuccess {
-            val token = it.session?.token
-            if (token != null) {
-                appData.login(token)
-            }
-        }).ignoreElement()
     }
 
     override fun confirmEmailCode(body: EmailCodeBody): Completable =
@@ -95,13 +57,15 @@ class AuthRepositoryImp
         }.ignoreElement()
     }
 
-    /*override fun registerSnResend(email: String, token: String): Completable {
-        return callAuthCompletable(api.registerSnResend(email, token))
+    private fun callAuthCompletable(authRequest: Single<NewAuthResponse>): Completable {
+        return authRequest.doOnSuccess {
+            val token = it?.token
+            if (token != null) {
+                appData.login(token)
+                appData.saveId(it.id)
+            }
+        }.doOnSuccess { appData.token = it.token }.map { it }.ignoreElement()
     }
-
-    override fun sendRecoveryEmail(email: String): Completable {
-        return callAuthCompletable(api.sendEmailRecovery(email))
-    }*/
 
     override fun sendRecoveryEmail(type: String, email: String): Maybe<RecoverPasswordResponse> {
         return api.sendEmailRecovery(type, email)
@@ -121,7 +85,7 @@ class AuthRepositoryImp
     }
 
     override fun recoverPasswordNew(body: RecoverPasswordBody): Completable {
-        return callNewAuthCompletable(api.recoverPassword(body))
+        return callAuthCompletable(api.recoverPassword(body))
     }
 
     override fun rebaseInvite(id: Int, body: RebaseInviteBody): Completable =

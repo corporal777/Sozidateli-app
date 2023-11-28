@@ -42,7 +42,7 @@
 
     <dimen name="in_app_notification_fragment_margin_top">40dp</dimen>
     <!--  new margins  -->
-
+    <dimen name="edit_text_min_height">45dp</dimen>
     <dimen name="auth_logo_margin_top">24dp</dimen>
     <dimen name="auth_logo_height">40dp</dimen>
     <dimen name="auth_button_min_height">48dp</dimen>
@@ -164,4 +164,13 @@
     <dimen name="update_app_image">250dp</dimen>
 
     <dimen name="action_button_radius">6dp</dimen>
+
+    <!--  code view margins  -->
+    <dimen name="symbols_spacing">8dp</dimen>
+    <dimen name="symbol_view_corner_radius">2dp</dimen>
+    <dimen name="symbol_view_width">60dp</dimen>
+    <dimen name="symbol_view_height">60dp</dimen>
+    <dimen name="symbol_view_text_size">25sp</dimen>
+    <dimen name="symbol_view_stroke_width">2dp</dimen>
+    <dimen name="symbol_view_active_stroke_width">3dp</dimen>
 </resources>

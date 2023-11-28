@@ -38,4 +38,8 @@
     <dimen name="update_app_image">250dp</dimen>
     <!--  new margins  -->
 
+    <!--  code view margins  -->
+    <dimen name="symbol_view_width">55dp</dimen>
+    <dimen name="symbol_view_height">5dp</dimen>
+    <dimen name="symbol_view_text_size">22sp</dimen>
 </resources>

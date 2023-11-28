@@ -75,6 +75,6 @@ class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(true),
     override fun layout() = R.layout.fragment_favorite
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

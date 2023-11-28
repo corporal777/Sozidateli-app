@@ -2,6 +2,7 @@ package com.example.ui.base
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.R
 import com.example.databinding.ActivityMainBinding
 import com.example.databinding.LayoutBottomNavBadgeBinding
+import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
@@ -79,14 +81,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     abstract fun handleIntent(intent: Intent)
 
-    override fun showEnterAnimation() {
-    }
-
-    override fun showEventAddedToFavoriteDialog() {
-    }
-
-    override fun showEventRemovedFromFavoriteDialog() {
-    }
+    override fun showEnterAnimation() {}
+    override fun showEventAddedToFavoriteDialog() {}
+    override fun showEventRemovedFromFavoriteDialog() {}
 
     override fun showLoadingDialog() {
         if (!isFinishing) runOnUiThread {
@@ -168,6 +165,20 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     fun isCurrentDestination(frag : Int): Boolean {
         return findNavController(R.id.navHostFragment).currentDestination?.id == frag
+    }
+
+    fun setupBackgroundImageFragment(f : Fragment){
+        val isLightStatus: Boolean
+        val bg: Drawable?
+        if (f is BackgroundImageFragment) {
+            bg = f.getFragmentBackgroundDrawable()
+            isLightStatus = f.isLightStatus
+        } else {
+            bg = null
+            isLightStatus = true
+        }
+        window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+        mBinding.root.background = bg
     }
 
     abstract fun showProgressView()

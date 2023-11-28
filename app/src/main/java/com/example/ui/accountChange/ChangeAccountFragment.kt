@@ -129,7 +129,7 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
 
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 
 }

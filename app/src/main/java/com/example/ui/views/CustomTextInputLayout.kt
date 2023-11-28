@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.getDrawableOrThrow
 import com.example.R
 import com.example.extensions.dp
+import com.example.util.getDrawable
 import com.google.android.material.textfield.TextInputLayout
 
 class CustomTextInputLayout : TextInputLayout {
@@ -73,6 +74,7 @@ class CustomTextInputLayout : TextInputLayout {
         if (oldIconDrawable == null) oldIconDrawable = endIconDrawable
         endIconDrawable = getProgressBarDrawable()
     }
+
 
     fun hideLoadingIcon() {
         endIconDrawable = oldIconDrawable

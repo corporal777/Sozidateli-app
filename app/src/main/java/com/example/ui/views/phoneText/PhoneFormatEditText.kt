@@ -4,10 +4,13 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
+import com.example.R
 import onFocusChanged
 
 class PhoneFormatEditText : AppCompatEditText {
@@ -263,22 +266,27 @@ class PhoneFormatEditText : AppCompatEditText {
         } else nextValidPosition(rawToMask[rawText.length()])
     }
 
-    private fun makeMaskedText(): String {
-        val maskedTextLength: Int = if (rawText.length() < rawToMask.size) {
-            rawToMask[rawText.length()]
-        } else {
-            mask!!.length
+    private fun changeTextColor(maskedText : String){
+        if (rawText.text.isNullOrEmpty()){
+            if (maskedText.replace(" ", "").length == 3)
+                setTextColor(currentHintTextColor)
         }
-        val maskedText =
-            CharArray(maskedTextLength) //mask.replace(charRepresentation, ' ').toCharArray();
+        else setTextColor(ContextCompat.getColor(context, R.color.black))
+    }
+
+    private fun makeMaskedText(): String {
+        val maskedTextLength = if (rawText.length() < rawToMask.size) {
+            rawToMask[rawText.length()]
+        } else mask!!.length
+
+        val maskedText = CharArray(maskedTextLength)
         for (i in maskedText.indices) {
             val rawIndex = maskToRaw[i]
-            if (rawIndex == -1) {
-                maskedText[i] = mask!![i]
-            } else {
-                maskedText[i] = rawText.charAt(rawIndex)
-            }
+            if (rawIndex == -1) maskedText[i] = mask!![i]
+            else maskedText[i] = rawText.charAt(rawIndex)
         }
+
+        changeTextColor(String(maskedText))
         return String(maskedText)
     }
 
@@ -289,14 +297,10 @@ class PhoneFormatEditText : AppCompatEditText {
         for (i in 0 until mask!!.length) {
             mtrv = maskToRaw[i]
             if (mtrv != -1) {
-                if (mtrv < rawText.length()) {
-                    ssb.append(rawText.charAt(mtrv))
-                } else {
-                    ssb.append(hint.get(maskToRaw[i]))
-                }
-            } else {
-                ssb.append(mask!![i])
-            }
+                if (mtrv < rawText.length()) ssb.append(rawText.charAt(mtrv))
+                else ssb.append(hint.get(maskToRaw[i]))
+            } else ssb.append(mask!![i])
+
             if ((keepHint && rawText.length() < rawToMask.size && i >= rawToMask[rawText.length()] || !keepHint) && i >= maskFirstChunkEnd) {
                 ssb.setSpan(ForegroundColorSpan(getCurrentHintTextColor()), i, i + 1, 0)
             }

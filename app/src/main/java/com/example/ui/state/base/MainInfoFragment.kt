@@ -223,6 +223,6 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         }
     }
 
-    override fun scrollValue(scroll: (value: Int) -> Unit) {}
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }
