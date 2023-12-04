@@ -6,6 +6,7 @@ import com.example.data.database.UserEventDao
 import com.example.data.models.*
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -16,6 +17,7 @@ import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.CompletableSubject
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.ArrayList
 
 class UserEventData(
@@ -148,11 +150,11 @@ class UserEventData(
     fun createEventScheduleDays(dates: List<String>): List<EventScheduleDay> {
         if (dates.isEmpty()) return arrayListOf()
         val sortedDates = dates.sorted()
-
-        return sortedDates.map {
+        return sortedDates.mapIndexed { index, it ->
             val millis = defaultServerDateFormatter.parse(it).time
             val cal = millis.calendar()
             EventScheduleDay(
+                index,
                 it,
                 millis,
                 cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
@@ -168,12 +170,25 @@ class UserEventData(
         val millis = defaultServerDateFormatter.parse(date).time
         val cal = millis.calendar()
         return EventScheduleDay(
+            ThreadLocalRandom.current().nextInt(0, 1000),
             date,
             millis,
             cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
             cal.get(Calendar.DAY_OF_MONTH),
             true
         )
+    }
+
+    fun isHasEventSearchText(text: String, event: EventActivityModel): Boolean {
+        var isHas = false
+        if (event.description?.contains(text, true) == true || event.title?.contains(text, true) == true) {
+            isHas = true
+        } else {
+            if (event.binds?.users?.any { x -> x.fullName.contains(text, true) } == true) {
+                isHas = true
+            }
+        }
+        return isHas
     }
 
 
@@ -200,26 +215,18 @@ class UserEventData(
         return days
     }
 
-    fun collectDates(dates:List<EventScheduleDay>): MutableMap<Int, List<EventScheduleDay>> {
-        var countSize = 0
-        var key = 1
-        val map = mutableMapOf<Int, List<EventScheduleDay>>()
-        val listDays = arrayListOf<EventScheduleDay>()
-        dates.forEach {
-            listDays.add(it)
-            countSize++
-            if (listDays.size == 7) {
-                map[key] = listDays
-                listDays.clear()
-                key++
-            } else {
-                if (countSize == dates.size) {
-                    map[key] = listDays
-                }
-            }
-        }
-        return map
+    fun findNearestDay(eventDates : List<EventScheduleDay>): EventScheduleDay? {
+        val date = System.currentTimeMillis()
+        val days = eventDates
+        val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
+        val other = Calendar.getInstance()
+        return days.find {
+            (dateCalendar.isSameDay(other.apply {
+                timeInMillis = it.millis
+            }) || it.millis - date > 0)
+        } ?: days.lastOrNull()
     }
+
 
     fun clear() {
         days = null
@@ -276,9 +283,17 @@ class UserEventData(
                         ).subscribe(
                             { list ->
                                 val mSortedList = arrayListOf<MemberModel>()
-                                mSortedList.addAll(list.filter { x -> x.isLead == true }.sortedBy { x -> x.binds?.user?.fullName })
-                                mSortedList.addAll(list.filter { x -> x.isLead == false }.sortedBy { x -> x.binds?.user?.fullName })
-                                insertEventMembers(EventMember(id, mSortedList, System.currentTimeMillis()))
+                                mSortedList.addAll(list.filter { x -> x.isLead == true }
+                                    .sortedBy { x -> x.binds?.user?.fullName })
+                                mSortedList.addAll(list.filter { x -> x.isLead == false }
+                                    .sortedBy { x -> x.binds?.user?.fullName })
+                                insertEventMembers(
+                                    EventMember(
+                                        id,
+                                        mSortedList,
+                                        System.currentTimeMillis()
+                                    )
+                                )
                                 emitter.onSuccess(mSortedList)
                             },
                             { error ->

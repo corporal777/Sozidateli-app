@@ -1,5 +1,6 @@
 package com.example.ui.event.my.schedule.calendar
 
+import com.example.data.models.EventScheduleDay
 import com.example.ui.base.BaseContract
 import com.pagercalendar.calendar.CalendarDay
 import moxy.MvpView
@@ -19,7 +20,7 @@ class CalendarBottomSheetContract {
         fun setEventDates(dates: List<CalendarDay>)
 
         @OneExecution
-        fun setDateSelected(cal: Calendar)
+        fun setDateSelected(date: EventScheduleDay?)
 
     }
 

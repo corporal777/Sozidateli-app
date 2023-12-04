@@ -40,7 +40,6 @@
         <com.example.ui.views.expandableTextView.CustomExpandableTextView
             android:id="@+id/tvMessage"
             style="@style/Notification.MessageNew"
-            android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@+id/tvReadMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

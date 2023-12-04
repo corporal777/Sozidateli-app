@@ -17,7 +17,7 @@ interface ActivitiesContract {
         fun setContentPlaceholder()
 
         @AddToEndSingle
-        fun setDays(days: Map<Int, List<EventScheduleDay>>)
+        fun setDays(days: List<List<EventScheduleDay>>)
 
         @AddToEndSingle
         fun setTags(tags: List<Tag>?)
@@ -28,11 +28,14 @@ interface ActivitiesContract {
         @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "placeholder")
         fun showEmptyEventPlaceholder()
 
-        @OneExecution
-        fun selectDay(day: EventScheduleDay)
+        @Skip
+        fun selectDay(day: EventScheduleDay?)
 
         @Skip
-        fun scrollContent(day: EventScheduleDay)
+        fun scrollPageContent(day: EventScheduleDay?)
+
+        @Skip
+        fun scrollListContent(day: EventScheduleDay?)
 
         @Skip
         fun showSubEvent(eventId: String, subEventId: String)

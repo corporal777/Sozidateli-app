@@ -11,34 +11,22 @@ import moxy.viewstate.strategy.alias.Skip
 interface MyScheduleEventsContract {
     interface View : BaseContract.View {
         @AddToEndSingle
-        fun setContentPlaceholder()
-
-        @AddToEndSingle
-        fun setHeaderCalendar(days: List<List<EventScheduleDay>>)
-
-        @AddToEndSingle
-        fun setMonthCalendar(dates: List<EventScheduleDay>, month: String)
+        fun setCalendar(days: List<List<EventScheduleDay>>, month: String)
 
         @AddToEndSingle
         fun setContent(data: List<EventScheduleData>)
 
         @Skip
-        fun scrollToDay(day: EventScheduleDay)
+        fun scrollPageContent(day: EventScheduleDay?)
 
         @Skip
-        fun scrollContent(day: EventScheduleDay)
+        fun scrollListContent(day: EventScheduleDay?)
 
         @Skip
-        fun selectDay(day: EventScheduleDay)
+        fun selectDay(day: EventScheduleDay?)
 
         @OneExecution
         fun showAboutEvent(eventId: String)
-
-        @Skip
-        fun showMessageDialog(message: String)
-
-        @OneExecution
-        fun updateSubEvent(subEvent: EventActivityModel)
 
         @OneExecution
         fun showSubEvent(eventId: String, subEventId: String)

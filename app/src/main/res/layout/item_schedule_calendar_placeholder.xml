@@ -6,191 +6,174 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/days_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="5dp"
+        android:orientation="horizontal">
 
-        <View
-            android:id="@+id/tvMonth"
-            android:layout_width="150dp"
-            android:layout_height="17dp"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/placeholder_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/ln_days"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@id/tvMonth">
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
 
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/day_item_start"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="25dp"
-                    android:layout_height="15dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/placeholder_background" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:elevation="0dp"
-                    app:cardBackgroundColor="@color/placeholder"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="0dp" />
-
-            </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/placeholder_background"
-            app:layout_constraintTop_toBottomOf="@id/ln_days" />
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/day_item_start"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:background="@drawable/placeholder_background" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:elevation="0dp"
+                app:cardBackgroundColor="@color/placeholder"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp" />
+
+        </LinearLayout>
+    </LinearLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

@@ -1,8 +1,9 @@
 package com.example.util.pagination
 
+import android.util.Log
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class PaginationListGroupAdapter<VH : GroupieViewHolder> : GroupAdapter<VH>() {
 
@@ -16,6 +17,7 @@ class PaginationListGroupAdapter<VH : GroupieViewHolder> : GroupAdapter<VH>() {
         onItemTakeCallback?.onItemTake(position)
         return super.getItem(position)
     }
+
 
     interface OnItemTakeCallback {
         fun onItemTake(position: Int)

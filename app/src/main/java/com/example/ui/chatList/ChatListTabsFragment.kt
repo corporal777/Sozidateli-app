@@ -85,7 +85,7 @@ class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
         mBinding.tvChatsBadge.isVisible = count > 0
     }
 
-    fun scrollToFirstItem() {
+    override fun scrollToFirstItem() {
         if (mBinding.viewPager.currentItem == 0) {
             (fragments[0] as ChatListFragment).smoothScrollToFirstItem(mBinding.appBarLayout)
         } else {

@@ -17,24 +17,19 @@ class EventScheduleGroup(
     private val mHeaderItem = Section()
 
     init {
-        mHeaderItem.apply {
-            update(listOf(
-                EventActivityDateItem(data.titleDate),
-                EventImageHeaderItem(
-                    data.getId(),
-                    data.getName(),
-                    data.getImage(),
-                    data.getBackgroundColor()
-                ) {
-                    onHeaderClick(data.getId())
-                }
-            ))
-        }
+        mHeaderItem.update(listOf(
+            EventActivityDateItem(data.titleDate),
+            EventImageHeaderItem(
+                data.getId(),
+                data.getName(),
+                data.getImage(),
+                data.getBackgroundColor()
+            ) { onHeaderClick(data.getId()) }
+        ))
         mDataItem.apply {
             data.subEvents.forEach {
-                if (!it.titleDate.isNullOrEmpty())
-                    add(EventActivityDateItem(it.titleDate, it.getDateInLong()))
-
+                if (it.titleDate != null)
+                    add(EventActivityDateItem(it.titleDate, it.titleDate?.uniqueId?.toLong()))
                 add(
                     EventActivityItem(
                         data.getId(),

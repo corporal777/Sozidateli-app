@@ -655,4 +655,13 @@ fun Activity.onBackPressedCallback(
     }
 }
 
+fun View?.getLocationOfView(): Pair<Int, Int> {
+    if (this == null) return Pair(0, 0)
+    val location = IntArray(2)
+    this.getLocationOnScreen(location)
+    val x = location[0]
+    val y = location[1]
+    return Pair(x, y)
+}
+
 

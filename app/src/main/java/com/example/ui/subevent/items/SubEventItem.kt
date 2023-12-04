@@ -6,7 +6,7 @@ import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tags
 import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.formatToIntervalNew
+import com.example.extensions.formatTimeIntervalFromTo
 import com.example.ui.views.TagChip
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.weak
@@ -25,7 +25,7 @@ open class SubEventItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.apply {
-            tvTime.text = subEvent.holdingDate?.from.formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+            tvTime.text = subEvent.holdingDate?.from.formatTimeIntervalFromTo(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
             tvStatus.text = subEvent.title
 
             when (mode) {

@@ -18,6 +18,8 @@ import com.pagercalendar.calendar.DayViewDecorator
 import com.pagercalendar.calendar.DayViewFacade
 import com.pagercalendar.calendar.spans.DotSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.pagercalendar.calendar.decorators.EventDecorator
+import com.pagercalendar.calendar.decorators.SelectedDayDecorator
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -33,8 +35,7 @@ class CalendarBottomSheet(
 ) : BottomSheetDialog(context), CalendarBottomSheetContract.View {
 
     private val mBinding = BottomSheetCalendarBinding.inflate(LayoutInflater.from(context))
-    private var onActionClick: (date: Calendar) -> Unit = {}
-    private var onDateClick: (date: EventScheduleDay) -> Unit = {}
+    private var onDateClick: (date: EventScheduleDay?) -> Unit = {}
     private val mvpDelegate by lazy { MvpDelegate<CalendarBottomSheet>(this) }
 
 
@@ -85,23 +86,16 @@ class CalendarBottomSheet(
 
     override fun setEventDates(dates: List<CalendarDay>) {
         mBinding.calendarView.apply {
-            addDecorator(EventDecorator(getColor(context, R.color.main_brown_color_new), dates))
+            addDecorator(EventDecorator(dates, getColor(context, R.color.main_brown_color_new)))
         }
     }
 
-    override fun setDateSelected(cal: Calendar) {
-        onActionClick(cal)
-        val valueLong = defaultServerDateFormatter.parse(defaultServerDateFormatter.format(cal.time)).time
-        onDateClick(createCalendarDay(valueLong))
+    override fun setDateSelected(date: EventScheduleDay?) {
+        onDateClick(date)
         dismiss()
     }
 
-    fun setSelectCallback(block: (date: Calendar) -> Unit): CalendarBottomSheet {
-        onActionClick = block
-        return this
-    }
-
-    fun setDateSelectCallback(block: (date: EventScheduleDay) -> Unit): CalendarBottomSheet {
+    fun setDateSelectCallback(block: (date: EventScheduleDay?) -> Unit): CalendarBottomSheet {
         onDateClick = block
         return this
     }
@@ -118,56 +112,6 @@ class CalendarBottomSheet(
         mvpDelegate.onDetach()
         mvpDelegate.onDestroyView()
         mvpDelegate.onDestroy()
-    }
-
-    private fun createCalendarDay(date: Long): EventScheduleDay {
-        val cal = date.calendar()
-        return EventScheduleDay(
-            longToDate(date),
-            date,
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
-            cal.get(Calendar.DAY_OF_MONTH),
-            true
-        )
-    }
-
-
-    class EventDecorator(private val color: Int, dates: Collection<CalendarDay?>?) :
-        DayViewDecorator {
-        private val dates: HashSet<CalendarDay>
-        override fun shouldDecorate(day: CalendarDay): Boolean {
-            return dates.contains(day)
-        }
-
-        override fun decorate(view: DayViewFacade) {
-            view.addSpan(DotSpan(7F, color))
-        }
-
-        init {
-            this.dates = HashSet(dates)
-        }
-    }
-
-    class SelectedDayDecorator(date: CalendarDay?) :
-        DayViewDecorator {
-        private val date: CalendarDay
-        override fun shouldDecorate(day: CalendarDay): Boolean {
-            return date == day
-        }
-
-
-        override fun decorate(view: DayViewFacade) {
-            view.addSpan(
-                DotSpan(
-                    7F,
-                    Color.WHITE
-                )
-            )
-        }
-
-        init {
-            this.date = date!!
-        }
     }
 
     companion object {

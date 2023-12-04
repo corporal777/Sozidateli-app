@@ -17,7 +17,8 @@ class EventDetailActivitiesItem(
 ) : NestedGroup() {
 
     private val mContentItem = Section()
-    private val mDateItem = EventActivityDateItem(date)
+    //private val mDateItem = EventActivityDateItem(date)
+    private val mDateItem = Section()
 
     init {
         add(mDateItem)

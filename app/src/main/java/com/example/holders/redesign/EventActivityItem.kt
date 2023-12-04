@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
@@ -16,7 +15,7 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
 import com.example.databinding.ItemLectureBinding
 import com.example.extensions.defaultServerDateTimeFormatter
-import com.example.extensions.formatToIntervalNew
+import com.example.extensions.formatTimeIntervalFromTo
 import com.example.extensions.markWon
 import com.example.ui.views.TagChipNew
 import com.example.util.URLSpanNoUnderline
@@ -33,26 +32,23 @@ class EventActivityItem(
     private val canShow: Boolean,
 ) : BindableItem<ItemLectureBinding>(subEvent.id?.toLong() ?: 0) {
 
-    private val mClickListener by weak(clickListener)
-    private val mTime = subEvent.holdingDate?.from.formatToIntervalNew(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
-    private var canShowButton = false
+    private val onClickListener by weak(clickListener)
+    private val date = subEvent.holdingDate?.from.formatTimeIntervalFromTo(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
+    private var canShowButton = canShow
     private var isCollapsed = true
     private var isMessageLong = false
 
 
     init {
-        canShowButton = canShow
         val today = System.currentTimeMillis()
         val subEventDate = defaultServerDateTimeFormatter.parse(subEvent.holdingDate?.to).time
-        if (today > subEventDate) {
-            canShowButton = false
-        }
+        if (today > subEventDate) canShowButton = false
     }
 
     override fun bind(viewBinding: ItemLectureBinding, position: Int) {
         viewBinding.apply {
-            cardActivity.setOnClickListener { mClickListener?.onSubEventClick(eventId, subEvent) }
-            tvLectureTime.text = mTime
+            cardActivity.setOnClickListener { onClickListener?.onSubEventClick(eventId, subEvent) }
+            tvLectureTime.text = date
             tvLectureName.text = subEvent.title
 
             auditoryContainer.apply {
@@ -101,11 +97,11 @@ class EventActivityItem(
             if (event.binds?.userCalendar != null) {
                 text = context.getString(R.string.sub_event_remove_from_schedule)
                 background = getDrawable(R.drawable.custom_btn_gray_selectable)
-                setOnClickListener { mClickListener?.onRemoveFromScheduleClick(event) }
+                setOnClickListener { onClickListener?.onRemoveFromScheduleClick(event) }
             } else {
                 text = context.getString(R.string.sub_event_add_to_schedule)
                 background = getDrawable(R.drawable.custom_btn_green_selectable)
-                setOnClickListener { mClickListener?.onAddToScheduleClick(event) }
+                setOnClickListener { onClickListener?.onAddToScheduleClick(event) }
             }
         }
     }

@@ -4,8 +4,8 @@ import com.example.ui.event.activities.SubEventsData
 
 data class EventScheduleData(
     val event : EventNew?,
-    val titleDate: String?,
-    val eventDates : List<String>,
+    val titleDate: EventScheduleDay?,
+    val eventDates : List<EventScheduleDay>,
     var subEvents: List<SubEventsData>
 ) {
     fun getId() = event?.id.toString()

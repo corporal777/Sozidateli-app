@@ -2,6 +2,7 @@ package com.example.ui.auth.confirm
 
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.base.BaseContract
+import com.example.util.OneExecutionByTagStateStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.AddToEndSingle

@@ -48,6 +48,7 @@ class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>()
                 }
             }
             btnConfirm.setOnClickListener {
+                hideKeyboard()
                 presenter.onConfirmMobilePhone()
             }
         }
@@ -73,6 +74,7 @@ class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>()
             navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
         )
     }
+
 
     override fun showCustomLoading(type: Int) {
         mBinding.apply {

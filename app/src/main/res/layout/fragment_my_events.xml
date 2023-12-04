@@ -211,9 +211,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingBottom="70dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_event_new" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
         </com.example.ui.views.CustomSwipeRefreshLayout>

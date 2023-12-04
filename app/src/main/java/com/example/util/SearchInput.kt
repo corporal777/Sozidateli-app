@@ -5,18 +5,23 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
+import onFocusChanged
 
 class SearchInput(
         val view: EditText
 ) {
 
     private var onTextChange: OnTextChange? = null
+    private var onAfterTextChange: OnAfterTextChange? = null
+    private var onFocusChange: OnFocusChange? = null
     private var onTextChangeSearch: OnTextChangeDone? = null
 
     init {
         view.apply {
             addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
+                override fun afterTextChanged(s: Editable?) {
+                    onAfterTextChange?.invoke(s.toString())
+                }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -24,6 +29,9 @@ class SearchInput(
                     onTextChange?.invoke(s.toString())
                 }
             })
+            onFocusChanged {
+                onFocusChange?.invoke(it)
+            }
 
             setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -37,6 +45,10 @@ class SearchInput(
         }
     }
 
+    fun setOnAfterTextChange(onAfterTextChange: OnAfterTextChange) {
+        this.onAfterTextChange = onAfterTextChange
+    }
+
     fun setOnTextChange(onTextChange: OnTextChange) {
         this.onTextChange = onTextChange
     }
@@ -44,7 +56,13 @@ class SearchInput(
     fun setOnTextChangeDone(onTextChangeDone: OnTextChangeDone) {
         this.onTextChangeSearch = onTextChangeDone
     }
+
+    fun setOnFocusChange(onFocusChange: OnFocusChange) {
+        this.onFocusChange = onFocusChange
+    }
 }
 
 typealias OnTextChange = (String) -> Unit
+typealias OnAfterTextChange = (String) -> Unit
+typealias OnFocusChange = (Boolean) -> Unit
 typealias OnTextChangeDone = (String) -> Unit

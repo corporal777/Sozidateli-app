@@ -59,9 +59,6 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
                 callback.onResult(data, dataPosition, totalCount)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e("SIZE", data.size.toString())
-                Log.e("PAGE", params.requestedLoadSize.toString())
-                Log.e("TOTAL", totalCount.toString())
                 if (e.message == "List size + position too large, last item in list beyond totalCount.") {
                     callback.onResult(data, dataPosition, data.size)
                 }

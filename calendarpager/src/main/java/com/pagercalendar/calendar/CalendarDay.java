@@ -116,6 +116,19 @@ public final class CalendarDay implements Parcelable {
                 + date.getDayOfMonth() + "}";
     }
 
+    @NonNull
+    public String getDateString() {
+        String month;
+        String day;
+        if (date.getMonthValue() < 10) month = "0" + date.getMonthValue();
+        else month = String.valueOf(date.getMonthValue());
+
+        if (date.getDayOfMonth() < 10) day = "0" + date.getDayOfMonth();
+        else day = String.valueOf(date.getDayOfMonth());
+
+        return date.getYear() + "-" + month + "-" + day;
+    }
+
 
     public CalendarDay(Parcel in) {
         this(in.readInt(), in.readInt(), in.readInt());

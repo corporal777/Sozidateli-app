@@ -37,9 +37,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is BaseActivity) {
-            this.mActivity = context
-        }
+        if (context is BaseActivity) this.mActivity = context
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,10 +93,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     }
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
-
-    override fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+    override fun showToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
     override fun showLoadingDialog() {
         mActivity?.showLoadingDialog()
@@ -116,16 +111,16 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         mActivity?.hideProgressBarLoadingDialog()
     }
 
-    override fun hideAllLoadingDialogs() {
-        mActivity?.hideAllLoadingDialogs()
-    }
-
     override fun showCustomProgressDialog() {
         mActivity?.showCustomProgressDialog()
     }
 
     override fun hideCustomProgressDialog() {
         mActivity?.hideCustomProgressDialog()
+    }
+
+    override fun hideAllLoadingDialogs() {
+        mActivity?.hideAllLoadingDialogs()
     }
 
     override fun showCustomLoading() {}
@@ -169,8 +164,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
             ApiErrorDialog(
                 it, getString(R.string.email_exist_error_title),
                 getString(R.string.email_exist_error_text)
-            )
-                .setSelectCallback { }
+            ).setSelectCallback { }
         }
     }
 
@@ -349,6 +343,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
 
     open fun onExpandedState() {}
     open fun onCollapsedState() {}
+    open fun scrollToFirstItem() {}
 
     private var cashCollapseState: Pair<Int, Int>? = null
 

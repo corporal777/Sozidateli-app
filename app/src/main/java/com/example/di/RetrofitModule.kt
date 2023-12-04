@@ -6,6 +6,7 @@ import com.example.BuildConfig
 import com.example.api.AuthInterceptor
 import com.example.api.Api
 import com.example.data.AppData
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -32,17 +33,19 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideApi(
-        authInterceptor: AuthInterceptor,
-        clientBuilder: OkHttpClient.Builder,
-        converterFactory : GsonConverterFactory,
-        context: Context
-    ): Api {
+    fun provideApi(converterFactory: Converter.Factory, authInterceptor: AuthInterceptor, context: Context): Api {
+        val clientBuilder = OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
 
         clientBuilder.addInterceptor(authInterceptor)
 
         if (BuildConfig.DEBUG) {
-            val logInterceptor = HttpLoggingInterceptor { m -> Log.e("REQUEST INFO: ", m) }
+            val logInterceptor = HttpLoggingInterceptor { message ->
+                Log.e("REQUEST INFO: ", message)
+            }
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(logInterceptor)
         }
@@ -51,7 +54,11 @@ class RetrofitModule {
             val response = it.proceed(it.request())
             val cacheControl: CacheControl = if (context.isConnectedToNetwork()) {
                 CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build()
-            } else CacheControl.Builder().maxStale(7, TimeUnit.DAYS).build()
+            } else {
+                CacheControl.Builder()
+                    .maxStale(7, TimeUnit.DAYS)
+                    .build()
+            }
 
             return@addNetworkInterceptor response.newBuilder()
                 .removeHeader("Pragma")
@@ -74,16 +81,16 @@ class RetrofitModule {
                     .cacheControl(cacheControl)
                     .build()
             }
+
             return@addInterceptor it.proceed(request)
         }
 
         return Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addConverterFactory(converterFactory)
-            .client(clientBuilder.build())
-            .baseUrl(BuildConfig.NEW_API_URL).build()
-            .create(Api::class.java)
+            .client(clientBuilder.build()).baseUrl(BuildConfig.NEW_API_URL).build().create(Api::class.java)
     }
+
 
     @Provides
     @Singleton
@@ -93,17 +100,13 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create(GsonBuilder().serializeNulls().create())
+    fun provideConverterFactory(gson: Gson): Converter.Factory {
+        return GsonConverterFactory.create(gson)
     }
 
     @Provides
     @Singleton
-    fun provideHttpClient(context: Context): OkHttpClient.Builder {
-        return OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(1, TimeUnit.MINUTES)
-            .cache(Cache(File(context.cacheDir, "http-cache"), 10 * 1024 * 1024))
+    fun provideGson(): Gson {
+        return GsonBuilder().serializeNulls().create()
     }
 }

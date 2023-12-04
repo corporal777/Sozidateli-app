@@ -1,5 +1,6 @@
 package com.example.ui.event.my.schedule.calendar
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
@@ -46,11 +47,8 @@ class CalendarBottomSheetPresenter @Inject constructor(
     }
 
     override fun onDateSelected(date: CalendarDay) {
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.YEAR, date.year)
-        cal.set(Calendar.MONTH, date.month - 1)
-        cal.set(Calendar.DAY_OF_MONTH, date.day)
-        viewState.setDateSelected(cal)
+        val foundDate = eventDays.find { x -> x.date == date.dateString }
+        viewState.setDateSelected(foundDate)
     }
 
     private fun getCalendarDaysFromList(): List<CalendarDay> {

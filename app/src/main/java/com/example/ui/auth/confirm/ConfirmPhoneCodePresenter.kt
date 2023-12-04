@@ -3,6 +3,7 @@ package com.example.ui.auth.confirm
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.repository.AuthRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BaseContract
 import com.example.ui.base.BasePresenter
 import com.example.util.Utils
@@ -13,9 +14,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withDelay
+import withInfinityCustomLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -23,7 +27,7 @@ import javax.inject.Inject
 class ConfirmPhoneCodePresenter
 @Inject constructor(
     val appData: AppData,
-    val authRepository: AuthRepository
+    val authRepository: AuthRepository,
 ) : BasePresenter<ConfirmPhoneCodeContract.View>(appData), ConfirmPhoneCodeContract.Presenter {
 
     var mobilePhone = ""
@@ -48,6 +52,7 @@ class ConfirmPhoneCodePresenter
             .withLoading(1)
             .subscribeSimple(
                 onError = {
+                    it.printStackTrace()
                     viewState.apply {
                         setIgnoreTokenListener(false)
                         showCodeError(true)
@@ -97,7 +102,6 @@ class ConfirmPhoneCodePresenter
         }
     }
 
-
     private fun formatMobilePhone(phone: String): String {
         return if (phone.length == 12) {
             StringBuilder(phone)
@@ -114,6 +118,7 @@ class ConfirmPhoneCodePresenter
             .doOnComplete { viewState.showCustomLoading(type) }
             .doOnDispose { viewState.hideCustomLoading(type) }
             .subscribe()
+
         val actionHide = Action {
             if (loadingDisposable.isDisposed) viewState.hideCustomLoading(type)
             else loadingDisposable.dispose()
@@ -124,9 +129,9 @@ class ConfirmPhoneCodePresenter
             else loadingDisposable.dispose()
         }
         return this.doFinally(actionHide)
-            .doOnDispose(actionHide)
-            .doOnError(actionConsumer())
+            .doOnDispose(actionHide).doOnError(actionConsumer())
     }
+
 
     companion object {
         const val TIMER_SECONDS_COUNT = 60

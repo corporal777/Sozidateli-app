@@ -15,6 +15,7 @@ import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.profile.ProfileFragmentArgs
+import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
@@ -48,11 +49,12 @@ class RecommendationsFragment :
     }
 
     private val dataGroup = Section()
-    private val groupAdapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
+    private val groupAdapter = PaginationGroupAdapter<GroupieViewHolder>().apply {
         add(dataGroup)
-        setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+        setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
-                if (position > 0) presenter.onItemTake(position - 1)
+                presenter.onItemTake(position)
+                //if (position > 0) presenter.onItemTake(position - 1)
             }
         })
     }
@@ -95,7 +97,7 @@ class RecommendationsFragment :
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    fun scrollToFirstItem() {
+    override fun scrollToFirstItem() {
         val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
         mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }

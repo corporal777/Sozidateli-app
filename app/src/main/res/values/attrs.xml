@@ -14,6 +14,11 @@
         <attr name="inputHasCheckBox" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CustomPhoneTextInputView">
+        <attr name="phoneTitleText" format="string" />
+        <attr name="phoneHintText" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="CustomTextInputView">
         <attr name="titleText" format="string" />
         <attr name="hintText" format="string" />

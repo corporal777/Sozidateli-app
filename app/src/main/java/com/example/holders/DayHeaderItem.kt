@@ -13,7 +13,6 @@ open class DayHeaderItem(
 
     private val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
 
-    //private val dateFormat = SimpleDateFormat("EE d.MM.yyyy", Locale.getDefault())
     private val dateFormatWithoutDay = SimpleDateFormat("d.MM.yyyy", Locale.getDefault())
 
     override fun bind(viewBinding: ItemDayHeaderBinding, position: Int) {

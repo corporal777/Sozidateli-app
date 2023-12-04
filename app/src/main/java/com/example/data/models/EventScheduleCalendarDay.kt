@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import com.example.ui.notification.NotificationsSortedData
+
 data class EventScheduleCalendarDay(
         val millis: Long,
         val week: Int,
@@ -9,9 +11,19 @@ data class EventScheduleCalendarDay(
 )
 
 data class EventScheduleDay(
+        val uniqueId : Int,
         val date : String,
         val millis: Long,
         val dayOfWeek: String?,
         val dayOfMonth: Int,
         var hasEvents: Boolean
-)
+){
+        override fun equals(other: Any?): Boolean {
+                other as EventScheduleDay
+                return date == other.date && uniqueId == other.uniqueId
+        }
+
+        override fun hashCode(): Int {
+                return uniqueId
+        }
+}

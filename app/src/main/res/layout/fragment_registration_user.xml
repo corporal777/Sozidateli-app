@@ -66,7 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                app:titleText="@string/profile_phone_mobile" />
+                app:phoneHintText="+7 912 345 67 89"
+                app:phoneTitleText="@string/profile_phone_mobile" />
 
             <com.example.ui.views.passwordView.CustomPasswordView
                 android:id="@+id/passwordView"

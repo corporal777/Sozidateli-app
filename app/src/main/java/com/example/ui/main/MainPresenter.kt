@@ -100,7 +100,6 @@ class MainPresenter
 
     private fun checkAppUpdate() {
         compositeDisposable += authRepository.checkAppUpdate(BuildConfig.VERSION_NAME)
-            //.flatMap { checkAppUpdateAvailable(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 appData.isNeedUpdateApp = it.hasUpdate()

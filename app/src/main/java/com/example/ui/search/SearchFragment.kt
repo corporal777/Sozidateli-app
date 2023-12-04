@@ -41,9 +41,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     private var filterDialog: BottomSheetDialog? = null
     private var filterView: View? = null
 
-    val headerSection = Section()
-
-
     protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
     protected val adapter by lazy {

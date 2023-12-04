@@ -585,7 +585,9 @@ data class BackgroundColorModel(
 data class DateModel(
     val from: String? = null,
     val to: String? = null
-) : Parcelable
+) : Parcelable {
+    fun getShortDate(): String = from?.split(" ")?.get(0) ?: ""
+}
 
 @Parcelize
 data class RequestApplyModel(

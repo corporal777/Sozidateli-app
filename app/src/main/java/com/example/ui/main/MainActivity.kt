@@ -39,6 +39,7 @@ import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs

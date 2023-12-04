@@ -11,6 +11,13 @@ inline fun <VH : GroupieViewHolder, reified I : Item<*>> GroupAdapter<VH>.findIt
     return null
 }
 
+inline fun Group.forEachItems(selector: (Item<*>, position: Int) -> Unit) {
+    for (i in 0 until this.itemCount) {
+        val item = this.getItem(i)
+        selector(item, i)
+    }
+}
+
 inline fun <VH : GroupieViewHolder, reified I : NestedGroup> GroupAdapter<VH>.findGroupBy(selector: (I) -> Boolean): I? {
     for (i in 0 until this.groupCount) {
         val group = getGroup(i)
@@ -60,13 +67,6 @@ inline fun <reified I : Group> NestedGroup.findGroupBy(selector: (I) -> Boolean)
     }
 
     return null
-}
-
-inline fun Group.forEachItems(selector: (Item<*>, position: Int) -> Unit) {
-    for (i in 0 until this.itemCount) {
-        val item = this.getItem(i)
-        selector(item, i)
-    }
 }
 
 inline fun <reified I : Group> Group.forEachGroups(selector: (I) -> Unit) {

@@ -1,19 +1,14 @@
 package com.example.holders
 
-import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import coil.transform.RoundedCornersTransformation
 import com.example.R
 import com.example.databinding.ItemProfileDataUserBinding
 import com.example.extensions.dp
-import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_profile_data_user.*
 
 
 class ProfileDataUserItem(

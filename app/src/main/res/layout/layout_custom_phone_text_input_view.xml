@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.ui.views.phoneText.PhoneFormatEditText
+        <com.example.ui.views.phoneText.PhoneNumberEditText
             android:id="@+id/etInput"
             style="@style/ProfileData.EditText"
             android:layout_width="0dp"

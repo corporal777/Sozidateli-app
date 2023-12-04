@@ -1,6 +1,7 @@
 package com.example.ui.event.my
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
@@ -19,8 +20,10 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
+import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.SearchInput
+import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -45,27 +48,20 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
     @InjectPresenter
     override lateinit var presenter: MyEventsPresenter
 
-    private var mFilterDialog: BottomSheetDialog? = null
-    private var mFilterView: View? = null
-
     @Inject
     lateinit var presenterProvider: Provider<MyEventsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): MyEventsPresenter = presenterProvider.get().apply {
-        mEventStateFilter = MyEventsFilter.NONE
-    }
+    fun providePresenter(): MyEventsPresenter = presenterProvider.get()
 
     private val eventsSection = Section()
-    private val groupAdapter by lazy {
-        PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(eventsSection)
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-                override fun onItemTake(position: Int) {
-                    presenter.onItemTake(position)
-                }
-            })
-        }
+    private val groupAdapter = PaginationGroupAdapter<GroupieViewHolder>().apply {
+        add(eventsSection)
+        setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
+            override fun onItemTake(position: Int) {
+                presenter.onItemTake(position)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,21 +69,24 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         mBinding.apply {
             eventsList.apply {
                 adapter = groupAdapter
+                layoutManager = LinearLayoutManager(requireContext())
             }
             etSearch.apply {
                 SearchInput(this).apply {
-                    setOnTextChange { presenter.onSearchTextChange(it) }
+                    setOnFocusChange { hasFocus ->
+                        clSearch.setBackgroundResource(
+                            if (hasFocus) R.drawable.background_search_field_rounded_focused
+                            else R.drawable.background_search_field_rounded_normal
+                        )
+                    }
+                    setOnAfterTextChange {
+                        btnClear.isVisible = !it.isNullOrEmpty()
+                        presenter.onSearchTextChange(it)
+                    }
                     setOnTextChangeDone {
                         presenter.onSearchTextSubmit(it)
                         hideKeyboard()
                     }
-                }
-                onTextChanged { btnClear.isVisible = !it.isNullOrEmpty() }
-                onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    clSearch.setBackgroundResource(
-                        if (hasFocus) R.drawable.background_search_field_rounded_focused
-                        else R.drawable.background_search_field_rounded_normal
-                    )
                 }
             }
             btnClear.apply {
@@ -96,13 +95,13 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
             }
             btnFilter.setOnClickListener { presenter.onShowFiltersClick() }
             btnDeclined.setOnCheckedChangeListener { _, isChecked ->
-                presenter.setEventStateFilter(isChecked, MyEventsFilter.DECLINED)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.DECLINED)
             }
             btnApproved.setOnCheckedChangeListener { _, isChecked ->
-                presenter.setEventStateFilter(isChecked, MyEventsFilter.APPROVED)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.APPROVED)
             }
             btnPending.setOnCheckedChangeListener { _, isChecked ->
-                presenter.setEventStateFilter(isChecked, MyEventsFilter.PENDING)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.PENDING)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, offset ->
@@ -112,52 +111,18 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
 
     }
 
-
     override fun setData(data: List<EventNew?>) {
+        mBinding.swipeToRefresh.isRefreshing = false
         eventsSection.update(data.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(
-                it,
-                onEventClickListener,
-            )
+            else EventItemNew(it, onEventClickListener,)
         })
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun updateEvent(event: EventNew) {
-        val id = event.id?.toLong()
-        eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showFilters() {
-        val filterContainer =
-            (layoutInflater.inflate(R.layout.layout_filter, null) as ViewGroup).apply {
-                findViewById<ViewGroup>(R.id.flFilters).apply {
-                    val filterView = createEventFiltersView(presenter.getSearchFilters())
-                    mFilterView = filterView
-                    addView(filterView)
-                }
-
-                findViewById<View>(R.id.btnApply).setOnClickListener {
-                    presenter.updateData()
-                    hideFilter()
-                }
-                findViewById<View>(R.id.btnClear).setOnClickListener {
-                    clearFiltersView()
-                }
-                findViewById<View>(R.id.btnClose).setOnClickListener {
-                    mFilterDialog?.dismiss()
-                }
-            }
-
-        mFilterDialog = BottomSheetDialog(requireContext())
-            .apply {
-                setContentView(filterContainer)
-                val behavior = BottomSheetBehavior.from(filterContainer.parent as View)
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                setOnDismissListener { }
-                show()
-            }
+        EventFiltersBottomSheetDialog(requireContext(), presenter.searchFilter)
+            .setFiltersSelected { presenter.onSearchFiltersClick(it) }
+            .show()
     }
 
     override fun setFiltersChosen(isChosen: Boolean) {
@@ -185,197 +150,23 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    fun scrollToFirstItem() {
-        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
-    }
-
-    private fun showMyScheduleEvents() {
-        findNavController().navigate(R.id.my_schedule_events_fragment)
-    }
-
-    override fun setActionButton(event: EventNew?) {
-        val id = event?.id?.toLong()
+    override fun updateEvent(event: EventNew) {
+        val id = event.id?.toLong()
         eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
     }
 
-    override fun setShowMyScheduleButton(canShow: Boolean) {
+    override fun setShowScheduleEvents(canShow: Boolean) {
         mBinding.toolbar.apply {
-            isVisible = canShow
+            isVisible = true
             mBinding.btnGoToMyTimeTable.setOnClickListener {
-                showMyScheduleEvents()
+                findNavController().navigate(R.id.my_schedule_events_fragment)
             }
         }
     }
 
-
-    private fun createEventFiltersView(filter: SearchFilter.EventNew): View {
-        return layoutInflater.inflate(R.layout.layout_filter_event, null).apply {
-            etAddress.apply {
-                setTextWithoutSearch(filter.address)
-                onTextChanged {
-                    filter.address = it.toString()
-                    filter.fullAddress = null
-                }
-                onDataSelectedListener = {
-                    filter.fullAddress = it
-                }
-            }
-
-            initTextFilter(etName, filter.name) { filter.name = it }
-            initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
-            initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
-
-            val interests = filter.interests
-            if (interests.isNullOrEmpty()) {
-                tilTheme.isVisible = false
-                tilSpec.isVisible = false
-            } else {
-                initInterests(
-                    interests,
-                    tvTheme,
-                    tilSpec,
-                    tvSpec,
-                    filter.theme,
-                    filter.spec
-                ) { theme, spec ->
-                    filter.theme = theme
-                    filter.spec = spec
-                }
-                tilTheme.isVisible = true
-                tilSpec.isVisible = true
-            }
-
-            val formats = filter.formats
-            if (formats.isNullOrEmpty()) {
-                tilFormat.isVisible = false
-            } else {
-                tilFormat.isVisible = true
-                initDropDownView(
-                    tvFormat,
-                    formats,
-                    formats.find { it.id == filter.format }?.name,
-                    null,
-                    { it.name ?: "" },
-                    { it?.id },
-                    { filter.format = it }
-                )
-            }
-
-        }
-    }
-
-    private fun initTextFilter(editText: EditText, text: String?, onTextChange: (String?) -> Unit) {
-        editText.apply {
-            onTextChanged { onTextChange(it?.toString()) }
-            setText(text)
-        }
-    }
-
-    private fun initDateFilter(
-        editText: EditText,
-        inputLayout: TextInputLayout,
-        date: String?,
-        onDateChange: (String?) -> Unit
-    ) {
-        val parsedDate = date?.let { defaultServerDateFormatter.parse(it) }
-        val formattedDate = parsedDate?.let { defaultDateFormatter.format(it) }
-        editText.apply {
-            onTextChanged { onDateChange(it?.toString()?.formatToDefaultServerDate()) }
-            setText(formattedDate)
-        }
-
-        inputLayout.initAsDatePicker(parsedDate) { year, month, day ->
-            String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
-        }
-    }
-
-    private fun initInterests(
-        interests: Map<InterestNew, List<InterestNew>>,
-        tvTheme: AutoCompleteTextView,
-        tilSpec: TextInputLayout,
-        tvSpec: AutoCompleteTextView,
-        theme: Int?,
-        spec: Int?,
-        onInterestChange: (theme: Int?, spec: Int?) -> Unit
-    ) {
-        var currentTheme = theme
-        var currentSpec: Int?
-
-        val onSpecChange: (Int?) -> Unit = {
-            currentSpec = it
-            onInterestChange(currentTheme, currentSpec)
-        }
-
-        val themes = interests.keys
-        val selectedTheme = findInterest(theme, themes)
-        initDropDownView(
-            tvTheme,
-            themes,
-            selectedTheme?.name,
-            null,
-            transformKey = { it.name ?: "" },
-            findValue = { it?.id },
-            onVariantChange = { id ->
-                currentTheme = id
-                currentSpec = null
-                onInterestChange(id, null)
-                val specs = findInterest(id, themes)?.let { interests[it] }
-                initSpec(tilSpec, tvSpec, specs, null, onSpecChange)
-            }
-        )
-
-        val specs = selectedTheme?.let { interests[it] }
-        initSpec(tilSpec, tvSpec, specs, spec, onSpecChange)
-    }
-
-    private fun initSpec(
-        inputLayout: View,
-        textView: AutoCompleteTextView,
-        interests: List<InterestNew>?,
-        spec: Int?,
-        onSpecChange: (spec: Int?) -> Unit
-    ) {
-        if (interests == null) {
-            textView.isEnabled = false
-            textView.text = null
-            inputLayout.isEnabled = false
-        } else {
-            val selectedTheme = findInterest(spec, interests)
-            initDropDownView(
-                textView,
-                interests,
-                selectedTheme?.name,
-                null,
-                transformKey = { it.name ?: "" },
-                findValue = { it?.id },
-                onVariantChange = { onSpecChange(it) })
-            textView.isEnabled = true
-            inputLayout.isEnabled = true
-        }
-    }
-
-    private fun findInterest(id: Int?, interests: Collection<InterestNew>): InterestNew? {
-        return id?.let { interests.find { it.id == id } }
-    }
-
-    private fun hideFilter() {
-        mFilterDialog?.apply {
-            setOnDismissListener(null)
-            dismiss()
-        }
-    }
-
-    private fun clearFiltersView() {
-        mFilterView?.apply {
-            etAddress?.text?.clear()
-            etName.text?.clear()
-            etStart.text?.clear()
-            etFinish.text?.clear()
-            tvTheme.text.clear()
-            tvSpec.text.clear()
-            tvFormat.text.clear()
-        }
+    override fun scrollToFirstItem() {
+        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
     override fun onExpandedState() {

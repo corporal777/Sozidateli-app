@@ -2,8 +2,9 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
-import android.widget.AbsListView
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
@@ -15,40 +16,38 @@ import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.*
-import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
+import com.example.ui.event.my.schedule.calendar.CalendarHorizontalDaysItem
 import com.example.ui.event.my.schedule.items.EventScheduleGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import getLocationOfView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onScrollStateChanged
 import onScrolled
-import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>(),
     MyScheduleEventsContract.View {
 
-    var mCanChangeDay = false
-    private val mProgressDialog by lazy { CustomProgressDialog(requireContext()) }
-    private val mLayoutManager by lazy { LinearLayoutManager(requireContext()) }
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
+    private val listManager by lazy { LinearLayoutManager(requireContext()) }
+    private var oldPosition = 0
 
     @InjectPresenter
-    lateinit var mPresenter: MyScheduleEventsPresenter
+    lateinit var presenter: MyScheduleEventsPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<MyScheduleEventsPresenter>
@@ -58,17 +57,21 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
 
     private val subEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            mPresenter.onSubEventClick(eventId, subEvent)
+            presenter.onSubEventClick(eventId, subEvent)
 
         override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onAddSubEventToScheduleClick(subEvent)
+            presenter.onAddSubEventToScheduleClick(subEvent)
 
         override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onRemoveSubEventFromScheduleClick(subEvent)
+            presenter.onRemoveSubEventFromScheduleClick(subEvent)
     }
 
-    private val eventsSection = Section()
-    private val calendarSection = Section()
+    private val eventsSection by lazy {
+        Section().apply { update(List(3) { PlaceholderItem(PlaceholderItem.Type.SCHEDULE_LIST) }) }
+    }
+    private val calendarSection by lazy {
+        Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.SCHEDULE_CALENDAR)) }
+    }
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
@@ -87,90 +90,66 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             eventsList.apply {
-                layoutManager = mLayoutManager
+                layoutManager = listManager
                 adapter = groupAdapter
                 setItemViewCacheSize(10)
                 recycledViewPool.setMaxRecycledViews(0, 10)
+
                 onScrolled { _, _ ->
-                    val lastItem = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    val lastItem = listManager.findFirstCompletelyVisibleItemPosition()
                     try {
                         if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
                             val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
-                            if (!mPresenter.isJumping){
-                                changeDayWhenScrollDown(item.getDay())
-                                if (!mCanChangeDay) changeDay(item.getDay())
+                            if (!presenter.isJumping){
+                                if (isLocationInOneLine(item.getView())) scrollPageContent(item.getDate())
                             }
                         }
                     } catch (e: Exception) {
                     }
                 }
-                onScrollStateChanged { rv, newState ->
-                    mCanChangeDay =
-                        newState !== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
-                }
             }
             appBar.apply {
+                ivBack.setOnClickListener { findNavController().navigateUp() }
                 calendarPager.apply {
                     adapter = calendarAdapter
                     offscreenPageLimit = 3
                 }
-                ivBack.setOnClickListener { findNavController().navigateUp() }
                 etSearch.apply {
                     SearchInput(this).apply {
-                        setOnTextChange { mPresenter.onSearchTextChange(it) }
-                        setOnTextChangeDone { mPresenter.onSearchTextSubmit(it) }
+                        setOnFocusChange { hasFocus -> clSearch.changeBackground(hasFocus) }
+                        setOnTextChange {
+                            btnClear.isVisible = !it.isNullOrEmpty()
+                            presenter.onSearchTextChange(it)
+                        }
+                        setOnTextChangeDone { presenter.onSearchTextSubmit(it) }
                     }
-
-                    onTextChanged { btnClear.isVisible = !it.isNullOrEmpty() }
                     btnClear.apply {
                         isVisible = !etSearch.text.isNullOrEmpty()
                         setOnClickListener { etSearch.text = null }
                     }
-
-                    onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                        clSearch.setBackgroundResource(
-                            if (hasFocus) R.drawable.background_search_field_rounded_focused
-                            else R.drawable.background_search_field_rounded_normal
-                        )
-                    }
                 }
             }
-
-
         }
     }
 
 
-    override fun setContentPlaceholder() {
-        calendarSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SCHEDULE_CALENDAR))
-        eventsSection.update(List(3) { PlaceholderItem(PlaceholderItem.Type.SCHEDULE_LIST) })
-    }
-
-
-    override fun setHeaderCalendar(days: List<List<EventScheduleDay>>) {
+    override fun setCalendar(days: List<List<EventScheduleDay>>, month: String) {
         calendarSection.update(
             days.mapIndexed { i, l ->
-                EventDaysListItem(i, l) { day -> mPresenter.onDaySelected(day) }
+                CalendarHorizontalDaysItem(i, l) { day -> presenter.onDaySelected(day) }
             }
         )
-        mBinding.appBar.tvMonth.isVisible = !days.isNullOrEmpty()
-        mBinding.appBar.clSearch.isVisible = true
-    }
-
-    override fun setMonthCalendar(dates: List<EventScheduleDay>, month: String) {
         mBinding.appBar.apply {
+            clSearch.isInvisible = days.isEmpty()
             tvMonth.apply {
+                isInvisible = days.isEmpty()
                 text = month
                 setOnClickListener {
-                    CalendarBottomSheet(
-                        requireContext(),
-                        mPresenter.currentDay,
-                        dates
-                    ).setDateSelectCallback { date ->
-                        changeDayWhenScrollDown(date.date)
-                        changeDay(date.date)
-                        scrollContent(date)
-                    }.show()
+                    CalendarBottomSheet(requireContext(), presenter.getCurrentDay(), days.flatten())
+                        .setDateSelectCallback { date ->
+                            scrollPageContent(date)
+                            scrollListContent(date)
+                        }.show()
                 }
             }
         }
@@ -181,87 +160,59 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
             data.map {
                 EventScheduleGroup(
                     it,
-                    { id -> mPresenter.onShowEventClick(id) },
+                    { id -> presenter.onShowEventClick(id) },
                     subEventClickListener
                 )
             }
         )
     }
 
-    override fun selectDay(day: EventScheduleDay) {
+    override fun selectDay(day: EventScheduleDay?) {
         for (i in 0 until calendarSection.itemCount) {
-            val item = calendarSection.getItem(i) as EventDaysListItem
+            val item = calendarSection.getItem(i) as CalendarHorizontalDaysItem
             item.selectDay(day)
         }
     }
 
-    override fun scrollContent(day: EventScheduleDay) {
-        val group =
-            groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDay() == day.date }
-        if (group == null) {
-            val message = getString(R.string.this_day_doesnt_have_event)
-            showMessageDialog(message)
-        } else {
-            val position = groupAdapter.getAdapterPosition(group)
-            mPresenter.startJumpingTimer()
-            mLayoutManager.startSmoothScroll(getSmoothScroller(position))
-        }
-    }
-
-    override fun scrollToDay(day: EventScheduleDay) {
+    override fun scrollPageContent(day: EventScheduleDay?) {
+        if (day == null) return
         Handler().post(Runnable {
-            val item = calendarSection.findItemBy<EventDaysListItem> { it.isHasDay(day.date) }
-            if (item != null) {
-                val position = calendarSection.getPosition(item)
-                mBinding.appBar.calendarPager.setCurrentItem(position, true)
-                item.selectDay(day)
+            val position = presenter.findPositionFromList(day) ?:return@Runnable
+            mBinding.appBar.apply {
+                calendarPager.setCurrentItem(position, true)
+                tvMonth.text = getMonthName(day.millis.calendar())
+                presenter.setCurrentDay(day)
             }
+            val item = calendarSection.getItem(position)
+            if (item is CalendarHorizontalDaysItem) item.selectDay(day)
         })
     }
 
-    private fun changeDayWhenScrollDown(day: String?) {
-        try {
-            Handler().post(Runnable {
-                mPresenter.apply { currentDay = createCalendarDay(day) }
-                val item = calendarSection.findItemBy<EventDaysListItem> { it.isHasDay(day) }
-                if (item != null) {
-                    val position = calendarSection.getPosition(item)
-                    mBinding.appBar.apply {
-                        calendarPager.setCurrentItem(position, true)
-                        tvMonth.text = getMonthName(item.getFirstItem().millis.calendar())
-                    }
+    override fun scrollListContent(day: EventScheduleDay?) {
+        if (day == null) showErrorMessage(false, getString(R.string.this_day_doesnt_have_event))
+        else {
+            val group = groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDate() == day }
+            if (group == null) showErrorMessage(false, getString(R.string.this_day_doesnt_have_event))
+            else {
+                val position = groupAdapter.getAdapterPosition(group)
+                presenter.startJumpingTimer()
+                if (position == 0) listManager.startSmoothScroll(smoothScroller(position, 2))
+                else {
+                    if (position < oldPosition)
+                        listManager.startSmoothScroll(smoothScroller(position, position + 2))
+                    else listManager.startSmoothScroll(smoothScroller(position, position - 1))
                 }
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun changeDay(day: String?) {
-        try {
-            for (i in 0 until calendarSection.itemCount) {
-                val item = calendarSection.getItem(i) as EventDaysListItem
-                item.changeDay(day)
+                oldPosition = position
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
-
     }
+
 
     override fun showAboutEvent(eventId: String) {
         findNavController().navigate(
             R.id.about_event_fragment,
             AboutEventFragmentArgs.Builder(eventId).build().toBundle()
         )
-    }
-
-    override fun showMessageDialog(message: String) {
-        MessageDialogWithGreenButton(requireContext(), message)
-    }
-
-    override fun updateSubEvent(subEvent: EventActivityModel) {
     }
 
     override fun showEmptyListPlaceholder() {
@@ -287,7 +238,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
             val result = bundle.getString("eventId")
             if (!result.isNullOrEmpty()) {
                 showLoadingAlertDialog()
-                mPresenter.getEventsList()
+                presenter.getEventsList()
             }
         }
     }
@@ -295,21 +246,23 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     override fun showErrorMessage(eventId: String, message: String) {
         MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
             if (!eventId.isNullOrEmpty()) {
-                mPresenter.getEventsList()
+                presenter.getEventsList()
                 showLoadingAlertDialog()
             }
         }
     }
 
-    override fun showLoadingAlertDialog() = mProgressDialog.showDialog()
-    override fun hideLoadingAlertDialog() = mProgressDialog.hideDialog()
+    override fun showLoadingAlertDialog() = progressDialog.showDialog()
+    override fun hideLoadingAlertDialog() = progressDialog.hideDialog()
 
 
-    private fun getSmoothScroller(jumPosition: Int): LinearSmoothScroller {
+    private fun smoothScroller(targetPosition: Int, jumPosition: Int): LinearSmoothScroller {
         val scroller by lazy {
             object : LinearSmoothScroller(requireContext()) {
                 override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_START
+                    return if (targetPosition == 0) SNAP_TO_END
+                    else if (targetPosition < oldPosition) SNAP_TO_END
+                    else SNAP_TO_START
                 }
 
                 override fun updateActionForInterimTarget(action: Action?) {
@@ -317,8 +270,26 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
                 }
             }
         }
-        scroller.targetPosition = jumPosition
+        scroller.targetPosition = targetPosition
         return scroller
+    }
+
+    private fun View.changeBackground(hasFocus: Boolean) {
+        setBackgroundResource(
+            if (hasFocus) R.drawable.background_search_field_rounded_focused
+            else R.drawable.background_search_field_rounded_normal
+        )
+    }
+
+
+    private fun isLocationInOneLine(view: View?): Boolean {
+        return if (view == null) true
+        else {
+            val lineY = mBinding.lineView.getLocationOfView().second
+            val viewY = view.getLocationOfView().second
+            if (lineY == 0 || viewY == 0) return true
+            else return viewY >= lineY && viewY <= (lineY + 250)
+        }
     }
 
     override fun layout(): Int = R.layout.fragment_my_schedule_events

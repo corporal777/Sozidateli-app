@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteModel
@@ -265,13 +266,8 @@ class EventRepositoryImp
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         api.getSortedEventsList(map)
             .map {
-                val eventFormats = appData.getEventFormats()
-                if (!eventFormats.isNullOrEmpty()) {
-                    it.data?.forEach { ev ->
-                        ev?.format?.name =
-                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
-                    }
-                }
+                Log.e("SIZE", it.data?.size.toString())
+                Log.e("TOTAL", it.totalCount.toString())
                 PaginationResponse(it.totalCount, it.data ?: arrayListOf())
             }
 
@@ -321,11 +317,8 @@ class EventRepositoryImp
         val eventFormats = appData.getEventFormats()
         return if (eventFormats.isNullOrEmpty())
             api.getEventFormatsList(map)
-                .doOnSuccess {
-                    appData.setEventFormats(it.data)
-                }.map { it.data }
-        else
-            Maybe.just(eventFormats)
+                .doOnSuccess { appData.setEventFormats(it.data) }.map { it.data }
+        else Maybe.just(eventFormats)
     }
 
     override fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>> {

@@ -49,10 +49,6 @@ class SearchEventPresenter
         val loadOrganizations = organizationRepository.getOrganizationsWithActiveEvents()
         val loadInterests = userRepository.getInterestsList(null)
             .map { i -> i.data.groupByNotNull { child -> i.data.firstOrNull { it.id == child.parent } } }
-//        val loadEventFormats = eventRepository.getEventFormatsList(
-//            mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
-//        )
-
         val loadEventFormats = eventRepository.getActiveEventFormatsList()
 
         compositeDisposable += Maybe.zip(
@@ -196,29 +192,6 @@ class SearchEventPresenter
             if (topicCategory != null) put(SEARCH_EVENT_TOPIC_CATEGORY, topicCategory)
             val topicSubcategory = filter.spec
             if (topicSubcategory != null) put(SEARCH_EVENT_TOPIC_SUBCATEGORY, topicSubcategory)
-//            if (!filter.address.isNullOrEmpty() || filter.fullAddress != null) {
-//                if (filter.fullAddress != null) {
-//                    if (filter.fullAddress?.country != null) put(
-//                        EventNew.EVENT_ADDRESS_COUNTRY,
-//                        filter.fullAddress?.country!!
-//                    )
-//                    if (filter.fullAddress?.city != null) put(
-//                        EventNew.EVENT_ADDRESS_CITY,
-//                        filter.fullAddress?.city!!
-//                    )
-//                    if (filter.fullAddress?.region != null) put(
-//                        EventNew.EVENT_ADDRESS_REGION,
-//                        filter.fullAddress?.region!!
-//                    )
-//                    if (filter.fullAddress?.street != null) put(
-//                        EventNew.EVENT_ADDRESS_STREET,
-//                        filter.fullAddress?.street!!
-//                    )
-//                }
-//            }
-
-//            val interests = filter.spec ?: filter.theme
-//            if (interests != null) put(SEARCH_EVENT_INTERESTS, interests)
         }
     }
 

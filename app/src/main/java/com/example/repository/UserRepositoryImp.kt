@@ -1,6 +1,7 @@
 package com.example.repository
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.*
@@ -336,6 +337,8 @@ class UserRepositoryImp
 
     override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
         return api.getUserNotifications(map).map {
+            Log.e("SIZE", it.data.size.toString())
+            Log.e("TOTAL", it.totalCount.toString())
             NotificationsResponse(
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },

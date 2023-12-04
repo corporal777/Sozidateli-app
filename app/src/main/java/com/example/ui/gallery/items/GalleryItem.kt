@@ -4,7 +4,6 @@ import android.net.Uri
 import android.widget.ImageView
 import com.example.R
 import com.example.databinding.ItemGalleryBinding
-import com.example.holders.redesign.EventActivityItem
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 

@@ -24,16 +24,18 @@ class CustomPhoneTextInputView : LinearLayout {
     )
 
     private var titleText: CharSequence = ""
+    private var hintText: CharSequence? = ""
 
     private fun obtainAttributes(attrs: AttributeSet?) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.CustomTextInputView)
-        titleText = a.getText(R.styleable.CustomTextInputView_titleText)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.CustomPhoneTextInputView)
+        titleText = a.getText(R.styleable.CustomPhoneTextInputView_phoneTitleText)
+        hintText = a.getText(R.styleable.CustomPhoneTextInputView_phoneHintText)
         a.recycle()
         layoutView.tvTitle.text = titleText
+        layoutView.etInput.hint = hintText
     }
 
     private var onTextChanged: (text: String?) -> Unit = {}
-    private var onFocused: (focused: Boolean) -> Unit = {}
     private val layoutView =
         LayoutCustomPhoneTextInputViewBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -42,10 +44,9 @@ class CustomPhoneTextInputView : LinearLayout {
         layoutView.apply {
             etInput.apply {
                 onInputTextChanged {
-                    onTextChanged.invoke(clearPhoneText(it.toString()))
+                    onTextChanged.invoke(it.toString())
                 }
                 onInputFocusChanged { hasFocus ->
-                    onFocused.invoke(hasFocus)
                     clSearch.setBackgroundResource(
                         if (hasFocus) R.drawable.background_custom_input_view_focused
                         else R.drawable.background_custom_input_view_unfocused
@@ -68,36 +69,8 @@ class CustomPhoneTextInputView : LinearLayout {
         }
     }
 
-    fun showTextError(text: String) {
-        layoutView.apply {
-            btnAction.isEnabled = false
-            btnAction.isVisible = true
-            tvTitle.text = text
-            tvTitle.setTextColor(ContextCompat.getColor(context, R.color.red_new))
-        }
-    }
-
-    fun initFocused(onTextChanged: (focused: Boolean) -> Unit) {
-        onFocused = onTextChanged
-    }
-
     fun initInput(text: String? = null, onTextChanged: (text: CharSequence?) -> Unit) {
-        layoutView.etInput.setText(text)
+        if (text != null) layoutView.etInput.setText(text)
         this.onTextChanged = onTextChanged
-    }
-
-    fun setText(text: String?) {
-        layoutView.etInput.setText(text)
-    }
-
-    fun setInputEnabled(enabled: Boolean) {
-        layoutView.etInput.isEnabled = enabled
-    }
-
-    private fun clearPhoneText(text : String?): String? {
-        if (text.isNullOrEmpty()) return null
-        var newText = text.replace("_", "")
-        newText = newText.replace(" ", "")
-        return newText
     }
 }

@@ -12,6 +12,7 @@ import android.text.TextUtils.TruncateAt.END
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -32,22 +33,17 @@ class CustomExpandableTextView : AppCompatTextView {
 
     var originalText: CharSequence? = ""
         set(value) {
-            field = ""
             field = value
             updateCollapsedDisplayedText()
         }
 
     private var collapsedDisplayedText: CharSequence? = ""
-        set(value) {
-            field = ""
-            field = value
-        }
 
     var expandAction: CharSequence = ""
     var limitedMaxLines: Int = 5
         set(value) {
             field = value
-            updateCollapsedDisplayedText()
+            //updateCollapsedDisplayedText()
         }
 
 
@@ -132,13 +128,33 @@ class CustomExpandableTextView : AppCompatTextView {
             }
     }
 
+//    private fun collapseOriginalText(staticLayout: StaticLayout): CharSequence? {
+//        if (staticLayout.text.isNullOrEmpty() || originalText.toString().isNullOrEmpty())
+//            return originalText
+//
+//        val truncatedText = staticLayout.text
+//        Log.e("SHORT TEXT", truncatedText.toString())
+//        Log.e("FULL TEXT", originalText.toString())
+//        if (truncatedText.toString() != originalText.toString()) return truncatedText
+//        else return originalText
+//    }
+
     private fun collapseOriginalText(staticLayout: StaticLayout): CharSequence? {
-        if (staticLayout.text.isNullOrEmpty() || originalText.toString().isNullOrEmpty())
+        if (staticLayout.text.isNullOrEmpty() || originalText.isNullOrEmpty())
             return originalText
 
         val truncatedText = staticLayout.text
-        if (truncatedText.toString() != originalText.toString()) return truncatedText
-        else return originalText
+        if (truncatedText.toString() != originalText.toString()) {
+            var defaultEllipsisStart = truncatedText.indexOf(Typography.ellipsis)
+            if (defaultEllipsisStart == -1 || defaultEllipsisStart == 0) {
+                val tWidth = (0 until staticLayout.lineCount).sumOf { staticLayout.getLineWidth(it).toInt() }
+                val textWithoutCta = TextUtils.ellipsize(originalText, paint, tWidth.toFloat(), TextUtils.TruncateAt.END)
+                defaultEllipsisStart = textWithoutCta.indexOf(Typography.ellipsis) + "\u2026".length
+            } else defaultEllipsisStart -= 6
+
+            val collapsedText = SpannableStringBuilder(truncatedText.subSequence(0, defaultEllipsisStart))
+            return collapsedText.append("\u2026")
+        } else return originalText
     }
 
     private fun updateCollapsedDisplayedText(textWidth: Int = measuredWidth - compoundPaddingStart - compoundPaddingEnd) {
@@ -150,31 +166,20 @@ class CustomExpandableTextView : AppCompatTextView {
     }
 
 
-    private fun getStaticLayout(targetMaxLines: Int, text: CharSequence, textWidth: Int): StaticLayout {
+    private fun getStaticLayout(
+        targetMaxLines: Int,
+        text: CharSequence,
+        textWidth: Int
+    ): StaticLayout {
         val maximumLineWidth = textWidth.coerceAtLeast(0)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StaticLayout.Builder
-                .obtain(text, 0, text.length, paint, maximumLineWidth)
-                .setIncludePad(false)
-                .setEllipsize(TextUtils.TruncateAt.END)
-                .setMaxLines(targetMaxLines)
-                .setLineSpacing(lineSpacingExtra, lineSpacingMultiplier)
-                .build()
-        } else {
-            StaticLayout(
-                text,
-                0,
-                text.length,
-                paint, maximumLineWidth,
-                Layout.Alignment.ALIGN_NORMAL,
-                lineSpacingExtra,
-                lineSpacingMultiplier,
-                false,
-                TextUtils.TruncateAt.END,
-                textWidth.coerceAtLeast(0)
-            )
-        }
+        return StaticLayout.Builder
+            .obtain(text, 0, text.length, paint, maximumLineWidth)
+            .setIncludePad(false)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setMaxLines(targetMaxLines)
+            .setLineSpacing(lineSpacingExtra, lineSpacingMultiplier)
+            .build()
     }
 }
 
-typealias OnExpandLinkListener = (link : String) -> Unit
+typealias OnExpandLinkListener = (link: String) -> Unit

@@ -96,7 +96,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     tools:visibility="visible"
                     android:id="@+id/clSearch"
                     android:layout_width="match_parent"

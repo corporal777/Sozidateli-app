@@ -20,7 +20,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
     protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
-        .applyErrorHandler { if (it.cause is UnknownHostException) hasNoConnectionError = true }
+        .applyErrorHandler { viewState.showRequestErrorMessage() }
         .buildList(enablePlaceholders = false, initialSize = 30)
 
     var eventsList = mutableListOf<EventNew?>()

@@ -1,6 +1,7 @@
 package com.example.ui.notification
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -21,8 +22,8 @@ import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -192,7 +193,7 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
 
     override fun showUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
-    fun scrollToFirstItem() {
+    override fun scrollToFirstItem() {
         val mLayoutManager =
             mBinding.notificationsList.layoutManager as LinearLayoutManager
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)

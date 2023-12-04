@@ -1,5 +1,6 @@
 package com.example.ui.event.my
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
@@ -8,6 +9,7 @@ import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
+import com.example.ui.search.event.SearchEventPresenter
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Observable
@@ -21,63 +23,30 @@ import javax.inject.Inject
 class MyEventsPresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
-    private val commonRepository: CommonRepository,
     private val appData: AppData
 ) : EventListPresenter<MyEventsContract.View>(appData, eventRepository),
     MyEventsContract.Presenter {
 
-    lateinit var mEventStateFilter: MyEventsFilter
-    private var mSearchFilter = SearchFilter.EventNew()
-    private var isFirstAttach = true
-    private var mSearchText = ""
+    private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE
+    private var searchText = ""
+    var searchFilter = SearchFilter.EventNew()
 
-    private var isHasSchedules = false
-    private var isCommonDataLoaded = false
-
-    override fun attachView(view: MyEventsContract.View?) {
-        super.attachView(view)
-//        if (isFirstAttach) isFirstAttach = false
-//        else pagination.invalidate()
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-        compositeDisposable += Maybe.zip(
-            eventRepository.getUserCalendarEvents()
-                .map { it.filter { x -> x.binds?.activity?.any { z -> z.binds?.userCalendar != null } == true } },
-            commonRepository.getInterests()
-                .map { interests -> interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } } },
-            eventRepository.getEventFormatsList(
-                mapOf(EventNew.EVENT_LIMIT to 100, EventNew.EVENT_OFFSET to 0)
-            )
-        ) { events, interests, formats ->
-            mSearchFilter.interests = interests
-            mSearchFilter.formats = formats
-            isHasSchedules = !events.isNullOrEmpty()
-        }
+        compositeDisposable += eventRepository.getUserCalendarEvents()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    isCommonDataLoaded = true
-                    viewState.setShowMyScheduleButton(isHasSchedules)
-                },
-                onSuccess = {
-                    isCommonDataLoaded = true
-                    viewState.setShowMyScheduleButton(isHasSchedules)
-                })
+            .subscribeSimple {
+                viewState.setShowScheduleEvents(!it.isNullOrEmpty())
+            }
         getEventsData(true, SHIMMER_LOADING)
     }
 
     private fun getEventsData(isFirst: Boolean, loading: Int) {
-        if (loading == 0) viewState.setData(List(5) { null })
+        viewState.setData(List(5) { null })
         compositeDisposable += Observable.create(pagination)
             .map { transformData(it) }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (loading == 1) it.withProgressBarDialogLoading(viewState)
-                else it
-            }
             .subscribeSimple(
                 onError = { viewState.showEmptyListPlaceholder(isFirst) },
                 onNext = { eventList ->
@@ -88,41 +57,31 @@ class MyEventsPresenter
 
 
     override fun onSearchTextChange(text: String) {
-        mSearchText = text
+        searchText = text
         getEventsData(false, SHIMMER_LOADING)
     }
 
     override fun onSearchTextSubmit(text: String) {
-        mSearchText = text
+        searchText = text
         getEventsData(false, SHIMMER_LOADING)
     }
 
-    fun getSearchFilters() = mSearchFilter
+    override fun onSearchFiltersClick(filter: SearchFilter.EventNew) {
+        searchFilter = filter
+        getEventsData(false, PROGRESS_LOADING)
+        viewState.setFiltersChosen(searchFilter.isHasFilter())
+    }
+
+    override fun onEventStateFiltersClick(isChecked: Boolean, filter: MyEventsFilter) {
+        eventStateFilter = if (isChecked) filter else MyEventsFilter.NONE
+        getEventsData(false, PROGRESS_LOADING)
+    }
+
+    override fun onShowFiltersClick() = viewState.showFilters()
     override fun onRefreshRequest() = pagination.invalidate()
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
-
-    override fun updateData() {
-        getEventsData(false, PROGRESS_LOADING)
-        viewState.setFiltersChosen(mSearchFilter.isHasFilter())
-    }
-
-    override fun setEventStateFilter(isChecked: Boolean, filter: MyEventsFilter) {
-        mEventStateFilter =
-            if (isChecked) filter
-            else MyEventsFilter.NONE
-        getEventsData(false, PROGRESS_LOADING)
-    }
-
-
-    override fun onShowFiltersClick() {
-        if (isCommonDataLoaded) viewState.showFilters()
-    }
-
-    override fun getPaginationRequest(
-        limit: Int,
-        offset: Int
-    ): Maybe<PaginationResponse<EventNew?>> {
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getSortedEventsList(
             mutableMapOf<String, Any>().apply {
                 put(EventNew.EVENT_LIMIT, limit)
@@ -132,15 +91,13 @@ class MyEventsPresenter
                     "activity,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
                 )
                 put(EventNew.EVENT_USER_ID, appData.getId())
-                //put(EventNew.EVENT_SORT_TYPE, "desc")
-                //put(EventNew.EVENT_SORT_FIELD, "id")
                 put(
                     EventNew.EVENT_STATUS,
                     "cancelled,registration,registrationFinished,running,finished"
                 )
 
                 put(
-                    EventNew.EVENT_USER_STATUS, when (mEventStateFilter) {
+                    EventNew.EVENT_USER_STATUS, when (eventStateFilter) {
                         MyEventsFilter.ACCEPTED, MyEventsFilter.APPROVED -> EventNew.FILTER_REGISTRATION_APPROVED
                         MyEventsFilter.PENDING -> EventNew.FILTER_REGISTRATION_PENDING
                         MyEventsFilter.DECLINED -> EventNew.FILTER_REGISTRATION_DECLINED
@@ -148,47 +105,46 @@ class MyEventsPresenter
                     }
                 )
 
-                if (!mSearchFilter.name.isNullOrEmpty())
-                    put(EventNew.EVENT_NAME, "%" + mSearchFilter.name + "%")
+                if (!searchFilter.name.isNullOrEmpty())
+                    put(EventNew.EVENT_NAME, "%" + searchFilter.name + "%")
 
-                if (!mSearchText.isNullOrEmpty()) put(EventNew.EVENT_SEARCH, "%$mSearchText%")
+                if (!searchText.isNullOrEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
 
-                if (mSearchFilter.dateStart != null)
-                    put(EventNew.EVENT_START_DATE, mSearchFilter.dateStart + "," + mSearchFilter.dateFinish
-                )
+                if (searchFilter.dateStart != null)
+                    put(
+                        EventNew.EVENT_START_DATE,
+                        searchFilter.dateStart + "," + searchFilter.dateFinish
+                    )
 
-                if (mSearchFilter.format != null) put(EventNew.EVENT_FORMAT, mSearchFilter.format!!)
+                if (searchFilter.format != null) put(EventNew.EVENT_FORMAT, searchFilter.format!!)
 
-                if (!mSearchFilter.address.isNullOrEmpty() || mSearchFilter.fullAddress != null) {
-                    if (mSearchFilter.fullAddress != null) {
-                        if (mSearchFilter.fullAddress?.country != null) put(
+                if (!searchFilter.address.isNullOrEmpty() || searchFilter.fullAddress != null) {
+                    if (searchFilter.fullAddress != null) {
+                        if (searchFilter.fullAddress?.country != null) put(
                             EventNew.EVENT_ADDRESS_COUNTRY,
-                            mSearchFilter.fullAddress?.country!!
+                            searchFilter.fullAddress?.country!!
                         )
-                        if (mSearchFilter.fullAddress?.city != null) put(
+                        if (searchFilter.fullAddress?.city != null) put(
                             EventNew.EVENT_ADDRESS_CITY,
-                            mSearchFilter.fullAddress?.city!!
+                            searchFilter.fullAddress?.city!!
                         )
-                        if (mSearchFilter.fullAddress?.region != null) put(
+                        if (searchFilter.fullAddress?.region != null) put(
                             EventNew.EVENT_ADDRESS_REGION,
-                            mSearchFilter.fullAddress?.region!!
+                            searchFilter.fullAddress?.region!!
                         )
-                        if (mSearchFilter.fullAddress?.street != null) put(
+                        if (searchFilter.fullAddress?.street != null) put(
                             EventNew.EVENT_ADDRESS_STREET,
-                            mSearchFilter.fullAddress?.street!!
+                            searchFilter.fullAddress?.street!!
                         )
 
                     } else {
 
                     }
                 }
-                val category = mSearchFilter.spec ?: mSearchFilter.theme
+                val category = searchFilter.spec ?: searchFilter.theme
                 if (category != null) put(EventNew.EVENT_CATEGORY, category)
             }
-
-
         )
-
     }
 
 

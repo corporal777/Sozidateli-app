@@ -11,12 +11,15 @@ import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
 import withProgressBarDialogLoading
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,6 +29,10 @@ class ActivitiesPresenter
     private val userEventData: UserEventData,
     private val appData: AppData,
 ) : BasePresenter<ActivitiesContract.View>(appData), ActivitiesContract.Presenter {
+
+    private val timerCompositeDisposable = CompositeDisposable().apply {
+        compositeDisposable += this
+    }
 
     lateinit var userEvent: UserEvent
 
@@ -38,8 +45,10 @@ class ActivitiesPresenter
 
     private var groupedEventList = arrayListOf<SubEventsData>()
     private var eventTags: List<Tag> = emptyList()
-    private var eventDates = mapOf<Int, List<EventScheduleDay>>()
+    private var eventDates = listOf<List<EventScheduleDay>>()
     private var isStatusApproved = false
+
+    var isJumping = false
 
 
     override fun onFirstViewAttach() {
@@ -48,7 +57,8 @@ class ActivitiesPresenter
         compositeDisposable += userEventData.loadEventData(eventId)
             .doOnSuccess { e ->
                 userEvent = e
-                isStatusApproved = e.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+                isStatusApproved =
+                    e.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
                 eventTags = e.activity.groups.plus(e.activity.tags)
                 if (tagsNew != null) {
                     eventTags.forEach {
@@ -72,66 +82,36 @@ class ActivitiesPresenter
             val selectedTags = eventTags.filter { it.isSelected }
             val list = checkParams(userEvent.activity.activities, selectedTags)
             val groupedList = groupData(selectedTags, list)
-            if (!groupedList.isNullOrEmpty()) {
-                val dates = groupedList.mapNotNull { x -> x.titleDate }
-                eventDates = userEventData.collectDates(userEventData.createEventScheduleDays(dates))
-            }
+            eventDates = userEventData.collectDatesToWeeks(groupedList.mapNotNull { x -> x.titleDate })
+            currentDay = userEventData.findNearestDay(groupedList.mapNotNull { x -> x.titleDate })
             Maybe.just(groupedList)
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { list ->
-                viewState.apply {
-                    if (list.isNullOrEmpty()) showEmptyEventPlaceholder()
-                    else {
-                        setDays(eventDates)
-                        setTags(eventTags)
-                        setSubEvents(isStatusApproved, list)
-                        if (isFirstAttach){
-                            if (currentDay == null) findDay()
-                            isFirstAttach = false
-                        }
+                if (list.isNullOrEmpty()) viewState.showEmptyEventPlaceholder()
+                else viewState.apply {
+                    setDays(eventDates)
+                    setTags(eventTags)
+                    setSubEvents(isStatusApproved, list)
+                    if (isFirstAttach && currentDay != null) {
+                        scrollPageContent(currentDay!!)
+                        scrollListContent(currentDay!!)
+                        isFirstAttach = false
                     }
                 }
             }
-    }
-
-
-    private fun findDay() {
-        compositeDisposable += Completable.fromAction {
-            val date = System.currentTimeMillis()
-            val days = eventDates.values.flatten()
-            val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }
-            val other = Calendar.getInstance()
-            currentDay = days.find {
-                        (dateCalendar.isSameDay(other.apply {
-                            timeInMillis = it.millis
-                        }) || it.millis - date > 0)
-            } ?: days.lastOrNull()
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onComplete = {
-                    if (currentDay != null) {
-                        viewState.scrollContent(currentDay!!)
-                        viewState.selectDay(currentDay!!)
-                    }
-                }
-            )
     }
 
     override fun onDaySelected(day: EventScheduleDay) {
         currentDay = day
         viewState.apply {
-            scrollContent(day)
             selectDay(day)
+            scrollListContent(day)
         }
     }
 
     override fun onSubEventClick(subEvent: EventActivityModel) = viewState.showSubEvent(eventId, subEvent.id.toString())
-
     override fun onSchemeClick() = viewState.showScheme(eventId)
-
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
         processChangeEventInCalendarStatusRequest(
@@ -206,7 +186,8 @@ class ActivitiesPresenter
     }
 
     private fun isEventHasTag(event: EventActivityModel, tags: List<Tag>): Boolean {
-        return !tags.filter { x -> event.tag?.any { e -> e.id == x.id.toInt() } == true }.isNullOrEmpty()
+        return !tags.filter { x -> event.tag?.any { e -> e.id == x.id.toInt() } == true }
+            .isNullOrEmpty()
     }
 
 
@@ -230,28 +211,40 @@ class ActivitiesPresenter
         var titleDate: String? = ""
         if (!list.isNullOrEmpty()) {
             list.forEach { subEvent ->
-                val subEventDate = subEvent.holdingDate?.from?.split(" ")?.get(0) ?: ""
-                if (titleDate == subEventDate) titleDate = null
-                else titleDate = subEventDate
-
-                subEventsList.add(SubEventsData(titleDate, subEvent, tags))
+                val subEventDate = subEvent.holdingDate?.getShortDate()
+                titleDate = if (titleDate == subEventDate) null else subEventDate
+                subEventsList.add(SubEventsData(userEventData.createEventScheduleDay(titleDate), subEvent, tags))
                 titleDate = subEventDate
             }
             groupedEventList = subEventsList
         }
         return subEventsList
     }
+
+    fun startJumpingTimer() {
+        isJumping = true
+        timerCompositeDisposable.clear()
+        timerCompositeDisposable += Observable.interval(1, TimeUnit.SECONDS)
+            .subscribeSimple {
+                if (it >= 2) {
+                    isJumping = false
+                    timerCompositeDisposable.clear()
+                }
+            }
+    }
+
+    fun findPositionFromList(day: EventScheduleDay?): Int? {
+        val position = eventDates.indexOf(eventDates.find { x -> x.contains(day) })
+        return if (position == -1) null
+        else position
+    }
 }
 
 data class SubEventsData(
-    var titleDate: String?,
+    var titleDate: EventScheduleDay?,
     var subEvent: EventActivityModel,
-    var selectedTags: List<Tag>
+    var selectedTags: List<Tag> = emptyList()
 ) {
-    fun getDateInLong(): Long? {
-        return if (!titleDate.isNullOrEmpty()) defaultServerDateFormatter.parse(titleDate)?.time
-        else 0
-    }
 
 }
 
