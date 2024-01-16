@@ -37,17 +37,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnAction"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/ic_input_error_icon"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/etInput"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.526" />
+            app:layout_constraintVertical_bias="0.526"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

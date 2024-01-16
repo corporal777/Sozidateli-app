@@ -19,7 +19,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -74,8 +73,7 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
                 isVisible = false
             } else {
                 isVisible = true
-                //markWon(requireContext()).setMarkdown(this, title)
-                setHtml(title, HtmlHttpImageGetter(this))
+                markWon(requireContext()).setMarkdown(this, title)
             }
         }
 
@@ -85,7 +83,6 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
             } else {
                 isVisible = true
                 markWon(requireContext()).setMarkdown(this, content)
-                //setHtml(content, HtmlHttpImageGetter(this))
             }
         }
 

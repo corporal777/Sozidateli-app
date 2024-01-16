@@ -27,8 +27,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class RecommendationsFragment :
-    EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
+class RecommendationsFragment : EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -37,14 +36,12 @@ class RecommendationsFragment :
     @Inject
     lateinit var presenterProvider: Provider<RecommendationsPresenter>
 
-
     @ProvidePresenter
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
         try {
             val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
-            if (args.isOpenProfile) showUserProfile()
-        } catch (e: Exception) {
-
+            if (args.isOpenProfile) onProfileClick()
+        } catch (_: Exception) {
         }
     }
 
@@ -54,7 +51,6 @@ class RecommendationsFragment :
         setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
             override fun onItemTake(position: Int) {
                 presenter.onItemTake(position)
-                //if (position > 0) presenter.onItemTake(position - 1)
             }
         })
     }
@@ -76,7 +72,13 @@ class RecommendationsFragment :
     override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
         val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
         if (group == null)
-            dataGroup.updateGroup(RecommendationItemsGroup(events, isNeedUpdateApp, onEventClickListener))
+            dataGroup.updateGroup(
+                RecommendationItemsGroup(
+                    events,
+                    isNeedUpdateApp,
+                    onEventClickListener
+                )
+            )
         else group.updateItems(events, isNeedUpdateApp)
 
         mBinding.swipeToRefresh.isRefreshing = false
@@ -107,7 +109,7 @@ class RecommendationsFragment :
         findNavController().navigate(R.id.search_tabs_fragment)
     }
 
-    private fun showUserProfile() {
+    override fun showUserProfile() {
         val args = ProfileFragmentArgs.Builder(true).build().toBundle()
         findNavController().navigate(R.id.profile_fragment, args)
     }

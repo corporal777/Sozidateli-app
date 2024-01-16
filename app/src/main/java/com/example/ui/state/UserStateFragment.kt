@@ -22,7 +22,7 @@ import onPageSelected
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStateContract.View,
+class UserStateFragment : BaseFragment<FragmentUserStateBinding>(), UserStateContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -115,6 +115,7 @@ class UserStateFragment : BaseFragment<FragmentUserStateBinding>(true), UserStat
         }
     }
 
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
     override fun actionIconContainer(view: ViewGroup) {}

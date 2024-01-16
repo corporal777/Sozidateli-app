@@ -87,7 +87,8 @@ class InviteRegisterFragment : BaseFragment<FragmentInviteRegisterBinding>(),
             }
 
             ibRegistered.setOnClickListener {
-                val args = LoginFragmentArgs.Builder("")
+                val args = LoginFragmentArgs.Builder()
+                    .setEmail("")
                     .setIsRegistered(true)
                     .setInviteId(presenter.invite ?: 0)
                     .build().toBundle()

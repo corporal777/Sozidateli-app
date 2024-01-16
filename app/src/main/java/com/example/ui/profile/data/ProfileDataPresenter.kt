@@ -10,6 +10,7 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.data.AppData
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.util.ImageUtil
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.example.util.saveImageToCache
 import com.generator.qrcodegenerator.QrCodeGenerator
@@ -33,10 +34,13 @@ class ProfileDataPresenter
     private val context: Context
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
-    var userImageUrl: String = ""
-    var userCodeUrl: String = ""
-    var userName: String = ""
-    var userLink: String = ""
+    private var userImageUrl: String = appData.getUser().loadUserImage() ?: ""
+    private var userCodeUrl: String = appData.getUser().qrCodeLink ?: ""
+    private var userName: String = appData.getUser().nameLastName
+    private var userLink: String =
+        if (appData.getUser().shortName.isNullOrEmpty()) getUrl() + appData.getUser().id
+        else getUrl() + "@" + appData.getUser().shortName
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -52,10 +56,10 @@ class ProfileDataPresenter
     }
 
     override fun shareImageClick(context: Context, image: Bitmap) {
-        compositeDisposable += Single.create<Uri> {
+        compositeDisposable += Single.defer {
             val uri = saveImageToCache(context, image)
-            if (uri != null) it.onSuccess(uri)
-            else it.onError(Exception("Uri is null"))
+            if (uri != null) Single.just(uri)
+            else Single.error(Exception("Uri is null"))
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -83,8 +87,7 @@ class ProfileDataPresenter
         return Maybe.fromCallable {
             val data = QrData.Url(link)
             val opt = createReadyBitmapQrOptions(
-                uri,
-                Glide.with(context).asBitmap().load(uri).submit().get(),
+                ImageUtil.getBitmapFromUrlAsync(context, uri),
                 R.drawable.ic_about_app,
                 ContextCompat.getColor(context, R.color.qr_code_pixels_color)
             )
@@ -96,8 +99,7 @@ class ProfileDataPresenter
         return Maybe.fromCallable {
             val data = QrData.Url(link)
             val options = createReadyVectorQrOptions(
-                uri,
-                Glide.with(context).asBitmap().load(uri).submit().get(),
+                ImageUtil.getBitmapFromUrlAsync(context, uri),
                 R.drawable.ic_about_app,
                 ContextCompat.getColor(context, R.color.qr_code_pixels_color)
             )

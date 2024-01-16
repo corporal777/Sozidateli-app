@@ -4,11 +4,18 @@ import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.example.R
 import com.example.data.models.FieldDetails
+import com.example.data.models.SnType
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileSettingsBinding
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -18,19 +25,24 @@ import com.example.ui.userprofile.edit.name.ChangeNameFragment
 import com.example.ui.userprofile.edit.password.ChangePasswordFragment
 import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
 import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.edit.email.ChangeEmailFragmentArgs
 import com.example.ui.views.CustomCheckView
+import com.example.ui.views.blur.BlurredDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithTextButtons
 import com.example.ui.views.dialogs.TitleMessageDialog
+import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
+import com.example.util.setLeftDrawableWithIntrinsicBounds
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileSettingsFragment :
-    BaseFragment<FragmentUserProfileSettingsBinding>(canShowAnim = true),
+class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBinding>(),
     UserProfileSettingsContract.View, ToolbarFragment {
 
     @InjectPresenter
@@ -99,26 +111,22 @@ class UserProfileSettingsFragment :
         mBinding.apply {
             tvUserName.setText(user.name)
             tvUserLastName.setText(user.lastName)
-            tvUserMiddleName.apply {
-                setText(user.getMiddleName())
-                initSwitch(user.middleName?.value == "-" || user.middleName?.value.isNullOrBlank()){}
-            }
-
+            tvUserMiddleName.setText(user.getMiddleName())
+            scNoMiddleName.isChecked = user.getMiddleName().isNullOrEmpty()
             tvPhoneMobile.apply {
-                val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value?.parsePhone(requireContext())
-                setText(phone)
+                showIcon(user.personalPhone?.isConfirmed ?: false)
+                if (user.personalPhone?.value.isNullOrEmpty())
+                    setHint(getString(R.string.user_profile_files_hint))
+                else setText(user.personalPhone?.value)
             }
-            tvPassword.setText("●●●●●●●●●")
             tvShortname.setText(user.shortNameFormatted)
-
             tvEmail.apply {
-                setText(user.getUserEmail())
+                setText(user.personalEmail)
                 setIconVisibility(user.isHasEmailOnConfirmation())
                 getInputLayout().setEndIconOnClickListener {
                     showEmailInformation(user)
                 }
             }
-
             ivPrivacyProfile.setChecked(user.state?.isHidden.toBoolean())
             ivBlockEvent.setChecked(user.blockedNotifications?.event ?: false)
             ivBlockProject.setChecked(user.blockedNotifications?.projects ?: false)
@@ -126,6 +134,84 @@ class UserProfileSettingsFragment :
         }
     }
 
+    override fun setUserPassword(isAbsent: Boolean) {
+        mBinding.apply {
+            tvPassword.apply {
+                text = if (isAbsent) getString(R.string.you_does_not_have_password) else "●●●●●●●●●"
+                compoundDrawablePadding =
+                    if (isAbsent) resources.getDimension(R.dimen.user_profile_settings_absent_password_icon_padding)
+                        .toInt()
+                    else 0.dp
+                setLeftDrawableWithIntrinsicBounds(if (isAbsent) R.drawable.ic_empty_password_icon else 0)
+            }
+            tvEditPassword.isEnabled = !isAbsent
+            btnCreatePassword.apply {
+                isVisible = isAbsent
+                setOnClickListener { showChangePassword(true) }
+            }
+        }
+    }
+
+    override fun setUserSocialBinds(user: UserDetail) {
+        mBinding.apply {
+            btnLinkVk.apply {
+                val text =
+                    if (user.getVkontakteBinds() == null) getString(R.string.link_account) else getString(
+                        R.string.unlink_account
+                    )
+                setActiveWithIcon(user.getVkontakteBinds() == null, text)
+                setOnClickListener {
+                    showBindAccountDialog(user.getVkontakteBinds() != null) {
+                        presenter.onBindVkAccount(requireContext(), this)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBindAccountDialog(show: Boolean, onBind: () -> Unit) {
+        if (show) {
+            MessageDialogWithTextButtons(
+                requireContext(),
+                "Отменить связь?",
+                "После отмены вы не сможете входить в аккаунт этим способом",
+                "Отменить",
+                "Оставить"
+            ).setSelectCallback { onBind.invoke() }
+        } else onBind.invoke()
+    }
+
+    override fun showChangePassword(isChange: Boolean) {
+        findNavController().navigate(
+            R.id.changePasswordFragment,
+            bundleOf("isChange" to isChange)
+        )
+    }
+
+    override fun showChangeEmail(email: String?) {
+        findNavController().navigate(
+            R.id.changeEmailFragment,
+            bundleOf("email" to email)
+        )
+    }
+
+    override fun showChangePhone() {
+        findNavController().navigate(R.id.changePhoneFragment)
+    }
+
+    override fun showChangeName(user: UserDetail) = ChangeNameFragment(user)
+        .show(requireActivity().supportFragmentManager)
+
+    override fun showChangeShortName(user: UserDetail){
+        findNavController().navigate(R.id.changeShortNameFragment)
+    }
+
+    override fun showEmailConfirmation(email: String) {
+        findNavController().navigate(
+            R.id.emailCodeConfirmFragment,
+            bundleOf("email" to email, "fromRegister" to false),
+        )
+    }
 
     private fun showDisabledMainInputInfo() {
         val supportEmail = requireContext().getString(R.string.support_email)
@@ -135,47 +221,6 @@ class UserProfileSettingsFragment :
                 .toSpannable()
         Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
         MessageDialogWithBrownButton(requireContext(), message)
-    }
-
-    override fun showChangeEmail(email: String?) {
-        val changeEmailDialog = ChangeEmailFragment(email)
-        changeEmailDialog.show(requireActivity().supportFragmentManager, "change_email_settings")
-    }
-
-    override fun showChangePassword() {
-        ChangePasswordFragment(false).show(requireActivity().supportFragmentManager)
-    }
-
-    override fun showChangeName(user: UserDetail) {
-        val changeNameDialog = ChangeNameFragment(user)
-        changeNameDialog.show(
-            requireActivity().supportFragmentManager,
-            "change_name_settings"
-        )
-    }
-
-    override fun showChangeShortName(user: UserDetail) {
-        val changeShortNameDialog = ChangeShortNameFragment(user.id, user.shortName)
-        changeShortNameDialog.show(
-            requireActivity().supportFragmentManager,
-            "change_short_name_settings"
-        )
-    }
-
-    override fun showPhoneEdit(phone: FieldDetails?) {
-        val changePhoneDialog = ChangePhoneFragment(phone)
-        changePhoneDialog.show(
-            requireActivity().supportFragmentManager,
-            "change_phone_settings"
-        )
-    }
-
-    override fun showEmailConfirmation(email: String) {
-        val confirmEmailDialog = ConfirmEmailPhoneFragment(email)
-        confirmEmailDialog.show(
-            requireActivity().supportFragmentManager,
-            "confirm_email_settings"
-        )
     }
 
     override fun showDeleteProfile() {
@@ -199,19 +244,13 @@ class UserProfileSettingsFragment :
         onAction: (state: Boolean) -> Unit
     ) {
         if (!status) {
-            TitleMessageDialog(
-                requireContext(),
-                title,
-                message
-            )
+            TitleMessageDialog(requireContext(), title, message)
                 .setPositiveSelectCallback { onAction.invoke(true) }
                 .setNegativeSelectCallback { onAction.invoke(false) }
-        } else {
-            onAction.invoke(false)
-        }
+        } else onAction.invoke(false)
     }
 
-    private fun showEmailInformation(user: UserDetail){
+    private fun showEmailInformation(user: UserDetail) {
         TitleMessageDialog(
             requireContext(),
             title = getString(R.string.wait_for_accept_title),
@@ -220,19 +259,22 @@ class UserProfileSettingsFragment :
             btnNegativeText = getString(R.string.content_description_delete),
             canShowCancel = true
         ).setPositiveSelectCallback {
-            presenter.onShowEmailConfirm(
-                user.email?.onConfirmation ?: user.email?.value ?: ""
-            )
+            showEmailConfirmation(user.personalEmail ?: "")
         }.setNegativeSelectCallback {
             if (user.email?.value == null) presenter.onDeleteEmail()
             else presenter.onDeleteConfirmEmail(user.email?.onConfirmation ?: "")
         }
     }
 
-    override fun showBlockingLoading(show: Boolean, checkView: CustomCheckView) {
-        checkView.showProgressLoading(show)
+    override fun showBlockingLoading(show: Boolean, customView: ViewGroup) {
+        when (customView) {
+            is CustomCheckView -> customView.showProgressLoading(show)
+            is CustomCircleLoadingButton -> customView.showProgressLoading(show)
+            else -> return
+        }
     }
 
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_user_profile_settings
     override val title: CharSequence by lazy { getString(R.string.profile_settings) }
     override fun actionIconContainer(view: ViewGroup) {}

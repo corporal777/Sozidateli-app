@@ -16,6 +16,7 @@ class AboutAdditionalInfoBottomSheet(context: Context) : BottomSheetDialog(conte
     init {
         setContentView(mBinding.root)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.skipCollapsed = true
         setCancelable(true)
 
         mBinding.apply {

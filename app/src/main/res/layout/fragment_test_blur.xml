@@ -11,14 +11,16 @@
         tools:ignore="MissingPrefix">
 
 
-        <ImageView
-            android:id="@+id/iv_content"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/img_test"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.example.ui.views.codeView.EditView
+            android:id="@+id/test_view"
+            android:clickable="true"
+            android:minHeight="@dimen/common_edit_text_min_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

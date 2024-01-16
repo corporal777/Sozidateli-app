@@ -52,7 +52,7 @@ class ChatHelper @Inject constructor(
                         setContentIntent(intent)
                         if (bitmap != null) setLargeIcon(bitmap)
                         else {
-                            ContextCompat.getDrawable(context, R.drawable.avatar_placeholder)?.let {
+                            ContextCompat.getDrawable(context, R.drawable.avatar_placeholder_circle)?.let {
                                 setLargeIcon(it.toBitmap())
                             }
                         }

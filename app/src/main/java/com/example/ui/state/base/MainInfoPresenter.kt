@@ -1,16 +1,22 @@
 package com.example.ui.state.base
 
+import android.util.Log
 import com.example.data.AppData
+import com.example.extensions.formatToDefaultDate
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
+import com.example.util.GENDER_FEMALE
+import com.example.util.GENDER_MALE
 import com.example.util.PHONE_PERSONAL
 import com.example.util.rxtakephoto.RxTakePhoto
+import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -21,54 +27,44 @@ class MainInfoPresenter
     private val appData: AppData,
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
-    private val takePhoto: RxTakePhoto
 ) : BasePresenter<MainInfoContract.View>(appData), MainInfoContract.Presenter {
 
     lateinit var type: UserState
     var screen: Int = 1
     private var isImageUpdating = false
     private var isPhoneUpdating = false
-    private var isFirstLaunch = true
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setPlaceholder()
         compositeDisposable += appData.userChangeSubject
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.navigateUp()
-                },
-                onNext = {
-                    val user = it.value
-                    if (user != null) {
-                        if (isPhoneUpdating) isPhoneUpdating = false
-                        else if (isImageUpdating) isImageUpdating = false
-                        else viewState.setPersonalData(user)
-                    } else viewState.navigateUp()
-                })
+            .subscribeSimple {
+                val user = it.value
+                if (user == null) viewState.navigateUp()
+                else if (isPhoneUpdating) {
+                    isPhoneUpdating = false
+                    viewState.updatePhone(user.personalPhone)
+                }
+                else if (isImageUpdating) isImageUpdating = false
+                else viewState.setPersonalData(user)
+            }
     }
 
 
     override fun onSaveData(data: MutableMap<String, Any?>) {
-        if (data.isNullOrEmpty()) {
-            viewState.navigateUp()
-            return
-        } else {
-            compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
-                .flatMap { userRepository.checkUserProfileSingle() }
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribeSimple(
-                    onError = {
-                        onReceiveError(it)
-                        viewState.goToNext()
-                    },
-                    onSuccess = { viewState.goToNext() }
-                )
-        }
+        if (data.isNullOrEmpty()) viewState.navigateUp()
+        else compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
+            .flatMap { userRepository.checkUserProfileSingle() }
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                    viewState.goToNext()
+                },
+                onSuccess = { viewState.goToNext() }
+            )
+
     }
 
 
@@ -96,9 +92,9 @@ class MainInfoPresenter
     }
 
 
-    override fun onShowPhoneEdit(phone: String?) {
+    override fun onShowPhoneEdit() {
         isPhoneUpdating = true
-        viewState.showPhoneEdit(phone)
+        viewState.showPhoneEdit()
     }
 
     override fun onShowImageEdit() {
@@ -107,6 +103,4 @@ class MainInfoPresenter
     }
 
     fun getEmail() = appData.getUser().email
-    fun getPhone() = appData.getUser().phone?.firstOrNull { it.type == PHONE_PERSONAL }
-    override fun onClickClose() = viewState.navigateUp()
 }

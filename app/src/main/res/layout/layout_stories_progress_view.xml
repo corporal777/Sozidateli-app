@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/back_progress"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stories_progress_view_height"
+        android:background="@drawable/background_stories_progress_secondary" />
+
+    <View
+        android:id="@+id/front_progress"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stories_progress_view_height"
+        android:background="@drawable/background_stories_progress_primary"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/max_progress"
+        android:layout_width="match_parent"
+        android:background="@drawable/background_stories_progress_max"
+        android:layout_height="@dimen/stories_progress_view_height"
+        android:visibility="gone" />
+</FrameLayout>

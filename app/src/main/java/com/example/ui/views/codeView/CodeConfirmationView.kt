@@ -13,14 +13,26 @@ import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.view.children
 import androidx.core.view.postDelayed
+import com.example.R
 
-class CodeConfirmationView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+class CodeConfirmationView : LinearLayout {
 
-    private val codeLength = DEFAULT_CODE_LENGTH
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        obtainAttributes(attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    private fun obtainAttributes(attrs: AttributeSet?) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.CodeConfirmationView)
+        codeLength = a.getInt(R.styleable.CodeConfirmationView_codeViewLength, DEFAULT_CODE_LENGTH)
+        style = CodeConfirmationViewUtils.getFromAttributes(context, a)
+        a.recycle()
+    }
+
+    var codeLength = DEFAULT_CODE_LENGTH
+
     var enteredCode: String = ""
         set(value) {
             val digits = value.digits()
@@ -32,7 +44,7 @@ class CodeConfirmationView @JvmOverloads constructor(
 
     private var onCodeChanged: (code: CodeViewData) -> Unit = {}
 
-    internal var style: Style = CodeConfirmationViewUtils.getDefault(context)
+    internal var style: Style? = null
         set(value) {
             if (field == value) return
             field = value
@@ -47,9 +59,6 @@ class CodeConfirmationView @JvmOverloads constructor(
         orientation = HORIZONTAL
         isFocusable = true
         isFocusableInTouchMode = true
-
-        style = CodeConfirmationViewUtils.getDefault(context)
-        updateState()
 
         setOnClickListener {
             if (requestFocus()) showKeyboard()
@@ -78,17 +87,25 @@ class CodeConfirmationView @JvmOverloads constructor(
     private fun setupSymbolSubviews() {
         removeAllViews()
 
-        for (i in 0 until codeLength) {
-            val symbolView = SymbolView(context, style.symbolViewStyle)
-            symbolView.state = SymbolView.State(isActive = (i == enteredCode.length))
-            addView(symbolView)
+        if (style != null){
+            for (i in 0 until codeLength) {
+                val symbolView = SymbolView(context, style!!.symbolViewStyle)
+                symbolView.state = SymbolView.State(isActive = (i == enteredCode.length))
+                addView(symbolView)
 
-            if (i < codeLength.dec()) {
-                val space = Space(context).apply {
-                    layoutParams = ViewGroup.LayoutParams(style.symbolsSpacing, 0)
+                if (i < codeLength.dec()) {
+                    val space = Space(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(style!!.symbolsSpacing, 0)
+                    }
+                    addView(space)
                 }
-                addView(space)
             }
+        }
+    }
+
+    fun showError(show : Boolean){
+        symbolSubviews.forEach {
+            it.isError = show
         }
     }
 
@@ -215,7 +232,7 @@ class CodeConfirmationView @JvmOverloads constructor(
 
     companion object {
         internal const val DEFAULT_CODE_LENGTH = 4
-        private const val KEYBOARD_AUTO_SHOW_DELAY = 500L
+        internal const val KEYBOARD_AUTO_SHOW_DELAY = 500L
     }
 }
 

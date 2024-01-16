@@ -2,11 +2,12 @@ package com.example.ui.auth.register
 
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface UserRegistrationContract {
-    interface View : BaseAuthContract.View {
+    interface View : BaseContract.View {
         @Skip
         fun enableRegisterBtn(isEnable: Boolean)
 
@@ -20,7 +21,10 @@ interface UserRegistrationContract {
         fun showMiddleNameError(show: Boolean, error : String?)
 
         @Skip
-        fun showMobilePhoneError(show: Boolean)
+        fun showLoginError(show: Boolean)
+
+        @Skip
+        fun showBirthdayError(show: Boolean)
 
         @Skip
         fun enableMiddleNameInput(enable: Boolean)
@@ -32,25 +36,22 @@ interface UserRegistrationContract {
         fun showUserAgreementError(show: Boolean)
 
         @Skip
-        fun showPhoneIsNotUnique(phone: String)
+        fun showPhoneIsNotUnique(login: String)
 
         @OneExecution
-        fun showPhoneCodeConfirmation(phone: String)
-
-        @Skip
-        fun changeAppBarHeader(value: Float)
+        fun showCodeConfirmation(login: String)
     }
 
-    interface Presenter : BaseAuthContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun onChangeLastNameText(lastName : String)
         fun onChangeFirstNameText(firstName : String)
         fun onChangeMiddleNameText(middleName: String)
         fun onMiddleNameIsAbsent(checked: Boolean)
-        fun onChangeMobilePhoneText(phone: String)
+        fun onChangeLoginText(login: String)
+        fun onChangeBirthdayText(birthday: String)
         fun onChangePasswordText(password: String?, isValid: Boolean)
         fun onChangeUserAgreement(isAgree : Boolean)
         fun registerUser(withCheck : Boolean)
 
-        fun onScrollChange(value : Int)
     }
 }

@@ -17,8 +17,8 @@ interface ProfileContract {
         @AddToEndSingle
         fun setUserLink(user: UserDetail)
 
-        @OneExecution
-        fun setChangeOrAddNewAccount(description : Int, icon : Int)
+        @AddToEndSingle
+        fun setChangeOrAddNewAccount(sessionsCount : Int)
 
         @OneExecution
         fun showProfile(uid: String)
@@ -72,10 +72,10 @@ interface ProfileContract {
         fun showQrScannerToAuthWebSite()
 
         @OneExecution
-        fun showUserProfileLinkDialog(user: UserDetail)
+        fun showUserProfileLinkDialog()
 
         @OneExecution
-        fun showChangeUserShortNameDialog(user: UserDetail)
+        fun showChangeUserShortName()
     }
 
     interface Presenter : BaseContract.Presenter {

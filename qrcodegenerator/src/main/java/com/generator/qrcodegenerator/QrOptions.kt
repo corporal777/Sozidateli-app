@@ -100,12 +100,12 @@ inline fun createQrOptions(
     build()
 }
 
-fun createReadyBitmapQrOptions(uri: String, bm: Bitmap, icon: Int, color: Int): QrOptions {
+fun createReadyBitmapQrOptions(bm: Bitmap?, icon: Int, color: Int): QrOptions {
     return createQrOptions(1400, 1400, .1f) {
         logo {
             val drawableSource: DrawableSource
             val drawableShape: QrLogoShape
-            if (!uri.isNullOrEmpty()) {
+            if (bm != null) {
                 drawableShape = QrLogoShape.RoundCorners(.30f)
                 drawableSource = DrawableSource.DecodedBitmap(bm)
             } else {

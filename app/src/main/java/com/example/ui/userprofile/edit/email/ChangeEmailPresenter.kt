@@ -5,12 +5,15 @@ import com.example.data.AppData
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
+import com.example.ui.base.BasePresenter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.AuthValidateUtil
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -20,45 +23,45 @@ class ChangeEmailPresenter
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
     private val appData: AppData,
-    private val socket: SocketIOManager,
-    private val notificationManager: NotificationManager,
-) : BaseBottomSheetPresenter<ChangeEmailContract.View>(appData),
-    ChangeEmailContract.Presenter {
+) : BasePresenter<ChangeEmailContract.View>(appData), ChangeEmailContract.Presenter {
 
-    var currentEmail = ""
+    var currentEmail : String? = ""
+    private var newEmail = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setCurrentEmail(currentEmail)
+        performDataChange()
     }
 
-    override fun checkEmailIsUnique(email: String) {
-        if (AuthValidateUtil.isValidEmail(email)) {
-            compositeDisposable += userRepository.checkEmailPhone(email, null)
-                .withCheckInternetConnectivity()
+    override fun onCheckEmailIsUnique() {
+        if (AuthValidateUtil.isValidEmail(newEmail)) {
+            compositeDisposable += userRepository.checkEmailPhone(newEmail, null)
                 .performOnBackgroundOutOnMain()
+                .withCustomLoading(viewState)
                 .subscribeSimple(
-                    onError = { viewState.showEmailNotUnique(email) },
-                    onComplete = { onShowEmailConfirm(email) }
+                    onError = { viewState.showEmailNotUnique(newEmail) },
+                    onComplete = { onShowEmailConfirm() }
                 )
-        } else viewState.showEmailNotValid(email)
+        } else viewState.showEmailError(true)
     }
 
-    override fun onShowEmailConfirm(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .andThen(userRepository.getUserInternal())
-            .doOnSuccess { new -> appData.updateUser { this.email = new.email } }
+    override fun onShowEmailConfirm() {
+        compositeDisposable += Completable.fromAction {
+            appData.updateUser { this.email?.onConfirmation = newEmail }
+        }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                viewState.showEmailConfirm(email)
+                viewState.showEmailConfirm(newEmail)
             }
     }
 
 
-    override fun updateEmail(email: String) {
-        viewState.showChangeEmailComplete()
+    override fun onChangeEmailText(email: String) {
+        newEmail = email
+        viewState.showEmailError(false)
+        performDataChange()
     }
 
-
+    private fun performDataChange() = viewState.enableBtnSave(AuthValidateUtil.isValidEmail(newEmail))
 }

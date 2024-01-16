@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_background">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@id/btnSave"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnClose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_close"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="@dimen/auth_login_circle_logo_height"
+                    android:layout_height="@dimen/auth_login_circle_logo_height"
+                    android:src="@drawable/ic_app_logo_circle"
+                    app:layout_constraintBottom_toTopOf="@+id/tvShortNameTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnClose" />
+
+                <TextView
+                    android:id="@+id/tvShortNameTitle"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="32dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="-0.01"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/short_name_label"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvRegisterWithPhone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tvRegisterWithPhone"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/short_name_description"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvShortNameTitle"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/tvShortName"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/your_short_name_link_in_sozidateli"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone" />
+
+                <com.example.ui.views.CustomTextInputView
+                    android:id="@+id/etShortName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    app:hintText="@string/input_short_name_hint"
+                    app:layout_constraintTop_toBottomOf="@+id/tvShortName"
+                    app:titleText="@string/short_name_label" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_short_name_invalid_error"
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/short_name_invalid_error"
+                    android:textColor="@color/red_new"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/etShortName"
+                    tools:visibility="visible" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_fifteen"
+            android:layout_marginBottom="20dp"
+            app:buttonMinHeight="@dimen/common_button_min_height"
+            app:buttonText="@string/save"
+            app:buttonTextSize="@dimen/common_button_text_size"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

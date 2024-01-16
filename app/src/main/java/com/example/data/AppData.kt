@@ -2,10 +2,12 @@ package com.example.data
 
 import com.example.BuildConfig
 import com.example.data.models.*
+import com.example.data.models.Optional
 import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AppData(

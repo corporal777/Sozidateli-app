@@ -17,6 +17,7 @@ import com.example.R
 import com.example.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.extensions.inverseSp
+import com.example.extensions.px
 import com.example.extensions.sp
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.getDrawable
@@ -56,11 +57,14 @@ class CustomLoadingButton : ConstraintLayout {
             R.dimen.auth_button_min_height
         )
         val buttonTextColor = a.getColor(R.styleable.CustomLoadingButton_buttonTextColor, Color.WHITE)
-        val buttonTextSize = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonTextSize, 16.sp)
+        val buttonTextSize = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonTextSize,
+            resources.getDimensionPixelSize(R.dimen.common_button_text_size)
+        )
         val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText)
+        val buttonDrawable = a.getDrawable(R.styleable.CustomLoadingButton_buttonDrawable)
 
         a.recycle()
-        initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText)
+        initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText, buttonDrawable)
 
         buttonInitText = buttonText.toString()
         loadingView.progressLoad.apply {
@@ -75,8 +79,13 @@ class CustomLoadingButton : ConstraintLayout {
         color: Int,
         buttonHeight: Int,
         buttonTextSize: Int,
-        buttonText: CharSequence
+        buttonText: CharSequence,
+        buttonDrawable: Drawable?
     ) {
+        loadingView.ivButton.apply {
+            isVisible = buttonDrawable != null
+            setImageDrawable(buttonDrawable)
+        }
         loadingView.btnLoad.apply {
             CalligraphyUtils.applyFontToTextView(context, this, "fonts/sf_pro_text_semibold.ttf")
             background = back ?: getDrawable(R.drawable.custom_btn_brown_selectable)
@@ -84,10 +93,9 @@ class CustomLoadingButton : ConstraintLayout {
             minHeight = buttonHeight
             stateListAnimator = null
             letterSpacing = -0.01f
-            isAllCaps = false
             text = buttonText
             setTextColor(color)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize.inverseSp)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize.toFloat())
         }
 
     }
@@ -110,6 +118,7 @@ class CustomLoadingButton : ConstraintLayout {
     }
 
     fun showProgressLoading(show : Boolean) {
+        if (isProgressVisible == show) return
         isProgressVisible = show
         loadingView.apply {
             progressLoad.isVisible = show

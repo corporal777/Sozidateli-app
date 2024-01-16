@@ -9,36 +9,147 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+<!--        <androidx.core.widget.NestedScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/btnSave"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="10dp"
-            android:clipToPadding="false"
-            android:descendantFocusability="beforeDescendants"
-            android:paddingBottom="20dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/btnSave"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_edit_main_info" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginHorizontal="15dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:orientation="vertical">-->
 
-        <androidx.appcompat.widget.AppCompatButton
+<!--                <androidx.appcompat.widget.AppCompatTextView-->
+<!--                    android:id="@+id/photo_title"-->
+<!--                    style="@style/Profile.Edit.TextViewTitle"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/profile_photo"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/ivAvatar"-->
+<!--                    android:layout_width="104dp"-->
+<!--                    android:layout_height="104dp"-->
+<!--                    android:layout_marginTop="9dp"-->
+<!--                    android:background="@drawable/background_corners"-->
+<!--                    android:contentDescription="@string/content_description_avatar"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/photo_title"-->
+<!--                    tools:src="@drawable/avatar_placeholder_rectangle" />-->
+
+
+<!--                <TextView-->
+<!--                    android:id="@+id/btnEdit"-->
+<!--                    style="@style/ClickableTextView"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:text="@string/edit_title"-->
+<!--                    android:textSize="18sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="@id/ivAvatar"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/ivAvatar"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
+<!--                    tools:ignore="MissingPrefix" />-->
+
+
+<!--                <com.example.ui.views.CustomTextMenuView-->
+<!--                    android:id="@+id/etBirthday"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="25dp"-->
+<!--                    app:inputHasCheckBox="true"-->
+<!--                    app:inputHintText="@string/profile_birthday"-->
+<!--                    app:inputIconDrawable="@drawable/ic_calendar_new"-->
+<!--                    app:inputIconMode="custom"-->
+<!--                    app:inputTitleText="@string/profile_birthday"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ivAvatar" />-->
+
+<!--                <com.example.ui.views.CustomTextMenuView-->
+<!--                    android:id="@+id/tvGender"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    app:inputHasCheckBox="true"-->
+<!--                    app:inputHintText="@string/profile_gender"-->
+<!--                    app:inputTitleText="@string/profile_gender"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/etBirthday" />-->
+
+<!--                <com.example.ui.views.CustomTextMenuView-->
+<!--                    android:id="@+id/tvRegion"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    app:inputHintText="@string/search_filter_region"-->
+<!--                    app:inputIconDrawable="@drawable/ic_arrow_right_brown"-->
+<!--                    app:inputIconMode="custom"-->
+<!--                    app:inputTitleText="@string/profile_city"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvGender" />-->
+
+<!--                <com.example.ui.views.CustomTextMenuView-->
+<!--                    android:id="@+id/tvCity"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    app:inputHasCheckBox="true"-->
+<!--                    app:inputHintText="@string/profile_locality"-->
+<!--                    app:inputIconDrawable="@drawable/ic_arrow_right_brown"-->
+<!--                    app:inputIconMode="custom"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvRegion" />-->
+
+<!--                <com.example.ui.views.CustomTextInputView-->
+<!--                    android:id="@+id/etMobilePhone"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    app:hintText="@string/profile_phone_mobile"-->
+<!--                    app:inputEnabled="false"-->
+<!--                    app:inputType="phone"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvCity"-->
+<!--                    app:titleText="@string/profile_phone_mobile" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvEditPhone"-->
+<!--                    style="@style/ClickableTextView"-->
+<!--                    android:layout_marginVertical="10dp"-->
+<!--                    android:text="@string/edit_title"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/etMobilePhone" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </androidx.core.widget.NestedScrollView>-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:clipToPadding="false"
+                    android:descendantFocusability="beforeDescendants"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnSave"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_edit_main_info" />
+
+        <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnSave"
-            style="@style/BtnBrownStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:minHeight="@dimen/auth_button_min_height"
-            android:text="@string/auth_action_continue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:buttonMinHeight="@dimen/common_button_min_height"
+            app:buttonText="@string/auth_action_continue"
+            app:buttonTextSize="@dimen/common_button_text_size"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

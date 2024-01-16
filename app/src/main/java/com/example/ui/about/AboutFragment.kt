@@ -17,7 +17,7 @@ import removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.View,
+class AboutFragment : BaseFragment<FragmentAboutBinding>(), AboutContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -43,6 +43,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>(true), AboutContract.Vi
 
     }
 
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_about
 
     override val title: CharSequence by lazy { getString(R.string.profile_about_app) }

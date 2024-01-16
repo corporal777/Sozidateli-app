@@ -57,7 +57,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvMessage" />
 
         <androidx.appcompat.widget.AppCompatButton
-            style="@style/BtnCancelStyle"
+            style="@style/BtnGrayCancelStyle"
             android:id="@+id/btnNegative"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

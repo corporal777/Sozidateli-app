@@ -21,8 +21,6 @@ import javax.inject.Inject
 @InjectViewState
 class SupportFilesPresenter @Inject constructor(
     private val appData: AppData,
-    private val context: Context,
-    private val rxPermissions: RxPermissions,
     private val rxTakePhoto: RxTakePhoto
 ) : BaseBottomSheetPresenter<SupportFilesContract.View>(appData), SupportFilesContract.Presenter {
 
@@ -30,14 +28,7 @@ class SupportFilesPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += rxPermissions.request(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-        )
-            .flatMapMaybe {
-                if (it) Maybe.defer { ImageUtil.getGalleryImages(context) }
-                else Maybe.error(PermissionNotGrantedException())
-            }
+        compositeDisposable += rxTakePhoto.takeAllGalleryImages()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.hideBottomSheetDialog() },

@@ -5,23 +5,24 @@ import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
 import com.example.data.bodies.RebaseInviteBody
 import com.example.data.models.ApiError
-import com.example.data.models.NewAuthResponse
+import com.example.data.models.AuthResponse
+import com.example.data.models.SnAuth
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
-import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthManager
+import com.example.ui.base.BasePresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withInfinityCustomLoading
 import javax.inject.Inject
 
@@ -30,29 +31,17 @@ class LoginPresenter
 @Inject constructor(
     private val authRepository: AuthRepository,
     private val appData: AppData,
-    snAuthManager: SnAuthManager
-) : BaseAuthPresenter<LoginContract.View>(authRepository, snAuthManager, appData),
-    LoginContract.Presenter {
-
-    companion object {
-        private const val WRONG_PASSWORD_API_ERROR = "combination email and password not found"
-        private const val WRONG_EMAIL_API_ERROR = "combination user and username not found"
-    }
+) : BasePresenter<LoginContract.View>(appData), LoginContract.Presenter {
 
     var login = ""
+    var snAuth : SnAuth? = null
     private var password = ""
     private var loginType = "email"
-    private var deviceId = appData.deviceId
-    private var deviceModel = getDeviceName()
-    private var appVersion = getAppVersion()
-    private var appCode = getAppVersionCode()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setLoginAndPassword(login, password)
     }
-
-    override fun onClickBack() = viewState.navigateUp()
 
     override fun onChangeLoginText(value: String) {
         this.login = value
@@ -73,11 +62,9 @@ class LoginPresenter
 
     override fun onClickLogin(invite: Int) {
         compositeDisposable += Completable.defer {
-            val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
-            if (invite != -1) {
-                authRepository.authEmailOrPhoneWithResult(getLoginBody(validatedLogin))
-                    .flatMapCompletable { authRepository.rebaseInvite(invite, getInviteBody(it)) }
-            } else authRepository.authEmailOrPhone(getLoginBody(validatedLogin))
+            if (invite != -1) authRepository.authEmailOrPhoneWithInvite(invite, getLoginBody())
+            else if (snAuth != null) authRepository.authEmailOrPhoneWithSn(getLoginBody(), snAuth!!)
+            else authRepository.authEmailOrPhone(getLoginBody())
         }
             .performOnBackgroundOutOnMain()
             .withInfinityCustomLoading(viewState)
@@ -100,29 +87,42 @@ class LoginPresenter
         }
     }
 
-    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
-        //viewState.showSnRegistration(snUser)
-    }
 
-    private fun getLoginBody(login: String): AuthBody {
+    private fun getLoginBody(): AuthBody {
+        val validatedLogin = if (loginType == "phone") validatePhoneBeforeSend(login) else login
         return AuthBody(
-            LoginModel(loginType, login),
+            LoginModel(loginType, validatedLogin),
             LoginModel("common", password),
-            deviceId ?: "",
-            deviceModel,
-            appCode,
-            appVersion
+            appData.deviceId ?: "",
+            getDeviceName(),
+            getAppVersionCode(),
+            getAppVersion()
         )
     }
 
-    private fun getInviteBody(auth: NewAuthResponse): RebaseInviteBody {
+    private fun getInviteBody(auth: AuthResponse): RebaseInviteBody {
         return RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
     }
 
     private fun catchError(it: Throwable) {
-        it.printStackTrace()
-        val hasApiError = (it as? ApiError)?.hasError(WRONG_PASSWORD_API_ERROR, WRONG_EMAIL_API_ERROR)
-        if (hasApiError == true) viewState.showWrongPasswordError()
-        else onReceiveError(it)
+        if (it is HttpException) {
+            try {
+                val error =
+                    Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
+                if (error.hasError(WRONG_PASSWORD_ERROR)) viewState.showWrongPasswordError()
+                else if (error.hasError(WRONG_PASSWORD_API_ERROR)) viewState.showWrongPasswordError()
+                else if (error.hasError(WRONG_EMAIL_API_ERROR)) viewState.showWrongPasswordError()
+                else if (error.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
+                else onReceiveError(it)
+
+            } catch (e: Exception) { }
+        }
+    }
+
+    companion object {
+        private const val TOO_MANY_ATTEMPTS_ERROR = "Too many login attempts"
+        private const val WRONG_PASSWORD_ERROR = "Incorrect password"
+        private const val WRONG_PASSWORD_API_ERROR = "combination email and password not found"
+        private const val WRONG_EMAIL_API_ERROR = "combination user and username not found"
     }
 }

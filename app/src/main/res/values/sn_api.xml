@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="com_vk_sdk_AppId">7472862</integer>
-    <string name="facebook_app_id">1274443886060668</string>
+    <string name="asset_statements">[{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]</string>
+
+    <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
+    <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
 </resources>

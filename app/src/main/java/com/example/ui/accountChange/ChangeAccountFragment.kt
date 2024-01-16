@@ -25,7 +25,7 @@ import onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
+class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
     ChangeAccountContract.View, ToolbarFragment {
 
     @InjectPresenter
@@ -105,11 +105,11 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
     }
 
     override fun showAuthorizationFragment() {
-        findNavController().navigate(R.id.account_auth_fragment)
+        findNavController().navigate(R.id.authorization_fragment)
     }
 
     override fun showLoginFragment(login: String) {
-        val args = LoginFragmentArgs.Builder(login).build().toBundle()
+        val args = LoginFragmentArgs.Builder().setEmail(login).build().toBundle()
         findNavController().navigate(R.id.login_fragment, args)
     }
 
@@ -124,7 +124,7 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(true),
     override fun showMessage(message: String) = showToast(message)
     override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)
 
-
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_change_account
 
     override val title: CharSequence = ""

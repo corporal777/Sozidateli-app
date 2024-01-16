@@ -7,6 +7,7 @@ import com.example.data.bodies.RecoverPasswordBody
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
+import com.example.ui.base.BasePresenter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
@@ -22,24 +23,21 @@ import javax.inject.Inject
 class ChangePasswordPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     private val appData: AppData,
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
-) : BaseBottomSheetPresenter<ChangePasswordContract.View>(appData),
+) : BasePresenter<ChangePasswordContract.View>(appData),
     ChangePasswordContract.Presenter {
 
-    var recoverCode = ""
-    var fromRecover = false
-    var userId = appData.getId().toString()
+    var isPasswordChange = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (fromRecover) viewState.showEnterNewPassword()
+        if (isPasswordChange) viewState.showEnterNewPassword()
+        else viewState.showEnterCurrentPassword()
     }
 
-
-    override fun checkPasswordValid(password: String) {
+    override fun onCheckPasswordValid(password: String) {
         compositeDisposable += userRepository.checkPassword(password)
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
@@ -63,19 +61,14 @@ class ChangePasswordPresenter
             )
     }
 
-    override fun onChangePasswordClickConfirm(newPassword: String) {
-        compositeDisposable += Completable.defer {
-            if (fromRecover)
-                authRepository.recoverPasswordNew(
-                    RecoverPasswordBody("email", recoverCode, newPassword, userId)
-                )
-            else userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
-        }
+    override fun onChangePasswordClick(newPassword: String) {
+        compositeDisposable += userRepository.changePassword(appData.getId(), PasswordBody(newPassword))
+            .doOnComplete { appData.getUser().state?.isEmptyPassword = false }
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { viewState.showPasswordSuccessUpdated() }
+                onComplete = { viewState.navigateUp() }
             )
     }
 
@@ -90,13 +83,10 @@ class ChangePasswordPresenter
                 notificationManager.cancelAll()
             }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withCustomLoading(viewState)
             .subscribeBy(
                 onError = { onReceiveError(it) },
                 onComplete = {}
             )
     }
-
-    override fun onRecoveryPasswordClick() = viewState.showRecoveryPassword()
-
 }

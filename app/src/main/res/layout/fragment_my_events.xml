@@ -41,7 +41,7 @@
                             android:layout_height="30dp"
                             android:layout_marginEnd="20dp"
                             android:layout_marginBottom="10dp"
-                            android:background="@drawable/custom_btn_add_favorites_selectable"
+                            android:background="@drawable/custom_btn_rounded_corners_active_selectable"
                             android:minHeight="@dimen/auth_button_min_height"
                             android:text="@string/my_timetable_title"
                             android:textAllCaps="false"

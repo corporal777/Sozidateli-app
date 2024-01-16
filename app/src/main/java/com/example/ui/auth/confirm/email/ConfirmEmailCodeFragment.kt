@@ -1,0 +1,110 @@
+package com.example.ui.auth.confirm.email
+
+import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navOptions
+import com.example.R
+import com.example.databinding.FragmentEmailCodeConfirmBinding
+import com.example.databinding.FragmentPhoneCodeConfirmBinding
+import com.example.interfaces.ToolbarFragment
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeContract
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodePresenter
+import com.example.ui.base.BaseFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.setTint
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import javax.inject.Inject
+import javax.inject.Provider
+
+class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>(),
+    ConfirmEmailCodeContract.View, ToolbarFragment {
+
+    @InjectPresenter
+    lateinit var presenter: ConfirmEmailCodePresenter
+
+    @Inject
+    lateinit var presenterProviderFinish: Provider<ConfirmEmailCodePresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): ConfirmEmailCodePresenter = presenterProviderFinish.get().apply {
+        navArgs<ConfirmEmailCodeFragmentArgs>().value.also {
+            email = it.email
+            isFromRegistration = it.fromRegister
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mBinding.apply {
+            emailCodeView.doOnCodeChanged {
+                presenter.onChangeCode(it.code)
+            }
+            btnSendAgain.apply {
+                setButtonTextColor(R.color.text_color_repeat_code_button)
+                setOnClickListener {
+                    presenter.onSendCodeAgain()
+                }
+            }
+            btnConfirm.setOnClickListener {
+                hideKeyboard()
+                presenter.onConfirmEmail()
+            }
+        }
+    }
+
+    override fun setEmail(email: String?) {
+        mBinding.tvEmail.text = email
+    }
+
+    override fun setTimeLeft(seconds: Int) {
+        if (seconds > 0) mBinding.btnSendAgain.setButtonText("Отправить повторно · 0:$seconds")
+        else mBinding.btnSendAgain.setButtonText("Отправить код повторно")
+    }
+
+    override fun setCanSendAgain(canSend: Boolean) = mBinding.btnSendAgain.run { isEnabled = canSend }
+    override fun setConfirmButton(enabled: Boolean) = mBinding.btnConfirm.run { isEnabled = enabled }
+
+    override fun showCodeError(show: Boolean) {
+        mBinding.emailCodeView.showError(show)
+        mBinding.tvCodeError.isVisible = show
+    }
+
+    override fun showHomeFragment() {
+        val args = RecommendationsFragmentArgs.Builder(true).build().toBundle()
+        findNavController().navigate(
+            R.id.recommendations_fragment, args,
+            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
+        )
+    }
+
+
+    override fun showCustomLoading(type: Int) {
+        mBinding.apply {
+            if (type == 1) btnConfirm.showProgressLoading(true)
+            else btnSendAgain.showProgressLoading(true)
+        }
+    }
+
+    override fun hideCustomLoading(type: Int) {
+        mBinding.apply {
+            if (type == 1) btnConfirm.showProgressLoading(false)
+            else btnSendAgain.showProgressLoading(false)
+        }
+    }
+
+
+    override fun layout(): Int = R.layout.fragment_email_code_confirm
+    override val title: CharSequence = ""
+    override fun actionIconContainer(view: ViewGroup) {}
+    override fun scrollValue(scroll: Int) {}
+    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
+        toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
+    }
+}

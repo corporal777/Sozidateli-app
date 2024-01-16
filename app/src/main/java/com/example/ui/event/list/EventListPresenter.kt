@@ -5,6 +5,8 @@ import com.example.data.models.EventNew
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.PAGE_PLACEHOLDER
+import com.example.util.PAGE_SIZE
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
@@ -12,7 +14,6 @@ import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
-import java.net.UnknownHostException
 
 abstract class EventListPresenter<V : EventListContract.View>(
     private val appData: AppData,
@@ -21,7 +22,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
         .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = false, initialSize = 30)
+        .buildList(enablePlaceholders = PAGE_PLACEHOLDER, initialSize = PAGE_SIZE)
 
     var eventsList = mutableListOf<EventNew?>()
 

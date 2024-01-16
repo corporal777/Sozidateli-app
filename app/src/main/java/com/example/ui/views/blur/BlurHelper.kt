@@ -140,10 +140,9 @@ object BlurHelper {
         return output
     }
 
-    fun getRoundedCornerAndLightenBitmap(
+    fun getRoundedBitmap(
         bitmap: Bitmap,
         cornerRadiusInPixels: Int,
-        captureCircle: Boolean
     ): Bitmap {
         val output: Bitmap = Bitmap.createBitmap(
             bitmap.getWidth(),
@@ -164,25 +163,14 @@ object BlurHelper {
         paint.setAntiAlias(true)
         canvas.drawARGB(0, 0, 0, 0)
         paint.setColor(color)
-        if (captureCircle) {
-            canvas.drawCircle(
-                rectF.centerX(),
-                rectF.centerY(),
-                (bitmap.getWidth() / 2).toFloat(),
-                paint
-            )
-        } else {
-            canvas.drawRoundRect(
-                rectF,
-                roundPx,
-                roundPx,
-                paint
-            )
-        }
+        canvas.drawRoundRect(
+            rectF,
+            roundPx,
+            roundPx,
+            paint
+        )
         paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
-        val filter: ColorFilter = LightingColorFilter(-0x1, 0x00222222) // lighten
         //ColorFilter filter = new LightingColorFilter(0xFF7F7F7F, 0x00000000);    // darken
-        paint.setColorFilter(filter)
         canvas.drawBitmap(bitmap, rect, rect, paint)
         return output
     }

@@ -23,40 +23,7 @@ class EventDetailImageItem(
 
     private val eventDate = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
     private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
-    private var requestDate = ""
-
-    init {
-        if (requestsApply != null) {
-            if (!requestsApply.dateFrom.isNullOrEmpty()) {
-                val today = System.currentTimeMillis()
-                val startReq = defaultServerDateFormatter.parse(requestsApply.dateFrom)?.time ?: 0
-                if (startReq > today) {
-                    val day = daysBetweenNew(today, startReq)
-                    requestDate = when (day) {
-                        1 -> "До начала приема заявок $day день"
-                        in 2..4 -> "До начала приема заявок $day дня"
-                        else -> "До начала приема заявок $day дней"
-                    }
-                } else {
-                    if (!requestsApply.dateLimit.isNullOrEmpty()) {
-                        val limitDate = requestsApply.dateLimit.parseAndFormat(
-                            defaultServerDateFormatter,
-                            dateFormatterShortDayFullMothShortYear
-                        )
-                        requestDate = "Заявки принимаются по $limitDate"
-                    }
-                }
-            } else {
-                if (!requestsApply.dateLimit.isNullOrEmpty()) {
-                    val limitDate = requestsApply.dateLimit.parseAndFormat(
-                        defaultServerDateFormatter,
-                        dateFormatterShortDayFullMothShortYear
-                    )
-                    requestDate = "Заявки принимаются по $limitDate"
-                }
-            }
-        }
-    }
+    private val requestDate = getEventRequestDate()
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
         viewBinding.apply {
@@ -70,7 +37,6 @@ class EventDetailImageItem(
                 isVisible = !address.isNullOrEmpty()
                 text = address
             }
-
             ivLogo.apply {
                 setImage(logo ?: imageColor)
             }
@@ -89,12 +55,29 @@ class EventDetailImageItem(
         return true
     }
 
-    private fun daysBetweenNew(d1: Long, d2: Long): Int {
-        var days = 0
-        for (i in d1..d2 step 86400000) days++
-        return days
-    }
 
+
+
+    private fun getEventRequestDate() : String? {
+        if (requestsApply == null) return null
+        if (!requestsApply.dateFrom.isNullOrEmpty() && !requestsApply.dateLimit.isNullOrEmpty()) {
+            val today = System.currentTimeMillis()
+            val startReq = defaultServerDateTimeFormatter.parse(requestsApply.dateFrom)?.time ?: 0
+            if (startReq > today) {
+                val day = daysBetween(today, startReq)
+                return when (day) {
+                    1 -> "До начала приема заявок $day день"
+                    in 2..4 -> "До начала приема заявок $day дня"
+                    else -> "До начала приема заявок $day дней"
+                }
+            } else {
+                val limitDate = requestsApply.dateLimit.parseAndFormat(defaultServerDateTimeFormatter, dateFormatterShortMonthShortYear)
+                val limitTime = requestsApply.dateLimit.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+
+                return "Заявки принимаются по $limitDate, $limitTime"
+            }
+        } else return null
+    }
 
 
     override fun getLayout(): Int = R.layout.item_event_detail_image_block

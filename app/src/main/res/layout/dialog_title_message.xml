@@ -6,43 +6,43 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rounded_corners"
         android:paddingStart="@dimen/margin_horizontal_default"
         android:paddingTop="20dp"
-        android:background="@drawable/dialog_rounded_corners"
         android:paddingEnd="@dimen/margin_horizontal_default"
         android:paddingBottom="15dp">
 
         <TextView
             android:id="@+id/tvTitle"
             fontPath="fonts/sf_pro_display_semibold.ttf"
-            android:letterSpacing="-0.01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
+            android:letterSpacing="-0.01"
+            android:text="@string/change_status_title"
             android:textColor="@color/bottom_dialog_message"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix"
-            android:text="@string/change_status_title"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <TextView
-            fontPath="fonts/sf_pro_text.ttf"
             android:id="@+id/tvMessage"
+            fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="start"
             android:letterSpacing="-0.01"
+            android:text="@string/change_status_description"
             android:textColor="@color/bottom_dialog_message"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_goneMarginTop="0dp"
-            android:text="@string/change_status_description"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -51,21 +51,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
-            android:stateListAnimator="@null"
+            android:minHeight="@dimen/auth_buttons_min_height"
             android:text="@string/yes"
+            android:textSize="@dimen/auth_buttons_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMessage" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNegative"
-            style="@style/BtnCancelStyle"
+            style="@style/BtnGrayCancelStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:stateListAnimator="@null"
+            android:layout_marginTop="10dp"
+            android:minHeight="@dimen/auth_buttons_min_height"
             android:text="@string/cancel"
-            android:textSize="16sp"
+            android:textSize="@dimen/auth_buttons_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnPositive"
@@ -73,13 +74,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCancel"
-            style="@style/BtnCancelStyle"
+            style="@style/BtnGrayCancelStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:stateListAnimator="@null"
+            android:layout_marginTop="10dp"
+            android:minHeight="@dimen/auth_buttons_min_height"
             android:text="@string/cancel"
-            android:textSize="16sp"
+            android:textSize="@dimen/auth_buttons_text_size"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,8 +8,10 @@ import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
+import io.reactivex.plugins.RxJavaPlugins
 import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
@@ -17,10 +19,23 @@ import withCheckInternetConnectivity
 import javax.inject.Inject
 
 open class BasePresenter<V : BaseContract.View>
-@Inject constructor(val appDat: AppData) : MvpPresenter<V>(), BaseContract.Presenter {
+@Inject constructor(private val appData: AppData) : MvpPresenter<V>(), BaseContract.Presenter {
 
     protected val compositeDisposable = CompositeDisposable()
     protected var hasNoConnectionError = false
+
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        RxJavaPlugins.setErrorHandler { e ->
+            if (e is UndeliverableException) e.printStackTrace()
+            else {
+                Thread.currentThread().also { thread ->
+                    thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
+                }
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -52,9 +67,10 @@ open class BasePresenter<V : BaseContract.View>
     }
 
 
-    fun getUserData() = appDat.getUser()
+    fun getUserData() = appData.getUser()
 
-    fun getHasBase() = appDat.hasBaseState
+    fun getHasBase() = appData.hasBaseState
+    fun isStoriesShown() = appData.isStoriesShown
 
     private fun createOnErrorConsumer(
         onError: ((Throwable) -> Unit)?,
@@ -64,9 +80,7 @@ open class BasePresenter<V : BaseContract.View>
         return Consumer {
 
             if (it is NoInternetConnectionException) if (onNoInternetConnectionException != null) onNoInternetConnectionException() else onReceiveNoInternetError()
-            else if (it is ApiError) if (onApiError != null) onApiError(it) else onReceiveApiError(
-                it
-            )
+            else if (it is ApiError) if (onApiError != null) onApiError(it) else onReceiveApiError(it)
 
             if (onError != null) onError(it)
             else {
@@ -152,14 +166,6 @@ open class BasePresenter<V : BaseContract.View>
     }
 
     data class NewErrors(val errors: List<NewError>)
-    data class NewEventErrors(val errors: List<NewBannedOrCancelledError>)
-    data class Errors(val errors: List<ErrorModel>)
-    data class ErrorModel(
-        val code: String? = null,
-        val field: String? = null,
-        val message: String? = null
-    )
-
     data class NewError(
         val code: String? = null,
         val type: String? = null,
@@ -167,15 +173,6 @@ open class BasePresenter<V : BaseContract.View>
         val message: String? = null,
         val additionalData: EventAdditionalDataError? = null
     )
-
-    data class NewBannedOrCancelledError(
-        val code: String? = null,
-        val type: String? = null,
-        val message: String? = null,
-        val additionalData: EventAdditionalDataError? = null
-
-    )
-
     data class EventAdditionalDataError(
         val id: Int? = null,
         val name: String? = null,

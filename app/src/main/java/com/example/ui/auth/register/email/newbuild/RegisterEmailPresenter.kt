@@ -11,10 +11,11 @@ import com.example.extensions.getDeviceName
 import com.example.extensions.removeAllDoubleSpaces
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthManager
-import com.example.util.*
+import com.example.ui.base.BasePresenter
+import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
+import com.example.util.USER_DATA_EMPTY
+import com.example.util.Utils
 import com.example.util.Utils.validatePhoneBeforeSend
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -30,9 +31,7 @@ class RegisterEmailPresenter
     private val appData: AppData,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    snAuthManager: SnAuthManager
-) : BaseAuthPresenter<RegisterEmailContract.View>(authRepository, snAuthManager, appData),
-    RegisterEmailContract.Presenter {
+) : BasePresenter<RegisterEmailContract.View>(appData), RegisterEmailContract.Presenter {
 
     private var firstName: String = ""
     private var lastName: String = ""
@@ -191,9 +190,6 @@ class RegisterEmailPresenter
             version = appVersion
         )
 
-    }
-
-    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
     }
 
     override fun onClickClose() {

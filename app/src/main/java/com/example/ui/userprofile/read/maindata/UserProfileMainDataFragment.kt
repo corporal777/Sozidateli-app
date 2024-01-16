@@ -64,24 +64,15 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
                     filesText += "<a href='${file.uri}'>${file.name}</a><br><br>"
                 }
                 text = filesText.parseAsHtmlWithoutUnderline()
-
+                BetterLinkMovementMethod.linkifyHtml(this)
+                    .setOnLinkClickListener { _, url ->
+                        showCustomTabsBrowser(requireContext(), url)
+                        true
+                    }
             }
         }
-        BetterLinkMovementMethod.linkifyHtml(mBinding.tvFiles)
-            .setOnLinkClickListener { _, url ->
-                showCustomTabsBrowser(requireContext(), url)
-                true
-            }
     }
 
-    private fun downloadFile(file: String?) {
-        val uri = file?.let { Uri.parse(it) } ?: return
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-        } catch (e: ActivityNotFoundException) {
-            showRequestErrorMessage()
-        }
-    }
 
     override fun showEdit() {
         findNavController().navigate(UserProfileMainDataFragmentDirections.toEdit(UserEditDataType.PERSONAL))

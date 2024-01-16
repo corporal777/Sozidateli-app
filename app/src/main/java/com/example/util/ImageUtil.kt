@@ -18,6 +18,15 @@ import io.reactivex.Maybe
 class ImageUtil {
 
     companion object {
+        fun getBitmapFromUrlAsync(context: Context, url: String?): Bitmap? {
+            return try {
+                Glide.with(context).asBitmap().load(url).submit().get()
+            } catch (e : Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
         fun getBitmapFromUri(ctx: Context, imageUri: Uri?, reqHeight: Int, reqWidth: Int): Bitmap? {
             if (imageUri == null) return null
             val options: BitmapFactory.Options = BitmapFactory.Options()
@@ -99,17 +108,6 @@ fun String?.loadBitmap(
     ImageUtil.loadBitmapFromUrl(this, transformations, onResult)
 }
 
-fun String?.loadBitmap(transformations: List<Transformation>? = null): Maybe<Optional<Bitmap>> {
-    return Maybe.create { emitter ->
-        loadBitmap(transformations) { emitter.onSuccess(it.asOptional()) }
-    }
-}
-
-
-fun String?.loadBitmapNew(context: Context): Bitmap? {
-    return if (this.isNullOrEmpty()) null
-    else Glide.with(context).asBitmap().load(this).submit().get()
-}
 
 private fun getMediaAbsolutePath(ctx: Context, uri: Uri?): String? {
     val filePathColumn = arrayOf<String>(MediaStore.Images.Media.DATA)

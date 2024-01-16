@@ -162,7 +162,7 @@ class CustomPasswordView : FrameLayout {
     fun showErrors(show: Boolean) {
         showFirstPasswordError(!isFirstPasswordValid)
         showSecondPasswordError(!isSecondPasswordValid)
-        if (!isFirstPasswordValid) validatePassword(!firstPassword.isNullOrEmpty(), firstPassword)
+        if (!isFirstPasswordValid) validatePassword(firstPassword.isNullOrEmpty(), firstPassword)
         else matchPasswords(secondPassword)
     }
 

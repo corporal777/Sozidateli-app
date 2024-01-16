@@ -29,14 +29,17 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/etInput"
+            android:id="@+id/etMenuInput"
             style="@style/ProfileData.EditText"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="@string/profile_choose_gender"
-            android:paddingStart="@dimen/profile_first_expand_margin_top"
-            android:paddingEnd="@dimen/profile_first_expand_margin_top" />
+
+            android:paddingStart="@dimen/background_custom_input_view_padding_left"
+            android:paddingTop="5dp"
+            android:paddingEnd="@dimen/background_custom_input_view_padding_left"
+            android:paddingBottom="5dp" />
 
     </com.example.ui.views.CustomTextInputLayout>
 
@@ -44,7 +47,7 @@
         android:id="@+id/btnAction"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="5dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_input_error_icon"
         android:visibility="gone"

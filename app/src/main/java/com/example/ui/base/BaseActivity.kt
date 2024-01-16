@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,7 +18,16 @@ import com.example.R
 import com.example.databinding.ActivityMainBinding
 import com.example.databinding.LayoutBottomNavBadgeBinding
 import com.example.interfaces.BackgroundImageFragment
+import com.example.ui.auth.authorization.AuthorizationFragment
+import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.my.MyEventsFragment
+import com.example.ui.event.my.schedule.MyScheduleEventsFragment
+import com.example.ui.event.registration.EventRegistrationFragment
+import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
+import com.example.util.cancelWindowTransparency
+import com.example.util.doEdgeWindow
+import com.example.util.setWindowTransparency
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -81,7 +88,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     abstract fun handleIntent(intent: Intent)
 
-    override fun showEnterAnimation() {}
     override fun showEventAddedToFavoriteDialog() {}
     override fun showEventRemovedFromFavoriteDialog() {}
 
@@ -136,6 +142,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun hideCustomProgressDialog() = mProgressDialog.hideDialog()
     override fun showCustomLoading() {}
     override fun hideCustomLoading() {}
+
     override fun hideKeyboard() = hideKeyboard(currentFocus)
 
     override fun hideKeyboard(v: View?) {
@@ -167,6 +174,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         return findNavController(R.id.navHostFragment).currentDestination?.id == frag
     }
 
+    fun isPreviousDestination(id : Int) : Boolean {
+        val prevId = getNavHostFragment().navController.previousBackStackEntry?.destination?.id
+        return prevId == id
+    }
+
     fun setupBackgroundImageFragment(f : Fragment){
         val isLightStatus: Boolean
         val bg: Drawable?
@@ -179,6 +191,21 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         }
         window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
         mBinding.root.background = bg
+    }
+
+    fun setupBackgroundTransparency(f : Fragment){
+        if (f is AboutEventFragment || f is EventRegistrationFragment) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            setWindowTransparency()
+        }
+        else if (f is StoriesFragment) doEdgeWindow()
+        else if (f is MyEventsFragment || f is MyScheduleEventsFragment) {
+            cancelWindowTransparency()
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        } else {
+            cancelWindowTransparency()
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
     }
 
     abstract fun showProgressView()

@@ -127,6 +127,6 @@ class SearchRegionBottomSheet (
     companion object {
         private const val REGIONS_TAG_VIEW = "regions_tag"
 
-        private const val PLACEHOLDER = R.drawable.avatar_placeholder
+        private const val PLACEHOLDER = R.drawable.avatar_placeholder_circle
     }
 }

@@ -82,9 +82,6 @@ interface AboutEventContract {
 
         @Skip
         fun updateAppBarBackgroundColorValue(value : Int)
-
-        @Skip
-        fun showTest()
     }
 
     interface Presenter : BaseContract.Presenter {

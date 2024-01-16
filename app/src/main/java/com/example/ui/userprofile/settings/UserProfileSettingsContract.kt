@@ -1,5 +1,7 @@
 package com.example.ui.userprofile.settings
 
+import android.content.Context
+import android.view.ViewGroup
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.ui.userprofile.base.BaseUserProfileContract
@@ -10,11 +12,17 @@ import moxy.viewstate.strategy.alias.Skip
 interface UserProfileSettingsContract {
     interface View : BaseUserProfileContract.View {
 
+        @Skip
+        fun setUserPassword(isAbsent : Boolean)
+
+        @Skip
+        fun setUserSocialBinds(user: UserDetail)
+
         @OneExecution
         fun showChangeEmail(email : String?)
 
         @OneExecution
-        fun showChangePassword()
+        fun showChangePassword(isChange : Boolean)
 
         @OneExecution
         fun showChangeName(user : UserDetail)
@@ -26,13 +34,13 @@ interface UserProfileSettingsContract {
         fun showDeleteProfile()
 
         @OneExecution
-        fun showPhoneEdit(phone : FieldDetails?)
+        fun showChangePhone()
 
         @OneExecution
         fun showEmailConfirmation(email : String)
 
         @Skip
-        fun showBlockingLoading(show : Boolean, checkView : CustomCheckView)
+        fun showBlockingLoading(show : Boolean, customView : ViewGroup)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -42,11 +50,11 @@ interface UserProfileSettingsContract {
         fun onDeleteEmail()
         fun onDeleteConfirmEmail(email: String)
 
-        fun onChangePrivacyConfirm(hidden: Boolean, view : CustomCheckView)
+        fun onChangePrivacyConfirm(hidden: Boolean, view : ViewGroup)
 
-        fun onBlockProjectNotificationsClick(hidden: Boolean, view : CustomCheckView)
-        fun onBlockOrganizationNotificationsClick(hidden: Boolean, view : CustomCheckView)
-        fun onBlockEventNotificationsClick(hidden: Boolean, view : CustomCheckView)
+        fun onBlockProjectNotificationsClick(hidden: Boolean, view : ViewGroup)
+        fun onBlockOrganizationNotificationsClick(hidden: Boolean, view : ViewGroup)
+        fun onBlockEventNotificationsClick(hidden: Boolean, view : ViewGroup)
 
         fun onDeleteProfileClick()
         fun onDeleteProfileConfirm()
@@ -54,6 +62,7 @@ interface UserProfileSettingsContract {
 
         fun showChangeNameClick()
         fun showChangeShortNameClick()
-        fun onShowEmailConfirm(email : String)
+
+        fun onBindVkAccount(context : Context, view: ViewGroup)
     }
 }

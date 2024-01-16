@@ -8,6 +8,7 @@ import com.example.ui.state.maxNew.MaxStateScreenType
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.ceil
 
 
@@ -41,6 +42,16 @@ object Utils {
         return "$formattedStart - $formattedFinish"
     }
 
+    fun formatMobilePhone(phone: String): String {
+        return if (phone.length == 12) {
+            StringBuilder(phone)
+                .insert(2, " ")
+                .insert(6, " ")
+                .insert(10, " ")
+                .insert(13, " ").toString()
+        } else phone
+    }
+
     fun isPhone(text: String?): Boolean {
         if (text.isNullOrEmpty()) return false
         val regex = Regex(pattern = "[0-9]+")
@@ -57,6 +68,11 @@ object Utils {
         if (text.isNullOrEmpty()) return false
         val regex = Regex(pattern = "[A-Za-z]+")
         return regex.containsMatchIn(text)
+    }
+
+    fun isEmailValid(email: String?): Boolean {
+        return if (email.isNullOrEmpty()) false
+        else AuthValidateUtil.isValidEmail(email)
     }
 
     fun isPhoneNumberValid(phone: String?): Boolean {

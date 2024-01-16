@@ -5,12 +5,14 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_LAST_NAME
 import com.example.data.models.UserDetail.Companion.USER_NAME
+import com.example.extensions.removeAllDoubleSpaces
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -41,27 +43,19 @@ class ChangeNamePresenter
 
     override fun onSaveNameClick() {
         if (isDataValid()) {
-            compositeDisposable += userRepository.updateUserProfileField(
+            compositeDisposable += userRepository.updateUserProfile(appData.getId(),
                 mutableMapOf<String, Any?>().apply {
                     if (firstName != userDetail.name) put(USER_NAME, firstName)
                     if (lastName != userDetail.lastName) put(USER_LAST_NAME, lastName)
-                    if (middleName != userDetail.middleName?.value && isMiddleNameAbsent != userDetail.middleName?.absent) {
-                        put(
-                            UserDetail.USER_MIDDLE_NAME,
-                            FieldDetails(value = middleName, absent = isMiddleNameAbsent)
-                        )
-                    }
+
+                    val midName = if (middleName.isNullOrBlank()) FieldDetails(value = null, absent = true)
+                    else FieldDetails(value = middleName.removeAllDoubleSpaces())
+                    put(UserDetail.USER_MIDDLE_NAME, midName)
                 }
             )
-                .doOnSuccess { new ->
-                    appData.updateUser {
-                        this.name = new.name
-                        this.lastName = new.lastName
-                        this.middleName = new.middleName
-                    }
-                }
+                .flatMap { userRepository.checkUserProfileSingle() }
                 .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
+                .withCustomLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
                     onSuccess = { viewState.hideBottomSheetDialog() }

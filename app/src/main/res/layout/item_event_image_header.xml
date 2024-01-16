@@ -26,7 +26,6 @@
                 android:id="@+id/event_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/event_image_header_gradient"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_test" />
 

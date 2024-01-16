@@ -3,7 +3,6 @@ package com.example.repository
 import android.graphics.Bitmap
 import com.example.data.bodies.*
 import com.example.data.models.*
-import com.example.data.models.user.User
 import com.example.ui.notification.NotificationType
 import com.example.util.pagination.NotificationsResponse
 import com.example.util.pagination.PaginationResponse
@@ -25,6 +24,7 @@ interface UserRepository {
     fun notificationsInviteDecline(id: Int): Completable
     //fun getFcmToken(): Maybe<InstanceIdResult>
 
+    fun changePassword(id: Int, body: PasswordBody): Completable
     fun checkPassword(password: String): Completable
 
     fun deleteProfile(id: Int): Completable
@@ -41,7 +41,6 @@ interface UserRepository {
 
     fun getEventCalendar(data: EventsCalendarListBody): Maybe<EventsListModel>
     fun logout(id: Int): Completable
-    fun changePassword(id: Int, body: PasswordBody): Completable
     fun changeUserImage(photo: Bitmap?): Single<ImageModel>
     fun deleteImage(): Completable
     fun uploadRecommendedFile(body: List<MultipartBody.Part?>): Single<ImageModel>
@@ -50,7 +49,6 @@ interface UserRepository {
     fun deleteRecommendedFile(fileId : Int): Completable
     //fun getAddress(body: AddressBody): Maybe<List<AddressResponse>>
     fun deleteProfile(): Completable
-    fun checkIfPasswordValid(password: String): Completable
 
     fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel>
     fun getInterestsList(ids: List<Int>?): Maybe<InterestsModel>
@@ -68,9 +66,7 @@ interface UserRepository {
     fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>>
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
-    fun unblockUser(id : Int): Completable
-    fun blockUser(id : Int): Completable
-    fun checkUserProfile(): Maybe<UserProfileFieldsModel>
+
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
     fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
     fun markAsRead(notificationId: String): Completable
@@ -90,5 +86,9 @@ interface UserRepository {
 
     fun checkEmailPhone(email: String?, phone: String?): Completable
 
-    fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+
+    //+
+    fun bindSocialAccount(uuid : String, socialType : String): Maybe<SnBindDataModel>
+    fun unbindSocialAccount(uuid : String, socialType : String): Completable
 }

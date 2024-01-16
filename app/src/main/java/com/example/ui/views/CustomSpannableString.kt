@@ -27,6 +27,16 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
         )
     }
 
+    fun setColorSpanWithLength(color: Int, start: Int, context: Context) {
+        val expandColor = ContextCompat.getColor(context, color)
+        setSpan(
+            ForegroundColorSpan(expandColor),
+            start,
+            length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+
     fun setTextSizeSpan(size: Int, context: Context) {
         val textSize = context.resources.getDimensionPixelSize(size)
         setSpan(AbsoluteSizeSpan(textSize), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -11,6 +12,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toTopOf="@id/btnConfirm"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -61,20 +63,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp" />
+                    android:layout_marginTop="20dp"
+                    app:codeViewHeight="@dimen/phone_code_view_height"
+                    app:codeViewLength="4"
+                    app:codeViewSpace="@dimen/phone_code_view_spacing"
+                    app:codeViewTextSize="@dimen/phone_code_view_text_size"
+                    app:codeViewWidth="@dimen/phone_code_view_width" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_code_error"
                     fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:visibility="gone"
-                    tools:visibility="visible"
                     android:text="@string/auth_error_code_new"
                     android:textColor="@color/title_text_error_red"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
 
             </LinearLayout>
@@ -88,8 +95,9 @@
             android:layout_marginHorizontal="@dimen/margin_horizontal_default"
             android:layout_marginBottom="10dp"
             app:buttonBackground="@drawable/custom_btn_brown_selectable"
-            app:buttonMinHeight="@dimen/auth_button_min_height"
+            app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/confirm"
+            app:buttonTextSize="@dimen/common_button_text_size"
             app:layout_constraintBottom_toTopOf="@id/btnCallAgain" />
 
         <com.example.ui.views.loading.CustomLoadingButton
@@ -100,11 +108,10 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
-            app:buttonMinHeight="@dimen/auth_button_min_height"
+            app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/send_call_again"
+            app:buttonTextSize="@dimen/common_button_text_size"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

@@ -1,11 +1,12 @@
 package com.example.ui.auth.register.invite
 
 import com.example.ui.auth.base.BaseAuthContract
+import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface InviteRegisterContract {
-    interface View : BaseAuthContract.View {
+    interface View : BaseContract.View {
         @AddToEndSingle
         fun setData(firstName: String?, lastName: String?, middleName: String?, email: String?)
 
@@ -37,7 +38,7 @@ interface InviteRegisterContract {
         fun loggedOut()
     }
 
-    interface Presenter : BaseAuthContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun onClickRegister()
 
         fun onClickClose()

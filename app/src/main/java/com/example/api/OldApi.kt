@@ -25,10 +25,6 @@ interface OldApi {
     @POST("/v1/user/auth/{sn}/set_email")
     fun setEmailSocialNetwork(@Path("sn") sn: String, @Field("email") email: String, @Field("token") token: String): Single<ApiResponse<AuthResponse>>*/
 
-    @FormUrlEncoded
-    @POST("/v1/user/auth/social/confirm_email")
-    fun confirmEmailSocialNetwork(@Field("id") id: String, @Field("code") code: String): Single<ApiResponse<AuthResponse>>
-
     /*@FormUrlEncoded
     @POST("/v1/user/auth")
     fun authEmailOrPhone(@Field("username") email: String, @Field("user_pwd") password: String): Single<ApiResponse<AuthResponse>>*/

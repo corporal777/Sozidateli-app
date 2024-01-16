@@ -1,12 +1,15 @@
 package com.example
 
-import android.app.*
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
-import com.vk.sdk.VKSdk
-import dagger.android.*
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
@@ -38,8 +41,6 @@ class App : Application(), HasAndroidInjector {
 
         createNotificationChannels()
         initViewPump()
-
-        VKSdk.initialize(this)
     }
 
     private fun createNotificationChannels() {

@@ -127,8 +127,7 @@
                         android:layout_marginTop="15dp"
                         android:text="@string/attach_image_or_file"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingPrefix" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         fontPath="fonts/sf_pro_display.OTF"

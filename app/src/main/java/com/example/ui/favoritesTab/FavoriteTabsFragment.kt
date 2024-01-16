@@ -19,7 +19,7 @@ import onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(true),
+class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(),
     FavoriteTabsContract.View,
     ToolbarFragment {
 
@@ -71,7 +71,7 @@ class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(true),
         }
     }
 
-
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_favorite
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
     override fun actionIconContainer(view: ViewGroup) {}

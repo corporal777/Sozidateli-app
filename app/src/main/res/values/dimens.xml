@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
-    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
+    <!--  new auth views margins  -->
+    <dimen name="auth_logo_text_height">60dp</dimen>
 
+    <dimen name="auth_buttons_min_height">40dp</dimen>
+    <dimen name="auth_buttons_text_size">14sp</dimen>
+
+    <dimen name="auth_buttons_title_text_size">14sp</dimen>
+
+    <dimen name="auth_pager_title_text_size">25sp</dimen>
+    <dimen name="auth_pager_story_text_size">14sp</dimen>
+
+    <dimen name="common_button_min_height">46dp</dimen>
+    <dimen name="common_button_text_size">15sp</dimen>
+
+    <dimen name="common_edit_text_min_height">42dp</dimen>
+    <dimen name="common_edit_text_size">15sp</dimen>
+    <dimen name="common_edit_text_title_size">13sp</dimen>
+
+    <dimen name="common_button_radius">6dp</dimen>
+
+    <dimen name="linked_account_icon_size">38dp</dimen>
+    <dimen name="linked_account_text_size">15sp</dimen>
+
+    <dimen name="account_block_dialog_width">270dp</dimen>
+
+
+    <dimen name="user_profile_settings_absent_password_icon_padding">10dp</dimen>
+
+    <dimen name="background_custom_input_view_padding_left">12dp</dimen>
+    <dimen name="toolbar_circle_button_padding">8dp</dimen>
+
+    <dimen name="clickable_text_view_size">14sp</dimen>
+    <dimen name="check_view_text_size">14sp</dimen>
+    <dimen name="profile_page_button_text_size">16sp</dimen>
+    <!--  new auth views margins  -->
 
     <!--  new margins  -->
-
     <dimen name="margin_eight">8dp</dimen>
     <dimen name="margin_ten">10dp</dimen>
     <dimen name="margin_fifteen">15dp</dimen>
@@ -39,21 +70,22 @@
     <dimen name="day_item_start">5dp</dimen>
 
     <dimen name="user_short_name_text_size">12sp</dimen>
-
     <dimen name="in_app_notification_fragment_margin_top">40dp</dimen>
     <!--  new margins  -->
-    <dimen name="edit_text_min_height">45dp</dimen>
+
+
     <dimen name="auth_logo_margin_top">24dp</dimen>
     <dimen name="auth_logo_height">40dp</dimen>
+
+
+    <dimen name="auth_login_circle_logo_height">50dp</dimen>
     <dimen name="auth_button_min_height">48dp</dimen>
+
     <dimen name="auth_button_text_size">16sp</dimen>
-    <dimen name="auth_label_text_size">16sp</dimen>
-    <dimen name="auth_block_label_text_size">12sp</dimen>
-    <dimen name="auth_block_login_label_text_size">14sp</dimen>
 
     <dimen name="margin_horizontal_default">16dp</dimen>
-    <dimen name="margin_horizontal_main_data_title">20dp</dimen>
     <dimen name="margin_horizontal_main_data">25dp</dimen>
+
 
     <dimen name="chat_list_button_padding_left">8dp</dimen>
     <dimen name="chat_list_button_padding_right">8dp</dimen>
@@ -78,30 +110,13 @@
     <dimen name="profile_avatar_size">60dp</dimen>
 
     <dimen name="add_schedule_height">50dp</dimen>
-    <dimen name="remove_from_schedule_height">35dp</dimen>
 
     <dimen name="profile_first_expand_margin_top">15dp</dimen>
 
-    <dimen name="chat_padding_read_icon">5dp</dimen>
-
-    <dimen name="profile_margin_between_field">25dp</dimen>
-
     <dimen name="profile_full_padding_top">10dp</dimen>
-    <dimen name="profile_full_height_divider">1dp</dimen>
 
     <dimen name="event_schedule_sub_event_divider_height">24dp</dimen>
-
-    <dimen name="max_height_image">200dp</dimen>
-
-    <dimen name="from_unread_message">70dp</dimen>
-
-    <dimen name="mtrl_textinput_box_stroke_width_default" tools:override="true">1dp</dimen>
-    <dimen name="mtrl_textinput_box_stroke_width_focused" tools:override="true">1dp</dimen>
-
-    <dimen name="organization_logo_corners_radius">4dp</dimen>
-
     <dimen name="building_scheme_bottom_gradient_height">50dp</dimen>
-    <dimen name="about_event_bottom_gradient_height">100dp</dimen>
 
     <dimen name="action_button_height">45dp</dimen>
     <dimen name="action_button_margin_vertical">20dp</dimen>
@@ -145,32 +160,29 @@
 
     <dimen name="card_min_height">186dp</dimen>
 
-    <dimen name="stories_progress_bar_height">2dp</dimen>
-    <dimen name="stories_progress_corners_radius">2.5dp</dimen>
-    <dimen name="lines_space">-5dp</dimen>
-    <dimen name="viewpager_next_item_visible">26dp</dimen>
-    <dimen name="viewpager_current_item_horizontal_margin">42dp</dimen>
-    <dimen name="background_corners_seven">7dp</dimen>
     <dimen name="background_corners_eight">8dp</dimen>
-
-
-
-    <dimen name="default_blur_dialog_title_size">10sp</dimen>
-    <dimen name="default_blur_dialog_corner_radius">15dp</dimen>
 
 
     <dimen name="profile_qr_code_image_size">235dp</dimen>
 
     <dimen name="update_app_image">250dp</dimen>
 
-    <dimen name="action_button_radius">6dp</dimen>
+    <dimen name="stories_progress_view_height">3dp</dimen>
+    <dimen name="stories_progress_view_radius">2dp</dimen>
 
     <!--  code view margins  -->
-    <dimen name="symbols_spacing">8dp</dimen>
     <dimen name="symbol_view_corner_radius">2dp</dimen>
-    <dimen name="symbol_view_width">60dp</dimen>
-    <dimen name="symbol_view_height">60dp</dimen>
-    <dimen name="symbol_view_text_size">25sp</dimen>
     <dimen name="symbol_view_stroke_width">2dp</dimen>
     <dimen name="symbol_view_active_stroke_width">3dp</dimen>
+
+    <dimen name="phone_code_view_spacing">5dp</dimen>
+    <dimen name="phone_code_view_width">55dp</dimen>
+    <dimen name="phone_code_view_height">55dp</dimen>
+    <dimen name="phone_code_view_text_size">22sp</dimen>
+
+    <dimen name="email_code_view_spacing">5dp</dimen>
+    <dimen name="email_code_view_width">45dp</dimen>
+    <dimen name="email_code_view_height">45dp</dimen>
+    <dimen name="email_code_view_text_size">20sp</dimen>
+
 </resources>

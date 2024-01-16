@@ -14,10 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:inputIconDrawable="@drawable/ic_calendar_new"
-            app:inputIconMode="custom"
             app:inputHasCheckBox="true"
             app:inputHintText="@string/profile_birthday"
+            app:inputIconDrawable="@drawable/ic_calendar_new"
+            app:inputIconMode="custom"
             app:inputTitleText="@string/profile_birthday" />
 
         <com.example.ui.views.CustomTextMenuView
@@ -44,64 +44,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:inputHintText="@string/profile_locality"
             app:inputHasCheckBox="true"
+            app:inputHintText="@string/profile_locality"
             app:inputIconDrawable="@drawable/ic_arrow_right_brown"
             app:inputIconMode="custom" />
 
-        <LinearLayout
-            style="@style/Profile.Edit.InputContainer"
+        <com.example.ui.views.CustomTextMenuView
+            android:id="@+id/tvNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            app:inputHintText="@string/profile_notes_absent"
+            app:inputIconDrawable="@drawable/ic_about_session"
+            app:inputIconMode="custom"
+            app:inputMenuTextColor="@color/input_hint_text_color"
+            app:inputTitleText="@string/profile_additional_data_and_files" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Profile.Edit.TextViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="@string/profile_additional_data_and_files" />
+        <TextView
+            android:id="@+id/tvEditNotes"
+            style="@style/ClickableTextView"
+            android:layout_marginTop="10dp"
+            android:text="@string/edit_title" />
 
-            <com.example.ui.views.CustomTextInputLayout
-                android:id="@+id/til_notes"
-                style="@style/ProfileData.InputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="custom"
-                app:endIconTint="#C3996C"
-                app:errorEnabled="false"
-                app:errorIconDrawable="@null">
-
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNotes"
-                    style="@style/ProfileData.EditText"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:gravity="start|top"
-                    android:hint="@string/profile_notes_absent"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:textColor="@color/input_hint_text_color"
-                    tools:text="@tools:sample/lorem/random" />
-            </com.example.ui.views.CustomTextInputLayout>
-
-            <TextView
-                android:id="@+id/tvEditNotes"
-                style="@style/ClickableTextView"
-                android:layout_marginTop="10dp"
-                android:text="@string/edit_title"
-                tools:ignore="MissingPrefix" />
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/scNotes"
-                style="@style/Profile.Edit.Switch"
-                android:text="@string/profile_show_in_profile" />
-        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/scNotes"
+            style="@style/Profile.Edit.Switch"
+            android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 </layout>

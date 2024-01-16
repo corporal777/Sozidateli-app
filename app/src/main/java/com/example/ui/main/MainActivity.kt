@@ -3,14 +3,13 @@ package com.example.ui.main
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -18,49 +17,78 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.AuthType
+import com.example.data.models.Notification
+import com.example.data.models.RemoteNotification
+import com.example.data.models.SupportData
+import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
-import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragmentActivity
-import com.example.ui.chat.ChatFragment
+import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.chatList.ChatListTabsFragment
-import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
-import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationsListFragment
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
-import com.example.ui.splash.SplashFragment
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.userprofile.edit.password.ChangePasswordFragment
-import com.example.ui.views.*
+import com.example.ui.userprofile.edit.password.reset.ResetPasswordFragment
+import com.example.ui.views.ApiErrorDialog
+import com.example.ui.views.ChangeStateDialog
+import com.example.ui.views.ClickType
+import com.example.ui.views.FillProfileDialog
+import com.example.ui.views.StateType
 import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.*
+import com.example.util.ASSISTANT
+import com.example.util.AUTH_CONFIRM_EMAIL
+import com.example.util.AUTH_CONFIRM_EMAIL_CODE
+import com.example.util.AUTH_CONFIRM_INVITE_ID
+import com.example.util.FIELD_CHAT
+import com.example.util.FIELD_CHAT_ID
+import com.example.util.FIELD_EVENT
+import com.example.util.FIELD_LABEL
+import com.example.util.FIELD_NAME
+import com.example.util.FIELD_NOTIFICATION
+import com.example.util.FIELD_NOTIFICATION_ID
+import com.example.util.FIELD_SN_AUTHORIZATION_USER_ID
+import com.example.util.LINKED_REGISTER
+import com.example.util.PASSWORD_RECOVERY
+import com.example.util.PATH_AUTH
+import com.example.util.PATH_EVENT
+import com.example.util.PATH_EVENT_MEMBER
+import com.example.util.PATH_HIDDEN
+import com.example.util.PATH_LP
+import com.example.util.PATH_PROFILE
+import com.example.util.PATH_QR
+import com.example.util.PATH_SETTINGS
+import com.example.util.PATH_SN_AUTHORIZATION
+import com.example.util.PATH_SUPPORT_CENTER
+import com.example.util.PATH_SWITCH_ACCOUNT
+import com.example.util.PATH_USER
+import com.example.util.PGRF
+import com.example.util.Utils
+import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
@@ -80,41 +108,17 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     lateinit var presenterProvider: Provider<MainPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): MainPresenter = presenterProvider.get().apply {
-        newMessageTitleText = getString(R.string.chat_new_message_title_text)
-        photoMessageText = getString(R.string.chat_photo_message_text)
-        chatAcceptMessageText = getString(R.string.chat_accepted)
-    }
+    fun providePresenter(): MainPresenter = presenterProvider.get()
 
-    private val navBarColorDefault by lazy { ContextCompat.getColor(this, R.color.main_background) }
-    private val navBarColorBottomNav by lazy {
-        ContextCompat.getColor(
-            this,
-            R.color.bottom_navigation_view_background_color
-        )
-    }
+    private val navBarColorDefault by lazy { getColor(R.color.main_background) }
+    private val navBarColorBottomNav by lazy { getColor(R.color.bottom_navigation_view_background_color) }
 
     private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
         onFragmentStopped = { },
-        onFragmentStarted = { f ->
-            if (f is AboutEventFragment || f is EventRegistrationFragment) {
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-                setWindowTransparency()
-            }
-            else if (f is StoriesFragment) doEdgeWindow()
-            else if (f is MyEventsFragment || f is MyScheduleEventsFragment) {
-                cancelWindowTransparency()
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-            } else {
-                cancelWindowTransparency()
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-            }
-        },
-        onFragmentDestroyed = { f ->
-            if (f is StoriesFragment) presenter.onStoriesComplete()
-        },
-        onViewCreated = { f ->
-            presenter.onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
+        onFragmentDestroyed = { f -> if (f is StoriesFragment) presenter.onStoriesComplete() },
+        onFragmentStarted = { f -> setupBackgroundTransparency(f) },
+        onBottomSheetViewCreated = { },
+        onFragmentViewCreated = { f ->
             when (f) {
                 is RecommendationsFragment,
                 is MyEventsFragment,
@@ -125,38 +129,37 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 else -> hideNavBar()
             }
 
+            presenter.onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
             setupNavBarItems(f)
             setupBackgroundImageFragment(f)
 
+            mBinding.appBar.isVisible = f is ToolbarFragment
             if (f is ToolbarFragment) {
-                mBinding.run {
-                    appBar.isVisible = true
-                    toolbar.apply {
-                        toolbarLabel.text = f.title
-                        f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
-                        f.actionIconContainer(toolbarContainer)
-                    }
-                    getBehavior()?.setScrollChangeCallback {
-                        f.scrollValue(it)
-                        presenter.changeScrollingOffset(it)
-                    }
+                mBinding.toolbar.apply {
+                    toolbarLabel.text = f.title
+                    f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
+                    f.actionIconContainer(toolbarContainer)
                 }
-            } else mBinding.appBar.isVisible = false
+                getBehavior()?.setScrollChangeCallback {
+                    f.scrollValue(it)
+                    presenter.changeScrollingOffset(it)
+                }
+            }
         }
     )
 
-
     private val backClick = onBackPressedCallback(true) {
-        val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
-            ?: return@onBackPressedCallback
+        val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull() ?: return@onBackPressedCallback
         when (fragment) {
             is ProfileFragment,
             is MyEventsFragment,
             is NotificationsListFragment,
             is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
             is RecommendationsFragment,
-            is AuthorizationFragment -> finish()
-            else -> findNavController().navigateUp()
+            is AuthorizationFragment -> {
+                if (isPreviousDestination(R.id.change_account_fragment)) navigateUp() else finish()
+            }
+            else -> navigateUp()
         }
     }
 
@@ -335,8 +338,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         )
     }
 
-    override fun showDialogChangePassword(userId: String, code: String) {
-        ChangePasswordFragment(true, code, userId).show(supportFragmentManager)
+    override fun showChangePassword(userId: String, code: String) {
+        findNavController().navigate(
+            R.id.resetPasswordFragment, bundleOf(
+                "loginType" to "email",
+                "code" to code,
+                "userId" to userId
+            )
+        )
     }
 
     override fun showPasswordRecovery() {
@@ -420,11 +429,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().navigate(R.id.supportDetailFragment, args)
     }
 
-
-    override fun showStories() {
-        findNavController().navigate(R.id.stories_fragment)
-    }
-
     override fun showOrganization(organization: String) {
         findNavController().navigate(
             R.id.organization_fragment_new,
@@ -437,6 +441,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             R.id.event_rating_fragment,
             EventRatingFragmentArgs.Builder(event).build().toBundle()
         )
+    }
+
+    override fun showStories() {
+        findNavController().navigate(R.id.stories_fragment)
     }
 
     private fun findNavController() = findNavController(R.id.navHostFragment)

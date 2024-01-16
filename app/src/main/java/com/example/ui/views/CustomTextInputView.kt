@@ -2,25 +2,23 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.telephony.PhoneNumberFormattingTextWatcher
+import android.os.Parcel
+import android.os.Parcelable
+import android.text.InputType
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.LayoutCustomTextInputViewBinding
 import com.example.extensions.dp
-import com.example.util.SearchInput
 import com.example.util.getColor
-import com.example.util.getDrawable
-import com.example.util.setTint
 import onFocusChanged
 import onTextChanged
-import setOnClickListener
+import showHidePasswordText
 
 class CustomTextInputView : LinearLayout {
 
@@ -29,11 +27,7 @@ class CustomTextInputView : LinearLayout {
         obtainAttributes(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val layoutView =
         LayoutCustomTextInputViewBinding.inflate(LayoutInflater.from(context), this, true)
@@ -50,6 +44,8 @@ class CustomTextInputView : LinearLayout {
     private var inputEnabled: Boolean = true
     private var inputCheckBoxVisible: Boolean = false
 
+    private var isErrorShown = false
+    private var inputId : Int = generateViewId()
 
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CustomTextInputView)
@@ -79,7 +75,14 @@ class CustomTextInputView : LinearLayout {
             minLines = inputMinLines
             isEnabled = inputEnabled
         }
+        layoutView.passwordToggle.apply {
+            isVisible = isPasswordInputType(inputTextType)
+            setOnCheckedChangeListener { _, isChecked ->
+                layoutView.etInput.showHidePasswordText(isChecked)
+            }
+        }
         layoutView.scCheck.isVisible = inputCheckBoxVisible
+        layoutView.scCheck.isEnabled = inputEnabled
     }
 
     private var onTextChanged: (text: String?) -> Unit = {}
@@ -88,6 +91,7 @@ class CustomTextInputView : LinearLayout {
     init {
         layoutView.apply {
             etInput.apply {
+                id = inputId
                 onTextChanged {
                     onTextChanged.invoke(it.toString())
                 }
@@ -103,10 +107,13 @@ class CustomTextInputView : LinearLayout {
     }
 
     fun showError(show: Boolean) {
+        if (isErrorShown == show) return
+        isErrorShown = show
         layoutView.apply {
-            btnAction.isEnabled = !show
-            btnAction.isVisible = show
-            if (show) tvTitle.setTextColor(getColor(R.color.title_text_error_red))
+            passwordToggle.isVisible = isPasswordInputType(inputTextType) && !show
+            btnAction.isEnabled = !isErrorShown
+            btnAction.isVisible = isErrorShown
+            if (isErrorShown) tvTitle.setTextColor(getColor(R.color.title_text_error_red))
             else {
                 tvTitle.text = titleText
                 tvTitle.setTextColor(getColor(R.color.chat_list_date))
@@ -115,9 +122,11 @@ class CustomTextInputView : LinearLayout {
     }
 
     fun showTextError(text: String) {
+        isErrorShown = true
         layoutView.apply {
             btnAction.isEnabled = false
             btnAction.isVisible = true
+            passwordToggle.isVisible = false
             tvTitle.text = text
             tvTitle.setTextColor(getColor(R.color.title_text_error_red))
         }
@@ -128,7 +137,7 @@ class CustomTextInputView : LinearLayout {
     }
 
     fun initInput(text: String? = null, onTextChanged: (text: CharSequence?) -> Unit) {
-        layoutView.etInput.setText(text)
+        if (text != null) layoutView.etInput.setText(text)
         this.onTextChanged = onTextChanged
     }
 
@@ -142,5 +151,12 @@ class CustomTextInputView : LinearLayout {
     override fun setEnabled(enabled: Boolean) {
         layoutView.etInput.isEnabled = enabled
         layoutView.btnAction.isEnabled = enabled
+    }
+
+    private fun isPasswordInputType(inputType: Int): Boolean {
+        val variation = inputType and (EditorInfo.TYPE_MASK_CLASS or EditorInfo.TYPE_MASK_VARIATION)
+        return (variation == EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ||
+                variation == EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD ||
+                variation == EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD)
     }
 }

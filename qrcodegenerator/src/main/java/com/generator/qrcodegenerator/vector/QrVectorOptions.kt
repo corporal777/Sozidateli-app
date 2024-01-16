@@ -78,13 +78,13 @@ fun createQrVectorOptions(block : QrVectorOptionsBuilderScope.() -> Unit) : QrVe
     return builder.build()
 }
 
-fun createReadyVectorQrOptions(uri : String, bm : Bitmap, icon : Int, color : Int): QrVectorOptions {
+fun createReadyVectorQrOptions(bm : Bitmap?, icon : Int, color : Int): QrVectorOptions {
     return createQrVectorOptions {
         padding = .1f
         logo {
             val drawableSource: DrawableSource
             val drawableShape: QrLogoShape
-            if (!uri.isNullOrEmpty()) {
+            if (bm != null) {
                 drawableShape = QrLogoShape.RoundCorners(.30f)
                 drawableSource = DrawableSource.DecodedBitmap(bm)
             } else {

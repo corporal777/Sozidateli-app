@@ -1,12 +1,13 @@
 package com.example.ui.auth.register.email.finish
 
 import com.example.ui.auth.base.BaseAuthContract
+import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface FinishRegisterContract {
-    interface View : BaseAuthContract.View {
+    interface View : BaseContract.View {
 
         @OneExecution
         fun setData(
@@ -57,7 +58,7 @@ interface FinishRegisterContract {
 
     }
 
-    interface Presenter : BaseAuthContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun sendCodeAgain()
         fun onChangeCodeText(code: String)
         fun onChangeNameText(name: String)

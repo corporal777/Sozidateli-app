@@ -30,11 +30,17 @@ private const val cursorSymbol = "|"
 @SuppressLint("ViewConstructor")
 internal class SymbolView(context: Context, private val symbolStyle: Style) : View(context) {
 
-
     data class State(
         val symbol: Char? = null,
         val isActive: Boolean = false
     )
+
+    var isError = false
+        set(value) {
+            if (field == value) return
+            field = value
+            updateState(state)
+        }
 
     var state: State = State()
         set(value) {
@@ -97,7 +103,11 @@ internal class SymbolView(context: Context, private val symbolStyle: Style) : Vi
                     addUpdateListener { invalidate() }
                 }
             animateBorderColor(symbolStyle.borderColor, symbolStyle.borderColorActive)
-        } else if (symbol != null && !isActive){
+        }
+        else if (symbol != null && !isActive && isError) {
+            animateBorderColor(symbolStyle.borderColorEntered, symbolStyle.borderColorError)
+        }
+        else if (symbol != null && !isActive){
             backgroundPaint.color = symbolStyle.backgroundColorActive
             borderPaint.strokeWidth = symbolStyle.borderWidth.toFloat()
             textPaint.color = symbolStyle.textColor
@@ -185,6 +195,7 @@ internal class SymbolView(context: Context, private val symbolStyle: Style) : Vi
         @ColorInt val borderColor: Int,
         @ColorInt val borderColorActive: Int,
         @ColorInt val borderColorEntered: Int,
+        @ColorInt val borderColorError: Int,
         @Px val borderWidthActive: Int,
         @Px val borderWidth: Int,
         val borderCornerRadius: Float,

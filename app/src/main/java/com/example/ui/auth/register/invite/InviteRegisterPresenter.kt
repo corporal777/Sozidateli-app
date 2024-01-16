@@ -6,17 +6,15 @@ import com.example.data.bodies.EmailCodeBody
 import com.example.data.bodies.LoginModel
 import com.example.data.bodies.PasswordBody
 import com.example.data.models.FieldDetails
-import com.example.data.models.SnUser
 import com.example.data.models.UserDetail
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthManager
-import com.example.util.*
+import com.example.ui.base.BasePresenter
+import com.example.util.AuthValidateUtil
+import com.example.util.USER_DATA_EMPTY
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -31,8 +29,7 @@ class InviteRegisterPresenter
     private val appData: AppData,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    snAuthManager: SnAuthManager
-) : BaseAuthPresenter<InviteRegisterContract.View>(authRepository, snAuthManager, appData),
+) : BasePresenter<InviteRegisterContract.View>(appData),
     InviteRegisterContract.Presenter {
 
     var firstName: String? = null
@@ -205,5 +202,4 @@ class InviteRegisterPresenter
 
     private fun performDataChange() = viewState.enableRegisterBtn(isDataValid())
     override fun onClickUserAgreement() = viewState.showUserAgreement()
-    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {}
 }

@@ -1,14 +1,22 @@
 package com.example.ui.auth.login
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.blur.BlurredDialog
+import com.example.ui.views.dialogs.EventRegistrationRequestDialog
+import com.example.ui.views.dialogs.MessageDialogWithTextButtons
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import onTextChanged
@@ -32,6 +40,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
             isRegister = args.isRegistered
             invite = args.inviteId
             login = args.email ?: ""
+            snAuth = args.snAuth
         }
     }
 
@@ -42,20 +51,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
                 isVisible = !isRegister
                 setOnClickListener { presenter.onClickRecoverPassword() }
             }
-            etLogin.onTextChanged {
-                it?.toString()?.let { text -> presenter.onChangeLoginText(text) }
+            etLogin.initInput {
+                presenter.onChangeLoginText(it.toString())
             }
-            etPassword.onTextChanged {
-                it?.toString()?.let { text -> presenter.onChangePasswordText(text) }
+            etPassword.initInput {
+                presenter.onChangePasswordText(it.toString())
             }
             btnLogin.setOnClickListener {
                 hideKeyboard()
                 presenter.onClickLogin(invite ?: -1)
-                //presenter.authVk()
-                //presenter.authOk()
-
             }
-            ibClose.setOnClickListener { presenter.onClickBack() }
+            ibClose.setOnClickListener { navigateUp() }
         }
 
     }
@@ -70,23 +76,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
     }
 
     override fun showLoginError(show: Boolean) {
-        mBinding.tilLogin.apply {
-            if (show) showError(getString(R.string.auth_error_wrong_login))
-            else showError(null)
-        }
+        mBinding.etLogin.showError(show)
     }
 
     override fun showPasswordError(show: Boolean) {
-        mBinding.tilPassword.apply {
-            if (show)
-                if (mBinding.etPassword.text.isNullOrEmpty()) showError(getString(R.string.auth_error_no_password))
-                else showError(getString(R.string.auth_error_short_password))
-            else showError(null)
-        }
-    }
-
-    override fun showSnRegistration(snUser: SnUser) {
-
+        mBinding.etPassword.showError(show)
     }
 
     override fun showRecoveryPassword(email: String) {
@@ -100,18 +94,40 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
         showErrorMessage(false, message)
     }
 
+    override fun showAccountBlockingDialog() {
+        MessageDialogWithTextButtons(
+            requireContext(),
+            "Ваш аккаунт заблокирован",
+            "Превышено количество попыток ввода пароля. Обратитесь в техническую поддержку, чтобы разблокировать аккаунт.",
+            "Помощь",
+            "Отмена"
+        ).setSelectCallback { sendHelpEmail() }
+    }
 
-    override fun showCustomLoading() {
-        mBinding.apply {
-            btnLogin.showProgressLoading(true)
+
+    private fun sendHelpEmail() {
+        try {
+            val text = getString(R.string.blocked_account_email_text, presenter.login)
+            val techInfo = "Техническая информация"
+            val os = "OS: Android"
+            val api = "API: ${android.os.Build.VERSION.SDK_INT}"
+            val appVersion = "App version: ${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
+            val message = listOf(text, techInfo, os, api, appVersion).joinToString(separator = "\n")
+
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
+            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Разблокировка аккаунта: " + presenter.login)
+            intent.putExtra(Intent.EXTRA_TEXT, message)
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    override fun hideCustomLoading(){
-        mBinding.apply {
-            btnLogin.showProgressLoading(false)
-        }
-    }
+
+    override fun showCustomLoading() = mBinding.btnLogin.run { showProgressLoading(true) }
+    override fun hideCustomLoading() = mBinding.btnLogin.run { showProgressLoading(false) }
 
     override fun layout() = R.layout.fragment_login
 }

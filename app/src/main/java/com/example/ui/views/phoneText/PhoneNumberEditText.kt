@@ -85,6 +85,18 @@ class PhoneNumberEditText : AppCompatEditText, TextWatcher {
         return formattedText
     }
 
+    fun setPhoneHint(text: CharSequence?){
+        hint = formatPhoneText(text.toString())
+    }
+
+    fun setHint(text: String?){
+        hint = text
+    }
+
+    fun setPhoneText(text: CharSequence?){
+        setText(formatPhoneText(text.toString()))
+    }
+
     private fun clearPhoneText(text : String?): String? {
         if (text.isNullOrEmpty()) return null
         else {

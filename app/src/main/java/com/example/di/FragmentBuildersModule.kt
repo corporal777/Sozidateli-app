@@ -1,18 +1,20 @@
 package com.example.di
 
 import com.example.ui.about.AboutFragment
-import com.example.ui.auth.authorization.AccountAuthFragment
 import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
-import com.example.ui.auth.confirm.ConfirmPhoneCodeFragment
+import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragment
+import com.example.ui.userprofile.edit.password.confirm.PhoneConfirmPasswordFragment
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
 import com.example.ui.auth.register.UserRegistrationFragment
 import com.example.ui.auth.register.email.finish.FinishRegisterFragment
 import com.example.ui.auth.register.email.newbuild.RegisterEmailFragment
 import com.example.ui.auth.register.invite.InviteRegisterFragment
-import com.example.ui.auth.register.sn.RegisterSnFragment
+import com.example.ui.auth.register.sn.SnRegisterFragment
+import com.example.ui.auth.snAuth.SnAuthFragment
 import com.example.ui.auth.welcome.WelcomeFragment
 import com.example.ui.banned.BannedFragment
 import com.example.ui.chat.ChatFragment
@@ -94,6 +96,7 @@ import com.example.ui.userprofile.edit.name.ChangeNameFragment
 import com.example.ui.userprofile.edit.password.ChangePasswordFragment
 import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
 import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.edit.password.reset.ResetPasswordFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -117,9 +120,6 @@ abstract class FragmentBuildersModule {
     abstract fun contributeLoginFragment(): AuthorizationFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeAccountAuthFragment(): AccountAuthFragment
-
-    @ContributesAndroidInjector
     abstract fun contributeLoginEmailFragment(): LoginFragment
 
     @ContributesAndroidInjector
@@ -129,7 +129,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeRegisterEmailNewFragment(): RegisterEmailFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeRegisterSnFragment(): RegisterSnFragment
+    abstract fun contributeRegisterSnFragment(): SnRegisterFragment
 
     @ContributesAndroidInjector
     abstract fun contributeWelcomeFragment(): WelcomeFragment
@@ -297,6 +297,9 @@ abstract class FragmentBuildersModule {
     abstract fun contributeChangePasswordBottomSheetFragment(): ChangePasswordFragment
 
     @ContributesAndroidInjector
+    abstract fun contributeResetPasswordFragment(): ResetPasswordFragment
+
+    @ContributesAndroidInjector
     abstract fun contributeChangeShortNameFragment(): ChangeShortNameFragment
 
     @ContributesAndroidInjector
@@ -382,4 +385,13 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributePhoneCodeConfirmFragment(): ConfirmPhoneCodeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributePasswordConfirmFragment(): PhoneConfirmPasswordFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEmailCodeConfirmFragment(): ConfirmEmailCodeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSnAuthFragment(): SnAuthFragment
 }

@@ -2,10 +2,11 @@ package com.example.ui.auth.login
 
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface LoginContract {
-    interface View : BaseAuthContract.View {
+    interface View : BaseContract.View {
         @OneExecution
         fun setLoginAndPassword(login: String, password: String)
 
@@ -25,13 +26,10 @@ interface LoginContract {
         fun showWrongPasswordError()
 
         @OneExecution
-        fun showSnRegistration(snUser: SnUser)
-
-
+        fun showAccountBlockingDialog()
     }
 
-    interface Presenter : BaseAuthContract.Presenter {
-        fun onClickBack()
+    interface Presenter : BaseContract.Presenter {
         fun onChangeLoginText(value: String)
         fun onChangePasswordText(value: String)
         fun onClickLogin(invite: Int)

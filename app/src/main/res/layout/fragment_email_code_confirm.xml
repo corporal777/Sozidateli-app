@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_background">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@id/btnConfirm"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/ln_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    fontPath="fonts/sf_pro_display_semibold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="-0.01"
+                    android:text="@string/confirm_email_by_code"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tv_email"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="-0.01"
+                    android:textColor="@color/chat_list_date"
+                    android:textSize="20sp"
+                    tools:text="test@mail.com" />
+
+                <TextView
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="-0.01"
+                    android:text="@string/enter_last_six_numbers_from_letter"
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+
+
+                <com.example.ui.views.codeView.CodeConfirmationView
+                    android:id="@+id/email_code_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    app:codeViewHeight="@dimen/email_code_view_height"
+                    app:codeViewLength="6"
+                    app:codeViewSpace="@dimen/email_code_view_spacing"
+                    app:codeViewTextSize="@dimen/email_code_view_text_size"
+                    app:codeViewWidth="@dimen/email_code_view_width" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_code_error"
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/auth_error_code_new"
+                    android:textColor="@color/title_text_error_red"
+                    android:textSize="17sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:layout_marginBottom="10dp"
+            app:buttonBackground="@drawable/custom_btn_brown_selectable"
+            app:buttonMinHeight="@dimen/common_button_min_height"
+            app:buttonText="@string/confirm"
+            app:buttonTextSize="@dimen/common_button_text_size"
+            app:layout_constraintBottom_toTopOf="@id/btnSendAgain" />
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btnSendAgain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_fifteen"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
+            app:buttonMinHeight="@dimen/common_button_min_height"
+            app:buttonText="@string/send_code_again"
+            app:buttonTextSize="@dimen/common_button_text_size"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

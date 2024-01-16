@@ -253,8 +253,6 @@ class BlurView(val application: Application) {
 
 
     fun blurBackground(sentBitmap: Bitmap, radius: Int): Bitmap?{
-//        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) renderScriptBlur(sentBitmap, radius)
-//        else fastBlur(sentBitmap, radius)
-        return fastBlur(sentBitmap, radius)
+        return renderScriptBlur(sentBitmap, radius)
     }
 }

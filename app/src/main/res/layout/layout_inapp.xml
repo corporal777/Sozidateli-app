@@ -83,7 +83,7 @@
                 tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
-                style="@style/BtnCancelStyle"
+                style="@style/BtnGrayCancelStyle"
                 android:id="@+id/btnNegative"
                 android:minHeight="45dp"
                 android:layout_width="match_parent"

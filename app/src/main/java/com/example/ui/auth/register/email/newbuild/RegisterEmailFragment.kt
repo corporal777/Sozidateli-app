@@ -210,8 +210,6 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
     }
 
 
-    override fun showSnRegistration(snUser: SnUser) {}
-
     private fun showUserAgreement() =
         showCustomTabsBrowser(requireContext(), getString(R.string.auth_agree_address))
 

@@ -2,98 +2,81 @@ package com.example.ui.userprofile.edit.email
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.example.R
-import com.example.databinding.BottomSheetChangeEmailBinding
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
+import com.example.databinding.FragmentChangeEmailBinding
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeEmailFragment(
-    val email: String?
-) : BaseBottomSheetFragment<BottomSheetChangeEmailBinding>(),
-    ChangeEmailContract.View {
+class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEmailContract.View {
 
-
-    @InjectPresenter(tag = CHANGE_EMAIL_FRAGMENT_TAG)
+    @InjectPresenter
     lateinit var presenter: ChangeEmailPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<ChangeEmailPresenter>
 
-    @ProvidePresenter(tag = CHANGE_EMAIL_FRAGMENT_TAG)
+    @ProvidePresenter
     fun providePresenter(): ChangeEmailPresenter = presenterProvider.get().apply {
-        this.currentEmail = email?:""
+        currentEmail = ChangeEmailFragmentArgs.fromBundle(requireArguments()).email
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        focusOnInput(mBinding.etNewEmail, true)
         mBinding.apply {
-            etNewEmail.doAfterTextChanged { tilNewEmail.error = null }
+            etNewEmail.initInput {
+                presenter.onChangeEmailText(it.toString())
+            }
             btnClose.setOnClickListener {
-                dismiss()
+                navigateUp()
             }
             btnSave.setOnClickListener {
                 hideKeyboard(it)
-                presenter.checkEmailIsUnique(etNewEmail.text.toString())
+                presenter.onCheckEmailIsUnique()
             }
 
         }
     }
 
 
-    override fun setCurrentEmail(currentEmail: String) {
-        if (!currentEmail.isNullOrEmpty()) {
-            mBinding.tvCurrentEmail.setText(currentEmail)
-        } else {
-            mBinding.apply {
-                tvCurrentEmail.isVisible = false
-                tvCurrentLogin.isVisible = false
-            }
+    override fun setCurrentEmail(currentEmail: String?) {
+        mBinding.etCurrentEmail.apply {
+            isVisible = !currentEmail.isNullOrEmpty()
+            setText(currentEmail)
         }
-
     }
 
-    override fun showEmailNotValid(email: String) {
-        mBinding.tilNewEmail.error = getString(R.string.new_login_invalid)
+    override fun showEmailError(show: Boolean) {
+        mBinding.etNewEmail.showError(show)
     }
+
 
     override fun showEmailNotUnique(email: String) {
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_email_text, email),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) {
-                    presenter.onShowEmailConfirm(email)
-                }
-            }
+        ).setSelectCallback { if (it) presenter.onShowEmailConfirm() }
     }
 
     override fun showEmailConfirm(email: String) {
-        val confirmEmail = ConfirmEmailPhoneFragment(email)
-        confirmEmail.show(requireActivity().supportFragmentManager, "confirm_email_dialog")
-        confirmEmail.setConfirmCallback {
-            presenter.updateEmail(email)
-        }
+        findNavController().navigate(
+            R.id.emailCodeConfirmFragment,
+            bundleOf("email" to email, "fromRegister" to false),
+            navOptions { popUpTo(R.id.changeEmailFragment) { inclusive = true } }
+        )
     }
 
-    override fun showChangeEmailComplete() {
-        showToast(getString(R.string.email_change_confirm_success))
-        dismiss()
-    }
+    override fun enableBtnSave(enable: Boolean) = mBinding.btnSave.run { isSelected = enable }
+    override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
+    override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
-
-    companion object {
-        const val CHANGE_EMAIL_FRAGMENT_TAG = "change_email_tag"
-    }
-
-    override fun layout(): Int = R.layout.bottom_sheet_change_email
-
+    override fun animationType(): AnimType = AnimType.FADE
+    override fun layout(): Int = R.layout.fragment_change_email
 }

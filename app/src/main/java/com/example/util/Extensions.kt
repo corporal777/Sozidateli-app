@@ -1,11 +1,12 @@
 package com.example.util
 
-import android.annotation.TargetApi
+import android.animation.Animator
+import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.*
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
@@ -14,19 +15,16 @@ import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.text.InputFilter
-import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.*
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
@@ -34,37 +32,26 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
-import androidx.core.view.isInvisible
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.example.BuildConfig
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
-import com.example.extensions.dp
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.vincent.filepicker.BrowserUtil
-import com.vincent.filepicker.ToastUtil
-import io.noties.markwon.Markwon
-import io.noties.markwon.SoftBreakAddsNewLinePlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
-import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import onTextChanged
@@ -93,41 +80,6 @@ fun <T> AppCompatAutoCompleteTextView.initDropDownAdapter(list: MutableList<T>) 
     )
 }
 
-
-fun FragmentManager.showDatePicker(
-    currentDate: String?,
-    onDateSelected: (date: Long) -> Unit
-) {
-    var selection = if (!currentDate.isNullOrBlank())
-        serverDateToMilliseconds(currentDate, DATE_FORMAT_SHORT_MONTH_FULL_YEAR)
-    else {
-        val current = Calendar.getInstance()
-        current.add(Calendar.YEAR, -14)
-        current.timeInMillis
-    }
-    val timezone = TimeZone.getDefault()
-    selection += timezone.getOffset(selection)
-    val endDate = Calendar.getInstance()
-    endDate.add(Calendar.YEAR, -14)
-
-    val picker = MaterialDatePicker
-        .Builder
-        .datePicker()
-        .setTitleText(R.string.profile_birthday)
-        .setTheme(R.style.DatePickerStyle)
-        .setSelection(selection)
-        .setCalendarConstraints(
-            CalendarConstraints.Builder()
-                .setEnd(endDate.timeInMillis)
-                .setOpenAt(selection)
-                .setValidator(WeekDayValidator()).build()
-        )
-        .build()
-    picker.addOnPositiveButtonClickListener {
-        onDateSelected.invoke(it)
-    }
-    picker.show(this, "")
-}
 
 fun PopupWindow.settings() {
     isOutsideTouchable = true
@@ -188,19 +140,26 @@ object InsetUtil {
 }
 
 fun ImageView.setTint(@ColorRes colorRes: Int) {
-    ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(ContextCompat.getColor(context, colorRes)))
+    ImageViewCompat.setImageTintList(
+        this,
+        ColorStateList.valueOf(ContextCompat.getColor(context, colorRes))
+    )
 }
 
-fun AppCompatImageButton.setTint(@ColorRes colorRes: Int) {
-    this.imageTintList = ContextCompat.getColorStateList(context, colorRes)
-}
-
-fun View.getDrawable(res : Int): Drawable? {
+fun View.getDrawable(res: Int): Drawable? {
     return ContextCompat.getDrawable(context, res)
 }
 
-fun View.getColor(res : Int): Int {
+fun View.getColor(res: Int): Int {
     return ContextCompat.getColor(context, res)
+}
+
+fun TextView.setLeftDrawableWithIntrinsicBounds(res: Int) {
+    this.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0)
+}
+
+fun TextView.setRightDrawableWithIntrinsicBounds(res: Int) {
+    this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res,0)
 }
 
 fun ImageView.setImage(
@@ -239,7 +198,7 @@ fun ImageView.setImage(
 fun ImageView.setCircleAvatar(
     image: Any?, crossFad: Int? = 500,
     placeholder: Int? = R.drawable.background_image_placeholder,
-    error: Int? = R.drawable.avatar_placeholder
+    error: Int? = R.drawable.avatar_placeholder_circle
 ) {
     val resImage: Any = image ?: ""
     when (resImage) {
@@ -280,9 +239,40 @@ fun ImageRequest.Builder.setParams(
     diskCachePolicy(CachePolicy.ENABLED)
 }
 
-fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.YEAR)
-fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)
-fun getCurrentDay(): Int = System.currentTimeMillis().calendar().get(Calendar.DAY_OF_MONTH)
+
+fun ViewPager2.setCurrentItemWithDuration(
+    item: Int,
+    duration: Long,
+    pagePxWidth: Int = width,
+    onAnimation: (isAnim: Boolean) -> Unit
+) {
+    val pxToDrag: Int = pagePxWidth * (item - currentItem)
+    val animator = ValueAnimator.ofInt(0, pxToDrag)
+    var previousValue = 0
+    animator.addUpdateListener { valueAnimator ->
+        val currentValue = valueAnimator.animatedValue as Int
+        val currentPxToDrag = (currentValue - previousValue).toFloat()
+        fakeDragBy(-currentPxToDrag)
+        previousValue = currentValue
+    }
+    animator.addListener(object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator) {
+            beginFakeDrag()
+            onAnimation.invoke(true)
+        }
+
+        override fun onAnimationEnd(animation: Animator) {
+            endFakeDrag()
+            onAnimation.invoke(false)
+        }
+
+        override fun onAnimationCancel(animation: Animator) {}
+        override fun onAnimationRepeat(animation: Animator) {}
+    })
+    animator.interpolator = AccelerateDecelerateInterpolator()
+    animator.duration = duration
+    animator.start()
+}
 
 fun LinearLayoutManager.smoothScrollToFirstItem(
     context: Context,

@@ -1,32 +1,32 @@
 package com.example.ui.userprofile.edit.email
 
+import com.example.ui.base.BaseContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface ChangeEmailContract {
-    interface View : BaseBottomSheetContract.View {
+    interface View : BaseContract.View {
 
         @OneExecution
-        fun setCurrentEmail(currentEmail : String)
+        fun setCurrentEmail(currentEmail : String?)
 
         @Skip
-        fun showEmailNotValid(email: String)
+        fun showEmailError(show: Boolean)
 
         @Skip
         fun showEmailNotUnique(email: String)
 
         @Skip
-        fun showChangeEmailComplete()
+        fun showEmailConfirm(email: String)
 
         @Skip
-        fun showEmailConfirm(email: String)
+        fun enableBtnSave(enable: Boolean)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
-        fun onShowEmailConfirm(email : String)
-        fun checkEmailIsUnique(email: String)
-        fun updateEmail(email: String)
-
+    interface Presenter : BaseContract.Presenter {
+        fun onCheckEmailIsUnique()
+        fun onShowEmailConfirm()
+        fun onChangeEmailText(email: String)
     }
 }

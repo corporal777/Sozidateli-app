@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.*
+import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import android.util.SparseArray
@@ -19,6 +20,7 @@ import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -41,6 +43,7 @@ import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
 import com.example.extensions.defaultServerDateFormatter
+import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.util.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
@@ -135,9 +138,24 @@ fun TextView.onFocusChanged(onFocusChanged: (hasFocus: Boolean) -> Unit): View.O
     return watcher
 }
 
+fun EditText.showHidePasswordText(show: Boolean) {
+    if (!show) this.transformationMethod = PasswordTransformationMethod()
+    else this.transformationMethod = null
+    this.setSelection(this.length());
+}
+
+fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
+    val listener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageScrollStateChanged(state: Int) {
+            onPageChanged(state)
+        }
+    }
+    registerOnPageChangeCallback(listener)
+}
+
 fun onPageSelected(onPageChanged: (position: Int) -> Unit): ViewPager2.OnPageChangeCallback {
     val listener = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageSelected(position: Int){
+        override fun onPageSelected(position: Int) {
             onPageChanged(position)
         }
     }
@@ -199,7 +217,8 @@ fun getFragmentLifecycleCallback(
     onFragmentStarted: (f: Fragment) -> Unit?,
     onFragmentStopped: (f: Fragment) -> Unit?,
     onFragmentDestroyed: (f: Fragment) -> Unit?,
-    onViewCreated: (f: Fragment) -> Unit,
+    onFragmentViewCreated: (f: Fragment) -> Unit,
+    onBottomSheetViewCreated: (f: BaseBottomSheetFragment<*>) -> Unit,
 ): FragmentManager.FragmentLifecycleCallbacks {
     val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
 
@@ -215,7 +234,8 @@ fun getFragmentLifecycleCallback(
             savedInstanceState: Bundle?
         ) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-            onViewCreated(f)
+            if (f is BaseBottomSheetFragment<*>) onBottomSheetViewCreated(f)
+            else onFragmentViewCreated(f)
         }
 
         override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
@@ -271,11 +291,13 @@ fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
             statusTextColorRes = R.color.profile_status_low_text
             statusBackgroundStyleRes = R.style.ViewBackgroundStatusLow
         }
+
         User.Status.MID_PROTECTION -> {
             statusTextRes = R.string.profile_status_mid
             statusTextColorRes = R.color.profile_status_mid_text
             statusBackgroundStyleRes = R.style.ViewBackgroundStatusMid
         }
+
         User.Status.MAX_PROTECTION -> {
             statusTextRes = R.string.profile_status_max
             statusTextColorRes = R.color.profile_status_max_text
@@ -630,6 +652,13 @@ fun String?.parseColor(): Int? {
         null
     }
 }
+
+var Fragment.statusBarColorValue: Int
+    get() = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    set(value) {
+        if (requireActivity().window.decorView.systemUiVisibility == value) return
+        else requireActivity().window.decorView.systemUiVisibility = value
+    }
 
 fun Fragment.onBackPressedCallback(
     enabled: Boolean,

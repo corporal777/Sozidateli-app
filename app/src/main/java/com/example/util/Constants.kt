@@ -72,6 +72,7 @@ const val GENDER_MALE = "M"
 const val GENDER_FEMALE = "F"
 
 const val SN_VK = "vk"
+const val SN_GU = "gosUslugi"
 const val SN_OK = "ok"
 const val SN_FB = "fb"
 
@@ -112,4 +113,5 @@ const val DEGREES_MAX_SIZE = 10
 const val PHONE_PERSONAL = "personal"
 const val PHONE_WORK = "work"
 
-var IS_EXPANDED = true
+const val PAGE_SIZE = 30
+const val PAGE_PLACEHOLDER = false

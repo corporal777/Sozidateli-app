@@ -1,20 +1,20 @@
 package com.example.ui.userprofile.edit.phone
 
 import com.example.data.AppData
+import com.example.data.bodies.FieldPhoneBody
 import com.example.data.models.FieldDetails
-import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_PHONE
-import com.example.extensions.phoneToServer
+import com.example.exceptions.PhoneNotUniqueException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
-import io.reactivex.Single
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
+import withCustomLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -23,110 +23,79 @@ class ChangePhonePresenter
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
     private val appData: AppData,
-) : BaseBottomSheetPresenter<ChangePhoneContract.View>(appData),
-    ChangePhoneContract.Presenter {
+) : BasePresenter<ChangePhoneContract.View>(appData), ChangePhoneContract.Presenter {
 
-    var mobilePhone: String = ""
-    var oldMobilePhone: String = ""
-    var isConfirmed = false
-    var isVisible = false
-    var phoneField: FieldDetails? = null
-    var withUpdate = false
+    private var phoneField: FieldDetails? = null
+
+    private var phone: String = ""
+    private var phoneIsVisible: Boolean = true
+    private var phoneIsConfirmed: Boolean = false
 
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.apply {
-            setUserPhone(mobilePhone)
-            setUserPhoneIsConfirmed(isConfirmed)
-            setUserPhoneIsVisible(isVisible)
+    override fun attachView(view: ChangePhoneContract.View?) {
+        super.attachView(view)
+        phoneField = appData.getUser().phone?.firstOrNull { it.type == PHONE_PERSONAL }
+        phone = phoneField?.value ?: ""
+        phoneIsVisible = phoneField?.isVisible ?: true
+        phoneIsConfirmed = phoneField?.isConfirmed ?: false
+
+        viewState.setUserPhone(phone, phoneIsVisible)
+        performDataChange()
+    }
+
+
+    override fun onSavePhoneClick(withCheck: Boolean) {
+        compositeDisposable += Completable.defer {
+            if (withCheck && !isSamePhone())
+                userRepository.checkEmailPhone(null, phone)
+                    .onErrorResumeNext { Completable.error(PhoneNotUniqueException()) }
+            else Completable.complete()
         }
-    }
-
-    override fun setNewPhone(phone: String) {
-        this.mobilePhone = phone
-    }
-
-    override fun setNewPhoneIsConfirmed(phone: String) {
-        if (phoneField?.isConfirmed == true) {
-            this.isConfirmed = phone.phoneToServer() == oldMobilePhone
-            viewState.setUserPhoneIsConfirmed(isConfirmed)
-        }
-    }
-
-    override fun setNewPhoneIsVisible(isVisible: Boolean) {
-        this.isVisible = isVisible
-    }
-
-    override fun onSaveNewPhoneClick(phone: String) {
-        if (phoneField?.isConfirmed == true) {
-            if (this.isConfirmed) updatePhoneData()
-            else viewState.showEnterPassword(phone)
-        } else updatePhoneData()
-    }
-
-    override fun checkPassword(password: String, phone: String) {
-        compositeDisposable += userRepository.checkPassword(password)
+            .andThen(updatePhoneRequest())
             .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
-                    viewState.hideEnterPassword()
-                }, onComplete = {
-                    viewState.hideEnterPassword()
-                    checkPhoneIsUnique(phone)
+                    if (it is PhoneNotUniqueException) viewState.showPhoneNotUnique(phone)
+                    else onReceiveError(it)
+                },
+                onComplete = {
+                    if (phoneIsConfirmed && !isSamePhone()) onShowConfirmClick(false)
+                    else viewState.navigateUp()
                 })
     }
 
-    override fun checkPhoneIsUnique(phone: String) {
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { viewState.showPhoneNotUnique(phone) },
-                onComplete = { onShowPhoneConfirm(phone) }
-            )
+    override fun onShowConfirmClick(withAdd: Boolean) {
+        viewState.showPhoneConfirmation(phone, withAdd)
     }
 
-    override fun onShowPhoneConfirm(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.showPhoneConfirmation(phone)
-            }
+    override fun onChangePhone(phone: String) {
+        this.phone = phone
+        performDataChange()
     }
 
-
-    override fun updatePhoneData() {
-        compositeDisposable += updatePhoneRequest()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { user ->
-                    val phone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }
-                    viewState.apply {
-                        showPhoneIsUpdatedSuccessfully(phone)
-                    }
-                })
+    override fun onChangePhoneVisible(isVisible: Boolean) {
+        this.phoneIsVisible = isVisible
     }
 
-
-    private fun updatePhoneRequest(): Single<UserDetail> {
+    private fun updatePhoneRequest(): Completable {
         return userRepository.updateUserProfileField(
             mapOf(
-                USER_PHONE to arrayListOf(
-                    FieldDetails(
-                        value = Utils.validatePhoneBeforeSend(mobilePhone.phoneToServer() ?: ""),
-                        type = phoneField?.type,
-                        isVisible = isVisible
-                    )
-                )
+                USER_PHONE to FieldPhoneBody(
+                    value = phone,
+                    type = phoneField?.type,
+                    isVisible = phoneIsVisible
+                ).toList()
             )
-        ).doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }
+        ).doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }.ignoreElement()
     }
 
-    fun isWithUpdate(): Boolean = withUpdate
+    private fun isSamePhone() = phoneField?.value == phone
 
+    private fun performDataChange() {
+        viewState.enableBtnSave(Utils.isPhoneNumberValid(phone))
+        if (isSamePhone()) viewState.enableBtnConfirm(phoneIsConfirmed)
+        else viewState.enableBtnConfirm(false)
+    }
 
 }

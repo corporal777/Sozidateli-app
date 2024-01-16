@@ -16,9 +16,8 @@
         <item name="android:datePickerDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:windowBackground">@color/main_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:navigationBarColor">@color/bottom_navigation_view_background_color
-        </item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/bottom_navigation_view_background_color</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
@@ -81,6 +80,16 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Stories">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowLightStatusBar" >true</item>
         <item name="colorControlNormal">@android:color/white</item>
     </style>
 
@@ -327,18 +336,6 @@
         <item name="android:layout_marginTop">0dp</item>
     </style>
 
-    <style name="Profile.Data.Main">
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textColor">@color/profile_name_text</item>
-        <item name="android:textColorLink">@color/profile_data_text_link</item>
-        <item name="android:textColorHint">@color/profile_data_text_hint</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_main_data</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_main_data</item>
-    </style>
-
 
     <style name="Profile.Data">
         <item name="android:letterSpacing">-0.02</item>
@@ -381,7 +378,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/background_highlight</item>
         <item name="android:theme">@style/ViewBackgroundWhite</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">@dimen/profile_page_button_text_size</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">56dp</item>
     </style>
@@ -786,14 +783,14 @@
     <style name="Profile.Edit.TextViewTitle">
         <item name="android:letterSpacing">-0.01</item>
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/common_edit_text_title_size</item>
         <item name="android:textColor">@color/chat_list_date</item>
         <item name="android:layout_marginBottom">9dp</item>
     </style>
 
     <style name="Profile.Edit.BlockTitle">
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:layout_marginBottom">9dp</item>
@@ -897,7 +894,18 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="BtnCancelStyle">
+    <style name="BtnWhiteCancelStyle">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
+        <item name="android:background">@drawable/custom_btn_white_cancel_selectable</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BtnGrayCancelStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">-0.01</item>
         <item name="android:stateListAnimator">@null</item>
@@ -987,12 +995,12 @@
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">@dimen/common_edit_text_size</item>
         <item name="android:textColor">@color/input_text_color</item>
         <item name="android:backgroundTint">@color/background_input_edit_text</item>
         <item name="android:textColorHint">@color/input_hint_text_color</item>
         <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
-        <item name="android:minHeight">@dimen/edit_text_min_height</item>
+        <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
@@ -1012,13 +1020,25 @@
     </style>
 
     <style name="ClickableTextView">
-        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:letterSpacing">-0.01</item>
         <item name="fontPath">fonts/sf_pro_display_bold.ttf</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">@dimen/clickable_text_view_size</item>
         <item name="android:textColor">@color/text_color_action_text</item>
         <item name="android:background">@drawable/custom_text_background_selectable</item>
+    </style>
+
+    <style name="AuthPagerTextViewTitleHeavyStyle">
+        <item name="fontPath">fonts/sf_pro_display_heavy.ttf</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:shadowDy">4</item>
+        <item name="android:shadowRadius">6</item>
+        <item name="android:shadowColor">#40000000</item>
     </style>
 
 </resources>

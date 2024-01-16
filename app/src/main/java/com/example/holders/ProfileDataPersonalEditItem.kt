@@ -93,10 +93,7 @@ class ProfileDataPersonalEditItem(
             }
 
             tvEditNotes.apply {
-                scNotes.apply {
-                    isVisible = notes?.value?.isNullOrEmpty() == false
-                    initSwitch(mNotesShow) { mNotesShow = it }
-                }
+                scNotes.initSwitch(mNotesShow) { mNotesShow = it }
                 setOnClickListener {
                     AdditionalInfoBottomSheet(root.context, mNotes)
                         .setSaveClickCallback {
@@ -113,11 +110,13 @@ class ProfileDataPersonalEditItem(
 
 
     private fun setNotes(viewBinding: ItemProfileDataEditPersonalBinding) {
-        viewBinding.tilNotes.apply {
-            setInformationIconVisibility(mNotes.isNullOrEmpty()) {
+        viewBinding.scNotes.isVisible = !mNotes.isNullOrEmpty()
+        viewBinding.tvNotes.apply {
+            setIconVisibility(mNotes.isNullOrEmpty())
+            getInputLayout().setEndIconOnClickListener {
                 AboutAdditionalInfoBottomSheet(context).show()
             }
-            viewBinding.etNotes.setText(mNotes)
+            setText(mNotes)
         }
     }
 

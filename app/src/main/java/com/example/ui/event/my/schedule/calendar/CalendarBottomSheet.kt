@@ -12,7 +12,6 @@ import com.example.data.models.EventScheduleDay
 import com.example.databinding.BottomSheetCalendarBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.longToDate
 import com.pagercalendar.calendar.CalendarDay
 import com.pagercalendar.calendar.DayViewDecorator
 import com.pagercalendar.calendar.DayViewFacade

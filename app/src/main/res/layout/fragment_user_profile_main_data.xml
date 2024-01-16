@@ -29,15 +29,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/user_profile_birthday"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/profile_title_text" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvBirthday"
-                    style="@style/Profile.Data.Main"
+                    style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:hint="@string/user_profile_additional_hint"
-                    android:textColor="@color/profile_title_text" />
+                    android:textColor="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
@@ -45,15 +46,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/user_profile_gender"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/profile_title_text" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvGender"
-                    style="@style/Profile.Data.Main"
+                    style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:hint="@string/user_profile_additional_hint"
-                    android:textColor="@color/profile_title_text" />
+                    android:textColor="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
@@ -61,24 +63,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/user_profile_address"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/profile_title_text" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvRegion"
-                    style="@style/Profile.Data.Main"
+                    style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
                     android:hint="@string/user_profile_additional_hint"
-                    android:textColor="@color/profile_title_text" />
+                    android:textColor="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvCity"
-                    style="@style/Profile.Data.Main"
+                    style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:hint="@string/user_profile_additional_hint"
-                    android:textColor="@color/profile_title_text" />
+                    android:textColor="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Profile.User.Title"
@@ -86,23 +90,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/profile_additional_data_and_files"
-                    android:textColor="@color/black" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvAdditional"
-                    style="@style/Profile.Data.Main"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:hint="@string/user_profile_additional_hint"
                     android:textColor="@color/profile_title_text" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvFiles"
-                    style="@style/Profile.Data.Main"
+                    android:id="@+id/tvAdditional"
+                    style="@style/Profile.Data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:hint="@string/user_profile_additional_hint"
+                    android:textColor="@color/black" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFiles"
+                    style="@style/Profile.Data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:hint="@string/user_profile_files_hint" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

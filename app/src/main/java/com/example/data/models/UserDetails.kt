@@ -1,10 +1,13 @@
 package com.example.data.models
 
+import android.content.Context
 import android.os.Parcelable
 import coil.transform.RoundedCornersTransformation
 import com.example.R
 import com.example.extensions.dp
+import com.example.extensions.parsePhone
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import com.example.util.setImage
 import com.google.gson.annotations.SerializedName
@@ -27,9 +30,6 @@ data class UserDetail(
     var phone: List<FieldDetails>? = null,
     @SerializedName("contactInformation")
     var contactInformation: ContactInformationModel,
-    /*var site: FieldListDetails? = null,
-    @SerializedName("socialLinks")
-    var socialLinks: FieldListDetails? = null,*/
     var birthday: FieldDetails? = null,
     var image: ImageModel? = null,
     var gender: ToggleStringModel? = null,
@@ -53,7 +53,8 @@ data class UserDetail(
     val qrCodeLink: String? = null,
     @SerializedName("recomendationFilesCount")
     var filesCount: Int = 0,
-
+    val socialBinds: SocialBindsModel? = null,
+    val avatarIsDefault : Boolean? = true
 ) : Parcelable {
 
     val nameLastName: String
@@ -81,13 +82,25 @@ data class UserDetail(
             else "@$shortName"
         }
 
+    val personalPhone: FieldDetails?
+        get() = phone?.firstOrNull { it.type == PHONE_PERSONAL }
+
+    val personalEmail: String?
+        get() {
+            return if (email == null) null
+            else if (!email?.onConfirmation.isNullOrEmpty()) email?.onConfirmation
+            else email?.value
+        }
+
+    val userGender: String
+        get() = when (gender?.value) {
+            "M" -> "Мужской"
+            "F" -> "Женский"
+            else -> ""
+        }
+
     fun getMiddleName(): String? {
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
-    }
-
-    fun getUserEmail(): String? {
-        if (!email?.onConfirmation.isNullOrEmpty()) return email?.onConfirmation
-        else return email?.value
     }
 
     fun isHasEmailOnConfirmation(): Boolean {
@@ -102,9 +115,9 @@ data class UserDetail(
 
     fun getUserInterests(): List<Int> {
         var userInterests = listOf<Int>()
-        if (!interests.isNullOrEmpty()){
-            if (interests?.firstOrNull() != null){
-                userInterests = interests?: emptyList()
+        if (!interests.isNullOrEmpty()) {
+            if (interests?.firstOrNull() != null) {
+                userInterests = interests ?: emptyList()
             }
         }
         return userInterests
@@ -126,10 +139,24 @@ data class UserDetail(
         return if (image == null) null
         else {
             if (image?.uri.isNullOrEmpty()) null
+            else if (avatarIsDefault == true) null
             else image?.uri
         }
     }
 
+    fun getVkontakteBinds(): VKBindsModel? {
+        return socialBinds?.vkontakte
+    }
+
+    fun getVkUUID() = socialBinds?.vkontakte?.uuid ?: ""
+
+    fun genderToServer(value: String?): String? {
+        return when (value) {
+            "Мужской" -> "M"
+            "Женский" -> "F"
+            else -> null
+        }
+    }
 
     companion object {
         const val USER_EMAIL = "email"
@@ -389,7 +416,8 @@ data class UserState(
     @SerializedName("isSuspend")
     val isSuspend: BooleanModel? = null,
     @SerializedName("registrationState")
-    val isRegistered: Boolean? = null
+    val isRegistered: Boolean? = null,
+    var isEmptyPassword: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -420,7 +448,7 @@ data class NewUserAddress(
     @SerializedName("shortValue")
     var shortAddres: String? = null,
     @SerializedName("showInProfile")
-    val showInProfile: Boolean? = false
+    var showInProfile: Boolean? = false
 ) : Parcelable {
 
     fun getShortAddress(): String {
@@ -476,7 +504,7 @@ data class ImageResponse(
     val size: Long? = null,
     val name: String? = null,
     val id: String? = null,
-    val path : String? = null
+    val path: String? = null
 ) {
     fun toImageModel(): ImageModel {
         return ImageModel(
@@ -542,10 +570,27 @@ data class FieldListDetails(
     val absent: Boolean? = null
 ) : Parcelable
 
+
 @Parcelize
 data class AcademicDegreeModelNew(
     val id: Int? = null,
     val user: Int? = null,
     val speciality: EducationLevel? = null,
     val degree: EducationLevel? = null
+) : Parcelable
+
+@Parcelize
+data class SocialBindsModel(
+    @SerializedName("vk")
+    var vkontakte: VKBindsModel?
+) : Parcelable
+
+@Parcelize
+data class VKBindsModel(
+    val id: Int,
+    val user: Int,
+    val uuid: String,
+    val phone: String,
+    val email: String,
+    val registeredByVk: Boolean?
 ) : Parcelable

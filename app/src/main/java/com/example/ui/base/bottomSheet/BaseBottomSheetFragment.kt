@@ -12,10 +12,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.core.view.updateLayoutParams
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.databinding.LayoutFilterBinding
 import com.example.ui.base.BaseActivity
 import com.example.ui.views.StateType
 import com.example.ui.views.WarningDialog
@@ -25,9 +28,8 @@ import com.google.android.material.textfield.TextInputEditText
 import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
-    val type: Int = 0,
     val lightDim: Boolean = false,
-    val isTransparent : Boolean = false
+    val isTransparent: Boolean = false
 ) : MvpAppCompatBottomSheetFragment(), BaseBottomSheetContract.View {
 
     lateinit var mBinding: binding
@@ -51,7 +53,6 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
             dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            if (type == 1) { dialog.setOnShowListener { setupFullHeight(dialog) } }
             if (lightDim) dialog.window?.setDimAmount(0.3f)
         }
         return dialog
@@ -62,27 +63,14 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
         else return super.getTheme()
     }
 
-    private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
-        val bottomSheet: FrameLayout =
-            dialog!!.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        showFullScreenBottomSheet(bottomSheet)
-    }
-
-    private fun showFullScreenBottomSheet(bottomSheet: FrameLayout) {
-        val layoutParams = bottomSheet.layoutParams
-        layoutParams.height = Resources.getSystem().displayMetrics.heightPixels - 50
-        bottomSheet.layoutParams = layoutParams
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         if (::mBinding.isInitialized.not()) {
-            mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
-            mBinding.lifecycleOwner = this
+            mBinding = DataBindingUtil.inflate(inflater, layout(), container, false)
+            mBinding.lifecycleOwner = viewLifecycleOwner
         }
         return mBinding.root
     }
@@ -174,6 +162,10 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
 
     override fun showRequestErrorMessage() {
         mActivity?.showRequestErrorMessage()
+    }
+
+    override fun setIgnoreTokenListener(isIgnore: Boolean) {
+        mActivity?.setIgnoreTokenListener(isIgnore)
     }
 
     override fun onDestroyView() {

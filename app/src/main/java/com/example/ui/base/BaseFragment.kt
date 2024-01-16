@@ -23,12 +23,13 @@ import com.example.ui.views.*
 import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.util.Utils
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 
-abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean = false) :
-    MvpAppCompatFragment(),
-    BaseContract.View {
+abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(), BaseContract.View {
 
     lateinit var mBinding: binding
 
@@ -43,22 +44,18 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidSupportInjection.inject(this)
         super.onCreate(savedInstanceState)
-        if (canShowAnim) {
+        if (animationType() == AnimType.AXIS) {
             postponeEnterTransition()
-            showEnterAnimation()
-        }
-
-//        RxJavaPlugins.setErrorHandler { e ->
-//            e.printStackTrace()
-//            if (e is UndeliverableException) {
-//
-//            } else {
-//                Thread.currentThread().also { thread ->
-//                    e.printStackTrace()
-//                    thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
-//                }
-//            }
-//        }
+            enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+                duration = (350).toLong()
+            }
+            returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+                duration = (450).toLong()
+            }
+        } else if (animationType() == AnimType.FADE) {
+            enterTransition = MaterialFadeThrough()
+            exitTransition = MaterialFadeThrough()
+        } else return
     }
 
     override fun onCreateView(
@@ -67,7 +64,7 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
         savedInstanceState: Bundle?
     ): View? {
         if (::mBinding.isInitialized.not()) {
-            mBinding = DataBindingUtil.inflate(layoutInflater, layout(), container, false)
+            mBinding = DataBindingUtil.inflate(inflater, layout(), container, false)
             mBinding.lifecycleOwner = viewLifecycleOwner
         }
         return mBinding.root
@@ -82,15 +79,6 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     @LayoutRes
     abstract fun layout(): Int
 
-    override fun showEnterAnimation() {
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-            duration = (350).toLong()
-        }
-
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
-            duration = (450).toLong()
-        }
-    }
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -344,6 +332,14 @@ abstract class BaseFragment<binding : ViewDataBinding>(val canShowAnim: Boolean 
     open fun onExpandedState() {}
     open fun onCollapsedState() {}
     open fun scrollToFirstItem() {}
+
+    open fun animationType(): AnimType {
+        return AnimType.NONE
+    }
+
+    enum class AnimType {
+        FADE, AXIS, NONE
+    }
 
     private var cashCollapseState: Pair<Int, Int>? = null
 

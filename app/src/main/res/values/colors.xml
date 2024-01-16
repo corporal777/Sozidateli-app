@@ -206,9 +206,6 @@
 
     <color name="dialog_event_registration_profile_fields_message">#77767E</color>
 
-    <color name="stories_progress_primary">#C3996C</color>
-    <color name="stories_progress_secondary">#4D979797</color>
-
     <color name="action_button_register_background_enabled">#C3996C</color>
     <color name="action_button_register_background_disabled">#66C3996C</color>
 
@@ -231,8 +228,8 @@
     <color name="color_green_button_new">#8CA26B</color>
     <color name="search_field_background_color">#1F767680</color>
     <color name="main_brown_color_new">#BE9B72</color>
+    <color name="main_brown_color">#A57F56</color>
 
-    <color name="colorOverlay">#78ffffff</color>
     <color name="white_smoke_color">#F6F6F6</color>
 
     <color name="event_register_input_normal_color">#F6F6F6</color>
@@ -260,6 +257,16 @@
 
 
     <color name="title_text_error_red">#F42223</color>
+    <color name="gos_uslugi_button_text_color">#0D4CD3</color>
+    <color name="item_stories_title_text_color">#E6FFFFFF</color>
 
+
+    <color name="stories_progress_max_active">@color/white</color>
+    <color name="stories_progress_primary">#BE9B72</color>
+    <color name="stories_progress_secondary">#66FFFFFF</color>
+    <color name="main_vk_blue_color">#0077FF</color>
+
+    <color name="blurColorOverlay">#80F9F9F9</color>
+    <color name="circle_rounded_corners_button_color">#543C3C43</color>
 
 </resources>

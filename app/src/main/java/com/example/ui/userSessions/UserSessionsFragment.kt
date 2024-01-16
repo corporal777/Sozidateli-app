@@ -27,7 +27,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(true),
+class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
     UserSessionsContract.View, ToolbarFragment {
 
 
@@ -38,8 +38,7 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(true),
     lateinit var presenterProvider: Provider<UserSessionsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): UserSessionsPresenter = presenterProvider.get().apply {
-    }
+    fun providePresenter(): UserSessionsPresenter = presenterProvider.get()
 
 
     private val currentSessionSection by lazy {
@@ -120,6 +119,7 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(true),
         MessageDialogWithBrownButton(requireContext(), message)
     }
 
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_user_sessions
     override val title: CharSequence by lazy { getString(R.string.sessions_label) }
     override fun actionIconContainer(view: ViewGroup) {

@@ -58,15 +58,23 @@
     <string name="auth_with_social_network">С помощью социальных сетей</string>
     <string name="auth_with_email">С помощью электронной почты</string>
     <string name="auth_or_login">Уже есть аккаунт?</string>
+    <string name="or_auth_in_one_click">Или войдите в один клик</string>
     <string name="auth_label_login">Войти</string>
+    <string name="auth_label_create">Создать</string>
+    <string name="auth_label_login_with_vk">Войти через VK ID</string>
+    <string name="auth_label_login_with_gos">Войти через Госуслуги</string>
+    <string name="auth_title_login_fragment">Вход</string>
     <string name="email">E-mail</string>
+    <string name="login">Логин</string>
     <string name="email_or_phone">E-mail или телефон</string>
+    <string name="email_or_phone_hint">Номер телефона или email</string>
     <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
-    <string name="auth_login_with_email">с помощью Вашей электронной почты или телефона</string>
+    <string name="auth_login_with_email">Введите электронную почту или номер телефона</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
-    <string name="auth_register_sn">Пожалуйста, завершите процесс регистрации</string>
+    <string name="auth_register_sn">Подтвердите ваши данные</string>
+    <string name="auth_recovery_email_error">Пожалуйста, убедитесь, что указали правильный e-mail или номер телефона и повторите попытку</string>
     <string name="auth_create_account">Создать аккаунт</string>
     <string name="auth_hint_password_strong_1">-6 знаков</string>
     <string name="auth_hint_password_strong_2">-Не менее 1 заглавной буквы</string>
@@ -82,6 +90,7 @@
     <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
     <string name="auth_input_middle_name_hint">Укажите Ваше отчество</string>
     <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
+    <string name="auth_input_email_or_phone_title">Введите телефон или email</string>
     <string name="auth_input_email_or_phone_hint">Мобильный телефон или e-mail</string>
     <string name="auth_input_email_again_hint">Введите e-mail повторно</string>
     <string name="auth_input_password_hint">Пароль</string>
@@ -105,7 +114,7 @@
     <string name="auth_error_no_code">Введите код</string>
     <string name="auth_error_no_call">Введите последние 4 цифры</string>
     <string name="auth_error_code">Неверный код</string>
-    <string name="auth_error_code_new">Неправильно, пожалуйста, попробуйте снова</string>
+    <string name="auth_error_code_new">Пожалуйста, попробуйте ещё раз</string>
     <plurals name="seconds_timer">
         <item quantity="zero">%d секунд</item>
         <item quantity="one">%d секунду</item>
@@ -367,12 +376,16 @@
     <string name="image_transition_name">image_open_transition</string>
     <string name="camera_transition_name">camera_transition</string>
 
+    <string name="create_password_title">Задайте пароль</string>
+    <string name="reset_password_title">Сброс пароля</string>
     <string name="recovery_password_title">Восстановление пароля</string>
     <string name="recovery_password_btn">Восстановить</string>
+    <string name="recovery_check_email">Проверить почту</string>
     <string name="recovery_confirm_email_message">Пожалуйста, проверьте свою почту %s, там уже ожидает письмо с инструкцией по восстановлению пароля.\n\nЕсли Вы не найдете его в папке «Входящие», загляните в «Спам». Но если и в этом случае письмо не обнаружено, обратитесь в службу поддержки</string>
     <string name="recovery_set_password_title">Пожалуйста, укажите новый пароль и нажмите кнопку «Сохранить»</string>
     <string name="recovery_confirm_password">Подтвердите пароль</string>
     <string name="recovery_password_wrong_email_error">Упс… Такой пользователь не найден.\nПожалуйста, убедитесь, что указали правильный %s, и повторите попытку.</string>
+    <string name="recovery_password_user_not_found_error">Такой пользователь не найден</string>
 
     <string name="profile_label">Личный кабинет</string>
     <string name="profile_current_user_label">Профиль</string>
@@ -777,6 +790,7 @@
         \n\nНе забудьте указать в письме причину вашего отказа, это упростит работу наших сотрудников и ускорит решение вашей проблемы.</string>
     <string name="event">Событие</string>
     <string name="phone">Телефон</string>
+    <string name="mobile_phone">Мобильный телефон </string>
     <string name="tags">Теги</string>
     <string name="notification_event_title">Сообщение от организаторов мероприятия: %s</string>
     <string name="notification_event_title_new">Сообщение от организаторов мероприятия:</string>
@@ -878,12 +892,10 @@
     <string name="change_email_text">Эта почта является логином, на нее приходят все рассылки и уведомления, связанные с Вашим профилем. Для смены или подтверждения основной почты, пожалуйста, перейдите в настройки аккаунта.</string>
     <string name="change_email_positive_button">Перейти в настройки</string>
     <string name="change_email_negative_button">Позже</string>
-    <string name="current_login">Текущий логин</string>
-    <string name="new_login">Новый логин</string>
+    <string name="current_login">Текущий e-mail</string>
+    <string name="new_login">Новый e-mail</string>
     <string name="new_email">Введите новый email</string>
     <string name="additional_data_hint">Расскажите о себе и своих достижениях</string>
-    <string name="current_login_invalid">Введите правильный текущий логин</string>
-    <string name="new_login_invalid">Введите правильный новый логин</string>
     <string name="profile_email_add">Добавить email</string>
     <string name="confirm_phone_text">Введенный номер %s уже подтвержден в другом профиле. Если Вы действительно хотите привязать данный номер к текущему профилю, нажмите «Подтвердить».\nДля внесения изменений нажмите на «Отменить».</string>
     <string name="confirm_phone_positive">Подтвердить</string>
@@ -1024,10 +1036,6 @@
 
     <string name="lorem_ipsum_dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
 
-    <string name="yandex_app_metric_key">faf7bdc3-762b-4c6a-8813-a6a8fb26f448</string>
-    <string name="shake_client_id">oyDHzEmxoVIrNju4DlROVuuhoukYUe5crbSbqle1</string>
-    <string name="shake_client_secret">QDH6Q6RJhV4lDisYs8TPLbIimILrLqKgQHUT4n8YKrAp9lm86lXBDGK</string>
-
 
     <string name="unread_notifications_label">Непросмотренные уведомления</string>
     <string name="system_notifications">Системные уведомления</string>
@@ -1051,7 +1059,6 @@
 Обращаем внимание, что данный раздел является очень важным при подаче заявки на конкурс президентских грантов, поскольку эти сведения могут помочь экспертам убедиться в том, что Вы обладаете достаточным опытом, чтобы успешно справиться с заявленной ролью в команде проекта.</string>
 
 
-    <string name="asset_statements">[{\"include\": \"https://sozidateli.ru/.well-known/assetlinks.json\"}]</string>
     <string name="no_education">Нет образования</string>
 
 
@@ -1077,7 +1084,22 @@
     <string name="auth_user_agreement">Я подтверждаю, что ознакомлен(а) и принимаю условия пользовательского соглашения</string>
 
     <string name="confirm_phone_number_by_code">Подтвердите номер</string>
+    <string name="confirm_email_by_code">Подтвердите email</string>
     <string name="enter_last_four_numbers_of_call_number">Введите последние 4 цифры номера\n входящего звонка</string>
+    <string name="enter_last_six_numbers_from_letter">На почту отправлен код из 6 цифр. Введите его для подтверждения</string>
+    <string name="email_for_communication_text">Email для коммуникации</string>
+    <string name="input_your_email_text">Введите Ваш email</string>
 
+
+
+    <string name="auth_pager_title_text">Присоединяйтесь к сообществу лидеров социальных проектов</string>
+    <string name="you_does_not_have_password">У вас нет пароля</string>
+    <string name="create_password">Создать пароль</string>
+    <string name="user_linked_accounts">Связанные аккаунты</string>
+    <string name="link_account">Привязать</string>
+    <string name="unlink_account">Привязан</string>
+    <string name="which_account_to_link_vk_id">Какой аккаунт связать \nс VK ID?</string>
+
+    <string name="blocked_account_email_text">Я пытаюсь использовать свой логин: %s, но система говорит, что превышено количество попыток ввода пароля. Пожалуйста, помогите.\n</string>
 
 </resources>

@@ -40,7 +40,7 @@ class SearchUserPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         val data = buildFilterNew(limit, offset)
-        userRepository.searchUsersNew(data).doOnSuccess {
+        userRepository.searchUsers(data).doOnSuccess {
             val uid = appData.getId()
             it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
         }

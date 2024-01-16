@@ -5,15 +5,15 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="@android:color/black">
+            android:background="@drawable/background_auth_very_small">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/top_guideLine"

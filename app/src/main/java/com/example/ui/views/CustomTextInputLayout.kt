@@ -61,7 +61,7 @@ class CustomTextInputLayout : TextInputLayout {
 
     fun setInformationIconVisibility(show: Boolean, onClick: () -> Unit) {
         if (show) {
-            endIconDrawable = ContextCompat.getDrawable(context, R.drawable.ic_about_session)
+            endIconDrawable = getDrawable(R.drawable.ic_about_session)
             endIconMode = END_ICON_CUSTOM
             setEndIconOnClickListener { onClick.invoke() }
         } else {

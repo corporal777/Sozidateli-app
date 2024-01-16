@@ -10,6 +10,7 @@ import android.view.View
 import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.databinding.BottomSheetConfirmPhoneBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
@@ -133,9 +134,7 @@ class ConfirmEmailPhoneFragment(val phone: String) :
         return this
     }
 
-    companion object {
-        const val CONFIRM_PHONE_FRAGMENT_TAG = "confirm_phone_tag"
-    }
+
 
     private fun getEmailFormattedDescription(text: String, login: String): SpannableString {
         return SpannableString(text).apply {
@@ -173,6 +172,14 @@ class ConfirmEmailPhoneFragment(val phone: String) :
         return SpannableStringBuilder(text).append("\n").append("\n").append(phone)
     }
 
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, "confirm_email_phone")
+    }
+
+    companion object {
+        const val CONFIRM_PHONE_FRAGMENT_TAG = "confirm_phone_tag"
+    }
 
     override fun layout(): Int = R.layout.bottom_sheet_confirm_phone
 }

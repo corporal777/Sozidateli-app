@@ -2,17 +2,14 @@ package com.example.ui.auth.register.email.newbuild
 
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
+import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface RegisterEmailContract {
-    interface View : BaseAuthContract.View {
-
+    interface View : BaseContract.View {
         @OneExecution
         fun enableRegisterBtn(isEnable: Boolean)
-
-        @OneExecution
-        fun showSnRegistration(snUser: SnUser)
 
         @OneExecution
         fun showFinishRegister(
@@ -52,7 +49,7 @@ interface RegisterEmailContract {
         fun showAgreementSelection(isValid: Boolean)
     }
 
-    interface Presenter : BaseAuthContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun onClickClose()
         fun onClickRegister()
 

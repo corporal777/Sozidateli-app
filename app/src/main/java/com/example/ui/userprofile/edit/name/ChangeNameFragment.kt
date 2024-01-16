@@ -2,10 +2,12 @@ package com.example.ui.userprofile.edit.name
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.BottomSheetChangeNameBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.base.bottomSheet.FullScreenBottomSheetFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import onTextChanged
@@ -91,6 +93,10 @@ class ChangeNameFragment(private val user: UserDetail) :
         }
     }
 
+    override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
+    override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
+
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "change_name")
 
     companion object {
         const val CHANGE_NAME_FRAGMENT_TAG = "change_name_tag"

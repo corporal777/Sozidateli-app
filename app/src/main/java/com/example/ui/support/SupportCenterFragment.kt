@@ -29,7 +29,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SupportCenterFragment : BaseFragment<FragmentSupportCenterBinding>(true), ToolbarFragment,
+class SupportCenterFragment : BaseFragment<FragmentSupportCenterBinding>(), ToolbarFragment,
     SupportCenterContract.View {
 
     @InjectPresenter
@@ -99,7 +99,7 @@ class SupportCenterFragment : BaseFragment<FragmentSupportCenterBinding>(true), 
         findNavController().navigate(R.id.supportSearchFragment)
     }
 
-
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_support_center
     override val title: CharSequence by lazy { getString(R.string.support_directory) }
     override fun actionIconContainer(view: ViewGroup) {}

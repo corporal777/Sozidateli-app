@@ -33,7 +33,7 @@ class UserAgreementFragment : BaseFragment<FragmentPageBinding>(), UserAgreement
     }
 
     override fun setContent(content: String) {
-        tvInfo.setHtml(content)
+        tvInfo.setText(content)
     }
 
     override fun setTitle(title: String) {

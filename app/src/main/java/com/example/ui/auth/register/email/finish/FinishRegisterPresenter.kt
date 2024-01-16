@@ -13,13 +13,12 @@ import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
-import com.example.ui.auth.base.BaseAuthPresenter
-import com.example.ui.snAuth.SnAuth
-import com.example.ui.snAuth.SnAuthManager
+import com.example.ui.base.BasePresenter
 import com.example.ui.views.AddPhoneEmailDialog
-import com.example.util.*
+import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
+import com.example.util.Utils
 import com.example.util.Utils.validatePhoneBeforeSend
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -36,12 +35,10 @@ class FinishRegisterPresenter
 @Inject constructor(
     private val appData: AppData,
     private val authRepository: AuthRepository,
-    private val phoneNumberUtil: PhoneNumberUtil,
     private val userRepository: UserRepository,
     private val chatRepository: ChatRepository,
     private val socket: SocketIOManager,
-    snAuthManager: SnAuthManager
-) : BaseAuthPresenter<FinishRegisterContract.View>(authRepository, snAuthManager, appData),
+) : BasePresenter<FinishRegisterContract.View>(appData),
     FinishRegisterContract.Presenter {
 
     var firstName: String = ""
@@ -215,9 +212,6 @@ class FinishRegisterPresenter
                     logout()
                 }
             }
-    }
-
-    override fun onContinueWithSnRegistration(SnAuth: SnAuth) {
     }
 
     private fun checkEmailValid(): Boolean {

@@ -40,22 +40,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:inputCheckBoxVisible="true"
                 app:hintText="@string/profile_edit_user_middle_name"
                 app:inputEnabled="false"
                 app:titleText="@string/user_profile_middle_name" />
 
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/sc_no_middle_name"
+                style="@style/Profile.Edit.Switch"
+                android:layout_marginBottom="0dp"
+                android:enabled="false"
+                android:text="@string/profile_edit_user_no_middle_name" />
+
             <TextView
                 android:id="@+id/tvEditName"
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/ClickableTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:text="@string/edit_name_title"
-                android:textColor="@color/main_brown_color_new"
-                android:textSize="15sp"
-                tools:ignore="MissingPrefix" />
+                android:text="@string/edit_name_title" />
 
             <com.example.ui.views.CustomTextInputView
                 android:id="@+id/tvShortname"
@@ -69,61 +71,30 @@
 
             <TextView
                 android:id="@+id/tvEditShortName"
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/ClickableTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:text="@string/edit_title"
-                android:textColor="@color/main_brown_color_new"
-                android:textSize="15sp"
-                tools:ignore="MissingPrefix" />
+                android:text="@string/edit_title" />
 
-            <com.example.ui.views.CustomTextInputView
+            <com.example.ui.views.CustomPhoneTextInputView
                 android:id="@+id/tvPhoneMobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:hintText="@string/profile_phone_mobile"
-                app:inputEnabled="false"
-                app:titleText="@string/profile_phone_mobile" />
+                app:phoneInputEnabled="false"
+                app:phoneTextIcon="@drawable/ic_confirmed_phone_icon"
+                app:phoneTitleText="@string/profile_phone_mobile" />
 
             <TextView
                 android:id="@+id/tvEditPhone"
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/ClickableTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:text="@string/edit_title"
-                android:textColor="@color/main_brown_color_new"
-                android:textSize="15sp"
-                tools:ignore="MissingPrefix" />
-
-            <com.example.ui.views.CustomTextInputView
-                android:id="@+id/tvPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:hintText="●●●●●●●●●"
-                app:inputEnabled="false"
-                app:titleText="@string/user_profile_password_title" />
-
-            <TextView
-                android:id="@+id/tvEditPassword"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:text="@string/profile_password_change"
-                android:textColor="@color/main_brown_color_new"
-                android:textSize="15sp"
-                tools:ignore="MissingPrefix" />
-
+                android:text="@string/edit_title" />
 
             <com.example.ui.views.CustomTextMenuView
                 android:id="@+id/tvEmail"
@@ -131,22 +102,160 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:inputHintText="@string/user_profile_email_title"
-                app:inputIconMode="custom"
                 app:inputIconDrawable="@drawable/ic_info_us"
+                app:inputIconMode="custom"
                 app:inputTitleText="@string/user_profile_email_title" />
 
             <TextView
                 android:id="@+id/tvEditEmail"
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/ClickableTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_text_background_selectable"
-                android:text="@string/edit_title"
-                android:textColor="@color/main_brown_color_new"
-                android:textSize="15sp"
-                tools:ignore="MissingPrefix" />
+                android:text="@string/edit_title" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEmptyPasswordTitle"
+                    style="@style/Profile.Edit.TextViewTitle"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_profile_password_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvPassword"
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/background_custom_input_view_unfocused"
+                    android:drawableStart="@drawable/ic_empty_password_icon"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/common_edit_text_min_height"
+                    android:text="@string/you_does_not_have_password"
+                    android:textSize="@dimen/common_edit_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvEmptyPasswordTitle"
+                    tools:drawablePadding="10dp" />
+
+
+                <com.example.ui.views.toolbar.ToolbarCircleButton
+                    android:id="@+id/btnCreatePassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/create_password"
+                    app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/tvPassword"
+                    app:layout_constraintEnd_toEndOf="@id/tvPassword"
+                    app:layout_constraintTop_toTopOf="@id/tvPassword" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvEditPassword"
+                style="@style/ClickableTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/profile_password_change" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvAccountsTitle"
+                style="@style/Profile.Edit.TextViewTitle"
+                fontPath="fonts/sf_pro_display_regular.OTF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/user_linked_accounts" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_account_vk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <ImageView
+                    android:id="@+id/iv_vk_logo"
+                    android:layout_width="@dimen/linked_account_icon_size"
+                    android:layout_height="@dimen/linked_account_icon_size"
+                    android:src="@drawable/ic_vk_logo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/main_vk_blue_color" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_vk"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="VK"
+                    android:textSize="@dimen/linked_account_text_size"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_vk_logo"
+                    app:layout_constraintStart_toEndOf="@id/iv_vk_logo"
+                    app:layout_constraintTop_toTopOf="@id/iv_vk_logo" />
+
+                <com.example.ui.views.loading.CustomCircleLoadingButton
+                    android:id="@+id/btnLinkVk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:circleLoadingButtonText="@string/link_account"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_account_gos_uslugi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_gos_logo"
+                    android:layout_width="@dimen/linked_account_icon_size"
+                    android:layout_height="@dimen/linked_account_icon_size"
+                    android:src="@drawable/ic_gos_uslugi_logo_rect"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_gos"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Госуслуги"
+                    android:textSize="@dimen/linked_account_text_size"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_gos_logo"
+                    app:layout_constraintStart_toEndOf="@id/iv_gos_logo"
+                    app:layout_constraintTop_toTopOf="@id/iv_gos_logo" />
+
+                <com.example.ui.views.toolbar.ToolbarCircleButton
+                    android:id="@+id/btnLinkGos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/link_account"
+                    app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Profile.Edit.TextViewTitle"
@@ -191,17 +300,15 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDeleteProfile"
-                fontPath="fonts/sf_pro_text_bold.ttf"
+                style="@style/BtnWhiteSmokeStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/custom_btn_white_smoke_selectable"
-                android:letterSpacing="-0.02"
+                android:minHeight="@dimen/common_button_min_height"
                 android:text="@string/user_profile_delete_profile"
-                android:textAllCaps="false"
-                android:textColor="@color/red_new"
-                android:textSize="16sp" />
+                android:textColor="@color/title_text_error_red"
+                android:textSize="@dimen/common_button_text_size" />
 
 
         </LinearLayout>

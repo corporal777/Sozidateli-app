@@ -2,36 +2,28 @@ package com.example.ui.auth.recoveryPassword
 
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface RecoveryPasswordContract {
     interface View : BaseContract.View {
-        @OneExecution
+        @Skip
         fun enableRecoveryBtn(isEnable: Boolean)
 
         @OneExecution
         fun setEmail(email: String)
 
-        @OneExecution
+        @Skip
         fun showEmailError(show: Boolean)
 
         @OneExecution
-        fun showRecoveryNotification(email: String, userId : String)
+        fun showEmailRecovery(email: String, userId : String)
 
         @OneExecution
-        fun showWrongEmailError()
-
-        @OneExecution
-        fun setTimeLeft(seconds: Int)
-
-        @OneExecution
-        fun showPasswordSuccessUpdated()
+        fun showPhoneRecovery(phone: String, userId : String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onRecoveryClick()
         fun onChangeEmailText(email: String)
-        fun onCloseClick()
-        fun onSetPassword(code: String, password: String, userId: String)
-        fun sendCodeAgain()
     }
 }

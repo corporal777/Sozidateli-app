@@ -80,6 +80,6 @@ class AccountView : FrameLayout, AccountViewContract.View {
     companion object {
         private const val ACCOUNT_TAG_VIEW = "account_view_tag"
 
-        private const val PLACEHOLDER = R.drawable.avatar_placeholder
+        private const val PLACEHOLDER = R.drawable.avatar_placeholder_circle
     }
 }

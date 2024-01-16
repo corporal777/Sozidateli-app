@@ -113,8 +113,7 @@ class ChangeAccountPresenter
                         appData.login(session.sessionUid)
                         appData.saveId(session.userId)
                         appData.setAllUserInfo(session.binds.user)
-                    }.doOnComplete { appData.token = session.sessionUid }
-                        .performOnBackgroundOutOnMain()
+                    }.performOnBackgroundOutOnMain()
                         .subscribeSimple {
                             viewState.showMessage("Аккаунт сменен")
                         }

@@ -20,15 +20,8 @@ object AuthBackground {
         return asDrawable(res, create(res))
     }
 
-//    fun clear() {
-//        bitmap?.recycle()
-//        bitmap = null
-//    }
 
-    private fun create(
-            res: Resources,
-            @RawRes resId: Int = R.raw.background_auth
-    ): Bitmap {
+    private fun create(res: Resources, @RawRes resId: Int = R.raw.background_auth): Bitmap {
         val (imageHeight: Int, imageWidth: Int) = BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeResource(res, resId, this)
@@ -42,12 +35,11 @@ object AuthBackground {
 
         val (heightScale: Float, widthScale: Float) = if (displayRatio > imageRatio) {
             displayRatio to 1f
-        } else {
-            1f to displayRatio
-        }
+        } else 1f to displayRatio
 
         val (top: Int, bottom: Int) = cropSide(imageHeight, (displayHeight * heightScale).toInt())
         val (left: Int, right: Int) = cropSide(imageWidth, (displayWidth * widthScale).toInt(), 0.6f)
+
 
         return BitmapRegionDecoder.newInstance(res.openRawResource(resId), false)!!.decodeRegion(
                 Rect(left, top, right, bottom),

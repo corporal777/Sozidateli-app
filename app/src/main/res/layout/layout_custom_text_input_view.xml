@@ -21,8 +21,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_custom_input_view_unfocused"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvCancel"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -32,7 +30,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:background="@null"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:hint="@string/enter_your_request"
             android:inputType="textCapSentences"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -52,6 +50,18 @@
             app:layout_constraintStart_toEndOf="@id/etInput"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.526" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/passwordToggle"
+            android:layout_width="30dp"
+            android:visibility="gone"
+            app:layout_goneMarginEnd="20dp"
+            android:layout_height="30dp"
+            android:button="@drawable/drawable_password_toggle"
+            app:layout_constraintBottom_toBottomOf="@id/btnAction"
+            app:layout_constraintEnd_toEndOf="@id/btnAction"
+            app:layout_constraintStart_toStartOf="@id/btnAction"
+            app:layout_constraintTop_toTopOf="@id/btnAction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatCheckBox

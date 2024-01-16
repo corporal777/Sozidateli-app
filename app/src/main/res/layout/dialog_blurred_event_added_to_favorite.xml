@@ -3,71 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:blurkit="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="0dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/event_added_to_favorite_dialog_size"
-            android:layout_height="@dimen/event_added_to_favorite_dialog_size"
-            android:background="@drawable/dialog_rounded_corners">
-
-            <ImageView
-                android:id="@+id/iv_blur"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:src="@drawable/img_test" />
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:clipChildren="true"
+    android:paddingTop="10dp">
 
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.3"
-                android:background="#6B6B6B" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="@dimen/event_added_to_favorite_dialog_icon_size"
-                android:layout_height="@dimen/event_added_to_favorite_dialog_icon_size"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/ic_star_added_to_favorite"
-                app:layout_constraintBottom_toTopOf="@id/tv_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/tv_title"
-                fontPath="fonts/sf_pro_text_semibold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:letterSpacing="-0.02"
-                android:singleLine="false"
-                android:text="@string/added_to_favorite"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_icon"
-                blurkit:ignore="MissingPrefix" />
+        <ImageView
+            android:scaleType="center"
+            android:id="@+id/iv_blur"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/img_test"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="#E6F9F9F9"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

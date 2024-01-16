@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentRegistrationUserBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.confirm.ConfirmPhoneCodeFragmentArgs
+import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragment
+import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.Utils
+import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.setTint
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
@@ -21,8 +26,6 @@ import javax.inject.Provider
 
 class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>(),
     UserRegistrationContract.View, ToolbarFragment {
-
-    private lateinit var toolbarContent: ToolbarContent
 
     @InjectPresenter
     lateinit var presenter: UserRegistrationPresenter
@@ -51,9 +54,14 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
                     presenter.onMiddleNameIsAbsent(isChecked)
                 }
             }
-            etMobilePhone.apply {
+            etLogin.apply {
                 initInput {
-                    presenter.onChangeMobilePhoneText(it.toString())
+                    presenter.onChangeLoginText(it.toString())
+                }
+            }
+            etBirthday.apply {
+                initAsDateTimePicker(null) {
+                    presenter.onChangeBirthdayText(it.toString())
                 }
             }
             passwordView.setPasswordValidCallback {
@@ -96,12 +104,16 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
         }
     }
 
-    override fun showPasswordError(show: Boolean) {
-        mBinding.passwordView.showErrors(show)
+    override fun showLoginError(show: Boolean) {
+        mBinding.etLogin.showError(show)
     }
 
-    override fun showMobilePhoneError(show: Boolean) {
-        mBinding.etMobilePhone.showError(show)
+    override fun showBirthdayError(show: Boolean) {
+        mBinding.etBirthday.showError(show)
+    }
+
+    override fun showPasswordError(show: Boolean) {
+        mBinding.passwordView.showErrors(show)
     }
 
     override fun showUserAgreementError(show: Boolean) {
@@ -112,42 +124,43 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
         mBinding.btnRegister.isSelected = isEnable
     }
 
-    override fun showPhoneIsNotUnique(phone: String) {
+    override fun showPhoneIsNotUnique(login: String) {
+        val message =
+            if (presenter.getLoginType() == "phone") getString(R.string.confirm_phone_text, login)
+            else getString(R.string.confirm_email_text, login)
+
         ConfirmPhoneDialog(
             requireContext(),
-            getString(R.string.confirm_phone_text, phone),
+            message,
             getString(R.string.event_register_no_form_negative),
             getString(R.string.confirm_phone_positive)
-
         ).setSelectCallback { if (it) presenter.registerUser(false) }
     }
 
-    override fun showPhoneCodeConfirmation(phone: String) {
-        val args = ConfirmPhoneCodeFragmentArgs.Builder(phone).build().toBundle()
-        findNavController().navigate(R.id.phoneCodeConfirmFragment, args)
+    override fun showCodeConfirmation(login: String) {
+        if (presenter.getLoginType() == "phone") {
+            findNavController().navigate(
+                R.id.phoneCodeConfirmFragment,
+                bundleOf("phone" to validatePhoneBeforeSend(login), "fromRegister" to true)
+            )
+        } else {
+            findNavController().navigate(
+                R.id.emailCodeConfirmFragment,
+                bundleOf("email" to login, "fromRegister" to true)
+            )
+        }
     }
 
     override fun showCustomLoading() = mBinding.btnRegister.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnRegister.showProgressLoading(false)
 
-    override fun changeAppBarHeader(value: Float) {
-        if (value <= 0){
-            toolbarContent.getToolbarTitleView().alpha = 0f
-            mBinding.tvRegisterTitle.alpha = 1f
-        } else {
-            toolbarContent.getToolbarTitleView().alpha = 0 + (value / 30)
-            mBinding.tvRegisterTitle.alpha = 1 - (value / 8)
-        }
-    }
 
     override fun layout(): Int = R.layout.fragment_registration_user
     override val title: CharSequence by lazy { getString(R.string.auth_register) }
     override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) { presenter.onScrollChange(scroll) }
+    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
-        this.toolbarContent = toolbarContent.apply {
-            getBackButton().setTint(R.color.main_brown_color_new)
-        }
+        toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }
 
 

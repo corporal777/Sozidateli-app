@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <RelativeLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="MissingPrefix">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top" />
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/custom_toolbar_btn_background_selectable"
+            android:padding="10dp"
+            android:src="@drawable/ic_back_black"
+            app:tint="@color/main_brown_color_new" />
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="30dp"
+            android:minHeight="30dp"
+            android:src="@drawable/ic_close" />
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="@dimen/auth_login_circle_logo_height"
+            android:layout_height="@dimen/auth_login_circle_logo_height"
+            android:layout_below="@id/btnClose"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_app_logo_circle" />
+
+        <TextView
+            android:id="@+id/tvRegisterTitle"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivLogo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/recovery_password_title"
+            android:textColor="@color/auth_title_text"
+            android:textSize="22sp"
+            tools:ignore="MissingPrefix" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_check"
+            android:layout_below="@+id/tvRegisterTitle"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_fifteen"
+                android:layout_marginTop="10dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_description"
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:breakStrategy="high_quality"
+                    android:gravity="center_horizontal"
+                    android:letterSpacing="-0.01"
+                    android:textColor="#34303E"
+                    android:textSize="17sp"
+                    tools:text="@string/recovery_confirm_email_message" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btn_check"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="20dp"
+            app:buttonBackground="@drawable/custom_btn_brown_selectable"
+            app:buttonMinHeight="@dimen/common_button_min_height"
+            app:buttonText="@string/recovery_check_email"
+            app:buttonTextSize="@dimen/common_button_text_size" />
+
+    </RelativeLayout>
+</layout>

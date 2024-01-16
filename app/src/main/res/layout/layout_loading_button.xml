@@ -12,10 +12,26 @@
         android:includeFontPadding="false"
         android:minHeight="@dimen/auth_button_min_height"
         android:text="@string/auth_label_login"
+        android:textAllCaps="false"
+        android:textSize="@dimen/auth_button_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/custom_btn_brown_selectable" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_button"
+        android:visibility="gone"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="15dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintBottom_toBottomOf="@id/btn_load"
+        app:layout_constraintStart_toStartOf="@id/btn_load"
+        app:layout_constraintTop_toTopOf="@id/btn_load" />
 
     <com.example.ui.views.CustomProgressBar
         android:id="@+id/progress_load"

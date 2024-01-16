@@ -21,9 +21,10 @@ import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(true),
-    UserProfileContract.View, ToolbarFragment {
+class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProfileContract.View,
+    ToolbarFragment {
 
+    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_user_profile
 
     @InjectPresenter

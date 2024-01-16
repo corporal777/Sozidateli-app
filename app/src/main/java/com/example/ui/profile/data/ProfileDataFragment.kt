@@ -21,13 +21,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ProfileDataFragment(
-    val user: Int,
-    val name: String,
-    val imageUrl: String?,
-    val codeUrl: String?,
-    val shortName: String?
-) : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(), ProfileDataContract.View {
+class ProfileDataFragment : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(),
+    ProfileDataContract.View {
 
 
     @InjectPresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
@@ -37,12 +32,7 @@ class ProfileDataFragment(
     lateinit var presenterProvider: Provider<ProfileDataPresenter>
 
     @ProvidePresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
-    fun providePresenter(): ProfileDataPresenter = presenterProvider.get().apply {
-        userName = name
-        userImageUrl = imageUrl ?: ""
-        userCodeUrl = codeUrl ?: ""
-        userLink = if (shortName.isNullOrEmpty()) getUrl() + user else getUrl() + "@" + shortName
-    }
+    fun providePresenter(): ProfileDataPresenter = presenterProvider.get()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

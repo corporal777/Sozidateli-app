@@ -30,7 +30,7 @@
                 tools:ignore="ContentDescription"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
-            <org.sufficientlysecure.htmltextview.HtmlTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvTitle"
                 fontPath="fonts/Roboto-Bold.ttf"
                 android:layout_width="0dp"
@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/ivLogo"
                 tools:text="@tools:sample/lorem" />
 
-            <org.sufficientlysecure.htmltextview.HtmlTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvInfo"
                 fontPath="fonts/Roboto-Light.ttf"
                 android:layout_width="0dp"

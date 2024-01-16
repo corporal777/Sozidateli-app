@@ -186,6 +186,10 @@ class CustomProgressBar : View {
         invalidate()
     }
 
+    fun setStroke(value: Float){
+        progressPaint.strokeWidth = dp(value).toFloat()
+    }
+
     fun setProgressColor(color: Int) {
         progressColor = color
         progressPaint.color = progressColor

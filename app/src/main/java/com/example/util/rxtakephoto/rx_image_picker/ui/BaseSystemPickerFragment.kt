@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.util.rxtakephoto.PermissionNotGrantedException
@@ -40,8 +41,7 @@ abstract class BaseSystemPickerFragment : Fragment() {
 
     private val launchedPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            var isGranted = false
-            isGranted = permissions.entries.find { x -> !x.value }?.value == false
+            val isGranted: Boolean = permissions.entries.find { x -> !x.value }?.value == false
             if (!isGranted) startPickImage()
             else {
                 publishSubject.onError(PermissionNotGrantedException())
@@ -83,50 +83,33 @@ abstract class BaseSystemPickerFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    protected fun checkPermission(): Boolean {
-        return if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
-            }
-            false
+
+    protected fun checkCameraPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!cameraPermissionIsGranted) {
+                launchedPermissions.launch(arrayOf(Manifest.permission.CAMERA))
+                false
+            } else true
         } else {
-            true
+            if (!writePermissionIsGranted || !cameraPermissionIsGranted) {
+                launchedPermissions.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                false
+            } else true
         }
     }
 
-    protected fun checkWritePermission(): Boolean {
-        var granted = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (readPermission != PackageManager.PERMISSION_GRANTED ||
-                cameraPermission != PackageManager.PERMISSION_GRANTED
-            ) {
-                launchedPermissions.launch(
-                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
-                )
-                granted = false
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            if (writePermission != PackageManager.PERMISSION_GRANTED ||
-                cameraPermission != PackageManager.PERMISSION_GRANTED
-            ) {
-                launchedPermissions.launch(
-                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                )
-                granted = false
-            }
-        } else granted = false
-        return granted
-    }
-
     protected fun checkReadPermission(): Boolean {
-        return if (readPermission != PackageManager.PERMISSION_GRANTED) {
-            launchedPermissions.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
-            false
-        } else true
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (readMedia != PackageManager.PERMISSION_GRANTED) {
+                launchedPermissions.launch(arrayOf(Manifest.permission.READ_MEDIA_IMAGES))
+                false
+            } else true
+        } else {
+            if (readPermission != PackageManager.PERMISSION_GRANTED) {
+                launchedPermissions.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
+                false
+            } else true
+        }
     }
 
 
@@ -142,14 +125,21 @@ abstract class BaseSystemPickerFragment : Fragment() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
-    private val writePermission by lazy {
+
+    private val readMedia by lazy {
         ContextCompat.checkSelfPermission(
             requireActivity(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_MEDIA_IMAGES
         )
     }
-    private val cameraPermission by lazy {
-        ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA)
+
+    private val writePermissionIsGranted by lazy {
+        ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
+    }
+    private val cameraPermissionIsGranted by lazy {
+        ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED
     }
 
     companion object {

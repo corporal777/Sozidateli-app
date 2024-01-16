@@ -19,6 +19,7 @@ import okhttp3.RequestBody
 import toBodyPart
 import javax.inject.Inject
 
+
 class UserRepositoryImp
 @Inject constructor(
     private val api: Api,
@@ -27,15 +28,15 @@ class UserRepositoryImp
 
     override fun getUserInternal(): Maybe<UserDetail> {
         return Maybe.zip(
-            api.getUserShort(appData.getId(), emptyList()),
-            checkUserProfile(),
+            api.getUserById(appData.getId(), emptyList()),
+            api.checkUserProfile(appData.getId().toString()).doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
             })
     }
 
     override fun getUserShortData(): Maybe<UserDetail> =
-        api.getUserShort(
+        api.getUserById(
             appData.getId(),
             arrayListOf(
                 "rights",
@@ -51,24 +52,18 @@ class UserRepositoryImp
                 "sessions-count",
                 "device-sessions-count"
             )
-        ).map { it }.doOnSuccess {
-            appData.setAllUserInfo(it)
-        }
+        ).map { it }.doOnSuccess { appData.setAllUserInfo(it) }
 
     override fun getUserFullData(): Maybe<UserDetail> =
         Maybe.zip(
             getUserShortData(),
-            checkUserProfile(),
+            api.checkUserProfile(appData.getId().toString()).doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
             })
 
-    override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
-        api.checkUserProfile(appData.getId().toString()).doOnSuccess { state ->
-            appData.checkUserState(state.fields)
-        }
 
-    override fun getUserById(id: String): Maybe<UserDetail> = api.getUserShort(
+    override fun getUserById(id: String): Maybe<UserDetail> = api.getUserById(
         id.toInt(),
         arrayListOf(
             "rights",
@@ -238,10 +233,6 @@ class UserRepositoryImp
         return call(api.checkPassword(password))
     }*/
 
-    override fun checkPassword(password: String): Completable {
-        return api.checkPassword(appData.getId(), password)
-    }
-
     /*override fun sendStatusPhoneConfirmSms(password: String): Completable {
         return call(api.sendStatusPhoneConfirmSms(password))
     }
@@ -266,8 +257,9 @@ class UserRepositoryImp
     override fun changePassword(id: Int, body: PasswordBody): Completable =
         api.changePassword(id, body)
 
-    override fun checkIfPasswordValid(password: String): Completable =
-        api.checkIfPasswordValid(appData.getId(), password)
+    override fun checkPassword(password: String): Completable {
+        return api.checkPassword(appData.getId(), password)
+    }
 
     override fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel> =
         api.updateWorkExperience(appData.getId(), body).doOnSuccess {
@@ -414,18 +406,23 @@ class UserRepositoryImp
             NotificationType.PROJECTS -> {
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "pgrf")
             }
+
             NotificationType.ORGANIZER -> {
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "org")
             }
+
             NotificationType.ESTIMATES -> {
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "evaluate")
             }
+
             NotificationType.EVENTS -> {
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "event")
             }
+
             NotificationType.SYSTEM -> {
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "system")
             }
+
             else -> api.markAllNotificationsAsRead(appData.getId().toString())
         }
 
@@ -468,17 +465,23 @@ class UserRepositoryImp
         api.checkEmailPhone(email, phone)
 
 
-    override fun searchUsersNew(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
-        return api.searchDataNew(map)
+    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+        return api.searchUsers(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
         //.map { it.users }
     }
 
-    override fun unblockUser(id: Int): Completable {
-        TODO("Not yet implemented")
+    override fun bindSocialAccount(uuid: String, socialType: String): Maybe<SnBindDataModel> {
+        return api.bindSocialAccount(
+            BindSocialAccountBody(
+                uuid,
+                appData.getId(),
+                socialType
+            )
+        )
     }
 
-    override fun blockUser(id: Int): Completable {
-        TODO("Not yet implemented")
+    override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
+        return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
     }
 }

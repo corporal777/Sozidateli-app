@@ -7,12 +7,14 @@ import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.FragmentActivity
 import com.example.ui.gallery.cropImage.cropHelper.CropImageView
+import com.example.util.ImageUtil
 import com.example.util.rxtakephoto.CropActivity.Companion.CROP_MODE_DEFAULT
 import com.example.util.rxtakephoto.rx_image_picker.core.RxImagePicker
 import com.example.util.rxtakephoto.rx_image_picker.entity.Result
 import com.example.util.saveImageToGallery
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.IOException
@@ -25,7 +27,7 @@ class RxTakePhoto(
     private val rxPermissions = RxPermissions(context)
     private val rxImagePicker = RxImagePicker.create()
 
-    fun takeFile() : Observable<Result> {
+    fun takeFile(): Observable<Result> {
         return rxImagePicker.openFile(context)
     }
 
@@ -38,6 +40,17 @@ class RxTakePhoto(
         return rxImagePicker
             .openGallery(context)
             .findRotation()
+    }
+
+    fun takeAllGalleryImages(): Observable<MutableList<Uri>> {
+        return rxPermissions.request(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+            else Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        ).flatMapMaybe {
+            if (it) Maybe.defer { ImageUtil.getGalleryImages(context) }
+            else Maybe.error(PermissionNotGrantedException())
+        }
     }
 
     fun saveImage(image: Bitmap): Completable {

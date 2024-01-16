@@ -32,6 +32,7 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils
 import com.example.util.setImage
+import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -151,10 +152,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-    override fun setChangeOrAddNewAccount(description: Int, icon: Int) {
-        mBinding.apply {
-            tvChangeAccount.text = getString(description)
-            tvChangeAccount.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0)
+    override fun setChangeOrAddNewAccount(sessionsCount: Int) {
+        mBinding.tvChangeAccount.apply {
+            if (sessionsCount <= 1) {
+                text = getString(R.string.add_account_label)
+                setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit)
+            } else {
+                text = getString(R.string.change_account_label)
+                setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit)
+            }
         }
     }
 
@@ -172,20 +178,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         ).setSelectCallback { if (it) presenter.onShowPhoneConfirm(phone) }
     }
 
-    override fun showChangeUserShortNameDialog(user: UserDetail) {
-        ChangeShortNameFragment(user.id, user.shortName)
-            .getUpdatedUserShortName { setUserLink(it) }
-            .show(requireActivity().supportFragmentManager)
+    override fun showChangeUserShortName() {
+        findNavController().navigate(R.id.changeShortNameFragment)
     }
 
-    override fun showUserProfileLinkDialog(user: UserDetail) {
-        val profileDataDialog = ProfileDataFragment(
-            user.id,
-            user.nameLastName,
-            user.loadUserImage(),
-            user.qrCodeLink,
-            user.shortName
-        )
+    override fun showUserProfileLinkDialog() {
+        val profileDataDialog = ProfileDataFragment()
         profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
     }
 
@@ -291,19 +289,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-    override fun showProgressBarLoadingDialog() {
+    override fun showCustomLoading() {
         mBinding.apply {
             shimmerView.isVisible = true
             clHeader.isVisible = false
         }
     }
 
-    override fun hideProgressBarLoadingDialog() {
+    override fun hideCustomLoading() {
         mBinding.apply {
             shimmerView.isVisible = false
             clHeader.isVisible = true
         }
     }
+
 
     override fun layout() = R.layout.fragment_profile
     override val title: CharSequence = ""

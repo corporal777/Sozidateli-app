@@ -1,13 +1,17 @@
 package com.example.ui.userprofile.settings
 
 import android.app.NotificationManager
+import android.content.Context
+import android.view.ViewGroup
 import com.example.data.AppData
+import com.example.data.models.SnType
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_STATE
 import com.example.data.models.UserState
 import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
+import com.example.ui.auth.snAuth.SnAuthCallbackHelper
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.ui.views.CustomCheckView
 import com.example.util.PHONE_PERSONAL
@@ -21,7 +25,10 @@ import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withDelay
+import withLoadingDialog
 import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -34,15 +41,12 @@ class UserProfileSettingsPresenter @Inject constructor(
 ) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData),
     UserProfileSettingsContract.Presenter {
 
-    override fun onChangeEmailClick() {
-        compositeDisposable += Maybe.defer { Maybe.just(appData.getUser()) }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                val email = it.email?.value ?: it.email?.onConfirmation
-                viewState.showChangeEmail(email)
-            }
-    }
 
+    override fun attachView(view: UserProfileSettingsContract.View?) {
+        super.attachView(view)
+        viewState.setUserPassword(user.state?.isEmptyPassword ?: false)
+        viewState.setUserSocialBinds(user)
+    }
 
     override fun onDeleteConfirmEmail(email: String) {
         compositeDisposable += authRepository.deleteConfirmEmail(email)
@@ -50,9 +54,7 @@ class UserProfileSettingsPresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                appData.updateUser {
-                    this.email?.onConfirmation = null
-                }
+                appData.updateUser { this.email?.onConfirmation = null }
             }
     }
 
@@ -72,27 +74,25 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
 
-    override fun onChangePrivacyConfirm(hidden: Boolean, view: CustomCheckView) {
+    override fun onChangePrivacyConfirm(hidden: Boolean, view: ViewGroup) {
         val map = mapOf(USER_STATE to UserState(isHidden = hidden.toString()))
         updateUser(map, view) { it.state?.isHidden = hidden.toString() }
     }
 
-
-    override fun onBlockEventNotificationsClick(hidden: Boolean, view: CustomCheckView) {
+    override fun onBlockEventNotificationsClick(hidden: Boolean, view: ViewGroup) {
         val map = mapOf(UserDetail.BLOCK_EVENT to hidden)
         updateUser(map, view) { it.blockedNotifications?.event = hidden }
     }
 
-    override fun onBlockOrganizationNotificationsClick(hidden: Boolean, view: CustomCheckView) {
+    override fun onBlockOrganizationNotificationsClick(hidden: Boolean, view: ViewGroup) {
         val map = mapOf(UserDetail.BLOCK_ORG to hidden)
         updateUser(map, view) { it.blockedNotifications?.organizations = hidden }
     }
 
-    override fun onBlockProjectNotificationsClick(hidden: Boolean, view: CustomCheckView) {
+    override fun onBlockProjectNotificationsClick(hidden: Boolean, view: ViewGroup) {
         val map = mapOf(UserDetail.BLOCK_PROJECT to hidden)
         updateUser(map, view) { it.blockedNotifications?.projects = hidden }
     }
-
 
 
     override fun onDeleteProfileConfirm() {
@@ -102,37 +102,64 @@ class UserProfileSettingsPresenter @Inject constructor(
             .subscribeSimple {
                 appData.isSubscribedToPush = false
                 socket.disconnectFromSocket()
-                appData.logout()
                 notificationManager.cancelAll()
+                appData.logout()
             }
     }
 
-    override fun onShowEmailConfirm(email: String) {
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.showEmailConfirmation(email)
-            }
-    }
-
-    private fun updateUser(data: Map<String, Any?>, view: CustomCheckView, onComplete: (UserDetail) -> Unit) {
+    private fun updateUser(
+        data: Map<String, Any?>,
+        view: ViewGroup,
+        onComplete: (UserDetail) -> Unit
+    ) {
         compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
+            .ignoreElement()
             .performOnBackgroundOutOnMain()
             .withProgressLoading(view)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { appData.updateUser(onComplete) }
+                onComplete = { appData.updateUser(onComplete) }
             )
     }
 
+
+    override fun onBindVkAccount(context: Context, view: ViewGroup) {
+        if (user.getVkontakteBinds() == null) {
+            compositeDisposable += SnAuthCallbackHelper.start(context, SnType.VK)
+                .performOnBackgroundOutOnMain()
+                .subscribeSimple {
+                    userRepository.bindSocialAccount(it.uuid, it.snType.code)
+                        .doOnSuccess { user.socialBinds?.vkontakte = it.data }.ignoreElement()
+                        .performOnBackgroundOutOnMain()
+                        .withProgressLoading(view)
+                        .subscribeSimple {
+                            viewState.setUserSocialBinds(user)
+                        }
+                }
+        } else {
+            compositeDisposable += userRepository.unbindSocialAccount(user.getVkUUID(), SnType.VK.code)
+                .doOnComplete { user.socialBinds?.vkontakte = null }
+                .performOnBackgroundOutOnMain()
+                .withProgressLoading(view)
+                .subscribeSimple {
+                    viewState.setUserSocialBinds(user)
+                }
+        }
+    }
+
     override fun onDeleteProfileClick() = viewState.showDeleteProfile()
-    override fun onChangePhoneClick() = viewState.showPhoneEdit(appData.getUser().phone?.firstOrNull { it.type == PHONE_PERSONAL })
-    override fun onChangePasswordClick() = viewState.showChangePassword()
+    override fun onChangePhoneClick() = viewState.showChangePhone()
+
+    override fun onChangeEmailClick() {
+        val email = user.email?.value ?: user.email?.onConfirmation
+        viewState.showChangeEmail(email)
+    }
+
+    override fun onChangePasswordClick() = viewState.showChangePassword(false)
     override fun showChangeNameClick() = viewState.showChangeName(user)
     override fun showChangeShortNameClick() = viewState.showChangeShortName(user)
 
-    private fun <T> Single<T>.withProgressLoading(view: CustomCheckView): Single<T> {
+    private fun Completable.withProgressLoading(view: ViewGroup): Completable {
         val loadingDisposable = Completable.complete()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { viewState.showBlockingLoading(true, view) }
@@ -149,7 +176,6 @@ class UserProfileSettingsPresenter @Inject constructor(
         }
         return this.doFinally(actionHide)
             .doOnDispose(actionHide)
-            .doOnSuccess(actionConsumer())
             .doOnError(actionConsumer())
     }
 }

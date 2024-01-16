@@ -6,7 +6,6 @@ import com.example.data.bodies.MessageBodyNew
 import com.example.ui.event.registration.items.ProfileFieldsData
 import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -17,16 +16,20 @@ import retrofit2.http.*
 interface Api {
 
     @POST("v1/user/login")
-    fun authEmailOrPhone(@Body body: AuthBody): Single<NewAuthResponse>
+    fun authEmailOrPhone(@Body body: AuthBody): Single<AuthResponse>
 
     @POST("v1/user/accept-qr")
-    fun authWithQrCode(@Body body: QrBody): Single<NewAuthResponse>
+    fun authWithQrCode(@Body body: QrBody): Single<AuthResponse>
+
+    //+
+    @POST("v1/user/social/login")
+    fun authWithVk(@Body body: VKAuthBody): Single<VKAuthResponse>
 
     @POST("v1/user/send-qr")
     fun sendQrCodeToGetDeviceInfo(@Body body: QrBody): Single<QrAuthResponse>
 
     @GET("v1/user/{id}")
-    fun getUserShort(@Path("id") id: Int, @Query("binds") binds: List<String>?): Maybe<UserDetail>
+    fun getUserById(@Path("id") id: Int, @Query("binds") binds: List<String>?): Maybe<UserDetail>
 
     //+
     @GET("v1/user/get-by-short-name")
@@ -37,7 +40,11 @@ interface Api {
 
     //+
     @POST("v1/user")
-    fun registerUser(@Body body: RegisterBody): Single<NewAuthResponse>
+    fun registerUser(@Body body: RegisterBody): Single<AuthResponse>
+
+    //+
+    @POST("v1/user/social/register")
+    fun registerSnUser(@Body body: SnRegisterBody): Single<AuthResponse>
 
     @PATCH("v1/user/{id}")
     fun updateProfile(@Path("id") id: Int, @Body map: Map<String, Any?>): Single<UserDetail>
@@ -53,7 +60,7 @@ interface Api {
     ): Completable
 
     @POST("v1/user/{id}/phone/confirm")
-    fun confirmPhoneCode(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<NewAuthResponse>
+    fun confirmPhoneCode(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<AuthResponse>
 
     @POST("v1/user/{id}/email/confirm")
     fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
@@ -121,9 +128,6 @@ interface Api {
     @DELETE("v1/user-recommendation-file/{id}")
     fun deleteRecommendedFile(@Path("id") fileId: Int): Completable
 
-    @GET("v1/user/{id}/password/check")
-    fun checkIfPasswordValid(@Path("id") id: Int, @Query("password") password: String): Completable
-
     @PATCH("v1/user-work-experience/user/{id}")
     fun updateWorkExperience(
         @Path("id") id: Int,
@@ -160,9 +164,6 @@ interface Api {
     //+
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
-
-    @GET("v1/event")
-    fun getEventsListFlow(@QueryMap map: Map<String, Any>): Flowable<EventNewModel>
 
     //+
     @GET("v1/event/sorted")
@@ -218,13 +219,6 @@ interface Api {
         @Path("id") memberId: String,
         @Query("binds") binds: String
     ): Maybe<MemberModel>
-
-    //+
-    @GET("v1/event/{id}")
-    fun getEventDetailsNew(
-        @Path("id") eventId: String,
-        @Query("binds") binds: String
-    ): Single<EventNew>
 
     //+
     @POST("v1/event-subscriptions")
@@ -287,7 +281,7 @@ interface Api {
     fun checkPasswordRecover(@Query("type") type: String, @Query("code") code: String): Completable
 
     @POST("v1/user/password/recover")
-    fun recoverPassword(@Body body: RecoverPasswordBody): Single<NewAuthResponse>
+    fun recoverPassword(@Body body: RecoverPasswordBody): Single<AuthResponse>
 
     @GET("v1/user/{id}/password/check")
     fun checkPassword(@Path("id") id: Int, @Query("password") password: String): Completable
@@ -377,9 +371,6 @@ interface Api {
         @Path("id") activityId: String,
         @Query("binds") binds: String
     ): Single<EventActivityModel>
-
-    //++
-    fun registerFcmToken(): Completable
 
     @GET("v1/user-notification/{id}")
     fun getNotificationDetail(
@@ -485,7 +476,7 @@ interface Api {
     fun messageToEvent(@Body body: MessageToEventBody): Completable
 
     @GET("v1/search")
-    fun searchDataNew(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
+    fun searchUsers(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
 
     @GET("v1/organization/active-events")
     fun getOrganizationsWithActiveEvents(): Maybe<SearchResponseData<OrganizationNew>>
@@ -524,4 +515,17 @@ interface Api {
 
     @POST("v1/form/feedback-send")
     fun sendSupportData(@Body body: RequestBody): Completable
+
+    //+
+    @POST("v1/user/social/bind")
+    fun bindSocialAccountWithToken(
+        @Body body: BindSocialAccountBody,
+        @Header("Authorization") token: String?
+    ): Completable
+
+    @POST("v1/user/social/bind")
+    fun bindSocialAccount(@Body body: BindSocialAccountBody): Maybe<SnBindDataModel>
+
+    @HTTP(method = "DELETE", path = "v1/user/social/disconnect", hasBody = true)
+    fun unBindSocialAccount(@Body map : Map<String, String>): Completable
 }

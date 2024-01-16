@@ -1,24 +1,30 @@
 package com.example.ui.stories
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentStoriesBinding
+import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
-import jp.shts.android.storiesprogressview.StoriesProgressView
+import com.example.ui.views.stories.StoriesProgressView
+import com.example.util.getColor
+import com.example.util.getDrawable
+import kotlinx.android.synthetic.main.activity_image_view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
-class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.View, DoNotCheckConnectionFragment {
+class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.View,
+    DoNotCheckConnectionFragment, BackgroundImageFragment {
 
     @InjectPresenter
     lateinit var presenter: StoriesPresenter
@@ -41,7 +47,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private val onTouchListener = View.OnTouchListener { _, event ->
+    private val onTouchListener = View.OnTouchListener { view, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 pressTime = System.currentTimeMillis()
@@ -57,43 +63,53 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
         false
     }
 
+    private val storiesListener = object : StoriesProgressView.StoriesListener {
+        override fun onComplete() {
+            backPressedCallback.isEnabled = false
+            presenter.onStoriesComplete()
+        }
+
+        override fun onPrev() {
+            val position = position - 1
+            if (position >= 0) setStory(position)
+        }
+
+        override fun onNext() {
+            val position = position + 1
+            if (position < 4) setStory(position)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedCallback
+        )
         mBinding.apply {
             stories.apply {
                 setStoriesCount(4)
                 setStoryDuration(3000L)
-                setStoriesListener(object : StoriesProgressView.StoriesListener {
-                    override fun onComplete() {
-                        backPressedCallback.isEnabled = false
-                        presenter.onStoriesComplete()
-                        //findNavController().navigateUp()
-                    }
-
-                    override fun onPrev() {
-                        val position = position - 1
-                        if (position >= 0) setStory(position)
-                    }
-
-                    override fun onNext() {
-                        val position = position + 1
-                        if (position < 4) setStory(position)
-                    }
-                })
+                setStoriesListener(storiesListener)
                 startStories()
             }
             reverse.apply {
-                setOnClickListener {
-                    stories.reverse()
-                }
+                setOnClickListener { stories.reverse() }
                 setOnTouchListener(onTouchListener)
             }
             skip.apply {
-                setOnClickListener {
-                    stories.skip()
-                }
+                setOnClickListener { stories.skip() }
                 setOnTouchListener(onTouchListener)
+            }
+            btnContinue.setOnClickListener { stories.skip() }
+            btnClose.setOnClickListener { presenter.onStoriesComplete() }
+            flingLayout.apply {
+                positionChangeListener = { _, _, dragRangeRate ->
+                    if (dragRangeRate <= 0f) mBinding.stories.resume()
+                    else mBinding.stories.pause()
+                    setBackgroundColor(Color.argb((255 * (1.0F - dragRangeRate)).roundToInt(), 0, 0, 0))
+                }
+                dismissListener = { presenter.onStoriesComplete() }
             }
         }
         setStory(0)
@@ -101,21 +117,41 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
 
     private fun setStory(position: Int) {
         this.position = position
-        mBinding.ivBackgroundImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
-            0 -> R.drawable.st_1_bg
-            1 -> R.drawable.st_2_bg
-            2 -> R.drawable.st_3_bg
-            3 -> R.drawable.st_4_bg
-            else -> throw IllegalStateException("No file for position: $position")
-        }))
-
-        mBinding.ivForegroundImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), when (position) {
-            0 -> R.drawable.st_1_fg
-            1 -> R.drawable.st_2_fg
-            2 -> R.drawable.st_3_fg
-            3 -> R.drawable.st_4_fg
-            else -> throw IllegalStateException("No file for position: $position")
-        }))
+        var imageBackground: Int = R.drawable.st_1_bg
+        var imageForeground: Int = R.drawable.st_1_fg
+        when (position) {
+            0 -> {
+                imageBackground = R.drawable.st_1_bg
+                imageForeground = R.drawable.st_1_fg
+            }
+            1 -> {
+                imageBackground = R.drawable.st_2_bg
+                imageForeground = R.drawable.st_2_fg
+            }
+            2 -> {
+                imageBackground = R.drawable.st_3_bg
+                imageForeground = R.drawable.st_3_fg
+            }
+            3 -> {
+                imageBackground = R.drawable.st_4_bg
+                imageForeground = R.drawable.st_4_fg
+            }
+        }
+        if (position == 0 || position == 3) {
+            mBinding.btnContinue.apply {
+                background = getDrawable(R.drawable.custom_btn_brown_cancel_selectable)
+                setTextColor(getColor(R.color.black))
+            }
+            mBinding.btnClose.setImageResource(R.drawable.ic_close_camera)
+        } else {
+            mBinding.btnContinue.apply {
+                background = getDrawable(R.drawable.custom_btn_white_cancel_selectable)
+                setTextColor(getColor(R.color.white))
+            }
+            mBinding.btnClose.setImageResource(R.drawable.ic_close_light)
+        }
+        mBinding.ivBackgroundImage.apply { setImageDrawable(getDrawable(imageBackground)) }
+        mBinding.ivForegroundImage.apply { setImageDrawable(getDrawable(imageForeground)) }
     }
 
     override fun showAuthorization() = findNavController().navigate(
@@ -125,4 +161,6 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
     )
 
     override fun layout() = R.layout.fragment_stories
+    override fun getFragmentBackgroundDrawable() = mBinding.root.getDrawable(R.drawable.background_auth_very_small)
+    override val isLightStatus = false
 }

@@ -3,7 +3,7 @@ package com.example.di
 import com.example.ui.gallery.camera.CustomCameraActivity
 import com.example.ui.image.ImageViewActivity
 import com.example.ui.main.MainActivity
-import com.example.ui.snAuth.SnAuthActivity
+import com.example.ui.auth.snAuth.SnAuthActivity
 import com.example.ui.gallery.cropImage.CropImageActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

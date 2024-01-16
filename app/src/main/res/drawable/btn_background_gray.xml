@@ -3,7 +3,7 @@
     <item>
         <shape>
             <solid android:color="@color/notification_center_date_text"/>
-            <corners android:radius="@dimen/action_button_radius" />
+            <corners android:radius="@dimen/common_button_radius" />
         </shape>
     </item>
 </layer-list>

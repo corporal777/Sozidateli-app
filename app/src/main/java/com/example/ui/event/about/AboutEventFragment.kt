@@ -1,23 +1,43 @@
 package com.example.ui.event.about
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.*
+import com.example.data.models.AboutEventData
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventNew
+import com.example.data.models.MapInfo
+import com.example.data.models.MemberModel
+import com.example.data.models.NewTags
+import com.example.data.models.PartnerModel
+import com.example.data.models.Tag
 import com.example.databinding.FragmentAboutEventNewBinding
-import com.example.extensions.*
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.findItemBy
+import com.example.extensions.updateGroup
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.items.*
+import com.example.ui.event.about.items.EventDetailActionItem
+import com.example.ui.event.about.items.EventDetailActivitiesItem
+import com.example.ui.event.about.items.EventDetailBlocksLabelItem
+import com.example.ui.event.about.items.EventDetailImageItem
+import com.example.ui.event.about.items.EventDetailInfoBlock
+import com.example.ui.event.about.items.EventDetailOrganizationItem
+import com.example.ui.event.about.items.EventDetailShowActivitiesItem
+import com.example.ui.event.about.items.SpeakersHorizontalListItem
+import com.example.ui.event.about.items.TagsItem
 import com.example.ui.event.activities.ActivitiesFragmentArgs
 import com.example.ui.event.location.map.MapFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -31,15 +51,18 @@ import com.example.ui.views.GridLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.blur.EventAddedToFavoriteBlurredDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import eightbitlab.com.blurview.BlurAlgorithm
+import eightbitlab.com.blurview.RenderEffectBlur
+import eightbitlab.com.blurview.RenderScriptBlur
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import onScrolled
 import setOnClickListener
+import statusBarColorValue
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -132,9 +155,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             toolbar.apply {
                 ivShare.setOnClickListener(mPresenter::onShareClick)
                 ivBack.setOnClickListener(findNavController()::navigateUp)
-                btnAddToCalendar.setOnClickListener {
-                    mPresenter.onAddEventToCalendarClick()
-                }
+                btnAddToCalendar.setOnClickListener(mPresenter::onAddEventToCalendarClick)
             }
 
             swipeToRefresh.apply {
@@ -143,12 +164,10 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
                     resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
                     resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
                 )
-                setOnRefreshListener {
-                    mPresenter.onRefreshRequest()
-                }
+                setOnRefreshListener { mPresenter.onRefreshRequest() }
             }
         }
-
+        setupBlurView()
     }
 
     override fun setEventDataPlaceholder() {
@@ -189,7 +208,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             )
         )
     }
-
 
 
     override fun setSpeakersData(speakers: List<MemberModel>, showMore: Boolean) {
@@ -354,21 +372,12 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         )
     }
 
-    override fun showTest() {
-        EventAddedToFavoriteBlurredDialog(
-            0,
-            requireContext(),
-            mBinding.root
-        )
-    }
 
     private fun decorEventFavoriteButton(isSubscribed: Boolean) {
         mBinding.toolbar.ivAddToFavorite.apply {
             if (!isSubscribed) setImageResource(R.drawable.ic_star)
             else setImageResource(R.drawable.ic_star_filled)
-            setOnClickListener {
-                mPresenter.onAddEventToFavoriteClick()
-            }
+            setOnClickListener { mPresenter.onAddEventToFavoriteClick() }
         }
     }
 
@@ -400,20 +409,32 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         }
     }
 
+    private fun setupBlurView() {
+        val algorithm: BlurAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            RenderEffectBlur()
+        } else RenderScriptBlur(requireContext())
+
+        val windowBackground = requireActivity().window.decorView.background
+        mBinding.toolbar.tbBackground.setupWith(mBinding.eventContentList, algorithm)
+            .setFrameClearDrawable(windowBackground)
+            .setBlurRadius(15f)
+    }
+
     override fun updateAppBarBackgroundColorValue(value: Int) {
-        Log.e("OFFSET", value.toString())
-
         mBinding.toolbar.apply {
-            if (value <= 0) tbBackground.alpha = 0f
-            else {
+            if (value <= 0) {
+                statusBarColorValue = 0
+                tbBackground.alpha = 0f
+            } else {
                 tbBackground.apply { alpha = abs(value / (1450).toFloat()) }
-                if (value >= 1450) mBinding.appBar.changeAppBarElevation(abs(value / 100f))
-                else mBinding.appBar.changeAppBarElevation(0f)
-
-                requireActivity().window.apply {
-                    if (value >= 740) decorView.systemUiVisibility =
-                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    else decorView.systemUiVisibility = 0
+                mBinding.appBar.apply {
+                    if (value >= 1450) {
+                        statusBarColorValue = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        changeAppBarElevation(abs(value / 100f))
+                    } else {
+                        statusBarColorValue = 0
+                        changeAppBarElevation(0f)
+                    }
                 }
             }
         }

@@ -188,7 +188,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ibCancel"
-                style="@style/BtnCancelStyle"
+                style="@style/BtnGrayCancelStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"

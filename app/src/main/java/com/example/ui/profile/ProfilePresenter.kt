@@ -18,6 +18,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomLoading
 import withDelay
 import withProgressBarDialogLoading
 import withProgressBarLoading
@@ -34,40 +35,26 @@ class ProfilePresenter
     private val authRepository: AuthRepository,
 ) : BasePresenter<ProfileContract.View>(appData), ProfileContract.Presenter {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        compositeDisposable += userRepository.getUserShortData()
-            .doOnSuccess { getAdditionalData() }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = {
-                    viewState.apply {
-                        setUser(it)
-                        setUserLink(it)
-                        if (it.getSessionsCount() <= 1) {
-                            setChangeOrAddNewAccount(R.string.add_account_label, R.drawable.ic_profile_add_account_edit)
-                        } else {
-                            setChangeOrAddNewAccount(R.string.change_account_label, R.drawable.ic_profile_change_account_edit)
-                        }
-                    }
-                })
-    }
+    private var firstLaunch = true
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        viewState.setUserState(appData.hasBaseState, appData.hasMaxState)
         compositeDisposable += getUserRequest()
             .performOnBackgroundOutOnMain()
+            .let {
+                if (firstLaunch) {
+                    firstLaunch = false
+                    it.withCustomLoading(viewState)
+                } else it
+            }
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
+                onError = { it.printStackTrace() },
                 onSuccess = {
                     viewState.apply {
                         setUser(it)
                         setUserLink(it)
+                        setUserState(appData.hasBaseState, appData.hasMaxState)
+                        setChangeOrAddNewAccount(it.getSessionsCount())
                     }
                 })
     }
@@ -90,14 +77,7 @@ class ProfilePresenter
             )
     }
 
-    private fun getAdditionalData() {
-        compositeDisposable += userRepository.getEducationLevel()
-            .subscribe({}, { it.printStackTrace() })
-        compositeDisposable += userRepository.getSpeciality()
-            .subscribe({}, { it.printStackTrace() })
-        compositeDisposable += userRepository.getAcademicDegrees()
-            .subscribe({}, { it.printStackTrace() })
-    }
+
 
 
     override fun checkEmailIsUnique(email: String) {
@@ -173,51 +153,34 @@ class ProfilePresenter
             }
     }
 
-
     override fun onQrScannerToAuthWebClick() = viewState.showQrScannerToAuthWebSite()
     override fun onSettingsClick() = viewState.showSettings()
     override fun onProfileClick() = viewState.showProfile(appData.getId().toString())
-
     override fun onFavoritesClick() = viewState.showFavorites()
-
-
     override fun onAboutApplicationClick() = viewState.showAboutApp()
-
-
     override fun onSupportClick() = viewState.showSupport()
     override fun onWriteEmailClick() = viewState.openSupportEmail(appData.getId().toString())
     override fun onRateClick() = viewState.openPlayMarket()
-
     override fun onSessionsClick() = viewState.showSessions()
     override fun onChangeAccountClick() = viewState.showChangeAccount()
 
-    override fun onShowUserProfileLink() {
-        compositeDisposable += getUserRequest()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    viewState.showUserProfileLinkDialog(it)
-                })
-    }
-
-    override fun onShowChangeUserShortName() {
-        compositeDisposable += getUserRequest()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    viewState.showChangeUserShortNameDialog(it)
-                })
-    }
+    override fun onShowUserProfileLink() = viewState.showUserProfileLinkDialog()
+    override fun onShowChangeUserShortName() = viewState.showChangeUserShortName()
 
 
     private fun getUserRequest(): Maybe<UserDetail> {
-        return Maybe.defer { Maybe.just(appData.getUser()) }
-            .onErrorResumeNext(userRepository.getUserShortData())
+        return if (firstLaunch) userRepository.getUserFullData()
+            .doOnSuccess { getAdditionalData() }
+        else Maybe.defer { Maybe.just(appData.getUser()) }
+            .onErrorResumeNext(userRepository.getUserFullData())
+    }
+
+    private fun getAdditionalData() {
+        compositeDisposable += userRepository.getEducationLevel()
+            .subscribe({}, { it.printStackTrace() })
+        compositeDisposable += userRepository.getSpeciality()
+            .subscribe({}, { it.printStackTrace() })
+        compositeDisposable += userRepository.getAcademicDegrees()
+            .subscribe({}, { it.printStackTrace() })
     }
 }

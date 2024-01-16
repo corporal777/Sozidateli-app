@@ -1,7 +1,6 @@
 package com.example.ui.main
 
 import android.app.NotificationManager
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import call
@@ -25,7 +24,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -45,15 +43,13 @@ class MainPresenter
     private val eventRepository: EventRepository,
     private val commonRepository: CommonRepository,
     private val socket: SocketIOManager,
-    private val context: Context,
 ) : BasePresenter<MainContract.View>(appData), MainContract.Presenter {
 
     private var isIgnoreToken = false
-    lateinit var newMessageTitleText: String
-    lateinit var photoMessageText: String
-    lateinit var chatAcceptMessageText: String
 
-    private val timerCompositeDisposable = CompositeDisposable()
+    private val timerCompositeDisposable = CompositeDisposable().apply {
+        compositeDisposable += this
+    }
     private val chatCompositeDisposable = CompositeDisposable()
     private val errorMessageDisposable = CompositeDisposable().apply {
         compositeDisposable += this
@@ -69,8 +65,6 @@ class MainPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += timerCompositeDisposable
-
         appData.deviceId = UUID.randomUUID().toString()
         if (!appData.isStoriesShown) {
             viewState.hideSplashScreen()
@@ -136,21 +130,11 @@ class MainPresenter
     }
 
     private fun loadUser() {
-        compositeDisposable += Completable.create { emitter ->
-            val disposable = CompositeDisposable()
-            disposable += userRepository.getUserFullData().subscribeBy(
-                onError = { emitter.onError(it) },
-                onSuccess = {
-                    disposable += Completable.merge(listOf(getAdditionalData()))
-                        .doOnComplete { connectToSocket() }
-                        .andThen(Completable.defer { checkShowGreetings() })
-                        .subscribeBy(
-                            onError = { emitter.onError(it) },
-                            onComplete = { emitter.onComplete() }
-                        )
-                })
-            emitter.setDisposable(disposable)
-        }
+        compositeDisposable += userRepository.getUserShortData()
+            .flatMapSingle { userRepository.checkUserProfileSingle() }
+            .flatMapCompletable { getAdditionalData() }
+            .doOnComplete { connectToSocket() }
+            .andThen(Completable.defer { checkShowGreetings() })
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -384,8 +368,7 @@ class MainPresenter
         if (isAuthRequired || appData.isLoggedOut) {
             viewState.showLogin()
             canShowBrowser = true
-        }
-        else if (url.isNullOrBlank()) return
+        } else if (url.isNullOrBlank()) return
         else {
             if (canShowBrowser) observeDeeplink(url)
             else viewState.showAccountChangeFragment(url, type)
@@ -446,11 +429,11 @@ class MainPresenter
     }
 
     override fun onHandleChangePasswordLink(userId: String, code: String) {
-        authRepository.checkRecoveryCodeNew("email", code)
+        authRepository.checkPasswordRecoveryCode("email", code)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    showDialogChangePassword(userId, code)
+                    showChangePassword(userId, code)
                     clearIntentData()
                 }
             }.call(compositeDisposable)

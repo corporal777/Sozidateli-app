@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
+
+    <LinearLayout
+        android:layout_width="@dimen/account_block_dialog_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/dialog_rounded_corners_account"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tvTitle"
+            fontPath="fonts/sf_pro_display_semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="15dp"
+            android:letterSpacing="-0.01"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="Ваш аккаунт заблокирован" />
+
+
+        <TextView
+            android:id="@+id/tvMessage"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:letterSpacing="-0.01"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            tools:text="Превышено количество попыток ввода пароля. Обратитесь в техническую поддержку, чтобы разблокировать аккаунт." />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <View
+                android:id="@+id/top_divider"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#C6C6C8"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/center_divider"
+                android:layout_width="0.5dp"
+                android:layout_height="45dp"
+                android:background="#3C3C43"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_divider" />
+
+            <TextView
+                android:id="@+id/tvCancel"
+                style="@style/ClickableTextView"
+                fontPath="fonts/sf_pro_display.OTF"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="Отмена"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/center_divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_divider" />
+
+
+            <TextView
+                android:id="@+id/tvAction"
+                style="@style/ClickableTextView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="Помощь"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/center_divider"
+                app:layout_constraintTop_toBottomOf="@id/top_divider" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -49,7 +49,7 @@ class BasicCameraFragment : BaseSystemPickerFragment(), ICameraCustomPickerView 
     }
 
     override fun startRequest() {
-        if (checkWritePermission()) {
+        if (checkReadPermission() && checkCameraPermission()) {
             startPickImage()
         }
     }

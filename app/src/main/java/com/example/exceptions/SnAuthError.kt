@@ -1,0 +1,3 @@
+package com.example.exceptions
+
+class SnAuthError(message: String?) : Exception(message)

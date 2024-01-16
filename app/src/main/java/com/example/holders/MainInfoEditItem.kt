@@ -1,32 +1,34 @@
 package com.example.holders
 
 import android.content.Context
+import android.util.Log
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.ItemEditMainInfoBinding
 import com.example.extensions.*
+import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
 import com.squareup.picasso.Picasso
+import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import initAsDatePicker
 import java.util.*
 
 
-
 class MainInfoEditItem(
     id: Long,
     private val gender: ToggleStringModel?,
-    private val birthday: String?,
-    private val address: UserAddress?,
-    private val phone: List<FieldDetails>?,
-    private val showBirthday: Boolean?,
-    private val image: String?,
-    private val isEnableNext: (isEnable: Boolean) -> Unit,
-    private val onEditPhoneClick: (String?) -> Unit,
-    private val onImageClick: (canRemove: Boolean) -> Unit
+    private val birthday: FieldDetails?,
+    private val address: NewUserAddress?,
+    private val phone: FieldDetails?,
+    private val image: String?
 ) : BindableItem<ItemEditMainInfoBinding>(id) {
+
+    var onEnableNext: (isEnable: Boolean) -> Unit = {}
+    var onEditPhoneClick: (String?) -> Unit = {}
+    var onImageClick: (canRemove: Boolean) -> Unit = {}
 
     private val genderMale = "Мужской"
     private val genderFemale = "Женский"
@@ -35,11 +37,11 @@ class MainInfoEditItem(
 
     private var mImage = image
 
-    private var mMobilePhone = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
-    private var mMobilePhoneIsVisible = phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isVisible
+    private var mMobilePhone = phone?.value
+    private var mMobilePhoneIsVisible = phone?.isVisible
 
-    private var mBirthday = birthday?.formatToDefaultDate()
-    private var mShowBirthday = showBirthday ?: false
+    private var mBirthday = birthday?.value?.formatToDefaultDate()
+    private var mShowBirthday = birthday?.isVisible ?: false
 
     private var mAddressRegion = address?.region
     private var mAddressCity = address?.city
@@ -56,7 +58,7 @@ class MainInfoEditItem(
                 onImageClick(!mImage.isNullOrEmpty())
             }
             etBirthday.apply {
-                initAsDateTimePicker(mBirthday){
+                initAsDateTimePicker(mBirthday) {
                     mBirthday = it.toString()
                     checkDataValid()
                 }
@@ -64,7 +66,7 @@ class MainInfoEditItem(
             }
 
             tvGender.apply {
-                initAsDropDown(mGender, listOf(genderMale, genderFemale)){
+                initAsDropDown(mGender, listOf(genderMale, genderFemale)) {
                     mGender = it.toString()
                     checkDataValid()
                 }
@@ -72,7 +74,7 @@ class MainInfoEditItem(
             }
 
             tvRegion.apply {
-                initAsCustomMode(mAddressRegion){
+                initAsCustomMode(mAddressRegion) {
                     SearchRegionBottomSheet(context)
                         .setRegionSelectedCallback {
                             mAddressRegion = it?.name
@@ -88,7 +90,7 @@ class MainInfoEditItem(
             }
             tvCity.apply {
                 isEnabled = !mAddressRegion.isNullOrEmpty()
-                initAsCustomMode(mAddressCity){
+                initAsCustomMode(mAddressCity) {
                     SearchSettlementBottomSheet(context, mAddressRegion)
                         .setSettlementSelectedCallback {
                             mAddressCity = it?.name
@@ -112,9 +114,7 @@ class MainInfoEditItem(
     }
 
 
-
-
-    fun checkDataValid(): Boolean {
+    fun checkDataValid() {
         var isValid = true
         if (mGender.isNullOrEmpty()) isValid = false
         if (mBirthday.isNullOrEmpty()) isValid = false
@@ -122,13 +122,10 @@ class MainInfoEditItem(
         if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) isValid = false
         if (mImage.isNullOrEmpty()) isValid = false
 
-        isEnableNext(isValid)
-        return isValid
+        onEnableNext(isValid)
     }
 
-    private fun getPersonalPhone() = mMobilePhone?.phoneToServer() ?: ""
-    private fun isPhoneValid(): Boolean = Utils.isPhoneNumberValid(getPersonalPhone())
-    private fun getValidatedPhone() = Utils.validatePhoneBeforeSend(getPersonalPhone())
+    private fun isPhoneValid(): Boolean = Utils.isPhoneNumberValid(mMobilePhone?.phoneToServer() ?: "")
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
@@ -142,13 +139,11 @@ class MainInfoEditItem(
             if (checkAddressIsEqual()) put(UserDetail.USER_ADDRESS, getNewAddress())
 
             put(
-                UserDetail.USER_PHONE, arrayListOf(
-                    FieldDetails(
-                        value = getValidatedPhone(),
-                        type = PHONE_PERSONAL,
-                        isVisible = mMobilePhoneIsVisible
-                    )
-                )
+                UserDetail.USER_PHONE, FieldDetails(
+                    value = Utils.validatePhoneBeforeSend(mMobilePhone?.phoneToServer() ?: ""),
+                    type = PHONE_PERSONAL,
+                    isVisible = mMobilePhoneIsVisible
+                ).toList()
             )
         }
     }
@@ -170,21 +165,20 @@ class MainInfoEditItem(
     }
 
     private fun setAvatar() {
-        if (::mBinding.isInitialized) {
-            mBinding.apply {
-                btnEdit.text =
-                    if (!mImage.isNullOrEmpty()) root.context.getString(R.string.edit_title)
-                    else root.context.getString(R.string.profile_add_photo)
+        if (::mBinding.isInitialized.not()) return
+        mBinding.apply {
+            btnEdit.text =
+                if (!mImage.isNullOrEmpty()) root.context.getString(R.string.edit_title)
+                else root.context.getString(R.string.profile_add_photo)
 
-                ivAvatar.apply {
-                    clipToOutline = true
-                    transitionName = mImage
-                    Picasso.get()
-                        .load(mImage)
-                        .placeholder(R.drawable.avatar_placeholder_rectangle)
-                        .error(R.drawable.avatar_placeholder_rectangle)
-                        .into(this)
-                }
+            ivAvatar.apply {
+                clipToOutline = true
+                transitionName = mImage
+                Picasso.get()
+                    .load(mImage)
+                    .placeholder(R.drawable.avatar_placeholder_rectangle)
+                    .error(R.drawable.avatar_placeholder_rectangle)
+                    .into(this)
             }
         }
     }
@@ -215,9 +209,19 @@ class MainInfoEditItem(
             region = mAddressRegion,
             city = mAddressCity,
             fullValue = address?.fullValue,
-            shortValue = address?.shortValue,
+            shortValue = address?.shortAddres,
             showInProfile = mAddressShow
         )
+    }
+
+    override fun hasSameContentAs(other: Item<*>?): Boolean {
+        if (other !is MainInfoEditItem) return false
+        if (gender != other.gender) return false
+        if (birthday != other.birthday) return false
+        if (address != other.address) return false
+        if (phone != other.phone) return false
+        if (image != other.image) return false
+        return true
     }
 
     override fun getLayout(): Int = R.layout.item_edit_main_info

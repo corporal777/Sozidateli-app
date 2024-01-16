@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import androidx.core.text.toSpannable
 import com.example.BuildConfig
-import com.example.util.getCurrentYear
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin

@@ -18,10 +18,14 @@ interface RecommendationsContract {
 
         @OneExecution
         fun showSearch()
+
+        @OneExecution
+        fun showUserProfile()
     }
 
     interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
+        fun onProfileClick()
         fun onRefreshRequest()
     }
 }

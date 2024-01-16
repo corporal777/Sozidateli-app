@@ -64,6 +64,13 @@ class RecommendationsPresenter
     override fun onRefreshRequest() = pagination.invalidate()
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
+    override fun onProfileClick() {
+        getUserData().apply {
+            if (personalPhone?.value.isNullOrEmpty() || personalEmail.isNullOrEmpty()) viewState.showUserProfile()
+            else return
+        }
+    }
+
     override fun getPaginationRequest(
         limit: Int,
         offset: Int

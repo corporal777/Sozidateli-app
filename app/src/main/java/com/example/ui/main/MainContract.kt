@@ -62,13 +62,10 @@ interface MainContract {
         fun showPasswordRecovery()
 
         @Skip
-        fun showDialogChangePassword(userId: String, code: String)
+        fun showChangePassword(userId: String, code: String)
 
         @OneExecution
         fun checkIntent()
-
-        @OneExecution
-        fun showStories()
 
         @OneExecution
         fun showInAppNew(listInApp: List<Notification>)
@@ -90,6 +87,9 @@ interface MainContract {
 
         @OneExecution
         fun showUpdateApp(isRequired : Boolean)
+
+        @OneExecution
+        fun showStories()
 
         @OneExecution
         fun showSplashScreen()
@@ -125,11 +125,11 @@ interface MainContract {
 
 
         fun onRetryConnectionClick()
+        fun onStoriesComplete()
 
         fun onRequestShowErrorMessage(message: String)
         fun onRequestHideErrorMessage()
 
-        fun onStoriesComplete()
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
         fun onHandleAuthWebsite(code : String?)
 

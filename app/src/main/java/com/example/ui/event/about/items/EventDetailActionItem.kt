@@ -64,7 +64,7 @@ class EventDetailActionItem(
                         }
                         setColorSpan(R.color.bottom_nav_item_selected_color, context)
                     }
-                    highlightColor = ContextCompat.getColor(context, R.color.colorOverlay)
+                    highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
                     movementMethod = LinkMovementMethod.getInstance()
                 }
             }

@@ -12,7 +12,7 @@ import com.example.data.database.Db
 import com.example.data.prefs.AppPrefs
 import com.example.data.prefs.AppPrefsImpl
 import com.example.repository.EventRepository
-import com.example.ui.snAuth.SnAuthManager
+import com.example.util.SnAuthManager
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
 import com.example.util.NotificationUtil
@@ -23,7 +23,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.android.support.AndroidSupportInjectionModule
 import io.github.inflationx.calligraphy3.CalligraphyConfig
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.reactivex.Observable
 import javax.inject.Singleton
 
@@ -84,9 +83,4 @@ class AppModule {
 
     @Provides
     fun providesEventLocationAlarmHelper(context: Context): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-
-    @Provides
-    fun providesPhoneNumberUtil(context: Context): PhoneNumberUtil = PhoneNumberUtil.createInstance(context)
-
-
 }

@@ -1,28 +1,26 @@
 package com.example.ui.userprofile.edit.shortName
 
 import com.example.data.models.UserDetail
+import com.example.ui.base.BaseContract
 import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface ChangeShortNameContract {
-    interface View : BaseBottomSheetContract.View{
+    interface View : BaseContract.View{
 
         @OneExecution
-        fun setUserShortName(name : String)
+        fun setUserShortName(name : String?, id : String)
 
         @Skip
-        fun setUserShortNameUnique(isUnique : Boolean)
+        fun setUserShortNameUnique(isUnique : Boolean, name : String?)
 
-        @OneExecution
-        fun showUserShortNameSuccessUpdated()
-
-        @OneExecution
-        fun updateUserShortNameInProfile(user : UserDetail)
+        @Skip
+        fun enableBtnSave(enabled : Boolean)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
-        fun checkUserShortNameUnique(short: String)
-        fun updateUserShortName(short: String)
+    interface Presenter : BaseContract.Presenter {
+        fun onChangeShortName(short: String)
+        fun onSaveShortName()
     }
 }

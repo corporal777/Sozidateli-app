@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example">
 
     <application>
@@ -10,66 +11,26 @@
             <intent-filter
                 android:autoVerify="true"
                 android:label="@string/app_default_url_sozidateli_name">
-                <action android:name="android.intent.action.VIEW" />
 
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/profile"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="alfa.sozidateli.ru"/>
 
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/auth"
-                    android:scheme="https" />
+                <data android:pathPrefix="/profile"/>
+                <data android:pathPrefix="/auth"/>
+                <data android:pathPrefix="/qr"/>
+                <data android:pathPrefix="/social"/>
+                <data android:pathPrefix="/portal/event"/>
+                <data android:pathPrefix="/portal/user"/>
+                <data android:pathPrefix="/event/hidden"/>
+                <data android:pathPrefix="/switch-account"/>
+                <data android:pathPrefix="/support_center"/>
+                <data android:pathPrefix="/settings"/>
+                <data android:pathPrefix="/lp"/>
 
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/qr"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/social"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/portal/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/portal/user"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/event/hidden"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/switch-account"
-                    android:scheme="https" />
-
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/support_center"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/settings"
-                    android:scheme="https" />
-
-                <data
-                    android:host="alfa.sozidateli.ru"
-                    android:pathPrefix="/lp"
-                    android:scheme="https" />
             </intent-filter>
         </activity>
 

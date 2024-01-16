@@ -12,7 +12,7 @@ val defaultDateFormatter: DateFormat
 val dateFormatterShortMoth: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_FULL_YEAR, Locale.getDefault())
 
-val dateFormatterShortMothShortYear: DateFormat
+val dateFormatterShortMonthShortYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_MONTH_SHORT_YEAR, Locale.getDefault())
 
 val dateFormatterShortMothNoYear: DateFormat
@@ -53,10 +53,6 @@ fun String.formatToDefaultServerDate(): String? {
     return parseAndFormat(defaultDateFormatter, defaultServerDateFormatter)
 }
 
-fun String.formatToDefaultDayAndMonth(): String? {
-    return parseAndFormat(defaultDateFormatter, dateFormatterFullMothNoYear)
-}
-
 fun String.parseToDate(parser: DateFormat): Date? {
     return try {
         parser.parse(this)
@@ -65,16 +61,12 @@ fun String.parseToDate(parser: DateFormat): Date? {
     }
 }
 
-fun longToDate(date: Long): String = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP).format(date)
 fun longToTime(date: Date): String = SimpleDateFormat(TIME_FORMAT_DEFAULT).format(date)
 
+fun String.parseToLong(parser: DateFormat): Long? = parseToDate(parser)?.let { it.time }
 
 fun String.parseAndFormat(parser: DateFormat, formatter: DateFormat): String? {
     return parseToDate(parser)?.let { formatter.format(it) }
-}
-
-fun String.parseToLong(parser: DateFormat): Long? {
-    return parseToDate(parser)?.let { it.time }
 }
 
 fun String?.parseAndFormatOrDefault(parser: DateFormat, formatter: DateFormat, default: String?): String? {
@@ -90,14 +82,6 @@ fun String?.parseAndFormatOrDefault(parser: DateFormat, formatter: DateFormat, d
     return formatter.format(parsed)
 }
 
-fun String?.formatToInterval(to: String?, parser: DateFormat = defaultServerDateFormatter, withTime: Boolean = false): String? {
-    if (this == null || to == null) return null
-
-    val start = parser.parse(this)
-    val finish = parser.parse(to)
-
-    return start.calendar().formatToInterval(finish.calendar(), withTime)
-}
 
 private fun Calendar.formatToInterval(to: Calendar, withTime: Boolean): String {
     val formatter = if (withTime) {
@@ -208,12 +192,6 @@ fun String?.formatToEventDatesIntervalOnMain(finish: String?): String? {
     }.toString()
 }
 
-fun Calendar.formatToDefaultTime(): String {
-    val formatter = if (this.isSameYear(Calendar.getInstance())) defaultDateTimeFormatterNoYear
-    else defaultDateFormatter
-
-    return formatter.format(this.time)
-}
 
 fun Long.calendar(): Calendar = Calendar.getInstance().apply { timeInMillis = this@calendar }
 
@@ -273,4 +251,15 @@ fun Long.endOfDay(): Long {
         set(Calendar.MILLISECOND, 999)
     }
             .timeInMillis
+}
+
+fun getCurrentYear(): Int = System.currentTimeMillis().calendar().get(Calendar.YEAR)
+fun getCurrentMonth(): Int = System.currentTimeMillis().calendar().get(Calendar.MONTH)
+fun getCurrentDay(): Int = System.currentTimeMillis().calendar().get(Calendar.DAY_OF_MONTH)
+
+fun daysBetween(d1: Long?, d2: Long): Int {
+    var days = 0
+    val dateOne = d1 ?: System.currentTimeMillis()
+    for (i in dateOne..d2 step 86400000) days++
+    return days
 }

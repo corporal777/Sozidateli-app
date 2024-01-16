@@ -2,6 +2,8 @@ package com.example.ui.base.bottomSheet
 
 import com.example.ui.base.BaseContract
 import moxy.MvpView
+import moxy.viewstate.strategy.SkipStrategy
+import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
@@ -25,6 +27,9 @@ interface BaseBottomSheetContract {
 
         @Skip
         fun navigateUp()
+
+        @Skip
+        fun setIgnoreTokenListener(isIgnore: Boolean)
     }
 
 

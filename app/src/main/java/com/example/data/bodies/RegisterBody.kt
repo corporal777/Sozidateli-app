@@ -30,54 +30,20 @@ data class RegisterBody(
         val deviceModel : String = "",
         var build : String = "",
         var version : String = ""
-) {
-        fun toMap(): Map<String, Any> {
-                val res: MutableMap<String, Any> = mutableMapOf()
-                password?.let {
-                        res["password"] = it
-                }
-                name?.let {
-                        res["name"] = it
-                }
-                lastName?.let {
-                        res["lastName"] = it
-                }
-                middleName?.let {
-                        res["middleName"] = it
-                }
-                email?.let {
-                        res["email"] = it
-                }
-                phone?.let {
-                        res["phone"] = it
-                }
-                site?.let {
-                        res["site"] = it
-                }
-                socialLinks?.let {
-                        res["socialLinks"] = it
-                }
-                birthday?.let {
-                        res["birthday"] = it
-                }
-                gender?.let {
-                        res["gender"] = it
-                }
-                address?.let {
-                        res["address"] = it
-                }
-                state?.let {
-                        res["state"] = it
-                }
-                interests?.let {
-                        res["interests"] = it
-                }
-                notes?.let {
-                        res["notes"] = it
-                }
-                educationLevel?.let {
-                        res["educationLevel"] = it
-                }
-                return res
-        }
-}
+)
+
+data class SnRegisterBody(
+        val name: String? = null,
+        val lastName: String? = null,
+        val middleName: FieldDetails? = null,
+        val email: String? = null,
+        val phone: String? = null,
+        val birthday: String? = null,
+        val socialNetwork: String? = null,
+
+        val uuid: String? = null,
+        val deviceId : String = "",
+        val deviceModel : String = "",
+        val build : String = "",
+        val version : String = ""
+)

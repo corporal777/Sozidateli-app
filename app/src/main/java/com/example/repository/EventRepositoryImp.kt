@@ -492,7 +492,7 @@ class EventRepositoryImp
         api.getTags(map).map { it.data }
 
     override fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
-        return api.searchDataNew(map)
+        return api.searchUsers(map)
             .map { PaginationResponse(it.events.count, it.events.data) }
     }
 

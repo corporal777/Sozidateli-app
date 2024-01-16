@@ -5,7 +5,7 @@ buildscript {
     ext.moxy_version = '2.2.2'
     ext.paging_version = '2.1.2'
     ext.retrofit_version = '2.9.0'
-    ext.room_version = '2.4.3'
+    ext.room_version = '2.5.2'
     ext.markwon_version = '4.6.2'
 
     repositories {
@@ -33,6 +33,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
+        maven { url "https://artifactory-external.vkpartner.ru/artifactory/vkid-sdk-andorid/" }
     }
 }
 task clean(type: Delete) {

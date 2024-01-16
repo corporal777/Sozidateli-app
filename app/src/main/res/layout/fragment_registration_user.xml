@@ -15,18 +15,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_register_title"
-                fontPath="fonts/sf_pro_display_bold.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center_horizontal"
-                android:letterSpacing="-0.01"
-                android:lineSpacingExtra="2dp"
-                android:text="@string/auth_register"
-                android:textColor="@color/auth_title_text"
-                android:textSize="24sp" />
 
             <com.example.ui.views.CustomTextInputView
                 android:id="@+id/etLastName"
@@ -61,13 +49,25 @@
                 android:layout_marginHorizontal="15dp"
                 android:text="@string/profile_edit_user_no_middle_name" />
 
-            <com.example.ui.views.CustomPhoneTextInputView
-                android:id="@+id/etMobilePhone"
+            <com.example.ui.views.CustomTextInputView
+                android:id="@+id/etLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                app:phoneHintText="+7 912 345 67 89"
-                app:phoneTitleText="@string/profile_phone_mobile" />
+                app:inputType="textEmailAddress"
+                app:hintText="@string/auth_input_email_or_phone_title"
+                app:titleText="@string/auth_input_email_or_phone_hint" />
+
+            <com.example.ui.views.CustomTextMenuView
+                android:id="@+id/etBirthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                app:inputHintText="@string/profile_birthday"
+                app:inputIconDrawable="@drawable/ic_calendar_new"
+                app:inputIconMode="custom"
+                app:inputTitleText="@string/profile_birthday" />
 
             <com.example.ui.views.passwordView.CustomPasswordView
                 android:id="@+id/passwordView"
@@ -92,7 +92,8 @@
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginVertical="20dp"
                 app:buttonBackground="@drawable/custom_btn_brown_selectable"
-                app:buttonMinHeight="@dimen/auth_button_min_height"
+                app:buttonMinHeight="@dimen/common_button_min_height"
+                app:buttonTextSize="@dimen/common_button_text_size"
                 app:buttonText="@string/auth_action_register" />
 
         </LinearLayout>

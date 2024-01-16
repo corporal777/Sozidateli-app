@@ -8,8 +8,6 @@ plugins {
 
 android {
     defaultConfig {
-        versionCode 1
-        versionName '1.0.0'
         targetSdk 31
         minSdk 21
     }

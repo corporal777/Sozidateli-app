@@ -24,8 +24,6 @@ import javax.inject.Inject
 class GalleryBottomPresenter
 @Inject constructor(
     private val appData: AppData,
-    private val context: Context,
-    private val rxPermissions: RxPermissions,
     private val userRepository: UserRepository,
     private val rxTakePhoto: RxTakePhoto
 ) : BaseBottomSheetPresenter<GalleryBottomContract.View>(appData), GalleryBottomContract.Presenter {
@@ -35,14 +33,7 @@ class GalleryBottomPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += rxPermissions.request(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-        )
-            .flatMapMaybe {
-                if (it) Maybe.defer { ImageUtil.getGalleryImages(context) }
-                else Maybe.error(PermissionNotGrantedException())
-            }
+        compositeDisposable += rxTakePhoto.takeAllGalleryImages()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.hideGalleryFragment() },
