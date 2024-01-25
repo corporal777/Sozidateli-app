@@ -31,6 +31,8 @@ import com.example.util.setWindowTransparency
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.reactivex.exceptions.UndeliverableException
+import io.reactivex.plugins.RxJavaPlugins
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
@@ -45,6 +47,15 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         setContentView(mBinding.root)
         getLoadingView().setOnTouchListener { _, _ -> return@setOnTouchListener true }
         mProgressDialog = CustomProgressDialog(this)
+
+        RxJavaPlugins.setErrorHandler { e ->
+            if (e is UndeliverableException) e.printStackTrace()
+            else {
+                Thread.currentThread().also { thread ->
+                    thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
+                }
+            }
+        }
     }
 
     override fun attachBaseContext(newBase: Context) {

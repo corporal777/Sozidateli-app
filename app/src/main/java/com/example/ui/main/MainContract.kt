@@ -1,6 +1,5 @@
 package com.example.ui.main
 
-import com.example.data.models.AuthType
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
@@ -50,7 +49,7 @@ interface MainContract {
         fun showAuthWebsiteFragment(code : String)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showAccountChangeFragment(url : String, type : AuthType)
+        fun showAccountChangeFragment(url : String)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showSupportQuestion(data : SupportData)
@@ -115,7 +114,7 @@ interface MainContract {
         fun onHandleEventCode(event: String?)
         fun onHandleEvent(event: String?)
         fun onHandleUser(userId: String?)
-        fun onHandleAuthToOtherPlatform(url: String?, type : AuthType)
+        fun onHandleAuthToOtherPlatform(url: String?)
         fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
 

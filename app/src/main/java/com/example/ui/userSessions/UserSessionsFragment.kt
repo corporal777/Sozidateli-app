@@ -44,7 +44,7 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
     private val currentSessionSection by lazy {
         Section().apply {
             setHeader(SessionsHeaderItem(getString(R.string.current_session_label)))
-            setHideWhenEmpty(true)
+            setPlaceholder(PlaceholderItem(PlaceholderItem.Type.SESSIONS))
         }
     }
     private val otherSessionsSection by lazy {
@@ -72,46 +72,32 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
 
     override fun setCurrentSession(session: UserSessionModel, isHasSessions: Boolean) {
         currentSessionSection.updateItem(
-            CurrentSessionItem(
-                session,
-                isHasSessions,
-                { presenter.killAllSessionsClick() },
-                { s -> showSessionDialog(true, { presenter.killAllSessionsClick() }, s) }
+            CurrentSessionItem(session, isHasSessions,
+                { presenter.onKillSessionsClick() },
+                { showSessionDialog(true, it) }
             )
         )
     }
 
     override fun setOtherSessions(sessions: List<UserSessionModel?>) {
-        otherSessionsSection.update(
-            sessions.map {
-                OtherSessionItem(it) { s ->
-                    showSessionDialog(
-                        false,
-                        { presenter.killUsersDeviceSessionClick(s.sessionId.toInt()) },
-                        s
-                    )
-                }
+        otherSessionsSection.update(sessions.map {
+            OtherSessionItem(it) { session ->
+                showSessionDialog(false, session)
             }
-        )
-
+        })
     }
 
     override fun updateKillSessionsButton(isHasSessions: Boolean) {
         currentSessionSection.findItemBy<CurrentSessionItem> { true }?.notifyChanged(isHasSessions)
     }
 
-    override fun showSessionsLoadingPlaceholder() {
-        currentSessionSection.updateItem(PlaceholderItem(PlaceholderItem.Type.MAIN_SESSIONS))
-        otherSessionsSection.update(List(5) { PlaceholderItem(PlaceholderItem.Type.OTHER_SESSIONS) })
-    }
 
-
-    private fun showSessionDialog(
-        isCurrent: Boolean,
-        actionClick: () -> Unit,
-        session: UserSessionModel
-    ) {
-        SessionBottomSheet(isCurrent, actionClick, requireContext(), session)
+    private fun showSessionDialog(isCurrent: Boolean, session: UserSessionModel) {
+        SessionBottomSheet(requireContext(), isCurrent, session)
+            .setOnKillSession {
+                if (isCurrent) presenter.onKillSessionsClick()
+                else presenter.onKillSessionClick(session.sessionId)
+            }.show()
     }
 
     private fun showSessionInfoDialog() {

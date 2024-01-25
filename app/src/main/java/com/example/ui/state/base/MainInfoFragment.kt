@@ -167,10 +167,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_email_text, email),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) presenter.onShowEmailConfirm(email)
-            }
+        ).setSelectCallback { if (it) presenter.onShowEmailConfirm(email) }
     }
 
     override fun showEmailConfirm(email: String) {

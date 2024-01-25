@@ -2,6 +2,7 @@ package com.example.util
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
@@ -29,8 +30,8 @@ class SearchInput(
                     onTextChange?.invoke(s.toString())
                 }
             })
-            onFocusChanged {
-                onFocusChange?.invoke(it)
+            onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                onFocusChange?.invoke(hasFocus)
             }
 
             setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, _ ->

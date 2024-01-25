@@ -56,14 +56,9 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     fun providePresenter(): MyScheduleEventsPresenter = presenterProvider.get()
 
     private val subEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            presenter.onSubEventClick(eventId, subEvent)
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddSubEventToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenter.onRemoveSubEventFromScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(eventId, subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddSubEventToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onRemoveSubEventFromScheduleClick(subEvent)
     }
 
     private val eventsSection by lazy {

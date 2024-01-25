@@ -23,7 +23,7 @@ interface Api {
 
     //+
     @POST("v1/user/social/login")
-    fun authWithVk(@Body body: VKAuthBody): Single<VKAuthResponse>
+    fun authWithVk(@Body body: VKAuthBody): Single<SnAuthResponse>
 
     @POST("v1/user/send-qr")
     fun sendQrCodeToGetDeviceInfo(@Body body: QrBody): Single<QrAuthResponse>
@@ -510,11 +510,15 @@ interface Api {
     @PATCH("v1/event-agreement/{id}")
     fun acceptRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
 
+    //+
     @GET("v1/support")
     fun getSupportData(): Maybe<List<SupportData>>
 
     @POST("v1/form/feedback-send")
     fun sendSupportData(@Body body: RequestBody): Completable
+
+    @GET("v1/support/search")
+    fun searchSupportQuestion(@Query("search") search: String) : Maybe<List<SupportData>>
 
     //+
     @POST("v1/user/social/bind")

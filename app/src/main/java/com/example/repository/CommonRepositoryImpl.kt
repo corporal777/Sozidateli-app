@@ -71,4 +71,8 @@ class CommonRepositoryImpl
     override fun sendSupportQuestion(body: RequestBody): Completable {
         return api.sendSupportData(body)
     }
+
+    override fun searchSupportQuestion(search: String): Maybe<List<SupportData>> {
+        return api.searchSupportQuestion(search)
+    }
 }

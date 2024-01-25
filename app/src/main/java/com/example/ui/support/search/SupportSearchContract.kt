@@ -6,8 +6,9 @@ import moxy.viewstate.strategy.alias.OneExecution
 
 interface SupportSearchContract {
     interface View : BaseContract.View {
+
         @OneExecution
-        fun setQuestions(data: List<SupportData>)
+        fun setQuestions(data: List<SupportData?>)
 
         @OneExecution
         fun showSupportQuestionAnswer(data: SupportData)

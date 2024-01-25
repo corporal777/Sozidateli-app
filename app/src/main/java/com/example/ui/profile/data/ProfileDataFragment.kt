@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import com.example.R
 import com.example.databinding.BottomSheetProfileDataBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
@@ -134,6 +135,7 @@ class ProfileDataFragment : BaseBottomSheetFragment<BottomSheetProfileDataBindin
         }
     }
 
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "profile_data_dialog")
 
     companion object {
         const val PROFILE_DATA_FRAGMENT_TAG = "profile_data_tag"

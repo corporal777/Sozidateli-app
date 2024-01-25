@@ -664,18 +664,9 @@
 
         <argument
             android:name="deepLink"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="authType"
-            app:argType="com.example.data.models.AuthType"
-            app:nullable="false" />
-
-        <argument
-            android:name="isFromDeepLink"
-            app:argType="boolean"
-            app:nullable="false" />
+            app:nullable="true" />
     </fragment>
 
     <fragment

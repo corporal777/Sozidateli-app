@@ -65,8 +65,6 @@
     <dimen name="event_image_height_new">310dp</dimen>
     <dimen name="event_image_shadow_height_new">160dp</dimen>
 
-    <dimen name="current_session_item_height">100dp</dimen>
-    <dimen name="other_session_item_height">80dp</dimen>
     <dimen name="day_item_start">5dp</dimen>
 
     <dimen name="user_short_name_text_size">12sp</dimen>
@@ -163,7 +161,7 @@
     <dimen name="background_corners_eight">8dp</dimen>
 
 
-    <dimen name="profile_qr_code_image_size">235dp</dimen>
+    <dimen name="profile_qr_code_image_size">200dp</dimen>
 
     <dimen name="update_app_image">250dp</dimen>
 

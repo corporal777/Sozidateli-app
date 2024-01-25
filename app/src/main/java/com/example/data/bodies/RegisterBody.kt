@@ -39,6 +39,7 @@ data class SnRegisterBody(
         val email: String? = null,
         val phone: String? = null,
         val birthday: String? = null,
+        val photo : String? = null,
         val socialNetwork: String? = null,
 
         val uuid: String? = null,

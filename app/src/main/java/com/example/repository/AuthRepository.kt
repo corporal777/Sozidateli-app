@@ -16,7 +16,7 @@ interface AuthRepository {
     fun authEmailOrPhoneWithInvite(invite: Int, body: AuthBody): Completable
 
     //auth social
-    fun authWithVk(token : String, uuid : String): Single<VKAuthResponse>
+    fun authWithVk(token : String, uuid : String): Single<SnAuthResponse>
     fun authEmailOrPhoneWithSn(body: AuthBody, snAuth: SnAuth): Completable
 
     fun sendQrCode(body: QrBody):Single<QrAuthResponse>

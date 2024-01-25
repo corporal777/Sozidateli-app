@@ -20,6 +20,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withInfinityCustomLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -48,15 +49,18 @@ class ConfirmPhoneCodePresenter
     }
 
     override fun onConfirmMobilePhone() {
-        viewState.setIgnoreTokenListener(true)
+        viewState.apply {
+            if (isFromRegistration) setFinishRegister(true)
+            else setIgnoreTokenListener(true)
+        }
         compositeDisposable += actionConfirmCodeRequest()
             .andThen(actionAfterConfirmRequest())
             .performOnBackgroundOutOnMain()
             .withLoading(1)
             .subscribeSimple(
                 onError = {
-                    it.printStackTrace()
                     viewState.apply {
+                        setFinishRegister(false)
                         setIgnoreTokenListener(false)
                         if (it is CodeInvalidException) showCodeError(true)
                         else onReceiveError(it)
@@ -65,8 +69,7 @@ class ConfirmPhoneCodePresenter
                 onComplete = {
                     viewState.apply {
                         setIgnoreTokenListener(false)
-                        if (isFromRegistration) showHomeFragment()
-                        else navigateUp()
+                        if (!isFromRegistration) navigateUp()
                     }
                 })
     }
@@ -135,7 +138,7 @@ class ConfirmPhoneCodePresenter
             if (loadingDisposable.isDisposed) viewState.hideCustomLoading(type)
             else loadingDisposable.dispose()
         }
-        return this.doFinally(actionHide)
+        return this.let { if (type == 1) it else it.doFinally(actionHide) }
             .doOnDispose(actionHide).doOnError(actionConsumer())
     }
 

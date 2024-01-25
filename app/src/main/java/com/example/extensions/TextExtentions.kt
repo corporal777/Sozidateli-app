@@ -120,8 +120,7 @@ fun markWon(context: Context): Markwon {
                 HtmlPlugin.create(),
                 MarkwonInlineParserPlugin.create()
             )
-        )
-        .build();
+        ).build();
 }
 
 fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")

@@ -65,10 +65,9 @@ class RecommendationsPresenter
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
     override fun onProfileClick() {
-        getUserData().apply {
-            if (personalPhone?.value.isNullOrEmpty() || personalEmail.isNullOrEmpty()) viewState.showUserProfile()
-            else return
-        }
+        val email = getUserData().personalEmail
+        val phone = getUserData().personalPhone?.value
+        if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
     }
 
     override fun getPaginationRequest(

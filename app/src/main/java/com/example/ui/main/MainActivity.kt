@@ -22,7 +22,6 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.example.R
-import com.example.data.models.AuthType
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
@@ -38,6 +37,7 @@ import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.rating.EventRatingFragmentArgs
@@ -207,7 +207,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path auth
                 if (lastPath == PATH_AUTH || lastPath == PATH_SWITCH_ACCOUNT) {
                     val redirectLink = it.getQueryParameter("redirect")
-                    presenter.onHandleAuthToOtherPlatform(redirectLink, AuthType.OTHER_PLATFORM)
+                    presenter.onHandleAuthToOtherPlatform(redirectLink)
                 }
                 //catch path qr code
                 else if (lastPath == PATH_QR) {
@@ -305,10 +305,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
 
-    override fun showAccountChangeFragment(url: String, type: AuthType) {
+    override fun showAccountChangeFragment(url: String) {
         findNavController().navigate(
             R.id.change_account_fragment,
-            ChangeAccountFragmentArgs.Builder(url, type, true).build().toBundle()
+            bundleOf("deepLink" to url),
         )
     }
 
@@ -391,12 +391,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showRecommendations() {
-        if (findNavController().currentDestination?.id != R.id.fragment_finish_register) {
-            findNavController().navigate(
-                R.id.recommendations_fragment, null,
-                navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
-            )
-        }
+        val args = RecommendationsFragmentArgs.Builder(presenter.isFinishRegister).build().toBundle()
+        findNavController().navigate(
+            R.id.recommendations_fragment, args,
+            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
+        )
+        setFinishRegister(false)
+    }
+
+    fun setFinishRegister(isFinish : Boolean) {
+        presenter.isFinishRegister = isFinish
     }
 
     override fun showAboutEvent(event: String) {

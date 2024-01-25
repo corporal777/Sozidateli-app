@@ -2,11 +2,13 @@ package com.example.ui.support.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.SupportData
 import com.example.databinding.FragmentSupportSearchBinding
+import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.support.items.SupportFooterItem
@@ -54,31 +56,34 @@ class SupportSearchFragment : BaseFragment<FragmentSupportSearchBinding>(),
             }
             etSearch.apply {
                 SearchInput(this).apply {
-                    setOnTextChange {
-                        presenter.onSearchTextChange(it)
+                    setOnAfterTextChange {
                         btnClear.isVisible = !it.isNullOrEmpty()
+                        presenter.onSearchTextChange(it)
                     }
                     setOnTextChangeDone {
                         hideKeyboard(etSearch)
                         presenter.onSearchTextSubmit(it)
                     }
-                }
-                onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    clSearch.setBackgroundResource(
-                        if (hasFocus) R.drawable.background_search_field_rounded_focused
-                        else R.drawable.background_search_field_rounded_normal
-                    )
+                    setOnFocusChange { hasFocus ->
+                        clSearch.setBackgroundResource(
+                            if (hasFocus) R.drawable.background_search_field_rounded_focused
+                            else R.drawable.background_search_field_rounded_normal
+                        )
+                    }
                 }
             }
         }
     }
 
-    override fun setQuestions(data: List<SupportData>) {
+    override fun setQuestions(data: List<SupportData?>) {
         questionsSection.update(
             if (data.isEmpty()) {
                 listOf(SearchEmptyItem(getString(R.string.support_search_data_not_found)))
             } else {
-                data.map { SearchItem(it.id, it.question) { q -> presenter.onQuestionClick(q) } }
+                data.map {
+                    if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_ITEM)
+                    else SearchItem(it.id, it.question) { q -> presenter.onQuestionClick(q) }
+                }
             }.plus(SupportFooterItem(requireContext(), childFragmentManager))
         )
     }

@@ -10,10 +10,10 @@ import moxy.viewstate.strategy.alias.OneExecution
 
 interface RecommendationsContract {
     interface View : EventListContract.View{
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @OneExecution
         fun setData(events: List<EventNew?>, isNeedUpdateApp : Boolean?)
 
-        @AddToEndSingle
+        @OneExecution
         fun showEmptyListPlaceholder()
 
         @OneExecution

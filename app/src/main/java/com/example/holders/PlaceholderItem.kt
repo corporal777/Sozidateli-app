@@ -28,8 +28,7 @@ class PlaceholderItem(
         Type.CHAT_LIST -> R.layout.item_user_chat_list_placeholder
         Type.CHAT -> R.layout.item_user_chat_placeholder
 
-        Type.MAIN_SESSIONS -> R.layout.item_main_sessions_placeholder
-        Type.OTHER_SESSIONS -> R.layout.item_other_sessions_placeholder
+        Type.SESSIONS -> R.layout.item_sessions_placeholder
         Type.ACCOUNTS -> R.layout.item_accounts_placeholder
 
         Type.ORGANIZATION -> R.layout.item_organization_placeholder
@@ -54,7 +53,7 @@ class PlaceholderItem(
         Type.REGISTER_HEADER -> R.layout.item_event_register_header_placeholder
         Type.REGISTER_FIELD -> R.layout.item_event_register_field_placeholder
 
-        Type.SEARCH_ITEM -> R.layout.item_region_search_placeholder
+        Type.SEARCH_ITEM -> R.layout.item_search_placeholder
 
         Type.MAIN_INFO_EDIT -> R.layout.item_main_info_edit_placeholder
     }
@@ -79,6 +78,8 @@ class PlaceholderItem(
 
         CHAT_LIST,
         CHAT,
+
+        SESSIONS,
         ACCOUNTS,
 
         SCHEDULE_CALENDAR,
@@ -92,9 +93,6 @@ class PlaceholderItem(
 
         INTERESTS,
         CONTACTS,
-
-        MAIN_SESSIONS,
-        OTHER_SESSIONS,
 
         REGISTER_HEADER,
         REGISTER_FIELD,

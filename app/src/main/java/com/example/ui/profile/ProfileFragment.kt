@@ -10,23 +10,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.clearFragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import coil.transform.RoundedCornersTransformation
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.AuthType
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
 import com.example.extensions.dp
 import com.example.extensions.firstLetterToUppercase
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
-import com.example.ui.userprofile.edit.shortName.ChangeShortNameFragment
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
@@ -101,10 +101,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
                 .setSelectCallback {
                     when (it.type) {
                         RegisterDataType.PHONE -> {
-                            presenter.checkPhoneIsUnique(Utils.validatePhoneBeforeSend(it.value))
+                            presenter.checkPhoneIsUnique(
+                                true,
+                                Utils.validatePhoneBeforeSend(it.value)
+                            )
                         }
+
                         RegisterDataType.EMAIL -> {
-                            presenter.checkEmailIsUnique(it.value)
+                            presenter.checkEmailIsUnique(true, it.value)
                         }
                     }
                 }.setNegativeClickCallback { showUserStateDialog() }
@@ -168,50 +172,56 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_email_text, email),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.onShowEmailConfirm(email) }
+        ).setSelectCallback { if (it) presenter.checkEmailIsUnique(false, email) }
     }
 
     override fun showPhoneNotUnique(phone: String) {
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_phone_text, phone),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.onShowPhoneConfirm(phone) }
+        ).setSelectCallback { if (it) presenter.checkPhoneIsUnique(false, phone) }
     }
 
-    override fun showChangeUserShortName() {
-        findNavController().navigate(R.id.changeShortNameFragment)
-    }
-
-    override fun showUserProfileLinkDialog() {
-        val profileDataDialog = ProfileDataFragment()
-        profileDataDialog.show(requireActivity().supportFragmentManager, "profile_data_dialog")
-    }
 
     override fun hideAddPhoneEmailDialog() = dialog.hideDialog()
 
     override fun showPhoneConfirmation(phone: String) {
-        val confirmPhone = ConfirmEmailPhoneFragment(phone)
-        confirmPhone.show(requireActivity().supportFragmentManager, "confirm_phone")
-        confirmPhone.setConfirmCallback {
-            presenter.onConfirmPhoneSuccess(phone)
+        findNavController().navigate(
+            R.id.phoneCodeConfirmFragment,
+            bundleOf("phone" to phone, "fromRegister" to false),
+        )
+        setFragmentResultListener("confirm") { _, bundle ->
+            val emailConfirm = bundle.getString("phone")
+            if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()
+            clearFragmentResultListener("confirm")
         }
     }
 
     override fun showEmailConfirmation(email: String) {
-        val confirmEmail = ConfirmEmailPhoneFragment(email)
-        confirmEmail.show(requireActivity().supportFragmentManager, "confirm_email")
-        confirmEmail.setConfirmCallback {
-            codeSuccess()
+        findNavController().navigate(
+            R.id.emailCodeConfirmFragment,
+            bundleOf("email" to email, "fromRegister" to false),
+        )
+        setFragmentResultListener("confirm") { _, bundle ->
+            val emailConfirm = bundle.getString("email")
+            if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()
+            clearFragmentResultListener("confirm")
         }
     }
-
-    override fun codeSuccess() = showUserStateDialog()
 
     private fun showUserStateDialog() {
         ChangeStateDialog(requireActivity(), StateType.SUCCESS)
             .setClickCallback {
                 if (it == ClickType.INFO) showStates()
             }
+    }
+
+    override fun showUserProfileLinkDialog() {
+        ProfileDataFragment().show(requireActivity().supportFragmentManager)
+    }
+
+    override fun showChangeUserShortName() {
+        findNavController().navigate(R.id.changeShortNameFragment)
     }
 
     override fun showProfile(uid: String) {
@@ -223,8 +233,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
     override fun showChangeAccount() {
-        val args = ChangeAccountFragmentArgs.Builder("", AuthType.NONE, false).build().toBundle()
-        findNavController().navigate(R.id.change_account_fragment, args)
+        findNavController().navigate(R.id.change_account_fragment)
     }
 
     override fun showFavorites() {
@@ -247,7 +256,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         findNavController().navigate(R.id.user_profile_settings_fragment)
     }
 
-    override fun showSupport(){
+    override fun showSupport() {
         findNavController().navigate(R.id.supportCenterFragment)
     }
 

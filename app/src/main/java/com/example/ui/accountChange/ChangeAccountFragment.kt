@@ -38,8 +38,6 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
     fun providePresenter(): ChangeAccountPresenter = presenterProvider.get().apply {
         val args = ChangeAccountFragmentArgs.fromBundle(requireArguments())
         this.redirectLink = args.deepLink
-        this.isFromDeeplink = args.isFromDeepLink
-        this.authType = args.authType
     }
 
     private val logoSection by lazy { Section().apply { updateItem(LogoItem()) } }

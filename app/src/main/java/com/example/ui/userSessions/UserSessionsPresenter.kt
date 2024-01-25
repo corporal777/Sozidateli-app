@@ -7,6 +7,7 @@ import com.example.ui.base.BasePresenter
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withDelay
 import withProgressBarDialogLoading
 import javax.inject.Inject
 
@@ -22,7 +23,6 @@ class UserSessionsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showSessionsLoadingPlaceholder()
         compositeDisposable += userRepository.getAllUsersSessions(deviceId)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -34,7 +34,7 @@ class UserSessionsPresenter
     }
 
 
-    override fun killAllSessionsClick() {
+    override fun onKillSessionsClick() {
         compositeDisposable += userRepository.killAllUsersOtherSessions()
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
@@ -47,8 +47,8 @@ class UserSessionsPresenter
             }
     }
 
-    override fun killUsersDeviceSessionClick(id: Int) {
-        compositeDisposable += userRepository.killUsersDeviceSession(id)
+    override fun onKillSessionClick(id: Long) {
+        compositeDisposable += userRepository.killUsersDeviceSession(id.toInt())
             .andThen(userRepository.getAllUsersSessions(deviceId))
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)

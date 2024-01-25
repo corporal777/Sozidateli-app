@@ -43,6 +43,7 @@ class PhoneNumberEditText : AppCompatEditText, TextWatcher {
             if (hasFocus) {
                 removeTextChangedListener(this)
                 setText(formatPhoneText(mask))
+                onInputTextChanged.invoke(clearPhoneText(text.toString()))
                 addTextChangedListener(this)
             }
             onInputFocusChanged.invoke(hasFocus)
@@ -51,6 +52,7 @@ class PhoneNumberEditText : AppCompatEditText, TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
     }
+
 
     override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int, lengthAfter: Int) {
         if (!editingOnChanged) editingOnChanged = true
@@ -64,7 +66,6 @@ class PhoneNumberEditText : AppCompatEditText, TextWatcher {
             editingAfter = false
             editingOnChanged = false
         }
-
         onInputTextChanged.invoke(clearPhoneText(text.toString()))
     }
 

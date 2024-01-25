@@ -3,7 +3,9 @@ package com.example.ui.auth.confirm.phone
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
@@ -13,6 +15,7 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
@@ -73,27 +76,23 @@ class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>()
         mBinding.tvCodeError.run { isVisible = show }
     }
 
-    override fun showHomeFragment() {
-        val args = RecommendationsFragmentArgs.Builder(true).build().toBundle()
-        findNavController().navigate(
-            R.id.recommendations_fragment, args,
-            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
-        )
+    override fun setFinishRegister(isFinish: Boolean) {
+        (requireActivity() as MainActivity).setFinishRegister(isFinish)
     }
 
-
-    override fun showCustomLoading(type: Int) {
-        mBinding.apply {
-            if (type == 1) btnConfirm.showProgressLoading(true)
-            else btnCallAgain.showProgressLoading(true)
-        }
+    override fun navigateUp() {
+        setFragmentResult("confirm", bundleOf("phone" to presenter.mobilePhone))
+        super.navigateUp()
     }
 
-    override fun hideCustomLoading(type: Int) {
-        mBinding.apply {
-            if (type == 1) btnConfirm.showProgressLoading(false)
-            else btnCallAgain.showProgressLoading(false)
-        }
+    override fun showCustomLoading(type: Int) = mBinding.let {
+        if (type == 1) it.btnConfirm.showProgressLoading(true)
+        else it.btnCallAgain.showProgressLoading(true)
+    }
+
+    override fun hideCustomLoading(type: Int) = mBinding.let {
+        if (type == 1) it.btnConfirm.showProgressLoading(false)
+        else it.btnCallAgain.showProgressLoading(false)
     }
 
 

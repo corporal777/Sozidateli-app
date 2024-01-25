@@ -3,7 +3,9 @@ package com.example.ui.auth.confirm.email
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
@@ -16,6 +18,7 @@ import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
 import com.example.ui.auth.confirm.phone.ConfirmPhoneCodePresenter
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
@@ -48,9 +51,7 @@ class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>()
             }
             btnSendAgain.apply {
                 setButtonTextColor(R.color.text_color_repeat_code_button)
-                setOnClickListener {
-                    presenter.onSendCodeAgain()
-                }
+                setOnClickListener { presenter.onSendCodeAgain() }
             }
             btnConfirm.setOnClickListener {
                 hideKeyboard()
@@ -76,14 +77,14 @@ class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>()
         mBinding.tvCodeError.isVisible = show
     }
 
-    override fun showHomeFragment() {
-        val args = RecommendationsFragmentArgs.Builder(true).build().toBundle()
-        findNavController().navigate(
-            R.id.recommendations_fragment, args,
-            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
-        )
+    override fun setFinishRegister(isFinish: Boolean) {
+        (requireActivity() as MainActivity).setFinishRegister(isFinish)
     }
 
+    override fun navigateUp() {
+        setFragmentResult("confirm", bundleOf("email" to presenter.email))
+        super.navigateUp()
+    }
 
     override fun showCustomLoading(type: Int) {
         mBinding.apply {

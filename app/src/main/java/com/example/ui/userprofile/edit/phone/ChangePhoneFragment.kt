@@ -4,21 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.R
-import com.example.data.models.FieldDetails
 import com.example.databinding.FragmentChangePhoneBinding
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.SetPasswordDialog
-import com.example.util.Utils
 import com.example.util.initSwitch
-import isValidPhoneNumber
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -41,19 +33,13 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
             etPhone.initInput {
                 presenter.onChangePhone(it.toString())
             }
-            btnConfirm.apply {
-                setButtonTextColor(R.color.text_color_repeat_code_button)
-                setOnClickListener {
-                    hideKeyboard(it)
-                    presenter.onShowConfirmClick(true)
-                }
+            btnConfirm.setOnClickListener {
+                hideKeyboard(it)
+                presenter.onShowConfirmClick(true)
             }
-            btnSave.apply {
-                setButtonTextColor(R.color.text_color_repeat_code_button)
-                setOnClickListener {
-                    hideKeyboard(it)
-                    presenter.onSavePhoneClick(true)
-                }
+            btnSave.setOnClickListener {
+                hideKeyboard(it)
+                presenter.onSavePhoneClick(true)
             }
             btnClose.setOnClickListener {
                 navigateUp()
@@ -71,8 +57,8 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
     }
 
     override fun enableBtnSave(enabled: Boolean) = mBinding.btnSave.run { isEnabled = enabled }
-    override fun enableBtnConfirm(isConfirmed: Boolean) = mBinding.run {
-        btnConfirm.isVisible = !isConfirmed
+    override fun enableBtnConfirm(isConfirmed: Boolean, isValid: Boolean) = mBinding.run {
+        btnConfirm.isVisible = !isConfirmed && isValid
         etPhone.showIcon(isConfirmed)
     }
 

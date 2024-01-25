@@ -114,10 +114,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_fifteen"
             android:layout_marginVertical="10dp"
-            app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
             app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/confirm"
-            app:buttonTextColor="@color/text_color_repeat_code_button"
             app:buttonTextSize="@dimen/common_button_text_size"
             app:layout_constraintBottom_toTopOf="@id/btnSave" />
 
@@ -127,10 +125,10 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_fifteen"
             android:layout_marginBottom="20dp"
-            app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
+            app:buttonBackground="@drawable/custom_btn_write_speaker_selectable"
             app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/save"
-            app:buttonTextColor="@color/text_color_repeat_code_button"
+            app:buttonTextColor="@color/event_tabs_text_unchecked"
             app:buttonTextSize="@dimen/common_button_text_size"
             app:layout_constraintBottom_toBottomOf="parent" />
 

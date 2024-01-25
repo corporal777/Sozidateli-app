@@ -51,9 +51,6 @@ interface ProfileContract {
         fun showSessions()
 
         @Skip
-        fun codeSuccess()
-
-        @Skip
         fun showEmailNotUnique(email: String)
 
         @Skip
@@ -90,11 +87,8 @@ interface ProfileContract {
         fun onLogoutClick()
         fun onSettingsClick()
 
-        fun onShowEmailConfirm(email: String)
-        fun onShowPhoneConfirm(phone: String)
-        fun checkEmailIsUnique(email: String)
-        fun checkPhoneIsUnique(phone: String)
-        fun onConfirmPhoneSuccess(phone: String)
+        fun checkEmailIsUnique(withCheck : Boolean, email: String)
+        fun checkPhoneIsUnique(withCheck: Boolean, phone: String)
 
         fun onQrScannerToAuthWebClick()
 

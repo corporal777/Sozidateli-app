@@ -23,7 +23,7 @@ interface ChangePhoneContract {
         fun enableBtnSave(enabled: Boolean)
 
         @Skip
-        fun enableBtnConfirm(isConfirmed: Boolean)
+        fun enableBtnConfirm(isConfirmed: Boolean, isValid : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

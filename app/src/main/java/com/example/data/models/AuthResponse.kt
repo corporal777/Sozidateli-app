@@ -6,7 +6,7 @@ data class AuthResponse(
     val errors: List<Errors>? = null
 )
 
-data class VKAuthResponse(
+data class SnAuthResponse(
     val accessData : AuthResponse?,
     val personalData : SnUserData?
 )

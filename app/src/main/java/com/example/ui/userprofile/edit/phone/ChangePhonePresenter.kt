@@ -1,5 +1,6 @@
 package com.example.ui.userprofile.edit.phone
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.FieldPhoneBody
 import com.example.data.models.FieldDetails
@@ -10,6 +11,7 @@ import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
+import com.example.util.Utils.isPhoneNumberValid
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -60,8 +62,9 @@ class ChangePhonePresenter
                     else onReceiveError(it)
                 },
                 onComplete = {
-                    if (phoneIsConfirmed && !isSamePhone()) onShowConfirmClick(false)
-                    else viewState.navigateUp()
+                    viewState.navigateUp()
+                    //if (phoneIsConfirmed && !isSamePhone()) onShowConfirmClick(false)
+                    //else viewState.navigateUp()
                 })
     }
 
@@ -92,10 +95,12 @@ class ChangePhonePresenter
 
     private fun isSamePhone() = phoneField?.value == phone
 
-    private fun performDataChange() {
-        viewState.enableBtnSave(Utils.isPhoneNumberValid(phone))
-        if (isSamePhone()) viewState.enableBtnConfirm(phoneIsConfirmed)
-        else viewState.enableBtnConfirm(false)
+    private fun performDataChange() = viewState.apply {
+        enableBtnSave(isPhoneNumberValid(phone))
+        enableBtnConfirm(
+            if (isSamePhone()) phoneIsConfirmed else false,
+            isPhoneNumberValid(phone)
+        )
     }
 
 }

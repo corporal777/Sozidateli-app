@@ -3,15 +3,19 @@ package com.example.ui.profile
 import android.app.NotificationManager
 import com.example.R
 import com.example.data.AppData
+import com.example.data.bodies.FieldPhoneBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
+import com.example.exceptions.EmailNotUniqueException
+import com.example.exceptions.PhoneNotUniqueException
 import com.example.extensions.phoneToServer
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -78,80 +82,43 @@ class ProfilePresenter
     }
 
 
-
-
-    override fun checkEmailIsUnique(email: String) {
+    override fun checkEmailIsUnique(withCheck: Boolean, email: String) {
         viewState.hideAddPhoneEmailDialog()
-        compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withCheckInternetConnectivity()
+        compositeDisposable += Completable.defer {
+            if (withCheck) userRepository.checkEmailPhone(email, null)
+                .onErrorResumeNext { Completable.error(EmailNotUniqueException()) }
+            else Completable.complete()
+        }
+            .andThen(updateEmailPhoneRequest(email, null))
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    viewState.showEmailNotUnique(email)
+                    if (it is EmailNotUniqueException) viewState.showEmailNotUnique(email)
+                    else onReceiveError(it)
                 },
-                onComplete = {
-                    onShowEmailConfirm(email)
-                })
-    }
-
-    override fun onShowEmailConfirm(email: String) {
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-        ).ignoreElement()
-            .andThen(authRepository.registerEmailResend(email))
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                appData.updateUser {
-                    this.email = FieldDetails(value = email)
-                }
-                viewState.showEmailConfirmation(email)
-            }
-    }
-
-    override fun checkPhoneIsUnique(phone: String) {
-        viewState.hideAddPhoneEmailDialog()
-        compositeDisposable += userRepository.checkEmailPhone(null, phone)
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = {
-                    viewState.showPhoneNotUnique(phone)
-                },
-                onComplete = {
-                    onShowPhoneConfirm(phone)
-                })
-    }
-
-    override fun onShowPhoneConfirm(phone: String) {
-        compositeDisposable += authRepository.registerPhoneResend("personal", phone)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.showPhoneConfirmation(phone)
-            }
-    }
-
-    override fun onConfirmPhoneSuccess(phone: String) {
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mapOf(
-                UserDetail.USER_PHONE to arrayListOf(
-                    FieldDetails(
-                        value = Utils.validatePhoneBeforeSend(phone.phoneToServer() ?: ""),
-                        type = PHONE_PERSONAL,
-                        isConfirmed = true
-                    )
-                )
+                onComplete = { viewState.showEmailConfirmation(email) }
             )
-        )
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.codeSuccess()
-            }
     }
+
+
+    override fun checkPhoneIsUnique(withCheck: Boolean, phone: String) {
+        viewState.hideAddPhoneEmailDialog()
+        compositeDisposable += Completable.defer {
+            if (withCheck) userRepository.checkEmailPhone(null, phone)
+                .onErrorResumeNext { Completable.error(PhoneNotUniqueException()) }
+            else Completable.complete()
+        }
+            .andThen(updateEmailPhoneRequest(null, phone))
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = {
+                    if (it is PhoneNotUniqueException) viewState.showPhoneNotUnique(phone)
+                    else onReceiveError(it)
+                },
+                onComplete = { viewState.showPhoneConfirmation(phone) }
+            )
+    }
+
 
     override fun onQrScannerToAuthWebClick() = viewState.showQrScannerToAuthWebSite()
     override fun onSettingsClick() = viewState.showSettings()
@@ -182,5 +149,19 @@ class ProfilePresenter
             .subscribe({}, { it.printStackTrace() })
         compositeDisposable += userRepository.getAcademicDegrees()
             .subscribe({}, { it.printStackTrace() })
+    }
+
+    private fun updateEmailPhoneRequest(email: String?, phone: String?): Completable {
+        return if (email.isNullOrEmpty()) userRepository.updateUserProfileField(
+            mapOf(
+                UserDetail.USER_PHONE to FieldPhoneBody(
+                    value = phone,
+                    type = PHONE_PERSONAL
+                ).toList()
+            )
+        ).doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }.ignoreElement()
+        else userRepository.updateUserProfileField(
+            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
+        ).doOnSuccess { new -> appData.updateUser { this.email = new.email } }.ignoreElement()
     }
 }

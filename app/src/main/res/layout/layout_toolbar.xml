@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolbar_label"
             fontPath="fonts/sf_pro_text_semibold.ttf"
             android:layout_width="0dp"
@@ -36,6 +36,7 @@
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
+            android:importantForAccessibility="no"
             android:includeFontPadding="false"
             android:letterSpacing="-0.025"
             android:textColor="@android:color/black"

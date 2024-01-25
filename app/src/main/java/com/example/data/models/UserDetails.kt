@@ -9,7 +9,6 @@ import com.example.extensions.parsePhone
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
-import com.example.util.setImage
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -139,7 +138,6 @@ data class UserDetail(
         return if (image == null) null
         else {
             if (image?.uri.isNullOrEmpty()) null
-            else if (avatarIsDefault == true) null
             else image?.uri
         }
     }
@@ -149,14 +147,6 @@ data class UserDetail(
     }
 
     fun getVkUUID() = socialBinds?.vkontakte?.uuid ?: ""
-
-    fun genderToServer(value: String?): String? {
-        return when (value) {
-            "Мужской" -> "M"
-            "Женский" -> "F"
-            else -> null
-        }
-    }
 
     companion object {
         const val USER_EMAIL = "email"

@@ -33,27 +33,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_icon"
+    <ImageView
+        android:id="@+id/iv_device_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:cardBackgroundColor="#66BE9B72"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
+        android:background="@drawable/background_session_image_icon"
+        android:padding="20dp"
+        android:src="@drawable/ic_android_device"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose">
-
-
-        <ImageView
-            android:id="@+id/iv_device_icon"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_android_device" />
-
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/btnClose" />
 
 
     <TextView
@@ -67,7 +56,7 @@
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_icon" />
+        app:layout_constraintTop_toBottomOf="@id/iv_device_icon" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_info"

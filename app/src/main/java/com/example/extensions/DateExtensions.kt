@@ -33,6 +33,9 @@ val dateFormatterShortDayFullMothShortYear: DateFormat
 val defaultServerDateFormatter: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
+val defaultVkDateFormatter: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_SHORT_DAY_SHORT_MONTH_FULL_YEAR_VK, Locale.getDefault())
+
 val defaultServerDateTimeFormatter: DateFormat
     get() = SimpleDateFormat(DATE_TIME_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
 
@@ -47,6 +50,10 @@ val defaultDateTimeFormatterNoYear: DateFormat
 
 fun String.formatToDefaultDate(): String? {
     return parseAndFormat(defaultServerDateFormatter, defaultDateFormatter)
+}
+
+fun String.formatFromVkToDefaultDate(): String? {
+    return parseAndFormat(defaultVkDateFormatter, defaultDateFormatter)
 }
 
 fun String.formatToDefaultServerDate(): String? {

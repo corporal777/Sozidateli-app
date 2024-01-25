@@ -3,11 +3,13 @@ package com.example.ui.event.about.items
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.core.view.isVisible
+import coil.ImageLoader
 import com.example.R
 import com.example.data.models.RequestApplyModel
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.*
 import com.example.util.setImage
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
@@ -38,7 +40,11 @@ class EventDetailImageItem(
                 text = address
             }
             ivLogo.apply {
-                setImage(logo ?: imageColor)
+                Picasso.get()
+                    .load(logo)
+                    .placeholder(imageColor)
+                    .error(imageColor)
+                    .into(this)
             }
         }
     }

@@ -55,6 +55,7 @@ class MainPresenter
         compositeDisposable += this
     }
 
+    var isFinishRegister = false
     private var isAuthRequired = false
     private var canShowBrowser = false
     private var inAppList: Deque<NotificationModel>? = null
@@ -364,14 +365,14 @@ class MainPresenter
         }
     }
 
-    override fun onHandleAuthToOtherPlatform(url: String?, type: AuthType) {
+    override fun onHandleAuthToOtherPlatform(url: String?) {
         if (isAuthRequired || appData.isLoggedOut) {
             viewState.showLogin()
             canShowBrowser = true
         } else if (url.isNullOrBlank()) return
         else {
             if (canShowBrowser) observeDeeplink(url)
-            else viewState.showAccountChangeFragment(url, type)
+            else viewState.showAccountChangeFragment(url)
             viewState.clearIntentData()
         }
     }

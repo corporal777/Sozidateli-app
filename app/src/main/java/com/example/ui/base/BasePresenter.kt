@@ -25,18 +25,6 @@ open class BasePresenter<V : BaseContract.View>
     protected var hasNoConnectionError = false
 
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        RxJavaPlugins.setErrorHandler { e ->
-            if (e is UndeliverableException) e.printStackTrace()
-            else {
-                Thread.currentThread().also { thread ->
-                    thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
-                }
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()

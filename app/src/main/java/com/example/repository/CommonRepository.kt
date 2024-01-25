@@ -20,5 +20,6 @@ interface CommonRepository {
 
     fun getSupportData() : Maybe<List<SupportData>>
     fun getSupportQuestion(id : String) : Maybe<SupportData>
+    fun searchSupportQuestion(search : String) : Maybe<List<SupportData>>
     fun sendSupportQuestion(body : RequestBody) : Completable
 }

@@ -3,7 +3,6 @@ package com.example.ui.accountChange
 import android.app.NotificationManager
 import android.net.Uri
 import com.example.data.AppData
-import com.example.data.models.AuthType
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.socket.SocketIOManager
@@ -31,9 +30,7 @@ class ChangeAccountPresenter
     private var canShowMenu = true
     private val currentUserId = appData.getId().toString()
 
-    var redirectLink = ""
-    var authType = AuthType.NONE
-    var isFromDeeplink = false
+    var redirectLink : String? = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -103,25 +100,23 @@ class ChangeAccountPresenter
     }
 
     override fun switchAccount(session: UserSessionModel) {
-        when (authType) {
-            AuthType.OTHER_PLATFORM -> observeDeeplink(session)
-            else -> {
-                viewState.showCustomProgressDialog()
-                if (!isCurrentUser(session.binds.user.id.toString())) {
-                    compositeDisposable += Completable.fromAction {
-                        viewState.setIgnoreTokenListener(false)
-                        appData.login(session.sessionUid)
-                        appData.saveId(session.userId)
-                        appData.setAllUserInfo(session.binds.user)
-                    }.performOnBackgroundOutOnMain()
-                        .subscribeSimple {
-                            viewState.showMessage("Аккаунт сменен")
-                        }
-                } else {
-                    viewState.apply {
-                        showMessage("Вы уже авторизованы в данном аккаунте")
-                        hideCustomProgressDialog()
+        if (!redirectLink.isNullOrEmpty()) observeDeeplink(session)
+        else {
+            viewState.showCustomProgressDialog()
+            if (!isCurrentUser(session.binds.user.id.toString())) {
+                compositeDisposable += Completable.fromAction {
+                    viewState.setIgnoreTokenListener(false)
+                    appData.login(session.sessionUid)
+                    appData.saveId(session.userId)
+                    appData.setAllUserInfo(session.binds.user)
+                }.performOnBackgroundOutOnMain()
+                    .subscribeSimple {
+                        viewState.showMessage("Аккаунт сменен")
                     }
+            } else {
+                viewState.apply {
+                    showMessage("Вы уже авторизованы в данном аккаунте")
+                    hideCustomProgressDialog()
                 }
             }
         }

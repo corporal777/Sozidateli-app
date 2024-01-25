@@ -61,7 +61,7 @@ class AuthRepositoryImp
             }.ignoreElement()
     }
 
-    override fun authWithVk(token: String, uuid: String): Single<VKAuthResponse> {
+    override fun authWithVk(token: String, uuid: String): Single<SnAuthResponse> {
         return api.authWithVk(
             VKAuthBody(
                 token,

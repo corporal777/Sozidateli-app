@@ -28,7 +28,7 @@ interface ConfirmEmailCodeContract  {
         fun hideCustomLoading(type: Int)
 
         @OneExecution
-        fun showHomeFragment()
+        fun setFinishRegister(isFinish : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {

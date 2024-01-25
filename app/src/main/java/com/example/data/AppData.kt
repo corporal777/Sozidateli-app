@@ -113,7 +113,6 @@ class AppData(
     var supportQuestions: List<SupportData> = emptyList()
     val filterRegionsList = arrayListOf<SearchRegion>()
 
-    private var user: User? = null
     private var newUser: UserDetail? = null
     private var newChatMessage: MessageModel? = null
 
@@ -224,6 +223,8 @@ class AppData(
     fun getUser(): UserDetail = newUser
         ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
 
+    fun getUserSafe() : UserDetail? = newUser
+
     fun updateUser(update: UserDetail.() -> Unit) {
         userChangeSubject.onNext(getUser().apply(update).asOptional())
     }
@@ -253,7 +254,7 @@ class AppData(
 
     fun logout() {
         isLoggedOut = true
-        user = null
+        newUser = null
         appPrefs.userId = -1
         notificationsCount = 0
         chatRequestsCount = 0
@@ -299,11 +300,16 @@ class AppData(
         return getUser().binds?.recommendationFile ?: emptyList()
     }
 
-    fun isUserEmailConfirmed() : Boolean{
+    fun isUserEmailConfirmed() : Boolean {
         val email = getUser().email
         if (email == null) return false
         else if(email.value.isNullOrEmpty()) return false
         else if (email.isConfirmed == false) return false
         else return true
+    }
+
+    fun isUserHasEmailOrPhone(): Boolean {
+        if (newUser == null) return false
+        else return !(getUser().personalPhone?.value.isNullOrEmpty() || getUser().personalEmail.isNullOrEmpty())
     }
 }

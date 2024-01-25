@@ -68,16 +68,6 @@ class EventAgreementRegisterDialog (val context: Context, val url: String) {
         mAlertDialog.show()
     }
 
-    private fun showUserAgreement(url: String) {
-
-        try {
-            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(viewIntent)
-        } catch (e: Throwable) {
-            Toast.makeText(context, R.string.about_event_agreement_open_error, Toast.LENGTH_LONG).show()
-        }
-    }
-
     fun setSelectCallback(block: () -> Unit): EventAgreementRegisterDialog {
         onSelect = block
         return this
