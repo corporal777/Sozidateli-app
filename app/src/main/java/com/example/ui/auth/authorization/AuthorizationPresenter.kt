@@ -10,14 +10,17 @@ import com.example.ui.auth.snAuth.SnAuthCallbackHelper
 import com.example.data.models.SnType
 import com.example.data.models.SnUser
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -28,13 +31,34 @@ class AuthorizationPresenter
 ) : BaseAuthPresenter<AuthorizationContract.View>(authRepository, appData),
     AuthorizationContract.Presenter {
 
+    private val timerCompositeDisposable = CompositeDisposable().apply {
+        compositeDisposable += this
+    }
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += authRepository.getStories()
+            .map { listOf(it.last()) + it + listOf(it.first()) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.setStories(it)
+                viewState.setPagerScroll(it.size)
             }
+    }
+
+    override fun attachView(view: AuthorizationContract.View?) {
+        super.attachView(view)
+        timerCompositeDisposable.clear()
+        timerCompositeDisposable += Observable.interval(3, TimeUnit.SECONDS)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.showNextStory()
+            }
+    }
+
+    override fun detachView(view: AuthorizationContract.View?) {
+        viewState.hideAllLoadings()
+        super.detachView(view)
     }
 
 
@@ -81,10 +105,4 @@ class AuthorizationPresenter
         }
         return this.doOnDispose(actionHide).doOnError(actionConsumer())
     }
-
-    override fun detachView(view: AuthorizationContract.View?) {
-        viewState.hideAllLoadings()
-        super.detachView(view)
-    }
-
 }

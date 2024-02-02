@@ -17,6 +17,7 @@ class ApiError(
     }
 
     fun hasError(vararg error: String): Boolean {
-        return errors.intersect(error.toList()).isNotEmpty()
+        if (errors.isNullOrEmpty()) return false
+        else return errors.intersect(error.toList()).isNotEmpty()
     }
 }

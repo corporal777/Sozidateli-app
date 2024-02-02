@@ -143,7 +143,7 @@ class MainPresenter
                     isAuthRequired = true
                     viewState.apply {
                         hideSplashScreen()
-                        hideLoadingDialog()
+                        hideAllLoadingDialogs()
                         showLogin()
                         checkIntent()
                     }
@@ -152,7 +152,7 @@ class MainPresenter
                     showNextInApp()
                     viewState.apply {
                         hideSplashScreen()
-                        hideLoadingDialog()
+                        hideAllLoadingDialogs()
                         showRecommendations()
                         checkIntent()
                     }
@@ -296,8 +296,7 @@ class MainPresenter
                     hideAllLoadingDialogs()
                     showGreetings()
                 }
-            }
-                .subscribeOn(AndroidSchedulers.mainThread())
+            }.subscribeOn(AndroidSchedulers.mainThread())
                 .andThen(Completable.timer(3, TimeUnit.SECONDS, Schedulers.io()))
         } else Completable.complete()
     }
@@ -515,7 +514,6 @@ class MainPresenter
         isIgnoreToken = isIgnore
     }
 
-    override fun onBackClick() = viewState.navigateUp()
 
     fun startUpdateTimer(time: Long?, isRequired: Boolean) {
         var counter = time ?: 0
@@ -524,7 +522,6 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 counter += 1
-                Log.e("UPDATE APP TIME", counter.toString())
                 if (BuildConfig.DEBUG) {
                     if (counter >= 10) {
                         appData.updateTime = System.currentTimeMillis()

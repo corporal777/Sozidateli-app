@@ -156,6 +156,15 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         }
     }
 
+    override fun showPhoneErrorMessage() {
+        context?.let {
+            ApiErrorDialog(
+                it, getString(R.string.phone_exist_error_title),
+                getString(R.string.phone_exist_error_text)
+            ).setSelectCallback { }
+        }
+    }
+
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
         MessageDialogWithGreenButton(requireContext(), message).setSelectCallback {
             if (canGoBack) findNavController().navigateUp()
@@ -213,17 +222,6 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
             }
     }
 
-
-    override fun showPhoneErrorMessage() {
-        context?.let {
-            ApiErrorDialog(
-                it, getString(R.string.phone_exist_error_title),
-                getString(R.string.phone_exist_error_text)
-            )
-                .setSelectCallback { }
-        }
-    }
-
     override fun showEventAddedToFavoriteDialog() {
         EventAddedToFavoriteDialog(0, requireContext())
     }
@@ -232,9 +230,6 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         EventAddedToFavoriteDialog(1, requireContext())
     }
 
-    override fun showNotificationErrorMessage() {
-        context?.let { FillProfileDialog(it).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) } }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

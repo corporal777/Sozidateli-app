@@ -2,11 +2,8 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Parcel
-import android.os.Parcelable
 import android.text.InputType
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
@@ -37,7 +34,7 @@ class CustomTextInputView : LinearLayout {
     private var hintText: CharSequence = ""
 
     private var inputTextColor: Int = Color.BLACK
-    private var inputTextType: Int = 0x00004001
+    private var inputTextType: Int = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 
     private var inputMaxLines: Int = 1
     private var inputMinLines: Int = 1
@@ -51,7 +48,7 @@ class CustomTextInputView : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CustomTextInputView)
         titleText = a.getText(R.styleable.CustomTextInputView_titleText)
         hintText = a.getText(R.styleable.CustomTextInputView_hintText)
-        inputTextType = a.getInt(R.styleable.CustomTextInputView_inputType, 0x00004001)
+        inputTextType = a.getInt(R.styleable.CustomTextInputView_inputType, InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
         inputMaxLines = a.getInt(R.styleable.CustomTextInputView_inputMaxLines, 1)
         inputMinLines = a.getInt(R.styleable.CustomTextInputView_inputMinLines, 1)
         inputEnabled = a.getBoolean(R.styleable.CustomTextInputView_inputEnabled, true)

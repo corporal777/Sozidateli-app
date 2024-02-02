@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="20dp"
-                app:hintText="Например, Кузнецов"
+                app:hintText="Введите Вашу фамилию"
                 app:layout_constraintTop_toTopOf="parent"
                 app:titleText="@string/user_profile_last_name" />
 
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
-                app:hintText="Например, Иван"
+                app:hintText="Введите Ваше имя"
                 app:layout_constraintTop_toBottomOf="@id/etLastName"
                 app:titleText="@string/search_filter_user_name" />
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
-                app:hintText="Например, Иванович"
+                app:hintText="Введите Ваше отчество"
                 app:layout_constraintTop_toBottomOf="@id/etFirstName"
                 app:titleText="@string/user_profile_middle_name" />
 
@@ -83,7 +83,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
                 app:hintText="@string/input_your_email_text"
-                app:inputType="textEmailAddress"
+                app:inputType="textEmailAddress|textNoSuggestions"
                 app:layout_constraintTop_toBottomOf="@id/etBirthday"
                 app:titleText="@string/email_for_communication_text" />
 

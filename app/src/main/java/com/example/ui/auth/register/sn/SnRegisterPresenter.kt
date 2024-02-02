@@ -2,10 +2,12 @@ package com.example.ui.auth.register.sn
 
 import android.util.Log
 import com.example.data.AppData
+import com.example.data.bodies.MiddleNameBody
 import com.example.data.bodies.RegisterBody
 import com.example.data.bodies.SnRegisterBody
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
+import com.example.data.models.ToggleStringModel
 import com.example.exceptions.EmailNotUniqueException
 import com.example.exceptions.PhoneNotUniqueException
 import com.example.extensions.formatFromVkToDefaultDate
@@ -45,6 +47,7 @@ class SnRegisterPresenter
     private var birthday: String? = ""
     private var email: String? = ""
     private var photo : String? = ""
+    private var gender : String? = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -55,6 +58,7 @@ class SnRegisterPresenter
         birthday = snUser.snUserData?.birthday?.formatFromVkToDefaultDate()
         email = snUser.snUserData?.email
         photo = snUser.snUserData?.photo
+        gender = snUser.snUserData?.gender
 
         viewState.setUserData(
             lastName,
@@ -163,8 +167,8 @@ class SnRegisterPresenter
     }
 
     private fun getRegisterBody(): SnRegisterBody {
-        val midName = if (middleName.isNullOrEmpty()) FieldDetails(value = null, absent = true)
-        else FieldDetails(value = middleName?.removeAllDoubleSpaces(), absent = false)
+        val midName = if (middleName.isNullOrEmpty()) MiddleNameBody(value = null, absent = true)
+        else MiddleNameBody(value = middleName?.removeAllDoubleSpaces(), absent = false)
 
         return SnRegisterBody(
             uuid = snUser.snAuth.uuid,
@@ -176,6 +180,7 @@ class SnRegisterPresenter
             phone = phone,
             birthday = birthday?.formatToDefaultServerDate(),
             photo = photo,
+            gender = ToggleStringModel(gender, true),
             deviceId = appData.deviceId ?: "",
             deviceModel = getDeviceName(),
             build = getAppVersionCode(),

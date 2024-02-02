@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="20dp"
-                app:hintText="Например, Кузнецов"
+                app:hintText="Введите Вашу фамилию"
                 app:titleText="@string/user_profile_last_name" />
 
             <com.example.ui.views.CustomTextInputView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
-                app:hintText="Например, Иван"
+                app:hintText="Введите Ваше имя"
                 app:titleText="@string/search_filter_user_name" />
 
             <com.example.ui.views.CustomTextInputView
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
-                app:hintText="Например, Иванович"
+                app:hintText="Введите Ваше отчество"
                 app:titleText="@string/user_profile_middle_name" />
 
             <androidx.appcompat.widget.AppCompatCheckBox

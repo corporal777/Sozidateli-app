@@ -41,9 +41,6 @@ interface BaseContract {
         fun showPhoneErrorMessage()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showNotificationErrorMessage()
-
-        @StateStrategyType(SkipStrategy::class)
         fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?)
 
         @StateStrategyType(SkipStrategy::class)

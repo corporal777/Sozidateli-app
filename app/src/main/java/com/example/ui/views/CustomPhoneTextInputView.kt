@@ -42,7 +42,7 @@ class CustomPhoneTextInputView : LinearLayout {
         a.recycle()
 
         layoutView.tvTitle.text = titleText
-        layoutView.etInput.apply {
+        layoutView.etPhoneInput.apply {
             isEnabled = inputEnabled
             if (!hintText.isNullOrEmpty()) setPhoneHint(hintText)
         }
@@ -56,7 +56,7 @@ class CustomPhoneTextInputView : LinearLayout {
 
     init {
         layoutView.apply {
-            etInput.apply {
+            etPhoneInput.apply {
                 id = inputId
                 onInputTextChanged {
                     onTextChanged.invoke(it.toString())
@@ -92,12 +92,12 @@ class CustomPhoneTextInputView : LinearLayout {
         layoutView.btnAction.isVisible = isIconShown
     }
 
-    fun setText(text : String?) = layoutView.etInput.setPhoneText(text)
-    fun setHint(text : String?) = layoutView.etInput.setHint(text)
+    fun setText(text : String?) = layoutView.etPhoneInput.setPhoneText(text)
+    fun setHint(text : String?) = layoutView.etPhoneInput.setHint(text)
 
 
     fun initInput(text: String? = null, onTextChanged: (text: CharSequence?) -> Unit) {
-        if (text != null) layoutView.etInput.setText(text)
+        if (text != null) layoutView.etPhoneInput.setText(text)
         this.onTextChanged = onTextChanged
     }
 }

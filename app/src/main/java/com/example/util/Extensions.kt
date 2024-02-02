@@ -243,8 +243,7 @@ fun ImageRequest.Builder.setParams(
 fun ViewPager2.setCurrentItemWithDuration(
     item: Int,
     duration: Long,
-    pagePxWidth: Int = width,
-    onAnimation: (isAnim: Boolean) -> Unit
+    pagePxWidth: Int = width
 ) {
     val pxToDrag: Int = pagePxWidth * (item - currentItem)
     val animator = ValueAnimator.ofInt(0, pxToDrag)
@@ -258,12 +257,10 @@ fun ViewPager2.setCurrentItemWithDuration(
     animator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
             beginFakeDrag()
-            onAnimation.invoke(true)
         }
 
         override fun onAnimationEnd(animation: Animator) {
             endFakeDrag()
-            onAnimation.invoke(false)
         }
 
         override fun onAnimationCancel(animation: Animator) {}

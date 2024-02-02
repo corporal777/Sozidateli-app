@@ -1,5 +1,6 @@
 package com.example.ui.auth.login
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
@@ -100,23 +101,15 @@ class LoginPresenter
         )
     }
 
-    private fun getInviteBody(auth: AuthResponse): RebaseInviteBody {
-        return RebaseInviteBody(auth.id ?: 0, auth.token ?: "")
-    }
-
     private fun catchError(it: Throwable) {
-        if (it is HttpException) {
-            try {
-                val error =
-                    Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
-                if (error.hasError(WRONG_PASSWORD_ERROR)) viewState.showWrongPasswordError()
-                else if (error.hasError(WRONG_PASSWORD_API_ERROR)) viewState.showWrongPasswordError()
-                else if (error.hasError(WRONG_EMAIL_API_ERROR)) viewState.showWrongPasswordError()
-                else if (error.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
-                else onReceiveError(it)
+        try {
+            it.printStackTrace()
+            val apiError = (it as? ApiError)
+            if (apiError == null) viewState.showWrongPasswordError()
+            else if (apiError.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
+            else viewState.showWrongPasswordError()
 
-            } catch (e: Exception) { }
-        }
+        } catch (_: Exception) { }
     }
 
     companion object {

@@ -3,6 +3,7 @@ package com.example.data.bodies
 import com.example.data.models.FieldDetails
 import com.example.data.models.FieldListDetails
 import com.example.data.models.NewUserAddress
+import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserState
 import com.google.gson.annotations.SerializedName
 
@@ -35,13 +36,13 @@ data class RegisterBody(
 data class SnRegisterBody(
         val name: String? = null,
         val lastName: String? = null,
-        val middleName: FieldDetails? = null,
+        val middleName: MiddleNameBody? = null,
         val email: String? = null,
         val phone: String? = null,
         val birthday: String? = null,
         val photo : String? = null,
         val socialNetwork: String? = null,
-
+        val gender : ToggleStringModel? = null,
         val uuid: String? = null,
         val deviceId : String = "",
         val deviceModel : String = "",

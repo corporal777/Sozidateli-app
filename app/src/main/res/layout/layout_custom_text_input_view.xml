@@ -33,6 +33,7 @@
             android:imeOptions="actionDone"
             android:hint="@string/enter_your_request"
             android:inputType="textCapSentences"
+            android:importantForAutofill="no"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnAction"
             app:layout_constraintStart_toStartOf="parent"

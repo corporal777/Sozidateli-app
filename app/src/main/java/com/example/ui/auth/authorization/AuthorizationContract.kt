@@ -13,6 +13,12 @@ interface AuthorizationContract {
         fun setStories(stories: List<String>)
 
         @OneExecution
+        fun setPagerScroll(size: Int)
+
+        @Skip
+        fun showNextStory()
+
+        @OneExecution
         fun showLogin()
 
         @OneExecution

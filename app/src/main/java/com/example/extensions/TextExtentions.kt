@@ -9,6 +9,7 @@ import android.text.style.UnderlineSpan
 import androidx.core.text.toSpannable
 import com.example.BuildConfig
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
@@ -111,17 +112,18 @@ fun removeFirstAndLastSpaces(str: String?): String {
     return value?.replace(reg, "") ?: ""
 }
 
-fun markWon(context: Context): Markwon {
+fun markWon(context: Context, vararg plugin : AbstractMarkwonPlugin): Markwon {
     return Markwon.builder(context)
         .usePlugins(
-            listOf(
+            arrayListOf(
                 SoftBreakAddsNewLinePlugin.create(),
                 LinkifyPlugin.create(),
                 HtmlPlugin.create(),
                 MarkwonInlineParserPlugin.create()
-            )
-        ).build();
+            ).apply { if (!plugin.isNullOrEmpty()) addAll(plugin.toList()) }
+        ).build()
 }
+
 
 fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")
 

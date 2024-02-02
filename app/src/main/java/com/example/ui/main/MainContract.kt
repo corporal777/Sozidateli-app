@@ -131,7 +131,5 @@ interface MainContract {
 
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
         fun onHandleAuthWebsite(code : String?)
-
-        fun onBackClick()
     }
 }

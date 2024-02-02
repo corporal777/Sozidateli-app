@@ -29,5 +29,6 @@ data class SnUserData(
         val email: String?,
         val phone: String?,
         val birthday: String?,
-        val photo : String?
+        val photo : String?,
+        val gender : String?
 ) : Parcelable

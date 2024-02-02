@@ -29,11 +29,9 @@ import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.accountChange.ChangeAccountFragmentArgs
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragmentActivity
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
@@ -51,11 +49,9 @@ import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.userprofile.edit.password.reset.ResetPasswordFragment
 import com.example.ui.views.ApiErrorDialog
 import com.example.ui.views.ChangeStateDialog
 import com.example.ui.views.ClickType
-import com.example.ui.views.FillProfileDialog
 import com.example.ui.views.StateType
 import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
@@ -175,7 +171,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setupMainNavBar()
         subscribeOnNotificationChanel()
 
-        mBinding.toolbar.ivBack.setOnClickListener { presenter.onBackClick() }
+        mBinding.toolbar.ivBack.setOnClickListener { navigateUp() }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
@@ -382,7 +378,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
     override fun showLogin() {
-        if (findNavController().currentDestination?.id != R.id.authorization_fragment) {
+        if (!isCurrentDestination(R.id.authorization_fragment)) {
             findNavController().navigate(
                 R.id.authorization_fragment, null,
                 navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
@@ -451,9 +447,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().navigate(R.id.stories_fragment)
     }
 
-    private fun findNavController() = findNavController(R.id.navHostFragment)
-
-
     override fun showUpdateApp(isRequired: Boolean) {
         UpdateAppBottomSheet(this, isRequired)
             .setDismissCallback { presenter.startUpdateTimer(null, isRequired) }
@@ -490,24 +483,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    override fun showRequestErrorMessage() {
-        presenter.onRequestShowErrorMessage(getString(R.string.request_execution_error))
-    }
+    private fun findNavController() = findNavController(R.id.navHostFragment)
 
-    override fun showErrorMessage(message: String) {
-        mBinding.tvErrorMessage.text = message
-        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
-        mBinding.errorContainer.isVisible = true
-    }
-
-    override fun hideErrorMessage() {
-        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
-        mBinding.errorContainer.isVisible = false
-    }
-
-    override fun navigateUp() {
-        onSupportNavigateUp()
-    }
+    override fun navigateUp() { onSupportNavigateUp() }
 
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
@@ -520,16 +498,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ApiErrorDialog(
             this, getString(R.string.email_exist_error_title),
             getString(R.string.email_exist_error_text)
-        )
-            .setSelectCallback { }
+        ).setSelectCallback { }
     }
 
     override fun showPhoneErrorMessage() {
         ApiErrorDialog(
             this, getString(R.string.phone_exist_error_title),
             getString(R.string.phone_exist_error_text)
-        )
-            .setSelectCallback { }
+        ).setSelectCallback { }
     }
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
@@ -585,13 +561,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             }
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mBinding.appBar.changeAppBarElevation(value)
-    }
-
-    override fun showNotificationErrorMessage() {
-        FillProfileDialog(this).setSelectCallback { findNavController().navigate(R.id.user_profile_fragment) }
-    }
 
     override fun setIgnoreTokenListener(isIgnore: Boolean) = presenter.ignoreTokenListener(isIgnore)
 
@@ -640,16 +609,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-
-    override fun showBadgeNotification(count: Int) {
-        mBinding.mainNavBar.setBadge(R.id.notification, count)
-    }
-
-    override fun showBadgeChat(count: Int) {
-        mBinding.mainNavBar.setBadge(R.id.chats, count)
-    }
-
-
     private fun setupNavBarItems(f: Fragment) {
         when (f) {
             is RecommendationsFragment -> {
@@ -668,6 +627,33 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 mBinding.mainNavBar.menu.findItem(R.id.my_events).isChecked = true
             }
         }
+    }
+
+    override fun showRequestErrorMessage() {
+        presenter.onRequestShowErrorMessage(getString(R.string.request_execution_error))
+    }
+
+    override fun showErrorMessage(message: String) {
+        mBinding.tvErrorMessage.text = message
+        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
+        mBinding.errorContainer.isVisible = true
+    }
+
+    override fun hideErrorMessage() {
+        TransitionManager.beginDelayedTransition(mBinding.root, Slide(Gravity.TOP))
+        mBinding.errorContainer.isVisible = false
+    }
+
+    override fun setAppBarElevation(value: Float) {
+        mBinding.appBar.changeAppBarElevation(value)
+    }
+
+    override fun showBadgeNotification(count: Int) {
+        mBinding.mainNavBar.setBadge(R.id.notification, count)
+    }
+
+    override fun showBadgeChat(count: Int) {
+        mBinding.mainNavBar.setBadge(R.id.chats, count)
     }
 
     private fun showNavBar() {

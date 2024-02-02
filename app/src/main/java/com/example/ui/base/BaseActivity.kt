@@ -146,6 +146,8 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading = 0
             getLoadingView().visibility = View.GONE
+            hideProgressView()
+            hideCustomLoading()
         }
     }
 

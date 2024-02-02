@@ -31,6 +31,7 @@ import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils
+import com.example.util.getColor
 import com.example.util.setImage
 import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
@@ -126,8 +127,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             else getString(R.string.state_max).firstLetterToUppercase() + " " + getString(R.string.state)
 
         mBinding.stateTitle.apply {
-            if (!hasBase && !hasMax) setTextColor(getColor(requireContext(), R.color.red_new))
-            else setTextColor(getColor(requireContext(), R.color.main_brown_color_new))
+            setTextColor(
+                if (!hasBase && !hasMax) getColor(R.color.red_new)
+                else getColor(R.color.main_brown_color_new)
+            )
             text = newState
             setOnClickListener { showStates() }
         }

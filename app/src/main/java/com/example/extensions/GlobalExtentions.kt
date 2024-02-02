@@ -102,14 +102,12 @@ fun String.parseAsHtmlWithoutUnderline(): Spannable? {
 }
 
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
-
     val watcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             onTextChanged(s)
         }
-
     }
     addTextChangedListener(watcher)
     return watcher
@@ -132,6 +130,7 @@ fun EditText.showHidePasswordText(show: Boolean) {
 fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
     val listener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
             onPageChanged(state)
         }
     }
