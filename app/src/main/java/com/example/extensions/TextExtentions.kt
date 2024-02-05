@@ -51,22 +51,23 @@ fun String.parsePhone(context: Context, defaultRegion: String = "RU"): String {
 }
 
 fun String.removeAllDoubleSpaces(): String {
-    val newStr = this.trim().replace("[\\s]+".toRegex(), " ")
-    val sb = StringBuilder(newStr)
-    val currentChar = ' '
-    var counter = 0
-    sb.forEach {
-        if (it == currentChar) counter++
-    }
-    run loop@{
-        sb.forEachIndexed { index, c ->
-            if (currentChar == c && counter > 1) {
-                sb.deleteCharAt(index)
-                return@loop
-            }
-        }
-    }
-    return sb.toString()
+//    val newStr = this.trim().replace("[\\s]+".toRegex(), " ")
+//    val sb = StringBuilder(newStr)
+//    val currentChar = ' '
+//    var counter = 0
+//    sb.forEach {
+//        if (it == currentChar) counter++
+//    }
+//    run loop@{
+//        sb.forEachIndexed { index, c ->
+//            if (currentChar == c && counter > 1) {
+//                sb.deleteCharAt(index)
+//                return@loop
+//            }
+//        }
+//    }
+    //return sb.toString()
+    return this.trim().replace("[\\s]+".toRegex(), " ")
 }
 
 

@@ -85,13 +85,13 @@ class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContra
     override fun setSpeakers(speakers: List<MemberModel>) {
         speakersSection.update(speakers.map { speaker ->
             SubEventSpeakerItem(
+                requireContext(),
                 speaker.id,
                 speaker.binds?.user?.nameLastName,
                 speaker.organizationAndPosition,
                 speaker.description,
-                speaker.binds?.user?.image?.uri,
-                speaker.status,
-                speaker.binds?.user?.state?.isRegistered ?: false
+                speaker.binds?.user?.loadUserImage(),
+                speaker.getSpeakerStatus()
             ) {
                 presenter.onSpeakerClick(it)
             }

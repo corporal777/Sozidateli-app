@@ -6,5 +6,5 @@
             <corners android:radius="@dimen/background_large_corners_radius" />
         </shape>
     </item>
-    <item android:drawable="?attr/selectableItemBackground" />
+
 </layer-list>

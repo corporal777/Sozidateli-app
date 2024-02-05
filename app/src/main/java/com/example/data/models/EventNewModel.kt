@@ -413,6 +413,11 @@ data class MemberModel(
     val binds: MemberBindsModel? = null
 ) : Parcelable {
 
+    fun getSpeakerStatus(): String? {
+        return if (binds?.user?.state?.isRegistered == false) "not_registered"
+        else status
+    }
+
     companion object {
         const val MEMBER_EVENT = "event"
         const val MEMBER_ROLE = "role"

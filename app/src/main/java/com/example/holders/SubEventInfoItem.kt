@@ -28,12 +28,7 @@ class SubEventInfoItem(
     private val onTagCLick: (id: Int) -> Unit
 ) : BindableItem<ItemSubeventInfoBinding>(subEvent.id?.toLong() ?: 0) {
 
-    private val activityTime = getDayAndMonth() + " " +
-            subEvent.holdingDate?.from.formatTimeIntervalFromTo(
-                subEvent.holdingDate?.to,
-                defaultServerDateTimeFormatter,
-                true
-            )
+    private val activityTime = getDayAndMonth()
 
     init {
 
@@ -80,8 +75,6 @@ class SubEventInfoItem(
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
-            //if (payload is Boolean) setAction(viewHolder.btnSubscribe, payload)
-            //if (payload is Boolean) setAction(viewHolder.btnAddToTimetable, payload)
             if (payload is EventActivityModel) {
                 decorActionButton(viewBinding.btnAddToTimetable, payload)
             }
@@ -133,12 +126,12 @@ class SubEventInfoItem(
             if (startCalendar.isSameDay(endCalendar)) {
                 date = startCalendar.getCalendarDay(false) +
                         "." + startCalendar.getCalendarMonth(false)
-                date = date + " (" + startCalendar.getCalendarDayOfWeek() + "),"
+                date = date + " (" + startCalendar.getCalendarDayOfWeek() + ")"
             } else {
                 date = startCalendar.getCalendarDay(false) +
                         " - " + endCalendar.getCalendarDay(false) +
                         "." + endCalendar.getCalendarMonth(false)
-                date = date + " (" + endCalendar.getCalendarDayOfWeek() + "),"
+                date = date + " (" + endCalendar.getCalendarDayOfWeek() + ")"
             }
 
         } else {
@@ -146,10 +139,18 @@ class SubEventInfoItem(
                         "." + startCalendar.getCalendarMonth(false) +
                         " - " + endCalendar.getCalendarDay(false) +
                         "." + endCalendar.getCalendarMonth(false)
-            date = date + " (" + endCalendar.getCalendarDayOfWeek() + "),"
+            date = date + " (" + endCalendar.getCalendarDayOfWeek() + ")"
 
         }
-        return date
+
+        val formatter = if (startCalendar.isSameYear(endCalendar)) {
+            if (startCalendar.isSameDay(endCalendar)) defaultTimeFormatter
+            else defaultDateTimeFormatterNoYear
+        } else defaultDateFormatter
+
+        val time = "${formatter.format(startCalendar.time)} - ${formatter.format(endCalendar.time)}"
+
+        return "$date, $time"
     }
 
 

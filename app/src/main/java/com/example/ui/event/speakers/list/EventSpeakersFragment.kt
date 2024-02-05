@@ -58,13 +58,13 @@ class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
         speakersSection.update(data.map { speaker ->
             if (speaker == null) PlaceholderItem(PlaceholderItem.Type.SPEAKER_LIST)
             else SubEventSpeakerItem(
+                requireContext(),
                 speaker.id,
                 speaker.binds?.user?.nameLastName,
                 speaker.organizationAndPosition,
                 speaker.description,
                 speaker.binds?.user?.loadUserImage(),
-                speaker.status,
-                speaker.binds?.user?.state?.isRegistered ?: false
+                speaker.getSpeakerStatus()
             ) { presenter.onSpeakerClick(it) }
         })
         mBinding.swipeToRefresh.isRefreshing = false

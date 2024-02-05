@@ -88,8 +88,13 @@ class AuthorizationFragment : BaseFragment<FragmentAuthorizationBinding>(),
     }
 
 
-    override fun showLogin() = findNavController().navigate(R.id.login_fragment)
-    override fun showRegistration() = findNavController().navigate(R.id.userRegistrationFragment)
+    override fun showLogin() {
+        findNavController().navigate(R.id.login_fragment)
+    }
+
+    override fun showRegistration() {
+        findNavController().navigate(R.id.userRegistrationFragment)
+    }
 
     override fun showSnAuthorization(snAuth: SnUser) {
         val args = SnAuthFragmentArgs.Builder(snAuth).build().toBundle()

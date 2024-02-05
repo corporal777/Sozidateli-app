@@ -87,7 +87,10 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
     override fun showMiddleNameError(show: Boolean) = mBinding.etMiddleName.showError(show)
     override fun showPhoneError(show: Boolean) = mBinding.etPhone.showError(show)
     override fun showBirthdayError(show: Boolean) = mBinding.etBirthday.showError(show)
-    override fun showEmailError(show: Boolean) = mBinding.etEmail.showError(show)
+    override fun showEmailError(show: Boolean) {
+        if (show) mBinding.etEmail.showTextError("Введите корректный e-mail")
+        else mBinding.etEmail.showError(false)
+    }
 
     override fun enableContinueButton(isEnable: Boolean) =
         mBinding.btnContinue.run { isSelected = isEnable }
