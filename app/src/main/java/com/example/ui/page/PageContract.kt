@@ -10,7 +10,7 @@ interface PageContract {
         @AddToEndSingle
         fun setContent(
                 logo: String?,
-                contentTitle: String,
+                contentTitle: String?,
                 title: String?,
                 content: String?,
                 documents: List<FileModel>?

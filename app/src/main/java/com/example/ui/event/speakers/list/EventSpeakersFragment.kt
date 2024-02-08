@@ -48,7 +48,7 @@ class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
             ivBack.setOnClickListener { findNavController().navigateUp() }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, offset ->
-                updateViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
             }
         }
     }
@@ -75,64 +75,31 @@ class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
         findNavController().navigate(R.id.user_speaker_fragment, args)
     }
 
-    private fun updateViews(offset: Float) {
-        mBinding.apply {
-            when {
-                offset < SWITCH_BOUND -> Pair(
-                    TO_EXPANDED,
-                    cashCollapseState?.second ?: WAIT_FOR_SWITCH
-                )
-                else -> Pair(TO_COLLAPSED, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
-            }.apply {
-                when {
-                    cashCollapseState != null && cashCollapseState != this -> {
-                        when (first) {
-                            TO_EXPANDED -> {
-                                tvLabelSmall.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-
-                                tvLabelLarge.apply {
-                                    visibility = View.VISIBLE
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                }
-                            }
-                            TO_COLLAPSED -> {
-                                tvLabelSmall.apply {
-                                    alpha = 0F
-                                    animate().setDuration(500).alpha(1.0f)
-                                    tvLabelSmall.visibility = View.VISIBLE
-                                }
-                                tvLabelLarge.apply {
-                                    alpha = 1F
-                                    animate().setDuration(500).alpha(0.0f)
-                                    visibility = View.GONE
-                                }
-                            }
-                        }
-                        cashCollapseState = Pair(first, SWITCHED)
-                    }
-                    else -> {
-                        cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
-                    }
-                }
-            }
+    override fun onExpandedState() {
+        mBinding.tvLabelSmall.apply {
+            alpha = 1F
+            animate().setDuration(500).alpha(0.0f)
+            visibility = View.GONE
+        }
+        mBinding.tvLabelLarge.apply {
+            visibility = View.VISIBLE
+            alpha = 0F
+            animate().setDuration(500).alpha(1.0f)
         }
     }
 
-    private var cashCollapseState: Pair<Int, Int>? = null
-
-    companion object {
-        const val SWITCH_BOUND = 0.3f
-        const val TO_EXPANDED = 0
-        const val TO_COLLAPSED = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
+    override fun onCollapsedState() {
+        mBinding.tvLabelSmall.apply {
+            alpha = 0F
+            animate().setDuration(500).alpha(1.0f)
+            visibility = View.VISIBLE
+        }
+        mBinding.tvLabelLarge.apply {
+            alpha = 1F
+            animate().setDuration(500).alpha(0.0f)
+            visibility = View.GONE
+        }
     }
-
 
     override fun layout() = R.layout.fragment_event_speakers
 }

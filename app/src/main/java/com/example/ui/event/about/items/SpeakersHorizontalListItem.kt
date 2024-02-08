@@ -1,6 +1,7 @@
 package com.example.ui.event.about.items
 
 import android.graphics.Color
+import android.util.Log
 import com.example.R
 import com.example.data.models.MemberModel
 import com.example.databinding.ItemSpeakersHorizontalListBinding
@@ -14,28 +15,25 @@ import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SpeakersHorizontalListItem(
-    val data: List<MemberModel>,
-    val canShowMore: Boolean,
-    val onItemClick: (id: Int) -> Unit,
-    val showAllSpeakers: () -> Unit
+    private val data: List<MemberModel>,
+    private val canShowMore: Boolean,
+    private val onItemClick: (id: Int) -> Unit,
+    private val showAllSpeakers: () -> Unit
 ) : BindableItem<ItemSpeakersHorizontalListBinding>(-1006L) {
-
-    val items = arrayListOf<Item<*>>().apply {
-        addAll(data.map {
-            EventSpeakerItem(
-                it.id ?: 0,
-                it.binds?.user?.name + "\n" + it.binds?.user?.lastName,
-                it.binds?.user?.image?.uri ?: "",
-                it.status ?: "",
-                it.binds?.user?.state?.isRegistered ?: false
-            ) { id -> onItemClick(id) }
-        })
-        if (canShowMore) add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
-    }
 
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            addAll(items)
+            update(
+                data.map {
+                    EventSpeakerItem(
+                        it.id,
+                        it.binds?.user?.nameLastName,
+                        it.binds?.user?.loadUserImage(),
+                        it.getSpeakerStatus()
+                    ) { id -> onItemClick(id) }
+                }
+            )
+            if (canShowMore) add(ShowAllSpeakersItem { showAllSpeakers.invoke() })
         }
     }
 

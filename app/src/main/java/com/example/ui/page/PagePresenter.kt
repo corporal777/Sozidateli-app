@@ -28,7 +28,7 @@ class PagePresenter
                 .performOnBackgroundOutOnMain()
                 .withProgressBarLoading(viewState)
                 .subscribeSimple {
-                    viewState.setContent(/*it.picture*/"", it.name?: "", it.title, it.content, it.files)
+                    viewState.setContent("", it.name, it.title, it.content, it.files)
                 }
     }
 

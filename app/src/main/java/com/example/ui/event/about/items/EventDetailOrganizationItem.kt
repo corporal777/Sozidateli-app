@@ -1,5 +1,7 @@
 package com.example.ui.event.about.items
 
+import android.graphics.Color
+import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
@@ -7,6 +9,7 @@ import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
@@ -21,34 +24,26 @@ class EventDetailOrganizationItem(
         ?: organization?.legalInformation?.name?.full
 
     private var isFavorite: Boolean = organization?.binds?.userFavorite != null
-
-
-    private val organizationLogo = organization?.logo?.uri ?: ""
-    private val backgroundColor = organization?.backgroundColor?.value
+    private val organizationLogo = organization?.logo?.uri
+    private val backgroundColor = organization?.backgroundColor?.value.parseColor() ?: Color.DKGRAY
 
     override fun bind(viewBinding: ItemEventDetailOrganizationBlockBinding, position: Int) {
         viewBinding.apply {
-
             tvOrganizationLabel.text = organizationName
-
-            if (organizationLogo.isNullOrEmpty()) {
-                tvOrganizationNameNoImage.apply {
-                    isVisible = true
-                    text = organizationName
+            ivOrganizationLogo.apply {
+                if (organizationLogo.isNullOrEmpty()) {
+                    tvOrganizationNameNoImage.apply {
+                        isVisible = true
+                        text = organizationName
+                    }
+                    setBackgroundColor(backgroundColor)
+                } else {
+                    Picasso.get()
+                        .load(organizationLogo)
+                        .placeholder(R.drawable.background_image_placeholder)
+                        .into(this)
                 }
-                ivOrganizationLogo.apply {
-                    setBackgroundColor(
-                        backgroundColor.parseColor() ?: ResourcesCompat.getColor(
-                            resources,
-                            R.color.event_item_no_image_background,
-                            null
-                        )
-                    )
-                }
-            } else {
-                ivOrganizationLogo.setImage(organizationLogo)
             }
-
             btnActionFavorite.apply {
                 setAction(getAction())
                 setOnClickListener { actionClickListener(this.action) }

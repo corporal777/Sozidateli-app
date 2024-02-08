@@ -57,9 +57,7 @@ class PartnerMainInfoItem(
             }
 
             tvLinks.apply {
-                text =
-                    if (links.isNullOrEmpty()) context.getString(R.string.user_profile_no_site)
-                    else links
+                text = if (links.isNullOrEmpty()) context.getString(R.string.user_profile_no_site) else links
                 removeUrlUnderline()
             }
             llSupportType.isVisible = !supportType.isNullOrEmpty()

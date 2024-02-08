@@ -24,8 +24,6 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
 
     override val isLightStatus = false
 
-    private val mArgs: AuthWebsiteFragmentArgs by navArgs()
-
     @InjectPresenter
     lateinit var mPresenter: AuthWebsitePresenter
 
@@ -34,9 +32,7 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
 
     @ProvidePresenter
     fun providePresenter(): AuthWebsitePresenter = presenterProvider.get().apply {
-        mArgs.let {
-            token = it.qrCode
-        }
+        token = AuthWebsiteFragmentArgs.fromBundle(requireArguments()).qrCode
     }
 
 

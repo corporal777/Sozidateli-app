@@ -43,8 +43,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
         getLoadingView().setOnTouchListener { _, _ -> return@setOnTouchListener true }
         mProgressDialog = CustomProgressDialog(this)
 

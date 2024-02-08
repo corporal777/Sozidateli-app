@@ -8,7 +8,7 @@ import com.example.R
 import com.example.databinding.FragmentRecoveryPasswordBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.edit.password.confirm.PhoneConfirmPasswordFragmentArgs
-import com.example.ui.userprofile.edit.password.confirm.EmailConfirmPasswordFragment
+import com.example.ui.userprofile.edit.password.confirm.EmailConfirmPasswordDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -27,6 +27,8 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
     fun providePresenter(): RecoveryPasswordPresenter = presenterProvider.get().apply {
         email = RecoveryPasswordFragmentArgs.fromBundle(requireArguments()).email ?: ""
     }
+
+    private var emailConfirmDialog : EmailConfirmPasswordDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,9 +62,16 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
     }
 
     override fun showEmailRecovery(email: String, userId: String) {
-        EmailConfirmPasswordFragment(requireContext(), email)
+        EmailConfirmPasswordDialog(requireContext(), email)
             .setOnDismissCallback { navigateUp() }
+            .setOnSendAgainCallback { presenter.onSendEmailAgainClick() }
+            .apply { if (emailConfirmDialog == null) emailConfirmDialog = this }
             .show()
+        showEmailSendTimer()
+    }
+
+    override fun showEmailSendTimer() {
+        if (emailConfirmDialog != null) emailConfirmDialog!!.starTimer()
     }
 
     override fun showPhoneRecovery(phone: String, userId: String) {

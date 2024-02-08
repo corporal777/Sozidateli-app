@@ -828,6 +828,7 @@
     <string name="code_dialog_text_title">На номер отправлено письмо с кодом из 6 цифр. Введите его для подтверждения.</string>
     <string name="code_dialog_text_information">Если Вы не\u00A0нашли письмо с\u00A0кодом в\u00A0папке «Входящие», загляните в\u00A0«Спам». Но если и\u00A0в\u00A0этом случае письмо не\u00A0обнаружено, обратитесь в\u00A0службу поддержки %s</string>
     <string name="send_code_again">Отправить код повторно</string>
+    <string name="send_email_again">Отправить повторно</string>
     <string name="send_call_again">Позвонить повторно</string>
     <string name="new_phone_number">Введите новый номер телефона</string>
     <string name="change_status_title">Повышение статуса</string>

@@ -6,28 +6,24 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background_auth_very_small"
         android:fitsSystemWindows="true">
-
 
         <ScrollView
             android:id="@+id/svContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            tools:background="@android:color/black">
-
+            android:fillViewport="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivLogo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="85dp"
-                    android:layout_marginTop="20dp"
-                    android:contentDescription="@string/content_description_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auth_logo_text_height"
                     android:src="@drawable/ic_app_logo_main"
                     app:layout_constraintBottom_toTopOf="@id/top_guideLine"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -172,8 +168,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="20dp"
-                        android:minHeight="@dimen/auth_button_min_height"
+                        android:minHeight="@dimen/common_button_min_height"
                         android:text="@string/confirm"
+                        android:textSize="@dimen/common_button_text_size"
                         app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm"
                         app:layout_constraintTop_toBottomOf="@id/tvTime" />
 
@@ -185,8 +182,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="30dp"
-                        android:minHeight="@dimen/auth_button_min_height"
+                        android:minHeight="@dimen/common_button_min_height"
                         android:text="@string/do_not_confirm"
+                        android:textSize="@dimen/common_button_text_size"
                         app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

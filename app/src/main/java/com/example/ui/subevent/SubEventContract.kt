@@ -8,10 +8,6 @@ import moxy.viewstate.strategy.alias.OneExecution
 
 interface SubEventContract {
     interface View : BaseContract.View {
-
-        @AddToEndSingle
-        fun setSubEventPlaceholder()
-
         @AddToEndSingle
         fun setData(isApproved : Boolean, subEvent: EventActivityModel)
 

@@ -1,67 +1,61 @@
 package com.example.holders.redesign
 
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.databinding.ItemSpeakerNewBinding
+import com.example.databinding.ItemEventSpeakerBinding
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.setImage
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 
 class EventSpeakerItem(
-    val id: Int,
-    val name: String?,
-    val image: String,
-    val status: String,
-    val isRegistered: Boolean,
-    val onItemClick: (id: Int) -> Unit
-) : BindableItem<ItemSpeakerNewBinding>(id.toLong()) {
+    private val speakerId: Int?,
+    private val name: String?,
+    private val image: String?,
+    private val status: String?,
+    private val onItemClick: (id: Int) -> Unit
+) : BindableItem<ItemEventSpeakerBinding>(speakerId?.toLong() ?: 0) {
 
 
-    override fun bind(viewBinding: ItemSpeakerNewBinding, position: Int) {
+    override fun bind(viewBinding: ItemEventSpeakerBinding, position: Int) {
         viewBinding.apply {
-            ivSpeakerImage.setImage(image, error = R.drawable.empty_speaker_avatar)
+            ivSpeakerImage.apply {
+                Picasso.get()
+                    .load(image)
+                    .placeholder(R.drawable.background_image_placeholder)
+                    .error(R.drawable.empty_speaker_avatar)
+                    .into(this)
+            }
             tvSpeakersName.text = name
-            root.setOnClickListener {
-                onItemClick(id)
+            ivSpeakerStatus.apply {
+                var message = ""
+                when (status) {
+                    "not_registered" -> {
+                        isVisible = true
+                        setImageResource(R.drawable.ic_speaker_status_not_confirmed)
+                        message = "Спикер еще не зарегистрирован в «Созидателях»"
+                    }
+                    "pending" -> {
+                        isVisible = true
+                        setImageResource(R.drawable.ic_speaker_status_pending)
+                        message = "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                    }
+                    "approved" -> {
+                        isVisible = true
+                        setImageResource(R.drawable.ic_speaker_status_confirmed)
+                        message = "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                    }
+                    else -> isVisible = false
+                }
+                setOnClickListener { MessageDialogWithBrownButton(context, message) }
             }
-            decorSpeakerStatus(status, ivSpeakerStatus)
+            itemContainer.apply {
+                clipToOutline = true
+                setOnClickListener { onItemClick(speakerId ?: 0) }
+            }
         }
     }
 
-
-    private fun decorSpeakerStatus(status: String, imageView: ImageView) {
-        var mIcon = 0
-        var mText = ""
-        var visibility = false
-        if (isRegistered) {
-            when (status) {
-                "pending" -> {
-                    visibility = true
-                    mIcon = R.drawable.ic_speaker_status_pending
-                    mText = "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
-                }
-                "approved" -> {
-                    visibility = true
-                    mIcon = R.drawable.ic_speaker_status_confirmed
-                    mText = "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
-                }
-                else -> visibility = false
-            }
-        } else {
-            visibility = true
-            mIcon = R.drawable.ic_speaker_status_not_confirmed
-            mText = "Спикер еще не зарегистрирован в «Созидателях»"
-        }
-
-        imageView.apply {
-            isVisible = visibility
-            setImageResource(mIcon)
-            setOnClickListener {
-                MessageDialogWithBrownButton(context, mText)
-            }
-        }
-    }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventSpeakerItem) return false
@@ -69,10 +63,9 @@ class EventSpeakerItem(
         if (name != other.name) return false
         if (image != other.image) return false
         if (status != other.status) return false
-        if (isRegistered != other.isRegistered) return false
         return true
     }
 
 
-    override fun getLayout(): Int = R.layout.item_speaker_new
+    override fun getLayout(): Int = R.layout.item_event_speaker
 }

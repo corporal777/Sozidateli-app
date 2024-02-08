@@ -133,7 +133,6 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                     }
                 }
             }
-
             UserState.BASE -> baseActionsWithSuccess()
         }
     }

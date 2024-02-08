@@ -91,13 +91,6 @@ data class UserDetail(
             else email?.value
         }
 
-    val userGender: String
-        get() = when (gender?.value) {
-            "M" -> "Мужской"
-            "F" -> "Женский"
-            else -> ""
-        }
-
     fun getMiddleName(): String? {
         return middleName?.let { if (it.value == USER_DATA_EMPTY || it.value?.isEmpty() == true) null else it.value }
     }

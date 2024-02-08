@@ -45,7 +45,9 @@ class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContra
         subEventId = args.subEventId
     }
 
-    private val infoSection = Section()
+    private val infoSection by lazy {
+        Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.SUB_EVENT_MAIN)) }
+    }
     private val speakersSection by lazy {
         Section().apply {
             setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)))
@@ -66,10 +68,6 @@ class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContra
                 adapter = groupAdapter
             }
         }
-    }
-
-    override fun setSubEventPlaceholder() {
-        infoSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SUB_EVENT_MAIN))
     }
 
     override fun setData(isApproved: Boolean, subEvent: EventActivityModel) {

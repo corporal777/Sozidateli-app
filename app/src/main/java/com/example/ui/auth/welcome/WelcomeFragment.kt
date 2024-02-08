@@ -1,5 +1,6 @@
 package com.example.ui.auth.welcome
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import com.example.R
@@ -15,7 +16,6 @@ import javax.inject.Provider
 class WelcomeFragment : BaseFragment<FragmentWelcomeBinding>(), BackgroundImageFragment,
     WelcomeContract.View {
 
-    override val isLightStatus = false
 
     @InjectPresenter
     lateinit var presenter: WelcomePresenter
@@ -29,16 +29,17 @@ class WelcomeFragment : BaseFragment<FragmentWelcomeBinding>(), BackgroundImageF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun setUserName(name: String) {
         mBinding.apply {
+            tvGreeting.text = getString(R.string.welcome_greeting_message, name)
             progressView.showProgressBar()
         }
     }
 
-    override fun setUserName(name: String) {
-        mBinding.tvGreeting.text = getString(R.string.welcome_greeting_message, name)
-    }
-
-    override fun getFragmentBackgroundDrawable() = AuthBackground.get(resources)
+    override fun getFragmentBackgroundDrawable(): Drawable? = null
+    override val isLightStatus = false
 
     override fun layout() = R.layout.fragment_welcome
 }

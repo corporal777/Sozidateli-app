@@ -102,10 +102,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
                 .setSelectCallback {
                     when (it.type) {
                         RegisterDataType.PHONE -> {
-                            presenter.checkPhoneIsUnique(
-                                true,
-                                Utils.validatePhoneBeforeSend(it.value)
-                            )
+                            presenter.checkPhoneIsUnique(true, Utils.validatePhoneBeforeSend(it.value))
                         }
 
                         RegisterDataType.EMAIL -> {

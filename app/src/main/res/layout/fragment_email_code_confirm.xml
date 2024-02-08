@@ -108,7 +108,7 @@
             android:layout_marginBottom="20dp"
             app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
             app:buttonMinHeight="@dimen/common_button_min_height"
-            app:buttonText="@string/send_code_again"
+            app:buttonText="@string/send_email_again"
             app:buttonTextSize="@dimen/common_button_text_size"
             app:layout_constraintBottom_toBottomOf="parent" />
 

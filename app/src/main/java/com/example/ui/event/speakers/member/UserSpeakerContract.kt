@@ -40,7 +40,7 @@ interface UserSpeakerContract{
         fun showCurrentUserProfile()
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : BaseContract.Presenter {
         fun onWriteMessageClick()
         fun onAddSpeakerToFavoriteClick()
 

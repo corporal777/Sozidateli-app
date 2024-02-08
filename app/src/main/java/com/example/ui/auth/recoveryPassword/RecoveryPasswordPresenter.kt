@@ -49,6 +49,15 @@ class RecoveryPasswordPresenter
         } else viewState.showEmailError(true)
     }
 
+    override fun onSendEmailAgainClick() {
+        val login = if (loginType == "email") email else Utils.validatePhoneBeforeSend(email)
+        compositeDisposable += authRepository.sendRecoveryEmail(loginType, login)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { viewState.showEmailError(true) },
+                onSuccess = { viewState.showEmailSendTimer() }
+            )
+    }
 
     override fun onChangeEmailText(email: String) {
         this.email = email

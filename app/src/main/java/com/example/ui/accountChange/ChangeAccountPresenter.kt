@@ -30,7 +30,7 @@ class ChangeAccountPresenter
     private var canShowMenu = true
     private val currentUserId = appData.getId().toString()
 
-    var redirectLink : String? = ""
+    var redirectLink: String? = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -131,18 +131,13 @@ class ChangeAccountPresenter
     }
 
     override fun loginToAccountClick(user: UserDetail) {
-        var login = ""
-        if (user.email != null) {
-            if (!user.email?.value.isNullOrEmpty() && user.email?.isConfirmed == true) {
-                login = user.email?.value ?: ""
-            }
-        } else {
-            user.phone?.forEach {
-                if (it.type == "personal") login = it.value ?: ""
-            }
-        }
+        val login =
+            if (user.email != null && !user.email?.value.isNullOrEmpty() && user.email?.isConfirmed == true) {
+                user.email?.value ?: ""
+            } else user.personalPhone?.value ?: ""
+
         viewState.apply {
-            if (!login.isNullOrEmpty()){
+            if (!login.isNullOrBlank()) {
                 setIgnoreTokenListener(false)
                 showLoginFragment(login)
             }

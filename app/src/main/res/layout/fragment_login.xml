@@ -9,108 +9,122 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ibClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/content_description_close"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:src="@drawable/ic_close"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="@dimen/auth_login_circle_logo_height"
-            android:layout_height="@dimen/auth_login_circle_logo_height"
-            android:src="@drawable/ic_app_logo_circle"
-            app:layout_constraintBottom_toTopOf="@+id/tvRegisterTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibClose" />
-
-        <TextView
-            android:id="@+id/tvRegisterTitle"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            android:includeFontPadding="false"
-            android:letterSpacing="-0.01"
-            android:lineSpacingExtra="2dp"
-            android:text="@string/auth_title_login_fragment"
-            android:textColor="@color/auth_title_text"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@+id/etLogin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-            tools:ignore="MissingPrefix" />
-
-        <com.example.ui.views.CustomTextInputView
-            android:id="@+id/etLogin"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="20dp"
-            app:hintText="@string/email_or_phone_hint"
-            app:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
-            app:titleText="@string/login" />
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_login"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.ui.views.CustomTextInputView
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="15dp"
-            app:hintText="********"
-            app:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etLogin"
-            app:titleText="@string/password_confirm_hint" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/ibClose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_close"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="@dimen/auth_login_circle_logo_height"
+                    android:layout_height="@dimen/auth_login_circle_logo_height"
+                    android:src="@drawable/ic_app_logo_circle"
+                    app:layout_constraintBottom_toTopOf="@+id/tvRegisterTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ibClose" />
+
+                <TextView
+                    android:id="@+id/tvRegisterTitle"
+                    fontPath="fonts/sf_pro_display_bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="32dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_horizontal"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="-0.01"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/auth_title_login_fragment"
+                    android:textColor="@color/auth_title_text"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@+id/etLogin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+                    tools:ignore="MissingPrefix" />
+
+                <com.example.ui.views.CustomTextInputView
+                    android:id="@+id/etLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    app:hintText="@string/email_or_phone_hint"
+                    app:inputType="textEmailAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
+                    app:titleText="@string/login" />
+
+                <com.example.ui.views.CustomTextInputView
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="15dp"
+                    app:hintText="********"
+                    app:inputType="textPassword"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etLogin"
+                    app:titleText="@string/password_confirm_hint" />
 
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/btnForgotPassword"
-            style="@style/ClickableTextView"
-            fontPath="fonts/sf_pro_display.OTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/auth_forgot_password"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword"
-            tools:visibility="visible" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btnForgotPassword"
+                    style="@style/ClickableTextView"
+                    fontPath="fonts/sf_pro_display.OTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:text="@string/auth_forgot_password"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etPassword"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
 
         <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:layout_marginVertical="20dp"
             android:layout_marginTop="40dp"
             app:buttonBackground="@drawable/custom_btn_brown_selectable"
             app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/auth_label_login"
             app:buttonTextSize="@dimen/common_button_text_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnForgotPassword" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

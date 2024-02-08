@@ -18,12 +18,16 @@ interface RecoveryPasswordContract {
         @OneExecution
         fun showEmailRecovery(email: String, userId : String)
 
+        @Skip
+        fun showEmailSendTimer()
+
         @OneExecution
         fun showPhoneRecovery(phone: String, userId : String)
     }
 
     interface Presenter : BaseContract.Presenter {
         fun onRecoveryClick()
+        fun onSendEmailAgainClick()
         fun onChangeEmailText(email: String)
     }
 }

@@ -31,7 +31,6 @@ class SubEventPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setSubEventPlaceholder()
         compositeDisposable += loadData()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(

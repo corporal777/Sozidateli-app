@@ -13,6 +13,7 @@ import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.setImage
 import com.example.util.showCustomTabsBrowser
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
@@ -25,7 +26,6 @@ import javax.inject.Provider
 class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, ToolbarFragment {
 
     private lateinit var toolbarContent: ToolbarContent
-    private val args: PageFragmentArgs by navArgs()
 
     @InjectPresenter
     lateinit var presenter: PagePresenter
@@ -35,10 +35,9 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
 
     @ProvidePresenter
     fun providePresenter(): PagePresenter = presenterProvider.get().apply {
-        args.apply {
-            dataEventId = eventId
-            dataPageId = pageId
-        }
+        val args = PageFragmentArgs.fromBundle(requireArguments())
+        dataEventId = args.eventId
+        dataPageId = args.pageId
     }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -55,35 +54,24 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
 
     override fun setContent(
         logo: String?,
-        contentTitle: String,
+        contentTitle: String?,
         title: String?,
         content: String?,
         documents: List<FileModel>?
     ) {
-        toolbarContent.setToolbarTitle(contentTitle)
+        toolbarContent.setToolbarTitle(contentTitle ?: "")
         mBinding.ivLogo.apply {
             clipToOutline = true
-            val visible = !logo.isNullOrEmpty()
-            if (visible) Picasso.get().load(logo).into(this)
-            isVisible = visible
+            isVisible = !logo.isNullOrEmpty()
+            setImage(logo)
         }
-
         mBinding.tvTitle.apply {
-            if (title.isNullOrBlank()) {
-                isVisible = false
-            } else {
-                isVisible = true
-                markWon(requireContext()).setMarkdown(this, title)
-            }
+            isVisible = !title.isNullOrBlank()
+            text = markWon(requireContext()).toMarkdown(title ?: "")
         }
-
         mBinding.tvInfo.apply {
-            if (content.isNullOrBlank()) {
-                isVisible = false
-            } else {
-                isVisible = true
-                markWon(requireContext()).setMarkdown(this, content)
-            }
+            isVisible = !content.isNullOrBlank()
+            text = markWon(requireContext()).toMarkdown(content ?: "")
         }
 
         groupAdapter.update(documents?.map { DocumentItem(it) { presenter.onDocumentClick(it) } }

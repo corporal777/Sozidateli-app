@@ -23,12 +23,10 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/img_test" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <View
             android:layout_width="0dp"
             android:layout_height="120dp"
-            android:background="@drawable/background_corners_large"
-            android:clipToOutline="true"
-            android:src="@drawable/footer_speaker_gradient"
+            android:background="@drawable/speaker_footer_gradient"
             app:layout_constraintBottom_toBottomOf="@id/ivSpeakerImage"
             app:layout_constraintEnd_toEndOf="@id/ivSpeakerImage"
             app:layout_constraintStart_toStartOf="@id/ivSpeakerImage" />

@@ -2,19 +2,27 @@ package com.example.ui.userprofile.edit.password.confirm
 
 import android.content.Context
 import android.content.Intent
+import android.os.CountDownTimer
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.databinding.BottomSheetEmailMessageSentBinding
+import com.example.ui.auth.confirm.email.ConfirmEmailCodePresenter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import performOnBackgroundOutOnMain
 import removeUrlUnderline
+import java.util.concurrent.TimeUnit
 
 
-class EmailConfirmPasswordFragment(
+class EmailConfirmPasswordDialog(
     private val context: Context,
     private val email: String,
 ) : BottomSheetDialog(context) {
@@ -28,6 +36,9 @@ class EmailConfirmPasswordFragment(
         append(".")
     }
     private var onDismiss:() -> Unit = {}
+    private var onSend:() -> Unit = {}
+
+    private val compositeDisposable = CompositeDisposable()
 
     init {
         setContentView(mBinding.root)
@@ -48,6 +59,10 @@ class EmailConfirmPasswordFragment(
                 showMessages()
                 dismiss()
             }
+            btnSend.apply {
+                setButtonTextColor(R.color.text_color_repeat_code_button)
+                setOnClickListener { onSend.invoke() }
+            }
 
             btnClose.setOnClickListener {
                 dismiss()
@@ -56,9 +71,30 @@ class EmailConfirmPasswordFragment(
                 dismiss()
             }
             setOnDismissListener {
+                compositeDisposable.clear()
                 onDismiss.invoke()
             }
         }
+    }
+
+    fun starTimer(){
+        if (!this.isShowing) return
+        compositeDisposable.clear()
+        mBinding.btnSend.isEnabled = false
+
+        compositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
+            .performOnBackgroundOutOnMain()
+            .subscribeBy {
+                val timeLeft = 60 - (it.toInt() + 1)
+                mBinding.apply {
+                    if (timeLeft > 0) btnSend.setButtonText("Отправить повторно · 0:$timeLeft")
+                    else btnSend.setButtonText("Отправить повторно")
+                }
+                if (timeLeft <= 0) {
+                    mBinding.btnSend.isEnabled = true
+                    compositeDisposable.clear()
+                }
+            }
     }
 
     private fun showMessages(){
@@ -68,8 +104,13 @@ class EmailConfirmPasswordFragment(
         context.startActivity(intent)
     }
 
-    fun setOnDismissCallback(block : () -> Unit) : EmailConfirmPasswordFragment {
+    fun setOnDismissCallback(block : () -> Unit) : EmailConfirmPasswordDialog {
         onDismiss = block
+        return this
+    }
+
+    fun setOnSendAgainCallback(block : () -> Unit): EmailConfirmPasswordDialog{
+        onSend = block
         return this
     }
 }

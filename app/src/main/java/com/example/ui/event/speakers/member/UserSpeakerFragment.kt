@@ -133,7 +133,7 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
                 speaker.organizationAndPosition,
                 speaker.description,
                 speaker.binds?.user?.loadUserImage(),
-                speaker.status,
+                speaker.getSpeakerStatus(),
                 presenter.isUserRegistered()
             ) { presenter.onWriteMessageClick() }
         )

@@ -30,7 +30,10 @@ class SubEventSpeakerItem(
 
     override fun bind(viewBinding: ItemSubEventSpeakerBinding, position: Int) {
         viewBinding.apply {
-            ivSpeakerImage.setImage(avatar, error = R.drawable.empty_speaker_avatar)
+            ivSpeakerImage.apply {
+                clipToOutline = true
+                setImage(avatar, error = R.drawable.empty_speaker_avatar)
+            }
 
             tvSpeakersName.text = name
             tvSpeakersPosition.apply {

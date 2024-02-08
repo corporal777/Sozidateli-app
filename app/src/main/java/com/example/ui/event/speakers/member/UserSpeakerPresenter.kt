@@ -96,11 +96,7 @@ class UserSpeakerPresenter
     override fun onAddSpeakerToFavoriteClick() {
         if (user.binds?.userFavorite == null)
             compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel.toBody(
-                    appData.getId(),
-                    FAVORITE_SPEAKER,
-                    getUserDetailId().toInt()
-                )
+                AddToFavoriteModel.toBody(appData.getId(), FAVORITE_SPEAKER, user.id)
             )
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
@@ -127,18 +123,12 @@ class UserSpeakerPresenter
 
 
     override fun onSubEventClick(subEvent: EventActivityModel) {
-        checkInternetAndRun {
-            viewState.showSubEvent(eventId, subEvent.id.toString())
-        }
+        viewState.showSubEvent(eventId, subEvent.id.toString())
     }
 
     override fun onGoToProfileClick() {
-        if (appData.isCurrentUser(user.id.toString())) {
-            viewState.showCurrentUserProfile()
-        } else viewState.showUserProfile(user.id.toString())
-    }
-
-    override fun onItemTake(position: Int) {
+        if (isCurrentUser()) viewState.showCurrentUserProfile()
+        else viewState.showUserProfile(user.id.toString())
     }
 
     override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
@@ -188,11 +178,9 @@ class UserSpeakerPresenter
 
     }
 
-    fun isCurrentUser() = getUserDetailId() == appData.getId().toString()
+    fun isCurrentUser() = user.id == appData.getId()
     fun isUserRegistered(): Boolean {
-        if (this::user.isInitialized) return user.state?.isRegistered ?: false
-        else return false
+        return if (this::user.isInitialized) (user.state?.isRegistered ?: false) else false
     }
 
-    private fun getUserDetailId(): String = user.id.toString()
 }

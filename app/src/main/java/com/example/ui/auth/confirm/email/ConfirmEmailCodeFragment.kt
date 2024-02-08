@@ -66,7 +66,7 @@ class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>()
 
     override fun setTimeLeft(seconds: Int) {
         if (seconds > 0) mBinding.btnSendAgain.setButtonText("Отправить повторно · 0:$seconds")
-        else mBinding.btnSendAgain.setButtonText("Отправить код повторно")
+        else mBinding.btnSendAgain.setButtonText("Отправить повторно")
     }
 
     override fun setCanSendAgain(canSend: Boolean) = mBinding.btnSendAgain.run { isEnabled = canSend }
