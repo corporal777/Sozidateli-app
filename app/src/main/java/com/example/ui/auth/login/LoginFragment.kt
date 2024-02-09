@@ -98,7 +98,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
         MessageDialogWithTextButtons(
             requireContext(),
             "Ваш аккаунт заблокирован",
-            "Превышено количество попыток ввода пароля. Обратитесь в техническую поддержку, чтобы разблокировать аккаунт.",
+            "Превышено количество попыток\n ввода пароля. Обратитесь в\n техническую поддержку, чтобы\n разблокировать аккаунт.",
             "Помощь",
             "Отмена"
         ).setSelectCallback { sendHelpEmail() }

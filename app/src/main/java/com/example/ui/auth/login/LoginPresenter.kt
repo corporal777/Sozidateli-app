@@ -8,6 +8,7 @@ import com.example.data.bodies.RebaseInviteBody
 import com.example.data.models.ApiError
 import com.example.data.models.AuthResponse
 import com.example.data.models.SnAuth
+import com.example.exceptions.VkAccountAlreadyBoundException
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
@@ -102,13 +103,12 @@ class LoginPresenter
     }
 
     private fun catchError(it: Throwable) {
+        if (it !is HttpException) return
         try {
-            it.printStackTrace()
-            val apiError = (it as? ApiError)
-            if (apiError == null) viewState.showWrongPasswordError()
-            else if (apiError.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
+            val error = Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
+            if (error == null) viewState.showWrongPasswordError()
+            else if (error.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
             else viewState.showWrongPasswordError()
-
         } catch (_: Exception) { }
     }
 

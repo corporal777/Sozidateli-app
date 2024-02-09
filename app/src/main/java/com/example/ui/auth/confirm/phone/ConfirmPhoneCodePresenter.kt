@@ -42,7 +42,7 @@ class ConfirmPhoneCodePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            setConfirmButton(code.length == 4)
+            setConfirmButton(code.length == CODE_SIZE)
             setMobilePhone(formatMobilePhone(mobilePhone))
         }
         onSendCallAgain()
@@ -106,7 +106,7 @@ class ConfirmPhoneCodePresenter
         this.code = code
         viewState.apply {
             showCodeError(false)
-            setConfirmButton(code.length == 4)
+            setConfirmButton(code.length == CODE_SIZE)
         }
     }
 
@@ -145,5 +145,6 @@ class ConfirmPhoneCodePresenter
 
     companion object {
         const val TIMER_SECONDS_COUNT = 60
+        const val CODE_SIZE = 4
     }
 }

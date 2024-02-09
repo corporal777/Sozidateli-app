@@ -1,32 +1,19 @@
 package com.example.ui.views
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.example.R
 import com.example.databinding.DialogAddPhoneEmailBinding
-import com.example.ui.auth.register.email.finish.FinishRegisterPresenter
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils
-import com.example.util.Utils.timerFormatter
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import performOnBackgroundOutOnMain
-import java.util.concurrent.TimeUnit
 
-class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
+class AddPhoneEmailDialog(val context: Context, val type: ContactsType) {
 
-    private var onSelect: (result: PhoneEmailResult) -> Unit = {}
-    private var onSendCode: () -> Unit = {}
+    private var onSelectPhone: (result: String) -> Unit = {}
+    private var onSelectEmail: (result: String) -> Unit = {}
     private var onNegativeClick: () -> Unit = {}
-    private val timerCompositeDisposable = CompositeDisposable()
-    private val timerMessage by lazy { context.getString(R.string.auth_register_confirm_email_timer_two) }
-
 
     private val binding = DialogAddPhoneEmailBinding.inflate(LayoutInflater.from(context))
 
@@ -35,76 +22,58 @@ class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
 
     init {
         builder.setView(binding.root)
-        binding.btnPositive.setOnClickListener {
-            //isProgressVisible(true)
-            onSelect.invoke(PhoneEmailResult(type, binding.etLogin.text.toString()))
-        }
-        binding.tvCode.apply {
-            setTextColor(ColorStateList(
-                    arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled)),
-                    intArrayOf(ContextCompat.getColor(context, R.color.colorAccent), ContextCompat.getColor(context, R.color.action_button_disabled_text_color))
-            ))
+
+        binding.btnPositive.apply {
+            isEnabled = false
             setOnClickListener {
-                onSendCode()
-                startTimer()
+                if (type == ContactsType.EMAIL) onSelectEmail.invoke(binding.etLogin.text.toString())
+                else onSelectPhone.invoke(Utils.validatePhoneBeforeSend(binding.etLogin.text.toString()))
             }
         }
-        binding.btnPositive.isEnabled = false
+        binding.btnNegative.setOnClickListener {
+            onNegativeClick.invoke()
+            alertDialog.dismiss()
+        }
         binding.etLogin.doAfterTextChanged {
             when (type) {
-                RegisterDataType.EMAIL -> {
+                ContactsType.EMAIL -> {
                     binding.btnPositive.isEnabled = AuthValidateUtil.isValidEmail(it.toString())
                 }
-                RegisterDataType.PHONE -> {
+
+                ContactsType.PHONE -> {
                     binding.btnPositive.isEnabled = Utils.isPhoneNumberValid(it.toString())
                 }
             }
         }
-        binding.btnNegative.setOnClickListener {
-            onNegativeClick()
-            alertDialog.dismiss()
-        }
-        setData(null)
+
+        setData()
         alertDialog = builder.create()
         alertDialog.show()
     }
 
-    private fun setData(phone: String?) {
+    private fun setData() {
         when (type) {
-            RegisterDataType.EMAIL -> {
+            ContactsType.EMAIL -> {
                 binding.tvTitle.text = context.getString(R.string.add_email_dialog_title)
                 binding.tvMessage.text = context.getString(R.string.add_email_dialog_text)
                 binding.etLogin.setHint(R.string.email)
-                binding.tvCode.isVisible = false
             }
-            RegisterDataType.PHONE -> {
+
+            ContactsType.PHONE -> {
                 binding.tvTitle.text = context.getString(R.string.add_phone_dialog_title)
                 binding.tvMessage.text = context.getString(R.string.add_phone_dialog_text)
                 binding.etLogin.setHint(R.string.search_filter_phone)
-                binding.tvCode.isVisible = false
             }
         }
     }
 
-    fun isProgressVisible(vis: Boolean) {
-        binding.progressBar2.isVisible = vis
-    }
-
-    fun setPhoneForCode(phone: String) {
-        setData(phone)
-    }
-
-    fun setSelectCallback(block: (result: PhoneEmailResult) -> Unit): AddPhoneEmailDialog {
-        onSelect = block
+    fun setSelectPhoneCallback(block: (result: String) -> Unit): AddPhoneEmailDialog {
+        onSelectPhone = block
         return this
     }
 
-    fun hideDialog() {
-        alertDialog.dismiss()
-    }
-
-    fun setSendCodeCallback(block: () -> Unit): AddPhoneEmailDialog {
-        onSendCode = block
+    fun setSelectEmailCallback(block: (result: String) -> Unit): AddPhoneEmailDialog {
+        onSelectEmail = block
         return this
     }
 
@@ -113,49 +82,11 @@ class AddPhoneEmailDialog(val context: Context, val type: RegisterDataType) {
         return this
     }
 
-    private fun startTimer() {
-        timerCompositeDisposable.clear()
-        setCanResend(false)
-        setTimeLeft(FinishRegisterPresenter.TIMER_SECONDS_COUNT)
-
-        timerCompositeDisposable += Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    val timeLeft = FinishRegisterPresenter.TIMER_SECONDS_COUNT - (it.toInt() + 1)
-                    if (timeLeft < 0) {
-                        timerCompositeDisposable.clear()
-                        setCanResend(true)
-                    } else {
-                        setTimeLeft(timeLeft)
-                    }
-                }, {
-                    it.printStackTrace()
-                })
-    }
-
-    fun setTimeLeft(seconds: Int) {
-        //val quantity = activity.resources.getQuantityString(R.plurals.seconds_timer, seconds, seconds)
-        val quantity = timerFormatter(seconds, context)
-        binding.tvTimer.text = String.format(timerMessage, quantity)
-    }
-
-    fun setCanResend(canResend: Boolean) {
-        binding.tvCode.isEnabled = canResend
-        binding.tvTimer.isVisible = !canResend
-    }
-
-    companion object {
-        const val CODE_SIZE = 6
-        const val EMAIL_CODE_SIZE = 6
-        const val PHONE_CODE_SIZE = 4
+    fun hideDialog() {
+        alertDialog.dismiss()
     }
 }
 
-data class PhoneEmailResult(
-        val type: RegisterDataType,
-        val value: String
-)
-
-enum class RegisterDataType {
+enum class ContactsType {
     EMAIL, PHONE
 }

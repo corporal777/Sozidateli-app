@@ -7,6 +7,7 @@ import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.DialogMessageWithGrayButtonBinding
 import com.example.databinding.DialogTextButtonsBinding
@@ -34,7 +35,10 @@ class MessageDialogWithTextButtons(
         mBuilder.setView(mBinding.root)
         mBuilder.setCancelable(isCancelable)
 
-        mBinding.tvTitle.text = title
+        mBinding.tvTitle.apply {
+            isVisible = !title.isNullOrEmpty()
+            text = title
+        }
         mBinding.tvMessage.apply {
             highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
             text = message

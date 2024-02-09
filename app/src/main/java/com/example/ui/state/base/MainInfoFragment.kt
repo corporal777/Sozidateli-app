@@ -1,7 +1,6 @@
 package com.example.ui.state.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -10,8 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
-import com.example.data.models.NewUserAddress
-import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
@@ -23,24 +20,15 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
-import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
-import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
-import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
 import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.RegisterDataType
+import com.example.ui.views.ContactsType
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.suggestFieldView.address.DaDataUtil
-import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
-import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -145,9 +133,9 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                 false
             ).setSelectCallback { baseActions() }
         } else {
-            dialog = AddPhoneEmailDialog(requireContext(), RegisterDataType.EMAIL)
-                .setSelectCallback {
-                    presenter.checkEmailIsUnique(it.value)
+            dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
+                .setSelectEmailCallback {
+                    presenter.checkEmailIsUnique(it)
                     dialog.hideDialog()
                 }.setNegativeClickCallback { baseActions() }
         }

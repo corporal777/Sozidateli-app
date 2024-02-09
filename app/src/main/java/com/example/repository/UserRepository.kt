@@ -89,6 +89,6 @@ interface UserRepository {
     fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
 
     //+
-    fun bindSocialAccount(uuid : String, socialType : String): Maybe<SnBindDataModel>
+    fun bindSocialAccount(uuid : String, socialType : String, isRebind : Boolean): Maybe<SnBindDataModel>
     fun unbindSocialAccount(uuid : String, socialType : String): Completable
 }

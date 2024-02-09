@@ -13,8 +13,9 @@ import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
+import com.example.ui.auth.confirm.email.ConfirmEmailCodePresenter
+import com.example.ui.auth.confirm.phone.ConfirmPhoneCodePresenter
 import com.example.ui.base.BasePresenter
-import com.example.ui.views.AddPhoneEmailDialog
 import com.example.util.AuthValidateUtil
 import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
@@ -231,8 +232,8 @@ class FinishRegisterPresenter
     }
 
     fun isConfirmCodeValid(codeLength: Int): Boolean {
-        return if (loginType == "email") codeLength == AddPhoneEmailDialog.EMAIL_CODE_SIZE
-        else codeLength == AddPhoneEmailDialog.PHONE_CODE_SIZE
+        return if (loginType == "email") codeLength == ConfirmEmailCodePresenter.CODE_SIZE
+        else codeLength == ConfirmPhoneCodePresenter.CODE_SIZE
     }
 
     private fun confirmCodeRequest(): Completable {

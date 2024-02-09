@@ -471,12 +471,13 @@ class UserRepositoryImp
         //.map { it.users }
     }
 
-    override fun bindSocialAccount(uuid: String, socialType: String): Maybe<SnBindDataModel> {
+    override fun bindSocialAccount(uuid: String, socialType: String, isRebind : Boolean): Maybe<SnBindDataModel> {
         return api.bindSocialAccount(
             BindSocialAccountBody(
                 uuid,
                 appData.getId(),
-                socialType
+                socialType,
+                isRebind
             )
         )
     }

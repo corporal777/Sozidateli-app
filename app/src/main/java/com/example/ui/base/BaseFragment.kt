@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.contextaware.withContextAvailable
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -239,6 +240,11 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         mBinding.unbind()
     }
 
+    fun checkIfFragmentAttached(operation: Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
+        }
+    }
 
     class PermissionsParams {
         var permissionsToRequest = arrayOf<String>()

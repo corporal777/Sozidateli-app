@@ -2,19 +2,25 @@ package com.example.ui.userprofile.settings
 
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import android.view.ViewGroup
 import com.example.data.AppData
+import com.example.data.models.ApiError
+import com.example.data.models.SnAuth
 import com.example.data.models.SnType
 import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_STATE
 import com.example.data.models.UserState
 import com.example.data.socket.SocketIOManager
+import com.example.exceptions.VkAccountAlreadyBoundException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
+import com.example.ui.auth.login.LoginPresenter
 import com.example.ui.auth.snAuth.SnAuthCallbackHelper
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.ui.views.CustomCheckView
 import com.example.util.PHONE_PERSONAL
+import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -24,6 +30,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withCheckInternetConnectivity
 import withDelay
 import withLoadingDialog
@@ -123,28 +130,38 @@ class UserProfileSettingsPresenter @Inject constructor(
     }
 
 
-    override fun onBindVkAccount(context: Context, view: ViewGroup) {
-        if (user.getVkontakteBinds() == null) {
-            compositeDisposable += SnAuthCallbackHelper.start(context, SnType.VK)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    userRepository.bindSocialAccount(it.uuid, it.snType.code)
-                        .doOnSuccess { user.socialBinds?.vkontakte = it.data }.ignoreElement()
-                        .performOnBackgroundOutOnMain()
-                        .withProgressLoading(view)
-                        .subscribeSimple {
+    override fun onBindVkAccount(context: Context, view: ViewGroup, snAuth: SnAuth?) {
+        compositeDisposable += Single.defer {
+            if (snAuth == null) SnAuthCallbackHelper.start(context, SnType.VK)
+            else Single.just(snAuth)
+        }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple { sn ->
+                userRepository.bindSocialAccount(sn.uuid, sn.snType.code, snAuth != null)
+                    .doOnSuccess { user.socialBinds?.vkontakte = it.data }.ignoreElement()
+                    .performOnBackgroundOutOnMain()
+                    .withProgressLoading(view)
+                    .subscribeSimple(
+                        onError = {
+                            if (snAuthError(it) is VkAccountAlreadyBoundException)
+                                viewState.showAccountAlreadyBoundDialog(view, sn)
+                            else onReceiveError(it)
+                        },
+                        onComplete = {
                             viewState.setUserSocialBinds(user)
                         }
-                }
-        } else {
-            compositeDisposable += userRepository.unbindSocialAccount(user.getVkUUID(), SnType.VK.code)
-                .doOnComplete { user.socialBinds?.vkontakte = null }
-                .performOnBackgroundOutOnMain()
-                .withProgressLoading(view)
-                .subscribeSimple {
-                    viewState.setUserSocialBinds(user)
-                }
-        }
+                    )
+            }
+    }
+
+    override fun onUnbindVkAccount(view: ViewGroup) {
+        compositeDisposable += userRepository.unbindSocialAccount(user.getVkUUID(), SnType.VK.code)
+            .doOnComplete { user.socialBinds?.vkontakte = null }
+            .performOnBackgroundOutOnMain()
+            .withProgressLoading(view)
+            .subscribeSimple {
+                viewState.setUserSocialBinds(user)
+            }
     }
 
     override fun onDeleteProfileClick() = viewState.showDeleteProfile()
@@ -169,7 +186,6 @@ class UserProfileSettingsPresenter @Inject constructor(
             if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false, view)
             else loadingDisposable.dispose()
         }
-
         fun <T> actionConsumer() = Consumer<T> {
             if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false, view)
             else loadingDisposable.dispose()
@@ -177,5 +193,18 @@ class UserProfileSettingsPresenter @Inject constructor(
         return this.doFinally(actionHide)
             .doOnDispose(actionHide)
             .doOnError(actionConsumer())
+    }
+
+    private fun snAuthError(it: Throwable): Throwable {
+        if (it !is HttpException) return it
+        try {
+            val error = Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
+            if (error == null) return it
+            else if (error.hasError("Vk profile already connected."))
+                return VkAccountAlreadyBoundException()
+            else return it
+        } catch (e: Exception) {
+            return e
+        }
     }
 }

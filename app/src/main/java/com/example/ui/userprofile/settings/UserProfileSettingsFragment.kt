@@ -9,6 +9,7 @@ import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
+import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
@@ -126,8 +127,7 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
                 text = if (isAbsent) getString(R.string.you_does_not_have_password) else "●●●●●●●●●"
                 compoundDrawablePadding =
                     if (isAbsent) resources.getDimension(R.dimen.user_profile_settings_absent_password_icon_padding)
-                        .toInt()
-                    else 0.dp
+                        .toInt() else 0.dp
                 setLeftDrawableWithIntrinsicBounds(if (isAbsent) R.drawable.ic_empty_password_icon else 0)
             }
             tvEditPassword.isEnabled = !isAbsent
@@ -147,24 +147,32 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
                     )
                 setActiveWithIcon(user.getVkontakteBinds() == null, text)
                 setOnClickListener {
-                    showBindAccountDialog(user.getVkontakteBinds() != null) {
-                        presenter.onBindVkAccount(requireContext(), this)
-                    }
+                    if (user.getVkontakteBinds() != null)
+                        showUnbindAccountDialog { presenter.onUnbindVkAccount(this) }
+                    else presenter.onBindVkAccount(requireContext(), this, null)
                 }
             }
         }
     }
 
-    private fun showBindAccountDialog(show: Boolean, onBind: () -> Unit) {
-        if (show) {
-            MessageDialogWithTextButtons(
-                requireContext(),
-                "Отменить связь?",
-                "После отмены вы не сможете входить в аккаунт этим способом",
-                "Отменить",
-                "Оставить"
-            ).setSelectCallback { onBind.invoke() }
-        } else onBind.invoke()
+    override fun showAccountAlreadyBoundDialog(view: ViewGroup, snAuth: SnAuth?) {
+        MessageDialogWithTextButtons(
+            requireContext(),
+            "",
+            "Данный аккаунт привязан к\n другому профилю. Перепривязать к\n вашему аккаунту?",
+            "Да",
+            "Отменить"
+        ).setSelectCallback { presenter.onBindVkAccount(requireContext(), view, snAuth) }
+    }
+
+    private fun showUnbindAccountDialog(onBind: () -> Unit) {
+        MessageDialogWithTextButtons(
+            requireContext(),
+            "Отменить связь?",
+            "После отмены вы не сможете\n входить в аккаунт этим способом",
+            "Отменить",
+            "Оставить"
+        ).setSelectCallback { onBind.invoke() }
     }
 
     override fun showChangePassword(isChange: Boolean) {
@@ -188,7 +196,7 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
     override fun showChangeName(user: UserDetail) = ChangeNameFragment(user)
         .show(requireActivity().supportFragmentManager)
 
-    override fun showChangeShortName(user: UserDetail){
+    override fun showChangeShortName(user: UserDetail) {
         findNavController().navigate(R.id.changeShortNameFragment)
     }
 

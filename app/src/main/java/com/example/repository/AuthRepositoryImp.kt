@@ -153,7 +153,8 @@ class AuthRepositoryImp
             BindSocialAccountBody(
                 uuid,
                 userId,
-                socialType
+                socialType,
+                false
             ),
             "Token $token"
         )

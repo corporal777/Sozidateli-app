@@ -3,6 +3,7 @@ package com.example.ui.userprofile.settings
 import android.content.Context
 import android.view.ViewGroup
 import com.example.data.models.FieldDetails
+import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
 import com.example.ui.userprofile.base.BaseUserProfileContract
 import com.example.ui.views.CustomCheckView
@@ -41,6 +42,9 @@ interface UserProfileSettingsContract {
 
         @Skip
         fun showBlockingLoading(show : Boolean, customView : ViewGroup)
+
+        @Skip
+        fun showAccountAlreadyBoundDialog(view: ViewGroup, snAuth: SnAuth?)
     }
 
     interface Presenter : BaseUserProfileContract.Presenter {
@@ -63,6 +67,7 @@ interface UserProfileSettingsContract {
         fun showChangeNameClick()
         fun showChangeShortNameClick()
 
-        fun onBindVkAccount(context : Context, view: ViewGroup)
+        fun onBindVkAccount(context : Context, view: ViewGroup, snAuth: SnAuth?)
+        fun onUnbindVkAccount(view: ViewGroup)
     }
 }

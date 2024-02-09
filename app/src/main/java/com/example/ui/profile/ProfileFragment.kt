@@ -8,21 +8,16 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
-import coil.transform.RoundedCornersTransformation
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentProfileBinding
-import com.example.extensions.dp
 import com.example.extensions.firstLetterToUppercase
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
@@ -30,7 +25,6 @@ import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.views.*
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
-import com.example.util.Utils
 import com.example.util.getColor
 import com.example.util.setImage
 import com.example.util.setLeftDrawableWithIntrinsicBounds
@@ -45,6 +39,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
+    private lateinit var toolbarContent: ToolbarContent
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -52,14 +47,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     @Inject
     lateinit var presenterProvider: Provider<ProfilePresenter>
 
-    private lateinit var toolbarContent: ToolbarContent
-
-
     @ProvidePresenter
     fun providePresenter(): ProfilePresenter = presenterProvider.get().apply {
         isShowPopup = try {
-            val args = ProfileFragmentArgs.fromBundle(requireArguments())
-            args.isShowPopup
+            ProfileFragmentArgs.fromBundle(requireArguments()).isShowPopup
         } catch (e: Exception) {
             false
         }
@@ -87,29 +78,19 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
     override fun setUser(user: UserDetail) {
         mBinding.apply {
-            ivAvatar.setImage(
-                image = user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle,
-                transformations = listOf(RoundedCornersTransformation(10f.dp))
-            )
+            ivAvatar.apply {
+                clipToOutline = true
+                setImage(user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle)
+            }
             tvName.text = user.nameLastName
         }
 
         if (isShowPopup && !::dialog.isInitialized) {
-            dialog = AddPhoneEmailDialog(
-                requireContext(),
-                if (user.email?.value != null) RegisterDataType.PHONE else RegisterDataType.EMAIL
-            )
-                .setSelectCallback {
-                    when (it.type) {
-                        RegisterDataType.PHONE -> {
-                            presenter.checkPhoneIsUnique(true, Utils.validatePhoneBeforeSend(it.value))
-                        }
-
-                        RegisterDataType.EMAIL -> {
-                            presenter.checkEmailIsUnique(true, it.value)
-                        }
-                    }
-                }.setNegativeClickCallback { showUserStateDialog() }
+            val type = if (user.email?.value != null) ContactsType.PHONE else ContactsType.EMAIL
+            dialog = AddPhoneEmailDialog(requireContext(), type)
+                .setSelectEmailCallback { presenter.checkEmailIsUnique(true, it) }
+                .setSelectPhoneCallback { presenter.checkPhoneIsUnique(true, it) }
+                .setNegativeClickCallback { showUserStateDialog() }
         }
     }
 
@@ -150,7 +131,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             }
         }
         toolbarContent.getToolbarTitleView().apply {
-            highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
+            highlightColor = getColor(R.color.profile_id_text)
             movementMethod = LinkMovementMethod.getInstance()
             text = userShortName
         }
@@ -209,8 +190,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-    private fun showUserStateDialog() {
-        ChangeStateDialog(requireActivity(), StateType.SUCCESS)
+    private fun showUserStateDialog() = checkIfFragmentAttached {
+        ChangeStateDialog(this, StateType.SUCCESS)
             .setClickCallback {
                 if (it == ClickType.INFO) showStates()
             }

@@ -41,7 +41,7 @@ class ConfirmEmailCodePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.apply {
-            setConfirmButton(code.length == 6)
+            setConfirmButton(code.length == CODE_SIZE)
             setEmail(email)
         }
         onSendCodeAgain()
@@ -116,7 +116,7 @@ class ConfirmEmailCodePresenter
         this.code = code
         viewState.apply {
             showCodeError(false)
-            setConfirmButton(code.length == 6)
+            setConfirmButton(code.length == CODE_SIZE)
         }
     }
 
@@ -156,5 +156,6 @@ class ConfirmEmailCodePresenter
 
     companion object {
         const val TIMER_SECONDS_COUNT = 60
+        const val CODE_SIZE = 6
     }
 }

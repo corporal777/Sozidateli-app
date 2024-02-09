@@ -18,7 +18,7 @@ import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.RegisterDataType
+import com.example.ui.views.ContactsType
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
@@ -99,10 +99,9 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     override fun showAddEmailDialog() {
-        dialog = AddPhoneEmailDialog(requireContext(), RegisterDataType.EMAIL)
-            .setSelectCallback {
-                presenter.checkEmailIsUnique(it.value)
-            }.setNegativeClickCallback { presenter.onClickClose() }
+        dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
+            .setSelectEmailCallback { presenter.checkEmailIsUnique(it) }
+            .setNegativeClickCallback { presenter.onClickClose() }
     }
 
     override fun hideAddEmailDialog() = dialog.hideDialog()
