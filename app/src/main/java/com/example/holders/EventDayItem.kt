@@ -1,5 +1,6 @@
 package com.example.holders
 
+import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.ItemDayBinding
@@ -17,11 +18,11 @@ class EventDayItem(
     override fun bind(viewBinding: ItemDayBinding, position: Int) {
         viewBinding.apply {
             if (!day.hasEvents){
-                tvDayName.setTextColor(root.resources.getColorStateList(R.color.input_text_color_disabled))
-                tvDayNumber.setTextColor(root.resources.getColorStateList(R.color.text_color_calendar_day_disabled))
+                tvDayName.setTextColor(ContextCompat.getColor(root.context, R.color.input_text_color_disabled))
+                tvDayNumber.setTextColor(ContextCompat.getColorStateList(root.context, R.color.text_color_calendar_day_disabled))
             }else {
-                tvDayName.setTextColor(root.resources.getColorStateList(R.color.black))
-                tvDayNumber.setTextColor(root.resources.getColorStateList(R.color.text_color_calendar_day))
+                tvDayName.setTextColor(ContextCompat.getColor(root.context, R.color.black))
+                tvDayNumber.setTextColor(ContextCompat.getColorStateList(root.context, R.color.text_color_calendar_day))
             }
 
             tvDayName.text = day.dayOfWeek

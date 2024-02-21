@@ -27,7 +27,8 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.registerEvent.*
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.event.registration.items.ProfileFieldsFormResult
+import com.example.data.models.ProfileFieldsFormResult
+import com.example.extensions.updateItems
 import com.example.ui.event.registration.items.RegisterEventImageHeaderItem
 import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.example.ui.views.BottomDialog
@@ -43,6 +44,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import onBackPressedCallback
 import onScrolled
+import statusBarColorValue
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -63,18 +65,19 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         eventId = EventRegistrationFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
-    private val headerSection = Section()
-    private val fieldsDataSection = Section()
+    private val fieldsDataSection = Section().apply {
+        updateItems(
+            PlaceholderItem(PlaceholderItem.Type.REGISTER_HEADER),
+            List(2) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) }
+        )
+    }
     private val groupAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
-            add(headerSection)
             add(fieldsDataSection)
         }
     }
     private val saveButtonItem by lazy {
-        ActionButtonItem(-200L, ACTION_EVENT_REQUEST) {
-            presenter.onRegisterClick()
-        }
+        ActionButtonItem(-200L, ACTION_EVENT_REQUEST) { presenter.onRegisterClick() }
     }
 
     private val personalDataFileClickListener: OnPersonalDataFileClickListener =
@@ -104,27 +107,6 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
                 presenter.onBackClick()
             }
         }
-
-    }
-
-    override fun setContentPlaceholder() {
-        headerSection.updateItem(PlaceholderItem(PlaceholderItem.Type.REGISTER_HEADER))
-        fieldsDataSection.update(List(2) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) })
-
-    }
-
-    override fun setFormHeader(event: EventRegistration) {
-        headerSection.updateItem(
-            RegisterEventImageHeaderItem(
-                -100L,
-                event.image,
-                event.backgroundColor,
-                event.registrationHeadline,
-                event.registrationSubtitle,
-                event.conferenceStart,
-                event.conferenceFinish
-            )
-        )
     }
 
 
@@ -138,13 +120,21 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         fieldsData: List<EventRegisterFieldData<*>>,
         withConfirm: Boolean
     ) {
-
         fieldsDataSection.apply {
-            if (withConfirm) {
-                setFooter(saveButtonItem)
-            }
+            setHeader(
+                RegisterEventImageHeaderItem(
+                    -100L,
+                    event.image,
+                    event.backgroundColor,
+                    event.registrationHeadline,
+                    event.registrationSubtitle,
+                    event.conferenceStart,
+                    event.conferenceFinish
+                )
+            )
+            if (withConfirm) setFooter(saveButtonItem)
 
-            update(fieldsData.map {
+            update(fieldsData.mapNotNull {
                 when (it) {
                     is EventRegisterFieldData.Prefilled -> {
                         if (it.value != null) RegisterEventProfileItemsGroup(it.value!!) { showEditProfile() }
@@ -257,7 +247,7 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         }
     }
 
-    override fun showLoadSavedFormResultDraftDialog(result: EventRegisterData) {
+    override fun showSavedFormResultDraftDialog(result: EventRegisterData) {
         EventRegistrationRequestDialog(
             requireContext(),
             "Анкета",
@@ -298,8 +288,7 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
             if (maybeApproved)
                 setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
             positiveButton {
-                text =
-                    getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
+                text = getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
                 clickListener = {
                     if (canGoToEvent) presenter.onSuccessGoToEvent() else presenter.onSuccessGoToList()
                     true
@@ -400,9 +389,7 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         findNavController().navigate(
             R.id.about_event_fragment,
             AboutEventFragmentArgs.Builder(eventId).build().toBundle(),
-            navOptions {
-                popUpTo(R.id.request_fragment) { inclusive = true }
-            })
+            navOptions { popUpTo(R.id.request_fragment) { inclusive = true } })
     }
 
     override fun showEditProfile() {
@@ -418,13 +405,8 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
             if (offset >= 1070) appBar.changeAppBarElevation(abs(offset / 120f))
             else appBar.changeAppBarElevation(0f)
 
-            if (offset >= 500) changeStatusBarColor(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-            else changeStatusBarColor(0)
+            statusBarColorValue = if (offset >= 500) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
         }
-    }
-
-    private fun changeStatusBarColor(s : Int){
-        requireActivity().window.decorView.systemUiVisibility = s
     }
 
     override fun layout() = R.layout.fragment_request

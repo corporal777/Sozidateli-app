@@ -1,4 +1,4 @@
-package com.example.ui.views.dialogs
+package com.example.ui.event.agreement
 
 import android.content.Context
 import android.content.Intent
@@ -9,37 +9,48 @@ import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialog
+import com.example.App
 import com.example.R
+import com.example.data.models.SnAuth
 import com.example.databinding.DialogEventRegistrationAgreementBinding
-import com.example.util.ClickableSpan
+import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
+import com.example.ui.event.my.schedule.calendar.CalendarBottomSheetPresenter
+import com.example.util.ClickableSpanNew
 import com.example.util.showCustomTabsBrowser
+import io.reactivex.subjects.SingleSubject
+import moxy.MvpDelegate
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import java.lang.NullPointerException
+import javax.inject.Inject
+import javax.inject.Provider
 
-class EventAgreementRegisterDialog (val context: Context, val url: String) {
+
+class EventAgreementRegisterDialog(val context: Context, val url: String) {
 
     private var onSelect: () -> Unit = {}
 
-    private var mBinding  = DialogEventRegistrationAgreementBinding.inflate(LayoutInflater.from(context))
+    private var mBinding = DialogEventRegistrationAgreementBinding.inflate(LayoutInflater.from(context))
 
-    private lateinit var mAlertDialog : AlertDialog
+    private lateinit var mAlertDialog: AlertDialog
     private val mBuilder = AlertDialog.Builder(context)
 
     init {
         mBuilder.setView(mBinding.root)
         mBuilder.setCancelable(true)
 
-        val agreementText = SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
-            val linkStart = 11
-            val linkEnd = length
-            setSpan(ClickableSpan(drawUnderline = false) {
-                showCustomTabsBrowser(context, url)
-            }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-
         mBinding.tvAgree.apply {
-            text = agreementText
+            text = SpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
+                val linkStart = 11
+                val linkEnd = length
+                setSpan(ClickableSpanNew(mBinding.tvAgree) {
+                    showCustomTabsBrowser(context, url)
+                }, linkStart, linkEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
             movementMethod = LinkMovementMethod.getInstance()
         }
 
@@ -51,10 +62,8 @@ class EventAgreementRegisterDialog (val context: Context, val url: String) {
             }
         }
 
-        mBinding.btnCancel.apply {
-            setOnClickListener {
-                mAlertDialog.dismiss()
-            }
+        mBinding.btnCancel.setOnClickListener {
+            mAlertDialog.dismiss()
         }
 
         mBinding.cbAgree.setOnCheckedChangeListener { _, checked ->
@@ -68,9 +77,14 @@ class EventAgreementRegisterDialog (val context: Context, val url: String) {
         mAlertDialog.show()
     }
 
+
     fun setSelectCallback(block: () -> Unit): EventAgreementRegisterDialog {
         onSelect = block
         return this
+    }
+
+    companion object {
+        private const val AGREEMENT_DIALOG_TAG = "agreement_dialog_tag"
     }
 
 }

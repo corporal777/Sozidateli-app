@@ -322,21 +322,8 @@ class MaxStateContactsEditItem(
                 FieldDetails(value = workPhoneUpdate, type = PHONE_WORK, isVisible = mShowWorkPhone, absent = mNoWorkPhone, additional = mAdditionalPhone)
             ))
 
-            val siteUpdate = if (mNoSite) arrayListOf()
-            else mSite
-            var isUpdateSites = false
-            if (mNoSite != site?.absent || site.values?.toHashSet() != siteUpdate.toHashSet()) {
-                isUpdateSites = true
-                //put(UserDetail.USER_SITE, FieldListDetails(value = siteUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoSite))
-            }
-
-            val networkUpdate = if (mNoNetworks) arrayListOf()
-            else mSocialNetworks
-            var isUpdateLinks = false
-            if (mNoNetworks != socialNetworks?.absent || socialNetworks.values?.toHashSet() != networkUpdate.toHashSet()) {
-                isUpdateLinks = true
-                //put(UserDetail.USER_SOCIAL_LINKS, FieldListDetails(value = networkUpdate.filter { it.value.isNotBlank() }.map { it.value }, absent = mNoNetworks))
-            }
+            val siteUpdate = if (mNoSite) arrayListOf() else mSite
+            val networkUpdate = if (mNoNetworks) arrayListOf() else mSocialNetworks
 
             put(UserDetail.USER_CONTACT_INFORMATION, ContactInformationModel(site = LinksModel(values = siteUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoSite),
                 socialLinks = LinksModel(values = networkUpdate.filter { it.value.isNotBlank() }.map { ToggleStringModel(it.value, it.showInProfile) }, absent = mNoNetworks), emails = emails))

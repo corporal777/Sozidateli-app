@@ -4,8 +4,15 @@ import android.content.Context
 import android.os.Parcelable
 import coil.transform.RoundedCornersTransformation
 import com.example.R
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.dp
+import com.example.extensions.formatToDefaultDate
+import com.example.extensions.getCalendarDay
+import com.example.extensions.getCalendarYear
 import com.example.extensions.parsePhone
+import com.example.extensions.parseToDate
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
@@ -89,6 +96,13 @@ data class UserDetail(
             return if (email == null) null
             else if (!email?.onConfirmation.isNullOrEmpty()) email?.onConfirmation
             else email?.value
+        }
+
+    val userAge : Int
+        get() {
+            val birthday = birthday?.value?.parseToDate(defaultServerDateFormatter)?.calendar()
+            val now = System.currentTimeMillis().calendar()
+            return now.getCalendarYear() - birthday.getCalendarYear()
         }
 
     fun getMiddleName(): String? {

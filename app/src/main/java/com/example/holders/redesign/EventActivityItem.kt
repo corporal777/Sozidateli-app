@@ -41,7 +41,8 @@ class EventActivityItem(
 
     init {
         val today = System.currentTimeMillis()
-        val subEventDate = defaultServerDateTimeFormatter.parse(subEvent.holdingDate?.to).time
+        val subEventDate = subEvent.holdingDate?.to?.let { defaultServerDateTimeFormatter.parse(it)?.time }
+            ?: 0
         if (today > subEventDate) canShowButton = false
     }
 

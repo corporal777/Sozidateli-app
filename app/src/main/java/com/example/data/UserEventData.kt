@@ -51,8 +51,8 @@ class UserEventData(
     }
 
     private fun loadInternal(eventId: String): Completable {
-        val event = eventRepository.getEventDetails(eventId)
-        val formats = eventRepository.getEventFormatsList(
+        val eventRequest = eventRepository.getEventDetails(eventId)
+        val formatsRequest = eventRepository.getEventFormatsList(
             mapOf(
                 EventNew.EVENT_LIMIT to 100,
                 EventNew.EVENT_OFFSET to 0
@@ -60,8 +60,8 @@ class UserEventData(
         )
         val eventActivities = eventRepository.getEventActivities(eventId.toInt())
         return Maybe.zip(
-            event,
-            formats,
+            eventRequest,
+            formatsRequest,
             eventActivities,
             Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
                 event.event.format?.name =
@@ -83,7 +83,7 @@ class UserEventData(
             .onErrorResumeNext(loadEventCache(eventId).toMaybe())
             .doOnSuccess {
                 val dateFormat = defaultServerDateFormatter
-                days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date).time })
+                days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date)?.time ?: 0 })
                 userEvent = it
                 isDataFromLocalStorage = it.isDataFromLocalStorage
                 dataLoadingDate = it.updatedAt
@@ -92,8 +92,8 @@ class UserEventData(
     }
 
     fun loadEventData(eventId: String): Maybe<UserEvent> {
-        val event = eventRepository.getEventDetails(eventId)
-        val formats = eventRepository.getEventFormatsList(
+        val eventRequest = eventRepository.getEventDetails(eventId)
+        val formatsRequest = eventRepository.getEventFormatsList(
             mapOf(
                 EventNew.EVENT_LIMIT to 100,
                 EventNew.EVENT_OFFSET to 0
@@ -101,8 +101,8 @@ class UserEventData(
         )
         val eventActivities = eventRepository.getEventActivities(eventId.toInt())
         return Maybe.zip(
-            event,
-            formats,
+            eventRequest,
+            formatsRequest,
             eventActivities,
             Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
                 event.event.format?.name =
@@ -121,7 +121,6 @@ class UserEventData(
             })
             .doOnSuccess { userEventDao.insert(it) }
             .onErrorResumeNext(loadEventCache(eventId).toMaybe())
-            .doOnSuccess { it }
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {
@@ -147,27 +146,10 @@ class UserEventData(
         }
     }
 
-    fun createEventScheduleDays(dates: List<String>): List<EventScheduleDay> {
-        if (dates.isEmpty()) return arrayListOf()
-        val sortedDates = dates.sorted()
-        return sortedDates.mapIndexed { index, it ->
-            val millis = defaultServerDateFormatter.parse(it).time
-            val cal = millis.calendar()
-            EventScheduleDay(
-                index,
-                it,
-                millis,
-                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
-                cal.get(Calendar.DAY_OF_MONTH),
-                true
-            )
-        }
-    }
-
     fun createEventScheduleDay(date: String?): EventScheduleDay? {
         if (date.isNullOrEmpty()) return null
 
-        val millis = defaultServerDateFormatter.parse(date).time
+        val millis = defaultServerDateFormatter.parse(date)?.time ?: 0
         val cal = millis.calendar()
         return EventScheduleDay(
             ThreadLocalRandom.current().nextInt(0, 1000),
@@ -181,11 +163,13 @@ class UserEventData(
 
     fun isHasEventSearchText(text: String, event: EventActivityModel): Boolean {
         var isHas = false
-        if (event.description?.contains(text, true) == true || event.title?.contains(text, true) == true) {
-            isHas = true
-        } else {
-            if (event.binds?.users?.any { x -> x.fullName.contains(text, true) } == true) {
-                isHas = true
+        if (event.description?.contains(text, true) == true) isHas = true
+        else if (event.title?.contains(text, true) == true) isHas =  true
+        else {
+            if (event.binds == null || event.binds.users.isNullOrEmpty()) isHas = false
+            else {
+                val users = event.binds.users.filterNotNull()
+                isHas = users.any { x -> x.nameLastName.contains(text, true) }
             }
         }
         return isHas

@@ -11,18 +11,17 @@
         android:paddingBottom="20dp"
         tools:ignore="MissingPrefix">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnEventAction"
-            style="@style/BtnWhiteGhostStyle"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="10dp"
-            android:letterSpacing="-0.02"
-            android:text="@string/go_to_event"
-            android:textSize="17sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:buttonBackground="@drawable/custom_btn_white_ghost_selectable"
+            app:buttonMinHeight="@dimen/auth_buttons_min_height"
+            app:buttonText="@string/go_to_event"
+            app:buttonTextColor="@color/black"
+            app:buttonTextSize="@dimen/auth_button_text_size"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -32,18 +31,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/custom_text_background_selectable"
-            android:gravity="center"
+            android:gravity="center_horizontal"
+            android:importantForAccessibility="no"
             android:letterSpacing="-0.02"
             android:paddingHorizontal="10dp"
             android:text="@string/change_decision"
-            android:textColor="#CCFFFFFF"
+            android:textColor="#C3996C"
             android:textSize="15sp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnEventAction"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@id/btnEventAction" />
 
 
         <com.example.ui.views.expandableTextView.ExpandableTextView
@@ -52,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:importantForAccessibility="no"
             android:letterSpacing="-0.02"
             android:maxLines="25"
             android:paddingHorizontal="15dp"
@@ -59,9 +57,8 @@
             android:textSize="15sp"
             app:layout_constraintBottom_toTopOf="@id/ln"
             app:layout_constraintTop_toBottomOf="@id/tvCancelRegister"
-            app:limitedMaxLines="4"
-            tools:text="Практически в каждом населенном пункте России на сегодняшний день вы с легкостью найдете разнообразные детские спектакли и представления.
-Детский театр перестал давно быть какой-то экзотикой. Как правило, в таких спектаклях принимают участие животные, куклы, непосредственно детки и, естественно, взрослые. " />
+            app:layout_goneMarginTop="20dp"
+            app:limitedMaxLines="4" />
 
         <LinearLayout
             android:id="@+id/ln"
@@ -87,8 +84,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/format_label"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -99,7 +95,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="@color/white"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="Конференция" />
 
             </LinearLayout>
@@ -117,8 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/address_label"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -129,7 +123,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="#C3996C"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="г. Тула, Ленина 15" />
 
             </LinearLayout>
@@ -147,8 +140,7 @@
                     android:layout_height="wrap_content"
                     android:text="Телефон:"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -159,7 +151,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="#C3996C"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="+7 (495) 111 -11- 22" />
 
             </LinearLayout>
@@ -177,8 +168,7 @@
                     android:layout_height="wrap_content"
                     android:text="E-mail:"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -189,7 +179,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="#C3996C"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="love@houseofapps.ru" />
 
             </LinearLayout>
@@ -207,8 +196,7 @@
                     android:layout_height="wrap_content"
                     android:text="Сайт:"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -219,7 +207,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="#C3996C"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="leader-russia.ru" />
 
             </LinearLayout>
@@ -238,8 +225,7 @@
                     android:layout_height="wrap_content"
                     android:text="Соцсеть:"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    tools:ignore="MissingPrefix" />
+                    android:textSize="15sp" />
 
 
                 <TextView
@@ -250,7 +236,6 @@
                     android:layout_marginStart="10dp"
                     android:textColor="#C3996C"
                     android:textSize="15sp"
-                    tools:ignore="MissingPrefix"
                     tools:text="vk.com/leader" />
             </LinearLayout>
         </LinearLayout>

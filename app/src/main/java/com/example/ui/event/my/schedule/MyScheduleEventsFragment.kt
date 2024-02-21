@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,12 +31,13 @@ import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import getLocationOfView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import onScrolled
+import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -55,10 +57,15 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     @ProvidePresenter
     fun providePresenter(): MyScheduleEventsPresenter = presenterProvider.get()
 
-    private val subEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(eventId, subEvent)
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddSubEventToScheduleClick(subEvent)
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onRemoveSubEventFromScheduleClick(subEvent)
+    private val eventClickListener = object : EventActivityItem.OnEventActivityClickListener {
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
+            presenter.onSubEventClick(eventId, subEvent)
+
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddSubEventToScheduleClick(subEvent)
+
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
+            presenter.onRemoveSubEventFromScheduleClick(subEvent)
     }
 
     private val eventsSection by lazy {
@@ -93,14 +100,11 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
                 onScrolled { _, _ ->
                     val lastItem = listManager.findFirstCompletelyVisibleItemPosition()
                     try {
-                        if (groupAdapter.getItem(lastItem) is EventActivityDateItem) {
-                            val item = groupAdapter.getItem(lastItem) as EventActivityDateItem
-                            if (!presenter.isJumping){
-                                if (isLocationInOneLine(item.getView())) scrollPageContent(item.getDate())
-                            }
-                        }
-                    } catch (e: Exception) {
-                    }
+                        val item = groupAdapter.findItem<EventActivityDateItem>(lastItem)
+                        if (item == null || presenter.isJumping) return@onScrolled
+                        if (isLocationInOneLine(item.getView()))
+                            scrollPageContent(item.getDate(), false)
+                    } catch (_: Exception) { }
                 }
             }
             appBar.apply {
@@ -112,16 +116,19 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
                 etSearch.apply {
                     SearchInput(this).apply {
                         setOnFocusChange { hasFocus -> clSearch.changeBackground(hasFocus) }
-                        setOnTextChange {
+                        setOnAfterTextChange {
                             btnClear.isVisible = !it.isNullOrEmpty()
                             presenter.onSearchTextChange(it)
                         }
-                        setOnTextChangeDone { presenter.onSearchTextSubmit(it) }
+                        setOnTextChangeDone {
+                            presenter.onSearchTextChange(it)
+                            hideKeyboard()
+                        }
                     }
-                    btnClear.apply {
-                        isVisible = !etSearch.text.isNullOrEmpty()
-                        setOnClickListener { etSearch.text = null }
-                    }
+                }
+                btnClear.apply {
+                    isVisible = !etSearch.text.isNullOrEmpty()
+                    setOnClickListener { etSearch.text = null }
                 }
             }
         }
@@ -142,7 +149,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
                 setOnClickListener {
                     CalendarBottomSheet(requireContext(), presenter.getCurrentDay(), days.flatten())
                         .setDateSelectCallback { date ->
-                            scrollPageContent(date)
+                            scrollPageContent(date, false)
                             scrollListContent(date)
                         }.show()
                 }
@@ -153,11 +160,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     override fun setContent(data: List<EventScheduleData>) {
         eventsSection.update(
             data.map {
-                EventScheduleGroup(
-                    it,
-                    { id -> presenter.onShowEventClick(id) },
-                    subEventClickListener
-                )
+                EventScheduleGroup(it, { id -> presenter.onShowEventClick(id) }, eventClickListener)
             }
         )
     }
@@ -169,10 +172,10 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
         }
     }
 
-    override fun scrollPageContent(day: EventScheduleDay?) {
+    override fun scrollPageContent(day: EventScheduleDay?, withRunnable: Boolean) {
         if (day == null) return
-        Handler().post(Runnable {
-            val position = presenter.findPositionFromList(day) ?:return@Runnable
+        val position = presenter.findPositionFromList(day) ?: return
+        withRunnable(withRunnable) {
             mBinding.appBar.apply {
                 calendarPager.setCurrentItem(position, true)
                 tvMonth.text = getMonthName(day.millis.calendar())
@@ -180,34 +183,22 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
             }
             val item = calendarSection.getItem(position)
             if (item is CalendarHorizontalDaysItem) item.selectDay(day)
-        })
-    }
-
-    override fun scrollListContent(day: EventScheduleDay?) {
-        if (day == null) showErrorMessage(false, getString(R.string.this_day_doesnt_have_event))
-        else {
-            val group = groupAdapter.findItemBy<GroupieViewHolder, EventActivityDateItem> { x -> x.getDate() == day }
-            if (group == null) showErrorMessage(false, getString(R.string.this_day_doesnt_have_event))
-            else {
-                val position = groupAdapter.getAdapterPosition(group)
-                presenter.startJumpingTimer()
-                if (position == 0) listManager.startSmoothScroll(smoothScroller(position, 2))
-                else {
-                    if (position < oldPosition)
-                        listManager.startSmoothScroll(smoothScroller(position, position + 2))
-                    else listManager.startSmoothScroll(smoothScroller(position, position - 1))
-                }
-                oldPosition = position
-            }
         }
     }
 
+    override fun scrollListContent(day: EventScheduleDay?) {
+        if (day == null) return
+        val group = groupAdapter.findItemByShort<EventActivityDateItem> { x -> x.getDate() == day }
+        if (group == null) showErrorMessage(false, getString(R.string.this_day_doesnt_have_event))
+        else listManager.apply {
+            val position = groupAdapter.getAdapterPosition(group)
+            presenter.startJumpingTimer()
 
-    override fun showAboutEvent(eventId: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(eventId).build().toBundle()
-        )
+            if (position == 0) smoothScroll(position, 2)
+            else if (position < oldPosition) smoothScroll(position, position + 2)
+            else smoothScroll(position, position - 1)
+            oldPosition = position
+        }
     }
 
     override fun showEmptyListPlaceholder() {
@@ -222,6 +213,10 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
         )
     }
 
+    override fun showAboutEvent(eventId: String) {
+        val args = AboutEventFragmentArgs.Builder(eventId).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
+    }
 
     override fun showSubEvent(eventId: String, subEventId: String) {
         val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
@@ -235,6 +230,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
                 showLoadingAlertDialog()
                 presenter.getEventsList()
             }
+            clearFragmentResultListener("eventKey")
         }
     }
 
@@ -251,7 +247,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     override fun hideLoadingAlertDialog() = progressDialog.hideDialog()
 
 
-    private fun smoothScroller(targetPosition: Int, jumPosition: Int): LinearSmoothScroller {
+    private fun LinearLayoutManager.smoothScroll(targetPosition: Int, jumPosition: Int) {
         val scroller by lazy {
             object : LinearSmoothScroller(requireContext()) {
                 override fun getVerticalSnapPreference(): Int {
@@ -266,7 +262,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
             }
         }
         scroller.targetPosition = targetPosition
-        return scroller
+        startSmoothScroll(scroller)
     }
 
     private fun View.changeBackground(hasFocus: Boolean) {
@@ -285,6 +281,13 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
             if (lineY == 0 || viewY == 0) return true
             else return viewY >= lineY && viewY <= (lineY + 250)
         }
+    }
+
+    private fun withRunnable(withRunnable: Boolean, block: () -> Unit) {
+        if (withRunnable) Handler().post(Runnable {
+            block.invoke()
+        })
+        else block.invoke()
     }
 
     override fun layout(): Int = R.layout.fragment_my_schedule_events

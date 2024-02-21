@@ -1,10 +1,13 @@
 package com.example.util
 
 import android.animation.Animator
-import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -13,6 +16,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.ParcelFileDescriptor
+import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.DisplayMetrics
@@ -20,11 +24,15 @@ import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.appcompat.widget.AppCompatImageButton
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
@@ -34,7 +42,6 @@ import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager2.widget.ViewPager2
@@ -48,15 +55,18 @@ import com.example.BuildConfig
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.vincent.filepicker.BrowserUtil
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import onTextChanged
-import java.io.*
-import java.util.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 
 fun AppCompatCheckBox.initSwitch(checked: Boolean, onCheckedChanged: (isChecked: Boolean) -> Unit) {
@@ -159,7 +169,7 @@ fun TextView.setLeftDrawableWithIntrinsicBounds(res: Int) {
 }
 
 fun TextView.setRightDrawableWithIntrinsicBounds(res: Int) {
-    this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res,0)
+    this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
 }
 
 fun ImageView.setImage(
@@ -173,9 +183,11 @@ fun ImageView.setImage(
         is Int -> load(resImage) {
             setParams(crossfad, placeholder, error, transformations)
         }
+
         is Uri -> load(resImage) {
             setParams(crossfad, placeholder, error, transformations)
         }
+
         is String ->
             if (Patterns.WEB_URL.matcher(resImage).matches())
                 load(resImage) {
@@ -185,10 +197,12 @@ fun ImageView.setImage(
                 load(File(resImage)) {
                     setParams(crossfad, placeholder, error, transformations)
                 }
+
         is Drawable ->
             load(resImage) {
                 setParams(crossfad, placeholder, error, transformations)
             }
+
         is Bitmap -> load(resImage) {
             setParams(crossfad, placeholder, error, transformations)
         }
@@ -205,6 +219,7 @@ fun ImageView.setCircleAvatar(
         is Int -> load(resImage) {
             setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
         }
+
         is String ->
             if (Patterns.WEB_URL.matcher(resImage).matches())
                 load(resImage) {
@@ -214,10 +229,12 @@ fun ImageView.setCircleAvatar(
                 load(File(resImage)) {
                     setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
                 }
+
         is Drawable ->
             load(resImage) {
                 setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
             }
+
         is Bitmap -> load(resImage) {
             setParams(crossFad, placeholder, error, listOf(CircleCropTransformation()))
         }
@@ -308,7 +325,40 @@ fun LinearLayoutManager.smoothScrollToFirstItem(
     this.startSmoothScroll(mSmoothScroller)
 }
 
-fun showCustomTabsBrowser(context: Context, url: String) = BrowserUtil.showBrowser(context, url)
+fun showCustomTabsBrowser(context: Context, url: String) {
+    try {
+        val customTabsIntent = CustomTabsIntent.Builder().apply {
+            setStartAnimations(context, R.anim.browser_popup_enter, android.R.anim.fade_out)
+            setExitAnimations(context, android.R.anim.fade_in, R.anim.browser_popup_exit)
+        }.build()
+        customTabsIntent.launchUrl(context, Uri.parse(url))
+    } catch (e: Exception) {
+        Toast.makeText(context, "Не удалось открыть страницу", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun openDeviceCalendarApp(context: Context, dateFrom: String?, dateTo: String?, name: String?, desc: String?, address: String?) {
+    try {
+        val startCal = defaultServerDateFormatter.parse(dateFrom ?: "").calendar()
+        val endCal = defaultServerDateFormatter.parse(dateTo ?: "").calendar()
+
+        val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
+            putExtra(CalendarContract.Events.TITLE, name)
+            putExtra(CalendarContract.Events.DESCRIPTION, desc)
+            putExtra(CalendarContract.Events.EVENT_LOCATION, address)
+            putExtra(
+                CalendarContract.Events.AVAILABILITY,
+                CalendarContract.Events.AVAILABILITY_BUSY
+            )
+        }
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 
 fun saveImageToGallery(context: Context, bitmap: Bitmap, albumName: String) {
     val filename = "${System.currentTimeMillis()}.png"

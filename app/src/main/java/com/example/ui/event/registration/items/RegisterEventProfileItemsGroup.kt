@@ -1,7 +1,6 @@
 package com.example.ui.event.registration.items
 
-import android.util.Log
-import com.example.extensions.findItemBy
+import com.example.data.models.ProfileFieldsFormResult
 import com.example.extensions.updateItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup

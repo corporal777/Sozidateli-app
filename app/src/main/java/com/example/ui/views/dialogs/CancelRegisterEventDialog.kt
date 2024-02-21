@@ -1,19 +1,10 @@
-package com.example.ui.event.about.items
+package com.example.ui.views.dialogs
 
 import android.content.Context
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
-import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.UserSessionModel
 import com.example.databinding.DialogCancelRegisterEventBinding
-import com.example.databinding.DialogChangeAccountBinding
-import com.example.extensions.dp
-import com.example.extensions.px
-import com.example.ui.accountChange.items.ChangeAccountBottomDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import setOnClickListener
 
 class CancelRegisterEventDialog (
     context: Context,

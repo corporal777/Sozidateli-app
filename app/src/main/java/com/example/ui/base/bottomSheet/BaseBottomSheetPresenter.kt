@@ -33,11 +33,7 @@ abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(
 
     fun getHasBase() = appData.hasBaseState
 
-    private fun createOnErrorConsumer(
-        onError: ((Throwable) -> Unit)?,
-        onNoInternetConnectionException: (() -> Unit)?,
-        onApiError: ((ApiError) -> Unit)?
-    ): Consumer<Throwable> {
+    private fun createOnErrorConsumer(onError: ((Throwable) -> Unit)?): Consumer<Throwable> {
         return Consumer {
             if (onError != null) onError(it)
             else {
@@ -52,62 +48,52 @@ abstract class BaseBottomSheetPresenter<V : BaseBottomSheetContract.View>(
 
     fun Completable.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,
-        onNoInternetConnectionException: (() -> Unit)? = null,
-        onApiError: ((ApiError) -> Unit)? = null,
         onComplete: () -> Unit
     ): Disposable {
         return subscribe(
             Action(onComplete),
-            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+            createOnErrorConsumer(onError)
         )
     }
 
     fun <T> Single<T>.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,
-        onNoInternetConnectionException: (() -> Unit)? = null,
-        onApiError: ((ApiError) -> Unit)? = null,
         onSuccess: (T) -> Unit
     ): Disposable {
         return subscribe(
             Consumer(onSuccess),
-            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+            createOnErrorConsumer(onError)
         )
     }
 
     fun <T> Maybe<T>.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,
-        onNoInternetConnectionException: (() -> Unit)? = null,
-        onApiError: ((ApiError) -> Unit)? = null,
         onSuccess: (T) -> Unit
     ): Disposable {
         return subscribe(
             Consumer(onSuccess),
-            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+            createOnErrorConsumer(onError)
         )
     }
 
     fun <T> Observable<T>.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,
-        onNoInternetConnectionException: (() -> Unit)? = null,
-        onApiError: ((ApiError) -> Unit)? = null,
         onNext: (T) -> Unit
     ): Disposable {
         return subscribe(
             Consumer(onNext),
-            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+            createOnErrorConsumer(onError)
         )
     }
 
 
     fun <T> Flowable<T>.subscribeSimple(
         onError: ((Throwable) -> Unit)? = null,
-        onNoInternetConnectionException: (() -> Unit)? = null,
-        onApiError: ((ApiError) -> Unit)? = null,
         onNext: (T) -> Unit
     ): Disposable {
         return subscribe(
             Consumer(onNext),
-            createOnErrorConsumer(onError, onNoInternetConnectionException, onApiError)
+            createOnErrorConsumer(onError)
         )
     }
 

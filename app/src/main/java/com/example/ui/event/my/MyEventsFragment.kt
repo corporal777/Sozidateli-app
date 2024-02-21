@@ -84,7 +84,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
                         presenter.onSearchTextChange(it)
                     }
                     setOnTextChangeDone {
-                        presenter.onSearchTextSubmit(it)
+                        presenter.onSearchTextChange(it)
                         hideKeyboard()
                     }
                 }

@@ -3,6 +3,7 @@ package com.example.ui.qrscanner.auth
 import android.app.NotificationManager
 import com.example.data.AppData
 import com.example.data.bodies.QrBody
+import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -18,19 +19,18 @@ import javax.inject.Inject
 @InjectViewState
 class AuthWebsitePresenter
 @Inject constructor(
-    private val userRepository: UserRepository,
     private val appData: AppData,
-    private val notificationManager: NotificationManager,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val socket: SocketIOManager
 ) : BasePresenter<AuthWebsiteContract.View>(appData), AuthWebsiteContract.Presenter {
 
     var token = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        //compositeDisposable += authRepository.sendQrCode(QrBody(token, null))
         compositeDisposable += authRepository.sendQrCode(QrBody(token, null))
             .withDelay(300)
-            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarLoading(viewState)
             .subscribeSimple(
@@ -51,7 +51,6 @@ class AuthWebsitePresenter
 
     override fun onConfirmEnterToWebsiteClick() {
         compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, true))
-            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(

@@ -14,6 +14,21 @@ data class AddToFavoriteModel(
                 )
             )
         }
+
+        fun toEventBody(userId : Int, eventId : String) : AddToFavoriteModel {
+            return AddToFavoriteModel(
+                userId, AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_EVENT, eventId.toInt())
+            )
+        }
+
+        fun toOrgBody(userId : Int, orgId : Long?) : AddToFavoriteModel {
+            return AddToFavoriteModel(
+                userId, AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId?.toInt()
+                )
+            )
+        }
     }
 }
 

@@ -49,7 +49,7 @@ class CustomCircleLoadingButton : ConstraintLayout {
     init {
         loadingView.progressLoad.apply {
             isVisible = false
-            setProgressColor(ContextCompat.getColor(context, R.color.main_brown_color))
+            setProgressColor(ContextCompat.getColor(context, R.color.main_brown_color_new))
             setSize(17.dp)
             setStroke(8f)
         }
@@ -63,7 +63,7 @@ class CustomCircleLoadingButton : ConstraintLayout {
         loadingView.btnAction.apply {
             if (isActive) {
                 background = getDrawable(R.drawable.custom_btn_rounded_corners_active_selectable)
-                setTextColor(getColor(R.color.main_brown_color))
+                setTextColor(getColor(R.color.main_brown_color_new))
                 setLeftIcon(R.drawable.ic_circle_plus_icon)
             } else {
                 background = getDrawable(R.drawable.custom_btn_rounded_corners_inactive_selectable)

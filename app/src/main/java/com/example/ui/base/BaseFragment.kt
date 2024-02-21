@@ -254,7 +254,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     val askMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
             if (allPermissionsGranted(params.permissionsToRequest))
                 params.permissionsGrantedCallback.invoke()
         }

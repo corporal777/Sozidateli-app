@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -12,6 +13,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Event
 import com.example.data.models.EventNew
+import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventNewBinding
 import com.example.extensions.formatToEventDatesIntervalOnMain
 import com.example.util.setImage
@@ -57,7 +59,7 @@ class EventItemNew(
         val userRegistration = eventData.binds?.currentUserRegistration?.status?.value
         var statusBackground = R.color.event_status_finished_background
         var statusText = R.string.event_status_finished
-        var statusVisibility = false
+        val statusVisibility: Boolean
         when (status) {
             Event.Status.FINISHED -> {
                 statusVisibility = true
@@ -105,50 +107,33 @@ class EventItemNew(
 
     private fun decorActionButton(btnAction: Button) {
         val registrationId = eventData.binds?.currentUserRegistration?.id.toString()
-        val status = eventData.status?.value
-        val eventRegistrationState = eventData.binds?.eventRegistrationState
+        val registrationState = eventData.binds?.eventRegistrationState
         val userAgreement = eventData.userAgreement?.uri
+        val actions = registrationState?.availableActions ?: arrayListOf("")
 
-        when (status) {
-            Event.Status.REGISTRATION,
-            Event.Status.REGISTRATION_FINISHED,
-            Event.Status.RUNNING,
-            Event.Status.FINISHED,
-            Event.Status.APPROVED -> {
-                if (eventRegistrationState != null) {
-                    val actions = eventRegistrationState.availableActions ?: arrayListOf("")
-                    val profileLevel = eventRegistrationState.prohibitions?.profileLevelToLow?.value
-                    if (eventRegistrationState.prohibitions?.registrationClosed == false) {
-                        if (actions.firstOrNull() == "register") {
-                            btnAction.apply {
-                                isVisible = true
-                                text = context.getString(R.string.event_action_participate)
-                                setOnClickListener {
-                                    profileLevel.checkStateLevel {
-                                        clickListener.onActionRegister(eventId, userAgreement)
-                                    }
-                                }
-                            }
-                        } else if (actions.firstOrNull() == "withdraw") {
-                            btnAction.apply {
-                                isVisible = true
-                                text = context.getString(R.string.event_action_cancel_request)
-                                setOnClickListener {
-                                    profileLevel.checkStateLevel {
-                                        clickListener.onActionCancel(eventId, registrationId)
-                                    }
-                                }
-                            }
-                        } else btnAction.isVisible = false
-                    } else btnAction.isVisible = false
-                } else btnAction.isVisible = false
-            }
-            else -> btnAction.isVisible = false
-        }
+        if (eventData.isStatusActionAvailable() && registrationState != null && !eventData.isRegistrationClosed()) {
+            if (actions.contains("register")) {
+                btnAction.apply {
+                    isVisible = true
+                    text = context.getString(R.string.event_action_participate)
+                    setOnClickListener {
+                        registrationState.checkStateLevel { clickListener.onActionRegister(eventId, userAgreement) }
+                    }
+                }
+            } else if (actions.contains("withdraw")) {
+                btnAction.apply {
+                    isVisible = true
+                    text = context.getString(R.string.event_action_cancel_request)
+                    setOnClickListener {
+                        registrationState.checkStateLevel { clickListener.onActionCancel(eventId, registrationId) }
+                    }
+                }
+            } else btnAction.isVisible = false
+        } else btnAction.isVisible = false
     }
 
-    private fun Boolean?.checkStateLevel(hasLevel: () -> Unit) {
-        if (this == false) hasLevel()
+    private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
+        if (this?.prohibitions?.profileLevelToLow?.value == false) hasLevel()
         else clickListener.onShowUpdateState()
     }
 

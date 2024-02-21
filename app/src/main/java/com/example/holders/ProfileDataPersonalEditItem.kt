@@ -137,7 +137,7 @@ class ProfileDataPersonalEditItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (gender?.value != mGender || gender?.showInProfile != mGenderShow) put(
+            if (gender?.value != mGender || gender.showInProfile != mGenderShow) put(
                 UserDetail.USER_GENDER,
                 ToggleStringModel(getGender(), mGenderShow)
             )

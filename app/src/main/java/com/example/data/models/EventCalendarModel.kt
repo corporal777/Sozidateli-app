@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class EventCalendarItem(
+data class EventCalendarModel(
         val id: Int,
         val user: Int? = null,
         val date: DateModel? = null,

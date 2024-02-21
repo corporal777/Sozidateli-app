@@ -25,7 +25,7 @@ data class EventRegistration(
     val registrationFinish: String?,
     val status: Event.RegistrationStatus?,
     @SerializedName("user_registration")
-    val userRegistration: Event./*RegistrationStatus*/Status,
+    val userRegistration: Event.Status,
     @SerializedName("registration_name")
     val registrationName: String?,
     @SerializedName("registration_headline")
@@ -41,7 +41,10 @@ data class EventRegistration(
     @SerializedName("conference_requests_receiving_date_end")
     val conferenceRegistrationFinishDate: String?,
     @SerializedName("user_agreement")
-    val userAgreement: String?
+    val userAgreement: String?,
+    val state : EventStateModel? = null,
+    val formId : Int? = null,
+    val form : EventFormModel? = null
 ) {
     companion object {
         const val MODERATION_MANUAL = "manual"
@@ -72,14 +75,16 @@ data class EventRegistration(
                 isRequireModerate = null,
                 moderateRegistration = null,
                 conferenceFirstActivityStart = null,
-                conferenceRegistrationFinishDate = event.requestsApply?.dateLimit
+                conferenceRegistrationFinishDate = event.requestsApply?.dateLimit,
+                state = event.state,
+                formId = event.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }?.id ?: 0,
+                form = event.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
             )
         }
     }
 
 
     fun setBackgroundColor(event: EventNew) {
-        val form = event.binds?.form?.firstOrNull { it.type == EventFormModel.Type.PARTICIPATION }
         backgroundColor = when (form?.background) {
             EventFormModel.BackgroundType.EVENT -> event.backgroundColor?.value
             else -> event.binds?.organization?.backgroundColor?.value

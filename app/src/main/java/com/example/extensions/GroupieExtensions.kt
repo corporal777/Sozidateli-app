@@ -1,13 +1,31 @@
 package com.example.extensions
 
-import com.xwray.groupie.*
+import com.xwray.groupie.Group
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
+import com.xwray.groupie.NestedGroup
+import com.xwray.groupie.Section
+
+inline fun <reified I : Item<*>> GroupAdapter<GroupieViewHolder>.findItem(position : Int): I? {
+    if (this.getItem(position) !is I) return null
+    else return this.getItem(position) as I
+}
 
 inline fun <VH : GroupieViewHolder, reified I : Item<*>> GroupAdapter<VH>.findItemBy(selector: (I) -> Boolean): I? {
     for (i in 0 until this.itemCount) {
         val item = this.getItem(i)
         if (item is I && selector(item)) return item
     }
+    return null
+}
 
+
+inline fun <reified I : Item<*>> GroupAdapter<GroupieViewHolder>.findItemByShort(selector: (I) -> Boolean): I? {
+    for (i in 0 until this.itemCount) {
+        val item = this.getItem(i)
+        if (item is I && selector(item)) return item
+    }
     return null
 }
 
@@ -89,8 +107,12 @@ fun Section.updateItem(item: Item<*>?){
     else update(listOf(item))
 }
 
-fun Section.updateItems(item: Item<*>, list: List<Item<*>>){
-    update(listOf(item).plus(list))
+fun Section.updateItems(item: Item<*>?, list: List<Group>?){
+    update(listOfNotNull(item).plus(list ?: emptyList()))
+}
+
+fun Section.updateItems(vararg item: Item<*>?){
+    update(item.toList())
 }
 
 fun Section.updateGroup(item: Group?){
@@ -107,7 +129,3 @@ fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateItems(item: Item<*>?, list: 
     else update(listOf(item).plus(list))
 }
 
-fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateGroup(group: Group?) {
-    if (group == null) update(emptyList())
-    else update(listOf(group))
-}

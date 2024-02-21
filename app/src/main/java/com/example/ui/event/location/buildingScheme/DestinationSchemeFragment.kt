@@ -59,7 +59,7 @@ class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>
     override fun setScheme(places: List<Place>, page: Int) {
         mBinding.tabDots.apply {
             isVisible = places.size > 1
-            TabLayoutMediator(this, mBinding.viewPager) { tab, position ->
+            TabLayoutMediator(this, mBinding.viewPager) { _, _ ->
             }.attach()
         }
         schemeSection.update(

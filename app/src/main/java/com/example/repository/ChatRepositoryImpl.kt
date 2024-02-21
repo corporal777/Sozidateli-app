@@ -130,7 +130,7 @@ class ChatRepositoryImpl
 
     override fun getChatMessagesPagination(map: Map<String, Any>): Maybe<PaginationResponse<MessageModel>> {
         return api.getChatMessages(map).flatMapMaybe {
-            Maybe.just(PaginationResponse(it.totalCount, it.data ?: arrayListOf()))
+            Maybe.just(PaginationResponse(it.totalCount, it.data))
         }
     }
 

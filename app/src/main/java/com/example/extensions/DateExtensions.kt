@@ -236,6 +236,9 @@ fun Calendar.getCalendarMonth(short : Boolean): String {
         else "0$month"
     }
 }
+fun Calendar?.getCalendarYear(): Int {
+    return this?.get(Calendar.YEAR) ?: 0
+}
 fun Calendar.getCalendarDayOfWeek() : String?{
     return this.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
 }

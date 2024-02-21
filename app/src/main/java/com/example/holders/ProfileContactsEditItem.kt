@@ -396,9 +396,7 @@ class ProfileContactsEditItem(
     }
 
     fun checkDataValid(): Boolean {
-        var isValid = true
-
-        isValid = validatePhone()
+        var isValid = validatePhone()
 //
         if (mobilePhone?.value != mMobilePhone
             && !mMobilePhone.isNullOrEmpty()

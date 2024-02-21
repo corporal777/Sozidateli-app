@@ -2,6 +2,7 @@ package com.example.util
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -23,9 +24,7 @@ class SearchInput(
                 override fun afterTextChanged(s: Editable?) {
                     onAfterTextChange?.invoke(s.toString())
                 }
-
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                     onTextChange?.invoke(s.toString())
                 }
@@ -33,7 +32,6 @@ class SearchInput(
             onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                 onFocusChange?.invoke(hasFocus)
             }
-
             setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     return@OnEditorActionListener onTextChangeSearch?.let {

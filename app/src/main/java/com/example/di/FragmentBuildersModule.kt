@@ -26,6 +26,7 @@ import com.example.ui.editwork.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
+import com.example.ui.event.formResult.EventFormResultFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.location.buildingScheme.DestinationSchemeFragment
 import com.example.ui.event.location.map.MapFragment
@@ -394,4 +395,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSnAuthFragment(): SnAuthFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEventFormResultFragment(): EventFormResultFragment
 }

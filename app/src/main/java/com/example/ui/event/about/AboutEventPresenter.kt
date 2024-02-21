@@ -2,24 +2,27 @@ package com.example.ui.event.about
 
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
-import com.example.data.bodies.EventCalendarBody
-import com.example.data.bodies.EventCalendarBodyEntity
+import com.example.data.bodies.AddToFavoriteModel.Companion.toEventBody
+import com.example.data.bodies.AddToFavoriteModel.Companion.toOrgBody
+import com.example.data.bodies.EventCalendarBody.Companion.toCalendarBody
 import com.example.data.models.AboutEventData
 import com.example.data.models.EventActivityModel
+import com.example.data.models.EventFormModel
 import com.example.data.models.EventUserFavorite
+import com.example.data.models.Optional
 import com.example.data.models.createMapInfo
+import com.example.data.socket.SocketIOManager
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.google.gson.Gson
-import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
+import withCustomLoading
 import withDelay
 import withProgressBarDialogLoading
 import javax.inject.Inject
@@ -30,6 +33,7 @@ class AboutEventPresenter
     private val appData: AppData,
     private val eventRepository: EventRepository,
     private val userEventData: UserEventData,
+    private val socket: SocketIOManager,
 ) : BasePresenter<AboutEventContract.View>(appData), AboutEventContract.Presenter {
 
     lateinit var eventId: String
@@ -43,10 +47,7 @@ class AboutEventPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.apply {
-            updateAppBarBackgroundColorValue(mDy)
-            setEventDataPlaceholder()
-        }
+        viewState.updateAppBarBackgroundColorValue(mDy)
 
         compositeDisposable += Maybe.defer {
             val userEventInfo = userEventData.userEvent?.eventInfo
@@ -58,21 +59,9 @@ class AboutEventPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { catchEventError(it) },
-                onSuccess = { setEventData(it) }
+                onSuccess = { viewState.setEventData(it) }
             )
     }
-
-    private fun setEventData(eventData: AboutEventData) {
-        viewState.apply {
-            setMainData(eventData.event)
-            setOrganizationData(eventData.event)
-            if (!eventData.speakers.isNullOrEmpty())
-                setSpeakersData(eventData.speakers, eventData.showMoreSpeakers)
-            setProgramData(eventData)
-            setPartnersData(eventData.partners)
-        }
-    }
-
 
     override fun onRefreshRequest() {
         compositeDisposable += eventRepository.getEventDetails(eventId)
@@ -80,7 +69,7 @@ class AboutEventPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onSuccess = { setEventData(it) }
+                onSuccess = { viewState.setEventData(it) }
             )
     }
 
@@ -97,34 +86,6 @@ class AboutEventPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it != null) viewState.updateTags(it)
-            }
-    }
-
-    override fun onAddEventToFavoriteClick() {
-        val userFavorite = aboutEventData.event.binds?.userFavorite
-        compositeDisposable += Completable.defer {
-            if (userFavorite != null) {
-                eventRepository.deleteFromFavorite(userFavorite.id.toString())
-                    .doOnComplete { aboutEventData.event.binds?.userFavorite = null }
-            } else {
-                eventRepository.addToFavorites(
-                    AddToFavoriteModel(
-                        appData.getId(), AddToFavoriteEntityModel(
-                            AddToFavoriteEntityModel.FAVORITE_EVENT, eventId.toInt()
-                        )
-                    )
-                ).doOnSuccess {
-                    aboutEventData.event.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                }.ignoreElement()
-            }
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.apply {
-                    changeEventSubscription(aboutEventData.event.binds?.userFavorite != null)
-                    if (aboutEventData.event.binds?.userFavorite == null) showEventRemovedFromFavoriteDialog()
-                    else showEventAddedToFavoriteDialog()
-                }
             }
     }
 
@@ -150,52 +111,54 @@ class AboutEventPresenter
             }
     }
 
+    override fun onAddEventToFavoriteClick() {
+        val userFavorite = aboutEventData.event.binds?.userFavorite
+        compositeDisposable += Single.defer {
+            if (userFavorite != null) eventRepository.deleteFromFavorite(userFavorite.id.toString())
+                .andThen(Single.just(Optional(null)))
+            else eventRepository.addToFavorites(toEventBody(appData.getId(), eventId))
+                .map { Optional(EventUserFavorite(it.id, it.user)) }
+        }.doOnSuccess { aboutEventData.event.binds?.userFavorite = it.value }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    setEventFavoriteButton(aboutEventData.event.binds?.userFavorite != null)
+                    if (aboutEventData.event.binds?.userFavorite == null) showEventRemovedFromFavoriteDialog()
+                    else showEventAddedToFavoriteDialog()
+                }
+            }
+    }
 
-    override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
-    override fun onPageClick(page: Int) = viewState.showPage(eventId, page.toString())
-    override fun onPartnerClick(partner: Int) = viewState.showPartner(eventId, partner.toString())
-    override fun onSubEventClick(subEvent: EventActivityModel) =
-        viewState.showSubEvent(eventId, subEvent.id.toString())
-
-    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
-    override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
-
+    override fun onAddOrganizationToFavoriteClick() {
+        val organizationFavorite = aboutEventData.event.binds?.organization?.binds?.userFavorite
+        compositeDisposable += Single.defer {
+            if (organizationFavorite != null)
+                eventRepository.deleteFromFavorite(organizationFavorite.id.toString())
+                    .andThen(Single.just(Optional(null)))
+            else eventRepository.addToFavorites(
+                toOrgBody(appData.getId(), aboutEventData.event.binds?.organization?.id)
+            ).map { Optional(EventUserFavorite(it.id, it.user)) }
+        }.doOnSuccess { aboutEventData.event.binds?.organization?.binds?.userFavorite = it.value }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                viewState.apply {
+                    changeOrganizationSubscription(it.value != null)
+                    if (it.value == null) showEventRemovedFromFavoriteDialog()
+                    else showEventAddedToFavoriteDialog()
+                }
+            }
+    }
 
     override fun onAddToScheduleClick(subEvent: EventActivityModel) {
-        processChangeEventInCalendarStatusRequest(subEvent,
-            eventRepository.addEventToCalendarWithResult(
-                EventCalendarBody(
-                    appData.getId(), EventCalendarBodyEntity(
-                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEvent.id ?: 0
-                    )
-                )
-            ).flatMapCompletable { subEv ->
-                Completable.fromAction {
-                    subEvent.binds?.userCalendar = subEv
-                }
-            })
-    }
-
-    override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) {
-        processChangeEventInCalendarStatusRequest(
-            subEvent,
-            eventRepository.deleteCalendarEvent(subEvent.binds?.userCalendar?.id.toString())
-                .andThen(Completable.fromAction { subEvent.binds?.apply { userCalendar = null } })
-        )
-    }
-
-    override fun onMapPageSelected() {
-        if (aboutEventData.event.address?.lat != null && aboutEventData.event.address?.lon != null) {
-            viewState.showMap(aboutEventData.event.createMapInfo())
-        }
-    }
-
-
-    private fun processChangeEventInCalendarStatusRequest(
-        subEvent: EventActivityModel, request: Completable
-    ) {
-        compositeDisposable += request
-            .withCheckInternetConnectivity()
+        val userCalendar = subEvent.binds?.userCalendar
+        compositeDisposable += Single.defer {
+            if (userCalendar == null)
+                eventRepository.addEventToCalendarWithResult(
+                    toCalendarBody(appData.getId(), subEvent.id)
+                ).map { Optional(it) }
+            else eventRepository.deleteCalendarEvent(userCalendar.id.toString())
+                .andThen(Single.just(Optional(null)))
+        }.doOnSuccess { subEvent.binds?.userCalendar = it.value }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
@@ -204,62 +167,42 @@ class AboutEventPresenter
     }
 
 
-    override fun onAddOrganizationToFavoriteClick() {
-        val organizationFavorite = aboutEventData.event.binds?.organization?.binds?.userFavorite
-        if (organizationFavorite != null) {
-            compositeDisposable += eventRepository.deleteFromFavorite(organizationFavorite.id.toString())
-                .doOnComplete { aboutEventData.event.binds?.organization?.binds?.userFavorite = null }
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple(
-                    onComplete = {
-                        viewState.apply {
-                            changeOrganizationSubscription(false)
-                            showEventRemovedFromFavoriteDialog()
-                        }
-                    }, onError = { it.printStackTrace() }
-                )
-        } else {
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
-                    appData.getId(), AddToFavoriteEntityModel(
-                        AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
-                        aboutEventData.event.binds?.organization?.id?.toInt()
-                    )
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .doOnSuccess {
-                    aboutEventData.event.binds?.organization?.binds?.userFavorite =
-                        EventUserFavorite(it.id, it.user)
+    override fun onActionRegister(url: String?) {
+        if (url.isNullOrEmpty()) registerToEvent(eventId)
+        else compositeDisposable += eventRepository.checkRegistrationAgreement(eventId)
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    if (it.isAccepted()) registerToEvent(eventId)
+                    else viewState.showAgreementRegisterDialog(eventId, url)
                 }
-                .subscribeSimple(
-                    onSuccess = {
-                        viewState.apply {
-                            changeOrganizationSubscription(true)
-                            showEventAddedToFavoriteDialog()
-                        }
-                    }, onError = { it.printStackTrace() }
-                )
-        }
+            )
     }
 
-    override fun onActionRegister(url: String?) {
-//        if (event?.event?.binds?.currentUserRegistration == null || event?.event?.binds?.currentUserRegistration?.status?.value == Event.Status.CANCELED) {
-//            viewState.showEventRequest(eventId)
-//        }
-        if (url.isNullOrEmpty()) viewState.showEventRequest(eventId)
-        else {
-            compositeDisposable += eventRepository.checkRegistrationAgreement(eventId)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onSuccess = {
-                        if (it.isAccepted()) viewState.showEventRequest(eventId)
-                        else viewState.showAgreementRegisterDialog(eventId, url)
-                    }
-                )
-        }
+    override fun onAcceptRegistrationAgreement(event: String) {
+        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { if (it.isAccepted()) registerToEvent(eventId) }
+            )
+    }
+
+    private fun registerToEvent(event: String) {
+        if (aboutEventData.event.isFormEnabled()) viewState.showEventRequest(event)
+        else compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
+            .andThen(socket.connectToUpdates())
+            .andThen(eventRepository.getEventDetails(eventId))
+            .doOnSuccess { aboutEventData.event = it.event }
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.setActionButton(it.event) }
+            )
     }
 
     override fun onActionCancel() {
@@ -268,28 +211,35 @@ class AboutEventPresenter
             .andThen(eventRepository.getEventDetails(eventId))
             .doOnSuccess { aboutEventData.event = it.event }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withCustomLoading(viewState)
             .subscribeSimple {
                 viewState.setActionButton(it.event)
             }
     }
 
-    override fun onAcceptRegistrationAgreement(event: String) {
-        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
-            )
-    }
+    override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
+    override fun onPageClick(page: Int) = viewState.showPage(eventId, page.toString())
+    override fun onPartnerClick(partner: Int) = viewState.showPartner(eventId, partner.toString())
+    override fun onSubEventClick(subEvent: EventActivityModel) =
+        viewState.showSubEvent(eventId, subEvent.id)
 
-    override fun onOrganizationClick(organization: String) =
-        viewState.showOrganization(organization)
+    override fun onOrganizationClick(orgId: String) = viewState.showOrganization(orgId)
+    override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
+    override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
+
+    override fun onMapPageSelected() {
+        if (aboutEventData.event.address?.lat != null && aboutEventData.event.address?.lon != null)
+            viewState.showMap(aboutEventData.event.createMapInfo())
+    }
 
     override fun onShareClick() = viewState.showShare(eventId)
     override fun onAddEventToCalendarClick() = viewState.addEventToCalendar(aboutEventData.event)
 
+    override fun onShowFormResult() {
+        val formResult = aboutEventData.event.binds?.userFormResult
+            ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION } ?: return
+        viewState.showEventFormResult(formResult)
+    }
 
     private fun catchEventError(t: Throwable) {
         if (t is HttpException) {
@@ -305,12 +255,14 @@ class AboutEventPresenter
                                     "В данный момент страница мероприятия доступна только владельцу или администратору"
                                 viewState.showErrorMessageWithResult(false, "", message)
                             }
+
                             "The event has been banned" -> {
                                 val eventName = error.errors[0].additionalData?.name
                                 val eventId = error.errors[0].additionalData?.id.toString()
                                 val message = "Мероприятие «$eventName» заблокировано."
                                 viewState.showErrorMessageWithResult(true, eventId, message)
                             }
+
                             "The event has been cancelled" -> {
                                 val eventName = error.errors[0].additionalData?.name
                                 val eventId = error.errors[0].additionalData?.id.toString()
@@ -318,6 +270,7 @@ class AboutEventPresenter
                                     "Мероприятие «$eventName» было отменено организатором."
                                 viewState.showErrorMessageWithResult(true, eventId, message)
                             }
+
                             else -> {
                                 onReceiveError(t)
                             }
@@ -326,6 +279,7 @@ class AboutEventPresenter
 
                     }
                 }
+
                 else -> onReceiveError(t)
             }
         } else onReceiveError(t)

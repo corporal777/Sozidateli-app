@@ -22,8 +22,6 @@ import javax.inject.Provider
 class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
     AuthWebsiteContract.View {
 
-    override val isLightStatus = false
-
     @InjectPresenter
     lateinit var mPresenter: AuthWebsitePresenter
 
@@ -35,16 +33,6 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
         token = AuthWebsiteFragmentArgs.fromBundle(requireArguments()).qrCode
     }
 
-
-    override fun setEnterData(data: QrAuthResponse) {
-        mBinding.apply {
-            tvDevice.text = data.device
-            tvIPAddress.text = data.ipAddress
-            tvTime.text = longToTime(data.timeStamp)
-        }
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
@@ -53,6 +41,13 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
         }
     }
 
+    override fun setEnterData(data: QrAuthResponse) {
+        mBinding.apply {
+            tvDevice.text = "Устройство: " + data.device
+            tvIPAddress.text = "IP адрес: " + data.ipAddress
+            tvTime.text = "Время: " + longToTime(data.timeStamp)
+        }
+    }
 
     override fun showEventList() {
         findNavController().navigate(
@@ -62,6 +57,7 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
         )
     }
 
+
     override fun showContent() {
         mBinding.clContent.isInvisible = false
     }
@@ -70,9 +66,8 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
         mBinding.clContent.isInvisible = true
     }
 
-    override fun getFragmentBackgroundDrawable(): Drawable? {
-        return AuthBackground.get(resources)
-    }
+    override fun getFragmentBackgroundDrawable(): Drawable? = null
+    override val isLightStatus = false
 
     override fun layout() = R.layout.fragment_auth_website
 }

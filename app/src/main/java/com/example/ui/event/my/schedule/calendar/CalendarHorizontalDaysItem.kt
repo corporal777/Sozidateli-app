@@ -10,13 +10,14 @@ import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
 import com.example.databinding.ItemCalendarHorizontalDaysBinding
+import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.CalendarDayView
 import com.xwray.groupie.databinding.BindableItem
 
 class CalendarHorizontalDaysItem(
     id: Int?,
-    val listDays: List<EventScheduleDay>,
-    val onDaySelect: (date: EventScheduleDay) -> Unit
+    private val listDays: List<EventScheduleDay>,
+    private val onDaySelect: (date: EventScheduleDay) -> Unit
 ) : BindableItem<ItemCalendarHorizontalDaysBinding>(id?.toLong() ?: 0) {
 
     private lateinit var binding: ItemCalendarHorizontalDaysBinding
@@ -24,20 +25,23 @@ class CalendarHorizontalDaysItem(
     override fun bind(viewBinding: ItemCalendarHorizontalDaysBinding, position: Int) {
         viewBinding.apply {
             binding = this
+            daysContainer.updatedViews()
             listDays.forEachIndexed { index, day ->
                 val dayView = daysContainer.findView(index)
                 if (dayView != null) {
                     dayView.setDay(day)
-                    dayView.updateView()
-                    dayView.setOnDaySelected {
-                        onDaySelect.invoke(it)
-                    }
+                    dayView.setOnDaySelected { onDaySelect.invoke(it) }
                 }
 
             }
         }
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is CalendarHorizontalDaysItem) return false
+        if (listDays != other.listDays) return false
+        return true
+    }
 
     fun selectDay(day: EventScheduleDay?) {
         if (!this::binding.isInitialized) return
@@ -49,14 +53,6 @@ class CalendarHorizontalDaysItem(
         }
     }
 
-    fun isHasDay(day: EventScheduleDay?): Boolean {
-        if (!this::binding.isInitialized) return false
-        val index = listDays.indexOf(day)
-        return if (index >= 0){
-            val view = binding.daysContainer.findView(index)
-            return view != null && view.getDay() == day
-        } else false
-    }
 
     private fun LinearLayout.findView(index: Int): CalendarDayView? {
         val view = this.children.elementAt(index)
@@ -65,5 +61,15 @@ class CalendarHorizontalDaysItem(
             return view as CalendarDayView
         } else return null
     }
+
+    private fun LinearLayout.updatedViews(){
+        this.children.forEach {
+            if (it is CalendarDayView) {
+                it.isInvisible = true
+                it.isDaySelected = false
+            }
+        }
+    }
+
     override fun getLayout(): Int = R.layout.item_calendar_horizontal_days
 }

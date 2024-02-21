@@ -30,6 +30,7 @@
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
+                    android:scaleType="centerCrop"
                     android:background="@drawable/background_corners"
                     android:contentDescription="@string/content_description_avatar"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -167,7 +168,7 @@
 
 
             <TextView
-                android:visibility="gone"
+
                 android:id="@+id/tvScan"
                 style="@style/Profile.ButtonPages"
                 android:layout_marginTop="5dp"

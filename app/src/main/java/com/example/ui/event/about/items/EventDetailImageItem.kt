@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.core.view.isVisible
 import coil.ImageLoader
 import com.example.R
+import com.example.data.models.EventNew
 import com.example.data.models.RequestApplyModel
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.*
@@ -13,35 +14,28 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import parseColor
 
-class EventDetailImageItem(
-    val name: String?,
-    val address: String?,
-    val dateFrom: String?,
-    val dateTo: String?,
-    val logo: String?,
-    val backgroundColor: String?,
-    val requestsApply: RequestApplyModel?
-) : BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
+class EventDetailImageItem(val event: EventNew) :
+    BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
 
-    private val eventDate = dateFrom.formatToEventDatesIntervalOnMain(dateTo) ?: ""
-    private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
+    private val eventDate = event.holdingDate?.from.formatToEventDatesIntervalOnMain(event.holdingDate?.from) ?: ""
+    private val imageColor = ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
     private val requestDate = getEventRequestDate()
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
         viewBinding.apply {
-            tvTitle.text = name
+            tvTitle.text = event.name
             tvDate.text = eventDate
             tvRequestsDate.apply {
                 isVisible = !requestDate.isNullOrEmpty()
                 text = requestDate
             }
             tvLocation.apply {
-                isVisible = !address.isNullOrEmpty()
-                text = address
+                isVisible = !event.address?.getShortAddress().isNullOrEmpty()
+                text = event.address?.getShortAddress()
             }
             ivLogo.apply {
                 Picasso.get()
-                    .load(logo)
+                    .load(event.image?.uri)
                     .placeholder(imageColor)
                     .error(imageColor)
                     .into(this)
@@ -51,21 +45,12 @@ class EventDetailImageItem(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventDetailImageItem) return false
-        if (name != other.name) return false
-        if (address != other.address) return false
-        if (dateFrom != other.dateFrom) return false
-        if (dateTo != other.dateTo) return false
-        if (logo != other.logo) return false
-        if (backgroundColor != other.backgroundColor) return false
-        if (requestsApply != other.requestsApply) return false
+        if (event != other.event) return false
         return true
     }
 
-
-
-
-    private fun getEventRequestDate() : String? {
-        if (requestsApply == null) return null
+    private fun getEventRequestDate(): String? {
+        val requestsApply = event.requestsApply ?: return null
         if (!requestsApply.dateFrom.isNullOrEmpty() && !requestsApply.dateLimit.isNullOrEmpty()) {
             val today = System.currentTimeMillis()
             val startReq = defaultServerDateTimeFormatter.parse(requestsApply.dateFrom)?.time ?: 0
@@ -77,8 +62,14 @@ class EventDetailImageItem(
                     else -> "До начала приема заявок $day дней"
                 }
             } else {
-                val limitDate = requestsApply.dateLimit.parseAndFormat(defaultServerDateTimeFormatter, dateFormatterShortMonthShortYear)
-                val limitTime = requestsApply.dateLimit.parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+                val limitDate = requestsApply.dateLimit.parseAndFormat(
+                    defaultServerDateTimeFormatter,
+                    dateFormatterShortMonthShortYear
+                )
+                val limitTime = requestsApply.dateLimit.parseAndFormat(
+                    defaultServerDateTimeFormatter,
+                    defaultTimeFormatter
+                )
 
                 return "Заявки принимаются по $limitDate, $limitTime"
             }

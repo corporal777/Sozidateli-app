@@ -2,7 +2,6 @@ package com.example.services
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import androidx.core.app.JobIntentService
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.util.FIELD_ACTION
@@ -29,7 +28,7 @@ class NotificationClickJobService : JobService() {
     }
 
     override fun onStartJob(params: JobParameters): Boolean {
-        val extras = params.extras ?: return false
+        val extras = params.extras
         val action = extras.getString(FIELD_ACTION) ?: return false
         val notificationId = extras.getInt(FIELD_NOTIFICATION_ID)
 

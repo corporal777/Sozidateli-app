@@ -16,7 +16,7 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs.EventAgreementRegisterDialog
+import com.example.ui.event.agreement.EventAgreementRegisterDialog
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput

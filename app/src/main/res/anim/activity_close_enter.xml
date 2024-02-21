@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:zAdjustment="normal">
     <alpha
@@ -8,6 +7,6 @@
         android:fillBefore="true"
         android:fillEnabled="true"
         android:fromAlpha="0.7"
-        android:interpolator="@interpolator/linear_out_slow_in"
+        android:interpolator="@anim/linear_out_slow_in"
         android:toAlpha="1.0" />
 </set>

@@ -6,7 +6,7 @@ import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
 import com.example.ui.base.BaseContract
-import com.example.ui.event.registration.items.ProfileFieldsFormResult
+import com.example.data.models.ProfileFieldsFormResult
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
@@ -14,13 +14,7 @@ import moxy.viewstate.strategy.alias.Skip
 interface EventRegistrationContract {
     interface View : BaseContract.View {
 
-        @AddToEndSingle
-        fun setContentPlaceholder()
-
-        @AddToEndSingle
-        fun setFormHeader(event: EventRegistration)
-
-        @AddToEndSingle
+        @OneExecution
         fun setFormFields(
             event: EventRegistration,
             fieldsData: List<EventRegisterFieldData<*>>,
@@ -37,7 +31,7 @@ interface EventRegistrationContract {
         fun showSaveFormResultDraftDialog()
 
         @Skip
-        fun showLoadSavedFormResultDraftDialog(result : EventRegisterData)
+        fun showSavedFormResultDraftDialog(result : EventRegisterData)
 
         @AddToEndSingle
         fun enableActionButton(enable: Boolean)

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tvFormTitle"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="Ваше имя *" />
+
+        <TextView
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="14sp"
+            android:text="Серия, номер *" />
+
+        <TextView
+            android:id="@+id/tvPassportSerialNumber"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:importantForAccessibility="no"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="17sp"
+            tools:text="Иванович" />
+
+        <TextView
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="14sp"
+            android:text="Кем выдано *" />
+
+        <TextView
+            android:id="@+id/tvPassportOrganization"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:importantForAccessibility="no"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="17sp"
+            tools:text="Иванович" />
+
+        <TextView
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="14sp"
+            android:text="Дата выдачи *" />
+
+        <TextView
+            android:id="@+id/tvPassportDate"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:importantForAccessibility="no"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="17sp"
+            tools:text="Иванович" />
+
+        <TextView
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="14sp"
+            android:text="Код подразделения *" />
+
+        <TextView
+            android:id="@+id/tvPassportCode"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:importantForAccessibility="no"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="17sp"
+            tools:text="Иванович" />
+    </LinearLayout>
+
+
+</layout>

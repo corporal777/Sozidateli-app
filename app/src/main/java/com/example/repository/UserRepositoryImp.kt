@@ -310,7 +310,7 @@ class UserRepositoryImp
                 appData.getId(),
                 mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)
             ),
-            Function3<EducationBodyModel, AcademicDegreeBodyModel, UserDetail, String> { t1, t2, t3 ->
+            Function3<EducationBodyModel, AcademicDegreeBodyModel, UserDetail, String> { _, _, _ ->
                 return@Function3 ""
             })
     }

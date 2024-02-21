@@ -164,9 +164,10 @@ class ActivitiesFragment : BaseFragment<FragmentActivitysBinding>(), ActivitiesC
     }
 
     override fun setTags(tags: List<Tag>?) {
-        if (!tags.isNullOrEmpty()) {
-            tagsSection.updateItem(TagsHorizontalListItem(tags) { presenter.onTagSelected() })
-        } else tagsSection.update(emptyList())
+        tagsSection.updateItem(
+            if (!tags.isNullOrEmpty()) TagsHorizontalListItem(tags) { presenter.onTagSelected() }
+            else null
+        )
     }
 
     override fun setSubEvents(isApproved: Boolean, data: List<SubEventsData>) {

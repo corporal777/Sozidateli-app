@@ -117,6 +117,17 @@ class CustomLoadingButton : ConstraintLayout {
         loadingView.btnLoad.setTextColor(ContextCompat.getColorStateList(context, buttonTextColor))
     }
 
+    fun setButtonBackground(back: Int) {
+        loadingView.btnLoad.background = getDrawable(back)
+    }
+
+    fun setProgressColor(buttonTextColor: Int) {
+        loadingView.progressLoad.setProgressColor(
+            ContextCompat.getColor(context, buttonTextColor)
+
+        )
+    }
+
     fun showProgressLoading(show : Boolean) {
         if (isProgressVisible == show) return
         isProgressVisible = show

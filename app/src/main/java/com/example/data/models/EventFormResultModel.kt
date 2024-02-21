@@ -15,6 +15,8 @@ data class EventFormResultModel(
     val createdDate: String? = null,
     val form: Int? = null,
     val user: Int? = null,
+    @SerializedName("fio")
+    val nameLastName : String? = null,
     val fields: List<EventFormResultFieldsModel>? = null
 ) : Parcelable {
     companion object {
@@ -27,7 +29,16 @@ data class EventFormResultModel(
 data class EventFormResultFieldsModel(
     val id: Int? = null,
     val value: @RawValue JsonElement? = null
-) : Parcelable
+) : Parcelable {
+
+    fun createData(type : EventRegisterField.Type?): EventRegisterResponseField {
+        return EventRegisterResponseField(
+            id?.toString() ?: "",
+            type ?: EventRegisterField.Type.STRING,
+            value
+        )
+    }
+}
 
 
 @Parcelize

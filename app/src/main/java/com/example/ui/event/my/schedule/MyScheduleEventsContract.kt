@@ -17,7 +17,7 @@ interface MyScheduleEventsContract {
         fun setContent(data: List<EventScheduleData>)
 
         @Skip
-        fun scrollPageContent(day: EventScheduleDay?)
+        fun scrollPageContent(day: EventScheduleDay?, withRunnable: Boolean)
 
         @Skip
         fun scrollListContent(day: EventScheduleDay?)
@@ -49,7 +49,6 @@ interface MyScheduleEventsContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onSearchTextChange(text: String)
-        fun onSearchTextSubmit(text: String)
         fun onDaySelected(day: EventScheduleDay)
         fun onShowEventClick(eventId: String)
         fun onSubEventClick(eventId: String, subEvent: EventActivityModel)

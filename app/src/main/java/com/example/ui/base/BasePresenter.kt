@@ -76,7 +76,7 @@ open class BasePresenter<V : BaseContract.View>
                     when (it.code) {
                         409 -> viewState.showEmailErrorMessage()
                         else -> {
-                            val errors = (it as ApiError).errors
+                            val errors = it.errors
                             if (errors.isNullOrEmpty()) {
                                 onReceiveError(it)
                             } else {

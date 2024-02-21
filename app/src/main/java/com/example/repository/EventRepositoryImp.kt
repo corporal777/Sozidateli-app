@@ -8,7 +8,7 @@ import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
-import com.example.ui.event.registration.items.ProfileFieldsData
+import com.example.data.models.ProfileFieldsData
 import com.example.util.pagination.PaginationResponse
 import com.google.gson.JsonElement
 import fromJson
@@ -291,8 +291,8 @@ class EventRepositoryImp
                 val eventFormats = appData.getEventFormats()
                 if (!eventFormats.isNullOrEmpty()) {
                     it.data?.forEach { ev ->
-                        ev?.format?.name =
-                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                        ev.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev.format?.value }?.name
                     }
                 }
                 it
@@ -304,8 +304,8 @@ class EventRepositoryImp
                 val eventFormats = appData.getEventFormats()
                 if (!eventFormats.isNullOrEmpty()) {
                     it.data?.forEach { ev ->
-                        ev?.format?.name =
-                            eventFormats.firstOrNull { f -> f.id == ev?.format?.value }?.name
+                        ev.format?.name =
+                            eventFormats.firstOrNull { f -> f.id == ev.format?.value }?.name
                     }
                 }
                 it
@@ -328,7 +328,12 @@ class EventRepositoryImp
     override fun getEventDetails(eventId: String): Maybe<EventInfo> =
         api.getEventDetails(
             eventId,
-            "rights,organization,organization.userFavorite,tag,page,format,activity,activity.userCalendar,activity.auditorium,user-registration,user-form-result,partner,member,member.user,userFavorite,current-user-registration,destination-scheme,eventRegistrationState,current-user-registration-state,is-user-subscribed,event-subscribe"
+            "organization,organization.userFavorite," +
+                    "tag,page,format,activity,activity.userCalendar,activity.auditorium," +
+                    "partner,member,member.user,userFavorite,destination-scheme," +
+                    "user-registration,eventRegistrationState,current-user-registration,current-user-registration-state," +
+                    "is-user-subscribed,event-subscribe," +
+                    "user-form-result"
         )
             .map {
                 val eventFormats = appData.getEventFormats()
@@ -340,12 +345,15 @@ class EventRepositoryImp
                     it,
                     it.binds?.partner ?: arrayListOf(),
                     it.binds?.page ?: arrayListOf(),
-                    if (it.binds?.userRegister?.isNotEmpty() == true) it.binds?.userRegister?.get(0) else null,
+                    if (it.binds?.userRegistration?.isNotEmpty() == true) it.binds?.userRegistration?.get(0) else null,
                     it.state?.rating?.askDelay,
                     it.binds?.form
                 )
 
             }
+
+    override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
+        api.getEventDetails(eventId, "rights,current-user-registration,form,organization,user-form-result")
 
     override fun getEventMember(memberId: String): Maybe<MemberModel> =
         api.getEventMember(
@@ -358,9 +366,6 @@ class EventRepositoryImp
 
     override fun deleteEventSubscription(eventId: Int): Completable =
         api.deleteEventSubscription(eventId)
-
-    override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
-        api.getEventDetails(eventId, "rights,current-user-registration,form,organization")
 
     override fun mailToEvent(body: MessageToEventBody): Completable =
         api.messageToEvent(body)
@@ -456,7 +461,7 @@ class EventRepositoryImp
             appData.defaultEvent = body.entity.id
         }
 
-    override fun addEventToCalendarWithResult(body: EventCalendarBody): Single<EventCalendarItem> =
+    override fun addEventToCalendarWithResult(body: EventCalendarBody): Single<EventCalendarModel> =
         api.addEventToCalendarWithResult(body).doOnSuccess {
             appData.defaultEvent = body.entity.id
         }
@@ -470,7 +475,7 @@ class EventRepositoryImp
     override fun deleteCalendarEvent(id: String): Completable =
         api.deleteCalendarEvent(id)
 
-    override fun getUserCalendarEvent(entityType: String): Maybe<ApiNewResponse<List<EventCalendarItem>>> =
+    override fun getUserCalendarEvent(entityType: String): Maybe<ApiNewResponse<List<EventCalendarModel>>> =
         api.getUserCalendarEvent(appData.getId(), entityType)
 
     override fun getEventActivities(eventId: Int): Maybe<List<EventActivityModel>> =
@@ -479,8 +484,7 @@ class EventRepositoryImp
             "event,member,tag,auditorium,userCalendar,member.user,member.user.userFavorite,userFavorite",
             "holdingDate.from",
             "asc"
-        )
-            .doOnSuccess { it }.map { it.data }
+        ).map { it.data }
 
     override fun getEventActivityDetail(activityId: String): Single<EventActivityModel> =
         api.getEventActivity(
@@ -497,11 +501,11 @@ class EventRepositoryImp
     }
 
 
-    override fun checkRegistrationAgreement(eventId: String): Maybe<RegistrationAgreementStatus> {
+    override fun checkRegistrationAgreement(eventId: String): Single<RegistrationAgreementStatus> {
         return api.checkRegistrationAgreement(eventId.toInt())
     }
 
-    override fun acceptRegistrationAgreement(eventId: String): Maybe<RegistrationAgreementStatus> {
+    override fun acceptRegistrationAgreement(eventId: String): Single<RegistrationAgreementStatus> {
         return api.acceptRegistrationAgreement(eventId.toInt())
     }
 }

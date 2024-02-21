@@ -1,7 +1,10 @@
-package com.example.ui.event.registration.items
+package com.example.data.models
 
 import android.os.Parcelable
 import com.example.data.models.*
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -12,8 +15,9 @@ data class ProfileFieldsData(
     val isRequired: Boolean,
     val fields: ProfileFieldsFormModel
 ) : Parcelable {
-    fun toProfileFieldsFormResult(): ProfileFieldsFormResult {
+    fun toFormResult(options: List<String>?): ProfileFieldsFormResult {
         return ProfileFieldsFormResult(
+            fieldId = form,
             fieldsIsRequired = isRequired,
             user_name = ProfileFieldString(isRequired, false, false, fields.user_fio),
             user_birthday = ProfileFieldString(isRequired, false, false, fields.user_birthday),
@@ -31,7 +35,7 @@ data class ProfileFieldsData(
             user_sites = ProfileFieldString(isRequired, false, fields.site_absent, fields.contactInformation?.site?.values?.joinToString("\n") { it.value ?: "" }),
             user_public_email = ProfileFieldString(isRequired, false, false, fields.contactInformation?.emails?.joinToString("\n") { it.value ?: "" }),
             user_files = ProfileFieldString(isRequired, false, false, fields.recommendationFile?.joinToString("\n") { it.name ?: "" })
-        )
+        ).setFieldsIsChosen(options)
     }
 }
 
@@ -67,6 +71,7 @@ data class ProfileFieldsFormModel(
 ) : Parcelable
 
 data class ProfileFieldsFormResult(
+    val fieldId : Int?,
     val fieldsIsRequired: Boolean,
     var user_name: ProfileFieldString,
     var user_birthday: ProfileFieldString,
@@ -86,6 +91,9 @@ data class ProfileFieldsFormResult(
     var user_files: ProfileFieldString
 ) {
 
+    fun toJsonElement(): JsonElement {
+        return Gson().toJsonTree(this)
+    }
 
     fun checkProfileFieldsIsValid(data: ProfileFieldsFormResult): Boolean {
         var isValid = true
@@ -152,56 +160,54 @@ data class ProfileFieldsFormResult(
         return isValid
     }
 
-    fun setFieldsIsChosen(options: List<String>?, data: ProfileFieldsFormResult) {
-        data.apply {
-            user_name.isChosen = true
+    fun setFieldsIsChosen(options: List<String>?) : ProfileFieldsFormResult{
+        user_name.isChosen = true
 //            if (options?.contains("user_fio") == true) {
 //                user_name.isChosen = true
 //            }
-            if (options?.contains("user_birthday") == true) {
-                user_birthday.isChosen = true
-            }
-            if (options?.contains("user_gender") == true) {
-                user_gender.isChosen = true
-            }
-            if (options?.contains("user_notes") == true) {
-                user_notes.isChosen = true
-            }
-            if (options?.contains("user_phone") == true) {
-                user_phone.isChosen = true
-            }
-            if (options?.contains("user_work_phone") == true) {
-                user_work_phone.isChosen = true
-            }
-            if (options?.contains("user_email") == true) {
-                user_email.isChosen = true
-            }
-            if (options?.contains("address") == true) {
-                address.isChosen = true
-            }
-            if (options?.contains("education") == true) {
-                education.isChosen = true
-            }
-            if (options?.contains("academicDegree") == true) {
-                academic_degree.isChosen = true
-            }
-            if (options?.contains("workExperience") == true) {
-                work_experience.isChosen = true
-            }
-            if (options?.contains("socialNetwork") == true) {
-                user_links.isChosen = true
-            }
-            if (options?.contains("site") == true) {
-                user_sites.isChosen = true
-            }
-            if (options?.contains("publicEmail") == true) {
-                user_public_email.isChosen = true
-            }
-            if (options?.contains("recommendationFile") == true) {
-                user_files.isChosen = true
-            }
+        if (options?.contains("user_birthday") == true) {
+            user_birthday.isChosen = true
         }
-
+        if (options?.contains("user_gender") == true) {
+            user_gender.isChosen = true
+        }
+        if (options?.contains("user_notes") == true) {
+            user_notes.isChosen = true
+        }
+        if (options?.contains("user_phone") == true) {
+            user_phone.isChosen = true
+        }
+        if (options?.contains("user_work_phone") == true) {
+            user_work_phone.isChosen = true
+        }
+        if (options?.contains("user_email") == true) {
+            user_email.isChosen = true
+        }
+        if (options?.contains("address") == true) {
+            address.isChosen = true
+        }
+        if (options?.contains("education") == true) {
+            education.isChosen = true
+        }
+        if (options?.contains("academicDegree") == true) {
+            academic_degree.isChosen = true
+        }
+        if (options?.contains("workExperience") == true) {
+            work_experience.isChosen = true
+        }
+        if (options?.contains("socialNetwork") == true) {
+            user_links.isChosen = true
+        }
+        if (options?.contains("site") == true) {
+            user_sites.isChosen = true
+        }
+        if (options?.contains("publicEmail") == true) {
+            user_public_email.isChosen = true
+        }
+        if (options?.contains("recommendationFile") == true) {
+            user_files.isChosen = true
+        }
+        return this@ProfileFieldsFormResult
     }
 }
 

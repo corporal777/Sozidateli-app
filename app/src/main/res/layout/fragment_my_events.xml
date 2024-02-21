@@ -28,29 +28,22 @@
                     android:layout_height="?attr/actionBarSize"
                     android:visibility="gone"
                     app:contentInsetStart="0dp"
-                    app:layout_collapseMode="pin">
+                    app:layout_collapseMode="pin"
+                    tools:visibility="visible">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <com.example.ui.views.toolbar.ToolbarCircleButton
                             android:id="@+id/btnGoToMyTimeTable"
-                            fontPath="fonts/sf_pro_text_semibold.ttf"
-                            android:layout_width="135dp"
-                            android:layout_height="30dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/custom_btn_rounded_corners_active_selectable"
-                            android:minHeight="@dimen/auth_button_min_height"
                             android:text="@string/my_timetable_title"
-                            android:textAllCaps="false"
-                            android:textColor="#BE9B72"
-                            android:textSize="11sp"
-                            android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent" />
-
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.MaterialToolbar>

@@ -29,6 +29,7 @@ class MyEventsPresenter
 
     private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE
     private var searchText = ""
+    private var firstLaunch = true
     var searchFilter = SearchFilter.EventNew()
 
 
@@ -39,10 +40,16 @@ class MyEventsPresenter
             .subscribeSimple {
                 viewState.setShowScheduleEvents(!it.isNullOrEmpty())
             }
-        getEventsData(true, SHIMMER_LOADING)
+        getEventsData(true)
     }
 
-    private fun getEventsData(isFirst: Boolean, loading: Int) {
+    override fun attachView(view: MyEventsContract.View?) {
+        super.attachView(view)
+        if (firstLaunch) firstLaunch = false
+        else pagination.invalidate()
+    }
+
+    private fun getEventsData(isFirst: Boolean) {
         viewState.setData(List(5) { null })
         compositeDisposable += Observable.create(pagination)
             .map { transformData(it) }
@@ -57,24 +64,20 @@ class MyEventsPresenter
 
 
     override fun onSearchTextChange(text: String) {
+        if (searchText == text) return
         searchText = text
-        getEventsData(false, SHIMMER_LOADING)
-    }
-
-    override fun onSearchTextSubmit(text: String) {
-        searchText = text
-        getEventsData(false, SHIMMER_LOADING)
+        getEventsData(false)
     }
 
     override fun onSearchFiltersClick(filter: SearchFilter.EventNew) {
         searchFilter = filter
-        getEventsData(false, PROGRESS_LOADING)
+        getEventsData(false)
         viewState.setFiltersChosen(searchFilter.isHasFilter())
     }
 
     override fun onEventStateFiltersClick(isChecked: Boolean, filter: MyEventsFilter) {
         eventStateFilter = if (isChecked) filter else MyEventsFilter.NONE
-        getEventsData(false, PROGRESS_LOADING)
+        getEventsData(false)
     }
 
     override fun onShowFiltersClick() = viewState.showFilters()
@@ -145,11 +148,5 @@ class MyEventsPresenter
                 if (category != null) put(EventNew.EVENT_CATEGORY, category)
             }
         )
-    }
-
-
-    companion object {
-        const val SHIMMER_LOADING = 0
-        const val PROGRESS_LOADING = 1
     }
 }

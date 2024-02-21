@@ -2,6 +2,7 @@ package com.example.holders
 
 import com.example.R
 import com.example.databinding.ItemDayHeaderBinding
+import com.example.extensions.firstLetterToUppercase
 import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,7 +18,7 @@ open class DayHeaderItem(
 
     override fun bind(viewBinding: ItemDayHeaderBinding, position: Int) {
         viewBinding.apply {
-            tvDate.text = dateFormat.format(date).capitalize()
+            tvDate.text = dateFormat.format(date).firstLetterToUppercase()
 //            if (isDay) tvDate.text = dateFormat.format(date).capitalize()
 //            else tvDate.text = dateFormatWithoutDay.format(date).capitalize()
         }

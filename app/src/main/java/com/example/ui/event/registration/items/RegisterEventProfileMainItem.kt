@@ -1,14 +1,12 @@
 package com.example.ui.event.registration.items
 
-import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventActivityModel
+import com.example.data.models.ProfileFieldString
 import com.example.databinding.ItemRegisterEventProfileMainBinding
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.item_lecture.*
 
 class RegisterEventProfileMainItem(
     val itemId : Long,

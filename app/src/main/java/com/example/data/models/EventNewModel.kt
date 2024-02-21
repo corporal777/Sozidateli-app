@@ -1,10 +1,8 @@
 package com.example.data.models
 
 import android.os.Parcelable
-import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 
 data class EventNewModel(
     val data: List<EventNew?>? = null,
@@ -61,6 +59,32 @@ data class EventNew(
         return if (format?.value == null && !format?.custom.isNullOrEmpty())
             EventFormat(name = format?.custom ?: "")
         else EventFormat(binds?.format?.id ?: 0, binds?.format?.name ?: "")
+    }
+
+    fun isStatusActionAvailable(): Boolean {
+        return when(status?.value) {
+            Event.Status.REGISTRATION,
+            Event.Status.REGISTRATION_FINISHED,
+            Event.Status.RUNNING,
+            Event.Status.APPROVED -> true
+            else -> false
+        }
+    }
+
+    fun isRegistrationClosed() : Boolean {
+        return binds?.eventRegistrationState?.prohibitions?.registrationClosed ?: false
+    }
+
+    fun isFormEnabled(): Boolean {
+        return state?.registration?.formEnabled == true
+    }
+
+    fun isHasFormResult(): Boolean {
+        val formResult = binds?.userFormResult
+            ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        if (formResult == null) return false
+        else if (formResult.result == null) return false
+        else return !formResult.result.fields.isNullOrEmpty()
     }
 
     companion object {
@@ -163,8 +187,8 @@ data class EventUserFavorite(
 data class EventBindsModel(
     val organization: OrganizationNew? = null,
     val activity: List<EventActivityModel>? = null,
-    @SerializedName("userRegister")
-    val userRegister: List<UserRegisterModel>? = null,
+    @SerializedName("user-registration")
+    val userRegistration: List<UserRegisterModel>? = null,
     val rights: EventRights? = null,
     val partner: List<PartnerModel>? = null,
     val page: List<PageModel>? = null,
@@ -342,6 +366,14 @@ data class EventRegisterFields(
         @SerializedName("datetimeplaned")
         DATETIMEPLANED
     }
+
+    fun createData(): EventRegisterField {
+        return EventRegisterField(
+            id.toString(), name, sort ?: 0,
+            type ?: EventRegisterField.Type.PREFILLED, isRequired,
+            description, parameters?.options, null, null, null
+        )
+    }
 }
 
 @Parcelize
@@ -490,7 +522,7 @@ data class EventActivityBinds(
     val tag: List<Tags>? = null,
     val member: List<MemberModel>? = null,
     @SerializedName("userCalendar")
-    var userCalendar: EventCalendarItem? = null,
+    var userCalendar: EventCalendarModel? = null,
     @SerializedName("userFavorite")
     var userFavorite: /*List<*/EventUserFavorite/*>*/? = null,
     var auditorium: EventAuditoriumModel? = null,

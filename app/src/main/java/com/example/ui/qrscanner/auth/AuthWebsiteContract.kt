@@ -3,6 +3,7 @@ package com.example.ui.qrscanner.auth
 import com.example.data.models.QrAuthResponse
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface AuthWebsiteContract {
 
@@ -13,10 +14,10 @@ interface AuthWebsiteContract {
         @OneExecution
         fun showEventList()
 
-        @OneExecution
+        @Skip
         fun showContent()
 
-        @OneExecution
+        @Skip
         fun hideContent()
     }
 

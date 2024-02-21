@@ -1,7 +1,6 @@
 package com.example.ui.event.about
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -19,12 +18,14 @@ import com.example.data.models.MemberModel
 import com.example.data.models.NewTags
 import com.example.data.models.PartnerModel
 import com.example.data.models.Tag
+import com.example.data.models.UserFormResultModel
 import com.example.databinding.FragmentAboutEventNewBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
+import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
@@ -39,6 +40,7 @@ import com.example.ui.event.about.items.EventDetailShowActivitiesItem
 import com.example.ui.event.about.items.SpeakersHorizontalListItem
 import com.example.ui.event.about.items.TagsItem
 import com.example.ui.event.activities.ActivitiesFragmentArgs
+import com.example.ui.event.formResult.EventFormResultFragment
 import com.example.ui.event.location.map.MapFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
@@ -47,11 +49,11 @@ import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
-import com.example.ui.views.GridLayoutManagerAccurateOffset
+import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
-import com.example.ui.views.dialogs.EventAgreementRegisterDialog
+import com.example.ui.event.agreement.EventAgreementRegisterDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.xwray.groupie.Group
+import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -73,7 +75,21 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun layout() = R.layout.fragment_about_event_new
 
-    private val eventMainSection by lazy { Section() }
+    @InjectPresenter
+    lateinit var presenter: AboutEventPresenter
+
+    @Inject
+    lateinit var presenterProvider: Provider<AboutEventPresenter>
+
+    @ProvidePresenter
+    fun providePresenter(): AboutEventPresenter = presenterProvider.get().apply {
+        eventId = AboutEventFragmentArgs.fromBundle(requireArguments()).eventId
+    }
+
+
+    private val eventMainSection by lazy {
+        Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN)) }
+    }
     private val eventOrganizationSection by lazy { Section() }
     private val eventSpeakersSection by lazy {
         Section().apply {
@@ -84,6 +100,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
     private val eventProgramSection by lazy {
         Section().apply {
             setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
+            setFooter(EventDetailShowActivitiesItem { presenter.onShowEventActivitiesClick() })
             setHideWhenEmpty(true)
         }
     }
@@ -92,17 +109,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             setHeader(EventDetailBlocksLabelItem(getString(R.string.partners_label)))
             setHideWhenEmpty(true)
         }
-    }
-
-    @InjectPresenter
-    lateinit var mPresenter: AboutEventPresenter
-
-    @Inject
-    lateinit var presenterProvider: Provider<AboutEventPresenter>
-
-    @ProvidePresenter
-    fun providePresenter(): AboutEventPresenter = presenterProvider.get().apply {
-        eventId = AboutEventFragmentArgs.fromBundle(requireArguments()).eventId
     }
 
     private val groupAdapter by lazy {
@@ -117,29 +123,20 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
 
     private val onActionClickListener = object : EventDetailActionItem.OnActionClickListener {
-        override fun onActionRegister(url: String?) = mPresenter.onActionRegister(url)
-        override fun onActionCancel() = mPresenter.onActionCancel()
+        override fun onActionRegister(url: String?) = presenter.onActionRegister(url)
+        override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onSubscribeEvent() = mPresenter.onCreateEventSubscriptionClick()
-        override fun onDeleteSubscribeEvent() = mPresenter.onDeleteEventSubscriptionClick()
+        override fun onSubscribeEvent() = presenter.onCreateEventSubscriptionClick()
+        override fun onDeleteSubscribeEvent() = presenter.onDeleteEventSubscriptionClick()
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            mPresenter.onSubEventClick(subEvent)
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            mPresenter.onRemoveFromScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
     }
 
-    private val customLayoutManager by lazy {
-        GridLayoutManagerAccurateOffset(requireContext(), groupAdapter.spanCount).apply {
-            spanSizeLookup = groupAdapter.spanSizeLookup
-        }
-    }
+    private val customLayoutManager by lazy { LinearLayoutManagerAccurateOffset(requireContext()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,84 +146,53 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
                 adapter = groupAdapter
                 layoutManager = customLayoutManager
                 onScrolled { _, _ ->
-                    mPresenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
+                    presenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
                 }
             }
             toolbar.apply {
-                ivShare.setOnClickListener(mPresenter::onShareClick)
+                ivShare.setOnClickListener(presenter::onShareClick)
                 ivBack.setOnClickListener(findNavController()::navigateUp)
-                btnAddToCalendar.setOnClickListener(mPresenter::onAddEventToCalendarClick)
+                btnAddToCalendar.setOnClickListener(presenter::onAddEventToCalendarClick)
             }
-
-            swipeToRefresh.apply {
-                setProgressViewOffset(
-                    true,
-                    resources.getDimensionPixelSize(R.dimen.swipe_distance_start_margin),
-                    resources.getDimensionPixelSize(R.dimen.swipe_distance_end_margin)
-                )
-                setOnRefreshListener { mPresenter.onRefreshRequest() }
-            }
+            swipeToRefreshLayout.setOnRefreshListener { presenter.onRefreshRequest() }
         }
         setupBlurView()
     }
 
-    override fun setEventDataPlaceholder() {
-        eventMainSection.updateItem(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN))
-    }
+    override fun setEventData(eventData: AboutEventData) {
+        setEventFavoriteButton(eventData.event.binds?.userFavorite != null)
 
-    override fun setMainData(event: EventNew) {
-        decorEventFavoriteButton(event.binds?.userFavorite != null)
-
-        eventMainSection.update(
-            listOf(
-                EventDetailImageItem(
-                    event.name,
-                    event.address?.getShortAddress(),
-                    event.holdingDate?.from,
-                    event.holdingDate?.to,
-                    event.image?.uri,
-                    event.backgroundColor?.value,
-                    event.requestsApply
-                ),
-                EventDetailActionItem(requireContext(), event, onActionClickListener)
-            )
+        eventMainSection.updateItems(
+            EventDetailImageItem(eventData.event),
+            EventDetailActionItem(eventData.event, requireContext(), onActionClickListener) {
+                presenter.onShowFormResult()
+            }
         )
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun setOrganizationData(event: EventNew) {
         eventOrganizationSection.updateGroup(
             EventDetailInfoBlock(
-                event.binds?.organization,
-                { mPresenter.onAddOrganizationToFavoriteClick() },
-                { mPresenter.onOrganizationClick(it) },
-                getString(R.string.information),
-                event.address?.fullValue,
-                event.binds?.page,
-                { mPresenter.onMapPageSelected() },
-                { mPresenter.onPageClick(it) }
+                eventData.event.binds?.organization,
+                eventData.event.address?.fullValue,
+                eventData.event.binds?.page,
+                { presenter.onAddOrganizationToFavoriteClick() },
+                { presenter.onOrganizationClick(it) },
+                { presenter.onMapPageSelected() },
+                { presenter.onPageClick(it) }
             )
         )
-    }
-
-
-    override fun setSpeakersData(speakers: List<MemberModel>, showMore: Boolean) {
-        eventSpeakersSection.updateItem(
-            SpeakersHorizontalListItem(
-                speakers,
-                showMore,
-                { mPresenter.onSpeakerClick(it) },
-                { mPresenter.onShowAllSpeakersClick() })
-        )
-    }
-
-    override fun setProgramData(eventData: AboutEventData) {
-        val list = arrayListOf<Group>()
-        if (!eventData.tags.isNullOrEmpty()) {
-            list.add(TagsItem(eventData.tags) { mPresenter.onTagSelected() })
+        if (!eventData.speakers.isNullOrEmpty()){
+            eventSpeakersSection.updateItem(
+                SpeakersHorizontalListItem(
+                    eventData.speakers,
+                    eventData.showMoreSpeakers,
+                    { presenter.onSpeakerClick(it) },
+                    { presenter.onShowAllSpeakersClick() })
+            )
         }
-        if (!eventData.subEvents.isNullOrEmpty()) {
-            list.addAll(eventData.subEvents.map {
+
+        eventProgramSection.updateItems(
+            if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() }
+            else null,
+            eventData.subEvents.map {
                 EventDetailActivitiesItem(
                     eventData.event.id.toString(),
                     eventData.getUserRegistrationState(),
@@ -234,27 +200,19 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
                     it.value,
                     onSubEventClickListener
                 )
-            })
-        }
-        eventProgramSection.apply {
-            update(list)
-            setFooter(EventDetailShowActivitiesItem {
-                mPresenter.onShowEventActivitiesClick()
-            })
-        }
-    }
-
-    override fun setPartnersData(partners: List<PartnerModel>) {
+            }
+        )
         eventPartnersSection.update(
-            partners.map {
+            eventData.partners.map {
                 EventPartnerItem(
                     it.id,
                     it.name,
                     it.description,
                     it.logo?.uri ?: it.image?.uri
-                ) { id -> mPresenter.onPartnerClick(id) }
+                ) { id -> presenter.onPartnerClick(id) }
             }
         )
+        mBinding.swipeToRefreshLayout.isRefreshing = false
     }
 
 
@@ -266,10 +224,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun updateTags(tag: Tag) {
         eventProgramSection.findItemBy<TagsItem> { true }?.updateTag(tag)
-    }
-
-    override fun changeEventSubscription(isSubscribed: Boolean) {
-        decorEventFavoriteButton(isSubscribed)
     }
 
     override fun changeOrganizationSubscription(isSubscribed: Boolean) {
@@ -284,12 +238,16 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
         EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
-            mPresenter.onAcceptRegistrationAgreement(event)
+            presenter.onAcceptRegistrationAgreement(event)
         }
     }
 
-    override fun showSubEvent(eventId: String, subEventId: String) {
-        val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
+    override fun showEventFormResult(formResult: UserFormResultModel) {
+        EventFormResultFragment(formResult).show(requireActivity().supportFragmentManager)
+    }
+
+    override fun showSubEvent(eventId: String, subEventId: Int?) {
+        val args = SubEventFragmentArgs.Builder(eventId, subEventId.toString()).build().toBundle()
         findNavController().navigate(R.id.subEvent_fragment, args)
     }
 
@@ -309,22 +267,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         val args = MapFragmentArgs.Builder(mapInfo).build().toBundle()
         findNavController().navigate(R.id.fragment_map_new, args)
     }
-
-    override fun showShare(eventId: String) {
-        val mLink = BuildConfig.SHARE_URL + "portal/event/"
-        val mShareLink = StringBuilder(mLink).append(eventId).toString()
-
-        try {
-            val shareApp = Intent(Intent.ACTION_SEND)
-            shareApp.type = "text/plain"
-
-            shareApp.putExtra(Intent.EXTRA_TEXT, mShareLink)
-            startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
-        } catch (e: Exception) {
-            showRequestErrorMessage()
-        }
-    }
-
 
     override fun showPage(eventId: String, pageId: String) {
         findNavController().navigate(
@@ -355,6 +297,13 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         )
     }
 
+    override fun showOrganization(organization: String) {
+        findNavController().navigate(
+            R.id.organization_fragment_new,
+            OrganizationFragmentArgs.Builder(organization).build().toBundle()
+        )
+    }
+
     override fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String) {
         MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
             if (withResult) {
@@ -364,49 +313,51 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         }
     }
 
+    override fun setEventFavoriteButton(isSubscribed: Boolean) {
+        mBinding.toolbar.ivAddToFavorite.apply {
+            setImageResource(
+                if (!isSubscribed) R.drawable.ic_star else R.drawable.ic_star_filled
+            )
+            setOnClickListener { presenter.onAddEventToFavoriteClick() }
+        }
+    }
 
-    override fun showOrganization(organization: String) {
-        findNavController().navigate(
-            R.id.organization_fragment_new,
-            OrganizationFragmentArgs.Builder(organization).build().toBundle()
+    override fun showShare(eventId: String) {
+        val mLink = BuildConfig.SHARE_URL + "portal/event/"
+        val mShareLink = StringBuilder(mLink).append(eventId).toString()
+
+        try {
+            val shareApp = Intent(Intent.ACTION_SEND)
+            shareApp.type = "text/plain"
+
+            shareApp.putExtra(Intent.EXTRA_TEXT, mShareLink)
+            startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
+        } catch (e: Exception) {
+            showRequestErrorMessage()
+        }
+    }
+
+    override fun addEventToCalendar(eventData: EventNew?) {
+        if (eventData == null) return
+        openDeviceCalendarApp(requireContext(),
+            eventData.holdingDate?.from,
+            eventData.holdingDate?.to,
+            eventData.name,
+            eventData.description,
+            eventData.address?.city
         )
     }
 
-
-    private fun decorEventFavoriteButton(isSubscribed: Boolean) {
-        mBinding.toolbar.ivAddToFavorite.apply {
-            if (!isSubscribed) setImageResource(R.drawable.ic_star)
-            else setImageResource(R.drawable.ic_star_filled)
-            setOnClickListener { mPresenter.onAddEventToFavoriteClick() }
-        }
+    override fun showCustomLoading() {
+        val button = eventMainSection.findItemBy<EventDetailActionItem> { true }?.getActionButton()
+        if (button != null) button.showProgressLoading(true)
+        else showCustomProgressDialog()
     }
 
-
-    override fun addEventToCalendar(eventData: EventNew?) {
-        if (eventData != null) {
-            try {
-                val startCal =
-                    defaultServerDateFormatter.parse(eventData.holdingDate?.from ?: "").calendar()
-                val endCal =
-                    defaultServerDateFormatter.parse(eventData.holdingDate?.to ?: "").calendar()
-
-                val intent: Intent = Intent(Intent.ACTION_INSERT).apply {
-                    data = CalendarContract.Events.CONTENT_URI
-                    putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startCal.timeInMillis)
-                    putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.timeInMillis)
-                    putExtra(CalendarContract.Events.TITLE, eventData.name)
-                    putExtra(CalendarContract.Events.DESCRIPTION, eventData.description)
-                    putExtra(CalendarContract.Events.EVENT_LOCATION, eventData.address?.city)
-                    putExtra(
-                        CalendarContract.Events.AVAILABILITY,
-                        CalendarContract.Events.AVAILABILITY_BUSY
-                    )
-                }
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+    override fun hideCustomLoading() {
+        val button = eventMainSection.findItemBy<EventDetailActionItem> { true }?.getActionButton()
+        if (button != null) button.showProgressLoading(false)
+        else hideCustomProgressDialog()
     }
 
     private fun setupBlurView() {

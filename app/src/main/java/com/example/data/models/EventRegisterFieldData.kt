@@ -1,8 +1,5 @@
 package com.example.data.models
 
-import com.example.ui.event.registration.items.ProfileFieldsFormModel
-import com.example.ui.event.registration.items.ProfileFieldsFormResult
-
 sealed class EventRegisterFieldData<T>(
     val field: EventRegisterField,
     var value: T?
@@ -11,10 +8,7 @@ sealed class EventRegisterFieldData<T>(
     abstract fun isValid(): kotlin.Boolean
     abstract fun hasForm(): kotlin.Boolean
 
-    class Prefilled(
-        field: EventRegisterField,
-        value: ProfileFieldsFormResult?,
-    ) :
+    class Prefilled(field: EventRegisterField, value: ProfileFieldsFormResult?) :
         EventRegisterFieldData<ProfileFieldsFormResult>(field, value) {
         override fun isValid() = if (value != null) value!!.checkProfileFieldsIsValid(value!!) else true
         override fun hasForm() = value != null
@@ -73,8 +67,7 @@ sealed class EventRegisterFieldData<T>(
         EventRegisterFieldData<EventFile?>(field, value) {
         override fun isValid(): kotlin.Boolean {
             val file = value
-            return !field.required || file != null
-                    && file.name.isNotEmpty()
+            return !field.required || file != null && file.name.isNotEmpty()
         }
 
         override fun hasForm(): kotlin.Boolean {

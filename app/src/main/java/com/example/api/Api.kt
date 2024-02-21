@@ -3,7 +3,7 @@ package com.example.api
 import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.bodies.MessageBodyNew
-import com.example.ui.event.registration.items.ProfileFieldsData
+import com.example.data.models.ProfileFieldsData
 import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -343,7 +343,7 @@ interface Api {
     fun addEventToCalendar(@Body body: EventCalendarBody): Completable
 
     @POST("v1/user-calendar")
-    fun addEventToCalendarWithResult(@Body body: EventCalendarBody): Single<EventCalendarItem>
+    fun addEventToCalendarWithResult(@Body body: EventCalendarBody): Single<EventCalendarModel>
 
     @DELETE("v1/user-calendar/{user}/all")
     fun deleteAllCalendarEvents(
@@ -358,7 +358,7 @@ interface Api {
     fun getUserCalendarEvent(
         @Query("user") userId: Int,
         @Query("entityType") entityType: String
-    ): Maybe<ApiNewResponse<List<EventCalendarItem>>>
+    ): Maybe<ApiNewResponse<List<EventCalendarModel>>>
 
     @GET("v1/event-activity")
     fun getEventActivities(
@@ -505,10 +505,10 @@ interface Api {
 
     //+
     @GET("v1/event-agreement/{id}")
-    fun checkRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
+    fun checkRegistrationAgreement(@Path("id") id: Int): Single<RegistrationAgreementStatus>
 
     @PATCH("v1/event-agreement/{id}")
-    fun acceptRegistrationAgreement(@Path("id") id: Int): Maybe<RegistrationAgreementStatus>
+    fun acceptRegistrationAgreement(@Path("id") id: Int): Single<RegistrationAgreementStatus>
 
     //+
     @GET("v1/support")

@@ -1,5 +1,6 @@
 package com.example.ui.event.about
 
+import android.content.Context
 import com.example.data.models.*
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
@@ -9,79 +10,67 @@ import moxy.viewstate.strategy.alias.Skip
 interface AboutEventContract {
     interface View : BaseContract.View {
         @OneExecution
-        fun setEventDataPlaceholder()
+        fun setEventData(eventData: AboutEventData)
 
-        @AddToEndSingle
-        fun setMainData(event: EventNew)
-
-        @AddToEndSingle
-        fun setOrganizationData(event: EventNew)
-
-        @AddToEndSingle
-        fun setSpeakersData(speakers: List<MemberModel>, showMore : Boolean)
-
-        @AddToEndSingle
-        fun setProgramData(eventData: AboutEventData)
-
-        @AddToEndSingle
-        fun setPartnersData(partners: List<PartnerModel>)
-
-        @AddToEndSingle
-        fun setActionButton(event: EventNew?)
-
-        @Skip
+        @OneExecution
         fun showPage(eventId: String, pageId: String)
 
-        @Skip
+        @OneExecution
         fun showPartner(eventId: String, partnerId: String)
 
-        @Skip
+        @OneExecution
         fun showSpeakers(eventId: String)
 
-        @Skip
+        @OneExecution
         fun showEventRequest(event: String)
 
-        @Skip
+        @OneExecution
         fun showOrganization(organization: String)
 
         @OneExecution
-        fun changeEventSubscription(isSubscribed: Boolean)
+        fun showSubEvent(eventId: String, subEventId: Int?)
 
         @OneExecution
+        fun showEventActivities(eventId: String, listTags: List<NewTags>)
+
+        @OneExecution
+        fun showSpeakerProfile(speakerId: Int, eventId: String)
+
+        @OneExecution
+        fun showEventFormResult(formResult: UserFormResultModel)
+
+        @OneExecution
+        fun showMap(mapInfo: MapInfo?)
+
+        @Skip
+        fun setActionButton(event: EventNew?)
+
+        @Skip
+        fun setEventFavoriteButton(isSubscribed: Boolean)
+
+        @Skip
         fun changeOrganizationSubscription(isSubscribed: Boolean)
 
         @Skip
         fun showShare(eventId: String)
 
-        @OneExecution
+        @Skip
         fun updateSubEvent(subEvent: EventActivityModel)
 
-        @OneExecution
+        @Skip
         fun updateTags(tag: Tag)
-
-        @Skip
-        fun showSubEvent(eventId: String, subEventId: String)
-
-        @Skip
-        fun showEventActivities(eventId: String, listTags: List<NewTags>)
-
-        @Skip
-        fun showSpeakerProfile(speakerId: Int, eventId: String)
-
-        @Skip
-        fun showMap(mapInfo: MapInfo?)
 
         @Skip
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
         @Skip
-        fun showAgreementRegisterDialog(event: String, url : String)
-
-        @OneExecution
-        fun addEventToCalendar(eventData : EventNew?)
+        fun showAgreementRegisterDialog(event: String, url: String)
 
         @Skip
-        fun updateAppBarBackgroundColorValue(value : Int)
+        fun addEventToCalendar(eventData: EventNew?)
+
+        @Skip
+        fun updateAppBarBackgroundColorValue(value: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -89,14 +78,13 @@ interface AboutEventContract {
         fun onPartnerClick(partner: Int)
         fun onRefreshRequest()
 
-        fun onOrganizationClick(organization: String)
+        fun onOrganizationClick(orgId: String)
 
-        fun onActionRegister(url : String?)
+        fun onActionRegister( url: String?)
         fun onActionCancel()
-        fun onAcceptRegistrationAgreement(event : String)
+        fun onAcceptRegistrationAgreement(event: String)
         fun onShareClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)
-        fun onRemoveFromScheduleClick(subEvent: EventActivityModel)
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onSpeakerClick(memberId: Int)
         fun onShowAllSpeakersClick()
@@ -108,8 +96,10 @@ interface AboutEventContract {
         fun onAddEventToFavoriteClick()
         fun onCreateEventSubscriptionClick()
         fun onDeleteEventSubscriptionClick()
-        fun changeAppBarBackgroundColorValue(value : Int)
+        fun changeAppBarBackgroundColorValue(value: Int)
 
         fun onAddEventToCalendarClick()
+
+        fun onShowFormResult()
     }
 }

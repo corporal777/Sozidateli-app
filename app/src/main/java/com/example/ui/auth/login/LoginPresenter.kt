@@ -14,6 +14,7 @@ import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
 import com.example.repository.AuthRepository
 import com.example.ui.base.BasePresenter
+import com.example.util.ApiErrorParser
 import com.example.util.AuthValidateUtil
 import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
@@ -105,11 +106,12 @@ class LoginPresenter
     private fun catchError(it: Throwable) {
         if (it !is HttpException) return
         try {
-            val error = Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
+            val error = ApiErrorParser.parse(it)
             if (error == null) viewState.showWrongPasswordError()
             else if (error.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
             else viewState.showWrongPasswordError()
         } catch (_: Exception) { }
+        ApiErrorParser
     }
 
     companion object {

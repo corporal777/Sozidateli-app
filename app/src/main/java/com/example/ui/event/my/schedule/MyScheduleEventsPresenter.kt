@@ -1,5 +1,6 @@
 package com.example.ui.event.my.schedule
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
@@ -24,6 +25,7 @@ import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException
 import withCheckInternetConnectivity
+import withDelay
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -93,7 +95,7 @@ class MyScheduleEventsPresenter
                         setCalendar(eventDates, currentMonth)
                         setContent(it)
                         if (currentDay != null) {
-                            scrollPageContent(currentDay!!)
+                            scrollPageContent(currentDay!!, true)
                             scrollListContent(currentDay!!)
                         }
                         hideLoadingAlertDialog()
@@ -141,12 +143,7 @@ class MyScheduleEventsPresenter
     }
 
     override fun onSearchTextChange(text: String) {
-        searchText = text
-        initContent()
-    }
-
-    override fun onSearchTextSubmit(text: String) {
-        viewState.hideKeyboard()
+        if (searchText == text) return
         searchText = text
         initContent()
     }

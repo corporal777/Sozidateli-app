@@ -52,7 +52,7 @@ class ToolbarCircleButton : AppCompatButton {
         letterSpacing = -0.01f
         minimumHeight = 25.dp
         minHeight = 25.dp
-        setTextColor(ContextCompat.getColor(context, R.color.main_brown_color))
+        setTextColor(ContextCompat.getColor(context, R.color.main_brown_color_new))
         textSize = 11f
         isAllCaps = false
     }

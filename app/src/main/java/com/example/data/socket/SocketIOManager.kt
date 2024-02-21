@@ -24,4 +24,7 @@ interface SocketIOManager {
 
     fun subscribeTotalNotificationsTypesCount(): Flowable<NotificationsTypesModel>
     fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel>
+
+    fun connectToAuthWithQrCode(code : String): Completable
+    fun subscribeToAuthWithQrCode(): Flowable<QrAuthResponse>
 }

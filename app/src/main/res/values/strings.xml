@@ -145,6 +145,7 @@
     <string name="notifications_state_disabled">Приглашение было отозвано организаторами.</string>
     <string name="notifications_change_decision">Изменить решение?</string>
     <string name="change_decision">Изменить решение</string>
+    <string name="my_event_form">Моя анкета</string>
     <string name="notifications_rate_event">Оценить мероприятие</string>
     <string name="notifications_simple_title">Уведомление</string>
     <string name="notifications_acceptable_title">Приглашение</string>

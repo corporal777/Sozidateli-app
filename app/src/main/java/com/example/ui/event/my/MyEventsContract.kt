@@ -29,7 +29,6 @@ interface MyEventsContract {
 
     interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback{
         fun onSearchTextChange(text: String)
-        fun onSearchTextSubmit(text: String)
         fun onShowFiltersClick()
         fun onRefreshRequest()
         fun onEventStateFiltersClick(isChecked : Boolean, filter: MyEventsFilter)

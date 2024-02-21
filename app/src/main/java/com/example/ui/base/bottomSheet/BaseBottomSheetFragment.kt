@@ -34,8 +34,7 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
 
     lateinit var mBinding: binding
 
-    protected var mActivity: BaseActivity? = null
-        private set
+    private var mActivity: BaseActivity? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,8 +58,8 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
     }
 
     override fun getTheme(): Int {
-        if (isTransparent) return R.style.TransparentBottomSheetDialogTheme
-        else return super.getTheme()
+        return if (isTransparent) R.style.TransparentBottomSheetDialogTheme
+        else super.getTheme()
     }
 
     override fun onCreateView(

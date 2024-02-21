@@ -26,7 +26,7 @@ class AppData(
     }
 
     fun isTimeToUpdate(): Boolean {
-        var isTimeToUpdate = false
+        val isTimeToUpdate: Boolean
         if (updateTime <= 0) isTimeToUpdate = true
         else {
             val seconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - updateTime)
@@ -249,7 +249,7 @@ class AppData(
     }
 
     fun getId(): Int {
-        return appPrefs.userId ?: 0
+        return appPrefs.userId
     }
 
     fun logout() {
@@ -275,7 +275,7 @@ class AppData(
         userFiles.add(newFile)
         this.newUser?.binds?.recommendationFile = userFiles
 
-        var userFilesCount = getUser().filesCount ?: 0
+        var userFilesCount = getUser().filesCount
         userFilesCount += 1
         getUser().filesCount = userFilesCount
         return newFile
@@ -288,7 +288,7 @@ class AppData(
         if (file != null) userFiles.remove(file)
         this.newUser?.binds?.recommendationFile = userFiles
 
-        var userFilesCount = getUser().filesCount ?: 0
+        var userFilesCount = getUser().filesCount
         if (userFilesCount > 0) {
             userFilesCount -= 1
             getUser().filesCount = userFilesCount

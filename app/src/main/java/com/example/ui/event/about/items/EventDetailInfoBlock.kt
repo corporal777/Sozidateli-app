@@ -2,6 +2,7 @@ package com.example.ui.event.about.items
 
 import com.example.data.models.OrganizationNew
 import com.example.data.models.PageModel
+import com.example.extensions.updateItems
 import com.example.holders.redesign.*
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.Group
@@ -9,45 +10,34 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class EventDetailInfoBlock(
-    val organization: OrganizationNew?,
+    private val organization: OrganizationNew?,
+    private val address: String?,
+    private val pages: List<PageModel>?,
     private val actionClickListener: (UserSubscribeButton.Action) -> Unit,
     private val onOrganizationClick: (id: String) -> Unit,
-
-    val infoTitle: String,
-    val address: String?,
-    val pages: List<PageModel>?,
-    val mapClick: () -> Unit,
-    val pageClick: (id: Int) -> Unit
+    private val mapClick: () -> Unit,
+    private val pageClick: (id: Int) -> Unit
 ) : NestedGroup() {
 
     private val mOrganizationItem =
         EventDetailOrganizationItem(organization, actionClickListener, onOrganizationClick)
 
     private val mInformationItem = Section().apply {
-        setHeader(EventDetailBlocksLabelItem(infoTitle, id = -1005L))
+        setHeader(EventDetailBlocksLabelItem("Информация", id = -1005L))
         setHideWhenEmpty(true)
     }
 
     init {
-        if (organization != null) {
-            add(mOrganizationItem)
-        }
+        if (organization != null) add(mOrganizationItem)
         mInformationItem.apply {
-            if (!address.isNullOrEmpty()){
-                add(
-                    EventPageItem(
-                        101,
-                        "Как добраться"
-                    ) { mapClick() })
-            }
-            if (!pages.isNullOrEmpty()) {
-                addAll(pages.map { item ->
-                    EventPageItem(
-                        item.id ?: 0,
-                        item.name ?: ""
-                    ) { pageClick(it) }
-                })
-            }
+            updateItems(
+                if (!address.isNullOrEmpty())
+                    EventPageItem(101, "Как добраться") { mapClick() }
+                else null,
+                pages?.map { item ->
+                    EventPageItem(item.id ?: 0, item.name ?: "") { pageClick(it) }
+                }
+            )
         }
         add(mInformationItem)
     }

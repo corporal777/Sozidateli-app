@@ -3,8 +3,8 @@ package com.example.data.models
 data class EventRegisterData(
     val event: EventRegistration,
     var hasDraft: Boolean = false,
-    var fieldsData: MutableList<EventRegisterFieldData<*>>,
-    var draftFieldsData: MutableList<EventRegisterFieldData<*>>
+    var fieldsData: MutableList<EventRegisterFieldData<*>> = mutableListOf(),
+    var draftFieldsData: MutableList<EventRegisterFieldData<*>> = mutableListOf(),
 ) {
     fun getSortedFields(): List<EventRegisterFieldData<*>> {
         return fieldsData.sortedBy { x -> x.field.id }

@@ -21,35 +21,31 @@ abstract class ApiRepository(
     fun <T> call(request: Single<ApiResponse<T>>): Single<T> {
         return request
                 .onErrorResumeNext { t: Throwable -> Single.error(processError(t)) }
-                .doOnSuccess { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T> call(request: Maybe<ApiResponse<T>>): Maybe<T> {
         return request
                 .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }
-                .doOnSuccess { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T> call(request: Observable<ApiResponse<T>>): Observable<T> {
         return request
                 .onErrorResumeNext { t: Throwable -> Observable.error(processError(t)) }
-                .doOnNext { saveSession(it) }
                 .map { it.response }
     }
 
     fun <T> call(request: Flowable<ApiResponse<T>>): Flowable<T> {
         return request
                 .onErrorResumeNext { t: Throwable -> Flowable.error(processError(t)) }
-                .doOnNext { saveSession(it) }
+
                 .map { it.response }
     }
 
     fun <T, C : List<T>> callPagination(request: Maybe<ApiResponse<C>>): Maybe<PaginationResponse<T>> {
         return request
                 .onErrorResumeNext { t: Throwable -> Maybe.error(processError(t)) }
-                .doOnSuccess { saveSession(it) }
                 .map {
                     PaginationResponse(
                             it.response_detail?.total,
@@ -58,21 +54,12 @@ abstract class ApiRepository(
                 }
     }
 
-    private fun saveSession(response: ApiResponse<*>?) {
-        response?.session?.token?.let { saveSession(it) }
-    }
-
-    private fun saveSession(token: String?) {
-        //appData.token = token
-    }
-
     private fun processError(throwable: Throwable): Throwable {
         if (throwable is ConnectException) return NoInternetConnectionException()
 
         return ApiErrorParser.parse(throwable)?.apply {
             if ((throwable as HttpException).code() == 409)
                 code = 409
-            saveSession(session?.token)
         } ?: throwable
     }
 }

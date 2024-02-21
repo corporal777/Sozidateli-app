@@ -45,14 +45,13 @@ fun interface DrawableSource {
 
     @Serializable
     @SerialName("File")
-    @Suppress("BlockingMethodInNonBlockingContext")
-
     data class File(val uri : String) : DrawableSource {
 
+        @Suppress("DEPRECATION")
         @SuppressWarnings("deprecation")
         override suspend fun get(context: Context): Drawable =
             withContext(Dispatchers.IO) {
-                if (Build.VERSION.SDK_INT >= 29){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     ImageDecoder
                         .decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri.toUri()))
                         .copy(Bitmap.Config.ARGB_8888,false)

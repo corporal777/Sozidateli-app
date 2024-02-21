@@ -143,7 +143,7 @@ class FinishRegisterPresenter
             disposable += userRepository.updateProfile(appData.getId(), getUpdateRequestBody())
                 .subscribeSimple(
                     onError = { emitter.onError(it) },
-                    onSuccess = { user ->
+                    onSuccess = { _ ->
                         disposable += confirmCodeRequest().subscribeSimple(
                             onError = { emitter.onError(CodeInvalidException()) },
                             onComplete = { emitter.onComplete() })

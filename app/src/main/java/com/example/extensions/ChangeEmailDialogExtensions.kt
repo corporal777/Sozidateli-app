@@ -13,10 +13,6 @@ import com.example.util.AuthValidateUtil
 import com.google.android.material.textfield.TextInputLayout
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
-
-
-
-
 fun Fragment.showChangeEmailCompleteDialog(email: String) {
     val supportEmail = getString(R.string.support_email).toSpannable()
     Linkify.addLinks(supportEmail, Linkify.EMAIL_ADDRESSES)
