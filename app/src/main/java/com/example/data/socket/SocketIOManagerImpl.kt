@@ -20,6 +20,7 @@ import io.socket.parseqs.ParseQS
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
+import org.json.JSONObject
 import timber.log.Timber
 import java.net.URI
 import java.net.URISyntaxException
@@ -55,40 +56,37 @@ class SocketIOManagerImpl
                 callFactory = okHttpClient
                 webSocketFactory = okHttpClient
             }).apply {
-                /*on(Socket.EVENT_CONNECTING) {
-                    connectionStatus = SocketConnectionState.CONNECTING
-                }*/
                 on(Manager.EVENT_OPEN) {
-                    Log.i("ChatSocket", "Open event: " + it.contentToString())
+                    logErrorSocket("Open event: " + it.contentToString())
                 }
                 on(Socket.EVENT_CONNECT_ERROR) {
-                    Log.i("ChatSocket", "Error event: " + it.contentToString())
+                    logErrorSocket("Error event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
                 }
                 on(Socket.EVENT_CONNECT) {
-                    Log.i("ChatSocket", "Connect event: " + it.contentToString())
+                    logErrorSocket("Connect event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.CONNECTED
                 }
                 on(Socket.EVENT_DISCONNECT) {
-                    Log.i("ChatSocket", "Disconnect event: " + it.contentToString())
+                    logErrorSocket("Disconnect event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
                 }
                 on(Manager.EVENT_CLOSE) {
-                    Log.i("ChatSocket", "Close event: " + it.contentToString())
+                    logErrorSocket("Close event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
                 }
                 on(Manager.EVENT_ERROR) {
-                    Log.i("ChatSocket", "Close event: " + it.contentToString())
+                    logErrorSocket("Close event: " + it.contentToString())
                     connectionStatus = SocketConnectionState.ERROR
                     disconnect()
                 }
                 connect()
-                Log.i("ChatSocket", "Connected")
+                logErrorSocket("Connected")
             }
-            Log.i("ChatSocket", "Token ${appData.token}")
-            Log.i("ChatSocket", "Connected to socket")
+            logErrorSocket("Token ${appData.token}")
+            logErrorSocket("Connected to socket")
         } catch (e: URISyntaxException) {
-            Log.i("ChatSocket", "Not connected to socket")
+            logErrorSocket("Not connected to socket")
         }
         return connectionStatusSubject.toFlowable(BackpressureStrategy.BUFFER)
     }
@@ -102,7 +100,7 @@ class SocketIOManagerImpl
     override fun connectToUpdates(): Completable =
         Completable.fromAction {
             mSocket?.emit("refresh")
-            Log.i("ChatSocket", "Started refresh")
+            logErrorSocket("Started refresh")
         }
 
     override fun disconnectFromChat(chatId: String): Completable =
@@ -149,64 +147,37 @@ class SocketIOManagerImpl
     override fun subscribeToTotalNotificationsCount(): Flowable<Int> =
         Flowable.create({ emitter ->
             val listener = Emitter.Listener { args ->
-                Log.i("ChatSocket", "Data: " + args.toString())
-                //emitter.onNext(args[0].toString().toInt())
-                if (args.first() != null) emitter.onNext(args.first().toString().toInt())
+                if (args == null || args[0] == null) return@Listener
+                emitter.onNext(args[0].toString().toInt())
             }
-
             mSocket?.on("notification-count", listener)
-            Log.i("ChatSocket", "Started listening notification-count event")
-
-            emitter.setCancellable {
-                Log.i("ChatSocket", "Stopped listening notification-count")
-                mSocket?.off("notification-count", listener)
-            }
+            logErrorSocket("Started listening notification-count event")
+            emitter.setCancellable { mSocket?.off("notification-count", listener) }
         }, BackpressureStrategy.LATEST)
 
     override fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel> {
         return Flowable.create({ emitter ->
             val listener = Emitter.Listener { args ->
-                Log.i("ChatSocket", "Data: " + args.toString())
-                emitter.onNext(
-                    Gson().fromJson(
-                        args[0].toString(),
-                        NotificationInviteModel::class.java
-                    )
-                )
+                if (args == null || args[0] == null) return@Listener
+                val data = Gson().fromJson(args[0].toString(), NotificationInviteModel::class.java)
+                emitter.onNext(data)
             }
-
             mSocket?.on("notification-invite-types-count", listener)
-            Log.i("NotificationSocket", "Started listening notification-invite-types-count event")
-
-            emitter.setCancellable {
-                Log.i(
-                    "NotificationSocket",
-                    "Stopped listening notification-invite-types-count event"
-                )
-                mSocket?.off("notification-invite-types-count", listener)
-            }
+            logErrorSocket("Started listening notification-invite-types-count event")
+            emitter.setCancellable { mSocket?.off("notification-invite-types-count", listener) }
         }, BackpressureStrategy.LATEST)
     }
 
     override fun subscribeTotalNotificationsTypesCount(): Flowable<NotificationsTypesModel> {
         return Flowable.create({ emitter ->
             val listener = Emitter.Listener { args ->
-                Log.i("ChatSocket", "Data: " + args.toString())
-                emitter.onNext(
-                    Gson().fromJson(
-                        args[0].toString(),
-                        NotificationsTypesModel::class.java
-                    )
-                )
+                if (args == null || args[0] == null) return@Listener
+                val data = Gson().fromJson(args[0].toString(), NotificationsTypesModel::class.java)
+                emitter.onNext(data)
             }
-
             mSocket?.on("notification-types-count", listener)
-            Log.i("NotificationSocket", "Started listening notification-types-count event")
-
-            emitter.setCancellable {
-                Log.i("NotificationSocket", "Stopped listening notification-types-count event")
-                mSocket?.off("notification-types-count", listener)
-            }
+            logErrorSocket("Started listening notification-types-count event")
+            emitter.setCancellable { mSocket?.off("notification-types-count", listener) }
         }, BackpressureStrategy.LATEST)
     }
 
@@ -215,7 +186,7 @@ class SocketIOManagerImpl
             val listener = Emitter.Listener { args ->
                 Log.i("ChatSocket", "Data: " + args.toString())
                 //emitter.onNext(args[0].toString().toInt())
-                if (args.first() != null) emitter.onNext(args.first().toString().toInt())
+                if (args.first() != null) emitter.onNext(args.firstOrNull().toString().toInt())
             }
 
             mSocket?.on("user-count-of-invites", listener)
@@ -232,7 +203,7 @@ class SocketIOManagerImpl
             val listener = Emitter.Listener { args ->
                 Log.i("ChatSocket", "Data: " + args.toString())
                 //emitter.onNext(args[0].toString().toInt())
-                if (args.first() != null) emitter.onNext(args.first().toString().toInt())
+                if (args.first() != null) emitter.onNext(args.firstOrNull().toString().toInt())
             }
 
             mSocket?.on("unread-total-message-count", listener)
@@ -302,62 +273,69 @@ class SocketIOManagerImpl
         }, BackpressureStrategy.LATEST)
 
 
-    override fun connectToAuthWithQrCode(code: String): Completable =
+    override fun connectToAuthWithQrCode(code: String, socketId: String?): Completable =
         Completable.fromAction {
-            mSocket?.emit("qr", code)
-            Log.i("QrAuthSocket", "Started listening")
+            val obj = JSONObject().apply {
+                put("socket", socketId)
+                put("qr", code)
+            }
+            mSocket?.emit("qrRead", obj)
+            logErrorSocket("QrAuthSocket", "Send message to connect")
         }
 
-    override fun subscribeToAuthWithQrCode(): Flowable<QrAuthResponse> =
+    override fun confirmAuthWithQrCode(code: String, socketId: String?): Completable =
+        Completable.fromAction {
+            val obj = JSONObject().apply {
+                put("socket", socketId)
+                put("qr", code)
+                put("isAccept", true)
+            }
+            mSocket?.emit("qrAccept", obj)
+            logErrorSocket("QrAuthSocket", "Send message to confirm")
+        }
+
+
+    override fun subscribeAuthQrCode(): Flowable<QrAuthResponse> =
         Flowable.create({ emitter ->
             val listener = Emitter.Listener { args ->
-                Log.i("QrAuthSocket", "Data: " + args.toString())
-                if (args[0].toString() != "[]") {
-                    val data = Gson().fromJson(args[0].toString(), QrAuthResponse::class.java)
-                    emitter.onNext(data)
-                }
+                if (args[0] == null || args[0].toString() == "[]") return@Listener
+                val data = Gson().fromJson(args[0].toString(), QrAuthResponse::class.java)
+                emitter.onNext(data)
+                emitter.onComplete()
             }
-
             mSocket?.on("check", listener)
-            Log.i("QrAuthSocket", "Started listening auth with qr code")
-
-            emitter.setCancellable {
-                Log.i("QrAuthSocket", "Stopped listening auth with qr code")
-                mSocket?.off("check", listener)
-            }
+            logErrorSocket("QrAuthSocket", "Started listening auth with qr code")
+            emitter.setCancellable { mSocket?.off("check", listener) }
         }, BackpressureStrategy.LATEST)
 
-    override fun stopListenChatUpdate() {
-        Log.i("ChatSocket", "Stopped listening")
-        //mSocket?.disconnect()
-        //mSocket?.off("new-message")
-    }
+    override fun subscribeAcceptAuthQrCode(): Flowable<AuthResponse> =
+        Flowable.create({ emitter ->
+            val listener = Emitter.Listener { args ->
+                if (args[0] == null || args[0].toString() == "[]") return@Listener
+                val data = Gson().fromJson(args[0].toString(), AuthResponse::class.java)
+                emitter.onNext(data)
+                emitter.onComplete()
+            }
+            mSocket?.on("check", listener)
+            logErrorSocket("QrAuthSocket", "Started listening auth with qr code")
+            emitter.setCancellable { mSocket?.off("check", listener) }
+        }, BackpressureStrategy.LATEST)
+
 
     override fun disconnectFromSocket() {
         mSocket?.disconnect()
-        Log.i("ChatSocket", "Disconnected")
+        logErrorSocket("Disconnected")
     }
 
-    override fun isConnected(): Single<Boolean> =
-        Single.just(connectionStatus == SocketConnectionState.CONNECTED)
+    override fun isConnected(): Single<Boolean> = Single.just(connectionStatus == SocketConnectionState.CONNECTED)
 
     private fun getHttpClient(): OkHttpClient {
         val myHostnameVerifier = HostnameVerifier { _, _ ->
             return@HostnameVerifier true
         }
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(
-                p0: Array<out java.security.cert.X509Certificate>?,
-                p1: String?
-            ) {
-            }
-
-            override fun checkServerTrusted(
-                p0: Array<out java.security.cert.X509Certificate>?,
-                p1: String?
-            ) {
-            }
-
+            override fun checkClientTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
+            override fun checkServerTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
             override fun getAcceptedIssuers(): Array<out java.security.cert.X509Certificate>? {
                 return arrayOf()
             }
@@ -379,4 +357,8 @@ class SocketIOManagerImpl
             .addInterceptor(logInterceptor)
             .build()
     }
+
+    private fun logErrorSocket(message : String) = Log.e("Socket", message)
+    private fun logErrorSocket(tag : String, message : String) = Log.e(tag, message)
+    private fun logInfoSocket(message : String) = Log.e("Socket", message)
 }

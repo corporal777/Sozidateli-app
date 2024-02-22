@@ -424,7 +424,6 @@ class ChatPresenter
         compositeDisposable += socket.disconnectFromChat(chatId)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                socket.stopListenChatUpdate()
                 super.onDestroy()
             }
     }

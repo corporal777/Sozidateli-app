@@ -2,6 +2,7 @@ package com.example.ui.qrscanner.auth
 
 import com.example.data.models.QrAuthResponse
 import com.example.ui.base.BaseContract
+import com.example.ui.views.loading.CustomLoadingButton
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
@@ -19,10 +20,16 @@ interface AuthWebsiteContract {
 
         @Skip
         fun hideContent()
+
+        @Skip
+        fun showCustomLoading(view: CustomLoadingButton)
+
+        @Skip
+        fun hideCustomLoading(view: CustomLoadingButton)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onConfirmEnterToWebsiteClick()
-        fun onDoNotConfirmToEnterWebsiteClick()
+        fun onConfirmEnterToWebsiteClick(view: CustomLoadingButton)
+        fun onDoNotConfirmToEnterWebsiteClick(view: CustomLoadingButton)
     }
 }

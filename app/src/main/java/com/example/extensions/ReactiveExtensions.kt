@@ -182,6 +182,20 @@ fun <T> Observable<T>.withProgressBarLoading(baseView: BaseContract.LoadingView)
         .doOnDispose(getHideProgressBarLoadingAction(baseView, loadingDisposable))
 }
 
+fun <T> Flowable<T>.withProgressBarLoading(baseView: BaseContract.LoadingView): Flowable<T> {
+    val loadingDisposable = getLoadingProgressBarDisposable(baseView)
+    var isFirstHidden = false
+    return this.doOnError(getHideProgressBarLoadingConsumer(baseView, loadingDisposable))
+        .doOnNext {
+            if (!isFirstHidden) {
+                isFirstHidden = true
+                hideProgressBarLoading(baseView, loadingDisposable)
+            }
+        }
+        .doFinally(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+        .doOnTerminate(getHideProgressBarLoadingAction(baseView, loadingDisposable))
+}
+
 fun Completable.withProgressBarDialogLoading(baseView: BaseContract.LoadingView): Completable {
     val loadingDisposable = getCustomLoadingProgressBarDisposable(baseView)
     return this.doOnDispose(getHideCustomProgressBarLoadingAction(baseView, loadingDisposable))

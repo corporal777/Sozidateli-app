@@ -8,7 +8,6 @@ import io.reactivex.Single
 interface SocketIOManager {
     fun subscribeNewChatMessage(): Flowable<ApiNewResponse<List<MessageModel>>>
     fun subscribeToChatUpdate(): Flowable<ApiNewResponse<List<MessageModel>>>
-    fun stopListenChatUpdate()
     fun connectToChat(chatId: String): Completable
     fun disconnectFromChat(chatId: String): Completable
     fun disconnectFromSocket()
@@ -25,6 +24,8 @@ interface SocketIOManager {
     fun subscribeTotalNotificationsTypesCount(): Flowable<NotificationsTypesModel>
     fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel>
 
-    fun connectToAuthWithQrCode(code : String): Completable
-    fun subscribeToAuthWithQrCode(): Flowable<QrAuthResponse>
+    fun connectToAuthWithQrCode(code : String, socketId : String?): Completable
+    fun confirmAuthWithQrCode(code : String, socketId : String?): Completable
+    fun subscribeAuthQrCode(): Flowable<QrAuthResponse>
+    fun subscribeAcceptAuthQrCode(): Flowable<AuthResponse>
 }

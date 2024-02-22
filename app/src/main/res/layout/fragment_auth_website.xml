@@ -122,29 +122,28 @@
                         tools:text="18:16 (мск)" />
 
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.example.ui.views.loading.CustomLoadingButton
                         android:id="@+id/btnConfirm"
-                        style="@style/BtnBrownStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="20dp"
-                        android:minHeight="@dimen/common_button_min_height"
-                        android:text="@string/confirm"
-                        android:textSize="@dimen/common_button_text_size"
+                        app:buttonMinHeight="@dimen/common_button_min_height"
+                        app:buttonText="@string/confirm"
+                        app:buttonTextSize="@dimen/common_button_text_size"
                         app:layout_constraintBottom_toTopOf="@id/btnDoNotConfirm"
                         app:layout_constraintTop_toBottomOf="@id/tvTime" />
 
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.example.ui.views.loading.CustomLoadingButton
                         android:id="@+id/btnDoNotConfirm"
-                        style="@style/BtnBrownCancelStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="30dp"
-                        android:minHeight="@dimen/common_button_min_height"
-                        android:text="@string/do_not_confirm"
-                        android:textSize="@dimen/common_button_text_size"
+                        app:buttonMinHeight="@dimen/common_button_min_height"
+                        app:buttonBackground="@drawable/custom_btn_brown_cancel_selectable"
+                        app:buttonText="@string/do_not_confirm"
+                        app:buttonTextSize="@dimen/common_button_text_size"
                         app:layout_constraintBottom_toBottomOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

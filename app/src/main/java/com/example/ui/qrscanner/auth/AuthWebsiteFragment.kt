@@ -13,6 +13,7 @@ import com.example.databinding.FragmentAuthWebsiteBinding
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.AuthBackground
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -36,16 +37,16 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            btnConfirm.setOnClickListener { mPresenter.onConfirmEnterToWebsiteClick() }
-            btnDoNotConfirm.setOnClickListener { mPresenter.onDoNotConfirmToEnterWebsiteClick() }
+            btnConfirm.setOnClickListener { mPresenter.onConfirmEnterToWebsiteClick(btnConfirm) }
+            btnDoNotConfirm.setOnClickListener { mPresenter.onDoNotConfirmToEnterWebsiteClick(btnDoNotConfirm) }
         }
     }
 
     override fun setEnterData(data: QrAuthResponse) {
         mBinding.apply {
-            tvDevice.text = "Устройство: " + data.device
-            tvIPAddress.text = "IP адрес: " + data.ipAddress
-            tvTime.text = "Время: " + longToTime(data.timeStamp)
+            tvDevice.text = "Устройство:   " + data.device
+            tvIPAddress.text = "IP адрес:   " + data.ipAddress
+            tvTime.text = "Время:   " + longToTime(data.timeStamp)
         }
     }
 
@@ -64,6 +65,14 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
 
     override fun hideContent() {
         mBinding.clContent.isInvisible = true
+    }
+
+    override fun showCustomLoading(view: CustomLoadingButton) = view.run {
+        showProgressLoading(true)
+    }
+
+    override fun hideCustomLoading(view: CustomLoadingButton) = view.run {
+        showProgressLoading(false)
     }
 
     override fun getFragmentBackgroundDrawable(): Drawable? = null

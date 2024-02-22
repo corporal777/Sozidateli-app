@@ -2,6 +2,7 @@ package com.example.ui.qrscanner
 
 import android.Manifest
 import android.net.Uri
+import android.util.Log
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -36,6 +37,7 @@ class QrScannerToAuthWebPresenter
     }
 
     override fun onSuccessScanning(code: String) {
+        Log.e("CODE", code)
         val token =
             Uri.parse(code).getQueryParameter("code") ?: Uri.parse(code).lastPathSegment ?: ""
         if (!token.isNullOrEmpty()) {
