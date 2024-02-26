@@ -376,11 +376,11 @@ class MainPresenter
         }
     }
 
-    override fun onHandleAuthWebsite(code: String?) {
+    override fun onHandleAuthWebsite(code: String?, socketId: String?) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else if (code.isNullOrBlank()) return
         else viewState.apply {
-            showAuthWebsiteFragment(code)
+            showAuthWebsiteFragment(code, socketId?:"")
             clearIntentData()
         }
     }

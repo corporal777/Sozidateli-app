@@ -31,14 +31,16 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
 
     @ProvidePresenter
     fun providePresenter(): AuthWebsitePresenter = presenterProvider.get().apply {
-        token = AuthWebsiteFragmentArgs.fromBundle(requireArguments()).qrCode
+        val args = AuthWebsiteFragmentArgs.fromBundle(requireArguments())
+        token = args.qrCode
+        socketId = args.socketId
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            btnConfirm.setOnClickListener { mPresenter.onConfirmEnterToWebsiteClick(btnConfirm) }
-            btnDoNotConfirm.setOnClickListener { mPresenter.onDoNotConfirmToEnterWebsiteClick(btnDoNotConfirm) }
+            btnConfirm.setOnClickListener { mPresenter.onConfirmAuthClick(btnConfirm) }
+            btnDoNotConfirm.setOnClickListener { mPresenter.onNotConfirmAuthClick(btnDoNotConfirm) }
         }
     }
 

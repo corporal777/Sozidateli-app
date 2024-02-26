@@ -596,6 +596,10 @@
             android:name="qrCode"
             app:argType="string" />
 
+        <argument
+            android:name="socketId"
+            app:argType="string" />
+
     </fragment>
 
     <fragment

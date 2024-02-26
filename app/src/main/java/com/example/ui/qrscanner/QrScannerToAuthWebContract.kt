@@ -8,7 +8,7 @@ interface QrScannerToAuthWebContract {
     interface View : BaseContract.View {
 
         @OneExecution
-        fun showAuthWebsite(code : String)
+        fun showAuthWebsite(code : String, socketId : String)
 
         @OneExecution
         fun showErrorScanningMessage()

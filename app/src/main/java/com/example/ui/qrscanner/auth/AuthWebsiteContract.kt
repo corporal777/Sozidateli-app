@@ -29,7 +29,7 @@ interface AuthWebsiteContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onConfirmEnterToWebsiteClick(view: CustomLoadingButton)
-        fun onDoNotConfirmToEnterWebsiteClick(view: CustomLoadingButton)
+        fun onConfirmAuthClick(view: CustomLoadingButton)
+        fun onNotConfirmAuthClick(view: CustomLoadingButton)
     }
 }

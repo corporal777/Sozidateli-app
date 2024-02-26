@@ -62,10 +62,10 @@ class QrScannerToAuthWebFragment : BaseFragment<FragmentAuthWebBinding>(),
         codeScanner?.apply { if (!isPreviewActive) startPreview() }
     }
 
-    override fun showAuthWebsite(code: String) {
+    override fun showAuthWebsite(code: String, socketId: String) {
         findNavController().navigate(
             R.id.authWebsiteFragment,
-            AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
+            AuthWebsiteFragmentArgs.Builder(code, socketId).build().toBundle()
         )
     }
 

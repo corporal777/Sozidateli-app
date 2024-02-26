@@ -46,7 +46,7 @@ interface MainContract {
         fun showInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
-        fun showAuthWebsiteFragment(code : String)
+        fun showAuthWebsiteFragment(code : String, socketId: String)
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showAccountChangeFragment(url : String)
@@ -130,6 +130,6 @@ interface MainContract {
         fun onRequestHideErrorMessage()
 
         fun onInviteRegister(email: String, code: String, name: String, lastName: String, middleName: String, invite: Int)
-        fun onHandleAuthWebsite(code : String?)
+        fun onHandleAuthWebsite(code : String?, socketId : String?)
     }
 }

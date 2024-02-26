@@ -25,7 +25,6 @@ interface SocketIOManager {
     fun subscribeNotificationsInvitesCount(): Flowable<NotificationInviteModel>
 
     fun connectToAuthWithQrCode(code : String, socketId : String?): Completable
-    fun confirmAuthWithQrCode(code : String, socketId : String?): Completable
+    fun confirmAuthWithQrCode(code : String, socketId : String?, isAccept : Boolean): Completable
     fun subscribeAuthQrCode(): Flowable<QrAuthResponse>
-    fun subscribeAcceptAuthQrCode(): Flowable<AuthResponse>
 }

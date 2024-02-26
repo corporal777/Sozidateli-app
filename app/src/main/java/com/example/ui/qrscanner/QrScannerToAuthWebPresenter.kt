@@ -37,14 +37,11 @@ class QrScannerToAuthWebPresenter
     }
 
     override fun onSuccessScanning(code: String) {
-        Log.e("CODE", code)
-        val token =
-            Uri.parse(code).getQueryParameter("code") ?: Uri.parse(code).lastPathSegment ?: ""
-        if (!token.isNullOrEmpty()) {
-            viewState.showAuthWebsite(token)
-        } else {
-            viewState.showErrorScanningMessage()
-        }
+        val uri = Uri.parse(code)
+        val qrCode = uri.getQueryParameter("code")
+        val id = uri.getQueryParameter("id")
+        if (!qrCode.isNullOrEmpty()) viewState.showAuthWebsite(qrCode, id ?: "")
+        else viewState.showErrorScanningMessage()
     }
 
 

@@ -60,6 +60,7 @@ import com.example.util.ASSISTANT
 import com.example.util.AUTH_CONFIRM_EMAIL
 import com.example.util.AUTH_CONFIRM_EMAIL_CODE
 import com.example.util.AUTH_CONFIRM_INVITE_ID
+import com.example.util.AUTH_CONFIRM_SOCKET_ID
 import com.example.util.FIELD_CHAT
 import com.example.util.FIELD_CHAT_ID
 import com.example.util.FIELD_EVENT
@@ -208,7 +209,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path qr code
                 else if (lastPath == PATH_QR) {
                     val code = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
-                    presenter.onHandleAuthWebsite(code)
+                    val id = it.getQueryParameter(AUTH_CONFIRM_SOCKET_ID)
+                    presenter.onHandleAuthWebsite(code, id)
                 }
                 //catch path event
                 else if (!lastPath.isNullOrEmpty() && paths.contains(PATH_EVENT)) {
@@ -417,10 +419,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
-    override fun showAuthWebsiteFragment(code: String) {
+    override fun showAuthWebsiteFragment(code: String, socketId: String) {
         findNavController().navigate(
             R.id.authWebsiteFragment,
-            AuthWebsiteFragmentArgs.Builder(code).build().toBundle()
+            AuthWebsiteFragmentArgs.Builder(code, socketId).build().toBundle()
         )
     }
 

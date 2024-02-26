@@ -25,6 +25,7 @@ const val DATE_TIME_FORMAT_DEFAULT_FULL_MONTH = "dd MMMM yyyy HH:mm"
 const val AUTH_CONFIRM_EMAIL_EMAIL = "confirm_email"
 const val AUTH_CONFIRM_EMAIL = "email"
 const val AUTH_CONFIRM_EMAIL_CODE = "code"
+const val AUTH_CONFIRM_SOCKET_ID = "id"
 const val AUTH_CONFIRM_INVITE_ID = "invite"
 
 const val RECOVERY_EMAIL = "recover_email"

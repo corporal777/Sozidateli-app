@@ -19,6 +19,7 @@ import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomLoading
 import withDelay
 import withProgressBarDialogLoading
 import withProgressBarLoading
@@ -28,12 +29,11 @@ import javax.inject.Inject
 class AuthWebsitePresenter
 @Inject constructor(
     private val appData: AppData,
-    private val authRepository: AuthRepository,
     private val socket: SocketIOManager
 ) : BasePresenter<AuthWebsiteContract.View>(appData), AuthWebsiteContract.Presenter {
 
     var token = ""
-    var socketId = "null"
+    var socketId = ""
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -48,7 +48,6 @@ class AuthWebsitePresenter
                     viewState.hideContent()
                 },
                 onNext = {
-                    Log.e("DATA", it.toString())
                     viewState.apply {
                         setEnterData(it)
                         showContent()
@@ -58,38 +57,26 @@ class AuthWebsitePresenter
     }
 
 
-    override fun onConfirmEnterToWebsiteClick(view: CustomLoadingButton) {
-        compositeDisposable += socket.confirmAuthWithQrCode(token, socketId)
-            .andThen(socket.subscribeAcceptAuthQrCode())
+    override fun onConfirmAuthClick(view: CustomLoadingButton) {
+        compositeDisposable += socket.confirmAuthWithQrCode(token, socketId, true)
             .performOnBackgroundOutOnMain()
             .withLoading(view)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                },
-                onNext = {
-                    Log.e("DATA", it.toString())
-                    //viewState.showEventList()
-                })
+                onError = { viewState.showEventList() },
+                onComplete = { viewState.showEventList() })
 
     }
 
-    override fun onDoNotConfirmToEnterWebsiteClick(view: CustomLoadingButton) {
-        compositeDisposable += authRepository.authWebWithQrCode(QrBody(token, false))
-            .withCheckInternetConnectivity()
+    override fun onNotConfirmAuthClick(view: CustomLoadingButton) {
+        compositeDisposable += socket.confirmAuthWithQrCode(token, socketId, false)
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withLoading(view)
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showEventList()
-                },
-                onSuccess = {
-                    viewState.showEventList()
-                })
+                onError = { viewState.showEventList() },
+                onComplete = { viewState.showEventList() })
     }
 
-    private fun <T> Flowable<T>.withLoading(view: CustomLoadingButton): Flowable<T> {
+    private fun Completable.withLoading(view: CustomLoadingButton): Completable {
         val loadingDisposable = Completable.complete()
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { viewState.showCustomLoading(view) }
@@ -104,10 +91,8 @@ class AuthWebsitePresenter
             if (loadingDisposable.isDisposed) viewState.hideCustomLoading(view)
             else loadingDisposable.dispose()
         }
-        return this.doOnNext(actionConsumer())
-            .doFinally(actionHide)
-            .doOnComplete(actionHide)
-            .doOnTerminate(actionHide)
+        return this.doFinally(actionHide)
+            .doOnDispose(actionHide)
             .doOnError(actionConsumer())
     }
 

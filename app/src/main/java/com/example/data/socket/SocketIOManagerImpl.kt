@@ -10,6 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
+import io.socket.client.Ack
 import io.socket.client.IO
 import io.socket.client.Manager
 import io.socket.client.Socket
@@ -19,7 +20,6 @@ import io.socket.engineio.client.transports.WebSocket
 import io.socket.parseqs.ParseQS
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import java.net.URI
@@ -283,12 +283,12 @@ class SocketIOManagerImpl
             logErrorSocket("QrAuthSocket", "Send message to connect")
         }
 
-    override fun confirmAuthWithQrCode(code: String, socketId: String?): Completable =
+    override fun confirmAuthWithQrCode(code: String, socketId: String?, isAccept: Boolean): Completable =
         Completable.fromAction {
             val obj = JSONObject().apply {
                 put("socket", socketId)
                 put("qr", code)
-                put("isAccept", true)
+                put("isAccept", isAccept)
             }
             mSocket?.emit("qrAccept", obj)
             logErrorSocket("QrAuthSocket", "Send message to confirm")
@@ -301,24 +301,9 @@ class SocketIOManagerImpl
                 if (args[0] == null || args[0].toString() == "[]") return@Listener
                 val data = Gson().fromJson(args[0].toString(), QrAuthResponse::class.java)
                 emitter.onNext(data)
-                emitter.onComplete()
             }
-            mSocket?.on("check", listener)
+            mSocket?.once("check", listener)
             logErrorSocket("QrAuthSocket", "Started listening auth with qr code")
-            emitter.setCancellable { mSocket?.off("check", listener) }
-        }, BackpressureStrategy.LATEST)
-
-    override fun subscribeAcceptAuthQrCode(): Flowable<AuthResponse> =
-        Flowable.create({ emitter ->
-            val listener = Emitter.Listener { args ->
-                if (args[0] == null || args[0].toString() == "[]") return@Listener
-                val data = Gson().fromJson(args[0].toString(), AuthResponse::class.java)
-                emitter.onNext(data)
-                emitter.onComplete()
-            }
-            mSocket?.on("check", listener)
-            logErrorSocket("QrAuthSocket", "Started listening auth with qr code")
-            emitter.setCancellable { mSocket?.off("check", listener) }
         }, BackpressureStrategy.LATEST)
 
 
@@ -327,15 +312,26 @@ class SocketIOManagerImpl
         logErrorSocket("Disconnected")
     }
 
-    override fun isConnected(): Single<Boolean> = Single.just(connectionStatus == SocketConnectionState.CONNECTED)
+    override fun isConnected(): Single<Boolean> =
+        Single.just(connectionStatus == SocketConnectionState.CONNECTED)
 
     private fun getHttpClient(): OkHttpClient {
         val myHostnameVerifier = HostnameVerifier { _, _ ->
             return@HostnameVerifier true
         }
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
-            override fun checkServerTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
+            override fun checkClientTrusted(
+                p0: Array<out java.security.cert.X509Certificate>?,
+                p1: String?
+            ) {
+            }
+
+            override fun checkServerTrusted(
+                p0: Array<out java.security.cert.X509Certificate>?,
+                p1: String?
+            ) {
+            }
+
             override fun getAcceptedIssuers(): Array<out java.security.cert.X509Certificate>? {
                 return arrayOf()
             }
@@ -358,7 +354,7 @@ class SocketIOManagerImpl
             .build()
     }
 
-    private fun logErrorSocket(message : String) = Log.e("Socket", message)
-    private fun logErrorSocket(tag : String, message : String) = Log.e(tag, message)
-    private fun logInfoSocket(message : String) = Log.e("Socket", message)
+    private fun logErrorSocket(message: String) = Log.e("Socket", message)
+    private fun logErrorSocket(tag: String, message: String) = Log.e(tag, message)
+    private fun logInfoSocket(message: String) = Log.e("Socket", message)
 }
