@@ -2,8 +2,8 @@ package com.example.ui.state.maxNew.education
 
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.ui.editeducation.items.UserEducationGroup
-import com.example.ui.editeducation.items.UserEducationLevelGroup
+import com.example.ui.userprofile.edit.education.items.UserEducationGroup
+import com.example.ui.userprofile.edit.education.items.UserEducationLevelGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import moxy.presenter.InjectPresenter
@@ -37,9 +37,9 @@ class MaxStatusEducationFragment : BaseMaxStateFragment<MaxStatusEducationPresen
         val levelItem = UserEducationLevelGroup(
             requireContext(),
             user.educationLevel,
-            user.educationLevelList ?: emptyList(),
-            user.academicDegrees ?: emptyList(),
-            user.speciality ?: emptyList(),
+            presenter.getEducationLevels(),
+            presenter.getAcademicDegrees(),
+            presenter.getSpecialities(),
             academicDegree ?: emptyList()
         )
 

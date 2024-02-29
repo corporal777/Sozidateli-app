@@ -165,13 +165,12 @@ interface Api {
     @GET("v1/event")
     fun getEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
-    //+
-    @GET("v1/event/sorted")
-    fun getSortedEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+    @GET("v1/event")
+    fun getEventsListWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
 
     //+
-    @GET("v1/user-calendar/events")
-    fun getUserCalendarEvents(@Query("binds") binds: String): Maybe<ApiNewResponse<List<EventNew>>>
+    @GET("v1/event/event-list")
+    fun getEventsListNew(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
 
     //+
     @GET("v1/event/event-list")
@@ -181,8 +180,15 @@ interface Api {
     @GET("v1/event/event-list")
     fun getOrganizationEventsListWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
 
-    @GET("v1/event")
-    fun getEventsListWithoutPagination(@QueryMap map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
+
+    //+
+    @GET("v1/event/sorted")
+    fun getSortedEventsList(@QueryMap map: Map<String, Any>): Maybe<EventNewModel>
+
+    //+
+    @GET("v1/user-calendar/events")
+    fun getUserCalendarEvents(@Query("binds") binds: String): Maybe<ApiNewResponse<List<EventNew>>>
+
 
     //+
     @GET("v1/organization")

@@ -52,15 +52,15 @@
                             tools:ignore="MissingPrefix" />
 
 
-                        <com.example.ui.views.toolbar.ToolbarCircleButton
+                        <com.example.ui.views.loading.CustomCircleLoadingButton
                             android:visibility="gone"
-                            tools:visibility="invisible"
+                            tools:visibility="visible"
                             android:id="@+id/btnReadAll"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="5dp"
-                            android:text="@string/read_all"
+                            app:circleButtonText="@string/read_all"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/toolbar_label"

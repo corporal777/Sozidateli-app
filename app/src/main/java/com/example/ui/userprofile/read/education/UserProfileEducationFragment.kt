@@ -5,9 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.R
+import com.example.data.models.AcademicDegreeModel
+import com.example.data.models.EducationLevel
+import com.example.data.models.EducationLevelModel
+import com.example.data.models.EducationModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
+import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
+import com.example.extensions.updateItems
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataEducationItem
 import com.example.holders.ProfileDataEducationLevelItem
@@ -47,27 +53,29 @@ class UserProfileEducationFragment : BaseFragment<FragmentUserProfileInterestsBi
         }
     }
 
-    override fun setUserData(user: UserDetail, state: String) {
-        val educationLevel =
-            user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
-        val academicDegrees = user.binds?.academicDegree ?: emptyList()
-        val education = user.binds?.education ?: emptyList()
+
+    override fun setUserEducation(
+        userEducationLevel: String,
+        userAcademicDegrees: List<AcademicDegreeModel>,
+        userEducation: List<EducationModel>
+    ) {
 
         val educationGroup = Section().apply {
-            if (educationLevel == null && education.isNullOrEmpty()) {
+            if (userEducationLevel.isNullOrEmpty() && userEducation.isNullOrEmpty())
                 updateItem(EmptyItem(getString(R.string.no_education)))
-            } else {
-                if (educationLevel != null) setHeader(
+            else updateItems(
+                if (!userEducationLevel.isNullOrEmpty())
                     ProfileDataEducationLevelItem(
-                        educationLevel, academicDegrees,
-                        user.academicDegrees ?: emptyList(), user.speciality ?: emptyList()
+                        userEducationLevel,
+                        userAcademicDegrees,
+                        presenter.getAcademicDegrees(),
+                        presenter.getSpecialities()
                     )
-                )
-                addAll(education.map { ProfileDataEducationItem(it) })
-            }
+                else null,
+                userEducation.map { ProfileDataEducationItem(it) }
+            )
         }
-
-        adapter.update(listOf(educationGroup))
+        adapter.updateGroup(educationGroup)
     }
 
     override fun showEdit() {

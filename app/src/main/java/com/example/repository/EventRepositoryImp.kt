@@ -173,54 +173,7 @@ class EventRepositoryImp
         )
     }*/
 
-    private fun createFieldsData(
-        fields: List<EventRegisterField>?,
-        responseField: List<EventRegisterResponseField?>?
-    ): List<EventRegisterFieldData<*>>? {
-        return fields?.mapNotNull { field ->
-            when (field.type) {
-                EventRegisterField.Type.STRING,
-                EventRegisterField.Type.TEXT_AREA,
-                EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
-                EventRegisterField.Type.DATE,
-                EventRegisterField.Type.DATETIME -> EventRegisterFieldData.Date(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
-                EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<Set<String>>()
-                )
-                EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
-                EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
-                EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
-                    field,
-                    findRegistrationDataValue(
-                        field,
-                        responseField
-                    ).fromJson(EventFile.Deserializer())
-                )
-                EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<Boolean>()
-                )
-                EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<EventPassport>()
-                )
-                else -> null
-            }
-        }
-    }
+
 
     private fun findRegistrationDataValue(
         field: EventRegisterField,
@@ -262,14 +215,14 @@ class EventRepositoryImp
         api.getEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
+    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+        return api.getEventsListNew(map)
+            .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
+    }
 
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
         api.getSortedEventsList(map)
-            .map {
-                Log.e("SIZE", it.data?.size.toString())
-                Log.e("TOTAL", it.totalCount.toString())
-                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
-            }
+            .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
     override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
         return api.getOrganizationEventsList(map)

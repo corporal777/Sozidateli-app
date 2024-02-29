@@ -17,7 +17,7 @@ import com.example.data.models.UserFormResultModel
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneContract
+import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneContract
 import com.example.util.Utils
 import com.google.gson.JsonElement
 import fromJson

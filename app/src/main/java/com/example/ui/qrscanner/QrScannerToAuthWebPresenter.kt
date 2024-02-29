@@ -40,8 +40,10 @@ class QrScannerToAuthWebPresenter
         val uri = Uri.parse(code)
         val qrCode = uri.getQueryParameter("code")
         val id = uri.getQueryParameter("id")
-        if (!qrCode.isNullOrEmpty()) viewState.showAuthWebsite(qrCode, id ?: "")
-        else viewState.showErrorScanningMessage()
+        viewState.apply {
+            if (!qrCode.isNullOrEmpty()) showAuthWebsite(qrCode, id ?: "")
+            else showErrorScanningMessage()
+        }
     }
 
 

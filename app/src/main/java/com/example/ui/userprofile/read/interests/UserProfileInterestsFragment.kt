@@ -15,7 +15,6 @@ import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.userprofile.edit.UserEditFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -81,10 +80,7 @@ class UserProfileInterestsFragment : BaseFragment<FragmentUserProfileInterestsBi
     }
 
     override fun showEdit() {
-        findNavController().navigate(
-            R.id.user_edit_fragment,
-            UserEditFragmentArgs.Builder(UserEditDataType.INTERESTS).build().toBundle()
-        )
+        findNavController().navigate(R.id.editInterestsFragment)
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_interests) }

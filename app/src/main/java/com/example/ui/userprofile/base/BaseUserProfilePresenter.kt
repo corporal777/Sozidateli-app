@@ -31,6 +31,4 @@ abstract class BaseUserProfilePresenter<V : BaseUserProfileContract.View>(
     protected open fun onUserUpdated(user: UserDetail) {
         viewState.setUserData(user, appData.getStateValue())
     }
-
-    protected fun updateUserInternal(update: UserDetail.() -> Unit) = appData.updateUser(update)
 }

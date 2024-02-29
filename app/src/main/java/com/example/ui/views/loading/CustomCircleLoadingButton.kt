@@ -6,6 +6,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -16,6 +19,7 @@ import com.example.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.util.getColor
 import com.example.util.getDrawable
+import com.example.util.setLeftDrawableWithIntrinsicBounds
 import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class CustomCircleLoadingButton : ConstraintLayout {
@@ -30,20 +34,30 @@ class CustomCircleLoadingButton : ConstraintLayout {
         defStyleAttr
     )
 
-    private var isProgressVisible = false
+    private val loadingView = LayoutCircleLoadingButtonBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private val loadingView =
-        LayoutCircleLoadingButtonBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private var isProgressVisible = false
+    var buttonText : CharSequence? = null
+        set(value) {
+            loadingView.btnAction.text = value
+            field = value
+        }
+    var buttonDrawable : Int = 0
+        set(value) {
+            loadingView.btnAction.setButtonLeftIcon(value)
+            field = value
+        }
 
 
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CustomCircleLoadingButton)
-        val iconDrawable = a.getResourceId(R.styleable.CustomCircleLoadingButton_circleLoadingButtonDrawable, 0)
-        val buttonText = a.getText(R.styleable.CustomCircleLoadingButton_circleLoadingButtonText)
+        val drawable = a.getResourceId(R.styleable.CustomCircleLoadingButton_circleButtonDrawable, 0)
+        val text = a.getText(R.styleable.CustomCircleLoadingButton_circleButtonText)
         a.recycle()
 
-        loadingView.btnAction.setLeftIcon(iconDrawable)
-        loadingView.btnAction.text = buttonText
+        buttonDrawable = drawable
+        buttonText = text
     }
 
     init {
@@ -64,18 +78,22 @@ class CustomCircleLoadingButton : ConstraintLayout {
             if (isActive) {
                 background = getDrawable(R.drawable.custom_btn_rounded_corners_active_selectable)
                 setTextColor(getColor(R.color.main_brown_color_new))
-                setLeftIcon(R.drawable.ic_circle_plus_icon)
+                setButtonLeftIcon(R.drawable.ic_circle_plus_icon)
             } else {
                 background = getDrawable(R.drawable.custom_btn_rounded_corners_inactive_selectable)
                 setTextColor(getColor(R.color.circle_rounded_corners_button_color))
-                setLeftIcon(R.drawable.ic_circle_done_icon)
+                setButtonLeftIcon(R.drawable.ic_circle_done_icon)
             }
             text = str
         }
     }
 
-    fun setButtonText(buttonText: CharSequence) {
-        loadingView.btnAction.text = buttonText
+
+    private fun Button.setButtonLeftIcon(icon: Int){
+        if (icon != 0) {
+            setLeftDrawableWithIntrinsicBounds(icon)
+            compoundDrawablePadding = 5.dp
+        }
     }
 
 

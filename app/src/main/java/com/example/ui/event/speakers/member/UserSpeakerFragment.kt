@@ -3,6 +3,7 @@ package com.example.ui.event.speakers.member
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Space
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
@@ -24,7 +25,7 @@ import com.example.ui.event.speakers.member.items.UserSpeakerMainInfoItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.UserSubscribeImageView
-import com.example.ui.views.toolbar.ToolbarCircleButton
+import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -37,10 +38,16 @@ import javax.inject.Provider
 class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
     UserSpeakerContract.View, ToolbarFragment {
 
+    private val space by lazy {
+        Space(requireContext()).apply {
+            isVisible = false
+            layoutParams = ViewGroup.LayoutParams(10.dp, 0)
+        }
+    }
 
     private val goToProfileButton by lazy {
-        ToolbarCircleButton(requireContext()).apply {
-            text = requireContext().getString(R.string.go_to_profile)
+        CustomCircleLoadingButton(requireContext()).apply {
+            buttonText = requireContext().getString(R.string.go_to_profile)
             isVisible = false
             setOnClickListener { presenter.onGoToProfileClick() }
         }
@@ -82,17 +89,10 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         }
     }
 
-    private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) {
-            presenter.onSubEventClick(subEvent)
-        }
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenter.onRemoveFromScheduleClick(subEvent)
+    private val onEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onRemoveFromScheduleClick(subEvent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,25 +104,15 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         }
     }
 
-
-    override fun openChat(userName: String, userAvatar: String?, chatId: String) {
-        val args = ChatFragmentArgs.Builder(userName, chatId)
-            .setUserAvatar(userAvatar).build().toBundle()
-        findNavController().navigate(R.id.chat_fragment, args)
+    override fun setEmptyMainDataPlaceholder() {
+        mainDataSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN))
     }
-
 
     override fun setSpeakersMainInfo(speaker: MemberModel, isCurrentUser: Boolean) {
         mBinding.apply {
-            addToFavoriteButton.apply {
-                isVisible = presenter.isUserRegistered() && !isCurrentUser
-            }
-            goToProfileButton.apply {
-                isVisible = speaker.binds?.user?.state?.isRegistered ?: false
-                if (!isCurrentUser && addToFavoriteButton.isVisible) {
-                    setButtonMargins(0, 0, 0, 10.dp)
-                }
-            }
+            addToFavoriteButton.isVisible = presenter.isUserRegistered() && !isCurrentUser
+            goToProfileButton.isVisible = speaker.binds?.user?.state?.isRegistered ?: false
+            space.isVisible = goToProfileButton.isVisible && addToFavoriteButton.isVisible
         }
 
         mainDataSection.updateItem(
@@ -139,10 +129,7 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         )
     }
 
-    override fun setSpeakerActivities(
-        canShow: Boolean,
-        data: Map<String?, List<EventActivityModel>>?
-    ) {
+    override fun setSpeakerActivities(canShow: Boolean, data: Map<String?, List<EventActivityModel>>?) {
         subEventsDataSection.update(
             data?.map {
                 EventDetailActivitiesItem(
@@ -150,15 +137,10 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
                     canShow,
                     it.key ?: "",
                     it.value,
-                    onSubEventClickListener
+                    onEventClickListener
                 )
             } ?: emptyList()
         )
-    }
-
-
-    override fun setEmptyMainDataPlaceholder() {
-        mainDataSection.updateItem(PlaceholderItem(PlaceholderItem.Type.SPEAKER_MAIN))
     }
 
     override fun updateSpeaker(speaker: UserDetail) {
@@ -170,6 +152,13 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         subEventsDataSection.findItemBy<EventActivityItem> { it.id == idLong }
             ?.notifyChanged(subEvent)
     }
+
+    override fun openChat(userName: String, userAvatar: String?, chatId: String) {
+        val args = ChatFragmentArgs.Builder(userName, chatId)
+            .setUserAvatar(userAvatar).build().toBundle()
+        findNavController().navigate(R.id.chat_fragment, args)
+    }
+
 
     override fun showSubEvent(eventId: String, subEventId: String) {
         val args = SubEventFragmentArgs.Builder(eventId, subEventId).build().toBundle()
@@ -185,7 +174,6 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
-
     override fun layout(): Int = R.layout.fragment_user_speaker
     override val title: CharSequence by lazy { "" }
 
@@ -193,6 +181,7 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
         view.apply {
             removeAllViews()
             addView(goToProfileButton, 0)
+            addView(space)
             addView(addToFavoriteButton, 1)
         }
     }

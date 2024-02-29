@@ -7,8 +7,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentRecoveryPasswordBinding
 import com.example.ui.base.BaseFragment
-import com.example.ui.userprofile.edit.password.confirm.PhoneConfirmPasswordFragmentArgs
-import com.example.ui.userprofile.edit.password.confirm.EmailConfirmPasswordDialog
+import com.example.ui.userprofile.common.password.confirm.EmailConfirmPasswordDialog
+import com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragmentArgs
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

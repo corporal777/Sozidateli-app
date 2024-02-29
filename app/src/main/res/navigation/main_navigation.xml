@@ -307,9 +307,7 @@
             android:id="@+id/user_to_chat"
             app:destination="@id/chat_fragment"
             app:launchSingleTop="true" />
-        <action
-            android:id="@+id/user_to_edit"
-            app:destination="@id/user_edit_fragment" />
+
         <action
             android:id="@+id/user_to_organization"
             app:destination="@id/organization_fragment_new" />
@@ -319,20 +317,12 @@
     <fragment
         android:id="@+id/user_profile_main_data_fragment"
         android:name="com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment"
-        tools:layout="@layout/fragment_user_profile_main_data">
-        <action
-            android:id="@+id/to_edit"
-            app:destination="@+id/user_edit_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile_main_data" />
 
     <fragment
         android:id="@+id/user_profile_contacts_fragment"
         android:name="com.example.ui.userprofile.read.contacts.UserProfileContactsFragment"
-        tools:layout="@layout/fragment_user_profile_main_data">
-        <action
-            android:id="@+id/to_edit"
-            app:destination="@+id/user_edit_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile_main_data" />
 
     <fragment
         android:id="@+id/user_profile_settings_fragment"
@@ -342,11 +332,7 @@
     <fragment
         android:id="@+id/user_profile_interests_fragment"
         android:name="com.example.ui.userprofile.read.interests.UserProfileInterestsFragment"
-        tools:layout="@layout/fragment_user_profile_interests">
-        <action
-            android:id="@+id/to_edit"
-            app:destination="@+id/user_edit_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile_interests" />
 
     <fragment
         android:id="@+id/user_profile_fragment"
@@ -361,44 +347,32 @@
         <action
             android:id="@+id/profile_to_interests"
             app:destination="@+id/user_profile_interests_fragment" />
+
+        <action
+            android:id="@+id/profile_to_interests_edit"
+            app:destination="@+id/editInterestsFragment" />
         <action
             android:id="@+id/profile_to_education"
             app:destination="@+id/user_profile_education_fragment" />
         <action
             android:id="@+id/profile_to_experience"
             app:destination="@+id/user_profile_experience_fragment" />
-
-        <action
-            android:id="@+id/profile_to_edit"
-            app:destination="@+id/user_edit_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/user_profile_experience_fragment"
         android:name="com.example.ui.userprofile.read.experience.UserProfileExperienceFragment"
-        tools:layout="@layout/fragment_user_profile_experience">
-        <action
-            android:id="@+id/to_edit"
-            app:destination="@+id/user_edit_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile_experience" />
 
     <fragment
         android:id="@+id/user_profile_education_fragment"
         android:name="com.example.ui.userprofile.read.education.UserProfileEducationFragment"
-        tools:layout="@layout/fragment_user_profile_interests">
-        <action
-            android:id="@+id/to_edit"
-            app:destination="@+id/user_edit_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile_interests" />
 
     <fragment
         android:id="@+id/user_edit_fragment"
-        android:name="com.example.ui.userprofile.edit.UserEditFragment"
-        tools:layout="@layout/fragment_user">
-        <argument
-            android:name="type"
-            app:argType="com.example.data.models.UserEditDataType" />
-    </fragment>
+        android:name="com.example.ui.userprofile.edit.maindata.EditMainDataFragment"
+        tools:layout="@layout/fragment_user" />
 
     <fragment
         android:id="@+id/search_tabs_fragment"
@@ -569,14 +543,26 @@
 
     <fragment
         android:id="@+id/editWorksFragment"
-        android:name="com.example.ui.editwork.EditWorksFragment"
+        android:name="com.example.ui.userprofile.edit.work.EditWorksFragment"
         android:label="EditWorksFragment"
         tools:layout="@layout/fragment_edit_work_fragment" />
 
     <fragment
         android:id="@+id/editEducationFragment"
-        android:name="com.example.ui.editeducation.EditEducationFragment"
+        android:name="com.example.ui.userprofile.edit.education.EditEducationFragment"
         android:label="EditEducationFragment"
+        tools:layout="@layout/fragment_edit_education_fragment" />
+
+    <fragment
+        android:id="@+id/editContactsFragment"
+        android:name="com.example.ui.userprofile.edit.contacts.EditContactsFragment"
+        android:label="EditContactsFragment"
+        tools:layout="@layout/fragment_edit_education_fragment" />
+
+    <fragment
+        android:id="@+id/editInterestsFragment"
+        android:name="com.example.ui.userprofile.edit.interests.EditInterestsFragment"
+        android:label="EditInterestsFragment"
         tools:layout="@layout/fragment_edit_education_fragment" />
 
 
@@ -807,7 +793,7 @@
 
     <fragment
         android:id="@+id/passwordConfirmFragment"
-        android:name="com.example.ui.userprofile.edit.password.confirm.PhoneConfirmPasswordFragment"
+        android:name="com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragment"
         android:label="PhoneConfirmPasswordFragment">
 
         <argument
@@ -841,12 +827,12 @@
 
     <fragment
         android:id="@+id/changePhoneFragment"
-        android:name="com.example.ui.userprofile.edit.phone.ChangePhoneFragment"
+        android:name="com.example.ui.userprofile.common.phone.ChangePhoneFragment"
         android:label="ChangePhoneFragment"/>
 
     <fragment
         android:id="@+id/changeEmailFragment"
-        android:name="com.example.ui.userprofile.edit.email.ChangeEmailFragment"
+        android:name="com.example.ui.userprofile.common.email.ChangeEmailFragment"
         android:label="ChangeEmailFragment">
 
         <argument
@@ -857,12 +843,12 @@
 
     <fragment
         android:id="@+id/changeShortNameFragment"
-        android:name="com.example.ui.userprofile.edit.shortName.ChangeShortNameFragment"
+        android:name="com.example.ui.userprofile.common.shortName.ChangeShortNameFragment"
         android:label="ChangeShortNameFragment" />
 
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.example.ui.userprofile.edit.password.ChangePasswordFragment"
+        android:name="com.example.ui.userprofile.common.password.ChangePasswordFragment"
         android:label="ChangePasswordFragment">
 
         <argument
@@ -873,7 +859,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.example.ui.userprofile.edit.password.reset.ResetPasswordFragment"
+        android:name="com.example.ui.userprofile.common.password.reset.ResetPasswordFragment"
         android:label="ResetPasswordFragment">
 
         <argument

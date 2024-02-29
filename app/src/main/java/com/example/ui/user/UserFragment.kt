@@ -216,7 +216,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
 
     private fun initEducationDataItem(user: UserDetail): Group? {
         val educationLevel =
-            user.educationLevelList?.firstOrNull { it.id == user.educationLevel?.value }?.name
+            presenter.getEducationLevels().firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()
         val education = user.binds?.education ?: emptyList()
         return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
@@ -228,7 +228,8 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
                     if (!educationLevel.isNullOrEmpty()) setHeader(
                         ProfileDataEducationLevelItem(
                             educationLevel, academicDegrees,
-                            user.academicDegrees ?: emptyList(), user.speciality ?: emptyList()
+                            presenter.getAcademicDegrees(),
+                            presenter.getSpecialities()
                         )
                     )
                     addAll(education.map { ProfileDataEducationItem(it) })
@@ -247,7 +248,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
                 add(Section().apply {
                     if (work.isNullOrEmpty()) add(ProfileNoWorkExperienceItem(resources.getString(R.string.no_experience)))
                     addAll(work.mapIndexed { index, socialRoles ->
-                        ProfileDataWorkExperienceItem(socialRoles, index == 0)
+                        ProfileDataWorkExperienceItem(socialRoles)
                     })
                 })
             }

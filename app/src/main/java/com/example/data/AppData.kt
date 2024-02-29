@@ -10,9 +10,7 @@ import io.reactivex.subjects.PublishSubject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class AppData(
-    private val appPrefs: AppPrefs
-) {
+class AppData(private val appPrefs: AppPrefs) {
 
     var updateTime: Long = appPrefs.updateTime
         set(value) {
@@ -109,13 +107,9 @@ class AppData(
             if (changed) notificationsCountSubject.onNext(value)
         }
 
-    var interests: List<InterestNew>? = null
-    var supportQuestions: List<SupportData> = emptyList()
-    val filterRegionsList = arrayListOf<SearchRegion>()
 
     private var newUser: UserDetail? = null
     private var newChatMessage: MessageModel? = null
-
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
@@ -130,11 +124,18 @@ class AppData(
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
     val chatUnreadMessageSubject = BehaviorSubject.createDefault(newChatMessage.asOptional())
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
-    val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
-    val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
+
     private var eventFormats: List<NewEventFormat>? = null
+    var interests: List<InterestNew>? = null
+    var supportQuestions: List<SupportData> = emptyList()
+    val filterRegionsList = arrayListOf<SearchRegion>()
+    val educationLevels = arrayListOf<EducationLevel>()
+    val academicDegrees = arrayListOf<EducationLevel>()
+    val specialities = arrayListOf<EducationLevel>()
 
     //new notifications subjects
+    val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
+    val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
     private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
     private var notificationsInvites = NotificationInviteModel(0, 0, 0)
     private val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
@@ -143,7 +144,6 @@ class AppData(
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
     }
-
     fun getEventFormats() = eventFormats
 
     fun setAllUserInfo(user: UserDetail) {
@@ -179,14 +179,8 @@ class AppData(
     fun setUserShort(user: UserDetail) {
         val changed = this.newUser != user
         val binds = this.newUser?.binds
-        val educationLevelList = this.newUser?.educationLevelList
-        val speciality = this.newUser?.speciality
-        val academicDegrees = this.newUser?.academicDegrees
         this.newUser = user
         this.newUser?.binds = binds
-        this.newUser?.educationLevelList = educationLevelList
-        this.newUser?.speciality = speciality
-        this.newUser?.academicDegrees = academicDegrees
         appPrefs.userId = user.id
         if (changed) userChangeSubject.onNext(newUser.asOptional())
     }
@@ -194,16 +188,6 @@ class AppData(
     fun updateWorkExperience(data: WorkExperienceServerModel) {
         this.newUser?.binds?.workExperience?.absent = data.absent
         this.newUser?.binds?.workExperience?.models = data.data
-        userChangeSubject.onNext(newUser.asOptional())
-    }
-
-    fun updateEducationLevel(data: List<EducationLevel>?) {
-        this.newUser?.educationLevelList = data
-        userChangeSubject.onNext(newUser.asOptional())
-    }
-
-    fun updateSpeciality(data: List<EducationLevel>?) {
-        this.newUser?.speciality = data
         userChangeSubject.onNext(newUser.asOptional())
     }
 
@@ -215,15 +199,8 @@ class AppData(
         this.newUser?.binds?.academicDegree = data
     }
 
-    fun updateAcademicDegrees(data: List<EducationLevel>?) {
-        this.newUser?.academicDegrees = data
-        userChangeSubject.onNext(newUser.asOptional())
-    }
-
     fun getUser(): UserDetail = newUser
         ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
-
-    fun getUserSafe() : UserDetail? = newUser
 
     fun updateUser(update: UserDetail.() -> Unit) {
         userChangeSubject.onNext(getUser().apply(update).asOptional())
@@ -306,10 +283,5 @@ class AppData(
         else if(email.value.isNullOrEmpty()) return false
         else if (email.isConfirmed == false) return false
         else return true
-    }
-
-    fun isUserHasEmailOrPhone(): Boolean {
-        if (newUser == null) return false
-        else return !(getUser().personalPhone?.value.isNullOrEmpty() || getUser().personalEmail.isNullOrEmpty())
     }
 }

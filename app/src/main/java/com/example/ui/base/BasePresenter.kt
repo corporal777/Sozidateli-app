@@ -56,6 +56,9 @@ open class BasePresenter<V : BaseContract.View>
 
 
     fun getUserData() = appData.getUser()
+    fun getEducationLevels() = appData.educationLevels
+    fun getAcademicDegrees() = appData.academicDegrees
+    fun getSpecialities() = appData.specialities
 
     fun getHasBase() = appData.hasBaseState
     fun isStoriesShown() = appData.isStoriesShown

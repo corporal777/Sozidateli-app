@@ -35,12 +35,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.example.ui.views.toolbar.ToolbarCircleButton
+                        <com.example.ui.views.loading.CustomCircleLoadingButton
                             android:id="@+id/btnGoToMyTimeTable"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:text="@string/my_timetable_title"
+                            app:circleButtonText="@string/my_timetable_title"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

@@ -5,16 +5,27 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.example.ui.views.toolbar.ToolbarCircleButton
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAction"
+        android:includeFontPadding="false"
+        fontPath="fonts/sf_pro_text_semibold.ttf"
+        android:paddingHorizontal="@dimen/toolbar_circle_button_padding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/link_account"
-        app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
+        android:background="@drawable/custom_btn_rounded_corners_active_selectable"
+        android:letterSpacing="-0.01"
+        android:minHeight="25dp"
+        android:stateListAnimator="@null"
+        android:textAllCaps="false"
+        android:textColor="@color/main_brown_color_new"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/link_account" />
+
 
     <com.example.ui.views.CustomProgressBar
         android:id="@+id/progress_load"

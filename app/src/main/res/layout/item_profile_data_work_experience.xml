@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/tvDates"
             style="@style/Profile.Data"
-            fontPath="fonts/Roboto-Medium.ttf"
+            fontPath="fonts/sf_pro_display_medium.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constrainedWidth="true"

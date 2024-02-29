@@ -270,21 +270,21 @@ class UserRepositoryImp
         api.getInterestsList(200, ids)
 
     override fun getEducationLevel(): Single<EducationLevelModel> {
-        val education = appData.getUser().educationLevelList
-        return if (education != null) Single.just(EducationLevelModel(education, 6))
-        else api.getEducationLevel().doOnSuccess { appData.updateEducationLevel(it.data) }
+        val education = appData.educationLevels
+        return if (!education.isNullOrEmpty()) Single.just(EducationLevelModel(education, 6))
+        else api.getEducationLevel().doOnSuccess { appData.educationLevels.addAll(it.data ?: emptyList()) }
     }
 
     override fun getSpeciality(): Single<EducationLevelModel> {
-        val speciality = appData.getUser().speciality
-        return if (speciality != null) Single.just(EducationLevelModel(speciality, 23))
-        else api.getSpeciality(100).doOnSuccess { appData.updateSpeciality(it.data) }
+        val speciality = appData.specialities
+        return if (!speciality.isNullOrEmpty()) Single.just(EducationLevelModel(speciality, 23))
+        else api.getSpeciality(100).doOnSuccess { appData.specialities.addAll(it.data ?: emptyList()) }
     }
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
-        val academicDegrees = appData.getUser().academicDegrees
-        return if (academicDegrees != null) Single.just(EducationLevelModel(academicDegrees, 4))
-        else api.getAcademicDegrees().doOnSuccess { appData.updateAcademicDegrees(it.data) }
+        val academicDegrees = appData.academicDegrees
+        return if (!academicDegrees.isNullOrEmpty()) Single.just(EducationLevelModel(academicDegrees, 4))
+        else api.getAcademicDegrees().doOnSuccess { appData.academicDegrees.addAll(it.data?: emptyList()) }
     }
 
     private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =

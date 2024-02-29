@@ -518,6 +518,12 @@ fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): Fil
     return file
 }
 
+fun getSiteFilter(): Array<InputFilter> {
+    return arrayOf(InputFilter { source, _, _, _, _, _ ->
+        source.toString().filterNot { it.isWhitespace() }
+    })
+}
+
 fun getEmailFilter(): Array<InputFilter> {
     return arrayOf(InputFilter { source, _, _, _, _, _ ->
         source.toString().filter {

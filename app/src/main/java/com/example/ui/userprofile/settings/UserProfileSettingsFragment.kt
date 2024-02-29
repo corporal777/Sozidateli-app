@@ -15,7 +15,7 @@ import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.userprofile.edit.name.ChangeNameFragment
+import com.example.ui.userprofile.common.name.ChangeNameFragment
 import com.example.ui.views.CustomCheckView
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.dialogs.MessageDialogWithTextButtons

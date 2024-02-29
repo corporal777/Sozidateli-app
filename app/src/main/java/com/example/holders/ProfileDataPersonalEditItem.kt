@@ -1,7 +1,6 @@
 package com.example.holders
 
 import android.content.Context
-import android.util.Log
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.FieldDetails
@@ -9,18 +8,14 @@ import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
 import com.example.databinding.ItemProfileDataEditPersonalBinding
-import com.example.extensions.defaultDateFormatter
-import com.example.extensions.firstLetterToUppercase
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.ui.userprofile.edit.items.AboutAdditionalInfoBottomSheet
-import com.example.ui.userprofile.edit.items.AdditionalInfoBottomSheet
+import com.example.ui.views.dialogs.AboutAdditionalInfoBottomSheet
+import com.example.ui.views.dialogs.AdditionalInfoBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
 import com.xwray.groupie.databinding.BindableItem
-import initAsDatePicker
-import java.util.*
 
 class ProfileDataPersonalEditItem(
     id: Long,

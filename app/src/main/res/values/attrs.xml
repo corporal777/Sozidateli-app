@@ -3,12 +3,8 @@
     <attr name="viewBackground" format="reference" />
 
     <declare-styleable name="CustomCircleLoadingButton">
-        <attr name="circleLoadingButtonDrawable" format="reference" />
-        <attr name="circleLoadingButtonText" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="ToolbarCircleButton">
         <attr name="circleButtonDrawable" format="reference" />
+        <attr name="circleButtonText" format="string" />
     </declare-styleable>
 
     <declare-styleable name="CustomTextMenuView">

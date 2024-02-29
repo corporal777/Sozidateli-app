@@ -3,7 +3,7 @@ package com.example.ui.state.maxNew.work
 import com.example.R
 import com.example.data.models.UserDetail
 import com.example.extensions.updateGroup
-import com.example.ui.editwork.items.UserWorksGroup
+import com.example.ui.userprofile.edit.work.items.UserWorksGroup
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

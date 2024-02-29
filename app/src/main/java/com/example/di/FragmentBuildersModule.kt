@@ -5,7 +5,7 @@ import com.example.ui.accountChange.ChangeAccountFragment
 import com.example.ui.agreement.UserAgreementFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragment
-import com.example.ui.userprofile.edit.password.confirm.PhoneConfirmPasswordFragment
+import com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragment
 import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragment
 import com.example.ui.auth.login.LoginFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragment
@@ -21,8 +21,8 @@ import com.example.ui.chat.ChatFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
-import com.example.ui.editeducation.EditEducationFragment
-import com.example.ui.editwork.EditWorksFragment
+import com.example.ui.userprofile.edit.education.EditEducationFragment
+import com.example.ui.userprofile.edit.work.EditWorksFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.activities.ActivitiesFragment
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragment
@@ -59,7 +59,7 @@ import com.example.ui.page.PageFragment
 import com.example.ui.partner.PartnerFragment
 import com.example.ui.profile.ProfileFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.userprofile.edit.shortName.ChangeShortNameFragment
+import com.example.ui.userprofile.common.shortName.ChangeShortNameFragment
 import com.example.ui.qrscanner.QrScannerToAuthWebFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragment
 import com.example.ui.search.chat.SearchChatFragment
@@ -85,19 +85,21 @@ import com.example.ui.support.sendFile.SupportFilesBottomSheet
 import com.example.ui.user.UserFragment
 import com.example.ui.userSessions.UserSessionsFragment
 import com.example.ui.userprofile.UserProfileFragment
-import com.example.ui.userprofile.edit.UserEditFragment
+import com.example.ui.userprofile.edit.maindata.EditMainDataFragment
 import com.example.ui.userprofile.read.contacts.UserProfileContactsFragment
 import com.example.ui.userprofile.read.education.UserProfileEducationFragment
 import com.example.ui.userprofile.read.experience.UserProfileExperienceFragment
 import com.example.ui.userprofile.read.interests.UserProfileInterestsFragment
 import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.userprofile.settings.UserProfileSettingsFragment
-import com.example.ui.userprofile.edit.email.ChangeEmailFragment
-import com.example.ui.userprofile.edit.name.ChangeNameFragment
-import com.example.ui.userprofile.edit.password.ChangePasswordFragment
-import com.example.ui.userprofile.edit.phone.ChangePhoneFragment
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
-import com.example.ui.userprofile.edit.password.reset.ResetPasswordFragment
+import com.example.ui.userprofile.common.email.ChangeEmailFragment
+import com.example.ui.userprofile.common.name.ChangeNameFragment
+import com.example.ui.userprofile.common.password.ChangePasswordFragment
+import com.example.ui.userprofile.common.phone.ChangePhoneFragment
+import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.common.password.reset.ResetPasswordFragment
+import com.example.ui.userprofile.edit.contacts.EditContactsFragment
+import com.example.ui.userprofile.edit.interests.EditInterestsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -229,7 +231,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeUserProfileExperienceFragment(): UserProfileExperienceFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeUserEditFragment(): UserEditFragment
+    abstract fun contributeUserEditFragment(): EditMainDataFragment
 
     @ContributesAndroidInjector
     abstract fun contributeBannedFragment(): BannedFragment
@@ -269,6 +271,12 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeEditEducationFragment(): EditEducationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEditContactsFragment(): EditContactsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeEditInterestsFragment(): EditInterestsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeQrScannerAuthWebsiteFragment(): QrScannerToAuthWebFragment

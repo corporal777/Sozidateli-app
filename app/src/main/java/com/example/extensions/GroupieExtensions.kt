@@ -36,16 +36,8 @@ inline fun Group.forEachItems(selector: (Item<*>, position: Int) -> Unit) {
     }
 }
 
-inline fun <VH : GroupieViewHolder, reified I : NestedGroup> GroupAdapter<VH>.findGroupBy(selector: (I) -> Boolean): I? {
-    for (i in 0 until this.groupCount) {
-        val group = getGroup(i)
-        if (group is I && selector(group)) return group
-    }
 
-    return null
-}
-
-inline fun <reified I : NestedGroup> GroupAdapter<com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder>.findGroup(selector: (I) -> Boolean): I? {
+inline fun <reified I : NestedGroup> GroupAdapter<GroupieViewHolder>.findGroupBy(selector: (I) -> Boolean): I? {
     for (i in 0 until this.groupCount) {
         val group = getGroup(i)
         if (group is I && selector(group)) return group
@@ -120,6 +112,11 @@ fun Section.updateGroup(item: Group?){
 }
 
 fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateItem(item: Item<*>?) {
+    if (item == null) update(emptyList())
+    else update(listOf(item))
+}
+
+fun <VH : GroupieViewHolder> GroupAdapter<VH>.updateGroup(item: Group?) {
     if (item == null) update(emptyList())
     else update(listOf(item))
 }

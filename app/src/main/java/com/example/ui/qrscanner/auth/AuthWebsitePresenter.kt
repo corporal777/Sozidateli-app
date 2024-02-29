@@ -37,7 +37,6 @@ class AuthWebsitePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        //compositeDisposable += authRepository.sendQrCode(QrBody(token, null))
         compositeDisposable += socket.connectToAuthWithQrCode(token, socketId)
             .andThen(socket.subscribeAuthQrCode())
             .performOnBackgroundOutOnMain()

@@ -78,13 +78,13 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:visibility="visible" />
 
-                    <com.example.ui.views.toolbar.ToolbarCircleButton
+                    <com.example.ui.views.loading.CustomCircleLoadingButton
                         android:id="@+id/btnReadAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
-                        android:text="@string/read_all"
+                        app:circleButtonText="@string/read_all"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

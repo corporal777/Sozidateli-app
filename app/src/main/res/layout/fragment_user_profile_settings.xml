@@ -148,12 +148,12 @@
                     tools:drawablePadding="10dp" />
 
 
-                <com.example.ui.views.toolbar.ToolbarCircleButton
+                <com.example.ui.views.loading.CustomCircleLoadingButton
                     android:id="@+id/btnCreatePassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/create_password"
+                    app:circleButtonText="@string/create_password"
                     app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
                     app:layout_constraintBottom_toBottomOf="@id/tvPassword"
                     app:layout_constraintEnd_toEndOf="@id/tvPassword"
@@ -212,7 +212,8 @@
                     android:id="@+id/btnLinkVk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:circleLoadingButtonText="@string/link_account"
+                    app:circleButtonText="@string/link_account"
+                    app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -245,11 +246,11 @@
                     app:layout_constraintStart_toEndOf="@id/iv_gos_logo"
                     app:layout_constraintTop_toTopOf="@id/iv_gos_logo" />
 
-                <com.example.ui.views.toolbar.ToolbarCircleButton
+                <com.example.ui.views.loading.CustomCircleLoadingButton
                     android:id="@+id/btnLinkGos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/link_account"
+                    app:circleButtonText="@string/link_account"
                     app:circleButtonDrawable="@drawable/ic_circle_plus_icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

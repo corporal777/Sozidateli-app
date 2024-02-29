@@ -56,8 +56,6 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
 
             tvAdditional.text = user.notes?.value
 
-
-
             tvFiles.apply {
                 var filesText = ""
                 user.binds?.recommendationFile?.forEach { file ->
@@ -75,7 +73,7 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
 
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileMainDataFragmentDirections.toEdit(UserEditDataType.PERSONAL))
+        findNavController().navigate(R.id.user_edit_fragment)
     }
 
     private fun setGender(user: UserDetail): String {

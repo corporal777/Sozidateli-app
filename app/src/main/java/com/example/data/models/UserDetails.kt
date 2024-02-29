@@ -46,11 +46,6 @@ data class UserDetail(
     @SerializedName("educationLevel")
     var educationLevel: ToggleIntModel? = null,
     var binds: UserBinds? = null,
-    @SerializedName("educationLevelList")
-    var educationLevelList: List<EducationLevel>? = null,
-    var speciality: List<EducationLevel>? = null,
-    @SerializedName("academicDegrees")
-    var academicDegrees: List<EducationLevel>? = null,
     @SerializedName("isCurrentUser")
     var isCurrentUser: Boolean = false,
     @SerializedName("blockedNotifications")

@@ -119,7 +119,7 @@ class EventDetailActionItem(
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_participate
                 clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
-                actionText = getTextShowForm(false, tvCancel)
+
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_cancel_request
                 clickAction = { state.checkStateLevel { clickListener.onActionCancel() } }
@@ -241,21 +241,17 @@ class EventDetailActionItem(
         textView: TextView
     ): CharSequence {
         return CustomSpannableString(context.getString(R.string.change_decision)).apply {
-            setClickSpan(textView) {
-                eventState.checkStateLevel { showCancelRegisterDialog() }
-            }
+            setClickSpan(textView) { eventState.checkStateLevel { showCancelRegisterDialog() } }
         }
     }
 
     private fun getTextShowForm(withDelimiter: Boolean, textView: TextView): CharSequence? {
-        if (!eventData.isFormEnabled()) return null
-        else if (!eventData.isHasFormResult()) return null
+        if (!eventData.isFormEnabled()) return ""
+        else if (!eventData.isHasFormResult()) return ""
         else return CustomSpannableString(
             if (withDelimiter) " ∙ " + context.getString(R.string.my_event_form)
             else context.getString(R.string.my_event_form)
-        ).apply {
-            setClickSpan(textView) { onShowFormResult.invoke() }
-        }
+        ).apply { setClickSpan(textView) { onShowFormResult.invoke() } }
     }
 
     fun getActionButton(): CustomLoadingButton? {

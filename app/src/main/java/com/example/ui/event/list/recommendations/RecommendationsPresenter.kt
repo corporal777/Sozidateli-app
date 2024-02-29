@@ -75,7 +75,7 @@ class RecommendationsPresenter
         offset: Int
     ): Maybe<PaginationResponse<EventNew?>> {
         Log.e("EventsList", "limit: $limit ,offset: $offset")
-        return eventRepository.getEventsList(
+        return eventRepository.getEventsListNew(
             mapOf(
                 EVENT_LIMIT to limit,
                 EVENT_OFFSET to offset,

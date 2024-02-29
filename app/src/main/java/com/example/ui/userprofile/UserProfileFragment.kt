@@ -86,7 +86,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProf
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToEdit(UserEditDataType.INTERESTS))
+        findNavController().navigate(UserProfileFragmentDirections.profileToInterestsEdit())
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }

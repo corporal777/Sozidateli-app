@@ -13,8 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileDataWorkExperienceItem(
-    private val work: WorkExperience,
-    private val compactTopMargin: Boolean
+    private val work: WorkExperience
 ) : BindableItem<ItemProfileDataWorkExperienceBinding>() {
 
     override fun bind(viewBinding: ItemProfileDataWorkExperienceBinding, position: Int) {
@@ -33,15 +32,6 @@ class ProfileDataWorkExperienceItem(
                 )
                 val years = resources.getString(R.string.profile_dates, startYear, endYear)
                 text = years
-
-                (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                    setMargins(
-                        leftMargin,
-                        if (compactTopMargin) 5.dp else 20.dp,
-                        rightMargin,
-                        bottomMargin
-                    )
-                }
             }
 
             tvProject.text = work.organization?.trim() ?: "-"

@@ -20,7 +20,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.userprofile.edit.confirm.ConfirmEmailPhoneFragment
+import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.ContactsType

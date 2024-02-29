@@ -72,7 +72,7 @@ class UserProfileContactsFragment : BaseFragment<FragmentUserProfileContactsBind
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileContactsFragmentDirections.toEdit(UserEditDataType.CONTACTS))
+        findNavController().navigate(R.id.editContactsFragment)
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_contacts) }

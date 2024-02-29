@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.data.models.WorkExperience
 import com.example.databinding.FragmentUserProfileInterestsBinding
+import com.example.extensions.updateItem
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem
 import com.example.interfaces.ToolbarFragment
@@ -44,19 +46,13 @@ class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsB
         }
     }
 
-    override fun setUserData(user: UserDetail, state: String) {
-        val work = user.binds?.workExperience?.models ?: emptyList()
-        if (work.isEmpty()) {
-            adapter.update(
-                arrayListOf(
-                    EmptyItem(
-                        context?.resources?.getString(R.string.no_experience) ?: ""
-                    )
-                )
-            )
+
+    override fun setUserExperience(workExperience: List<WorkExperience>) {
+        if (workExperience.isEmpty()) {
+            adapter.updateItem(EmptyItem(getString(R.string.no_experience)))
         } else {
-            adapter.update(work.mapIndexed { index, socialRoles ->
-                ProfileDataWorkExperienceItem(socialRoles, index == 0)
+            adapter.update(workExperience.map {
+                ProfileDataWorkExperienceItem(it)
             })
         }
     }
