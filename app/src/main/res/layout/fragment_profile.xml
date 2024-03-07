@@ -23,20 +23,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp">
 
-                <ImageView
-                    android:id="@+id/ivAvatar"
+                <com.example.ui.views.CustomAvatarView
+                    android:id="@+id/viewAvatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_marginStart="@dimen/margin_horizontal_default"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/background_corners"
                     android:contentDescription="@string/content_description_avatar"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/avatar_placeholder_circle" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvName"
@@ -51,8 +48,8 @@
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toTopOf="@id/state_title"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivAvatar"
-                    app:layout_constraintTop_toTopOf="@+id/ivAvatar"
+                    app:layout_constraintStart_toEndOf="@+id/viewAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/viewAvatar"
                     app:layout_constraintVertical_chainStyle="packed"
                     tools:text="@tools:sample/full_names" />
 
@@ -67,8 +64,8 @@
                     android:paddingHorizontal="5dp"
                     android:text="@string/state"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
-                    app:layout_constraintStart_toEndOf="@id/ivAvatar"
+                    app:layout_constraintBottom_toBottomOf="@id/viewAvatar"
+                    app:layout_constraintStart_toEndOf="@id/viewAvatar"
                     app:layout_constraintTop_toBottomOf="@id/tvName" />
 
 

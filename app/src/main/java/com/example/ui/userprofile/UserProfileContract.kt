@@ -9,7 +9,7 @@ interface UserProfileContract {
     interface View : BaseUserProfileContract.View {
 
         @Skip
-        fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean)
+        fun showTakePictureChooser()
 
         @OneExecution
         fun showMainData()

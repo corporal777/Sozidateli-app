@@ -25,7 +25,7 @@
                 android:layout_above="@+id/rlRotation" />
 
 
-<!--            <com.example.ui.gallery.cropImage.cropHelper.CropImageView-->
+<!--            <com.example.ui.views.crop.cropHelper.CropImageView-->
 <!--                android:id="@+id/cropView"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="match_parent"-->
@@ -42,7 +42,7 @@
 <!--                custom:scv_min_frame_size="50dp"-->
 <!--                custom:scv_touch_padding="8dp" />-->
 
-            <com.example.ui.gallery.cropImage.cropView.CustomCropView
+            <com.example.ui.views.crop.cropView.CustomCropView
                 android:id="@+id/customCropView"
                 android:layout_width="match_parent"
                 android:layout_above="@+id/rlRotation"

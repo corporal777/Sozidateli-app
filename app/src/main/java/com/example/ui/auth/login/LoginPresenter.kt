@@ -110,8 +110,9 @@ class LoginPresenter
             if (error == null) viewState.showWrongPasswordError()
             else if (error.hasError(TOO_MANY_ATTEMPTS_ERROR)) viewState.showAccountBlockingDialog()
             else viewState.showWrongPasswordError()
-        } catch (_: Exception) { }
-        ApiErrorParser
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {

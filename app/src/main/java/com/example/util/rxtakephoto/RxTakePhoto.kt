@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.FragmentActivity
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
+import com.example.ui.views.crop.cropHelper.CropImageView
 import com.example.util.ImageUtil
 import com.example.util.rxtakephoto.CropActivity.Companion.CROP_MODE_DEFAULT
 import com.example.util.rxtakephoto.rx_image_picker.core.RxImagePicker

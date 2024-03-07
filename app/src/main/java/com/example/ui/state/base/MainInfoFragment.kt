@@ -12,6 +12,7 @@ import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.findItemByShort
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
 import com.example.holders.PlaceholderItem
@@ -29,7 +30,7 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -78,7 +79,8 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
             user.birthday,
             user.address,
             user.personalPhone,
-            user.loadUserImage()
+            user.loadUserImage(),
+            user.avatarIsDefault
         ).apply {
             onEnableNext = { isEnable -> mBinding.btnSave.isEnabled = isEnable }
             onEditPhoneClick = { presenter.onShowPhoneEdit() }
@@ -169,18 +171,18 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         findNavController().navigate(R.id.changePhoneFragment)
     }
 
-    override fun updatePhone(phone: FieldDetails?) {
-        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setPhone(phone)
-    }
-
     override fun showChangeImage() {
         GalleryBottomSheet()
-            .setPhotoUpdated { updateImage(it) }
+            .setPhotoUpdated { presenter.onUpdateImage(it) }
             .show(childFragmentManager)
     }
 
-    override fun updateImage(photo: ImageModel?) {
-        adapter.findItemBy<GroupieViewHolder, MainInfoEditItem> { true }?.setImage(photo)
+    override fun updatePhone(phone: FieldDetails?) {
+        adapter.findItemByShort<MainInfoEditItem> { true }?.setPhone(phone)
+    }
+
+    override fun updateImage(photo: ImageModel?, isDefault: Boolean?) {
+        adapter.findItemByShort<MainInfoEditItem> { true }?.setImage(photo, isDefault)
     }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)

@@ -57,10 +57,13 @@ class GalleryBottomPresenter
 
     override fun onRemovePhotoClick() {
         compositeDisposable += userRepository.deleteImage()
-            .doOnComplete {
-                appData.updateUser { image = ImageModel(null, null, null, null, null) }
+            .andThen(userRepository.getUserInternal())
+            .doOnSuccess {
+                appData.updateUser {
+                    image = it.image
+                    avatarIsDefault = it.avatarIsDefault
+                }
             }
-            .andThen(userRepository.checkUserProfileSingle())
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(

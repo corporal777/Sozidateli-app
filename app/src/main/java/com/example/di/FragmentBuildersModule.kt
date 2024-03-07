@@ -41,7 +41,6 @@ import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.gallery.GalleryBottomSheet
-import com.example.ui.gallery.test.TestBlurFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationsListFragment
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
@@ -373,9 +372,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeGalleryBottomSheet(): GalleryBottomSheet
-
-    @ContributesAndroidInjector
-    abstract fun contributeTestBlurFragment(): TestBlurFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSupportCenterFragment(): SupportCenterFragment

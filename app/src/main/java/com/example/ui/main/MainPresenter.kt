@@ -181,7 +181,7 @@ class MainPresenter
     }
 
     private fun updateEmitValues() {
-        compositeDisposable += socket.connectToUpdates()
+        chatCompositeDisposable += socket.connectToUpdates()
             .performOnBackgroundOutOnMain()
             .subscribe()
     }
@@ -232,29 +232,18 @@ class MainPresenter
 
     private fun subscribeChatNewMessage() {
         chatCompositeDisposable += socket.subscribeNewChatMessage()
+            .map { it.data.lastOrNull() }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                },
-                onNext = {
-                    Log.e("NEW CHAT MESSAGE", it.data.toString())
-                    it.data.lastOrNull().let { message ->
-                        chatHelper.showNotificationIfCan(
-                            message?.chat.toString(),
-                            message?.id.toString(),
-                            message?.sender?.name + " " + message?.sender?.lastName,
-                            message?.message ?: "",
-                            "",
-                            message?.sender?.avatar
-                        )
-                    }
-                    appData.setNewChatMessage(it.data.lastOrNull())
+                onError = { it.printStackTrace() },
+                onNext = { message ->
+                    chatHelper.showMessageNotification(message)
+                    appData.setNewChatMessage(message)
                 })
     }
 
     private fun subscribeChatRequestsCount() {
-        compositeDisposable += Flowable.create<Int>({ emitter ->
+        chatCompositeDisposable += Flowable.create<Int>({ emitter ->
             val disposables = CompositeDisposable()
             disposables += chatRepository.getChatInvitesCount()
                 .subscribe({ emitter.onNext(it.count) }, { emitter.onError(it) })

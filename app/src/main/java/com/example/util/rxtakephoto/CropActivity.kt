@@ -6,20 +6,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
-import androidx.core.util.Pair
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
-import com.example.ui.gallery.cropImage.cropHelper.util.Utils
+import com.example.ui.views.crop.cropHelper.CropImageView
+import com.example.ui.views.crop.cropHelper.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.SingleSubject
 import kotlinx.android.synthetic.main.activity_crop.*
-import withDelay
 
 
 class CropActivity : AppCompatActivity() {

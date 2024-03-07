@@ -78,10 +78,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
     override fun setUser(user: UserDetail) {
         mBinding.apply {
-            ivAvatar.apply {
-                clipToOutline = true
-                setImage(user.loadUserImage() ?: R.drawable.avatar_placeholder_rectangle)
-            }
+            viewAvatar.setImage(user.loadUserImage(), user.avatarIsDefault ?: true)
             tvName.text = user.nameLastName
         }
 

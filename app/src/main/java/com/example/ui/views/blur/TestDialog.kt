@@ -6,20 +6,16 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.renderscript.RenderScript
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.example.databinding.DialogBlurredEventAddedToFavoriteBinding
-import com.example.ui.gallery.cropImage.cropView.cropWindow.handle.Handle
-import java.util.logging.Handler
 
 
 class BlurredDialog (

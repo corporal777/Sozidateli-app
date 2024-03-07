@@ -23,7 +23,8 @@ class MainInfoEditItem(
     private val birthday: FieldDetails?,
     private val address: NewUserAddress?,
     private val phone: FieldDetails?,
-    private val image: String?
+    private val image: String?,
+    private val imageIsDefault: Boolean?,
 ) : BindableItem<ItemEditMainInfoBinding>(id) {
 
     var onEnableNext: (isEnable: Boolean) -> Unit = {}
@@ -36,6 +37,7 @@ class MainInfoEditItem(
     private var mGenderShow = gender?.showInProfile ?: true
 
     private var mImage = image
+    private var mImageIsDefault = imageIsDefault ?: true
 
     private var mMobilePhone = phone?.value
     private var mMobilePhoneIsVisible = phone?.isVisible
@@ -120,12 +122,13 @@ class MainInfoEditItem(
         if (mBirthday.isNullOrEmpty()) isValid = false
         if (mAddressRegion.isNullOrEmpty()) isValid = false
         if (mMobilePhone.isNullOrEmpty() || !isPhoneValid()) isValid = false
-        if (mImage.isNullOrEmpty()) isValid = false
+        if (mImage.isNullOrEmpty() || mImageIsDefault) isValid = false
 
         onEnableNext(isValid)
     }
 
-    private fun isPhoneValid(): Boolean = Utils.isPhoneNumberValid(mMobilePhone?.phoneToServer() ?: "")
+    private fun isPhoneValid(): Boolean =
+        Utils.isPhoneNumberValid(mMobilePhone?.phoneToServer() ?: "")
 
     fun getDataToSave(): MutableMap<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
@@ -167,24 +170,16 @@ class MainInfoEditItem(
     private fun setAvatar() {
         if (::mBinding.isInitialized.not()) return
         mBinding.apply {
-            btnEdit.text =
-                if (!mImage.isNullOrEmpty()) root.context.getString(R.string.edit_title)
-                else root.context.getString(R.string.profile_add_photo)
-
-            ivAvatar.apply {
-                clipToOutline = true
-                transitionName = mImage
-                Picasso.get()
-                    .load(mImage)
-                    .placeholder(R.drawable.avatar_placeholder_rectangle)
-                    .error(R.drawable.avatar_placeholder_rectangle)
-                    .into(this)
-            }
+            btnEdit.text = if (mImage.isNullOrEmpty() || mImageIsDefault)
+                root.context.getString(R.string.profile_add_photo)
+            else root.context.getString(R.string.edit_title)
+            ivAvatar.setImage(mImage, mImageIsDefault)
         }
     }
 
-    fun setImage(image: ImageModel?) {
+    fun setImage(image: ImageModel?, isDefault: Boolean?) {
         mImage = image?.uri
+        mImageIsDefault = isDefault ?: false
         checkDataValid()
         setAvatar()
     }

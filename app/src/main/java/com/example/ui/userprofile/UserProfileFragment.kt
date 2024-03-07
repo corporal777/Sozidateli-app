@@ -50,18 +50,17 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProf
 
     override fun setUserData(user: UserDetail, state: String) {
         startPostponedEnterTransition()
-        mBinding.ivAvatar.apply {
-            val avatarUrl = user.loadUserImage()
-            transitionName = avatarUrl
-            setImage(
-                avatarUrl,
-                error = R.drawable.avatar_placeholder_rectangle,
-                transformations = listOf(RoundedCornersTransformation(10f.dp))
-            )
+        mBinding.apply {
+            ivAvatar.setImage(user.loadUserImage(), user.avatarIsDefault ?: true)
+            btnEdit.text =
+                if (user.loadUserImage().isNullOrEmpty() || user.avatarIsDefault == true)
+                    getString(R.string.user_profile_add)
+                else getString(R.string.user_profile_edit)
         }
+
     }
 
-    override fun showTakePictureChooser(canRemove: Boolean, isBase: Boolean, isMax: Boolean) {
+    override fun showTakePictureChooser() {
         GalleryBottomSheet().show(childFragmentManager)
     }
 

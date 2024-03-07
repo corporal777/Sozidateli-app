@@ -31,7 +31,7 @@ interface MainInfoContract {
         fun showEmailNotUnique(email : String)
 
         @OneExecution
-        fun updateImage(photo: ImageModel?)
+        fun updateImage(photo: ImageModel?, isDefault : Boolean?)
 
         @OneExecution
         fun updatePhone(phone: FieldDetails?)
@@ -44,5 +44,6 @@ interface MainInfoContract {
         fun onShowEmailConfirm(email: String)
         fun onShowPhoneEdit()
         fun onShowImageEdit()
+        fun onUpdateImage(photo: ImageModel?)
     }
 }

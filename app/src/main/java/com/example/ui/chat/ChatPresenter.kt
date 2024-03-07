@@ -13,7 +13,7 @@ import com.example.data.socket.SocketIOManager
 import com.example.extensions.*
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.gallery.cropImage.cropHelper.CropImageView
+import com.example.ui.views.crop.cropHelper.CropImageView
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.ChatHelper
 import com.example.util.IMAGE_MAX_SIZE_CHAT

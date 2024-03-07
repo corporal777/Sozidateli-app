@@ -742,10 +742,6 @@
             app:nullable="true" />
     </activity>
 
-    <fragment
-        android:id="@+id/test_blur_fragment"
-        android:name="com.example.ui.gallery.test.TestBlurFragment"
-        tools:layout="@layout/bottom_sheet_gallery" />
 
     <fragment
         android:id="@+id/supportCenterFragment"

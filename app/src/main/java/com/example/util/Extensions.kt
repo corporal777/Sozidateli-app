@@ -254,6 +254,13 @@ fun ImageRequest.Builder.setParams(
     if (!transformations.isNullOrEmpty()) transformations(transformations)
     scale(Scale.FILL)
     diskCachePolicy(CachePolicy.ENABLED)
+    listener(
+        onStart = {},
+        onCancel = {},
+        onError = {_, _ ->
+
+        }
+    )
 }
 
 

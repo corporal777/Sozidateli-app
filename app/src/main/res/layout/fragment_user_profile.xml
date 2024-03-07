@@ -20,31 +20,23 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.example.ui.views.CustomAvatarView
                     android:id="@+id/ivAvatar"
                     android:layout_width="104dp"
                     android:layout_height="104dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/background_corners"
-                    android:contentDescription="@string/content_description_avatar"
-                    tools:src="@drawable/avatar_placeholder_rectangle" />
+                    android:contentDescription="@string/content_description_avatar" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/btnEdit"
+                    style="@style/ClickableTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:fontFamily="sans-serif"
-                    android:minHeight="32dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:layout_marginVertical="10dp"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="5dp"
                     android:text="@string/user_profile_edit"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
             </LinearLayout>
 

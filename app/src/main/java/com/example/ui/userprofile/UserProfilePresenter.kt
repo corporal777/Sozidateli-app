@@ -20,8 +20,7 @@ class UserProfilePresenter @Inject constructor(
     }
 
     override fun onEditAvatarClick() {
-        val avatar = user.image?.uri?.takeIf { it.isNotBlank() }
-        viewState.showTakePictureChooser(avatar != null, appData.hasBaseState, appData.hasMaxState)
+        viewState.showTakePictureChooser()
     }
 
     override fun onMainDataClick() = viewState.showMainData()

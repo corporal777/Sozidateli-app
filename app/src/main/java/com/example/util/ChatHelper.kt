@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import com.example.R
+import com.example.data.models.MessageModel
 import javax.inject.Inject
 
 class ChatHelper @Inject constructor(
@@ -66,5 +67,18 @@ class ChatHelper @Inject constructor(
     @MainThread
     fun isCanSendMessage(chatId: String, messageId: String): Boolean {
         return !showedMessages.contains(messageId) && currentChatId != chatId
+    }
+
+    @MainThread
+    fun showMessageNotification(message : MessageModel?){
+        if (message == null) return
+        showNotificationIfCan(
+            message.chat.toString(),
+            message.id.toString(),
+            message.sender?.name + " " + message.sender?.lastName,
+            message.message ?: "",
+            "",
+            message.sender?.avatar
+        )
     }
 }

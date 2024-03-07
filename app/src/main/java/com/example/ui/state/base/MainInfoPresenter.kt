@@ -2,6 +2,7 @@ package com.example.ui.state.base
 
 import android.util.Log
 import com.example.data.AppData
+import com.example.data.models.ImageModel
 import com.example.extensions.formatToDefaultDate
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -58,10 +59,7 @@ class MainInfoPresenter
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                    viewState.goToNext()
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = { viewState.goToNext() }
             )
 
@@ -91,6 +89,9 @@ class MainInfoPresenter
             }
     }
 
+    override fun onUpdateImage(photo: ImageModel?) {
+        if (photo != null) viewState.updateImage(photo, getUserData().avatarIsDefault)
+    }
 
     override fun onShowPhoneEdit() {
         isPhoneUpdating = true

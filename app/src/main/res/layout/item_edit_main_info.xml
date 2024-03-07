@@ -25,16 +25,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <ImageView
+            <com.example.ui.views.CustomAvatarView
                 android:id="@+id/ivAvatar"
                 android:layout_width="104dp"
                 android:layout_height="104dp"
                 android:layout_marginTop="9dp"
-                android:background="@drawable/background_corners"
                 android:contentDescription="@string/content_description_avatar"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/photo_title"
-                tools:src="@drawable/avatar_placeholder_rectangle" />
+                app:layout_constraintTop_toBottomOf="@id/photo_title" />
 
             <TextView
                 android:id="@+id/btnEdit"

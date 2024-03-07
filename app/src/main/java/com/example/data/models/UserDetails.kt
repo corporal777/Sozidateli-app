@@ -55,7 +55,7 @@ data class UserDetail(
     @SerializedName("recomendationFilesCount")
     var filesCount: Int = 0,
     val socialBinds: SocialBindsModel? = null,
-    val avatarIsDefault : Boolean? = true
+    var avatarIsDefault : Boolean? = true
 ) : Parcelable {
 
     val nameLastName: String

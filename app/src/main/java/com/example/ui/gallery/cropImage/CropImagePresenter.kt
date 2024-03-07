@@ -66,7 +66,12 @@ class CropImagePresenter
         viewState.showProgressDialog()
         compositeDisposable += request
             .flatMapSingle { userRepository.changeUserImage(it) }
-            .doOnSuccess { appData.updateUser { image = it } }
+            .doOnSuccess {
+                appData.updateUser {
+                    image = it
+                    avatarIsDefault = false
+                }
+            }
             .flatMap { userRepository.checkUserProfileSingle() }
             .performOnBackgroundOutOnMain()
             .subscribeBy(

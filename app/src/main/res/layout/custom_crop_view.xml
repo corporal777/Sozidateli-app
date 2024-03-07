@@ -9,7 +9,7 @@
         android:adjustViewBounds="true"
         tools:ignore="contentDescription" />
 
-    <com.example.ui.gallery.cropImage.cropView.cropWindow.CropOverlayView
+    <com.example.ui.views.crop.cropView.cropWindow.CropOverlayView
         android:id="@+id/crop_overLay_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
