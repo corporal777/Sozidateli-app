@@ -56,7 +56,7 @@
         android:layout_marginStart="19dp"
         android:layout_marginEnd="19dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/background_corners_border"
+        android:background="@drawable/btn_background_corners_brown"
         android:text="@string/block"
         android:textAllCaps="false"
         android:textColor="@color/attention_action"

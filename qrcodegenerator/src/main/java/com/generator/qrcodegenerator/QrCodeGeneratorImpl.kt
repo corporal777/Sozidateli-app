@@ -43,9 +43,6 @@ internal class QrCodeGeneratorImpl(
         data : QrData,  options: QrOptions
     ) : Bitmap {
 
-//        Log.e("VALUE", (options.logo.size * (1 + options.logo.padding.value)).toString())
-//        Log.e("LVL", options.errorCorrectionLevel.lvl.name)
-//        Log.e("ACT LVL", options.actualEcl.lvl.name)
         val encoder = QrEncoder(options.copy(errorCorrectionLevel = options.actualEcl))
         val result = encoder.encode(data.encode())
 

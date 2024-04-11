@@ -1,22 +1,14 @@
 package com.example.holders
 
-import android.os.Handler
-import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.ItemProfileDataEditableFileBinding
-import com.example.extensions.dp
-import com.example.util.initInput
 import com.example.util.initSwitch
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_register_event_input.*
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 
 class ProfileDataFileEditableItem(
@@ -38,7 +30,6 @@ class ProfileDataFileEditableItem(
         viewBinding.apply {
             tilFile.apply {
                 setEndIconOnClickListener {
-                    showLoadingIcon()
                     onRemoveClick(file)
                 }
             }
@@ -77,10 +68,6 @@ class ProfileDataFileEditableItem(
     }
 
     fun getFileName() = fileName
-
-    fun hideLoadingIcon(){
-        if (this::mBinding.isInitialized) mBinding.tilFile.hideLoadingIcon()
-    }
 
 
     override fun getLayout() = R.layout.item_profile_data_editable_file

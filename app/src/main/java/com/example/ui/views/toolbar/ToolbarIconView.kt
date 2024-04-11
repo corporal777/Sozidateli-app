@@ -2,8 +2,6 @@ package com.example.ui.views.toolbar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -17,7 +15,7 @@ class ToolbarIconView(
 ) : AppCompatImageView(context) {
 
     init {
-        background = ContextCompat.getDrawable(context, R.drawable.custom_toolbar_btn_background_selectable)
+        background = ContextCompat.getDrawable(context, R.drawable.btn_background_toolbar)
         if (size == 0) layoutParams = LinearLayout.LayoutParams(35.dp, 35.dp)
         else layoutParams = LinearLayout.LayoutParams(size.dp, size.dp)
         initPadding(5.dp, 5.dp, 5.dp, 5.dp)

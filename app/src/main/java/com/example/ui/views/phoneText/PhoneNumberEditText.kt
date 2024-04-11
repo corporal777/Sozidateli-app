@@ -4,10 +4,8 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.widget.doBeforeTextChanged
-import onFocusChanged
+import com.example.extensions.onFocusChanged
 
 class PhoneNumberEditText : AppCompatEditText, TextWatcher {
 

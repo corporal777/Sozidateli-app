@@ -87,12 +87,9 @@ class CustomLoadingButton : ConstraintLayout {
             setImageDrawable(buttonDrawable)
         }
         loadingView.btnLoad.apply {
-            CalligraphyUtils.applyFontToTextView(context, this, "fonts/sf_pro_text_semibold.ttf")
-            background = back ?: getDrawable(R.drawable.custom_btn_brown_selectable)
+            if (back != null) background = back
             minimumHeight = buttonHeight
             minHeight = buttonHeight
-            stateListAnimator = null
-            letterSpacing = -0.01f
             text = buttonText
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize.toFloat())

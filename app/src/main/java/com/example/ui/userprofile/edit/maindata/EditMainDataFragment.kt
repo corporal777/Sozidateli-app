@@ -112,10 +112,6 @@ class EditMainDataFragment : BaseUserProfileEditFragment(), EditMainDataContract
         groupAdapter.findGroupBy<ProfileDataFileEditableGroup> { true }?.removeFileItem(file, fileCount)
     }
 
-    override fun hideDeleteUserFile(file: FileModel) {
-        groupAdapter.findGroupBy<ProfileDataFileEditableGroup> { true }?.hideFileDeleteLoading(file)
-    }
-
     override fun showFileUploadLoading() {
         groupAdapter.findGroupBy<ProfileDataFileEditableGroup> { true }?.showUploadLoading()
     }

@@ -52,7 +52,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/about_event_toolbar_btn_background"
-                        android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+                        android:foreground="@drawable/btn_background_toolbar"
                         android:paddingTop="6dp"
                         android:paddingEnd="3dp"
                         android:paddingBottom="6dp"

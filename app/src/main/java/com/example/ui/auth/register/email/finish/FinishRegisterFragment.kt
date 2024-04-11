@@ -23,9 +23,9 @@ import com.example.util.initSwitch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onBackPressedCallback
-import onFocusChanged
-import onTextChanged
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -4,20 +4,16 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import coil.transform.RoundedCornersTransformation
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileBinding
-import com.example.extensions.dp
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.setImage
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

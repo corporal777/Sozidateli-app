@@ -12,7 +12,7 @@ import com.example.extensions.parseToDate
 import com.example.util.*
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import initAsMonthYearPicker
+import com.example.extensions.initAsMonthYearPicker
 import java.util.*
 
 class UserWorkItem(

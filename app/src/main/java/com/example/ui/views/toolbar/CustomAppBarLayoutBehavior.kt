@@ -3,7 +3,6 @@ package com.example.ui.views.toolbar
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -11,12 +10,10 @@ import androidx.core.view.allViews
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentContainerView
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.example.R
 import com.example.ui.main.MainActivity
 import com.google.android.material.appbar.AppBarLayout
-import onScrolled
+import com.example.extensions.onScrolled
 
 class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
 

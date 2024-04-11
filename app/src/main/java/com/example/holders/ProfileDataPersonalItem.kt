@@ -1,6 +1,6 @@
 package com.example.holders
 
-import additionalNumber
+import com.example.extensions.additionalNumber
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import androidx.core.text.set
@@ -13,8 +13,8 @@ import com.example.databinding.ItemProfileDataPersonalBinding
 import com.example.extensions.parsePhone
 import com.example.util.ClickableSpan
 import com.xwray.groupie.databinding.BindableItem
-import removeUrlUnderline
-import setTextDataOrHide
+import com.example.extensions.removeUrlUnderline
+import com.example.extensions.setTextDataOrHide
 
 
 class ProfileDataPersonalItem(
@@ -51,7 +51,7 @@ class ProfileDataPersonalItem(
             groupGender.setTextDataOrHide(tvGender, gender)
             groupBirthday.setTextDataOrHide(tvBirthday, birthday)
             groupCity.setTextDataOrHide(tvCity, city)
-            //groupSocialNetworks.setTextDataOrHide(tvSocialNetworks, socialNetworks?.joinToString("\n"))
+            //groupSocialNetworks.com.example.extensions.setTextDataOrHide(tvSocialNetworks, socialNetworks?.joinToString("\n"))
             tvSocialNetworks.apply {
                 val scNetworks = socialNetworks?.values?.joinToString("\n") { it.value ?: "" }
                 text = if (socialNetworks?.absent == true){

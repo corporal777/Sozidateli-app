@@ -95,7 +95,6 @@ import com.example.ui.userprofile.common.email.ChangeEmailFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment
 import com.example.ui.userprofile.common.password.ChangePasswordFragment
 import com.example.ui.userprofile.common.phone.ChangePhoneFragment
-import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.userprofile.common.password.reset.ResetPasswordFragment
 import com.example.ui.userprofile.edit.contacts.EditContactsFragment
 import com.example.ui.userprofile.edit.interests.EditInterestsFragment
@@ -321,9 +320,6 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChangePhoneBottomSheetFragment(): ChangePhoneFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeConfirmPhoneBottomSheetFragment(): ConfirmEmailPhoneFragment
 
     @ContributesAndroidInjector
     abstract fun contributeOrganizationFragmentNew(): OrganizationFragment

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.R
 import com.example.ui.views.passwordView.PasswordCustomView
 import com.google.android.material.textfield.TextInputLayout
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 class ChangePasswordDialog(val activity: Activity) {
 

@@ -3,13 +3,10 @@ package com.example.ui.event.list.recommendations.items
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.databinding.ItemUpdateAppBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
 
 class UpdateAppItem(val itemId: Long = 1000L) : BindableItem<ItemUpdateAppBinding>(itemId) {
 

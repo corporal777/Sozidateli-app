@@ -6,16 +6,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemOrganizationBinding
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_organization.*
-import parseColor
 
 
 class OrganizationItem(

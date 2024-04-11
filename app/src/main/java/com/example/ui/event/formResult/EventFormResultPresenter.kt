@@ -1,41 +1,36 @@
 package com.example.ui.event.formResult
 
-import android.util.Log
 import com.example.data.AppData
-import com.example.data.bodies.ConfirmCodeBody
-import com.example.data.bodies.EmailCodeBody
-import com.example.data.models.AboutOrganizationData
 import com.example.data.models.EventFile
 import com.example.data.models.EventFormResultFieldsModel
-import com.example.data.models.EventNew
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegisterFields
 import com.example.data.models.EventRegisterResponseField
+import com.example.data.models.Optional
 import com.example.data.models.UserFormResultModel
+import com.example.data.models.asOptional
+import com.example.extensions.formatToDefaultDate
+import com.example.extensions.formatToDefaultDateTime
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneContract
-import com.example.util.Utils
 import com.google.gson.JsonElement
-import fromJson
-import io.reactivex.Completable
+import com.example.extensions.fromJson
+import com.example.repository.EventRepository
 import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
 class EventFormResultPresenter
 @Inject constructor(
     private val appData: AppData,
-    private val authRepository: AuthRepository,
+    private val eventRepository: EventRepository,
     private val userRepository: UserRepository
 ) : BaseBottomSheetPresenter<EventFormResultContract.View>(appData),
     EventFormResultContract.Presenter {
@@ -47,9 +42,11 @@ class EventFormResultPresenter
         compositeDisposable += Maybe.just(mapFields(formResult.formType?.fields))
             .map { Pair(it, mapFieldsResult(formResult.result?.fields, it)) }
             .map {
-                val compressedList = it.first.filter { x -> it.second.any { f -> f.id == x.id } }
-                createFieldsData(compressedList, it.second)
+                //val compressedList = it.first.filter { x -> it.second.any { f -> f.id == x.id } }
+                //createFieldsData(compressedList, it.second)
+                createFieldsData(it.first, it.second)
             }
+            .flatMap { getProfileFieldsData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.setFormResult(it)
@@ -62,49 +59,57 @@ class EventFormResultPresenter
     ): List<EventRegisterFieldData<*>>? {
         return fields?.mapNotNull { field ->
             when (field.type) {
+                EventRegisterField.Type.DATE -> {
+                    val date = findFormResultValue(field, responseField).fromJson<String>()
+                    EventRegisterFieldData.String(field, date?.formatToDefaultDate())
+                }
+
+                EventRegisterField.Type.DATETIME,
+                EventRegisterField.Type.DATETIMEPLANED -> {
+                    val date = findFormResultValue(field, responseField).fromJson<String>()
+                    EventRegisterFieldData.String(field, date?.formatToDefaultDateTime())
+                }
+
                 EventRegisterField.Type.STRING,
                 EventRegisterField.Type.TEXT_AREA,
-                EventRegisterField.Type.DATE,
-                EventRegisterField.Type.DATETIME,
-                EventRegisterField.Type.DATETIMEPLANED,
-                EventRegisterField.Type.NUMBER -> EventRegisterFieldData.String(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
+                EventRegisterField.Type.NUMBER -> {
+                    val data = findFormResultValue(field, responseField).fromJson<String>()
+                    EventRegisterFieldData.String(field, data)
+                }
 
-                EventRegisterField.Type.FILE -> EventRegisterFieldData.File(
-                    field,
-                    findRegistrationDataValue(
-                        field,
-                        responseField
-                    ).fromJson(EventFile.Deserializer())
-                )
+                EventRegisterField.Type.FILE -> {
+                    val file =
+                        findFormResultValue(field, responseField).fromJson(EventFile.Deserializer())
+                    EventRegisterFieldData.File(field, file)
+                }
 
-                EventRegisterField.Type.PASSPORT -> EventRegisterFieldData.Passport(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<EventPassport>()
-                )
+                EventRegisterField.Type.PASSPORT -> {
+                    val passport =
+                        findFormResultValue(field, responseField).fromJson<EventPassport>()
+                    EventRegisterFieldData.Passport(field, passport)
+                }
 
-                EventRegisterField.Type.SELECT_BOX -> EventRegisterFieldData.SelectBox(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
+                EventRegisterField.Type.SELECT_BOX -> {
+                    val selectBox = findFormResultValue(field, responseField).fromJson<String>()
+                    EventRegisterFieldData.SelectBox(field, selectBox)
+                }
 
-                EventRegisterField.Type.RADIO_BOX -> EventRegisterFieldData.RadioBox(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<String>()
-                )
+                EventRegisterField.Type.RADIO_BOX -> {
+                    val radioBox = findFormResultValue(field, responseField).fromJson<String>()
+                    EventRegisterFieldData.RadioBox(field, radioBox)
+                }
 
                 EventRegisterField.Type.CHECKBOXES,
                 EventRegisterField.Type.CHECKBOX -> EventRegisterFieldData.Checkbox(
                     field,
-                    findRegistrationDataValue(field, responseField).fromJson<Set<String>>()
+                    findFormResultValue(field, responseField).fromJson<Set<String>>()
                 )
 
-                EventRegisterField.Type.BOOLEAN -> EventRegisterFieldData.Boolean(
-                    field,
-                    findRegistrationDataValue(field, responseField).fromJson<Boolean>()
-                )
+                EventRegisterField.Type.BOOLEAN -> {
+                    val value = findFormResultValue(field, responseField).fromJson<Boolean>()
+                    val answer = if (value == true) "Да" else "Нет"
+                    EventRegisterFieldData.String(field, answer)
+                }
 
                 else -> null
             }
@@ -112,7 +117,7 @@ class EventFormResultPresenter
     }
 
 
-    private fun findRegistrationDataValue(
+    private fun findFormResultValue(
         field: EventRegisterField,
         fields: List<EventRegisterResponseField?>?
     ): JsonElement? {
@@ -135,5 +140,21 @@ class EventFormResultPresenter
             result.add(field.createData(type?.type))
         }
         return result
+    }
+
+    private fun getProfileFieldsData(list: List<EventRegisterFieldData<*>>): Maybe<List<EventRegisterFieldData<*>>> {
+        val field =
+            formResult.formType?.fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
+        if (field != null) {
+            return eventRepository.loadEventFormResult(field.id.toString())
+                .flatMapMaybe {
+                    val data = EventRegisterFieldData.Prefilled(
+                        field.createData(),
+                        it.toFormResult(field.parameters?.options)
+                    )
+                    Maybe.just(list.plus(data).sortedBy { x -> x.field.id })
+                }
+
+        } else return Maybe.just(list)
     }
 }

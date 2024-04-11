@@ -9,7 +9,7 @@ import com.example.databinding.BottomSheetChangeNameBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onTextChanged
+import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

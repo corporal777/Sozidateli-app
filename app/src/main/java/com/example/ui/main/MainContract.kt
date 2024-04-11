@@ -104,9 +104,6 @@ interface MainContract {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onOpenStartDestination()
-        fun onOpenNotStartDestination()
-        fun onOpenChatDestination(chatId: String?)
         fun onOpenCheckConnectionDestination(check: Boolean)
         fun onHandleChangePasswordLink(userId: String, code: String)
         fun onHandleRecoverPasswordLink()
@@ -115,7 +112,6 @@ interface MainContract {
         fun onHandleEvent(event: String?)
         fun onHandleUser(userId: String?)
         fun onHandleAuthToOtherPlatform(url: String?)
-        fun onHandleSocialNetworkConfirm(userId: String, code: String)
         fun onHandleNotification(notification: RemoteNotification)
 
         fun onHandleSupportQuestionLink(id : String?)

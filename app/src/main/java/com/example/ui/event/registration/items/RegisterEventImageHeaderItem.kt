@@ -5,11 +5,11 @@ import android.graphics.drawable.ColorDrawable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemRegisterEventHeaderNewBinding
-import com.example.extensions.formatToEventDatesIntervalOnMain
+import com.example.extensions.formatToDefaultDate
 import com.example.extensions.markWon
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import parseColor
+import com.example.extensions.parseColor
 
 class RegisterEventImageHeaderItem(
     id: Long,
@@ -22,7 +22,7 @@ class RegisterEventImageHeaderItem(
 ) : BindableItem<ItemRegisterEventHeaderNewBinding>(id) {
 
     private val eventStartDate =
-        "Дата проведения " + dateFrom.formatToEventDatesIntervalOnMain(dateTo)
+        "Дата проведения " + dateFrom?.formatToDefaultDate() + " - " + dateTo?.formatToDefaultDate()
     private val imageColor = ColorDrawable(backgroundColor.parseColor() ?: Color.DKGRAY)
 
     init {

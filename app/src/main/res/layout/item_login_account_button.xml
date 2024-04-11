@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:background="@drawable/custom_text_background_selectable"
+        android:background="@drawable/btn_background_text"
         android:paddingStart="20dp"
         android:paddingEnd="20dp">
 

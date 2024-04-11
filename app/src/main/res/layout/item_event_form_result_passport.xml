@@ -23,6 +23,7 @@
             tools:text="Ваше имя *" />
 
         <TextView
+            android:id="@+id/tvPassportSerialNumberTitle"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
             android:layout_marginTop="10dp"
             android:includeFontPadding="false"
             android:letterSpacing="-0.02"
-            android:textColor="#9A99A2"
+            android:textColor="#99000000"
             android:textSize="14sp"
             android:text="Серия, номер *" />
 
@@ -50,6 +51,7 @@
             tools:text="Иванович" />
 
         <TextView
+            android:id="@+id/tvPassportOrganizationTitle"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +59,7 @@
             android:layout_marginTop="10dp"
             android:includeFontPadding="false"
             android:letterSpacing="-0.02"
-            android:textColor="#9A99A2"
+            android:textColor="#99000000"
             android:textSize="14sp"
             android:text="Кем выдано *" />
 
@@ -77,6 +79,7 @@
             tools:text="Иванович" />
 
         <TextView
+            android:id="@+id/tvPassportCodeTitle"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,12 +87,12 @@
             android:layout_marginTop="10dp"
             android:includeFontPadding="false"
             android:letterSpacing="-0.02"
-            android:textColor="#9A99A2"
+            android:textColor="#99000000"
             android:textSize="14sp"
-            android:text="Дата выдачи *" />
+            android:text="Код подразделения *" />
 
         <TextView
-            android:id="@+id/tvPassportDate"
+            android:id="@+id/tvPassportCode"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,6 +107,7 @@
             tools:text="Иванович" />
 
         <TextView
+            android:id="@+id/tvPassportDateTitle"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,12 +115,12 @@
             android:layout_marginTop="10dp"
             android:includeFontPadding="false"
             android:letterSpacing="-0.02"
-            android:textColor="#9A99A2"
+            android:textColor="#99000000"
             android:textSize="14sp"
-            android:text="Код подразделения *" />
+            android:text="Дата выдачи *" />
 
         <TextView
-            android:id="@+id/tvPassportCode"
+            android:id="@+id/tvPassportDate"
             fontPath="fonts/sf_pro_display.OTF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

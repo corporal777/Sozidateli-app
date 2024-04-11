@@ -139,13 +139,13 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
         }
         if (position == 0 || position == 3) {
             mBinding.btnContinue.apply {
-                background = getDrawable(R.drawable.custom_btn_brown_cancel_selectable)
+                background = getDrawable(R.drawable.btn_background_corners_brown)
                 setTextColor(getColor(R.color.black))
             }
             mBinding.btnClose.setImageResource(R.drawable.ic_close_camera)
         } else {
             mBinding.btnContinue.apply {
-                background = getDrawable(R.drawable.custom_btn_white_cancel_selectable)
+                background = getDrawable(R.drawable.btn_background_corners_white)
                 setTextColor(getColor(R.color.white))
             }
             mBinding.btnClose.setImageResource(R.drawable.ic_close_light)

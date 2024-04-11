@@ -62,7 +62,6 @@
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="5dp"
                     android:paddingHorizontal="5dp"
-                    android:text="@string/state"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/viewAvatar"
                     app:layout_constraintStart_toEndOf="@id/viewAvatar"
@@ -131,7 +130,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnEditProfile"
-                style="@style/BtnGrayWriteStyle"
+                style="@style/BtnGrayTransparentStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"

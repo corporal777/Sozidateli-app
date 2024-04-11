@@ -24,13 +24,12 @@
 
         <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnSave"
+            style="@style/BtnLoadingStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            app:buttonBackground="@drawable/custom_btn_brown_selectable"
-            app:buttonMinHeight="@dimen/auth_button_min_height"
             app:buttonText="@string/auth_action_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

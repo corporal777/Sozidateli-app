@@ -13,7 +13,7 @@
         android:background="@drawable/background_corners_large"
         android:elevation="4dp"
         android:clipToOutline="true"
-        android:foreground="@drawable/custom_text_background_selectable">
+        android:foreground="@drawable/btn_background_text">
 
         <ImageView
             android:id="@+id/ivSpeakerImage"
@@ -51,7 +51,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/btn_speaker_status_circle"
-            android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+            android:foreground="@drawable/btn_background_toolbar"
             android:padding="6dp"
             android:src="@drawable/ic_speaker_status_pending"
             app:layout_constraintEnd_toEndOf="parent"

@@ -27,7 +27,7 @@ import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.StateType
-import com.example.ui.event.agreement.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -246,7 +246,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+        EventAgreementDialog(requireContext(), url).setSelectCallback {
             presenter.onAcceptRegistrationAgreement(event)
         }
     }

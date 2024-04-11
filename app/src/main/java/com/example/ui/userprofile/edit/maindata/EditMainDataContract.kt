@@ -21,9 +21,6 @@ interface EditMainDataContract {
         fun deleteUserFile(file: FileModel, fileCount: Int)
 
         @Skip
-        fun hideDeleteUserFile(file: FileModel)
-
-        @Skip
         fun showFileSelector()
 
         @Skip

@@ -1,26 +1,21 @@
 package com.example.ui.views.passwordView
 
 import android.content.Context
-import android.text.SpannableStringBuilder
 import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.example.R
 import com.example.databinding.ViewPasswordCustomBinding
 import com.example.extensions.getSymbols
-import com.example.ui.views.CustomSpannableString
 import com.example.util.getColor
-import com.example.util.getDrawable
-import onFocusChanged
-import onTextChanged
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
 
 class CustomPasswordView : FrameLayout {
 

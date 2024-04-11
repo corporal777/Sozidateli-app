@@ -5,7 +5,7 @@ import com.example.R
 import com.example.databinding.ItemEventRegistrationFileBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 open class EventRegistrationFileItem(
     id: Long,

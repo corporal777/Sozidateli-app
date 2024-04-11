@@ -1,26 +1,28 @@
 package com.example.ui.auth.register
 
 import android.os.Bundle
-import android.util.Log
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentRegistrationUserBinding
+import com.example.extensions.getClickablePrivacyPolitics
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragment
-import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.Utils
+import com.example.util.ClickableSpan
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.setTint
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import com.example.extensions.removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -68,19 +70,21 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
                 presenter.onChangePasswordText(it.password, it.isValid)
             }
             viewAgreement.apply {
-                setClickableText(context.getString(R.string.auth_user_agreement), 52) {
-                    showCustomTabsBrowser(context, getString(R.string.auth_agree_address))
+                getTextView().apply {
+                    text = getClickablePrivacyPolitics(requireContext())
+                    highlightColor = ContextCompat.getColor(requireContext(), R.color.profile_id_text)
+                    movementMethod = LinkMovementMethod.getInstance()
+                    removeUrlUnderline()
                 }
                 setOnCheckedListener {
                     presenter.onChangeUserAgreement(it)
                 }
             }
-            btnRegister.setOnClickListener {
+            btnSave.setOnClickListener {
                 presenter.registerUser(true)
             }
         }
     }
-
     override fun showLastNameError(show: Boolean, error: String?) {
         if (error.isNullOrEmpty()) mBinding.etLastName.showError(show)
         else mBinding.etLastName.showTextError(error)
@@ -121,7 +125,7 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
     }
 
     override fun enableRegisterBtn(isEnable: Boolean) {
-        mBinding.btnRegister.isSelected = isEnable
+        mBinding.btnSave.isSelected = isEnable
     }
 
     override fun showPhoneIsNotUnique(login: String) {
@@ -151,9 +155,8 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
         }
     }
 
-    override fun showCustomLoading() = mBinding.btnRegister.showProgressLoading(true)
-    override fun hideCustomLoading() = mBinding.btnRegister.showProgressLoading(false)
-
+    override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
+    override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
     override fun layout(): Int = R.layout.fragment_registration_user
     override val title: CharSequence by lazy { getString(R.string.auth_register) }

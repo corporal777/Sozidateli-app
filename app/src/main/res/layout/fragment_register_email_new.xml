@@ -144,12 +144,12 @@
                 android:id="@+id/llAgree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                android:visibility="gone"
-                tools:visibility="visible"
+                android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/cbAgree"
@@ -163,8 +163,8 @@
                     android:theme="@style/CheckBox" />
 
                 <TextView
-                    fontPath="fonts/sf_pro_display.OTF"
                     android:id="@+id/tvAgree"
+                    fontPath="fonts/sf_pro_display.OTF"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/auth_title_text"
@@ -186,13 +186,13 @@
 
             <com.example.ui.views.loading.CustomLoadingButton
                 android:id="@+id/ib_register"
+                style="@style/BtnLoadingStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                app:buttonBackground="@drawable/custom_btn_brown_selectable"
+                android:layout_marginVertical="20dp"
                 app:buttonMinHeight="@dimen/auth_button_min_height"
-                app:buttonText="@string/auth_action_register"/>
+                app:buttonText="@string/auth_action_register" />
 
 
         </LinearLayout>

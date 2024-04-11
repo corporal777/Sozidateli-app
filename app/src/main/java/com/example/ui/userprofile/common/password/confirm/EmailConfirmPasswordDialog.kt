@@ -2,14 +2,12 @@ package com.example.ui.userprofile.common.password.confirm
 
 import android.content.Context
 import android.content.Intent
-import android.os.CountDownTimer
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.databinding.BottomSheetEmailMessageSentBinding
-import com.example.ui.auth.confirm.email.ConfirmEmailCodePresenter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.Observable
@@ -18,7 +16,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import performOnBackgroundOutOnMain
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 import java.util.concurrent.TimeUnit
 
 

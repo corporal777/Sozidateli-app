@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/custom_text_background_selectable">
+        android:background="@drawable/btn_background_text">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivSpeakerImage"
@@ -38,7 +38,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/btn_speaker_status_circle"
-            android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+            android:foreground="@drawable/btn_background_toolbar"
             android:padding="6dp"
             android:src="@drawable/ic_speaker_status_pending"
             app:layout_constraintEnd_toEndOf="@id/ivSpeakerImage"

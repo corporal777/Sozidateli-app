@@ -15,7 +15,7 @@ import com.xwray.groupie.GroupieViewHolder
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onFocusChanged
+import com.example.extensions.onFocusChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

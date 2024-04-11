@@ -15,7 +15,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import offsetChangedListener
+import com.example.extensions.offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs

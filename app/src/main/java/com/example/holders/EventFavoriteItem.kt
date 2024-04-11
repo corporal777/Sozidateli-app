@@ -5,15 +5,14 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event_favorite.*
-import parseColor
-import setOnClickListener
+import com.example.extensions.parseColor
+import com.example.extensions.setOnClickListener
 
 class EventFavoriteItem(
         val event: EventNew,

@@ -320,17 +320,9 @@ class SocketIOManagerImpl
             return@HostnameVerifier true
         }
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(
-                p0: Array<out java.security.cert.X509Certificate>?,
-                p1: String?
-            ) {
-            }
+            override fun checkClientTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
 
-            override fun checkServerTrusted(
-                p0: Array<out java.security.cert.X509Certificate>?,
-                p1: String?
-            ) {
-            }
+            override fun checkServerTrusted(p0: Array<out java.security.cert.X509Certificate>?, p1: String?) {}
 
             override fun getAcceptedIssuers(): Array<out java.security.cert.X509Certificate>? {
                 return arrayOf()
@@ -338,11 +330,9 @@ class SocketIOManagerImpl
         })
         val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(null, trustAllCerts, null)
-        val logInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
-            override fun log(message: String) {
-                Timber.tag("Socket_DATA").d(message)
-            }
-        })
+        val logInterceptor = HttpLoggingInterceptor { message ->
+            Timber.tag("Socket_DATA").d(message)
+        }
         logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.MINUTES)

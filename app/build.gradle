@@ -43,10 +43,10 @@ android {
             }
         }
         manifestPlaceholders = [
-                VKIDRedirectHost : "vk.com",
-                VKIDRedirectScheme : "vk51817061",
-                VKIDClientID : "51817061",
-                VKIDClientSecret : "ZPcUM4IDxpFP26ych1qA"
+                VKIDRedirectHost  : "vk.com",
+                VKIDRedirectScheme: "vk51817061",
+                VKIDClientID      : "51817061",
+                VKIDClientSecret  : "ZPcUM4IDxpFP26ych1qA"
         ]
     }
 
@@ -65,7 +65,6 @@ android {
             buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
             buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
         }
-
         beta {
             initWith(debug)
             buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
@@ -89,6 +88,20 @@ android {
             matchingFallbacks = ['debug', 'release']
         }
     }
+
+//    flavorDimensions "version"
+//    productFlavors {
+//        "new" {
+//            dimension "version"
+//            buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
+//            buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
+//
+//            buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
+//            buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
+//            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
+//            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
+//        }
+//    }
 
     variantFilter { variant ->
         if (variant.name == "debug") {
@@ -231,6 +244,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
     androidTestImplementation 'com.google.firebase:testlab-instr-lib:0.2'

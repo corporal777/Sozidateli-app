@@ -4,7 +4,6 @@ import com.example.R
 import com.example.databinding.ItemFormatBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
 
 class EventFormatItem(
     private val itemId: Long?,

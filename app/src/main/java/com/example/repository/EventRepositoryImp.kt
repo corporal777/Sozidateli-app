@@ -1,6 +1,5 @@
 package com.example.repository
 
-import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteModel
@@ -11,7 +10,6 @@ import com.example.data.models.*
 import com.example.data.models.ProfileFieldsData
 import com.example.util.pagination.PaginationResponse
 import com.google.gson.JsonElement
-import fromJson
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single

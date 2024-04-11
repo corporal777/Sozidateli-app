@@ -27,7 +27,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/custom_toolbar_btn_background_selectable"
+            android:background="@drawable/btn_background_toolbar"
             android:padding="10dp"
             android:src="@drawable/ic_back_black"
             app:tint="@color/main_brown_color_new" />
@@ -102,14 +102,12 @@
 
         <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btn_check"
+            style="@style/BtnLoadingStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/btn_send"
             android:layout_marginHorizontal="@dimen/margin_fifteen"
-            app:buttonBackground="@drawable/custom_btn_brown_selectable"
-            app:buttonMinHeight="@dimen/common_button_min_height"
-            app:buttonText="@string/recovery_check_email"
-            app:buttonTextSize="@dimen/common_button_text_size" />
+            app:buttonText="@string/recovery_check_email" />
 
         <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btn_send"
@@ -118,7 +116,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="@dimen/margin_fifteen"
             android:layout_marginBottom="10dp"
-            app:buttonBackground="@drawable/custom_btn_repeat_code_selectable"
+            app:buttonBackground="@drawable/btn_background_repeat_code"
             app:buttonMinHeight="@dimen/common_button_min_height"
             app:buttonText="@string/send_email_again"
             app:buttonTextSize="@dimen/common_button_text_size" />

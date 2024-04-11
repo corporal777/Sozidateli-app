@@ -14,8 +14,8 @@ import com.example.util.getNameFilter
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onBackPressedCallback
-import onTextChanged
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

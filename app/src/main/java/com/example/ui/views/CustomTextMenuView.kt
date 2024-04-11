@@ -15,8 +15,8 @@ import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.getDrawable
 import com.example.util.initDropDownAdapter
 import com.google.android.material.textfield.TextInputLayout
-import initAsDatePicker
-import onTextChanged
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onTextChanged
 import java.util.*
 
 

@@ -4,11 +4,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import com.example.R
 import com.example.databinding.ItemEventImageHeaderBinding
-import com.example.holders.redesign.EventActivityItem
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import parseColor
-import setOnClickListener
+import com.example.extensions.parseColor
 
 class EventImageHeaderItem(
     val id: String?,

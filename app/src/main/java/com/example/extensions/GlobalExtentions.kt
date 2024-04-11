@@ -1,3 +1,5 @@
+package com.example.extensions
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -14,11 +16,11 @@ import android.text.*
 import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
+import android.util.Base64
 import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.ImageView
@@ -42,7 +44,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.user.User
-import com.example.extensions.defaultServerDateFormatter
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.util.*
 import com.google.android.material.appbar.AppBarLayout
@@ -57,10 +58,32 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.YEAR
 import kotlin.math.roundToInt
+
+
+fun decodeBase64ToJson(data : String?): JSONObject? {
+    if (data.isNullOrEmpty()) return null
+    try {
+        val base = Base64.decode(data, Base64.DEFAULT)
+        return JSONObject(String(base, StandardCharsets.UTF_8))
+    } catch (e : Exception){
+        e.printStackTrace()
+        return null
+    }
+}
+
+
+fun getClickablePrivacyPolitics(context: Context): CharSequence {
+    return SpannableString(context.getString(R.string.auth_user_agreement)).apply {
+        setSpan(ClickableSpan {
+            showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
+        }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+}
 
 fun Spanned?.removeUrlUnderline(): Spannable? {
     if (this.isNullOrEmpty()) return null

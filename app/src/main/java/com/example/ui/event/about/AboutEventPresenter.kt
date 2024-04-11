@@ -175,8 +175,9 @@ class AboutEventPresenter
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    if (it.isAccepted()) registerToEvent(eventId)
-                    else viewState.showAgreementRegisterDialog(eventId, url)
+                    viewState.showAgreementRegisterDialog(eventId, url)
+                    //if (it.isAccepted()) registerToEvent(eventId)
+                    //else viewState.showAgreementRegisterDialog(eventId, url)
                 }
             )
     }
@@ -270,14 +271,9 @@ class AboutEventPresenter
                                     "Мероприятие «$eventName» было отменено организатором."
                                 viewState.showErrorMessageWithResult(true, eventId, message)
                             }
-
-                            else -> {
-                                onReceiveError(t)
-                            }
+                            else -> onReceiveError(t)
                         }
-                    } catch (e: Exception) {
-
-                    }
+                    } catch (e: Exception) { }
                 }
 
                 else -> onReceiveError(t)

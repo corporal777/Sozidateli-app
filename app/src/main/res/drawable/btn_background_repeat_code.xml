@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false">
-        <shape>
-            <corners android:radius="@dimen/chat_list_button_padding_left" />
-            <solid android:color="#14747480" />
-        </shape>
-    </item>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
     <item>
         <shape>
-            <solid android:color="#C3996C" />
+            <solid android:color="@color/repeat_code_button_background_color" />
             <corners android:radius="@dimen/chat_list_button_padding_left" />
         </shape>
     </item>
-</selector>
+</ripple>

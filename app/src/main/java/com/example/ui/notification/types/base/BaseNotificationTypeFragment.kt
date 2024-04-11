@@ -25,7 +25,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import onScrolled
+import com.example.extensions.onScrolled
 
 
 abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Presenter> :

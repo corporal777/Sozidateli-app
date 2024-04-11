@@ -60,7 +60,7 @@ class SearchOrganizationFragment : SearchFragment<SearchOrganizationPresenter, O
         return LayoutFilterOrganizationSearchBinding.inflate(LayoutInflater.from(requireContext()), null, false).apply {
 //            etAddress.apply {
 //                setTextWithoutSearch(filter.address)
-//                onTextChanged {
+//                com.example.extensions.onTextChanged {
 //                    filter.address = it.toString()
 //                    if (filter.address.isNullOrBlank()) filter.setAddressFilter(null)
 //                }

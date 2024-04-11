@@ -12,8 +12,8 @@ import com.example.ui.base.BasePresenter
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
-import fileName
-import fromJson
+import com.example.extensions.fileName
+import com.example.extensions.fromJson
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign

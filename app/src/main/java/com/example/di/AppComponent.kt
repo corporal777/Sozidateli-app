@@ -2,7 +2,6 @@ package com.example.di
 
 import android.app.Application
 import com.example.App
-import com.example.ui.event.agreement.EventAgreementRegisterDialog
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.example.ui.views.accountView.AccountView

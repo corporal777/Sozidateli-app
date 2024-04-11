@@ -3,22 +3,23 @@ package com.example.ui.event.about.items
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.core.view.isVisible
-import coil.ImageLoader
 import com.example.R
 import com.example.data.models.EventNew
-import com.example.data.models.RequestApplyModel
 import com.example.databinding.ItemEventDetailImageBlockBinding
 import com.example.extensions.*
-import com.example.util.setImage
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
-import parseColor
+import com.example.extensions.parseColor
+import com.example.util.setImage
+import com.example.util.setImagePicasso
 
 class EventDetailImageItem(val event: EventNew) :
     BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
 
-    private val eventDate = event.holdingDate?.from.formatToEventDatesIntervalOnMain(event.holdingDate?.from) ?: ""
-    private val imageColor = ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+    private val eventDate =
+        event.holdingDate?.from?.formatToDefaultDate() + " - " + event.holdingDate?.to?.formatToDefaultDate()
+    private val imageColor =
+        ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
     private val requestDate = getEventRequestDate()
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
@@ -34,11 +35,7 @@ class EventDetailImageItem(val event: EventNew) :
                 text = event.address?.getShortAddress()
             }
             ivLogo.apply {
-                Picasso.get()
-                    .load(event.image?.uri)
-                    .placeholder(imageColor)
-                    .error(imageColor)
-                    .into(this)
+                setImagePicasso(url = event.image?.uri, placeholder = imageColor, error = imageColor)
             }
         }
     }

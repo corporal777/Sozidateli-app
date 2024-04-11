@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.R
-import com.example.data.models.UserDetail
 import com.example.data.models.WorkExperience
 import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.extensions.updateItem
@@ -18,7 +17,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

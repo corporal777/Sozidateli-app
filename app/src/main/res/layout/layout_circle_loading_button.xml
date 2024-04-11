@@ -13,7 +13,7 @@
         android:paddingHorizontal="@dimen/toolbar_circle_button_padding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_btn_rounded_corners_active_selectable"
+        android:background="@drawable/btn_rounded_corners_active"
         android:letterSpacing="-0.01"
         android:minHeight="25dp"
         android:stateListAnimator="@null"

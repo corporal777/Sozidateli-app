@@ -1,17 +1,15 @@
 package com.example.ui.event.about.items
 
 import android.graphics.Color
-import android.util.Log
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.OrganizationNew
 import com.example.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.setImage
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
-import parseColor
+import com.example.extensions.parseColor
+import com.example.util.setImagePicasso
 
 class EventDetailOrganizationItem(
     private val organization: OrganizationNew?,
@@ -38,10 +36,10 @@ class EventDetailOrganizationItem(
                     }
                     setBackgroundColor(backgroundColor)
                 } else {
-                    Picasso.get()
-                        .load(organizationLogo)
-                        .placeholder(R.drawable.background_image_placeholder)
-                        .into(this)
+                    setImagePicasso(
+                        url = organizationLogo,
+                        placeholder = R.drawable.background_image_placeholder
+                    )
                 }
             }
             btnActionFavorite.apply {

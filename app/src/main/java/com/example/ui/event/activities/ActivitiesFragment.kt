@@ -3,24 +3,18 @@ package com.example.ui.event.activities
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.AbsListView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.example.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
-import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.databinding.FragmentActivitysBinding
-import com.example.extensions.calendar
 import com.example.extensions.findItemBy
-import com.example.extensions.getMonthName
 import com.example.extensions.updateItem
-import com.example.holders.EventDaysListItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
@@ -36,10 +30,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onFocusChanged
-import onScrollStateChanged
-import onScrolled
-import onTextChanged
+import com.example.extensions.onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 

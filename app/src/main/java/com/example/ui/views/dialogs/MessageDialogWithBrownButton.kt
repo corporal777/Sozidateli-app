@@ -9,9 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.databinding.DialogMessageWithGrayButtonBinding
-import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 
 class MessageDialogWithBrownButton(
     val context: Context,

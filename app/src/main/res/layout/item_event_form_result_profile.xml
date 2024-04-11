@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tvFormTitle"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:text="Данные из профиля пользователя" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProfileFormTitle"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:text="@string/user_profile_fio"
+            android:textColor="#99000000"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProfileFormField"
+            fontPath="fonts/sf_pro_display.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:importantForAccessibility="no"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#9A99A2"
+            android:textSize="17sp"
+            tools:text="Иванович" />
+
+
+    </LinearLayout>
+
+
+</layout>

@@ -16,7 +16,7 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.util.SearchInput
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onPageChanged
+import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -7,7 +7,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.InterestNew
-import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.PlaceholderItem
@@ -20,7 +19,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

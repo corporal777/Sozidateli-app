@@ -111,10 +111,7 @@ class EditMainDataPresenter
             .andThen(Maybe.just(appData.updateFilesWithDelete(file)))
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                    viewState.hideDeleteUserFile(file)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = { viewState.deleteUserFile(it, appData.getUser().filesCount) }
             )
     }

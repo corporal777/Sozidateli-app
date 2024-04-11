@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.ProfileFieldFiles
 import com.example.data.models.ProfileFieldString
 import com.example.databinding.ItemRegisterEventProfileMainBinding
 import com.xwray.groupie.databinding.BindableItem
@@ -21,7 +22,7 @@ class RegisterEventProfileMainItem(
     val socialLinks: ProfileFieldString,
     val sites: ProfileFieldString,
     val publicEmails: ProfileFieldString,
-    val files: ProfileFieldString
+    val files: ProfileFieldFiles
 ) : BindableItem<ItemRegisterEventProfileMainBinding>(itemId) {
 
 
@@ -58,7 +59,17 @@ class RegisterEventProfileMainItem(
             }
             lnFiles.apply {
                 isVisible = files.isChosen
-                tvFiles.setField(files)
+                tvFiles.apply {
+                    val field = files.value.joinToString("\n") { it.name ?: "" }
+                    if (field.isNullOrEmpty()) {
+                        text = context.getString(R.string.user_profile_additional_hint)
+                        if (files.isRequired) setTextColor(ContextCompat.getColor(context, R.color.red_new))
+                    } else {
+                        setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
+                        text = field
+                    }
+                }
+
             }
             lnEmail.apply {
                 isVisible = email.isChosen

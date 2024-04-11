@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import kotlinx.android.synthetic.main.item_building_scheme.*
-import onScrolled
+import com.example.extensions.onScrolled
 
 class DestinationSchemeItem(
     val id: String,

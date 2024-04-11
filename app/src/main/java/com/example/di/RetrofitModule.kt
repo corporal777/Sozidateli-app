@@ -11,7 +11,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
-import isConnectedToNetwork
+import com.example.extensions.isConnectedToNetwork
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient

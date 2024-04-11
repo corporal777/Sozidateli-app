@@ -39,6 +39,7 @@
     <!--  new margins  -->
     <dimen name="margin_eight">8dp</dimen>
     <dimen name="margin_ten">10dp</dimen>
+    <dimen name="margin_fourteen">14dp</dimen>
     <dimen name="margin_fifteen">15dp</dimen>
     <dimen name="margin_twenty">20dp</dimen>
     <dimen name="margin_thirty">30dp</dimen>

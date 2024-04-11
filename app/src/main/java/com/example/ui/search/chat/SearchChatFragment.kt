@@ -27,11 +27,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import initDropDownView
+import com.example.extensions.initDropDownView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onScrolled
-import onTextChanged
+import com.example.extensions.onScrolled
+import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

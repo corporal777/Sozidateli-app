@@ -28,17 +28,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAction"
-        fontPath="fonts/sf_pro_text_bold.ttf"
+        style="@style/BtnBrownStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="20dp"
-        android:background="@drawable/custom_btn_brown_selectable"
-        android:letterSpacing="-0.02"
         android:text="@string/ok"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

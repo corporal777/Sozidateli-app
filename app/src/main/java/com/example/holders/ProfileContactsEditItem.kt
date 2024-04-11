@@ -2,19 +2,14 @@ package com.example.holders
 
 import android.content.Context
 import android.telephony.PhoneNumberFormattingTextWatcher
-import android.text.InputFilter
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
-import androidx.viewbinding.ViewBinding
-import androidx.viewbinding.ViewBindings
 import com.example.R
 import com.example.data.models.*
-import com.example.databinding.ItemLectureBinding
 import com.example.databinding.ItemProfileDataEditContactsBinding
 import com.example.databinding.ItemProfileEmailBinding
 import com.example.databinding.ItemProfileSocialNetworkBinding
@@ -23,11 +18,7 @@ import com.example.util.*
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import isValidPhoneNumber
-import kotlinx.android.synthetic.main.item_profile_data_edit_contacts.*
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 
 class ProfileContactsEditItem(
     private val context: Context,
@@ -87,7 +78,7 @@ class ProfileContactsEditItem(
         mBinding = viewBinding
         viewBinding.apply {
             tilMobilePhone.apply {
-                showError(null)
+                error = null
                 scMobilePhone.initSwitch(mShowMobilePhone) { mShowMobilePhone = it }
             }
             etMobilePhone.apply {
@@ -95,7 +86,7 @@ class ProfileContactsEditItem(
                 initInput(mMobilePhone) {
                     mMobilePhone = it.toString()
                     if (!it.isNullOrEmpty() && tilMobilePhone.error != null)
-                        tilMobilePhone.showError(null)
+                        tilMobilePhone.error = null
 
                     if (mobilePhone?.isConfirmed == true) {
                         mIsPhoneConfirmed = mMobilePhone.phoneToServer() == mobilePhone?.value
@@ -112,7 +103,7 @@ class ProfileContactsEditItem(
                 initInput(mWorkPhone) {
                     mWorkPhone = it.toString()
                     if (it?.isNotEmpty() == true && tilWorkPhone.error != null)
-                        tilWorkPhone.showError(null)
+                        tilWorkPhone.error = null
                 }
                 addTextChangedListener(PhoneNumberFormattingTextWatcher())
             }
@@ -446,6 +437,7 @@ class ProfileContactsEditItem(
     }
 
     fun setPhoneConfirmed(phone: FieldDetails?) {
+        if (!this::mBinding.isInitialized) return
         mobilePhone = phone
         mIsPhoneConfirmed = phone?.isConfirmed ?: false
         updatePhoneConfirmationStatus(mBinding)

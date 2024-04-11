@@ -18,7 +18,7 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onPageSelected
+import com.example.extensions.onPageSelected
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -25,7 +25,7 @@ class UserSubscribeImageView : AppCompatImageView {
     init {
         setPadding(5.dp, 0, 5.dp, 0)
         layoutParams = LinearLayout.LayoutParams(32.dp, 32.dp)
-        background = ContextCompat.getDrawable(context, R.drawable.custom_toolbar_btn_background_selectable)
+        background = ContextCompat.getDrawable(context, R.drawable.btn_background_toolbar)
         minimumHeight = 32.dp
     }
 

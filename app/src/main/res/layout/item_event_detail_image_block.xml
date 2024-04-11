@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/custom_text_background_selectable"
+            android:background="@drawable/btn_background_text"
             android:textColor="@color/white"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"

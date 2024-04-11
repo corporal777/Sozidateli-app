@@ -307,7 +307,13 @@ data class FileModel(
     val uri: String? = null,
     @SerializedName("showInProfile")
     var showInProfile: Boolean? = false
-) : Parcelable
+) : Parcelable {
+    fun isFilePDF() : Boolean{
+        return if (mimeType.isNullOrEmpty()){
+            name?.contains("pdf", true) == true
+        } else mimeType == "application/pdf" || mimeType.contains("pdf", true)
+    }
+}
 
 @Parcelize
 data class UserFiles(

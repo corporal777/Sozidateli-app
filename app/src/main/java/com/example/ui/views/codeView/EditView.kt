@@ -17,7 +17,7 @@ import com.example.extensions.dp
 import com.example.util.getDrawable
 import com.example.util.setRightDrawableWithIntrinsicBounds
 import io.github.inflationx.calligraphy3.CalligraphyUtils
-import onFocusChanged
+import com.example.extensions.onFocusChanged
 
 
 private const val textPaintAlphaAnimDuration = 25L

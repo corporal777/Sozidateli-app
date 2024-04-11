@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -15,10 +14,10 @@ import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventNewBinding
-import com.example.extensions.formatToEventDatesIntervalOnMain
+import com.example.extensions.formatToDefaultDate
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
-import parseColor
+import com.example.extensions.parseColor
 
 class EventItemNew(
     event: EventNew,
@@ -28,10 +27,9 @@ class EventItemNew(
     private var eventData = event
     private val eventId = eventData.id.toString()
     private val imageColor = ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+    private val eventDate =
+        eventData.holdingDate?.from?.formatToDefaultDate() + " - " + eventData.holdingDate?.to?.formatToDefaultDate()
 
-    init {
-
-    }
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
@@ -39,7 +37,7 @@ class EventItemNew(
                 clickListener.onShowEventClick(viewBinding.root, eventId)
             }
 
-            tvDate.text = eventData.holdingDate?.from.formatToEventDatesIntervalOnMain(eventData.holdingDate?.to)
+            tvDate.text = eventDate
             tvLocation.text = eventData.address?.getShortAddress()
             tvTitle.text = eventData.name
             ivLogo.apply {

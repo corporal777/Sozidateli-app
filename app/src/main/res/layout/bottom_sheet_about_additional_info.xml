@@ -30,7 +30,7 @@
             android:layout_marginBottom="4dp"
             android:layout_alignTop="@id/view"
             android:layout_marginTop="13dp"
-            android:background="@drawable/custom_toolbar_btn_background_selectable"
+            android:background="@drawable/btn_background_toolbar"
             android:padding="10dp"
             android:src="@drawable/ic_back_black" />
 

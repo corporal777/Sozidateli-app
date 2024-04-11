@@ -3,11 +3,10 @@ package com.example.ui.event.my.items
 import android.view.View
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.databinding.ItemSearchActivityBinding
 import com.example.databinding.ItemSearchEventBinding
 import com.example.util.SearchInput
 import com.xwray.groupie.databinding.BindableItem
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 class SearchEventItem(
     val onSearchTextChange: (search: String) -> Unit,

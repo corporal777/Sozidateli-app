@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="10dp"
-            app:buttonBackground="@drawable/custom_btn_white_ghost_selectable"
+            app:buttonBackground="@drawable/btn_background_white_ghost"
             app:buttonMinHeight="@dimen/auth_buttons_min_height"
             app:buttonText="@string/go_to_event"
             app:buttonTextColor="@color/black"

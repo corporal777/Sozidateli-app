@@ -17,7 +17,7 @@ import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 

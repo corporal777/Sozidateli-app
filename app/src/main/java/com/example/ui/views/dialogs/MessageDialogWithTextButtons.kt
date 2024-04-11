@@ -3,16 +3,14 @@ package com.example.ui.views.dialogs
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.databinding.DialogMessageWithGrayButtonBinding
 import com.example.databinding.DialogTextButtonsBinding
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 
 class MessageDialogWithTextButtons(
     val context: Context,

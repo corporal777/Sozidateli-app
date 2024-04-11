@@ -76,11 +76,11 @@ class CustomCircleLoadingButton : ConstraintLayout {
     fun setActiveWithIcon(isActive : Boolean, str : String){
         loadingView.btnAction.apply {
             if (isActive) {
-                background = getDrawable(R.drawable.custom_btn_rounded_corners_active_selectable)
+                background = getDrawable(R.drawable.btn_rounded_corners_active)
                 setTextColor(getColor(R.color.main_brown_color_new))
                 setButtonLeftIcon(R.drawable.ic_circle_plus_icon)
             } else {
-                background = getDrawable(R.drawable.custom_btn_rounded_corners_inactive_selectable)
+                background = getDrawable(R.drawable.btn_rounded_corners_inactive)
                 setTextColor(getColor(R.color.circle_rounded_corners_button_color))
                 setButtonLeftIcon(R.drawable.ic_circle_done_icon)
             }

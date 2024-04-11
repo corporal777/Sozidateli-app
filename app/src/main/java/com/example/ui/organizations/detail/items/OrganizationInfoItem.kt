@@ -5,7 +5,7 @@ import com.example.R
 import com.example.databinding.ItemOrganizationInfoBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 
 class OrganizationInfoItem(
     val orgId: Long?,

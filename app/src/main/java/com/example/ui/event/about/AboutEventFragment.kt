@@ -3,9 +3,9 @@ package com.example.ui.event.about
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.BuildConfig
@@ -14,14 +14,10 @@ import com.example.data.models.AboutEventData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
 import com.example.data.models.MapInfo
-import com.example.data.models.MemberModel
 import com.example.data.models.NewTags
-import com.example.data.models.PartnerModel
 import com.example.data.models.Tag
 import com.example.data.models.UserFormResultModel
 import com.example.databinding.FragmentAboutEventNewBinding
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
@@ -51,7 +47,7 @@ import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.StateType
-import com.example.ui.event.agreement.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementDialog
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupAdapter
@@ -62,9 +58,10 @@ import eightbitlab.com.blurview.RenderEffectBlur
 import eightbitlab.com.blurview.RenderScriptBlur
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onScrolled
-import setOnClickListener
-import statusBarColorValue
+import com.example.extensions.onScrolled
+import com.example.extensions.setOnClickListener
+import com.example.extensions.statusBarColorValue
+import com.example.ui.views.dialogs.EventAgreementBottomDialog
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -161,6 +158,8 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun setEventData(eventData: AboutEventData) {
         setEventFavoriteButton(eventData.event.binds?.userFavorite != null)
+        mBinding.toolbar.tbContent.isVisible = true
+        mBinding.swipeToRefreshLayout.isRefreshing = false
 
         eventMainSection.updateItems(
             EventDetailImageItem(eventData.event),
@@ -212,7 +211,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
                 ) { id -> presenter.onPartnerClick(id) }
             }
         )
-        mBinding.swipeToRefreshLayout.isRefreshing = false
     }
 
 
@@ -237,9 +235,13 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
-            presenter.onAcceptRegistrationAgreement(event)
-        }
+//        EventAgreementDialog(requireContext(), url).setSelectCallback {
+//            presenter.onAcceptRegistrationAgreement(event)
+//        }
+        EventAgreementBottomDialog(requireContext(), url)
+            .setSelectCallback {
+
+            }.show()
     }
 
     override fun showEventFormResult(formResult: UserFormResultModel) {

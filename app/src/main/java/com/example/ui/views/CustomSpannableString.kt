@@ -58,8 +58,11 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
         setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
-    fun setFontSpan(res: String, context: Context) {
+    fun setFontSpan(res: String, context: Context, start: Int? = null, end: Int? = null) {
         val font = Typeface.createFromAsset(context.assets, res)
-        setSpan(CustomTypefaceSpan("", font), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setSpan(
+            CustomTypefaceSpan("", font), start ?: 0, end ?: length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
     }
 }

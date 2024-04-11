@@ -39,10 +39,10 @@ class ProfileMainInfoScreenTest {
     fun profileMainInfoScreenTest() {
         val appCompatButton = onView(
             allOf(
-                withId(R.id.ibLogin), withText("Войти"),
+                withId(R.id.btnLogin), withText("Войти"),
                 childAtPosition(
                     allOf(
-                        withId(R.id.llLogin),
+                        withId(R.id.content),
                         childAtPosition(
                             withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
                             3
@@ -192,7 +192,7 @@ class ProfileMainInfoScreenTest {
         //city
         val cityTextView = onView(
             allOf(
-                withId(R.id.etCity),
+                withId(R.id.etCode),
                 childAtPosition(
                     childAtPosition(
                         withClassName(`is`("com.example.ui.views.CustomTextInputLayout")),

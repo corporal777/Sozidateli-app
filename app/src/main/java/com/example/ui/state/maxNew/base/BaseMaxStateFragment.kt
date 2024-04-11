@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.CallSuper
+import androidx.core.os.bundleOf
+import androidx.fragment.app.clearFragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.databinding.FragmentMaxStateInfoBinding
@@ -15,7 +18,6 @@ import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
 import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
-import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.ContactsType
@@ -63,25 +65,29 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
                     MaxStatusContactsFragmentArgs.Builder().setScreen(2).build().toBundle()
                 )
             }
+
             MaxStateScreenType.INTERESTS -> {
                 findNavController().navigate(
                     R.id.maxStatusInterestsFragment,
                     MaxStatusInterestsFragmentArgs.Builder().setScreen(2).build().toBundle()
                 )
             }
+
             MaxStateScreenType.EDUCATION -> {
                 findNavController().navigate(
                     R.id.maxStatusEducationFragment,
                     MaxStatusEducationFragmentArgs.Builder().setScreen(2).build().toBundle()
                 )
             }
+
             MaxStateScreenType.WORK -> {
                 findNavController().navigate(
                     R.id.maxStatusWorkFragment,
                     MaxStatusWorkFragmentArgs.Builder().setScreen(2).build().toBundle()
                 )
             }
-            MaxStateScreenType.DONE -> { presenter.checkUserEmail() }
+
+            MaxStateScreenType.DONE ->  presenter.checkUserEmail()
         }
     }
 
@@ -89,18 +95,17 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
         MessageDialogWithBrownButton(
             requireContext(),
             resources.getString(R.string.you_got_max_state)
-        )
-            .setSelectCallback {
-                when (screen) {
-                    1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                    2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                }
+        ).setSelectCallback {
+            when (screen) {
+                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
             }
+        }
     }
 
     override fun showAddEmailDialog() {
         dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
-            .setSelectEmailCallback { presenter.checkEmailIsUnique(it) }
+            .setSelectEmailCallback { presenter.checkEmailIsUnique(true, it) }
             .setNegativeClickCallback { presenter.onClickClose() }
     }
 
@@ -112,14 +117,20 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
         )
             .setSelectCallback {
-                if (it) presenter.onShowEmailConfirm(email)
+                if (it) presenter.checkEmailIsUnique(false, email)
             }
     }
 
     override fun showEmailConfirmation(email: String) {
-        val confirmEmail = ConfirmEmailPhoneFragment(email)
-        confirmEmail.show(requireActivity().supportFragmentManager, "max_state_confirm_email")
-        confirmEmail.setConfirmCallback { presenter.onShowMaxStateDone() }
+        findNavController().navigate(
+            R.id.emailCodeConfirmFragment,
+            bundleOf("email" to email, "fromRegister" to false),
+        )
+        setFragmentResultListener("confirm") { _, bundle ->
+            val emailConfirm = bundle.getString("email")
+            if (!emailConfirm.isNullOrEmpty()) presenter.onShowMaxStateDone()
+            clearFragmentResultListener("confirm")
+        }
     }
 
     override fun setClickClose(type: Int) {
@@ -144,7 +155,7 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
         }
     }
 
-    override fun hideCustomLoading(){
+    override fun hideCustomLoading() {
         mBinding.apply {
             btnSave.showProgressLoading(false)
         }

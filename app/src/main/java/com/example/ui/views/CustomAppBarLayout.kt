@@ -5,8 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import androidx.core.view.isVisible
 import com.google.android.material.appbar.AppBarLayout
-import offsetChangedListener
-import kotlin.math.abs
+import com.example.extensions.offsetChangedListener
 
 class CustomAppBarLayout : AppBarLayout {
 

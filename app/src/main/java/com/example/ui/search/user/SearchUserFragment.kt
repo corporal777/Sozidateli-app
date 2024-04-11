@@ -14,7 +14,7 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
-import initDropDownView
+import com.example.extensions.initDropDownView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

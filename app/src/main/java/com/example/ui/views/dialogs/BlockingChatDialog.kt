@@ -50,8 +50,6 @@ class BlockingChatDialog (
         }
 
         mBinding.btnNegative.apply {
-            background = ContextCompat.getDrawable(context, R.drawable.custom_btn_brown_selectable)
-            setTextColor(ContextCompat.getColor(context, R.color.white))
             if (!btnNegativeText.isNullOrEmpty()) text = btnNegativeText
             setOnClickListener {
                 mAlertDialog.dismiss()

@@ -55,6 +55,7 @@ interface UserRepository {
     fun getEducationLevel(): Single<EducationLevelModel>
     fun getSpeciality(): Single<EducationLevelModel>
     fun getAcademicDegrees(): Single<EducationLevelModel>
+    fun getUserProfileAdditionalData(): Completable
 
     fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun searchAddress(query: String?): Single<SearchAddressModel>

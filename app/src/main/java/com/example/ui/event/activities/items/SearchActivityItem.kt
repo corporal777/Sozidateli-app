@@ -6,7 +6,7 @@ import com.example.R
 import com.example.databinding.ItemSearchActivityBinding
 import com.example.util.SearchInput
 import com.xwray.groupie.databinding.BindableItem
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 class SearchActivityItem(
     val onSearchTextChange: (search : String) -> Unit,

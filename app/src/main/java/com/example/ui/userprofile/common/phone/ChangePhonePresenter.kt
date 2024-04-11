@@ -23,7 +23,6 @@ import javax.inject.Inject
 class ChangePhonePresenter
 @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     private val appData: AppData,
 ) : BasePresenter<ChangePhoneContract.View>(appData), ChangePhoneContract.Presenter {
 
@@ -36,7 +35,7 @@ class ChangePhonePresenter
 
     override fun attachView(view: ChangePhoneContract.View?) {
         super.attachView(view)
-        phoneField = appData.getUser().phone?.firstOrNull { it.type == PHONE_PERSONAL }
+        phoneField = getUserData().personalPhone
         phone = phoneField?.value ?: ""
         phoneIsVisible = phoneField?.isVisible ?: true
         phoneIsConfirmed = phoneField?.isConfirmed ?: false
@@ -93,7 +92,9 @@ class ChangePhonePresenter
         ).doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }.ignoreElement()
     }
 
-    private fun isSamePhone() = phoneField?.value == phone
+    private fun isSamePhone(): Boolean {
+        return if (phoneField == null) false else phoneField?.value == phone
+    }
 
     private fun performDataChange() = viewState.apply {
         enableBtnSave(isPhoneNumberValid(phone))

@@ -3,7 +3,7 @@ package com.example.holders.registerEvent
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
 import com.example.databinding.ItemRegisterEventSelectorBinding
-import initDropDownView
+import com.example.extensions.initDropDownView
 
 open class EventRegistrationSelectBoxItem(
     private val fieldData: EventRegisterFieldData<String>,

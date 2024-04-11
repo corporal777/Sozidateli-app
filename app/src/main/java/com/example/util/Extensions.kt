@@ -20,6 +20,7 @@ import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
@@ -56,10 +57,21 @@ import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.onTextChanged
+import com.generator.qrcodegenerator.QrCodeGenerator
 import com.google.android.material.appbar.AppBarLayout
+import com.squareup.picasso.Picasso
+import io.reactivex.Maybe
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import onTextChanged
+import performOnBackgroundOutOnMain
+import withProgressBarDialogLoading
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
@@ -172,6 +184,26 @@ fun TextView.setRightDrawableWithIntrinsicBounds(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
 }
 
+fun ImageView.setImagePicasso(url: String?, placeholder: Any? = null, error: Any? = null) {
+    Picasso.get()
+        .load(url)
+        .let {
+            when (placeholder) {
+                null -> it
+                is Int -> it.placeholder(placeholder)
+                else -> it.placeholder(placeholder as Drawable)
+            }
+        }
+        .let {
+            when (error) {
+                null -> it
+                is Int -> it.error(error)
+                else -> it.error(error as Drawable)
+            }
+        }
+        .into(this)
+}
+
 fun ImageView.setImage(
     image: Any?, crossfad: Int? = 500,
     placeholder: Int? = R.drawable.background_image_placeholder,
@@ -257,7 +289,7 @@ fun ImageRequest.Builder.setParams(
     listener(
         onStart = {},
         onCancel = {},
-        onError = {_, _ ->
+        onError = { _, _ ->
 
         }
     )
@@ -332,19 +364,16 @@ fun LinearLayoutManager.smoothScrollToFirstItem(
     this.startSmoothScroll(mSmoothScroller)
 }
 
-fun showCustomTabsBrowser(context: Context, url: String) {
-    try {
-        val customTabsIntent = CustomTabsIntent.Builder().apply {
-            setStartAnimations(context, R.anim.browser_popup_enter, android.R.anim.fade_out)
-            setExitAnimations(context, android.R.anim.fade_in, R.anim.browser_popup_exit)
-        }.build()
-        customTabsIntent.launchUrl(context, Uri.parse(url))
-    } catch (e: Exception) {
-        Toast.makeText(context, "Не удалось открыть страницу", Toast.LENGTH_SHORT).show()
-    }
-}
 
-fun openDeviceCalendarApp(context: Context, dateFrom: String?, dateTo: String?, name: String?, desc: String?, address: String?) {
+
+fun openDeviceCalendarApp(
+    context: Context,
+    dateFrom: String?,
+    dateTo: String?,
+    name: String?,
+    desc: String?,
+    address: String?
+) {
     try {
         val startCal = defaultServerDateFormatter.parse(dateFrom ?: "").calendar()
         val endCal = defaultServerDateFormatter.parse(dateTo ?: "").calendar()
@@ -418,77 +447,46 @@ fun saveImageToCache(context: Context, image: Bitmap): Uri? {
     return uri
 }
 
-
-fun pdfToBitmap(url: String, context: Context, index: Int): Bitmap? {
-    val client = OkHttpClient()
-    val request = Request.Builder().url(url)
-        .addHeader("Content-Type", "application/json")
-        .build()
-
-    val response = client.newCall(request).execute()
-    val inputStream: InputStream? = response.body?.byteStream()
-    val bytes = inputStream?.readBytes()
-
-    val imagesFolder = File(context.cacheDir, "pdf")
+fun showCustomTabsBrowser(context: Context, url: String) {
+    val pageUrl =
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            Uri.parse("https://$url")
+        else Uri.parse(url)
     try {
-        imagesFolder.mkdirs()
-        val pdfFile = File(imagesFolder, "pdf_image-$index.png")
-        bytes?.let { pdfFile.writeBytes(it) }
-
-        val pfd = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
-        val renderer = PdfRenderer(pfd)
-
-        val page = renderer.openPage(0)
-        val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_4444)
-        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-        page.close()
-        renderer.close()
-        return bitmap
-    } catch (e: IOException) {
+        val customTabsIntent = CustomTabsIntent.Builder().apply {
+            setStartAnimations(context, R.anim.browser_popup_enter, android.R.anim.fade_out)
+            setExitAnimations(context, android.R.anim.fade_in, R.anim.browser_popup_exit)
+        }.build()
+        customTabsIntent.launchUrl(context, pageUrl)
+    } catch (e: Exception) {
         e.printStackTrace()
-        return null
+        Toast.makeText(context, "Не удалось открыть страницу", Toast.LENGTH_SHORT).show()
     }
 }
 
-fun pdfToUri(url: String, context: Context, index: Int): Uri? {
-    val client = OkHttpClient()
-    val request = Request.Builder().url(url)
-        .addHeader("Content-Type", "application/json")
-        .build()
-
-    val response = client.newCall(request).execute()
-    val inputStream: InputStream? = response.body?.byteStream()
-    val bytes = inputStream?.readBytes()
-
-    val imagesFolder = File(context.cacheDir, "pdf")
-    try {
-        imagesFolder.mkdirs()
-        val pdfFile = File(imagesFolder, "pdf_image-$index.png")
-        bytes?.let { pdfFile.writeBytes(it) }
-
-        val pfd = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
-        val renderer = PdfRenderer(pfd)
-
-        val page = renderer.openPage(0)
-        val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_4444)
-        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-        page.close()
-        renderer.close()
-
-        val stream = FileOutputStream(pdfFile)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-        stream.flush()
-        stream.close()
-        return FileProvider.getUriForFile(
-            context,
-            BuildConfig.APPLICATION_ID + ".provider",
-            pdfFile
+fun showFileBrowser(context: Context, url: String){
+    val disposable = CompositeDisposable()
+    disposable += FileUtils.savePdfToCache(url, context)
+        .performOnBackgroundOutOnMain()
+        .subscribeBy(
+            onError = { it.printStackTrace() },
+            onSuccess = {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(it, "application/pdf")
+                    context.startActivity(intent)
+                    disposable.clear()
+                } catch (e : Exception){
+                    e.printStackTrace()
+                    Toast.makeText(context, "Не удалось открыть страницу", Toast.LENGTH_SHORT).show()
+                }
+            }
         )
-    } catch (e: IOException) {
-        e.printStackTrace()
-        return null
-    }
+
 }
+
+
 
 fun copyTextToBuffer(context: Context, link: String) {
     val clipboardManager =

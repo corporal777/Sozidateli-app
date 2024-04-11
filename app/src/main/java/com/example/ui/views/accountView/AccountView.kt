@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.image_with_badge.view.*
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setCircleImage
+import com.example.extensions.setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 

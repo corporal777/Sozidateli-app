@@ -132,6 +132,7 @@ class ProfilePresenter
     override fun onChangeAccountClick() = viewState.showChangeAccount()
 
     override fun onShowUserProfileLink() = viewState.showUserProfileLinkDialog()
+
     override fun onShowChangeUserShortName() = viewState.showChangeUserShortName()
 
 

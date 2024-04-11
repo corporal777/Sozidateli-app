@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.clearFragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
@@ -21,7 +23,6 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.userprofile.common.confirm.ConfirmEmailPhoneFragment
 import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.ContactsType
@@ -137,7 +138,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         } else {
             dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
                 .setSelectEmailCallback {
-                    presenter.checkEmailIsUnique(it)
+                    presenter.checkEmailIsUnique(true, it)
                     dialog.hideDialog()
                 }.setNegativeClickCallback { baseActions() }
         }
@@ -156,14 +157,18 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
         ConfirmPhoneDialog(
             requireContext(), getString(R.string.confirm_email_text, email),
             getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.onShowEmailConfirm(email) }
+        ).setSelectCallback { if (it) presenter.checkEmailIsUnique(false, email) }
     }
 
     override fun showEmailConfirm(email: String) {
-        val confirmPhone = ConfirmEmailPhoneFragment(email)
-        confirmPhone.show(requireActivity().supportFragmentManager, "main_info_email_dialog")
-        confirmPhone.setConfirmCallback {
-            baseActions()
+        findNavController().navigate(
+            R.id.emailCodeConfirmFragment,
+            bundleOf("email" to email, "fromRegister" to false),
+        )
+        setFragmentResultListener("confirm") { _, bundle ->
+            val emailConfirm = bundle.getString("email")
+            if (!emailConfirm.isNullOrEmpty()) baseActions()
+            clearFragmentResultListener("confirm")
         }
     }
 

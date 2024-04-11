@@ -3,15 +3,12 @@ package com.example.ui.views
 import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import com.example.R
-import com.example.util.getPhoneFilter
 import com.google.android.material.textfield.TextInputEditText
 import com.hbb20.CountryCodePicker
 import kotlinx.android.synthetic.main.phone_view.view.*
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs) {
 

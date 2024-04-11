@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/sv_content"
+        android:id="@+id/scroll_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_background">
@@ -54,8 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                app:inputType="textEmailAddress"
                 app:hintText="@string/auth_input_email_or_phone_title"
+                app:inputType="textEmailAddress"
                 app:titleText="@string/auth_input_email_or_phone_hint" />
 
             <com.example.ui.views.CustomTextMenuView
@@ -86,14 +86,12 @@
                 app:isCheckable="true" />
 
             <com.example.ui.views.loading.CustomLoadingButton
-                android:id="@+id/btn_register"
+                android:id="@+id/btn_save"
+                style="@style/BtnLoadingStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginVertical="20dp"
-                app:buttonBackground="@drawable/custom_btn_brown_selectable"
-                app:buttonMinHeight="@dimen/common_button_min_height"
-                app:buttonTextSize="@dimen/common_button_text_size"
                 app:buttonText="@string/auth_action_register" />
 
         </LinearLayout>

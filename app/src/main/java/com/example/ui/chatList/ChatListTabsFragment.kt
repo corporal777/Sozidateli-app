@@ -12,8 +12,8 @@ import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import offsetChangedListener
-import onPageChanged
+import com.example.extensions.offsetChangedListener
+import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs

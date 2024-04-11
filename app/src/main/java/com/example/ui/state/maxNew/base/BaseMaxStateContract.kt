@@ -39,8 +39,7 @@ interface BaseMaxStateContract {
         fun onShowMaxStateDone()
         fun onClickClose()
 
-        fun checkEmailIsUnique(email: String)
-        fun onShowEmailConfirm(email : String)
+        fun checkEmailIsUnique(withCheck : Boolean, email: String)
 
         fun checkUserEmail()
     }

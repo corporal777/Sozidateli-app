@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.AppData
@@ -35,7 +34,6 @@ class ProfileDataPresenter
 ) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
     private var userImageUrl: String = appData.getUser().loadUserImage() ?: ""
-    private var userCodeUrl: String = appData.getUser().qrCodeLink ?: ""
     private var userName: String = appData.getUser().nameLastName
     private var userLink: String =
         if (appData.getUser().shortName.isNullOrEmpty()) getUrl() + appData.getUser().id
@@ -112,5 +110,5 @@ class ProfileDataPresenter
         }
     }
 
-    fun getUrl() = BuildConfig.SHARE_URL + "portal/user/"
+    private fun getUrl() = BuildConfig.SHARE_URL + "portal/user/"
 }

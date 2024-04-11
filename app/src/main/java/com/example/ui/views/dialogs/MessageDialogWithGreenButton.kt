@@ -23,7 +23,7 @@ class MessageDialogWithGreenButton(val context: Context, val message: String) {
     init {
         mBuilder.setView(mBinding.root)
         mBinding.btnAction.background =
-            ContextCompat.getDrawable(context, R.drawable.custom_btn_green_selectable)
+            ContextCompat.getDrawable(context, R.drawable.btn_background_green)
 
         mBinding.tvMessage.apply {
             text = message

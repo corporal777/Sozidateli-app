@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_start_sub_events_fragment"
             android:layout_marginTop="@dimen/margin_top_sub_events_fragment"
-            android:background="@drawable/custom_btn_green_selectable"
+            android:background="@drawable/btn_background_green"
             android:letterSpacing="-0.02"
             android:minWidth="200dp"
             android:minHeight="40dp"

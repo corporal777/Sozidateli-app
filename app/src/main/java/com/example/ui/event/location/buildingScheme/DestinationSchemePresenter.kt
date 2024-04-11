@@ -6,7 +6,7 @@ import com.example.data.models.Place
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pdfToUri
+import com.example.util.FileUtils
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -57,7 +57,7 @@ class DestinationSchemePresenter
         list?.forEachIndexed { index, place ->
             if (!place.image.isNullOrEmpty()) {
                 if (place.image!!.contains("pdf")){
-                    place.image = pdfToUri(place.image?:"", context, index).toString()
+                    place.image = FileUtils.pdfToUri(place.image?:"", context, index).toString()
                 }
             }
         }

@@ -11,11 +11,17 @@ import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.UserFormResultModel
 import com.example.databinding.BottomSheetEventFormResultBinding
+import com.example.extensions.updateItems
+import com.example.holders.PlaceholderItem
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.formResult.items.EventFormResultFileItem
 import com.example.ui.event.formResult.items.EventFormResultPassportItem
+import com.example.ui.event.formResult.items.EventFormResultProfileGroup
+import com.example.ui.event.formResult.items.EventFormResultProfileItem
 import com.example.ui.event.formResult.items.EventFormResultStringItem
+import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -39,7 +45,11 @@ class EventFormResultFragment(
     }
 
 
-    private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
+    private val groupAdapter by lazy {
+        GroupAdapter<GroupieViewHolder>().apply {
+            update(List(3) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) })
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,34 +67,43 @@ class EventFormResultFragment(
     override fun setFormResult(fieldsData: List<EventRegisterFieldData<*>>?) {
         if (fieldsData.isNullOrEmpty()) return
         groupAdapter.update(fieldsData.map {
-            when (it) {
-                is EventRegisterFieldData.String ->
-                    EventFormResultStringItem(it.field.id, it.field.name, it.value)
+            if (it.value == null) EventFormResultStringItem(it.field.id, it.field.name, null)
+            else
+                when (it) {
+                    is EventRegisterFieldData.Prefilled ->
+                        EventFormResultProfileGroup(requireContext(), it.field, it.value)
 
-                is EventRegisterFieldData.File ->
-                    EventFormResultFileItem(it.field.id, it.field.name, it.value)
+                    is EventRegisterFieldData.String ->
+                        EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                is EventRegisterFieldData.Passport ->
-                    EventFormResultPassportItem(it.field.id, it.field.name, it.value)
+                    is EventRegisterFieldData.File ->
+                        EventFormResultFileItem(it.field.id, it.field.name, it.value)
 
-                is EventRegisterFieldData.SelectBox ->
-                    EventFormResultStringItem(it.field.id, it.field.name, it.value)
+                    is EventRegisterFieldData.Passport ->
+                        EventFormResultPassportItem(it.field.id, it.field.name, it.value)
 
-                is EventRegisterFieldData.RadioBox ->
-                    EventFormResultStringItem(it.field.id, it.field.name, it.value)
+                    is EventRegisterFieldData.SelectBox ->
+                        EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                is EventRegisterFieldData.Checkbox ->
-                    EventFormResultStringItem(it.field.id, it.field.name, getCheckBoxValue(it.value))
+                    is EventRegisterFieldData.RadioBox ->
+                        EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                is EventRegisterFieldData.Boolean ->
-                    EventFormResultStringItem(it.field.id, it.field.name, if (it.value == true) "Да" else "Нет")
-                else -> null
-            }
+                    is EventRegisterFieldData.Checkbox ->
+                        EventFormResultStringItem(
+                            it.field.id,
+                            it.field.name,
+                            getCheckBoxValue(it.value)
+                        )
+
+                    else -> return
+                }
+
+
         })
     }
 
 
-    private fun getCheckBoxValue(it : Set<String>?) : String {
+    private fun getCheckBoxValue(it: Set<String>?): String {
         val str = StringBuilder()
         it?.forEachIndexed { index, s ->
             if (index == 0) str.append("∙ $s")

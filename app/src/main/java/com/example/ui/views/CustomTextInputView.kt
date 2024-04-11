@@ -13,9 +13,9 @@ import com.example.R
 import com.example.databinding.LayoutCustomTextInputViewBinding
 import com.example.extensions.dp
 import com.example.util.getColor
-import onFocusChanged
-import onTextChanged
-import showHidePasswordText
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
+import com.example.extensions.showHidePasswordText
 
 class CustomTextInputView : LinearLayout {
 

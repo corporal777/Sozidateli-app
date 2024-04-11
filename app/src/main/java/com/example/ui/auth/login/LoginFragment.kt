@@ -1,25 +1,19 @@
 package com.example.ui.auth.login
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.BuildConfig
 import com.example.R
-import com.example.data.models.SnUser
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.blur.BlurredDialog
-import com.example.ui.views.dialogs.EventRegistrationRequestDialog
 import com.example.ui.views.dialogs.MessageDialogWithTextButtons
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

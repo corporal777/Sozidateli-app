@@ -5,7 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:foreground="@drawable/custom_text_background_selectable"
+        android:foreground="@drawable/btn_background_text"
         android:layout_height="wrap_content"
         android:paddingHorizontal="15dp">
 

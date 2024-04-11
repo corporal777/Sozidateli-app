@@ -9,7 +9,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.StateType
-import com.example.ui.event.agreement.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementDialog
 
 abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBinding> :
     BaseFragment<T>(), EventListContract.View {
@@ -24,7 +24,7 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+        EventAgreementDialog(requireContext(), url).setSelectCallback {
             presenter.onAcceptRegistrationAgreement(event)
         }
     }

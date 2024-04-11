@@ -10,7 +10,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import onBackPressedCallback
+import com.example.extensions.onBackPressedCallback
 
 abstract class BaseUserProfileEditFragment : BaseFragment<FragmentUserEditBinding>(), ToolbarFragment {
 

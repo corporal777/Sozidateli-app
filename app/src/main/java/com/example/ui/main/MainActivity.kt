@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -27,6 +28,7 @@ import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
 import com.example.data.models.UserDetail
 import com.example.databinding.LayoutNoInternetBinding
+import com.example.extensions.decodeBase64ToJson
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
@@ -87,10 +89,10 @@ import com.example.util.PGRF
 import com.example.util.Utils
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import getFragmentLifecycleCallback
+import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onBackPressedCallback
+import com.example.extensions.onBackPressedCallback
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -240,13 +242,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     val userId = if (indexLastPath > 0) paths[indexLastPath - 1] else ""
                     presenter.onHandleChangePasswordLink(userId, authCode)
                 }
-                //catch path sn authorization
-                else if (lastPath == PATH_SN_AUTHORIZATION) {
-                    val userId = it.getQueryParameter(FIELD_SN_AUTHORIZATION_USER_ID)
-                    if (userId != null && authCode != null) {
-                        presenter.onHandleSocialNetworkConfirm(userId, authCode)
-                    }
-                }
                 //catch path event member
                 else if (lastPath == PATH_EVENT_MEMBER) {
                     val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
@@ -262,8 +257,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
                 //catch path pgrf, assistant
                 else if (lastPath == PGRF || lastPath == ASSISTANT || lastPath == LINKED_REGISTER) {
-                    val base = Base64.decode(it.getQueryParameter("data"), Base64.DEFAULT)
-                    val json = JSONObject(String(base, StandardCharsets.UTF_8))
+                    val json = decodeBase64ToJson(it.getQueryParameter("data")) ?: return
                     val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
 
                     presenter.onInviteRegister(
@@ -284,7 +278,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         val chatId = it.getString(FIELD_CHAT_ID, null)
                         val userName = it.getString(FIELD_LABEL, null)
                         val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
-                        if (chatId != null && userName != null) {
+                        if (chatId != null && userName != null && notificationId != null) {
                             presenter.onHandleChat(chatId, userName, notificationId)
                         }
                     }

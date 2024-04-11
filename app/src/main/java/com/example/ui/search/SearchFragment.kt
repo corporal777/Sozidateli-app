@@ -27,11 +27,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.Group
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import initAsDatePicker
-import initDropDownView
-import onTextChanged
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.initDropDownView
+import com.example.extensions.onTextChanged
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
     BaseFragment<LayoutListSearchBinding>(), SearchContract.View<I, F> {

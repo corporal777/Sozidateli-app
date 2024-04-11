@@ -159,12 +159,12 @@
 
                 <com.example.ui.views.loading.CustomLoadingButton
                     android:id="@+id/btnSend"
+                    style="@style/BtnLoadingStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_fifteen"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="20dp"
-                    app:buttonBackground="@drawable/custom_btn_brown_selectable"
+                    android:layout_marginBottom="10dp"
                     app:buttonMinHeight="48dp"
                     app:buttonText="@string/send" />
 

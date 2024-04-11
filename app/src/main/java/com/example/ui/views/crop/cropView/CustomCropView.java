@@ -23,8 +23,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.R;
 import com.example.ui.views.crop.cropView.cropWindow.CropOverlayView;
 import com.example.ui.views.crop.cropView.cropWindow.edge.Edge;
@@ -193,58 +191,12 @@ public class CustomCropView extends FrameLayout {
         }
     }
 
-
-    public void setImageFromUri(Uri uri) {
-        mExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sourceUri = uri;
-                    //final Bitmap sampled = getImageBitmap(uri);
-                    Bitmap sampled;
-                    try {
-                        sampled = Glide.with(getContext())
-                                .asBitmap()
-                                .load(sourceUri)
-                                .apply(new RequestOptions().override(1080, 1875))
-                                .submit().get();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        sampled = getImageBitmap(uri);
-                    }
-                    Bitmap finalSampled = sampled;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setImageBitmap(finalSampled);
-                        }
-                    });
-                } catch (Exception e) {
-                    postErrorOnMainThread(e);
-                }
-            }
-        });
-    }
-
     public void setImageBitmap(Bitmap bitmap) {
         if (bitmap == null) return;
         mBitmap = bitmap;
         mImageView.setImageBitmap(mBitmap);
         if (mCropOverlayView != null) {
             mCropOverlayView.resetCropOverlayView();
-        }
-    }
-
-    public Bitmap getResizedBitmap(int newWidth, int newHeight) {
-        try {
-            return Glide.with(getContext())
-                    .asBitmap()
-                    .load(sourceUri)
-                    .apply(new RequestOptions().override(newWidth, newHeight))
-                    .submit().get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return mBitmap;
         }
     }
 

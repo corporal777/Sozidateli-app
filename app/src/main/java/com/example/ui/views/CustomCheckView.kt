@@ -1,6 +1,8 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater

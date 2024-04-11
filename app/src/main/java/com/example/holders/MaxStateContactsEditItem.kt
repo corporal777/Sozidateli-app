@@ -17,7 +17,7 @@ import com.example.extensions.phoneToServer
 import com.example.util.*
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.xwray.groupie.databinding.BindableItem
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 
 class MaxStateContactsEditItem(

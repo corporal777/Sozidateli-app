@@ -3,11 +3,9 @@ package com.example.ui.event.about.items
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -25,11 +23,8 @@ import com.example.ui.views.dialogs.CancelRegisterEventDialog
 import com.example.ui.views.dialogs.EventDescriptionBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.URLSpanNoUnderline
-import com.example.util.getColor
-import com.example.util.getDrawable
-import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.databinding.BindableItem
-import onClickListener
+import com.example.extensions.onClickListener
 
 
 class EventDetailActionItem(
@@ -108,7 +103,7 @@ class EventDetailActionItem(
         var clickAction: (() -> Unit)? = null
         var btnText = R.string.event_action_participate
         var btnTextColor = R.color.black
-        var btnBackground = R.drawable.custom_btn_white_ghost_selectable
+        var btnBackground = R.drawable.btn_background_white_ghost
         val userAgreement = eventNew.userAgreement?.uri
         val state = eventNew.binds?.eventRegistrationState
         val actions = state?.availableActions ?: arrayListOf("")

@@ -2,7 +2,6 @@ package com.example.ui.auth.authorization
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -12,19 +11,14 @@ import com.example.data.models.SnUser
 import com.example.databinding.FragmentAuthorizationBinding
 import com.example.holders.StoriesItem
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
 import com.example.ui.auth.snAuth.SnAuthFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.util.Utils
-import com.example.util.setCurrentItemWithDuration
 import com.google.android.material.tabs.TabLayoutMediator
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onPageStateChanged
+import com.example.extensions.onPageStateChanged
 import javax.inject.Inject
 import javax.inject.Provider
 

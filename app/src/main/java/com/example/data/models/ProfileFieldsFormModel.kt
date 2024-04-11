@@ -18,30 +18,46 @@ data class ProfileFieldsData(
     fun toFormResult(options: List<String>?): ProfileFieldsFormResult {
         return ProfileFieldsFormResult(
             fieldId = form,
+            options = options ?: emptyList(),
             fieldsIsRequired = isRequired,
-            user_name = ProfileFieldString(isRequired, false, false, fields.user_fio),
-            user_birthday = ProfileFieldString(isRequired, false, false, fields.user_birthday),
-            user_gender = ProfileFieldString(isRequired, false, false, fields.user_gender),
-            user_notes = ProfileFieldString(isRequired, false, false, fields.user_notes),
-            user_phone = ProfileFieldString(isRequired, false, false, fields.user_phone),
+            user_name = ProfileFieldString(isRequired, value = fields.user_fio),
+            user_birthday = ProfileFieldString(isRequired, value = fields.user_birthday),
+            user_gender = ProfileFieldString(isRequired, value = fields.user_gender),
+            user_notes = ProfileFieldString(isRequired, value = fields.user_notes),
+            user_phone = ProfileFieldString(isRequired, value = fields.user_phone),
             user_work_phone = ProfileFieldString(isRequired, false, fields.work_phone_absent, fields.user_work_phone),
-            user_email = ProfileFieldString(isRequired, false, false, fields.user_email),
-            address = ProfileFieldString(isRequired, false, false, fields.address?.fullValue ?: fields.address?.getShortAddress()),
+            user_email = ProfileFieldString(isRequired, value = fields.user_email),
+            address = ProfileFieldString(isRequired, value = fields.address?.fullValue ?: fields.address?.getShortAddress()),
             educationLevel = ProfileFieldEducationLevel(isRequired, fields.educationLevel),
             education = ProfileFieldEducation(isRequired, false, fields.education),
             academic_degree = ProfileFieldAcademicDegree(isRequired, false, fields.academic_degree),
             work_experience = ProfileFieldWorkExperience(isRequired, false, fields.work_experience_absent, fields.work_experience),
-            user_links = ProfileFieldString(isRequired, false, fields.social_links_absent, fields.contactInformation?.socialLinks?.values?.joinToString("\n") { it.value ?: "" }),
-            user_sites = ProfileFieldString(isRequired, false, fields.site_absent, fields.contactInformation?.site?.values?.joinToString("\n") { it.value ?: "" }),
-            user_public_email = ProfileFieldString(isRequired, false, false, fields.contactInformation?.emails?.joinToString("\n") { it.value ?: "" }),
-            user_files = ProfileFieldString(isRequired, false, false, fields.recommendationFile?.joinToString("\n") { it.name ?: "" })
+            user_links = ProfileFieldString(
+                isRequired,
+                false,
+                fields.social_links_absent,
+                fields.contactInformation?.socialLinks?.values?.joinToString("\n") {
+                    it.value ?: ""
+                }),
+            user_sites = ProfileFieldString(
+                isRequired,
+                false,
+                fields.site_absent,
+                fields.contactInformation?.site?.values?.joinToString("\n") { it.value ?: "" }),
+            user_public_email = ProfileFieldString(
+                isRequired,
+                value = fields.contactInformation?.emails?.joinToString("\n") { it.value ?: "" }),
+            user_files = ProfileFieldFiles(
+                isRequired,
+                value = fields.recommendationFile ?: emptyList(),
+            )
         ).setFieldsIsChosen(options)
     }
 }
 
 @Parcelize
 data class ProfileFieldsFormModel(
-    val user_fio : String? = null,
+    val user_fio: String? = null,
     val user_name: String? = null,
     val user_last_name: String? = null,
     val user_middle_name: String? = null,
@@ -71,7 +87,7 @@ data class ProfileFieldsFormModel(
 ) : Parcelable
 
 data class ProfileFieldsFormResult(
-    val fieldId : Int?,
+    val fieldId: Int?,
     val fieldsIsRequired: Boolean,
     var user_name: ProfileFieldString,
     var user_birthday: ProfileFieldString,
@@ -88,7 +104,8 @@ data class ProfileFieldsFormResult(
     var user_links: ProfileFieldString,
     var user_sites: ProfileFieldString,
     var user_public_email: ProfileFieldString,
-    var user_files: ProfileFieldString
+    var user_files: ProfileFieldFiles,
+    val options: List<String>
 ) {
 
     fun toJsonElement(): JsonElement {
@@ -160,7 +177,7 @@ data class ProfileFieldsFormResult(
         return isValid
     }
 
-    fun setFieldsIsChosen(options: List<String>?) : ProfileFieldsFormResult{
+    fun setFieldsIsChosen(options: List<String>?): ProfileFieldsFormResult {
         user_name.isChosen = true
 //            if (options?.contains("user_fio") == true) {
 //                user_name.isChosen = true
@@ -218,6 +235,12 @@ data class ProfileFieldString(
     var value: String? = null
 )
 
+data class ProfileFieldFiles(
+    var isRequired: Boolean,
+    var isChosen: Boolean = false,
+    var isAbsent: Boolean = false,
+    var value: List<FileModel> = emptyList()
+)
 
 data class ProfileFieldEducationLevel(
     var isRequired: Boolean,

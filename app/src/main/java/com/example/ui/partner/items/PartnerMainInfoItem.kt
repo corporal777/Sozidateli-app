@@ -8,7 +8,7 @@ import com.example.extensions.markWon
 import com.example.util.setImage
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import removeUrlUnderline
+import com.example.extensions.removeUrlUnderline
 
 class PartnerMainInfoItem(
     val id: Int?,

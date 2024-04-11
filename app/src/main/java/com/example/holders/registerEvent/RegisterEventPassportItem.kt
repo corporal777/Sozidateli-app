@@ -11,8 +11,8 @@ import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.setRequired
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.xwray.groupie.databinding.GroupieViewHolder
-import initAsDatePicker
-import onTextChanged
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onTextChanged
 import java.util.*
 
 class RegisterEventPassportItem(

@@ -16,7 +16,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import toBodyPart
+import com.example.extensions.toBodyPart
 import javax.inject.Inject
 
 
@@ -164,7 +164,7 @@ class UserRepositoryImp
     }
 
     /*override fun uploadAvatar(photo: Bitmap?): Single<User> {
-        return call(api.uploadAvatar(photo?.toBodyPart("file", "image.png")))
+        return call(api.uploadAvatar(photo?.com.example.extensions.toBodyPart("file", "image.png")))
     }*/
 
     override fun changeUserImage(photo: Bitmap?): Single<ImageModel> {
@@ -285,6 +285,11 @@ class UserRepositoryImp
         val academicDegrees = appData.academicDegrees
         return if (!academicDegrees.isNullOrEmpty()) Single.just(EducationLevelModel(academicDegrees, 4))
         else api.getAcademicDegrees().doOnSuccess { appData.academicDegrees.addAll(it.data?: emptyList()) }
+    }
+
+    override fun getUserProfileAdditionalData(): Completable {
+        return getEducationLevel().flatMap { getSpeciality() }.flatMap { getAcademicDegrees() }
+            .ignoreElement()
     }
 
     private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =

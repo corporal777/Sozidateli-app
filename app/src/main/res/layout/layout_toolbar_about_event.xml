@@ -12,13 +12,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tb_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/tb_background"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@android:color/white" />-->
+        <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--            android:id="@+id/tb_background"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:background="@android:color/white" />-->
 
         <eightbitlab.com.blurview.BlurView
             android:id="@+id/tb_background"
@@ -33,7 +34,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/about_event_toolbar_btn_background"
-            android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+            android:foreground="@drawable/btn_background_toolbar"
             android:paddingTop="6dp"
             android:paddingEnd="3dp"
             android:paddingBottom="6dp"
@@ -48,7 +49,7 @@
             android:layout_height="30dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/custom_btn_add_to_calendar_background"
+            android:background="@drawable/btn_background_add_calendar"
             android:text="@string/add_to_calendar"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
@@ -63,7 +64,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/about_event_toolbar_btn_background"
-            android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+            android:foreground="@drawable/btn_background_toolbar"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:src="@drawable/ic_star"
@@ -78,7 +79,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/about_event_toolbar_btn_background"
-            android:foreground="@drawable/custom_toolbar_btn_background_selectable"
+            android:foreground="@drawable/btn_background_toolbar"
 
             android:paddingHorizontal="4dp"
             android:paddingTop="3dp"

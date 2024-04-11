@@ -7,7 +7,7 @@ import androidx.core.view.updateLayoutParams
 import com.example.R
 import com.example.databinding.ItemProfileButtonEditBinding
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 
 class ProfileButtonEditItem(
     private val text: String,

@@ -48,7 +48,6 @@ fun interface DrawableSource {
     data class File(val uri : String) : DrawableSource {
 
         @Suppress("DEPRECATION")
-        @SuppressWarnings("deprecation")
         override suspend fun get(context: Context): Drawable =
             withContext(Dispatchers.IO) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

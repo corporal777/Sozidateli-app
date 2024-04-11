@@ -40,4 +40,10 @@ data class EventFile(
                 block.invoke(body)
             }
     }
+
+    fun isFilePDF() : Boolean{
+        if (mimeType == "application/pdf" || mimeType?.contains("pdf", true) == true)
+            return true
+        else return name.contains("pdf", true)
+    }
 }

@@ -35,12 +35,13 @@ class CropActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crop)
+
         val extras = intent.extras!!
-        uri = extras.getParcelable(ARG_URI)!!
+        uri = extras.getParcelable(ARG_URI) ?: return
         rotation = extras.getInt(ARG_ROTATION, 0)
-        cropMode = CropImageView.CropMode.SQUARE
-        outputMaxHeight = 1024
-        outputMaxWidth = 1024
+        cropMode = (extras.getSerializable(ARG_CROP_MODE) as? CropImageView.CropMode) ?: CROP_MODE_DEFAULT
+        outputMaxHeight = extras.getInt(ARG_MAX_HEIGHT, 0)
+        outputMaxWidth = extras.getInt(ARG_MAX_WIDTH, 0)
         outputQuality = extras.getInt(ARG_OUTPUT_QUALITY, 100)
 
         val cropSubject = CropCallbackHelper.getRequest(uri.toString())

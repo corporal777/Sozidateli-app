@@ -1,6 +1,6 @@
 package com.example.ui.userprofile.read.contacts
 
-import additionalNumber
+import com.example.extensions.additionalNumber
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileContactsBinding
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
@@ -18,7 +17,7 @@ import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

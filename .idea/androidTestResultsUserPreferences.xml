@@ -16,6 +16,21 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-1374301409">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Samsung_S23" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="-1151627021">
           <value>
             <AndroidTestResultsTableState>
@@ -35,8 +50,55 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Pixel_6_API_30" value="120" />
+                  <entry key="Samsung_S23" value="120" />
                   <entry key="Samsung_S9_API_30" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-674415398">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-633113553">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-195447393">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Samsung_S23" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -55,14 +117,44 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="71419670">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="159768462">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
                   <entry key="Samsung_S9_API_30" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="164696465">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -120,6 +212,20 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="1763907589">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="1964486259">
           <value>
             <AndroidTestResultsTableState>
@@ -128,6 +234,20 @@
                   <entry key="Duration" value="90" />
                   <entry key="Samsung_S9_API_30" value="120" />
                   <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="1988016076">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="OnePlus&#10; GM1900" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="bb5e6bef" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>

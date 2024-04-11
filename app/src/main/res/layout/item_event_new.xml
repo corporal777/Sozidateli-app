@@ -10,7 +10,7 @@
         android:layout_height="@dimen/event_item_height_new"
         android:layout_marginHorizontal="15dp"
         android:layout_marginVertical="10dp"
-        android:foreground="@drawable/custom_text_background_selectable"
+        android:foreground="@drawable/btn_background_text"
         app:cardCornerRadius="12dp"
         app:cardElevation="10dp">
 

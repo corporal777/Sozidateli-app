@@ -3,12 +3,9 @@ package com.example.ui.userSessions.items
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventActivityModel
 import com.example.data.models.UserSessionModel
 import com.example.databinding.ItemCurrentSessionBinding
-import com.example.databinding.ItemLectureBinding
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
 
 class CurrentSessionItem(
     val session: UserSessionModel,

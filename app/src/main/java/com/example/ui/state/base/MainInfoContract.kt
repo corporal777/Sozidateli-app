@@ -39,9 +39,8 @@ interface MainInfoContract {
     interface Presenter : BaseContract.Presenter  {
         fun onSaveData(data: MutableMap<String, Any?>)
 
-        fun checkEmailIsUnique(email: String)
+        fun checkEmailIsUnique(withCheck : Boolean, email: String)
 
-        fun onShowEmailConfirm(email: String)
         fun onShowPhoneEdit()
         fun onShowImageEdit()
         fun onUpdateImage(photo: ImageModel?)

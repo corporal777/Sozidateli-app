@@ -4,6 +4,7 @@ import com.example.R
 import com.example.databinding.ItemPartnerBinding
 import com.example.extensions.markWon
 import com.example.util.setImage
+import com.example.util.setImagePicasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 
@@ -25,7 +26,12 @@ class EventPartnerItem(
                 title ?: ""
             )
             //tvPartnerTitle.text = title
-            ivPartnerImage.setImage(image)
+
+            ivPartnerImage.setImagePicasso(
+                url = image,
+                placeholder = R.drawable.background_image_placeholder,
+                error = R.drawable.background_image_placeholder
+            )
 
             root.setOnClickListener {
                 if (id != null) onPartnerClick(id)

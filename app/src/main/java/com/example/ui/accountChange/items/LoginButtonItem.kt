@@ -3,7 +3,6 @@ package com.example.ui.accountChange.items
 import com.example.R
 import com.example.databinding.ItemLoginAccountButtonBinding
 import com.xwray.groupie.databinding.BindableItem
-import setOnClickListener
 
 class LoginButtonItem(
     val onActionClick: () -> Unit

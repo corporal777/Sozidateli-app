@@ -87,13 +87,13 @@ class SubEventInfoItem(
             isVisible = isApproved
             if (subEvent.binds?.userCalendar != null) {
                 text = context.getString(R.string.sub_event_remove_from_schedule)
-                background = getDrawable(R.drawable.custom_btn_gray_selectable)
+                background = getDrawable(R.drawable.btn_background_gray)
                 setOnClickListener {
                     onRemoveClickListener(subEvent)
                 }
             } else {
                 text = context.getString(R.string.sub_event_add_to_schedule)
-                background = getDrawable(R.drawable.custom_btn_green_selectable)
+                background = getDrawable(R.drawable.btn_background_green)
                 setOnClickListener {
                     onAddClickListener(subEvent)
                 }

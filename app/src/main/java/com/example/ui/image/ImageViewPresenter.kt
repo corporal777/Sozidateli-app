@@ -2,22 +2,15 @@ package com.example.ui.image
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Base64
 import androidx.annotation.DrawableRes
-import com.bumptech.glide.Glide
-import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import moxy.MvpPresenter
-import performOnBackgroundOutOnMain
 import javax.inject.Inject
 
 @InjectViewState
 class ImageViewPresenter
-@Inject constructor(
-    private val context : Context
-) : MvpPresenter<ImageViewContract.View>(), ImageViewContract.Presenter {
+@Inject constructor() : MvpPresenter<ImageViewContract.View>(), ImageViewContract.Presenter {
 
     var url: String? = null
     @DrawableRes
@@ -38,26 +31,12 @@ class ImageViewPresenter
             else setCustomTransitionName(transitionName)
 
             when {
-                url != null -> {
-                    findImageBitmap(url)
-                }
+                url != null -> findImageBitmap(url)
                 resource != null -> findImageBitmap(resource)
                 bitmap != null -> onBitmapFound(bitmap)
                 else -> throw NullPointerException("All supported image types are null")
             }
         }
-    }
-
-    private fun decodeByteArray(url : String){
-        compositeDisposable += Maybe.fromCallable {
-            val bytes = Base64.decode(url, Base64.DEFAULT)
-            Glide.with(context).asBitmap().load(bytes)
-                .submit().get()
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribe {
-                onBitmapFound(it)
-            }
     }
 
     override fun onBitmapFound(bitmap: Bitmap) {

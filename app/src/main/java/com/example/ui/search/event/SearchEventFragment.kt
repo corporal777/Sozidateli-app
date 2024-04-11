@@ -16,7 +16,7 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.StateType
-import com.example.ui.event.agreement.EventAgreementRegisterDialog
+import com.example.ui.views.dialogs.EventAgreementDialog
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput
@@ -65,7 +65,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementRegisterDialog(requireContext(), url).setSelectCallback {
+        EventAgreementDialog(requireContext(), url).setSelectCallback {
             searchPresenter.onAcceptRegistrationAgreement(event)
         }
     }
@@ -96,7 +96,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
             .apply {
 //                etAddress.apply {
 //                    setTextWithoutSearch(filter.address)
-//                    onTextChanged {
+//                    com.example.extensions.onTextChanged {
 //                        filter.address = it.toString()
 //                        filter.fullAddress = null
 //                    }

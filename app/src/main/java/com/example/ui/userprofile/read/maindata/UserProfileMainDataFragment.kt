@@ -1,30 +1,28 @@
 package com.example.ui.userprofile.read.maindata
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
-import com.example.data.models.UserEditDataType
 import com.example.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
+import com.example.extensions.parseAsHtmlWithoutUnderline
+import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.example.util.showCustomTabsBrowser
+import com.example.util.showFileBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import parseAsHtmlWithoutUnderline
-import setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBinding>(),
     UserProfileMainDataContract.View, ToolbarFragment {
@@ -64,7 +62,9 @@ class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBind
                 text = filesText.parseAsHtmlWithoutUnderline()
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
-                        showCustomTabsBrowser(requireContext(), url)
+                        val type = user.binds?.recommendationFile?.find { x -> x.uri == url }
+                        if (type?.isFilePDF() == true) showFileBrowser(requireContext(), url)
+                        else showCustomTabsBrowser(requireContext(), url)
                         true
                     }
             }

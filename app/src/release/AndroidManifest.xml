@@ -16,45 +16,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/profile"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="sozidateli.ru"/>
 
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/social"
-                    android:scheme="https" />
+                <data android:pathPrefix="/profile"/>
+                <data android:pathPrefix="/auth"/>
+                <data android:pathPrefix="/qr"/>
+                <data android:pathPrefix="/social"/>
+                <data android:pathPrefix="/event"/>
+                <data android:pathPrefix="/portal/event"/>
+                <data android:pathPrefix="/portal/user"/>
+                <data android:pathPrefix="/event/hidden"/>
+                <data android:pathPrefix="/switch-account"/>
+                <data android:pathPrefix="/support_center"/>
+                <data android:pathPrefix="/settings"/>
+                <data android:pathPrefix="/lp"/>
 
-                <data
-                    android:host="www.sozidateli.ru"
-                    android:pathPrefix="/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/portal/event"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/portal/user"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/auth"
-                    android:scheme="https" />
-
-                <data
-                    android:host="sozidateli.ru"
-                    android:pathPrefix="/qr"
-                    android:scheme="https" />
             </intent-filter>
         </activity>
 

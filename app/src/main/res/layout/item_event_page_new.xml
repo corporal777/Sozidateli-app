@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="@drawable/custom_text_background_selectable"
+        android:background="@drawable/btn_background_text"
         android:letterSpacing="-0.01"
         android:paddingVertical="10dp"
         android:paddingStart="15dp"

@@ -45,15 +45,10 @@ class ProfileDataFileEditableGroup(
     fun removeFileItem(file: FileModel, fileCount: Int) {
         val fileItem = fileItems.find { x -> x.id == file.id?.toLong() }
         if (fileItem != null) {
-            fileItem.hideLoadingIcon()
             fileItems.remove(fileItem)
             fileGroup.update(fileItems)
         }
         updateButton(fileCount)
-    }
-
-    fun hideFileDeleteLoading(file: FileModel) {
-        fileItems.find { x -> x.id == file.id?.toLong() }?.hideLoadingIcon()
     }
 
     fun showUploadLoading() {

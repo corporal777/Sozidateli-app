@@ -1,7 +1,6 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,13 +16,12 @@ import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.profile.ProfileFragmentArgs
 import com.example.util.pagination.PaginationGroupAdapter
-import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import offsetChangedListener
+import com.example.extensions.offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs

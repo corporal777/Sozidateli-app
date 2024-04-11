@@ -59,7 +59,6 @@ class MainPresenter
     private var isAuthRequired = false
     private var canShowBrowser = false
     private var inAppList: Deque<NotificationModel>? = null
-    private val inAppListNew = arrayListOf<Notification>()
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true
@@ -112,10 +111,7 @@ class MainPresenter
 
     private fun subscribeToTokenUpdates() {
         compositeDisposable += appData.tokenChangeSubject
-            .flatMap {
-                if (!isIgnoreToken) Observable.just(it)
-                else Observable.empty()
-            }
+            .flatMap { if (!isIgnoreToken) Observable.just(it) else Observable.empty() }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 unsubscribeChat()
@@ -133,7 +129,7 @@ class MainPresenter
     private fun loadUser() {
         compositeDisposable += userRepository.getUserShortData()
             .flatMapSingle { userRepository.checkUserProfileSingle() }
-            .flatMapCompletable { getAdditionalData() }
+            .flatMapCompletable { userRepository.getUserProfileAdditionalData() }
             .doOnComplete { connectToSocket() }
             .andThen(Completable.defer { checkShowGreetings() })
             .performOnBackgroundOutOnMain()
@@ -436,9 +432,6 @@ class MainPresenter
     }
 
 
-    override fun onHandleSocialNetworkConfirm(userId: String, code: String) {
-    }
-
     override fun onHandleNotification(notification: RemoteNotification) {
         if (isAuthRequired) return
         viewState.clearIntentData()
@@ -450,17 +443,6 @@ class MainPresenter
         chatHelper.currentChatId = null
     }
 
-    override fun onOpenStartDestination() {
-        chatHelper.currentChatId = null
-    }
-
-    override fun onOpenNotStartDestination() {
-        chatHelper.currentChatId = null
-    }
-
-    override fun onOpenChatDestination(chatId: String?) {
-        chatHelper.currentChatId = chatId
-    }
 
     override fun onOpenCheckConnectionDestination(check: Boolean) {
         isDoNotCheckConnectionFragmentOpened = check
@@ -536,13 +518,6 @@ class MainPresenter
         viewState.showBrowser(uri.toString())
     }
 
-    private fun getAdditionalData(): Completable {
-        return Single.merge(
-            userRepository.getEducationLevel(),
-            userRepository.getSpeciality(),
-            userRepository.getAcademicDegrees()
-        ).ignoreElements()
-    }
 
     fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
 

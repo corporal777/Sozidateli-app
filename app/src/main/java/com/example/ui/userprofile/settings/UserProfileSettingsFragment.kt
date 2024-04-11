@@ -25,7 +25,7 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -141,7 +141,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="30dp"
                         app:buttonMinHeight="@dimen/common_button_min_height"
-                        app:buttonBackground="@drawable/custom_btn_brown_cancel_selectable"
+                        app:buttonBackground="@drawable/btn_background_corners_brown"
                         app:buttonText="@string/do_not_confirm"
                         app:buttonTextSize="@dimen/common_button_text_size"
                         app:layout_constraintBottom_toBottomOf="parent" />

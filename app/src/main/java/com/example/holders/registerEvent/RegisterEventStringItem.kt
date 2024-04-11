@@ -9,7 +9,7 @@ import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.databinding.ItemRegisterEventInputBinding
 import com.xwray.groupie.databinding.GroupieViewHolder
-import onTextChanged
+import com.example.extensions.onTextChanged
 
 class RegisterEventStringItem(
     private val fieldData: EventRegisterFieldData<String>,

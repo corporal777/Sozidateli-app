@@ -20,7 +20,6 @@ import com.example.databinding.FragmentRequestBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.forEachGroups
 import com.example.extensions.setRequired
-import com.example.extensions.updateItem
 import com.example.holders.ActionButtonItem
 import com.example.holders.ActionButtonItem.Companion.ACTION_EVENT_REQUEST
 import com.example.holders.PlaceholderItem
@@ -42,9 +41,9 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onBackPressedCallback
-import onScrolled
-import statusBarColorValue
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onScrolled
+import com.example.extensions.statusBarColorValue
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider

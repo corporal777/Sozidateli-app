@@ -1,20 +1,14 @@
 package com.example.holders
 
-import android.content.Context
-import android.util.Log
 import com.example.R
 import com.example.data.models.*
 import com.example.databinding.ItemEditMainInfoBinding
 import com.example.extensions.*
-import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.util.*
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import initAsDatePicker
-import java.util.*
 
 
 class MainInfoEditItem(

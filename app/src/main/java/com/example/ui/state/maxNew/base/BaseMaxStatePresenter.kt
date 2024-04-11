@@ -7,6 +7,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.Utils
+import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
@@ -45,37 +46,29 @@ abstract class BaseMaxStatePresenter<V : BaseMaxStateContract.View>(
     }
 
     override fun checkUserEmail() {
-        if (appData.getUser().email?.value != null && appData.getUser().email?.isConfirmed != null) {
-            onShowMaxStateDone()
-        } else viewState.showAddEmailDialog()
+        val email = appData.getUser().email
+        if (email?.value != null && email.isConfirmed != null) onShowMaxStateDone()
+        else viewState.showAddEmailDialog()
     }
 
-    override fun checkEmailIsUnique(email: String) {
-        compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withProgressBarDialogLoading(viewState)
+    override fun checkEmailIsUnique(withCheck: Boolean, email: String) {
+        compositeDisposable += Completable.defer {
+            if (withCheck) userRepository.checkEmailPhone(email, null)
+            else Completable.complete()
+        }
+            .doOnComplete {
+                if (getUserData().email?.value.isNullOrEmpty())
+                    getUserData().email?.value = email
+                else getUserData().email?.onConfirmation = email
+            }
             .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { viewState.showEmailIsNotUnique(email) },
-                onComplete = { onShowEmailConfirm(email) }
+                onComplete = { viewState.showEmailConfirmation(email) }
             )
     }
 
-    override fun onShowEmailConfirm(email: String) {
-        viewState.hideAddEmailDialog()
-        compositeDisposable += userRepository.updateUserProfile(
-            appData.getId(),
-            mapOf(UserDetail.USER_EMAIL to FieldDetails(value = email))
-        ).ignoreElement()
-            .andThen(authRepository.registerEmailResend(email))
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                appData.updateUser {
-                    this.email = FieldDetails(value = email)
-                }
-                viewState.showEmailConfirmation(email)
-            }
-    }
 
 
     override fun onClickClose() = viewState.setClickClose(screen)

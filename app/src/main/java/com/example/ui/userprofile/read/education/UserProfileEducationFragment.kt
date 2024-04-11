@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.AcademicDegreeModel
-import com.example.data.models.EducationLevel
-import com.example.data.models.EducationLevelModel
 import com.example.data.models.EducationModel
-import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileInterestsBinding
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
@@ -25,7 +22,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import setOnClickListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 

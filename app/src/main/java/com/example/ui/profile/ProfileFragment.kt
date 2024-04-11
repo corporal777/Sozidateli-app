@@ -40,6 +40,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
     private lateinit var toolbarContent: ToolbarContent
+    private val toolbarIconView by lazy {
+        ToolbarIconView(requireContext()).apply {
+            isEnabled = false
+            setImageAsIcon(R.drawable.ic_profile_link_edit)
+            setOnClickListener { presenter.onShowUserProfileLink() }
+        }
+    }
 
     @InjectPresenter
     lateinit var presenter: ProfilePresenter
@@ -78,6 +85,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
 
     override fun setUser(user: UserDetail) {
         mBinding.apply {
+            toolbarIconView.isEnabled = true
             viewAvatar.setImage(user.loadUserImage(), user.avatarIsDefault ?: true)
             tvName.text = user.nameLastName
         }
@@ -295,12 +303,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     override val title: CharSequence = ""
     override fun scrollValue(scroll: Int) {}
     override fun actionIconContainer(view: ViewGroup) {
-        view.apply {
-            addView(ToolbarIconView(context).apply {
-                setImageAsIcon(R.drawable.ic_profile_link_edit)
-                setOnClickListener { presenter.onShowUserProfileLink() }
-            })
-        }
+        view.apply { addView(toolbarIconView) }
     }
 
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {

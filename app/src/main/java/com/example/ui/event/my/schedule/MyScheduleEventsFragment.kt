@@ -2,7 +2,6 @@ package com.example.ui.event.my.schedule
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -33,11 +32,10 @@ import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import getLocationOfView
+import com.example.extensions.getLocationOfView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onScrolled
-import onTextChanged
+import com.example.extensions.onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 

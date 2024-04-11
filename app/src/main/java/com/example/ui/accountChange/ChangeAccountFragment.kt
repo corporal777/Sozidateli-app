@@ -21,7 +21,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onBackPressedCallback
+import com.example.extensions.onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 

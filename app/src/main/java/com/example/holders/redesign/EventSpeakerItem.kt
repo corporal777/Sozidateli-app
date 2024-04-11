@@ -5,6 +5,7 @@ import com.example.R
 import com.example.databinding.ItemEventSpeakerBinding
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.setImage
+import com.example.util.setImagePicasso
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 
@@ -20,11 +21,11 @@ class EventSpeakerItem(
     override fun bind(viewBinding: ItemEventSpeakerBinding, position: Int) {
         viewBinding.apply {
             ivSpeakerImage.apply {
-                Picasso.get()
-                    .load(image)
-                    .placeholder(R.drawable.background_image_placeholder)
-                    .error(R.drawable.empty_speaker_avatar)
-                    .into(this)
+                setImagePicasso(
+                    url = image,
+                    placeholder = R.drawable.background_image_placeholder,
+                    error = R.drawable.empty_speaker_avatar
+                )
             }
             tvSpeakersName.text = name
             ivSpeakerStatus.apply {

@@ -2,7 +2,9 @@ package com.example.ui.state.base
 
 import android.util.Log
 import com.example.data.AppData
+import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
+import com.example.data.models.UserDetail
 import com.example.extensions.formatToDefaultDate
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -12,6 +14,7 @@ import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
 import com.example.util.PHONE_PERSONAL
 import com.example.util.rxtakephoto.RxTakePhoto
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -45,8 +48,7 @@ class MainInfoPresenter
                 else if (isPhoneUpdating) {
                     isPhoneUpdating = false
                     viewState.updatePhone(user.personalPhone)
-                }
-                else if (isImageUpdating) isImageUpdating = false
+                } else if (isImageUpdating) isImageUpdating = false
                 else viewState.setPersonalData(user)
             }
     }
@@ -66,28 +68,24 @@ class MainInfoPresenter
     }
 
 
-    override fun checkEmailIsUnique(email: String) {
-        compositeDisposable += userRepository.checkEmailPhone(email, null)
-            .withCheckInternetConnectivity()
+    override fun checkEmailIsUnique(withCheck: Boolean, email: String) {
+        compositeDisposable += Completable.defer {
+            if (withCheck) userRepository.checkEmailPhone(email, null)
+            else Completable.complete()
+        }
+            .doOnComplete {
+                if (getEmail()?.value.isNullOrEmpty())
+                    getUserData().email?.value = email
+                else getUserData().email?.onConfirmation = email
+            }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { viewState.showEmailNotUnique(email) },
-                onComplete = { onShowEmailConfirm(email) }
+                onComplete = { viewState.showEmailConfirm(email) }
             )
     }
 
-    override fun onShowEmailConfirm(email: String) {
-        isPhoneUpdating = true
-        compositeDisposable += authRepository.registerEmailResend(email)
-            .andThen(userRepository.getUserInternal())
-            .doOnSuccess { new -> appData.updateUser { this.email = new.email } }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.showEmailConfirm(email)
-            }
-    }
 
     override fun onUpdateImage(photo: ImageModel?) {
         if (photo != null) viewState.updateImage(photo, getUserData().avatarIsDefault)

@@ -4,14 +4,13 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.example.R
-import onFocusChanged
+import com.example.extensions.onFocusChanged
 
 class PhoneFormatEditText : AppCompatEditText {
 

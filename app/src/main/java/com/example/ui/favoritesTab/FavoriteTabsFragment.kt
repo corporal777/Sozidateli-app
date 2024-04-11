@@ -15,7 +15,7 @@ import com.example.ui.favoritesTab.users.FavoriteUsersFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import onPageChanged
+import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
