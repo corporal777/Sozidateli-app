@@ -5,13 +5,14 @@ import com.example.ui.event.list.EventListContract
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.OneExecution
 
 interface OrganizationEventsContract {
     interface View : EventListContract.View {
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @OneExecution
         fun setData(events: List<EventNew?>)
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "data")
+        @OneExecution
         fun showEmptyListPlaceholder()
     }
 

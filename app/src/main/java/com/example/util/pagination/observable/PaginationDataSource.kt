@@ -23,6 +23,7 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
             callback.onResult(emptyList())
             return
         }
+
         val result = executeRequest(params.loadSize, params.startPosition)
         val data = getDataFromResult(result)
         result?.totalCount?.let { lastTotalCount = it }

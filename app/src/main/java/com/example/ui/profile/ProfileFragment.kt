@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -23,10 +24,14 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.views.*
+import com.example.ui.views.dialogs.ChangeStateBottomDialog
+import com.example.ui.views.dialogs.ClickType
+import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithTextButton
+import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.getColor
-import com.example.util.setImage
 import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -88,6 +93,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             toolbarIconView.isEnabled = true
             viewAvatar.setImage(user.loadUserImage(), user.avatarIsDefault ?: true)
             tvName.text = user.nameLastName
+
+            tvChangeAccount.apply {
+                if (user.getSessionsCount() <= 1) {
+                    text = getString(R.string.add_account_label)
+                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit)
+                } else {
+                    text = getString(R.string.change_account_label)
+                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit)
+                }
+            }
         }
 
         if (isShowPopup && !::dialog.isInitialized) {
@@ -142,17 +157,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
         }
     }
 
-    override fun setChangeOrAddNewAccount(sessionsCount: Int) {
-        mBinding.tvChangeAccount.apply {
-            if (sessionsCount <= 1) {
-                text = getString(R.string.add_account_label)
-                setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit)
-            } else {
-                text = getString(R.string.change_account_label)
-                setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit)
-            }
-        }
-    }
 
     override fun showEmailNotUnique(email: String) {
         ConfirmPhoneDialog(
@@ -196,10 +200,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
     private fun showUserStateDialog() = checkIfFragmentAttached {
-        ChangeStateDialog(this, StateType.SUCCESS)
-            .setClickCallback {
-                if (it == ClickType.INFO) showStates()
-            }
+        ChangeStateBottomDialog(this, StateType.SUCCESS)
+            .setClickCallback { if (it == ClickType.INFO) showStates() }
+            .show()
     }
 
     override fun showUserProfileLinkDialog() {

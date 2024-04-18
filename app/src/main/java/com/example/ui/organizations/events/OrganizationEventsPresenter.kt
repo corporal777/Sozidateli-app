@@ -2,6 +2,7 @@ package com.example.ui.organizations.events
 
 import com.example.data.AppData
 import com.example.data.models.EventNew
+import com.example.data.socket.SocketIOManager
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
@@ -17,7 +18,9 @@ class OrganizationEventsPresenter
 @Inject constructor(
     val appData: AppData,
     private val eventRepository: EventRepository,
-) : EventListPresenter<OrganizationEventsContract.View>(appData,eventRepository), OrganizationEventsContract.Presenter {
+    private val socket: SocketIOManager,
+) : EventListPresenter<OrganizationEventsContract.View>(appData, eventRepository, socket),
+    OrganizationEventsContract.Presenter {
 
     lateinit var organizationId: String
     private var isFirstAttach = true
@@ -45,16 +48,23 @@ class OrganizationEventsPresenter
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
     override fun onRefreshRequest() = pagination.invalidate()
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
+    override fun getPaginationRequest(
+        limit: Int,
+        offset: Int
+    ): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getOrganizationEventsList(
             mapOf(
                 EventNew.EVENT_LIMIT to limit,
                 EventNew.EVENT_OFFSET to offset,
-                EventNew.EVENT_BINDS to "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState,format",
+                EventNew.EVENT_BINDS to getBinds(),
                 // EventNew.EVENT_SORT_TYPE to "desc",
                 EventNew.EVENT_ORGANIZATION to organizationId
             )
         )
+    }
+
+    override fun getBinds(): String {
+        return "user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 
 }

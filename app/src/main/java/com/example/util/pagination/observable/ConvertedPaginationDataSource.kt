@@ -22,8 +22,7 @@ class ConvertedPaginationDataSource<I, R>(
 
     override fun isInvalid() = source.isInvalid
 
-    override fun loadInitial(params: LoadInitialParams,
-                             callback: LoadInitialCallback<R>) {
+    override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<R>) {
         source.loadInitial(params, object : LoadInitialCallback<I>() {
             override fun onResult(data: List<I>, position: Int, totalCount: Int) {
                 this@ConvertedPaginationDataSource.totalCount = totalCount

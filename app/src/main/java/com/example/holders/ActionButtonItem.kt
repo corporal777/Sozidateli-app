@@ -1,67 +1,41 @@
 package com.example.holders
 
 import com.example.R
+import com.example.databinding.ItemActionButtonBinding
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_action_button_small.*
 
 
 class ActionButtonItem(
-        id: Long,
-        private val action: Int,
-        private val addClickListener: () -> Unit
-) : Item(id) {
+    id: Long,
+    private val action: Int,
+    private val addClickListener: () -> Unit
+) : BindableItem<ItemActionButtonBinding>(id) {
 
     var isEnabled = true
+    private lateinit var mBinding: ItemActionButtonBinding
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.btnAction.apply {
-            setOnClickListener { addClickListener() }
-            val actionText: Int
-            val actionIcon: Int
-            when (action) {
-                ACTION_ADD_RECORD -> {
-                    actionText = R.string.add_record
-                    actionIcon = R.drawable.ic_add_sn
-                }
-                ACTION_ADD_FILE -> {
-                    actionText = R.string.add_file
-                    actionIcon = R.drawable.ic_add_sn
-                }
-                ACTION_SHOW_ON_MAP -> {
-                    actionText = R.string.event_contacts_watch_on_map
-                    actionIcon = R.drawable.ic_location
-                }
-                ACTION_EVENT_REQUEST -> {
-                    actionText = R.string.event_register_request
-                    actionIcon = 0
-                }
-                ACTION_SEND -> {
-                    actionText = R.string.send
-                    actionIcon = 0
-                }
-                ACTION_SAVE -> {
-                    actionText = R.string.save
-                    actionIcon = 0
-                }
-                else -> {
-                    actionText = R.string.add_record
-                    actionIcon = R.drawable.ic_add_sn
-                }
+    override fun bind(viewBinding: ItemActionButtonBinding, position: Int) {
+        mBinding = viewBinding
+        viewBinding.btnAction.apply {
+
+            val actionText: Int = when (action) {
+                ACTION_ADD_RECORD -> R.string.add_record
+                ACTION_ADD_FILE -> R.string.add_file
+                ACTION_SHOW_ON_MAP -> R.string.event_contacts_watch_on_map
+                ACTION_EVENT_REQUEST -> R.string.event_register_request
+                ACTION_SEND -> R.string.send
+                ACTION_SAVE -> R.string.save
+                else -> R.string.add_record
             }
-
-            text = resources.getString(actionText)
-            setCompoundDrawablesWithIntrinsicBounds(actionIcon, 0, 0, 0)
+            setButtonText(resources.getString(actionText))
             isEnabled = this@ActionButtonItem.isEnabled
+            setOnClickListener { addClickListener() }
         }
     }
 
-    override fun getLayout() = when (action) {
-        ACTION_ADD_RECORD -> R.layout.item_action_button_small
-        ACTION_ADD_FILE -> R.layout.item_action_button_small
-        ACTION_SHOW_ON_MAP -> R.layout.item_action_button_middle
-        else -> R.layout.item_action_button
-    }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
@@ -72,6 +46,12 @@ class ActionButtonItem(
 
         return true
     }
+
+    fun showLoading(show : Boolean) {
+        if (this::mBinding.isInitialized) mBinding.btnAction.showProgressLoading(show)
+    }
+
+    override fun getLayout() = R.layout.item_action_button
 
     companion object {
         const val ACTION_ADD_RECORD = 0

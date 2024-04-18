@@ -1,9 +1,11 @@
 package com.example.ui.search.event
 
 import android.util.Log
+import call
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.models.*
+import com.example.data.socket.SocketIOManager
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
@@ -29,12 +31,12 @@ class SearchEventPresenter
     private val userRepository: UserRepository,
     private val organizationRepository: OrganizationRepository,
     private val commonRepository: CommonRepository,
-    private val appData: AppData
+    private val appData: AppData,
+    private val socket: SocketIOManager
 ) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData),
     SearchEventContract.Presenter {
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
         val data = buildNewFilters(limit, offset)
         eventRepository.searchEventsNew(data)
     }
@@ -46,21 +48,15 @@ class SearchEventPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val loadOrganizations = organizationRepository.getOrganizationsWithActiveEvents()
-        val loadInterests = userRepository.getInterestsList(null)
+        val organizations = organizationRepository.getOrganizationsWithActiveEvents()
+        val interests = userRepository.getInterestsList(null)
             .map { i -> i.data.groupByNotNull { child -> i.data.firstOrNull { it.id == child.parent } } }
-        val loadEventFormats = eventRepository.getActiveEventFormatsList()
+        val eventFormats = eventRepository.getActiveEventFormatsList()
 
-        compositeDisposable += Maybe.zip(
-            loadInterests,
-            loadEventFormats,
-            loadOrganizations
-        ) { interests, formats, organizations ->
-            this.interests = interests
-            this.formats.apply {
-                if (!formats.isNullOrEmpty()) addAll(formats)
-            }
-            this.organizations = organizations
+        compositeDisposable += Maybe.zip(interests, eventFormats, organizations) { i, f, o ->
+            this.interests = i
+            this.formats.apply { if (!f.isNullOrEmpty()) addAll(f) }
+            this.organizations = o
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -82,42 +78,53 @@ class SearchEventPresenter
         }
     }
 
-    override fun onActionRegister(event: String, url: String?) {
-        if (url.isNullOrEmpty()) viewState.showEventRequest(event)
-        else {
-            compositeDisposable += eventRepository.checkRegistrationAgreement(event)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onSuccess = {
-                        if (it.isAccepted()) viewState.showEventRequest(event)
-                        else viewState.showAgreementRegisterDialog(event, url)
-                    }
-                )
-        }
-    }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEventDetails(event))
+    override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
+        if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
+        else compositeDisposable += eventRepository.checkRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                pagination.invalidate()
-            }
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    if (it.isAccepted()) registerToEvent(event, formEnabled)
+                    else viewState.showAgreementRegisterDialog(event, url, formEnabled)
+                }
+            )
     }
 
-    override fun onAcceptRegistrationAgreement(event: String) {
+    override fun onAcceptRegistrationAgreement(event: String, formEnabled: Boolean) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
+                onSuccess = { if (it.isAccepted()) registerToEvent(event, formEnabled) }
             )
     }
 
+    private fun registerToEvent(event: String, formEnabled: Boolean) {
+        if (formEnabled) viewState.showEventRequest(event)
+        else eventRepository.registerToEvent(event.toInt())
+            .andThen(socket.connectToUpdates())
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onComplete = {
+                    viewState.showEventRegistrationSuccessDialog()
+                    pagination.invalidate()
+                }
+            ).call(compositeDisposable)
+    }
+
+    override fun onActionCancel(event: String, registrationId: String?) {
+        eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple {
+                pagination.invalidate()
+            }.call(compositeDisposable)
+    }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
@@ -149,6 +156,7 @@ class SearchEventPresenter
     override fun getSearchType(): String = SEARCH_EVENT_TYPE
 
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
+        Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
         return mutableMapOf<String, Any>().apply {
             put(EventNew.EVENT_LIMIT, limit)
             put(EventNew.EVENT_OFFSET, offset)
@@ -158,7 +166,8 @@ class SearchEventPresenter
             //if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            val binds = "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+            val binds =
+                "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
             put(SEARCH_EVENT_BINDS, binds)
 
             val name = filter.name

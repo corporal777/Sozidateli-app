@@ -1,7 +1,9 @@
 package com.example.ui.event.list
 
+import call
 import com.example.data.AppData
 import com.example.data.models.EventNew
+import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
@@ -18,6 +20,7 @@ import withProgressBarDialogLoading
 abstract class EventListPresenter<V : EventListContract.View>(
     private val appData: AppData,
     private val eventRepository: EventRepository,
+    private val socket: SocketIOManager,
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
     protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
@@ -26,48 +29,59 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     var eventsList = mutableListOf<EventNew?>()
 
-    override fun onActionRegister(event: String, url: String?) {
-        if (url.isNullOrEmpty()) viewState.showEventRequest(event)
-        else {
-            compositeDisposable += eventRepository.checkRegistrationAgreement(event)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onSuccess = {
-                        if (it.isAccepted()) viewState.showEventRequest(event)
-                        else viewState.showAgreementRegisterDialog(event, url)
-                    }
-                )
-        }
-    }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        val binds =
-            "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState,format"
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEvent(event, binds))
-            .doOnSuccess {
-                val item = eventsList.find { x -> x?.id == it.id }
-                if (item != null) eventsList[eventsList.indexOf(item)] = it
-            }
+    override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
+        if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
+        else eventRepository.checkRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.updateEvent(it)
-                //paginationList.invalidate()
-            }
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    if (it.isAccepted()) registerToEvent(event, formEnabled)
+                    else viewState.showAgreementRegisterDialog(event, url, formEnabled)
+                }
+            ).call(compositeDisposable)
     }
 
-    override fun onAcceptRegistrationAgreement(event: String) {
+    override fun onAcceptRegistrationAgreement(event: String, formEnabled: Boolean) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
+                onSuccess = { if (it.isAccepted()) registerToEvent(event, formEnabled) }
             )
     }
+
+    private fun registerToEvent(event: String, formEnabled: Boolean) {
+        if (formEnabled) viewState.showEventRequest(event)
+        else eventRepository.registerToEvent(event.toInt())
+            .andThen(socket.connectToUpdates())
+            .andThen(getEventDetailRequest(event))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    viewState.apply {
+                        updateEvent(it)
+                        showEventRegistrationSuccessDialog()
+                    }
+                }
+            ).call(compositeDisposable)
+    }
+
+    override fun onActionCancel(event: String, registrationId: String?) {
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
+            .andThen(getEventDetailRequest(event))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.updateEvent(it) }
+            )
+    }
+
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
@@ -76,9 +90,19 @@ abstract class EventListPresenter<V : EventListContract.View>(
         return eventsList
     }
 
+    private fun getEventDetailRequest(event: String): Maybe<EventNew> {
+        return eventRepository.getEvent(event, getBinds())
+            .doOnSuccess {
+                val item = eventsList.find { x -> x?.id == it.id }
+                if (item != null) eventsList.set(eventsList.indexOf(item), it)
+            }
+    }
+
 
     protected abstract fun getPaginationRequest(
         limit: Int,
         offset: Int
     ): Maybe<PaginationResponse<EventNew?>>
+
+    protected abstract fun getBinds(): String
 }

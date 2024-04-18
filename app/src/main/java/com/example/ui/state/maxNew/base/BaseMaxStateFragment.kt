@@ -22,6 +22,7 @@ import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.ContactsType
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithTextButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
@@ -87,20 +88,18 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
                 )
             }
 
-            MaxStateScreenType.DONE ->  presenter.checkUserEmail()
+            MaxStateScreenType.DONE -> presenter.checkUserEmail()
         }
     }
 
     override fun showMaxStateDone(screen: Int) {
-        MessageDialogWithBrownButton(
-            requireContext(),
-            resources.getString(R.string.you_got_max_state)
-        ).setSelectCallback {
-            when (screen) {
-                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+        MessageDialogWithTextButton(requireContext(), getString(R.string.you_got_max_state))
+            .setSelectCallback {
+                when (screen) {
+                    1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                    2 -> findNavController().popBackStack(R.id.userStateFragment, false)
+                }
             }
-        }
     }
 
     override fun showAddEmailDialog() {

@@ -28,8 +28,7 @@ class UserEventData(
 
     var days: List<EventScheduleCalendarDay>? = null
         private set
-    var userEvent: UserEvent? = null
-        private set
+    private var userEvent: UserEvent? = null
 
     var isDataFromLocalStorage = false
     var dataLoadingDate = 0L
@@ -37,90 +36,27 @@ class UserEventData(
     private val compositeDisposable = CompositeDisposable()
     private val onDataUpdateListeners: MutableList<OnDataUpdateListener> = mutableListOf()
 
-    fun load(eventId: String): Completable {
-        compositeDisposable.clear()
-        return CompletableSubject.create().apply {
-            compositeDisposable += loadInternal(eventId)
-                .doOnComplete { performOnDataUpdate() }
-                .subscribe({
-                    onComplete()
-                }, {
-                    onError(it)
-                })
-        }
-    }
-
-    private fun loadInternal(eventId: String): Completable {
-        val eventRequest = eventRepository.getEventDetails(eventId)
-        val formatsRequest = eventRepository.getEventFormatsList(
-            mapOf(
-                EventNew.EVENT_LIMIT to 100,
-                EventNew.EVENT_OFFSET to 0
-            )
-        )
-        val eventActivities = eventRepository.getEventActivities(eventId.toInt())
-        return Maybe.zip(
-            eventRequest,
-            formatsRequest,
-            eventActivities,
-            Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
-                event.event.format?.name =
-                    formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
-                val activityDates = activities.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
-                val dates = activityDates.map { EventDate(it.key ?: "", it.value.size) }
-                UserEvent(event.event.id.toString(),
-                    event, EventActivity(activities, dates,
-                        event.event.binds?.tag?.map {
-                            Tag.EventTag(
-                                it.id.toString(),
-                                it.name ?: ""
-                            )
-                        } ?: emptyList(), arrayListOf()
-                    ), System.currentTimeMillis()
-                )
-            })
-            .doOnSuccess { userEventDao.insert(it) }
-            .onErrorResumeNext(loadEventCache(eventId).toMaybe())
-            .doOnSuccess {
-                val dateFormat = defaultServerDateFormatter
-                days = createCalendarDays(it.activity.dates.map { dateFormat.parse(it.date)?.time ?: 0 })
-                userEvent = it
-                isDataFromLocalStorage = it.isDataFromLocalStorage
-                dataLoadingDate = it.updatedAt
-            }
-            .ignoreElement()
-    }
 
     fun loadEventData(eventId: String): Maybe<UserEvent> {
         val eventRequest = eventRepository.getEventDetails(eventId)
-        val formatsRequest = eventRepository.getEventFormatsList(
-            mapOf(
-                EventNew.EVENT_LIMIT to 100,
-                EventNew.EVENT_OFFSET to 0
-            )
-        )
         val eventActivities = eventRepository.getEventActivities(eventId.toInt())
-        return Maybe.zip(
-            eventRequest,
-            formatsRequest,
-            eventActivities,
-            Function3<EventInfo, List<NewEventFormat>, List<EventActivityModel>, UserEvent> { event, formats, activities ->
-                event.event.format?.name =
-                    formats.firstOrNull { f -> f.id == event.event.format?.value }?.name
-                val activityDates = activities.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
-                val dates = activityDates.map { EventDate(it.key ?: "", it.value.size) }
-                UserEvent(event.event.id.toString(),
-                    event, EventActivity(activities, dates,
-                        event.event.binds?.tag?.map {
-                            Tag.EventTag(
-                                it.id.toString(),
-                                it.name ?: ""
-                            )
-                        }
-                            ?: emptyList(), arrayListOf()), System.currentTimeMillis())
-            })
-            .doOnSuccess { userEventDao.insert(it) }
-            .onErrorResumeNext(loadEventCache(eventId).toMaybe())
+
+        return Maybe.zip(eventRequest, eventActivities) { event, activities ->
+            val activityDates = activities.groupBy { it.holdingDate?.from?.split(" ")?.get(0) }
+            val dates = activityDates.map { EventDate(it.key ?: "", it.value.size) }
+            UserEvent(
+                event.id.toString(),
+                event,
+                EventActivity(
+                    activities,
+                    dates,
+                    event.binds?.tag?.map { Tag.EventTag(it.id.toString(), it.name ?: "") }
+                        ?: emptyList(),
+                    arrayListOf()),
+                System.currentTimeMillis())
+        }
+        //.doOnSuccess { userEventDao.insert(it) }
+            //.onErrorResumeNext(loadEventCache(eventId).toMaybe())
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {
@@ -128,23 +64,6 @@ class UserEventData(
             .doOnSuccess { it.isDataFromLocalStorage = true }
     }
 
-
-    private fun createCalendarDays(dates: List<Long>): List<EventScheduleCalendarDay> {
-        if (dates.isEmpty()) return arrayListOf()
-        val sortedDates = dates.sorted()
-
-        return sortedDates.map {
-            val cal = it.calendar()
-            EventScheduleCalendarDay(
-                it,
-                cal.get(Calendar.WEEK_OF_MONTH),
-                cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-                    ?: "",
-                cal.get(Calendar.DAY_OF_MONTH),
-                true
-            )
-        }
-    }
 
     fun createEventScheduleDay(date: String?): EventScheduleDay? {
         if (date.isNullOrEmpty()) return null
@@ -164,7 +83,7 @@ class UserEventData(
     fun isHasEventSearchText(text: String, event: EventActivityModel): Boolean {
         var isHas = false
         if (event.description?.contains(text, true) == true) isHas = true
-        else if (event.title?.contains(text, true) == true) isHas =  true
+        else if (event.title?.contains(text, true) == true) isHas = true
         else {
             if (event.binds == null || event.binds.users.isNullOrEmpty()) isHas = false
             else {
@@ -199,7 +118,7 @@ class UserEventData(
         return days
     }
 
-    fun findNearestDay(eventDates : List<EventScheduleDay>): EventScheduleDay? {
+    fun findNearestDay(eventDates: List<EventScheduleDay>): EventScheduleDay? {
         val date = System.currentTimeMillis()
         val days = eventDates
         val dateCalendar = Calendar.getInstance().apply { timeInMillis = date }

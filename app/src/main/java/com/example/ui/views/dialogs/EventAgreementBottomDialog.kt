@@ -26,7 +26,6 @@ class EventAgreementBottomDialog (
 ) : BottomSheetDialog(context) {
 
     private val mBinding = BottomSheetDialogEventAgreementBinding.inflate(LayoutInflater.from(context))
-
     private var onSelect: () -> Unit = {}
 
     init {

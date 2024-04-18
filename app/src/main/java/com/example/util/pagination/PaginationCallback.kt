@@ -2,9 +2,7 @@ package com.example.util.pagination
 
 import androidx.paging.PagedList
 
-class PaginationCallback(
-        private val onListUpdated: () -> Unit
-) : PagedList.Callback() {
+class PaginationCallback(private val onListUpdated: () -> Unit) : PagedList.Callback() {
 
     override fun onChanged(position: Int, count: Int) = onListUpdated()
 

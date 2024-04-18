@@ -19,7 +19,10 @@ import com.google.gson.JsonElement
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.example.extensions.fileName
 import com.example.extensions.fromJson
+import com.example.util.rxtakephoto.RxTakePhoto
+import com.example.util.rxtakephoto.rx_image_picker.entity.Result
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.MaybeSubject
@@ -29,6 +32,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
+import withCustomLoading
 import withDelay
 import withProgressBarDialogLoading
 import java.util.*
@@ -38,8 +42,7 @@ import javax.inject.Inject
 class EventRegistrationPresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository,
-    private val rxPermissions: RxPermissions,
+    private val rxTakePhoto: RxTakePhoto,
     private val contentResolver: ContentResolver,
     private val socket: SocketIOManager,
     private val appData: AppData
@@ -52,15 +55,13 @@ class EventRegistrationPresenter
     private var fieldsData = arrayListOf<EventRegisterFieldData<*>>()
     private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
 
-    private var takeFileMaybe: MaybeSubject<Uri>? = null
-
     private val formId: Int
         get() = eventData.event.formId ?: 0
 
-    private var approvingMode: String? = ""
-
     private var mDy = 0
     private lateinit var eventData: EventRegisterData
+
+    private var approvingMode: String? = ""
 
 
     override fun changeAppBarBackground(value: Int) {
@@ -98,26 +99,25 @@ class EventRegistrationPresenter
         }
 
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
-            .flatMap {
-                approvingMode = it.state?.registration?.approvingMode
-                if (it.state?.registration?.formEnabled == true) Maybe.just(it)
-                else Maybe.error(NoEventFormException())
-            }
             .doOnSuccess { e ->
-                val form = e.binds?.form?.firstOrNull { e -> e.type == EventFormModel.Type.PARTICIPATION }
-                val formFields = mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED })
-                val formResultFields = mapFieldsResult(e.binds?.userFormResult?.firstOrNull()?.result?.fields, formFields)
-                eventData = EventRegisterData(getEventData(e))
-                eventData.addFields(createFieldsData(formFields, formResultFields))
+                approvingMode = e.state?.registration?.approvingMode
+                val form =
+                    e.binds?.form?.firstOrNull { o -> o.type == EventFormModel.Type.PARTICIPATION }
+                val formFields =
+                    mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED })
+                val formResultFields = mapFieldsResult(
+                    e.binds?.userFormResult?.firstOrNull()?.result?.fields,
+                    formFields
+                )
+                eventData = EventRegisterData.init(e).apply {
+                    addFields(createFieldsData(formFields, formResultFields))
+                }
             }
             .flatMap { getRegisterDraftsData() }
             .flatMapSingle { getProfileFieldsData().doOnSuccess { eventData.addField(it.value) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    if (it is NoEventFormException) registerToEvent(false)
-                    else onReceiveError(it)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = {
                     if (eventData.hasDraft) viewState.showSavedFormResultDraftDialog(eventData)
                     else initFormResultData(eventData.event, eventData.getSortedFields())
@@ -134,25 +134,20 @@ class EventRegistrationPresenter
         val hasForm = !result.filter { x -> x.value != null || x.field != null }.isNullOrEmpty()
         viewState.apply {
             setFormFields(event, result, hasForm)
-
             if (hasForm) checkDataValid()
-            else showEventRegisterConfirmation()
         }
     }
 
-
-    private fun registerToEvent(withLoading: Boolean) {
-        compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
+    override fun onRegisterClick() {
+        compositeDisposable += getRequestBody(0)
+            .flatMap { eventRepository.eventRegisterNew(it) }
+            .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
             .andThen(socket.connectToUpdates())
-            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .let {
-                if (withLoading) it.withProgressBarDialogLoading(viewState) else it
-            }
+            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { viewState.showSuccessRegister(approvingMode) }
-            )
+                onComplete = { viewState.showSuccessRegister(approvingMode) })
     }
 
     private fun mapFields(it: List<EventRegisterFields>?): List<EventRegisterField> {
@@ -189,7 +184,10 @@ class EventRegistrationPresenter
                 EventRegisterField.Type.STRING,
                 EventRegisterField.Type.TEXT_AREA,
                 EventRegisterField.Type.NUMBER ->
-                    EventRegisterFieldData.String(field, findValue(field, results).fromJson<String>())
+                    EventRegisterFieldData.String(
+                        field,
+                        findValue(field, results).fromJson<String>()
+                    )
 
                 EventRegisterField.Type.DATE,
                 EventRegisterField.Type.DATETIME,
@@ -198,23 +196,39 @@ class EventRegistrationPresenter
 
                 EventRegisterField.Type.CHECKBOXES,
                 EventRegisterField.Type.CHECKBOX ->
-                    EventRegisterFieldData.Checkbox(field, findValue(field, results).fromJson<Set<String>>())
+                    EventRegisterFieldData.Checkbox(
+                        field,
+                        findValue(field, results).fromJson<Set<String>>()
+                    )
 
                 EventRegisterField.Type.SELECT_BOX ->
-                    EventRegisterFieldData.SelectBox(field, findValue(field, results).fromJson<String>())
+                    EventRegisterFieldData.SelectBox(
+                        field,
+                        findValue(field, results).fromJson<String>()
+                    )
 
                 EventRegisterField.Type.RADIO_BOX ->
-                    EventRegisterFieldData.RadioBox(field, findValue(field, results).fromJson<String>())
+                    EventRegisterFieldData.RadioBox(
+                        field,
+                        findValue(field, results).fromJson<String>()
+                    )
 
                 EventRegisterField.Type.FILE ->
-                    EventRegisterFieldData.File(field, findValue(field, results).fromJson(EventFile.Deserializer())
-                )
+                    EventRegisterFieldData.File(
+                        field, findValue(field, results).fromJson(EventFile.Deserializer())
+                    )
 
                 EventRegisterField.Type.BOOLEAN ->
-                    EventRegisterFieldData.Boolean(field, findValue(field, results).fromJson<Boolean>())
+                    EventRegisterFieldData.Boolean(
+                        field,
+                        findValue(field, results).fromJson<Boolean>()
+                    )
 
                 EventRegisterField.Type.PASSPORT ->
-                    EventRegisterFieldData.Passport(field, findValue(field, results).fromJson<EventPassport>())
+                    EventRegisterFieldData.Passport(
+                        field,
+                        findValue(field, results).fromJson<EventPassport>()
+                    )
 
                 else -> null
             }
@@ -225,24 +239,6 @@ class EventRegistrationPresenter
     override fun onDataChange(field: EventRegisterFieldData<*>) {
         if (field.isValid()) invalidFieldsData.remove(field) else invalidFieldsData.add(field)
         checkDataValid()
-    }
-
-    override fun onRegisterClick() {
-        compositeDisposable += getRequestBody(0)
-            .flatMap { eventRepository.eventRegisterNew(it) }
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = {
-                    val group = selectedGroup
-                    val fieldsData = fieldsData
-                    if (group == null && fieldsData.isEmpty()) viewState.showEventRegisterConfirmation()
-                    onReceiveError(it)
-                },
-                onSuccess = {
-                    registerToEvent(true)
-                })
     }
 
     override fun onBackClick() {
@@ -265,8 +261,6 @@ class EventRegistrationPresenter
 
     override fun onSuccessCancel() = viewState.navigateUp()
     override fun onSuccessGoToList() = viewState.showEventLists()
-    override fun onSuccessGoToEvent() = viewState.showEvent(eventId)
-    override fun onRegisterCancelClick() = viewState.navigateUp()
     override fun onPersonalDataFileClick(url: String) = viewState.openUrl(url)
 
     override fun onSelectedGroupChange(groupId: String?) {
@@ -280,25 +274,30 @@ class EventRegistrationPresenter
     }
 
 
+
     override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) {
-        takeFileMaybe?.onComplete()
-        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .flatMapMaybe {
-                if (it) {
-                    viewState.openFileSelector()
-                    MaybeSubject.create<Uri>().apply { takeFileMaybe = this }
-                } else Maybe.error<Uri>(PermissionNotGrantedException())
-            }
+        viewState.openFileSelector(field)
+    }
+
+    override fun onTakeFile(field: EventRegisterFieldData<EventFile?>) {
+        takeFileRequest(rxTakePhoto.takeFile(), field)
+    }
+
+    override fun onTakeImage(field: EventRegisterFieldData<EventFile?>) {
+        takeFileRequest(rxTakePhoto.takeImage(), field)
+    }
+
+    private fun takeFileRequest(request: Observable<Result>, field: EventRegisterFieldData<EventFile?>) {
+        compositeDisposable += request.map { it.uri }
+            .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is PermissionNotGrantedException) {
+                    if (it is PermissionNotGrantedException)
                         viewState.showToast(R.string.event_register_file_no_permission)
-                    } else {
-                        it.printStackTrace()
-                    }
-                }, onNext = { path ->
-                    val nameAndExtension = (path.fileName(contentResolver)
-                        ?: path.toString()).getFileNameAndExtension()
+                    else it.printStackTrace()
+                },
+                onNext = { path ->
+                    val nameAndExtension = (path.fileName(contentResolver) ?: path.toString()).getFileNameAndExtension()
 
                     val fileName = nameAndExtension.first
                     val fileExtension = nameAndExtension.second
@@ -312,19 +311,13 @@ class EventRegistrationPresenter
                     if (contains) {
                         field.value = EventFile("", path, fileName, fileExtension)
                         viewState.updateFileField(field.field.id)
-                    } else {
-                        viewState.showWrongFileExtensions(availableExtensions)
-                    }
+                    } else viewState.showWrongFileExtensions(availableExtensions)
                 })
+
     }
 
-    override fun onFileSelected(path: Uri) {
-        takeFileMaybe?.onSuccess(path)
-    }
 
-    override fun onFileSelectionCancel() {
-        takeFileMaybe?.onComplete()
-    }
+
 
     override fun onReceiveApiError(apiError: ApiError) {
         super.onReceiveApiError(apiError)
@@ -358,8 +351,7 @@ class EventRegistrationPresenter
 
                         if (fieldData is EventRegisterFieldData.Prefilled) {
                             return@forEachIndexed
-                        }
-                        else if (fieldData is EventRegisterFieldData.File) {
+                        } else if (fieldData is EventRegisterFieldData.File) {
                             val path = (value as EventFile).path
                             addFormDataPart("fields[$index][id]", key)
                             if (checkHttpScheme(path)) {
@@ -375,13 +367,25 @@ class EventRegistrationPresenter
                             addFormDataPart("fields[$index][id]", key)
                             addFormDataPart("fields[$index][value][series]", passport.series ?: "")
                             addFormDataPart("fields[$index][value][number]", passport.number ?: "")
-                            addFormDataPart("fields[$index][value][issuedBy]", passport.issuedBy ?: "")
-                            addFormDataPart("fields[$index][value][issuedDepartment]", passport.issuedDepartment ?: "")
-                            addFormDataPart("fields[$index][value][issuedDate]", passport.issuedDate ?: "")
+                            addFormDataPart(
+                                "fields[$index][value][issuedBy]",
+                                passport.issuedBy ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDepartment]",
+                                passport.issuedDepartment ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDate]",
+                                passport.issuedDate ?: ""
+                            )
                         } else if (value is Iterable<*>) {
                             if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
                             value.forEachIndexed { _, a ->
-                                if (a != null) addFormDataPart("fields[$index][value]", a.toString())
+                                if (a != null) addFormDataPart(
+                                    "fields[$index][value]",
+                                    a.toString()
+                                )
                             }
                         } else {
                             val data = value.toString()
@@ -394,13 +398,6 @@ class EventRegistrationPresenter
 
     }
 
-    private fun getEventData(event: EventNew): EventRegistration {
-        return EventRegistration.setEventRegistration(event).apply {
-            setBackgroundColor(event)
-            registrationHeadline = form?.title
-            registrationSubtitle = form?.subtitle
-        }
-    }
 
     private fun getProfileFieldsData(): Single<Optional<EventRegisterFieldData.Prefilled>> {
         val form = eventData.event.form

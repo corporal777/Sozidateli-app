@@ -11,7 +11,7 @@ import com.example.data.database.converters.UserEventConverter
 data class UserEvent(
         @PrimaryKey(autoGenerate = false)
         val eventId: String,
-        val eventInfo: EventInfo,
+        val eventInfo: EventNew,
         val activity: EventActivity,
         val updatedAt: Long
 ) {
@@ -20,6 +20,6 @@ data class UserEvent(
     var isDataFromLocalStorage: Boolean = false
 
     fun isHasBuildingScheme(): Boolean {
-        return !eventInfo.event.binds?.destinationScheme.isNullOrEmpty()
+        return !eventInfo.binds?.destinationScheme.isNullOrEmpty()
     }
 }

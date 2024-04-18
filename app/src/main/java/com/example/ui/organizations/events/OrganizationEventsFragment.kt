@@ -22,8 +22,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationEventsFragment :
-    EventListFragment<OrganizationEventsPresenter, LayoutListBinding>(),
+class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter, LayoutListBinding>(),
     OrganizationEventsContract.View, ToolbarFragment {
 
 

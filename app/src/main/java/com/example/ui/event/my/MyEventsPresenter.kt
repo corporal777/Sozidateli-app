@@ -5,6 +5,7 @@ import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.SearchFilter
+import com.example.data.socket.SocketIOManager
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
@@ -23,8 +24,9 @@ import javax.inject.Inject
 class MyEventsPresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
+    private val socket: SocketIOManager,
     private val appData: AppData
-) : EventListPresenter<MyEventsContract.View>(appData, eventRepository),
+) : EventListPresenter<MyEventsContract.View>(appData, eventRepository, socket),
     MyEventsContract.Presenter {
 
     private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE
@@ -89,10 +91,7 @@ class MyEventsPresenter
             mutableMapOf<String, Any>().apply {
                 put(EventNew.EVENT_LIMIT, limit)
                 put(EventNew.EVENT_OFFSET, offset)
-                put(
-                    EventNew.EVENT_BINDS,
-                    "activity,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
-                )
+                put(EventNew.EVENT_BINDS, getBinds())
                 put(EventNew.EVENT_USER_ID, appData.getId())
                 put(
                     EventNew.EVENT_STATUS,
@@ -148,5 +147,9 @@ class MyEventsPresenter
                 if (category != null) put(EventNew.EVENT_CATEGORY, category)
             }
         )
+    }
+
+    override fun getBinds(): String {
+        return "activity,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

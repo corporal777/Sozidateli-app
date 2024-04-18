@@ -2,25 +2,16 @@ package com.example.ui.base.bottomSheet
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
-import androidx.core.view.updateLayoutParams
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.lifecycleScope
 import com.example.R
-import com.example.data.models.UserDetail
-import com.example.databinding.LayoutFilterBinding
 import com.example.ui.base.BaseActivity
-import com.example.ui.views.StateType
 import com.example.ui.views.WarningDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

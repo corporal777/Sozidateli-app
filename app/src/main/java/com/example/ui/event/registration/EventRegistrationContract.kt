@@ -25,9 +25,6 @@ interface EventRegistrationContract {
         fun updateProfileFields(profileForm : ProfileFieldsFormResult)
 
         @Skip
-        fun showEventRegisterConfirmation()
-
-        @Skip
         fun showSaveFormResultDraftDialog()
 
         @Skip
@@ -37,7 +34,7 @@ interface EventRegistrationContract {
         fun enableActionButton(enable: Boolean)
 
         @Skip
-        fun openFileSelector()
+        fun openFileSelector(field: EventRegisterFieldData<EventFile?>)
 
         @OneExecution
         fun updateFileField(fieldId: String)
@@ -51,14 +48,11 @@ interface EventRegistrationContract {
         @OneExecution
         fun openUrl(url: String)
 
-        @Skip
+        @OneExecution
         fun showEventLists()
 
         @OneExecution
         fun showEditProfile()
-
-        @OneExecution
-        fun showEvent(eventId : String)
 
         @Skip
         fun updateAppBarBackgroundColorValue(offset : Int)
@@ -66,17 +60,17 @@ interface EventRegistrationContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onPersonalDataFileClick(url: String)
+
         fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
-        fun onFileSelected(path: Uri)
-        fun onFileSelectionCancel()
+        fun onTakeFile(field: EventRegisterFieldData<EventFile?>)
+        fun onTakeImage(field: EventRegisterFieldData<EventFile?>)
+
         fun onRegisterClick()
-        fun onRegisterCancelClick()
         fun onDataChange(field: EventRegisterFieldData<*>)
         fun onSelectedGroupChange(groupId: String?)
 
         fun onSuccessCancel()
         fun onSuccessGoToList()
-        fun onSuccessGoToEvent()
         fun onBackClick()
 
         fun saveEventFormResultDraft()

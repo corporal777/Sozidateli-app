@@ -5,8 +5,6 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -52,9 +50,9 @@ import com.example.ui.stories.StoriesFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.ApiErrorDialog
-import com.example.ui.views.ChangeStateDialog
-import com.example.ui.views.ClickType
-import com.example.ui.views.StateType
+import com.example.ui.views.dialogs.ChangeStateBottomDialog
+import com.example.ui.views.dialogs.ClickType
+import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
 import com.example.ui.views.toolbar.ToolbarContent
@@ -70,7 +68,6 @@ import com.example.util.FIELD_LABEL
 import com.example.util.FIELD_NAME
 import com.example.util.FIELD_NOTIFICATION
 import com.example.util.FIELD_NOTIFICATION_ID
-import com.example.util.FIELD_SN_AUTHORIZATION_USER_ID
 import com.example.util.LINKED_REGISTER
 import com.example.util.PASSWORD_RECOVERY
 import com.example.util.PATH_AUTH
@@ -81,7 +78,6 @@ import com.example.util.PATH_LP
 import com.example.util.PATH_PROFILE
 import com.example.util.PATH_QR
 import com.example.util.PATH_SETTINGS
-import com.example.util.PATH_SN_AUTHORIZATION
 import com.example.util.PATH_SUPPORT_CENTER
 import com.example.util.PATH_SWITCH_ACCOUNT
 import com.example.util.PATH_USER
@@ -93,8 +89,6 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
-import org.json.JSONObject
-import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -509,7 +503,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateDialog(this, type)
+        ChangeStateBottomDialog(this, type)
             .setClickCallback {
                 when (it) {
                     ClickType.INFO -> {
@@ -554,7 +548,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         }
                     }
                 }
-            }
+            }.show()
     }
 
 

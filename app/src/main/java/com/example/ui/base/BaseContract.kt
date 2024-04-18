@@ -2,7 +2,7 @@ package com.example.ui.base
 
 import androidx.annotation.StringRes
 import com.example.data.models.UserDetail
-import com.example.ui.views.StateType
+import com.example.ui.views.dialogs.StateType
 import moxy.MvpView
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.SkipStrategy

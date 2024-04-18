@@ -27,6 +27,7 @@ import com.example.ui.views.AddPhoneEmailDialog
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.ContactsType
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.MessageDialogWithTextButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
@@ -116,10 +117,9 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                             bundleOf("screen" to presenter.screen)
                         )
                     MaxStateScreenType.DONE -> {
-                        MessageDialogWithBrownButton(
+                        MessageDialogWithTextButton(
                             requireContext(),
-                            getString(R.string.you_got_max_state),
-                            false
+                            getString(R.string.you_got_max_state)
                         ).setSelectCallback { baseActions() }
                     }
                 }
@@ -130,11 +130,8 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
 
     private fun baseActionsWithSuccess() {
         if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
-            MessageDialogWithBrownButton(
-                requireContext(),
-                getString(R.string.you_got_base_state),
-                false
-            ).setSelectCallback { baseActions() }
+            MessageDialogWithTextButton(requireContext(), getString(R.string.you_got_base_state))
+                .setSelectCallback { baseActions() }
         } else {
             dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
                 .setSelectEmailCallback {

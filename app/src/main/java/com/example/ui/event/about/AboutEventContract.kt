@@ -49,10 +49,7 @@ interface AboutEventContract {
         fun setEventFavoriteButton(isSubscribed: Boolean)
 
         @Skip
-        fun changeOrganizationSubscription(isSubscribed: Boolean)
-
-        @Skip
-        fun showShare(eventId: String)
+        fun updateOrganization(isSubscribed: Boolean)
 
         @Skip
         fun updateSubEvent(subEvent: EventActivityModel)
@@ -61,10 +58,16 @@ interface AboutEventContract {
         fun updateTags(tag: Tag)
 
         @Skip
+        fun showShare(eventId: String)
+
+        @Skip
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
         @Skip
         fun showAgreementRegisterDialog(event: String, url: String)
+
+        @Skip
+        fun showEventRegistrationSuccessDialog()
 
         @Skip
         fun addEventToCalendar(eventData: EventNew?)
@@ -94,8 +97,8 @@ interface AboutEventContract {
         fun onShowEventActivitiesClick()
         fun onAddOrganizationToFavoriteClick()
         fun onAddEventToFavoriteClick()
-        fun onCreateEventSubscriptionClick()
-        fun onDeleteEventSubscriptionClick()
+        fun onSubscribeEventClick(isSubscribed: Boolean)
+
         fun changeAppBarBackgroundColorValue(value: Int)
 
         fun onAddEventToCalendarClick()

@@ -36,7 +36,7 @@ interface OrganizationContract {
         fun showUser(id: String)
 
         @OneExecution
-        fun showCurrentUser(id: String)
+        fun showCurrentUser()
 
         @Skip
         fun updateUserSubscription(userId: Int, isSubscribed: Boolean)
@@ -51,7 +51,10 @@ interface OrganizationContract {
         fun showEventRequest(event: String)
 
         @Skip
-        fun showAgreementRegisterDialog(event: String, url: String)
+        fun showAgreementRegisterDialog(event: String, url: String, formEnabled : Boolean)
+
+        @Skip
+        fun showEventRegistrationSuccessDialog()
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -64,9 +67,9 @@ interface OrganizationContract {
         fun onAddOrganizationFavoriteClick(organization: OrganizationNew)
         fun onRefreshRequest()
 
-        fun onActionRegister(event: String, url: String?)
+        fun onActionRegister(event: String, url: String?, formEnabled : Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-        fun onAcceptRegistrationAgreement(event: String)
+        fun onAcceptRegistrationAgreement(event: String, formEnabled : Boolean)
     }
 }

@@ -8,17 +8,14 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface ProfileContract {
     interface View : BaseContract.View {
-        @AddToEndSingle
+        @OneExecution
         fun setUser(user: UserDetail)
 
-        @AddToEndSingle
+        @OneExecution
         fun setUserState(hasBase: Boolean, hasMax: Boolean)
 
-        @AddToEndSingle
+        @OneExecution
         fun setUserLink(user: UserDetail)
-
-        @AddToEndSingle
-        fun setChangeOrAddNewAccount(sessionsCount : Int)
 
         @OneExecution
         fun showProfile(uid: String)

@@ -17,15 +17,14 @@ interface EventRepository {
     fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
+
     fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
-    fun getOrganizationEventsListWithoutPagination(map: Map<String, Any>): Maybe<EventNewModelWithoutPagination>
 
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
 
     fun getEvent(eventId: String, binds : String?): Maybe<EventNew>
-    fun getEventDetails(eventId: String): Maybe<EventInfo>
+    fun getEventDetails(eventId: String): Maybe<EventNew>
     fun getEventDetailForRegister(eventId: String): Maybe<EventNew>
 
     fun getEventMember(memberId : String) : Maybe<MemberModel>

@@ -10,6 +10,7 @@ import com.example.data.models.EventNew.Companion.EVENT_PUBLIC
 import com.example.data.models.EventNew.Companion.EVENT_SORT_FIELD
 import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
+import com.example.data.socket.SocketIOManager
 import com.example.di.Connectivity
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
@@ -26,8 +27,9 @@ class RecommendationsPresenter
 @Inject constructor(
     val appData: AppData,
     private val eventRepository: EventRepository,
+    private val socket: SocketIOManager,
     @Connectivity val connectivity: Observable<Boolean>
-) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository),
+) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 
     private var isFirstAttach = true
@@ -81,10 +83,14 @@ class RecommendationsPresenter
                 EVENT_OFFSET to offset,
                 EVENT_SORT_TYPE to "desc",
                 EVENT_SORT_FIELD to "id",
-                EVENT_BINDS to "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState,format",
+                EVENT_BINDS to getBinds(),
                 EVENT_PUBLIC to "true",
                 EVENT_STATUS to "approved,registration,registrationFinished,running"
             )
         )
+    }
+
+    override fun getBinds(): String {
+        return "user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

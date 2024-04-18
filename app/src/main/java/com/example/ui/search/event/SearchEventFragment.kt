@@ -15,8 +15,9 @@ import com.example.holders.redesign.EventItemNew
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.example.ui.views.StateType
-import com.example.ui.views.dialogs.EventAgreementDialog
+import com.example.ui.views.dialogs.EventAgreementBottomDialog
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
+import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
 import com.example.util.initInput
@@ -41,13 +42,17 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String, agreementUrl: String?) =
-            searchPresenter.onActionRegister(event, agreementUrl)
+        override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
+            searchPresenter.onActionRegister(event, agreementUrl, formEnabled)
         override fun onActionCancel(event: String, registrationId: String?) =
             searchPresenter.onActionCancel(event, registrationId)
         override fun onShowEventClick(view: View, event: String) =
             searchPresenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun showAboutEvent(event: String) {
@@ -64,26 +69,22 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         )
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementDialog(requireContext(), url).setSelectCallback {
-            searchPresenter.onAcceptRegistrationAgreement(event)
-        }
+    override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
+        EventAgreementBottomDialog(requireContext(), url)
+            .setSelectCallback { searchPresenter.onAcceptRegistrationAgreement(event, formEnabled) }
+            .show()
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun showEventRegistrationSuccessDialog() {
+        EventRegistrationSuccessBottomDialog(requireContext())
+            .setSelectCallback {  }
+            .show()
     }
 
 
     override fun createItem(itemData: EventNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else {
-            return EventItemNew(
-                itemData,
-                onEventClickListener,
-            )
-        }
+        else EventItemNew(itemData, onEventClickListener,)
     }
 
 

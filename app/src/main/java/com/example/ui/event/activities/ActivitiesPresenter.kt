@@ -57,8 +57,7 @@ class ActivitiesPresenter
         compositeDisposable += userEventData.loadEventData(eventId)
             .doOnSuccess { e ->
                 userEvent = e
-                isStatusApproved =
-                    e.eventInfo.event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+                isStatusApproved = e.eventInfo.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
                 eventTags = e.activity.groups.plus(e.activity.tags)
                 if (tagsNew != null) {
                     eventTags.forEach {

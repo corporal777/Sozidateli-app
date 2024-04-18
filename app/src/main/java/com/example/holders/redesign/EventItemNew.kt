@@ -115,7 +115,9 @@ class EventItemNew(
                     isVisible = true
                     text = context.getString(R.string.event_action_participate)
                     setOnClickListener {
-                        registrationState.checkStateLevel { clickListener.onActionRegister(eventId, userAgreement) }
+                        registrationState.checkStateLevel {
+                            clickListener.onActionRegister(eventId, userAgreement, eventData.isFormEnabled())
+                        }
                     }
                 }
             } else if (actions.contains("withdraw")) {
@@ -123,7 +125,9 @@ class EventItemNew(
                     isVisible = true
                     text = context.getString(R.string.event_action_cancel_request)
                     setOnClickListener {
-                        registrationState.checkStateLevel { clickListener.onActionCancel(eventId, registrationId) }
+                        registrationState.checkStateLevel {
+                            clickListener.onActionCancel(eventId, registrationId)
+                        }
                     }
                 }
             } else btnAction.isVisible = false
@@ -162,7 +166,7 @@ class EventItemNew(
     }
 
     interface OnEventClickListener {
-        fun onActionRegister(event: String, agreementUrl: String?)
+        fun onActionRegister(event: String, agreementUrl: String?, formEnabled : Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(view: View, event: String)
         fun onShowUpdateState()

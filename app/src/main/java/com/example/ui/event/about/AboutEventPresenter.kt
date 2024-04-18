@@ -15,6 +15,7 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.google.gson.Gson
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -32,7 +33,6 @@ class AboutEventPresenter
 @Inject constructor(
     private val appData: AppData,
     private val eventRepository: EventRepository,
-    private val userEventData: UserEventData,
     private val socket: SocketIOManager,
 ) : BasePresenter<AboutEventContract.View>(appData), AboutEventContract.Presenter {
 
@@ -40,21 +40,15 @@ class AboutEventPresenter
     private var mDy = 0
     private lateinit var aboutEventData: AboutEventData
 
-    override fun changeAppBarBackgroundColorValue(value: Int) {
-        mDy = value
-        viewState.updateAppBarBackgroundColorValue(mDy)
+
+    override fun attachView(view: AboutEventContract.View?) {
+        super.attachView(view)
+        loadData()
     }
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.updateAppBarBackgroundColorValue(mDy)
-
-        compositeDisposable += Maybe.defer {
-            val userEventInfo = userEventData.userEvent?.eventInfo
-            if (userEventInfo?.event?.id.toString() == eventId) Maybe.just(userEventInfo)
-            else eventRepository.getEventDetails(eventId)
-        }
-            .map { AboutEventData(it.event).apply { aboutEventData = this } }
+    private fun loadData() {
+        compositeDisposable += eventRepository.getEventDetails(eventId)
+            .map { AboutEventData(it).apply { aboutEventData = this } }
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -63,15 +57,7 @@ class AboutEventPresenter
             )
     }
 
-    override fun onRefreshRequest() {
-        compositeDisposable += eventRepository.getEventDetails(eventId)
-            .map { AboutEventData(it.event).apply { aboutEventData = this } }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onSuccess = { viewState.setEventData(it) }
-            )
-    }
+    override fun onRefreshRequest() = loadData()
 
 
     override fun onTagSelected() {
@@ -89,26 +75,19 @@ class AboutEventPresenter
             }
     }
 
-    override fun onCreateEventSubscriptionClick() {
-        compositeDisposable += eventRepository.createEventSubscription(eventId.toInt())
+    override fun onSubscribeEventClick(isSubscribed: Boolean) {
+        compositeDisposable += Completable.defer {
+            if (isSubscribed) eventRepository.deleteEventSubscription(eventId.toInt())
+            else eventRepository.createEventSubscription(eventId.toInt())
+        }
             .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { aboutEventData.event = it.event }
+            .doOnSuccess { aboutEventData.event = it }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                viewState.setActionButton(it.event)
+                viewState.setActionButton(it)
             }
-    }
 
-    override fun onDeleteEventSubscriptionClick() {
-        compositeDisposable += eventRepository.deleteEventSubscription(eventId.toInt())
-            .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { aboutEventData.event = it.event }
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.setActionButton(it.event)
-            }
     }
 
     override fun onAddEventToFavoriteClick() {
@@ -142,7 +121,7 @@ class AboutEventPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    changeOrganizationSubscription(it.value != null)
+                    updateOrganization(it.value != null)
                     if (it.value == null) showEventRemovedFromFavoriteDialog()
                     else showEventAddedToFavoriteDialog()
                 }
@@ -175,9 +154,8 @@ class AboutEventPresenter
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    viewState.showAgreementRegisterDialog(eventId, url)
-                    //if (it.isAccepted()) registerToEvent(eventId)
-                    //else viewState.showAgreementRegisterDialog(eventId, url)
+                    if (it.isAccepted()) registerToEvent(eventId)
+                    else viewState.showAgreementRegisterDialog(eventId, url)
                 }
             )
     }
@@ -197,12 +175,17 @@ class AboutEventPresenter
         else compositeDisposable += eventRepository.registerToEvent(eventId.toInt())
             .andThen(socket.connectToUpdates())
             .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { aboutEventData.event = it.event }
+            .doOnSuccess { aboutEventData.event = it }
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { viewState.setActionButton(it.event) }
+                onSuccess = {
+                    viewState.apply {
+                        setActionButton(it)
+                        showEventRegistrationSuccessDialog()
+                    }
+                }
             )
     }
 
@@ -210,11 +193,11 @@ class AboutEventPresenter
         val registrationId = aboutEventData.event.binds?.currentUserRegistration?.id ?: 0
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
             .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { aboutEventData.event = it.event }
+            .doOnSuccess { aboutEventData.event = it }
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple {
-                viewState.setActionButton(it.event)
+                viewState.setActionButton(it)
             }
     }
 
@@ -240,6 +223,11 @@ class AboutEventPresenter
         val formResult = aboutEventData.event.binds?.userFormResult
             ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION } ?: return
         viewState.showEventFormResult(formResult)
+    }
+
+    override fun changeAppBarBackgroundColorValue(value: Int) {
+        mDy = value
+        viewState.updateAppBarBackgroundColorValue(mDy)
     }
 
     private fun catchEventError(t: Throwable) {
@@ -271,9 +259,11 @@ class AboutEventPresenter
                                     "Мероприятие «$eventName» было отменено организатором."
                                 viewState.showErrorMessageWithResult(true, eventId, message)
                             }
+
                             else -> onReceiveError(t)
                         }
-                    } catch (e: Exception) { }
+                    } catch (e: Exception) {
+                    }
                 }
 
                 else -> onReceiveError(t)

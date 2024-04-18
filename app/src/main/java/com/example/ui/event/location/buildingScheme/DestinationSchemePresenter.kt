@@ -35,7 +35,7 @@ class DestinationSchemePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += eventRepository.getEventDetails(eventId)
-            .map { it.event.binds?.destinationScheme?.map { s -> s.toPlace() } }
+            .map { it.binds?.destinationScheme?.map { s -> s.toPlace() } }
             .doOnSuccess { checkPlaceImages(it) }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoading(viewState)

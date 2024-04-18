@@ -1,11 +1,13 @@
 package com.example.ui.organizations.detail
 
+import call
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_ORGANIZATION
 import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
+import com.example.data.socket.SocketIOManager
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
@@ -15,6 +17,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.zipWith
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
@@ -28,20 +31,16 @@ class OrganizationPresenter
     private val organizationRepository: OrganizationRepository,
     private val userRepository: UserRepository,
     private val eventRepository: EventRepository,
+    private val socket: SocketIOManager
 ) : BasePresenter<OrganizationContract.View>(appData), OrganizationContract.Presenter {
 
     lateinit var organizationId: String
     private var isFirstAttach = true
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        loadData()
-    }
 
     override fun attachView(view: OrganizationContract.View?) {
         super.attachView(view)
-        if (isFirstAttach) isFirstAttach = false
-        else loadData()
+        loadData()
     }
 
 
@@ -62,32 +61,20 @@ class OrganizationPresenter
 
 
     override fun onAddUserFavoriteCLick(member: OrganizationMemberModel) {
-        compositeDisposable += Single.create<Boolean> { emitter ->
-            val disposables = CompositeDisposable()
-            disposables += if (member.binds?.userFavorite == null) {
-                eventRepository.addToFavorites(userFavoriteBody(member.user))
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onSuccess = { emitter.onSuccess(true) })
-            } else {
-                eventRepository.deleteFromFavorite(member.binds.userFavorite?.id.toString())
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onComplete = { emitter.onSuccess(false) })
-            }
-            emitter.setDisposable(disposables)
+        compositeDisposable += Single.defer {
+            if (member.binds?.userFavorite == null)
+                eventRepository.addToFavorites(userFavoriteBody(member.user)).map { true }
+            else eventRepository.deleteFromFavorite(member.binds.userFavorite?.id.toString())
+                .andThen(Single.just(false))
         }
+            .flatMapMaybe { e -> getMembersRequest().map { Triple(it.data, it.totalCount, e) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    compositeDisposable += organizationMembersRequest()
-                        .performOnBackgroundOutOnMain()
-                        .subscribeSimple {
-                            viewState.setMembersData(it.data, it.totalCount ?: it.data.size)
-                        }
                     viewState.apply {
-                        if (it) showEventAddedToFavoriteDialog()
+                        setMembersData(it.first, it.second ?: it.first.size)
+                        if (it.third) showEventAddedToFavoriteDialog()
                         else showEventRemovedFromFavoriteDialog()
                     }
                 }
@@ -95,26 +82,14 @@ class OrganizationPresenter
     }
 
     override fun onAddOrganizationFavoriteClick(organization: OrganizationNew) {
-        compositeDisposable += Single.create<OrganizationNew> { emitter ->
-            val disposables = CompositeDisposable()
-            disposables += if (organization.binds?.userFavorite == null) {
-                eventRepository.addToFavorites(organizationFavoriteBody())
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onSuccess = {
-                            organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                            emitter.onSuccess(organization)
-                        })
-            } else {
-                eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
-                    .subscribeSimple(
-                        onError = { emitter.onError(it) },
-                        onComplete = {
-                            organization.binds?.userFavorite = null
-                            emitter.onSuccess(organization)
-                        })
-            }
-            emitter.setDisposable(disposables)
+        compositeDisposable += Single.defer {
+            if (organization.binds?.userFavorite == null)
+                eventRepository.addToFavorites(organizationFavoriteBody()).flatMap {
+                    organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
+                    Single.just(organization)
+                }
+            else eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                .andThen(Single.just(organization.apply { binds?.userFavorite = null }))
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -129,46 +104,62 @@ class OrganizationPresenter
             )
     }
 
-    override fun onActionRegister(event: String, url: String?) {
-        if (url.isNullOrEmpty()) viewState.showEventRequest(event)
-        else {
-            compositeDisposable += eventRepository.checkRegistrationAgreement(event)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onSuccess = {
-                        if (it.isAccepted()) viewState.showEventRequest(event)
-                        else viewState.showAgreementRegisterDialog(event, url)
-                    }
-                )
-        }
-    }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEventDetails(event))
+    override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
+        if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
+        else compositeDisposable += eventRepository.checkRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.updateEvent(it.event)
-            }
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    if (it.isAccepted()) registerToEvent(event, formEnabled)
+                    else viewState.showAgreementRegisterDialog(event, url, formEnabled)
+                }
+            )
     }
 
-    override fun onAcceptRegistrationAgreement(event: String) {
+    override fun onAcceptRegistrationAgreement(event: String, formEnabled: Boolean) {
         compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) viewState.showEventRequest(event) }
+                onSuccess = { if (it.isAccepted()) registerToEvent(event, formEnabled) }
             )
     }
 
+    private fun registerToEvent(event: String, formEnabled: Boolean) {
+        if (formEnabled) viewState.showEventRequest(event)
+        else eventRepository.registerToEvent(event.toInt())
+            .andThen(socket.connectToUpdates())
+            .andThen(eventRepository.getEvent(event, "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = {
+                    viewState.apply {
+                        updateEvent(it)
+                        showEventRegistrationSuccessDialog()
+                    }
+                }
+            ).call(compositeDisposable)
+    }
+
+    override fun onActionCancel(event: String, registrationId: String?) {
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
+            .andThen(eventRepository.getEvent(event, "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"))
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple {
+                viewState.updateEvent(it)
+            }
+    }
+
+
     override fun onUserClick(user: String?) {
-        if (appData.isCurrentUser(user.toString())) {
-            viewState.showCurrentUser(appData.getUser().id.toString())
-        } else viewState.showUser(user.toString())
+        if (isCurrentUser(user.toString())) viewState.showCurrentUser()
+        else viewState.showUser(user.toString())
     }
 
     override fun onShowMoreEventsClick() = viewState.showAllEvents(organizationId)
@@ -179,19 +170,24 @@ class OrganizationPresenter
     private fun organizationDataRequest(): Maybe<AboutOrganizationData> {
         return Maybe.zip(
             organizationRepository.getOrganizationDetails(organizationId).toMaybe(),
-            eventRepository.getOrganizationEventsListWithoutPagination(
+            eventRepository.getOrganizationEventsList(
                 mapOf(
                     EventNew.EVENT_ACTIVE to true,
                     EventNew.EVENT_LIMIT to 3,
                     EventNew.EVENT_OFFSET to 0,
-                    EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,userFavorite,current-user-registration,eventRegistrationState,current-user-registration-state",
+                    EventNew.EVENT_BINDS to "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state",
                     EventNew.EVENT_ORGANIZATION to organizationId,
                     EventNew.EVENT_SORT_FIELD to "id"
                 )
             ),
-            organizationMembersRequest()
+            getMembersRequest()
         ) { org, e, m ->
-            AboutOrganizationData(org, e.data, m.data, m.totalCount ?: m.data.size)
+            AboutOrganizationData(
+                org,
+                e.data.mapNotNull { it },
+                m.data,
+                m.totalCount ?: m.data.size
+            )
         }
     }
 
@@ -199,14 +195,7 @@ class OrganizationPresenter
         return appData.isCurrentUser(id)
     }
 
-    private fun organizationFavoriteBody(): AddToFavoriteModel {
-        return AddToFavoriteModel(
-            appData.getId(),
-            AddToFavoriteEntityModel(FAVORITE_ORGANIZATION, organizationId.toInt())
-        )
-    }
-
-    private fun organizationMembersRequest(): Maybe<PaginationResponse<OrganizationMemberModel>> {
+    private fun getMembersRequest(): Maybe<PaginationResponse<OrganizationMemberModel>> {
         return organizationRepository.getOrganizationMembers(
             mapOf(
                 OrganizationMember.MEMBERS_BINDS to "user,userFavorite",
@@ -218,6 +207,14 @@ class OrganizationPresenter
                 data = if (it.data.size > 3) it.data.subList(0, 3) else it.data
             )
         }
+    }
+
+
+    private fun organizationFavoriteBody(): AddToFavoriteModel {
+        return AddToFavoriteModel(
+            appData.getId(),
+            AddToFavoriteEntityModel(FAVORITE_ORGANIZATION, organizationId.toInt())
+        )
     }
 
     private fun userFavoriteBody(user: Int?): AddToFavoriteModel {

@@ -58,7 +58,6 @@ class ProfilePresenter
                         setUser(it)
                         setUserLink(it)
                         setUserState(appData.hasBaseState, appData.hasMaxState)
-                        setChangeOrAddNewAccount(it.getSessionsCount())
                     }
                 })
     }

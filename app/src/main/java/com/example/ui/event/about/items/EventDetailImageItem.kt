@@ -13,41 +13,55 @@ import com.example.extensions.parseColor
 import com.example.util.setImage
 import com.example.util.setImagePicasso
 
-class EventDetailImageItem(val event: EventNew) :
+class EventDetailImageItem(event: EventNew) :
     BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
 
-    private val eventDate =
-        event.holdingDate?.from?.formatToDefaultDate() + " - " + event.holdingDate?.to?.formatToDefaultDate()
-    private val imageColor =
-        ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+
+    private val imageColor = ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+
+    private val eventName = event.name
+    private val eventImage = event.image?.uri
+    private val eventDateStart = event.holdingDate?.from
+    private val eventDateEnd = event.holdingDate?.to
+    private val eventRequests = event.requestsApply
+
+    private val eventAddress = event.address?.getShortAddress()
+    private val eventDate = eventDateStart?.formatToDefaultDate() + " - " + eventDateEnd?.formatToDefaultDate()
     private val requestDate = getEventRequestDate()
+
+
 
     override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
         viewBinding.apply {
-            tvTitle.text = event.name
+            tvTitle.text = eventName
             tvDate.text = eventDate
             tvRequestsDate.apply {
                 isVisible = !requestDate.isNullOrEmpty()
                 text = requestDate
             }
             tvLocation.apply {
-                isVisible = !event.address?.getShortAddress().isNullOrEmpty()
-                text = event.address?.getShortAddress()
+                isVisible = !eventAddress.isNullOrEmpty()
+                text = eventAddress
             }
             ivLogo.apply {
-                setImagePicasso(url = event.image?.uri, placeholder = imageColor, error = imageColor)
+                setImagePicasso(url = eventImage, placeholder = imageColor, error = imageColor)
             }
         }
     }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventDetailImageItem) return false
-        if (event != other.event) return false
+        if (eventName != other.eventName) return false
+        if (eventImage != other.eventImage) return false
+        if (eventDateStart != other.eventDateStart) return false
+        if (eventDateEnd != other.eventDateEnd) return false
+        if (eventRequests != other.eventRequests) return false
+
         return true
     }
 
     private fun getEventRequestDate(): String? {
-        val requestsApply = event.requestsApply ?: return null
+        val requestsApply = eventRequests ?: return null
         if (!requestsApply.dateFrom.isNullOrEmpty() && !requestsApply.dateLimit.isNullOrEmpty()) {
             val today = System.currentTimeMillis()
             val startReq = defaultServerDateTimeFormatter.parse(requestsApply.dateFrom)?.time ?: 0

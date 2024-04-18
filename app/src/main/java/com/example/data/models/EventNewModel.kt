@@ -10,12 +10,6 @@ data class EventNewModel(
     val totalCount: Int? = null
 )
 
-data class EventNewModelWithoutPagination(
-    val data: List<EventNew>? = null,
-    @SerializedName("totalCount")
-    val totalCount: Int? = null
-)
-
 @Parcelize
 data class EventNew(
     val id: Int? = null,

@@ -31,6 +31,10 @@ class RxTakePhoto(
         return rxImagePicker.openFile(context)
     }
 
+    fun takeImage(): Observable<Result> {
+        return rxImagePicker.openGallery(context)
+    }
+
     fun takeCameraImage(): Observable<ResultRotation> {
         return rxImagePicker.openCamera(context)
             .findRotation()

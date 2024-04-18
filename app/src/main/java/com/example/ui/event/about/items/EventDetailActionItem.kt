@@ -95,11 +95,7 @@ class EventDetailActionItem(
         }
     }
 
-    private fun decorActionButton(
-        eventNew: EventNew,
-        btnAction: CustomLoadingButton,
-        tvCancel: TextView
-    ) {
+    private fun decorActionButton(eventNew: EventNew, btnAction: CustomLoadingButton, tvCancel: TextView) {
         var clickAction: (() -> Unit)? = null
         var btnText = R.string.event_action_participate
         var btnTextColor = R.color.black
@@ -113,7 +109,8 @@ class EventDetailActionItem(
         if (eventNew.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_participate
-                clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
+                clickAction =
+                    { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
 
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_cancel_request
@@ -138,12 +135,13 @@ class EventDetailActionItem(
             actionText = getTextShowForm(false, tvCancel)
         } else {
             if (actions.firstOrNull() == "subscribe" || actions.contains("subscribe")) {
-                if (eventNew.binds?.isUserSubscribed == true) {
-                    btnText = R.string.event_action_unsubscribe_request
-                    clickAction = { state?.checkStateLevel { clickListener.onDeleteSubscribeEvent() } }
-                } else {
-                    btnText = R.string.event_action_subscribe_request
-                    clickAction = { state?.checkStateLevel { clickListener.onSubscribeEvent() } }
+                btnText =
+                    if (eventNew.binds?.isUserSubscribed == true) R.string.event_action_unsubscribe_request
+                    else R.string.event_action_subscribe_request
+                clickAction = {
+                    state?.checkStateLevel {
+                        clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
+                    }
                 }
             } else btnAction.isVisible = false
         }
@@ -258,8 +256,7 @@ class EventDetailActionItem(
         fun onActionRegister(url: String?)
         fun onActionCancel()
         fun onShowUpdateState()
-        fun onSubscribeEvent()
-        fun onDeleteSubscribeEvent()
+        fun onSubscribeEvent(subscribe: Boolean)
     }
 
     override fun getLayout(): Int = R.layout.item_event_detail_action_block

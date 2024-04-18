@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.contextaware.withContextAvailable
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -21,14 +20,15 @@ import com.example.data.models.UserDetail
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
+import com.example.ui.views.dialogs.ChangeStateBottomDialog
+import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs.MessageDialogWithGreenButton
+import com.example.ui.views.dialogs.StateType
 import com.example.util.Utils
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.exceptions.UndeliverableException
-import io.reactivex.plugins.RxJavaPlugins
 
 abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(), BaseContract.View {
 
@@ -173,12 +173,10 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
-        ChangeStateDialog(requireActivity(), type)
+        ChangeStateBottomDialog(requireActivity(), type)
             .setClickCallback {
                 when (it) {
-                    ClickType.INFO -> {
-                        findNavController().navigate(R.id.userStateFragment)
-                    }
+                    ClickType.INFO -> findNavController().navigate(R.id.userStateFragment)
                     ClickType.BASE -> {
                         findNavController().navigate(
                             R.id.mainInfoFragment,
@@ -220,7 +218,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
                         }
                     }
                 }
-            }
+            }.show()
     }
 
     override fun showEventAddedToFavoriteDialog() {

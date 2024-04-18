@@ -3,15 +3,13 @@ package com.example.ui.base
 import com.example.data.AppData
 import com.example.data.models.ApiError
 import com.example.exceptions.NoInternetConnectionException
-import com.example.ui.views.StateType
+import com.example.ui.views.dialogs.StateType
 import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.functions.Action
 import io.reactivex.functions.Consumer
-import io.reactivex.plugins.RxJavaPlugins
 import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
 import retrofit2.HttpException

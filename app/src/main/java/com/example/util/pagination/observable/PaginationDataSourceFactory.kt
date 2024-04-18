@@ -6,7 +6,6 @@ import com.example.util.pagination.DataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 
-@Suppress("UNCHECKED_CAST")
 open class PaginationDataSourceFactory<I>(
         private val paginationRequest: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
 ) : DataSourceFactory<Int, I>() {

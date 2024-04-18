@@ -4,82 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/margin_horizontal_default"
-        android:paddingTop="20dp"
-        android:paddingEnd="@dimen/margin_horizontal_default"
-        android:paddingBottom="20dp">
+        tools:ignore="MissingPrefix">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            fontPath="fonts/Roboto-Bold.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textColor="@color/bottom_dialog_message"
-            android:textSize="22sp"
-            android:textStyle="bold"
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingPrefix"
-            android:text="@string/change_status_title"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvMessage"
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStateDesc"
+            fontPath="fonts/sf_pro_display_semibold.ttf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
             android:layout_marginTop="10dp"
-            android:gravity="start"
-            android:textColor="@color/bottom_dialog_message"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
-            app:layout_goneMarginTop="0dp"
-            android:text="@string/change_status_description"
-            tools:visibility="visible" />
+            android:gravity="center"
+            android:text="@string/event_register_agreement_open_error"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPositive"
-            android:layout_width="0dp"
+            android:id="@+id/btnApply"
+            style="@style/BtnBrownStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/background_action_button_selector"
-            android:text="@string/change_status_button"
-            android:letterSpacing="0.01"
-            android:textAllCaps="false"
-            android:textColor="@color/text_color_action_button"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-            tools:visibility="visible" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNegative"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:letterSpacing="0.01"
-            android:stateListAnimator="@null"
-            android:text="@string/cancel"
-            android:textAllCaps="false"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/button_cancel_text"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:strokeColor="@color/button_cancel_border"
-            tools:layout_editor_absoluteY="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/btnPositive"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_background_brown_radius_14"
+            android:text="@string/auth_action_continue"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="visible" />
-
+            app:layout_constraintTop_toBottomOf="@id/tvStateDesc" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

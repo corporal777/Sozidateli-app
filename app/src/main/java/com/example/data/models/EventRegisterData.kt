@@ -33,4 +33,15 @@ data class EventRegisterData(
             this.draftFieldsData.addAll(draft)
         }
     }
+
+    companion object {
+        fun init(event : EventNew): EventRegisterData {
+            return EventRegisterData(EventRegistration.setEventRegistration(event).apply {
+                setBackgroundColor(event)
+                registrationHeadline = form?.title
+                registrationSubtitle = form?.subtitle
+            })
+        }
+    }
+
 }

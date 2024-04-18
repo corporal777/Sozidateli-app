@@ -15,6 +15,7 @@ import com.example.data.models.OrganizationNew
 import com.example.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
+import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventItemNew
 import com.example.interfaces.ToolbarFragment
@@ -26,8 +27,9 @@ import com.example.ui.organizations.detail.items.*
 import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.StateType
-import com.example.ui.views.dialogs.EventAgreementDialog
+import com.example.ui.views.dialogs.EventAgreementBottomDialog
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
+import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -67,8 +69,8 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
     private val onEventClickListener = object : EventItemNew.OnEventClickListener {
-        override fun onActionRegister(event: String, agreementUrl: String?) =
-            presenter.onActionRegister(event, agreementUrl)
+        override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
+            presenter.onActionRegister(event, agreementUrl, formEnabled)
 
         override fun onActionCancel(event: String, registrationId: String?) =
             presenter.onActionCancel(event, registrationId)
@@ -152,35 +154,26 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
     override fun setEventsData(events: List<EventNew>) {
-        eventsDataSection.update(events.map {
-            EventItemNew(
-                it,
-                onEventClickListener,
-            )
-        })
+        eventsDataSection.update(events.map { EventItemNew(it, onEventClickListener) })
     }
 
 
     override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
         membersDataSection.apply {
-            update(
-                listOf(EventsTitleItem(
-                    getString(R.string.organization_peoples).format(totalSize),
-                    pBottom = 10
-                )).plus(
-                    members.map { member ->
-                        OrganizationMemberItem(
-                            member.user,
-                            member.binds?.user?.nameLastName,
-                            member.binds?.user?.address?.shortAddres,
-                            member.binds?.user?.loadUserImage(),
-                            member.binds?.userFavorite != null,
-                            presenter.isCurrentUser(member.binds?.user?.id.toString()),
-                            { user -> presenter.onUserClick(user.toString()) },
-                            { id -> presenter.onAddUserFavoriteCLick(member) }
-                        )
-                    }
-                )
+            updateItems(
+                EventsTitleItem(getString(R.string.organization_peoples).format(totalSize), pBottom = 10),
+                members.map { member ->
+                    OrganizationMemberItem(
+                        member.user,
+                        member.binds?.user?.nameLastName,
+                        member.binds?.user?.address?.shortAddres,
+                        member.binds?.user?.loadUserImage(),
+                        member.binds?.userFavorite != null,
+                        presenter.isCurrentUser(member.binds?.user?.id.toString()),
+                        { user -> presenter.onUserClick(user.toString()) },
+                        { id -> presenter.onAddUserFavoriteCLick(member) }
+                    )
+                }
             )
         }
     }
@@ -193,10 +186,8 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
     override fun updateUserSubscription(userId: Int, isSubscribed: Boolean) {
         val idLong = userId.toLong()
-        val item =
-            membersDataSection.findItemBy<OrganizationMemberItem> { userItem -> userItem.id == idLong }
-                ?: return
-        item.notifyChanged(isSubscribed)
+        val item = membersDataSection.findItemBy<OrganizationMemberItem> { it.id == idLong }
+        item?.notifyChanged(isSubscribed)
     }
 
     override fun updateEvent(event: EventNew) {
@@ -227,7 +218,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
         )
     }
 
-    override fun showCurrentUser(id: String) {
+    override fun showCurrentUser() {
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
@@ -245,10 +236,16 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
         )
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementDialog(requireContext(), url).setSelectCallback {
-            presenter.onAcceptRegistrationAgreement(event)
-        }
+    override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
+        EventAgreementBottomDialog(requireContext(), url)
+            .setSelectCallback { presenter.onAcceptRegistrationAgreement(event, formEnabled) }
+            .show()
+    }
+
+    override fun showEventRegistrationSuccessDialog() {
+        EventRegistrationSuccessBottomDialog(requireContext())
+            .setSelectCallback {  }
+            .show()
     }
 
     override fun layout(): Int = R.layout.fragment_organization

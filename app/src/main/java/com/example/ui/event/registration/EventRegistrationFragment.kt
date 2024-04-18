@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.R
+import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
@@ -44,6 +45,7 @@ import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
 import com.example.extensions.onScrolled
 import com.example.extensions.statusBarColorValue
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -51,7 +53,6 @@ import kotlin.math.abs
 
 class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     EventRegistrationContract.View {
-
 
     @InjectPresenter
     lateinit var presenter: EventRegistrationPresenter
@@ -109,11 +110,6 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     }
 
 
-    override fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
-        fieldsDataSection.findGroupBy<RegisterEventProfileItemsGroup> { true }
-            ?.updateProfileFields(profileForm)
-    }
-
     override fun setFormFields(
         event: EventRegistration,
         fieldsData: List<EventRegisterFieldData<*>>,
@@ -136,101 +132,78 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
             update(fieldsData.mapNotNull {
                 when (it) {
                     is EventRegisterFieldData.Prefilled -> {
-                        if (it.value != null) RegisterEventProfileItemsGroup(it.value!!) { showEditProfile() }
-                        else null
+                        if (it.value == null) null
+                        else RegisterEventProfileItemsGroup(it.value!!) { showEditProfile() }
                     }
+
                     is EventRegisterFieldData.String ->
                         RegisterEventStringItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.Date ->
                         RegisterEventDateItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.SelectBox ->
                         EventRegistrationSelectBoxItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.RadioBox ->
                         RegisterEventRadioBoxItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.Checkbox ->
                         RegisterEventCheckboxItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.Boolean ->
                         RegisterEventBooleanItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it, withTitle = false)
+
                     is EventRegisterFieldData.Passport ->
                         RegisterEventPassportItem(
                             it,
                             onDataChange = onFieldDataChange
                         ).createFieldItemFrom(it)
+
                     is EventRegisterFieldData.File ->
                         EventRegistrationFileGroup(
                             requireContext(),
                             it,
                             onFieldDataChange
                         ) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
-                    else -> null
                 }
             })
         }
     }
 
-    private fun Group.createFieldItemFrom(
-        fieldData: EventRegisterFieldData<*>,
-        customTitle: String? = null,
-        withTitle: Boolean = true,
-        withFile: Boolean = true
-    ): Group {
-        val field = fieldData.field
-        return let {
-            val title = if (withTitle) customTitle ?: field.name else null
-            it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
+    override fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
+        fieldsDataSection.findGroupBy<RegisterEventProfileItemsGroup> { true }
+            ?.updateProfileFields(profileForm)
+    }
+
+    override fun updateFileField(fieldId: String) {
+        groupAdapter.forEachGroups {
+            val fileGroup = if (it is NestedGroup) findEventRegistrationFileGroup(it, fieldId)
+            else null
+            if (fileGroup != null) {
+                fileGroup.checkFile()
+                return@forEachGroups
+            }
         }
-            .let {
-                val file = if (withFile) field.rightFile else null
-                it.withEventRegistrationPersonalDataFile(
-                    file?.file, field.rightFileDescription
-                        ?: file?.filename, personalDataFileClickListener
-                )
-            }
     }
-
-    override fun showEventRegisterConfirmation() {
-        bottomDialog?.dismiss()
-        BottomDialog(requireContext()).apply {
-            setTitle(getString(R.string.event_register_no_form_confirmation_title))
-            setMessage(getString(R.string.event_register_no_form_confirmation_message))
-            positiveButton {
-                text = getString(R.string.event_register_no_form_positive)
-                clickListener = {
-                    presenter.onRegisterClick()
-                    true
-                }
-            }
-
-            negativeButton {
-                text = getString(R.string.event_register_no_form_negative)
-                clickListener = {
-                    presenter.onRegisterCancelClick()
-                    true
-                }
-            }
-            setCancelable(false)
-            bottomDialog = this
-        }.show()
-    }
-
 
     override fun showSaveFormResultDraftDialog() {
         EventRegistrationRequestDialog(
@@ -261,81 +234,46 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     }
 
     override fun showSuccessRegister(moderation: String?) {
-        val canGoToEvent: Boolean
-        val maybeApproved: Boolean
-        when (moderation) {
-            MODERATION_MANUAL -> {
-                canGoToEvent = false
-                maybeApproved = true
-            }
-            MODERATION_AUTO_APPROVE -> {
-                canGoToEvent = true
-                maybeApproved = true
-            }
-            MODERATION_AUTO_DISMISS -> {
-                canGoToEvent = false
-                maybeApproved = false
-            }
-            else -> {
-                canGoToEvent = false
-                maybeApproved = true
-            }
-        }
-        bottomDialog?.dismiss()
-        BottomDialog(requireContext()).apply {
-            setTitle(getString(if (canGoToEvent) R.string.event_register_sent_title else R.string.event_register_sent_moderate_title))
-            if (maybeApproved)
-                setMessage(getString(if (canGoToEvent) R.string.event_register_sent_message else R.string.event_register_sent_moderate_message))
-            positiveButton {
-                text = getString(if (canGoToEvent) R.string.event_register_sent_button else R.string.event_register_sent_moderate_button)
-                clickListener = {
-                    if (canGoToEvent) presenter.onSuccessGoToEvent() else presenter.onSuccessGoToList()
-                    true
-                }
-            }
-
-            setOnCancelListener { presenter.onSuccessCancel() }
-            bottomDialog = this
-        }.show()
+        EventRegistrationSuccessBottomDialog(requireContext())
+            .setSelectCallback {
+                presenter.onSuccessGoToList()
+            }.show()
     }
 
     override fun openUrl(url: String) = showCustomTabsBrowser(requireContext(), url)
 
-    override fun openFileSelector() {
-        val intent = Intent().apply {
-            type = "*/*"
-            action = Intent.ACTION_OPEN_DOCUMENT
-            addCategory(Intent.CATEGORY_OPENABLE)
-        }
+    override fun openFileSelector(field: EventRegisterFieldData<EventFile?>) {
         AlertDialog.Builder(requireContext())
             .setTitle("Открыть файлы или галерею?")
-            .setPositiveButton(R.string.file_alert_gallery) { _, _ ->
-                startActivityForResult(intent, REQUEST_CODE_FILE)
-            }
-            .setNegativeButton(R.string.photo_alert_gallery) { _, _ ->
-                startActivityForResult(
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*")),
-                    REQUEST_CODE_FILE
-                )
-            }
+            .setPositiveButton(R.string.file_alert_gallery) { _, _ -> presenter.onTakeFile(field) }
+            .setNegativeButton(R.string.photo_alert_gallery) { _, _ -> presenter.onTakeImage(field) }
             .show()
-    }
-
-    override fun updateFileField(fieldId: String) {
-        groupAdapter.forEachGroups {
-            val fileGroup = if (it is NestedGroup) findEventRegistrationFileGroup(it, fieldId)
-            else null
-            if (fileGroup != null) {
-                fileGroup.checkFile()
-                return@forEachGroups
-            }
-        }
     }
 
     override fun showWrongFileExtensions(availableExtensions: List<String>) {
         val message = getString(R.string.event_register_file_extension_wrong)
             .format(availableExtensions.joinToString { it.toLowerCase(Locale.getDefault()) })
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun Group.createFieldItemFrom(
+        fieldData: EventRegisterFieldData<*>,
+        customTitle: String? = null,
+        withTitle: Boolean = true,
+        withFile: Boolean = true
+    ): Group {
+        val field = fieldData.field
+        return let {
+            val title = if (withTitle) customTitle ?: field.name else null
+            it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
+        }
+            .let {
+                val file = if (withFile) field.rightFile else null
+                it.withEventRegistrationPersonalDataFile(
+                    file?.file, field.rightFileDescription
+                        ?: file?.filename, personalDataFileClickListener
+                )
+            }
     }
 
     private fun findEventRegistrationFileGroup(
@@ -355,17 +293,6 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         return null
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        super.onActivityResult(requestCode, resultCode, result)
-        if (requestCode == REQUEST_CODE_FILE) {
-            val url = if (resultCode == RESULT_OK) result?.data
-            else null
-
-            if (url != null) presenter.onFileSelected(url)
-            else presenter.onFileSelectionCancel()
-        }
-    }
-
     override fun enableActionButton(enable: Boolean) {
         saveButtonItem.apply {
             if (isEnabled != enable) {
@@ -378,23 +305,18 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
 
     override fun showEventLists() {
         if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
-            findNavController().navigate(R.id.recommendations_fragment, null, navOptions {
-                popUpTo(R.id.request_fragment) { inclusive = true }
-            })
+            findNavController().navigate(R.id.recommendations_fragment, null,
+                navOptions { popUpTo(R.id.request_fragment) { inclusive = true } }
+            )
         }
-    }
-
-    override fun showEvent(eventId: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(eventId).build().toBundle(),
-            navOptions { popUpTo(R.id.request_fragment) { inclusive = true } })
     }
 
     override fun showEditProfile() {
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
+    override fun showCustomLoading() = saveButtonItem.run { showLoading(true) }
+    override fun hideCustomLoading() = saveButtonItem.run { showLoading(false) }
 
     override fun updateAppBarBackgroundColorValue(offset: Int) {
         mBinding.apply {

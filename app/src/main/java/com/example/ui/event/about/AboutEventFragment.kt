@@ -46,8 +46,7 @@ import com.example.ui.page.PageFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
-import com.example.ui.views.StateType
-import com.example.ui.views.dialogs.EventAgreementDialog
+import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupAdapter
@@ -62,6 +61,7 @@ import com.example.extensions.onScrolled
 import com.example.extensions.setOnClickListener
 import com.example.extensions.statusBarColorValue
 import com.example.ui.views.dialogs.EventAgreementBottomDialog
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -123,8 +123,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         override fun onActionRegister(url: String?) = presenter.onActionRegister(url)
         override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onSubscribeEvent() = presenter.onCreateEventSubscriptionClick()
-        override fun onDeleteSubscribeEvent() = presenter.onDeleteEventSubscriptionClick()
+        override fun onSubscribeEvent(subscribe: Boolean) = presenter.onSubscribeEventClick(subscribe)
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
@@ -224,7 +223,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         eventProgramSection.findItemBy<TagsItem> { true }?.updateTag(tag)
     }
 
-    override fun changeOrganizationSubscription(isSubscribed: Boolean) {
+    override fun updateOrganization(isSubscribed: Boolean) {
         val item = eventOrganizationSection.findItemBy<EventDetailOrganizationItem> { true }
         item?.notifyChanged(isSubscribed)
     }
@@ -235,13 +234,15 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-//        EventAgreementDialog(requireContext(), url).setSelectCallback {
-//            presenter.onAcceptRegistrationAgreement(event)
-//        }
         EventAgreementBottomDialog(requireContext(), url)
-            .setSelectCallback {
+            .setSelectCallback { presenter.onAcceptRegistrationAgreement(event) }
+            .show()
+    }
 
-            }.show()
+    override fun showEventRegistrationSuccessDialog() {
+        EventRegistrationSuccessBottomDialog(requireContext())
+            .setSelectCallback {  }
+            .show()
     }
 
     override fun showEventFormResult(formResult: UserFormResultModel) {

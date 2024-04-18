@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAction"
-        style="@style/BtnBrownStyle"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/action_button_height"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="@dimen/action_button_margin_horizontal"
-        android:layout_marginTop="@dimen/action_button_margin_vertical"
-        android:layout_marginEnd="@dimen/action_button_margin_horizontal"
-        android:layout_marginBottom="@dimen/action_button_margin_vertical"
-        tools:text="@string/save" />
-</FrameLayout>
+        android:layout_height="wrap_content">
+
+        <com.example.ui.views.loading.CustomLoadingButton
+            android:id="@+id/btnAction"
+            style="@style/BtnLoadingStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/action_button_margin_horizontal"
+            android:layout_marginTop="@dimen/action_button_margin_vertical"
+            android:layout_marginEnd="@dimen/action_button_margin_horizontal"
+            android:layout_marginBottom="@dimen/action_button_margin_vertical" />
+    </FrameLayout>
+</layout>

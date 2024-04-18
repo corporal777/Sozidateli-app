@@ -15,16 +15,19 @@ interface EventListContract {
         fun showAboutEvent(event: String)
 
         @Skip
-        fun showAgreementRegisterDialog(event: String, url : String)
+        fun showAgreementRegisterDialog(event: String, url : String, formEnabled : Boolean)
+
+        @Skip
+        fun showEventRegistrationSuccessDialog()
 
         @OneExecution
         fun updateEvent(event: EventNew)
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onActionRegister(event: String, url : String?)
+        fun onActionRegister(event: String, url : String?, formEnabled : Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
-        fun onAcceptRegistrationAgreement(event : String)
+        fun onAcceptRegistrationAgreement(event : String, formEnabled : Boolean)
     }
 }

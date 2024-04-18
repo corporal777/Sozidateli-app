@@ -913,8 +913,8 @@
     <string name="user_id">id%s</string>
     <string name="get_base">Получить «Базовый»</string>
     <string name="get_max">Получить «Максимальный»</string>
-    <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового. Подробнее о статусах</string>
-    <string name="title_get_max">Для совершения данного действия Вам необходимо повысить статус профиля до максимального. Подробнее о статусах</string>
+    <string name="title_get_base">Для совершения данного действия Вам необходимо повысить статус профиля до базового</string>
+    <string name="title_get_max">Для совершения данного действия Вам необходимо повысить статус профиля до максимального</string>
     <string name="incorrect_data">Неверный формат e-mail</string>
     <string name="base_new_second">Легко и быстро регистрироваться и участвовать в мероприятиях</string>
     <string name="base_new_third">Общаться с пользователями портала и экспертами мероприятия</string>

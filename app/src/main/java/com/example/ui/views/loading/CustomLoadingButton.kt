@@ -60,7 +60,7 @@ class CustomLoadingButton : ConstraintLayout {
         val buttonTextSize = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonTextSize,
             resources.getDimensionPixelSize(R.dimen.common_button_text_size)
         )
-        val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText)
+        val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText) ?: ""
         val buttonDrawable = a.getDrawable(R.styleable.CustomLoadingButton_buttonDrawable)
 
         a.recycle()
@@ -79,7 +79,7 @@ class CustomLoadingButton : ConstraintLayout {
         color: Int,
         buttonHeight: Int,
         buttonTextSize: Int,
-        buttonText: CharSequence,
+        buttonText: CharSequence?,
         buttonDrawable: Drawable?
     ) {
         loadingView.ivButton.apply {
