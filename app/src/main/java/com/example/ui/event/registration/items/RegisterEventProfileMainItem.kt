@@ -1,5 +1,7 @@
 package com.example.ui.event.registration.items
 
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -7,6 +9,10 @@ import com.example.R
 import com.example.data.models.ProfileFieldFiles
 import com.example.data.models.ProfileFieldString
 import com.example.databinding.ItemRegisterEventProfileMainBinding
+import com.example.ui.views.CustomSpannableString
+import com.example.util.getColor
+import com.example.util.showCustomTabsBrowser
+import com.example.util.showFileBrowser
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventProfileMainItem(
@@ -63,10 +69,24 @@ class RegisterEventProfileMainItem(
                     val field = files.value.joinToString("\n") { it.name ?: "" }
                     if (field.isNullOrEmpty()) {
                         text = context.getString(R.string.user_profile_additional_hint)
-                        if (files.isRequired) setTextColor(ContextCompat.getColor(context, R.color.red_new))
+                        if (files.isRequired) setTextColor(getColor(R.color.red_new))
                     } else {
-                        setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
-                        text = field
+                        setTextColor(getColor(R.color.profile_edit_button_text_enabled))
+                        text = SpannableStringBuilder().apply {
+                            files.value.forEachIndexed { index, file ->
+                                if (index > 0) append("\n")
+                                append(CustomSpannableString(file.name).apply {
+                                    setClickSpan(tvFiles){
+                                        if (file.isFilePDF())
+                                            showFileBrowser(context, file.uri.toString())
+                                        else showCustomTabsBrowser(context, file.uri.toString())
+                                    }
+                                })
+                            }
+
+                        }
+                        highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                        movementMethod = LinkMovementMethod.getInstance()
                     }
                 }
 
@@ -86,7 +106,7 @@ class RegisterEventProfileMainItem(
             lnWorkPhone.apply {
                 isVisible = workPhone.isChosen
                 if (workPhone.isAbsent) {
-                    tvWorkPhone.setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
+                    tvWorkPhone.setTextColor(getColor(R.color.profile_edit_button_text_enabled))
                     tvWorkPhone.text = context.getString(R.string.user_profile_no_work_phone)
                 } else {
                     tvWorkPhone.setField(workPhone)
@@ -95,19 +115,51 @@ class RegisterEventProfileMainItem(
             lnSocialLinks.apply {
                 isVisible = socialLinks.isChosen
                 if (socialLinks.isAbsent) {
-                    tvSocialLinks.setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
+                    tvSocialLinks.setTextColor(getColor(R.color.profile_edit_button_text_enabled))
                     tvSocialLinks.text = context.getString(R.string.user_profile_no_social_networks)
+                }else if (socialLinks.value.isNullOrEmpty()){
+                    if (socialLinks.isRequired) tvSocialLinks.setTextColor(getColor(R.color.red_new))
+                    tvSocialLinks.text = context.getString(R.string.user_profile_additional_hint)
                 } else {
-                    tvSocialLinks.setField(socialLinks)
+                    tvSocialLinks.apply {
+                        text = SpannableStringBuilder().apply {
+                            socialLinks.value!!.split("\n").forEachIndexed { index, s ->
+                                if (index > 0) append("\n")
+                                append(CustomSpannableString(s).apply {
+                                    setClickSpan(tvSocialLinks){
+                                        showCustomTabsBrowser(context, s)
+                                    }
+                                })
+                            }
+                        }
+                        highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                        movementMethod = LinkMovementMethod.getInstance()
+                    }
                 }
             }
             lnSites.apply {
                 isVisible = sites.isChosen
                 if (sites.isAbsent) {
-                    tvSite.setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
+                    tvSite.setTextColor(getColor(R.color.profile_edit_button_text_enabled))
                     tvSite.text = context.getString(R.string.user_profile_no_site)
+                } else if (sites.value.isNullOrEmpty()){
+                    tvSite.text = context.getString(R.string.user_profile_additional_hint)
+                    if (sites.isRequired) tvSite.setTextColor(getColor(R.color.red_new))
                 } else {
-                    tvSite.setField(sites)
+                    tvSite.apply {
+                        text = SpannableStringBuilder().apply {
+                            sites.value!!.split("\n").forEachIndexed { index, s ->
+                                if (index > 0) append("\n")
+                                append(CustomSpannableString(s).apply {
+                                    setClickSpan(tvSite){
+                                        showCustomTabsBrowser(context, s)
+                                    }
+                                })
+                            }
+                        }
+                        highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                        movementMethod = LinkMovementMethod.getInstance()
+                    }
                 }
             }
         }
@@ -116,9 +168,9 @@ class RegisterEventProfileMainItem(
     private fun TextView.setField(field: ProfileFieldString) {
         if (field.value.isNullOrEmpty()) {
             text = context.getString(R.string.user_profile_additional_hint)
-            if (field.isRequired) setTextColor(ContextCompat.getColor(context, R.color.red_new))
+            if (field.isRequired) setTextColor(getColor(R.color.red_new))
         } else {
-            setTextColor(ContextCompat.getColor(context, R.color.profile_edit_button_text_enabled))
+            setTextColor(getColor(R.color.profile_edit_button_text_enabled))
             text = field.value
         }
     }
