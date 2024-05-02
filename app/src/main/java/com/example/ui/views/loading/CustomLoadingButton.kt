@@ -37,7 +37,7 @@ class CustomLoadingButton : ConstraintLayout {
     )
 
     private var isProgressVisible = false
-    private var buttonInitText = ""
+    private var buttonInitText : CharSequence = ""
 
     private val loadingView =
         LayoutLoadingButtonBinding.inflate(LayoutInflater.from(context), this, true)
@@ -66,7 +66,7 @@ class CustomLoadingButton : ConstraintLayout {
         a.recycle()
         initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText, buttonDrawable)
 
-        buttonInitText = buttonText.toString()
+        buttonInitText = buttonText
         loadingView.progressLoad.apply {
             setProgressColor(buttonTextColor)
             setSize(25.dp)
@@ -107,7 +107,7 @@ class CustomLoadingButton : ConstraintLayout {
 
     fun setButtonText(buttonText: CharSequence) {
         loadingView.btnLoad.text = buttonText
-        buttonInitText = buttonText.toString()
+        buttonInitText = buttonText
     }
 
     fun setButtonTextColor(buttonTextColor: Int) {

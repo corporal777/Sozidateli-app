@@ -449,6 +449,10 @@ data class NewUserAddress(
     var showInProfile: Boolean? = false
 ) : Parcelable {
 
+    fun getFullAddress(): String? {
+        return if (fullValue.isNullOrEmpty()) getShortAddress()
+        else fullValue
+    }
     fun getShortAddress(): String {
         return if (!shortAddres.isNullOrEmpty()) shortAddres ?: ""
         else

@@ -64,6 +64,14 @@ fun String.formatToDefaultServerDate(): String? {
     return parseAndFormat(defaultDateFormatter, defaultServerDateFormatter)
 }
 
+fun String.formatToDefaultDayMonthDate(): String? {
+    return parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothNoYear)
+}
+
+fun String.formatToDefaultDayMonthYearDate(): String? {
+    return parseAndFormat(defaultServerDateFormatter, dateFormatterFullMothFullYear)
+}
+
 fun String.parseToDate(parser: DateFormat): Date? {
     return try {
         parser.parse(this)

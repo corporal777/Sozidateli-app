@@ -90,7 +90,7 @@ class EventItemNew(
                     Event.Status.REGISTRATION_FINISHED -> {
                         statusVisibility = true
                         statusBackground = R.color.event_status_wait_confirmation_background
-                        statusText = R.string.about_event_registration_closed
+                        statusText = R.string.event_action_closed_request
                     }
                     else -> statusVisibility = false
                 }

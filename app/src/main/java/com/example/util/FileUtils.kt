@@ -17,22 +17,17 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
-import androidx.core.net.toFile
 import com.example.BuildConfig
 import io.reactivex.Maybe
-import okhttp3.Cache
-import okhttp3.Call
-import okhttp3.Callback
+import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.ResponseBody
 import timber.log.Timber
 import java.io.*
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.jvm.Throws
 
 object FileUtils {
     const val DOCUMENTS_DIR = "documents"
@@ -798,6 +793,7 @@ object FileUtils {
                     .readTimeout(1, TimeUnit.MINUTES)
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .build()
+
 
                 val request = Request.Builder().url(url)
                     .addHeader("Content-Type", "application/json")

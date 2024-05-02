@@ -434,18 +434,6 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/page_fragment"
-        android:name="com.example.ui.page.PageFragment">
-
-        <argument
-            android:name="eventId"
-            app:argType="string" />
-
-        <argument
-            android:name="pageId"
-            app:argType="string" />
-    </fragment>
 
     <fragment
         android:id="@+id/agreement_fragment"
@@ -611,18 +599,6 @@
             app:nullable="false" />
     </fragment>
 
-
-    <fragment
-        android:id="@+id/fragment_map_new"
-        android:name="com.example.ui.event.location.map.MapFragment"
-        tools:layout="@layout/fragment_map">
-
-        <argument
-            android:name="mapInfo"
-            app:argType="com.example.data.models.MapInfo"
-            app:nullable="true" />
-
-    </fragment>
 
     <fragment
         android:id="@+id/my_events_fragment_new"

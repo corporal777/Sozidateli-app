@@ -4,6 +4,7 @@ import com.example.data.AppData
 import com.example.data.models.FileModel
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
+import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -14,9 +15,9 @@ import javax.inject.Inject
 @InjectViewState
 class PagePresenter
 @Inject constructor(
-        private val eventRepository: EventRepository,
-        appData: AppData
-) : BasePresenter<PageContract.View>(appData), PageContract.Presenter {
+    private val eventRepository: EventRepository,
+    appData: AppData
+) : BaseBottomSheetPresenter<PageContract.View>(appData), PageContract.Presenter {
 
     lateinit var dataEventId: String
     lateinit var dataPageId: String
@@ -24,15 +25,15 @@ class PagePresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += eventRepository.getPageDetails(dataPageId)
-                .withCheckInternetConnectivity()
-                .performOnBackgroundOutOnMain()
-                .withProgressBarLoading(viewState)
-                .subscribeSimple {
-                    viewState.setContent("", it.name, it.title, it.content, it.files)
-                }
+            .withCheckInternetConnectivity()
+            .performOnBackgroundOutOnMain()
+            .withProgressBarLoading(viewState)
+            .subscribeSimple {
+                viewState.setContent("", it.name, it.title, it.content, it.files)
+            }
     }
 
     override fun onDocumentClick(document: FileModel) {
-        document.let { viewState.openLinkInBrowser(it.uri?: "") }
+        document.let { viewState.openLinkInBrowser(it.uri ?: "") }
     }
 }

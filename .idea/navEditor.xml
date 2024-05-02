@@ -407,7 +407,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="fragment_map_new">
+                  <entry key="fragment_map">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -913,18 +913,6 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="test_blur_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="to_invite_register">
                     <value>
                       <LayoutPositions>
@@ -989,11 +977,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="user_to_edit">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="user_to_organization">
                               <value>
                                 <LayoutPositions />
@@ -1012,15 +995,6 @@
                             <option name="x" value="6650" />
                             <option name="y" value="2119" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="to_edit">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -1065,11 +1039,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="profile_to_edit">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="profile_to_education">
                               <value>
                                 <LayoutPositions />
@@ -1081,6 +1050,11 @@
                               </value>
                             </entry>
                             <entry key="profile_to_interests">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="profile_to_interests_edit">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -1104,15 +1078,6 @@
                             <option name="y" value="2475" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="to_edit">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -1124,15 +1089,6 @@
                             <option name="x" value="6650" />
                             <option name="y" value="1763" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="to_edit">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

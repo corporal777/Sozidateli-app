@@ -32,6 +32,7 @@
     <color name="input_text_color_disabled_new">#995C5C5C</color>
     <color name="placeholder">#dddddd</color>
     <color name="dim">#93000000</color>
+    <color name="event_detail_bottom_sheet_text_color">#34303E</color>
 
     <color name="badge_attention_low">#8db75b</color>
     <color name="badge_attention_medium">#ECB349</color>
@@ -225,12 +226,15 @@
     <color name="bottom_nav_item_selected_color">#C3996C</color>
     <color name="chip_background_color">#14747480</color>
     <color name="bottom_nav_item_unselected_color">#979592</color>
+    <color name="color_green_button">#7D9D57</color>
     <color name="color_green_button_new">#8CA26B</color>
     <color name="search_field_background_color">#1F767680</color>
     <color name="main_brown_color_new">#BE9B72</color>
     <color name="main_brown_color">#A57F56</color>
 
     <color name="white_smoke_color">#F6F6F6</color>
+    <color name="white_70_alpha_color">#B3FFFFFF</color>
+    <color name="event_request_closed_text_color">#B2B2B2</color>
 
     <color name="event_register_input_normal_color">#F6F6F6</color>
     <color name="event_register_input_focused_color">#E8E8E8</color>
@@ -240,6 +244,7 @@
 
     <color name="bottom_navigation_view_background_color">#F9F9F9</color>
     <color name="register_event_go_to_profile_text_color">#7F7F7F</color>
+
 
     <color name="notification_decline_view_background_color">#F5F0E9</color>
     <color name="notification_decline_text_color">#858585</color>

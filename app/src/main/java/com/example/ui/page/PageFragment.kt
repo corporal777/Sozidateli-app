@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.navArgs
 import com.example.R
 import com.example.data.models.FileModel
 import com.example.databinding.FragmentPageBinding
 import com.example.extensions.markWon
+import com.example.extensions.setOnClickListener
 import com.example.holders.DocumentItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.event.location.map.MapFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setImage
 import com.example.util.showCustomTabsBrowser
@@ -23,21 +27,19 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, ToolbarFragment {
+class PageFragment(val eventId: String, val pageId: String) :
+    BaseBottomSheetFragment<FragmentPageBinding>(), PageContract.View {
 
-    private lateinit var toolbarContent: ToolbarContent
-
-    @InjectPresenter
+    @InjectPresenter(tag = PAGE_FRAGMENT_TAG)
     lateinit var presenter: PagePresenter
 
     @Inject
     lateinit var presenterProvider: Provider<PagePresenter>
 
-    @ProvidePresenter
+    @ProvidePresenter(tag = PAGE_FRAGMENT_TAG)
     fun providePresenter(): PagePresenter = presenterProvider.get().apply {
-        val args = PageFragmentArgs.fromBundle(requireArguments())
-        dataEventId = args.eventId
-        dataPageId = args.pageId
+        dataEventId = eventId
+        dataPageId = pageId
     }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -47,6 +49,9 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
         mBinding.apply {
             recyclerView.apply {
                 adapter = groupAdapter
+            }
+            ivBack.setOnClickListener {
+                dismiss()
             }
         }
 
@@ -59,7 +64,8 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
         content: String?,
         documents: List<FileModel>?
     ) {
-        toolbarContent.setToolbarTitle(contentTitle ?: "")
+        mBinding.tvBottomSheetLabel.text = contentTitle ?: ""
+
         mBinding.ivLogo.apply {
             clipToOutline = true
             isVisible = !logo.isNullOrEmpty()
@@ -80,12 +86,11 @@ class PageFragment : BaseFragment<FragmentPageBinding>(), PageContract.View, Too
 
     override fun openLinkInBrowser(link: String) = showCustomTabsBrowser(requireContext(), link)
 
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, PAGE_FRAGMENT_TAG)
+
+    companion object {
+        const val PAGE_FRAGMENT_TAG = "page_fragment_tag"
+    }
 
     override fun layout() = R.layout.fragment_page
-    override val title: CharSequence = ""
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {
-        this.toolbarContent = toolbarContent
-    }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
 }

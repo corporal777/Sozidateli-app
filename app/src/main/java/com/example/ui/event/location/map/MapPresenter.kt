@@ -3,6 +3,7 @@ package com.example.ui.event.location.map
 import com.example.data.AppData
 import com.example.data.models.MapInfo
 import com.example.ui.base.BasePresenter
+import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class MapPresenter
 @Inject constructor(
     appData: AppData
-) : BasePresenter<MapContract.View>(appData), MapContract.Presenter {
+) : BaseBottomSheetPresenter<MapContract.View>(appData), MapContract.Presenter {
 
     var mapInfo: MapInfo? = null
 
@@ -28,7 +29,7 @@ class MapPresenter
         val lat = mapInfo?.lat
         val lon = mapInfo?.lon
 
-        viewState.initializeMap()
+
         if (lat != null && lon != null) {
             compositeDisposable += Completable.fromAction { viewState.initializeMap() }
                 .withProgressBarLoading(viewState)

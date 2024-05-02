@@ -11,10 +11,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentManager
 import com.example.R
+import com.example.data.models.MapInfo
 import com.example.databinding.FragmentMapBinding
+import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.event.formResult.EventFormResultFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -25,20 +30,20 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MapFragment : BaseFragment<FragmentMapBinding>(), MapContract.View,
-    OnMapReadyCallback, ToolbarFragment {
+class MapFragment(
+    private val info: MapInfo
+) : BaseBottomSheetFragment<FragmentMapBinding>(), MapContract.View, OnMapReadyCallback {
 
-    @InjectPresenter
+    @InjectPresenter(tag = MAP_FRAGMENT_TAG)
     lateinit var presenter: MapPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<MapPresenter>
 
 
-    @ProvidePresenter
+    @ProvidePresenter(tag = MAP_FRAGMENT_TAG)
     fun providePresenter(): MapPresenter = presenterProvider.get().apply {
-        val args = MapFragmentArgs.fromBundle(requireArguments())
-        mapInfo = args.mapInfo
+        mapInfo = info
     }
 
     private lateinit var googleMap: GoogleMap
@@ -46,6 +51,9 @@ class MapFragment : BaseFragment<FragmentMapBinding>(), MapContract.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.ivBack.setOnClickListener { dismiss() }
+        mBinding.btnShare.setOnClickListener { presenter.onShareClick() }
+        mBinding.btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -72,18 +80,17 @@ class MapFragment : BaseFragment<FragmentMapBinding>(), MapContract.View,
                             scrollContainer.requestDisallowInterceptTouchEvent(false)
                             true
                         }
+
                         MotionEvent.ACTION_DOWN,
                         MotionEvent.ACTION_MOVE -> {
                             scrollContainer.requestDisallowInterceptTouchEvent(true)
                             false
                         }
+
                         else -> true
                     }
                 }
             }
-
-            btnShare.setOnClickListener { presenter.onShareClick() }
-            btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
         }
 
     }
@@ -135,16 +142,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>(), MapContract.View,
         }
     }
 
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, MAP_FRAGMENT_TAG)
+
     override fun layout() = R.layout.fragment_map
 
     companion object {
-        private const val ARG_MAP_INFO = "mapInfo"
-
+        const val MAP_FRAGMENT_TAG = "map_fragment_tag"
     }
-
-    override val title: CharSequence = ""
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
-
 }

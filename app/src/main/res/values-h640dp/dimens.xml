@@ -48,9 +48,10 @@
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">50dp</dimen>
 
+    <dimen name="event_detail_name_text_size">19sp</dimen>
     <dimen name="event_item_height_new">400dp</dimen>
-    <dimen name="event_image_height_new">370dp</dimen>
-    <dimen name="event_image_shadow_height_new">200dp</dimen>
+    <dimen name="event_image_height_new">400dp</dimen>
+    <dimen name="event_image_shadow_height_new">90dp</dimen>
 
     <dimen name="day_item_start">5dp</dimen>
 

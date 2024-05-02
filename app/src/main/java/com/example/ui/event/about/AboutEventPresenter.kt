@@ -86,6 +86,7 @@ class AboutEventPresenter
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
                 viewState.setActionButton(it)
+                viewState.showEventSubscribedDialog(it.binds?.isUserSubscribed)
             }
 
     }
@@ -202,7 +203,7 @@ class AboutEventPresenter
     }
 
     override fun onShowEventActivitiesClick() = viewState.showEventActivities(eventId, emptyList())
-    override fun onPageClick(page: Int) = viewState.showPage(eventId, page.toString())
+
     override fun onPartnerClick(partner: Int) = viewState.showPartner(eventId, partner.toString())
     override fun onSubEventClick(subEvent: EventActivityModel) =
         viewState.showSubEvent(eventId, subEvent.id)
@@ -211,19 +212,9 @@ class AboutEventPresenter
     override fun onSpeakerClick(memberId: Int) = viewState.showSpeakerProfile(memberId, eventId)
     override fun onShowAllSpeakersClick() = viewState.showSpeakers(eventId)
 
-    override fun onMapPageSelected() {
-        if (aboutEventData.event.address?.lat != null && aboutEventData.event.address?.lon != null)
-            viewState.showMap(aboutEventData.event.createMapInfo())
-    }
-
     override fun onShareClick() = viewState.showShare(eventId)
     override fun onAddEventToCalendarClick() = viewState.addEventToCalendar(aboutEventData.event)
 
-    override fun onShowFormResult() {
-        val formResult = aboutEventData.event.binds?.userFormResult
-            ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION } ?: return
-        viewState.showEventFormResult(formResult)
-    }
 
     override fun changeAppBarBackgroundColorValue(value: Int) {
         mDy = value

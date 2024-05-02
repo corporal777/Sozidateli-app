@@ -24,7 +24,7 @@
                 android:overScrollMode="never"
                 android:paddingBottom="20dp"
                 tools:itemCount="1"
-                tools:listitem="@layout/item_event_detail_image_block" />
+                tools:listitem="@layout/item_event_detail_main" />
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
 

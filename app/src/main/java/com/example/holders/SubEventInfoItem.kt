@@ -115,10 +115,8 @@ class SubEventInfoItem(
 
     private fun getDayAndMonth(): String? {
         var date: String
-        val startCalendar =
-            subEvent.holdingDate?.from?.parseToDate(defaultServerDateTimeFormatter)?.calendar()
-        val endCalendar =
-            subEvent.holdingDate?.to?.parseToDate(defaultServerDateTimeFormatter)?.calendar()
+        val startCalendar = subEvent.holdingDate?.from?.parseToDate(defaultServerDateTimeFormatter)?.calendar()
+        val endCalendar = subEvent.holdingDate?.to?.parseToDate(defaultServerDateTimeFormatter)?.calendar()
 
         if (startCalendar == null || endCalendar == null) return null
 

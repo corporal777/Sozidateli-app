@@ -29,7 +29,7 @@ class RegisterEventStringItem(
             textInputEditText.apply {
                 isEnabled = editable
                 when (field.type) {
-                    EventRegisterField.Type.STRING -> {
+                    EventRegisterField.Type.STRING, EventRegisterField.Type.GROUP -> {
                         inputType =
                             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                     }

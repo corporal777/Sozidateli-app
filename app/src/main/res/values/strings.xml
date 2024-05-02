@@ -49,6 +49,7 @@
     <string name="event_action_write_to_organisation">Написать организатору</string>
     <string name="event_action_participate">Участвовать</string>
     <string name="event_action_cancel_request">Отозвать заявку</string>
+    <string name="event_action_closed_request">Прием заявок закрыт</string>
     <string name="event_action_subscribe_request">Уведомить о старте приема заявок</string>
     <string name="event_action_unsubscribe_request">Не уведомлять о старте приема заявок</string>
     <string name="event_action_was_sent_request">Подана заявка</string>
@@ -173,9 +174,9 @@
     <string name="about_event_date">Дата</string>
     <string name="about_event_partners">Партнеры</string>
     <string name="about_event_registration_finish">Заявки принимаются до</string>
-    <string name="about_event_registration_closed">Прием заявок закрыт</string>
 
-    <string name="news_read_more">Подробнее</string>
+
+    <string name="more_details">Подробнее</string>
 
     <string name="speakers">Спикеры</string>
     <string name="go_to_profile">Перейти в профиль</string>
@@ -935,6 +936,7 @@
     <string name="event_program">Программа мероприятия</string>
     <string name="information">Информация</string>
     <string name="how_to_go">Как добраться</string>
+    <string name="go_direction">Проложить маршрут</string>
     <string name="timetable">Расписание</string>
     <string name="scheme_of_building">Схема комплекса</string>
     <string name="search_input_activity_hint">Название, описание или спикер</string>

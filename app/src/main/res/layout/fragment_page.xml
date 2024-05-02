@@ -3,78 +3,123 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollContainer"
+    <RelativeLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:fillViewport="true">
+        tools:ignore="MissingPrefix">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/dataContainer"
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top" />
+
+        <TextView
+            android:id="@+id/tv_bottom_sheet_label"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/view"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:letterSpacing="-0.02"
+            tools:text="@string/how_to_go"
+            android:textSize="17sp" />
 
-            <ImageView
-                android:id="@+id/ivLogo"
-                android:layout_width="0dp"
-                android:layout_height="140dp"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:background="@drawable/background_corners"
-                android:scaleType="centerCrop"
-                android:transitionName="logo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"
-                tools:src="@tools:sample/backgrounds/scenic" />
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/btn_background_toolbar"
+            android:padding="10dp"
+            android:src="@drawable/ic_back_black" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTitle"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:textSize="16sp"
-                android:transitionName="organizationLabel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-                tools:text="@tools:sample/lorem" />
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/iv_back"
+            android:layout_alignParentBottom="true"
+            android:fillViewport="true">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvInfo"
-                fontPath="fonts/Roboto-Light.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="16dp"
-                android:textSize="16sp"
-                android:transitionName="organizationLabel"
-                app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-                app:layout_constraintVertical_bias="0.0"
-                app:layout_constraintVertical_chainStyle="packed"
-                tools:text="@tools:sample/lorem/random" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dataContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvInfo" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:background="@drawable/background_corners"
+                    android:scaleType="centerCrop"
+                    android:transitionName="logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitle"
+                    fontPath="fonts/Roboto-Bold.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:textSize="16sp"
+                    android:transitionName="organizationLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+                    tools:text="@tools:sample/lorem" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvInfo"
+                    fontPath="fonts/Roboto-Light.ttf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_horizontal_default"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/margin_horizontal_default"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="16sp"
+                    android:transitionName="organizationLabel"
+                    app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingBottom="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvInfo" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+
+
 </layout>

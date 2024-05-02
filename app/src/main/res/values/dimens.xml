@@ -56,6 +56,9 @@
     <dimen name="margin_start_sub_events_fragment">20dp</dimen>
 
 
+    <dimen name="event_detail_name_text_size_min">18sp</dimen>
+    <dimen name="event_detail_name_text_size">19sp</dimen>
+    <dimen name="event_request_date_text_size">10sp</dimen>
     <dimen name="sub_event_description_text_size">13sp</dimen>
     <dimen name="sub_event_description_show_more_text_size">15sp</dimen>
 
@@ -63,8 +66,8 @@
     <dimen name="swipe_distance_end_margin">40dp</dimen>
 
     <dimen name="event_item_height_new">380dp</dimen>
-    <dimen name="event_image_height_new">310dp</dimen>
-    <dimen name="event_image_shadow_height_new">160dp</dimen>
+    <dimen name="event_image_height_new">400dp</dimen>
+    <dimen name="event_image_shadow_height_new">90dp</dimen>
 
     <dimen name="day_item_start">5dp</dimen>
 

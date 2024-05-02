@@ -1,67 +1,204 @@
 package com.example.ui.event.about.items
 
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
+import android.util.DisplayMetrics
+import android.util.Log
+import android.util.TypedValue
+import android.widget.TextView
+import androidx.core.text.getSpans
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.R
+import com.example.data.models.Event
 import com.example.data.models.EventNew
-import com.example.databinding.ItemEventDetailImageBlockBinding
+import com.example.data.models.EventRegistrationStateModel
+import com.example.databinding.ItemEventDetailMainBinding
 import com.example.extensions.*
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
-import com.example.util.setImage
+import com.example.ui.views.CustomSpannableString
+import com.example.ui.views.dialogs.CancelRegisterEventDialog
+import com.example.ui.views.loading.CustomLoadingButton
+import com.example.util.URLSpanNoUnderline
+import com.example.util.getColor
 import com.example.util.setImagePicasso
 
-class EventDetailImageItem(event: EventNew) :
-    BindableItem<ItemEventDetailImageBlockBinding>(1000L) {
+class EventDetailImageItem(
+    event: EventNew,
+    private val context: Context,
+    private val clickListener: OnActionClickListener,
+    private val onMoreClick: () -> Unit,
+    private val onShowFormResult: () -> Unit
+) : BindableItem<ItemEventDetailMainBinding>(1000L) {
 
+    private var eventData = event
 
-    private val imageColor = ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+    private val imageColor =
+        ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
 
-    private val eventName = event.name
-    private val eventImage = event.image?.uri
-    private val eventDateStart = event.holdingDate?.from
-    private val eventDateEnd = event.holdingDate?.to
-    private val eventRequests = event.requestsApply
-
-    private val eventAddress = event.address?.getShortAddress()
-    private val eventDate = eventDateStart?.formatToDefaultDate() + " - " + eventDateEnd?.formatToDefaultDate()
+    private val eventDate = getEventDate()
+    private val eventDescription = eventData.description?.replace("\n", " ")
     private val requestDate = getEventRequestDate()
 
 
-
-    override fun bind(viewBinding: ItemEventDetailImageBlockBinding, position: Int) {
+    private lateinit var mBinding: ItemEventDetailMainBinding
+    override fun bind(viewBinding: ItemEventDetailMainBinding, position: Int) {
+        mBinding = viewBinding
         viewBinding.apply {
-            tvTitle.text = eventName
-            tvDate.text = eventDate
-            tvRequestsDate.apply {
-                isVisible = !requestDate.isNullOrEmpty()
-                text = requestDate
+            tvEventLocation.apply {
+                isVisible = !eventData.address?.getShortAddress().isNullOrEmpty()
+                text = eventData.address?.getShortAddress()
             }
-            tvLocation.apply {
-                isVisible = !eventAddress.isNullOrEmpty()
-                text = eventAddress
+            tvEventName.apply {
+                setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    if ((eventData.name ?: "").length < 150)
+                        resources.getDimension(R.dimen.event_detail_name_text_size)
+                    else resources.getDimension(R.dimen.event_detail_name_text_size_min)
+                )
+                text = eventData.name
             }
+
+            tvEventDate.apply {
+                isVisible = !eventDate.isNullOrEmpty()
+                text = eventDate
+            }
+
+            tvEventDescription.text = eventDescription
+
             ivLogo.apply {
-                setImagePicasso(url = eventImage, placeholder = imageColor, error = imageColor)
+                setImagePicasso(
+                    url = eventData.image?.uri,
+                    placeholder = imageColor,
+                    error = imageColor
+                )
             }
+            tvShowMore.setOnClickListener {
+                onMoreClick.invoke()
+            }
+            tvCancelRegister.apply {
+                highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+            decorActionButton(eventData, btnEventAction, tvCancelRegister)
+        }
+    }
+
+    private fun decorActionButton(eventNew: EventNew, btnAction: CustomLoadingButton, tvCancel: TextView) {
+        var clickAction: (() -> Unit)? = null
+        var btnText: CharSequence = ""
+        var btnBackground = R.drawable.btn_background_green
+        val userAgreement = eventNew.userAgreement?.uri
+        val state = eventNew.binds?.eventRegistrationState
+        val actions = state?.availableActions ?: arrayListOf("")
+
+        var actionText: CharSequence? = null
+
+        if (eventNew.isStatusActionAvailable() && state != null) {
+            if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
+                btnText = getActionButtonText("register")
+                clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
+
+            } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
+                btnBackground = R.drawable.btn_background_white_ghost
+                btnText = getActionButtonText("withdraw")
+                clickAction = { state.checkStateLevel { clickListener.onActionCancel() } }
+                actionText = getTextShowForm(false, tvCancel)
+
+            } else if (actions.contains("view") && !eventNew.isRegistrationClosed()) {
+                btnText = getActionButtonText("view")
+                btnBackground = R.drawable.btn_background_register_approved
+                actionText = getTextShowForm(true, tvCancel)
+
+            } else if (eventNew.isRegistrationClosed()) {
+                btnText = getActionButtonText("closed")
+                btnBackground = R.drawable.btn_background_register_closed
+
+            } else btnAction.isVisible = false
+        } else if (eventNew.status?.value == Event.Status.CANCELED) {
+            btnText = getActionButtonText("canceled")
+            btnBackground = R.drawable.btn_background_register_closed
+            actionText = getTextShowForm(false, tvCancel)
+
+        } else {
+            if (actions.contains("subscribe")) {
+                if (eventNew.binds?.isUserSubscribed == true){
+                    btnText = getActionButtonText("unsubscribe")
+                    btnBackground = R.drawable.btn_background_white_ghost
+                } else btnText = getActionButtonText("subscribe")
+
+                clickAction = {
+                    state?.checkStateLevel {
+                        clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
+                    }
+                }
+            } else btnAction.isVisible = false
+        }
+
+        tvCancel.apply {
+            text = actionText
+            isVisible = !actionText.isNullOrBlank()
+        }
+        btnAction.apply {
+            showProgressLoading(false)
+            setProgressColor(R.color.main_brown_color_new)
+
+            setButtonText(btnText)
+            setButtonBackground(btnBackground)
+            onClickListener(clickAction)
+            isEnabled = clickAction != null
         }
     }
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventDetailImageItem) return false
-        if (eventName != other.eventName) return false
-        if (eventImage != other.eventImage) return false
-        if (eventDateStart != other.eventDateStart) return false
-        if (eventDateEnd != other.eventDateEnd) return false
-        if (eventRequests != other.eventRequests) return false
-
+        if (eventData != other.eventData) return false
         return true
     }
 
+    override fun bind(
+        viewBinding: ItemEventDetailMainBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
+        else {
+            if (payload is EventNew) {
+                eventData = payload
+                decorActionButton(payload, viewBinding.btnEventAction, viewBinding.tvCancelRegister)
+            }
+        }
+    }
+
+
+    private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
+        if (this?.prohibitions?.profileLevelToLow?.value == false) hasLevel()
+        else clickListener.onShowUpdateState()
+    }
+
+    private fun getEventDate(): String? {
+        val eventDateStart = eventData.holdingDate?.from
+        val eventDateEnd = eventData.holdingDate?.to
+        val startCalendar = eventDateStart?.parseToDate(defaultServerDateFormatter)?.calendar()
+        val endCalendar = eventDateEnd?.parseToDate(defaultServerDateFormatter)?.calendar()
+
+        if (eventDateStart.isNullOrEmpty() || eventDateEnd.isNullOrEmpty()) return null
+        if (startCalendar == null || endCalendar == null) return null
+
+        return if (startCalendar.isSameYear(endCalendar))
+            eventDateStart.formatToDefaultDayMonthDate() + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+        else eventDateStart.formatToDefaultDayMonthYearDate() + " г." + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+
+    }
+
     private fun getEventRequestDate(): String? {
-        val requestsApply = eventRequests ?: return null
+        val requestsApply = eventData.requestsApply ?: return null
         if (!requestsApply.dateFrom.isNullOrEmpty() && !requestsApply.dateLimit.isNullOrEmpty()) {
             val today = System.currentTimeMillis()
             val startReq = defaultServerDateTimeFormatter.parse(requestsApply.dateFrom)?.time ?: 0
@@ -73,22 +210,107 @@ class EventDetailImageItem(event: EventNew) :
                     else -> "До начала приема заявок $day дней"
                 }
             } else {
+//                val limitDate = requestsApply.dateLimit.parseAndFormat(
+//                    defaultServerDateTimeFormatter,
+//                    dateFormatterShortMonthShortYear
+//                )
+//                val limitTime = requestsApply.dateLimit.parseAndFormat(
+//                    defaultServerDateTimeFormatter,
+//                    defaultTimeFormatter
+//                )
+//                return "Заявки принимаются по $limitDate, $limitTime"
+
                 val limitDate = requestsApply.dateLimit.parseAndFormat(
                     defaultServerDateTimeFormatter,
-                    dateFormatterShortMonthShortYear
+                    dateFormatterFullMothNoYear
                 )
-                val limitTime = requestsApply.dateLimit.parseAndFormat(
-                    defaultServerDateTimeFormatter,
-                    defaultTimeFormatter
-                )
-
-                return "Заявки принимаются по $limitDate, $limitTime"
+                return "Заявки принимаются по $limitDate"
             }
         } else return null
     }
 
 
-    override fun getLayout(): Int = R.layout.item_event_detail_image_block
+    private fun getActionButtonText(description: String?): CharSequence {
+        return when (description) {
+            "register" -> {
+                SpannableStringBuilder().apply {
+                    append(CustomSpannableString(context.getString(R.string.event_action_participate)).apply {
+                        setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
+                    })
+                    append("\n")
+                    append(CustomSpannableString(requestDate).apply {
+                        setTextSizeSpan(R.dimen.event_request_date_text_size, context)
+                        setColorSpan(R.color.white_70_alpha_color, context)
+                    })
+                }
+            }
+            "withdraw" -> {
+                CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
+                    setColorSpan(R.color.black, context)
+                }
+            }
+            "view" -> context.getString(R.string.event_status_approved)
+
+            "closed" -> {
+                CustomSpannableString(context.getString(R.string.event_action_closed_request)).apply {
+                    setColorSpan(R.color.event_request_closed_text_color, context)
+                }
+            }
+
+            "canceled" -> {
+                CustomSpannableString(context.getString(R.string.event_status_cancelled)).apply {
+                    setColorSpan(R.color.event_request_closed_text_color, context)
+                }
+            }
+
+            "subscribe" -> context.getString(R.string.event_action_subscribe_request)
+
+            "unsubscribe" -> {
+                CustomSpannableString(context.getString(R.string.event_action_unsubscribe_request)).apply {
+                    setColorSpan(R.color.black, context)
+                }
+            }
+
+            else -> ""
+        }
+    }
+
+    private fun getTextShowForm(withDelimiter: Boolean, textView: TextView): CharSequence? {
+        return SpannableStringBuilder().apply {
+            if (withDelimiter) {
+                append(CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
+                    setClickSpan(textView) { showCancelRegisterDialog() }
+                })
+            }
+            if (eventData.isFormEnabled() && eventData.isHasFormResult()){
+                if (withDelimiter) append(" ∙ ")
+
+                append(CustomSpannableString(context.getString(R.string.my_event_form)).apply {
+                    setClickSpan(textView) { onShowFormResult.invoke() }
+                })
+            }
+        }
+    }
+
+    private fun showCancelRegisterDialog() {
+        CancelRegisterEventDialog(context)
+            .setCancelRegisterCallback { clickListener.onActionCancel() }
+            .show()
+    }
+
+    fun getActionButton(): CustomLoadingButton? {
+        if (this::mBinding.isInitialized) return mBinding.btnEventAction
+        else return null
+    }
 
 
+    interface OnActionClickListener {
+        fun onActionRegister(url: String?)
+        fun onActionCancel()
+        fun onShowUpdateState()
+        fun onSubscribeEvent(subscribe: Boolean)
+    }
+
+
+    override fun getLayout(): Int = R.layout.item_event_detail_main
 }

@@ -101,14 +101,9 @@ class EventRegistrationPresenter
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
             .doOnSuccess { e ->
                 approvingMode = e.state?.registration?.approvingMode
-                val form =
-                    e.binds?.form?.firstOrNull { o -> o.type == EventFormModel.Type.PARTICIPATION }
-                val formFields =
-                    mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED })
-                val formResultFields = mapFieldsResult(
-                    e.binds?.userFormResult?.firstOrNull()?.result?.fields,
-                    formFields
-                )
+                val form = e.binds?.form?.firstOrNull { o -> o.type == EventFormModel.Type.PARTICIPATION }
+                val formFields = mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED })
+                val formResultFields = mapFieldsResult(e.binds?.userFormResult?.firstOrNull()?.result?.fields, formFields)
                 eventData = EventRegisterData.init(e).apply {
                     addFields(createFieldsData(formFields, formResultFields))
                 }
@@ -183,6 +178,7 @@ class EventRegistrationPresenter
             when (field.type) {
                 EventRegisterField.Type.STRING,
                 EventRegisterField.Type.TEXT_AREA,
+                EventRegisterField.Type.GROUP,
                 EventRegisterField.Type.NUMBER ->
                     EventRegisterFieldData.String(
                         field,

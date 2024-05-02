@@ -3,22 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
+        android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="MissingPrefix">
+
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bottom_sheet_top" />
+
+        <TextView
+            android:id="@+id/tv_bottom_sheet_label"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/view"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:letterSpacing="-0.02"
+            android:text="@string/how_to_go"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/btn_background_toolbar"
+            android:padding="10dp"
+            android:src="@drawable/ic_back_black" />
 
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_below="@+id/iv_back"
+            android:layout_alignParentBottom="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="@dimen/margin_horizontal_default"
                 android:orientation="vertical"
                 android:paddingBottom="20dp">
@@ -105,6 +142,6 @@
         </androidx.core.widget.NestedScrollView>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </layout>
