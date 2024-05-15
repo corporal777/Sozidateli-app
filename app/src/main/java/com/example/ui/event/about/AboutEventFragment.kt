@@ -203,6 +203,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         eventPartnersSection.update(
             eventData.partners.map {
                 EventPartnerItem(
+                    requireContext(),
                     it.id,
                     it.name,
                     it.description,

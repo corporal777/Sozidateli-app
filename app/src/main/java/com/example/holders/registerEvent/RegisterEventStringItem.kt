@@ -33,6 +33,10 @@ class RegisterEventStringItem(
                         inputType =
                             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                     }
+                    EventRegisterField.Type.GROUP -> {
+                        inputType =
+                            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    }
                     EventRegisterField.Type.TEXT_AREA -> {
                         inputType =
                             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
