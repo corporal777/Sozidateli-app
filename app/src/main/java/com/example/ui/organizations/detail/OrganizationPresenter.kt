@@ -162,6 +162,11 @@ class OrganizationPresenter
         else viewState.showUser(user.toString())
     }
 
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
+    }
+
     override fun onShowMoreEventsClick() = viewState.showAllEvents(organizationId)
     override fun onShowMoreUsersClick() = viewState.showAllUsers(organizationId)
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)

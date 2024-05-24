@@ -29,6 +29,7 @@ import com.example.extensions.onClickListener
 
 class EventDetailActionItem(
     eventNew: EventNew,
+    private val isTemporary: Boolean,
     private val context: Context,
     private val clickListener: OnActionClickListener,
     private val onShowFormResult: () -> Unit
@@ -95,7 +96,11 @@ class EventDetailActionItem(
         }
     }
 
-    private fun decorActionButton(eventNew: EventNew, btnAction: CustomLoadingButton, tvCancel: TextView) {
+    private fun decorActionButton(
+        eventNew: EventNew,
+        btnAction: CustomLoadingButton,
+        tvCancel: TextView
+    ) {
         var clickAction: (() -> Unit)? = null
         var btnText = R.string.event_action_participate
         var btnTextColor = R.color.black
@@ -109,8 +114,10 @@ class EventDetailActionItem(
         if (eventNew.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_participate
-                clickAction =
-                    { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
+                clickAction = {
+                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
+                    else state.checkStateLevel { clickListener.onActionRegister(userAgreement) }
+                }
 
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnText = R.string.event_action_cancel_request
@@ -257,6 +264,7 @@ class EventDetailActionItem(
         fun onActionCancel()
         fun onShowUpdateState()
         fun onSubscribeEvent(subscribe: Boolean)
+        fun onShowNeedAuth(eventId: String)
     }
 
     override fun getLayout(): Int = R.layout.item_event_detail_action_block

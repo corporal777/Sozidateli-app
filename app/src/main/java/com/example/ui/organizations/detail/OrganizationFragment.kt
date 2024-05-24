@@ -77,6 +77,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
+        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
     }
 
     private val mainDataSection by lazy {
@@ -154,14 +155,23 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
     override fun setEventsData(events: List<EventNew>) {
-        eventsDataSection.update(events.map { EventItemNew(it, onEventClickListener) })
+        eventsDataSection.update(events.map {
+            EventItemNew(
+                it,
+                presenter.isTemporaryUser(),
+                onEventClickListener
+            )
+        })
     }
 
 
     override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
         membersDataSection.apply {
             updateItems(
-                EventsTitleItem(getString(R.string.organization_peoples).format(totalSize), pBottom = 10),
+                EventsTitleItem(
+                    getString(R.string.organization_peoples).format(totalSize),
+                    pBottom = 10
+                ),
                 members.map { member ->
                     OrganizationMemberItem(
                         member.user,
@@ -236,6 +246,10 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
         )
     }
 
+    override fun showAuthorization() {
+        findNavController().navigate(R.id.authorization_fragment)
+    }
+
     override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
         EventAgreementBottomDialog(requireContext(), url)
             .setSelectCallback { presenter.onAcceptRegistrationAgreement(event, formEnabled) }
@@ -244,7 +258,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
     override fun showEventRegistrationSuccessDialog() {
         EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback {  }
+            .setSelectCallback { }
             .show()
     }
 

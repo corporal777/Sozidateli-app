@@ -40,6 +40,9 @@ interface AboutEventContract {
         fun showEventFormResult(formResult: UserFormResultModel)
 
         @OneExecution
+        fun showAuthorization()
+
+        @OneExecution
         fun showMap(mapInfo: MapInfo?)
 
         @Skip
@@ -104,5 +107,6 @@ interface AboutEventContract {
         fun onAddEventToCalendarClick()
 
         fun onShowFormResult()
+        fun onShowAuthorization(id : String)
     }
 }

@@ -15,6 +15,9 @@ import retrofit2.http.*
 @JvmSuppressWildcards
 interface Api {
 
+    @GET("v1/user/temp/login")
+    fun getTemporaryToken(): Single<TempAuthResponse>
+
     @POST("v1/user/login")
     fun authEmailOrPhone(@Body body: AuthBody): Single<AuthResponse>
 

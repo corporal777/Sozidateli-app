@@ -128,6 +128,10 @@ class SearchEventPresenter
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
+    }
 
     override fun onShowFilterRequest() {
         val showFilter = {

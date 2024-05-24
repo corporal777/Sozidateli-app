@@ -115,37 +115,30 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 unsubscribeChat()
-                if (token.value == null) {
-                    isAuthRequired = true
+                if (token.value == null)
                     viewState.apply {
+                        isAuthRequired = true
                         hideSplashScreen()
-                        showLogin()
+                        showRecommendations()
                         checkIntent()
                     }
-                } else loadUser()
+                else loadUser()
             }
     }
 
     private fun loadUser() {
         compositeDisposable += userRepository.getUserShortData()
             .flatMapSingle { userRepository.checkUserProfileSingle() }
-            .flatMapCompletable { userRepository.getUserProfileAdditionalData() }
-            .doOnComplete { connectToSocket() }
-            .andThen(Completable.defer { checkShowGreetings() })
+            .doOnSuccess { connectToSocket() }
+            .flatMapCompletable { Completable.defer { checkShowGreetings() } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
                     it.printStackTrace()
                     isAuthRequired = true
-                    viewState.apply {
-                        hideSplashScreen()
-                        hideAllLoadingDialogs()
-                        showLogin()
-                        checkIntent()
-                    }
                 },
                 onComplete = {
-                    showNextInApp()
+                    getAdditionalDataAndInAppList()
                     viewState.apply {
                         hideSplashScreen()
                         hideAllLoadingDialogs()
@@ -287,15 +280,9 @@ class MainPresenter
     }
 
 
-    private fun showNextInApp() {
-        compositeDisposable += userRepository.getInAppList(
-            mapOf(
-                NotificationModel.NOTIFICATION_LIMIT to 50,
-                NotificationModel.NOTIFICATION_USER to appData.getId(),
-                NotificationModel.NOTIFICATION_IS_IN_APP to true,
-                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-            )
-        )
+    private fun getAdditionalDataAndInAppList() {
+        compositeDisposable += userRepository.getUserProfileAdditionalData()
+            .andThen(userRepository.getInAppList())
             .map { it.map { n -> Notification.fromRemoteNotification(n) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -365,7 +352,7 @@ class MainPresenter
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else if (code.isNullOrBlank()) return
         else viewState.apply {
-            showAuthWebsiteFragment(code, socketId?:"")
+            showAuthWebsiteFragment(code, socketId ?: "")
             clearIntentData()
         }
     }

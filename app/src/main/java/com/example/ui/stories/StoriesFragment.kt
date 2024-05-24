@@ -8,11 +8,14 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.example.R
 import com.example.databinding.FragmentStoriesBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.main.MainActivity
 import com.example.ui.views.stories.StoriesProgressView
 import com.example.util.getColor
 import com.example.util.getDrawable
@@ -54,6 +57,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
                 mBinding.stories.pause()
                 return@OnTouchListener false
             }
+
             MotionEvent.ACTION_UP -> {
                 val now = System.currentTimeMillis()
                 mBinding.stories.resume()
@@ -107,7 +111,14 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
                 positionChangeListener = { _, _, dragRangeRate ->
                     if (dragRangeRate <= 0f) mBinding.stories.resume()
                     else mBinding.stories.pause()
-                    setBackgroundColor(Color.argb((255 * (1.0F - dragRangeRate)).roundToInt(), 0, 0, 0))
+                    setBackgroundColor(
+                        Color.argb(
+                            (255 * (1.0F - dragRangeRate)).roundToInt(),
+                            0,
+                            0,
+                            0
+                        )
+                    )
                 }
                 dismissListener = { presenter.onStoriesComplete() }
             }
@@ -124,14 +135,17 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
                 imageBackground = R.drawable.st_1_bg
                 imageForeground = R.drawable.st_1_fg
             }
+
             1 -> {
                 imageBackground = R.drawable.st_2_bg
                 imageForeground = R.drawable.st_2_fg
             }
+
             2 -> {
                 imageBackground = R.drawable.st_3_bg
                 imageForeground = R.drawable.st_3_fg
             }
+
             3 -> {
                 imageBackground = R.drawable.st_4_bg
                 imageForeground = R.drawable.st_4_fg
@@ -154,13 +168,15 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
         mBinding.ivForegroundImage.apply { setImageDrawable(getDrawable(imageForeground)) }
     }
 
-    override fun showAuthorization() = findNavController().navigate(
-        R.id.authorization_fragment, null, NavOptions.Builder()
-            .setPopUpTo(R.id.main_navigation, true)
-            .build()
-    )
+    override fun hideStories() {
+        checkIfFragmentAttached {
+            (requireActivity() as MainActivity).presenter.onStoriesComplete()
+        }
+    }
 
     override fun layout() = R.layout.fragment_stories
-    override fun getFragmentBackgroundDrawable() = mBinding.root.getDrawable(R.drawable.background_auth_very_small)
+    override fun getFragmentBackgroundDrawable() =
+        mBinding.root.getDrawable(R.drawable.background_auth_very_small)
+
     override val isLightStatus = false
 }

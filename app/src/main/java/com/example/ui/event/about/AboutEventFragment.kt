@@ -124,12 +124,18 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent(subscribe: Boolean) = presenter.onSubscribeEventClick(subscribe)
+        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
+            presenter.onSubEventClick(subEvent)
+
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddToScheduleClick(subEvent)
+
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddToScheduleClick(subEvent)
     }
 
     private val customLayoutManager by lazy { LinearLayoutManagerAccurateOffset(requireContext()) }
@@ -162,9 +168,12 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
         eventMainSection.updateItems(
             EventDetailImageItem(eventData.event),
-            EventDetailActionItem(eventData.event, requireContext(), onActionClickListener) {
-                presenter.onShowFormResult()
-            }
+            EventDetailActionItem(
+                eventData.event,
+                presenter.isTemporaryUser(),
+                requireContext(),
+                onActionClickListener
+            ) { presenter.onShowFormResult() }
         )
         eventOrganizationSection.updateGroup(
             EventDetailInfoBlock(
@@ -177,7 +186,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
                 { presenter.onPageClick(it) }
             )
         )
-        if (!eventData.speakers.isNullOrEmpty()){
+        if (!eventData.speakers.isNullOrEmpty()) {
             eventSpeakersSection.updateItem(
                 SpeakersHorizontalListItem(
                     eventData.speakers,
@@ -242,7 +251,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun showEventRegistrationSuccessDialog() {
         EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback {  }
+            .setSelectCallback { }
             .show()
     }
 
@@ -308,6 +317,10 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         )
     }
 
+    override fun showAuthorization() {
+        findNavController().navigate(R.id.authorization_fragment)
+    }
+
     override fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String) {
         MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
             if (withResult) {
@@ -343,7 +356,8 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun addEventToCalendar(eventData: EventNew?) {
         if (eventData == null) return
-        openDeviceCalendarApp(requireContext(),
+        openDeviceCalendarApp(
+            requireContext(),
             eventData.holdingDate?.from,
             eventData.holdingDate?.to,
             eventData.name,

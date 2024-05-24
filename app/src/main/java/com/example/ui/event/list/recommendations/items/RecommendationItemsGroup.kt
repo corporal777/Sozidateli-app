@@ -11,6 +11,7 @@ import com.xwray.groupie.Section
 
 class RecommendationItemsGroup(
     val events: List<EventNew?>,
+    val isTemp : Boolean,
     val isNeedUpdateApp: Boolean?,
     val eventClickListener: EventItemNew.OnEventClickListener,
 ) : NestedGroup() {
@@ -33,10 +34,7 @@ class RecommendationItemsGroup(
         eventsSection.apply {
             update(events.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-                else EventItemNew(
-                    it,
-                    eventClickListener,
-                )
+                else EventItemNew(it, isTemp, eventClickListener)
             })
         }
     }

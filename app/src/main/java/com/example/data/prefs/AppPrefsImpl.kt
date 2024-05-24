@@ -47,6 +47,13 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
             prefs.edit().putString(USER_TOKEN, value).commit()
         }
 
+    override var temporaryToken: String?
+        get() = prefs.getString(TEMP_TOKEN, null)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putString(TEMP_TOKEN, value).commit()
+        }
+
     override var uniqueDeviceId: String?
         get() = prefs.getString(USER_DEVICE_ID, null)
         @SuppressLint("ApplySharedPref")
@@ -73,6 +80,7 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
     companion object {
         const val SELECTED_EVENT = "selected_event"
         const val USER_TOKEN = "user_token"
+        const val TEMP_TOKEN = "temp_token"
         const val USER_DEVICE_ID = "user_device"
         const val USER_ATTEMPTS = "user_attempts"
         const val FCM_TOKEN_SENT = "fcm_token_sent"

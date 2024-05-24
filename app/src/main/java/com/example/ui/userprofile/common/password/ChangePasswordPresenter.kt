@@ -23,6 +23,7 @@ import javax.inject.Inject
 class ChangePasswordPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     private val appData: AppData,
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
@@ -75,6 +76,7 @@ class ChangePasswordPresenter
 
     override fun logoutFromAccount() {
         compositeDisposable += userRepository.logout(appData.getId())
+            .andThen(authRepository.getTemporaryToken())
             .withDelay(300)
             .doOnComplete {
                 appData.isSubscribedToPush = false

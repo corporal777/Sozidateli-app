@@ -46,7 +46,6 @@ import com.example.ui.profile.ProfileFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.stories.StoriesFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.ApiErrorDialog
@@ -108,21 +107,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
         onFragmentStopped = { },
-        onFragmentDestroyed = { f -> if (f is StoriesFragment) presenter.onStoriesComplete() },
+        onFragmentDestroyed = { },
         onFragmentStarted = { f -> setupBackgroundTransparency(f) },
         onBottomSheetViewCreated = { },
         onFragmentViewCreated = { f ->
-            when (f) {
-                is RecommendationsFragment,
-                is MyEventsFragment,
-                is ChatListTabsFragment,
-                is ProfileFragment,
-                is MyScheduleEventsFragment,
-                is NotificationsListFragment -> showNavBar()
-                else -> hideNavBar()
-            }
-
             presenter.onOpenCheckConnectionDestination(f is DoNotCheckConnectionFragment)
+
+            setupNavBar(f)
             setupNavBarItems(f)
             setupBackgroundImageFragment(f)
 
@@ -142,16 +133,16 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     )
 
     private val backClick = onBackPressedCallback(true) {
-        val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull() ?: return@onBackPressedCallback
+        val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
+            ?: return@onBackPressedCallback
         when (fragment) {
             is ProfileFragment,
             is MyEventsFragment,
             is NotificationsListFragment,
-            is ChatListTabsFragment -> findNavController().popBackStack(R.id.recommendations_fragment, false)
-            is RecommendationsFragment,
-            is AuthorizationFragment -> {
-                if (isPreviousDestination(R.id.change_account_fragment)) navigateUp() else finish()
-            }
+            is ChatListTabsFragment ->
+                findNavController().popBackStack(R.id.recommendations_fragment, false)
+
+            is RecommendationsFragment -> finish()
             else -> navigateUp()
         }
     }
@@ -277,10 +268,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                         }
                     }
                 }
+
                 extras.containsKey(FIELD_EVENT) -> {
                     val eventId = extras.getString(FIELD_EVENT)
                     if (eventId != null) presenter.onHandleEvent(eventId)
                 }
+
                 extras.containsKey(FIELD_NOTIFICATION) -> {
                     extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
                         presenter.onHandleNotification(it)
@@ -369,10 +362,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showLogin() {
         if (!isCurrentDestination(R.id.authorization_fragment)) {
-            findNavController().navigate(
-                R.id.authorization_fragment, null,
-                navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
-            )
+            findNavController().navigate(R.id.authorization_fragment)
         }
     }
 
@@ -385,7 +375,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setFinishRegister(false)
     }
 
-    fun setFinishRegister(isFinish : Boolean) {
+    fun setFinishRegister(isFinish: Boolean) {
         presenter.isFinishRegister = isFinish
     }
 
@@ -475,7 +465,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
-    override fun navigateUp() { onSupportNavigateUp() }
+    override fun navigateUp() {
+        onSupportNavigateUp()
+    }
 
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
@@ -509,12 +501,14 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     ClickType.INFO -> {
                         findNavController().navigate(R.id.userStateFragment)
                     }
+
                     ClickType.BASE -> {
                         findNavController().navigate(
                             R.id.mainInfoFragment,
                             bundleOf("type" to UserState.BASE, "screen" to 3)
                         )
                     }
+
                     ClickType.MAX -> {
                         if (presenter.getHasBase()) {
                             when (Utils.maxStateScreen(presenter.getUserData())) {
@@ -523,21 +517,25 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                                         R.id.maxStatusContactsFragment,
                                         bundleOf("screen" to 1)
                                     )
+
                                 MaxStateScreenType.INTERESTS ->
                                     findNavController().navigate(
                                         R.id.maxStatusInterestsFragment,
                                         bundleOf("screen" to 1)
                                     )
+
                                 MaxStateScreenType.EDUCATION ->
                                     findNavController().navigate(
                                         R.id.maxStatusEducationFragment,
                                         bundleOf("screen" to 1)
                                     )
+
                                 MaxStateScreenType.WORK ->
                                     findNavController().navigate(
                                         R.id.maxStatusWorkFragment,
                                         bundleOf("screen" to 1)
                                     )
+
                                 else -> {}
                             }
                         } else {
@@ -576,26 +574,47 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     }
                     true
                 }
+
                 R.id.my_events -> {
                     if (!findNavController().popBackStack(R.id.my_events_fragment_new, false)) {
                         findNavController().navigate(R.id.my_events_fragment_new)
                     }
                     true
                 }
+
                 R.id.chats -> {
                     findNavController().navigate(R.id.chat_list_tabs_fragment)
                     true
                 }
+
                 R.id.notification -> {
                     findNavController().navigate(R.id.notifications_list_fragment)
                     true
                 }
+
                 R.id.profile -> {
                     findNavController().navigate(R.id.profile_fragment)
                     true
                 }
+
                 else -> false
             }
+        }
+    }
+
+    private fun setupNavBar(f: Fragment) {
+        when (f) {
+            is RecommendationsFragment,
+            is MyEventsFragment,
+            is ChatListTabsFragment,
+            is ProfileFragment,
+            is MyScheduleEventsFragment,
+            is NotificationsListFragment -> {
+                if (presenter.isTemporaryUser()) hideNavBar()
+                else showNavBar()
+            }
+
+            else -> hideNavBar()
         }
     }
 
@@ -604,15 +623,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             is RecommendationsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.main).isChecked = true
             }
+
             is ProfileFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.profile).isChecked = true
             }
+
             is ChatListTabsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.chats).isChecked = true
             }
+
             is NotificationsListFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.notification).isChecked = true
             }
+
             is MyEventsFragment -> {
                 mBinding.mainNavBar.menu.findItem(R.id.my_events).isChecked = true
             }

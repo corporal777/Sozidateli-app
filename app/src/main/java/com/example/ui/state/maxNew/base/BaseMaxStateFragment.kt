@@ -93,7 +93,7 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     override fun showMaxStateDone(screen: Int) {
-        MessageDialogWithTextButton(requireContext(), getString(R.string.you_got_max_state))
+        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
             .setSelectCallback {
                 when (screen) {
                     1 -> findNavController().popBackStack(R.id.profile_fragment, false)

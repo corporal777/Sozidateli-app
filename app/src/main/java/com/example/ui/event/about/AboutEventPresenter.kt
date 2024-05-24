@@ -225,6 +225,11 @@ class AboutEventPresenter
         viewState.showEventFormResult(formResult)
     }
 
+    override fun onShowAuthorization(id: String) {
+        appData.savedEventId = id
+        viewState.showAuthorization()
+    }
+
     override fun changeAppBarBackgroundColorValue(value: Int) {
         mDy = value
         viewState.updateAppBarBackgroundColorValue(mDy)

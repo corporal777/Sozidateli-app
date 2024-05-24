@@ -1,8 +1,11 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.R
 import com.example.data.models.EventNew
@@ -22,6 +25,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.offsetChangedListener
+import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -62,10 +66,15 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
+            btnLogin.setOnClickListener { showAuthorization() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
                 updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
         }
+    }
+
+    override fun setAuthorizationButton(isTemporary: Boolean) {
+        mBinding.btnLogin.isVisible = isTemporary
     }
 
     override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
@@ -74,6 +83,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
             dataGroup.updateGroup(
                 RecommendationItemsGroup(
                     events,
+                    presenter.isTemporaryUser(),
                     isNeedUpdateApp,
                     onEventClickListener
                 )
@@ -112,6 +122,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
         val args = ProfileFragmentArgs.Builder(true).build().toBundle()
         findNavController().navigate(R.id.profile_fragment, args)
     }
+
 
     override fun onExpandedState() {
         mBinding.apply {

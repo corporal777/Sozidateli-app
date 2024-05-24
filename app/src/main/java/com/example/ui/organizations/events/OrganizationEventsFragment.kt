@@ -63,10 +63,7 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
     override fun setData(events: List<EventNew?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(
-                it,
-                onEventClickListener,
-            )
+            else EventItemNew(it, presenter.isTemporaryUser(), onEventClickListener)
         })
 
         mBinding.swipeToRefresh.isRefreshing = false

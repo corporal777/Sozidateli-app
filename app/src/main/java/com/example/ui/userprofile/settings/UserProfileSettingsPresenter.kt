@@ -104,6 +104,7 @@ class UserProfileSettingsPresenter @Inject constructor(
 
     override fun onDeleteProfileConfirm() {
         compositeDisposable += userRepository.deleteProfile(appData.getId())
+            .andThen(authRepository.getTemporaryToken())
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
