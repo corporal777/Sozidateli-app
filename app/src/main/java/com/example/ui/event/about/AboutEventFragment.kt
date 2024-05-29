@@ -123,8 +123,12 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         override fun onActionRegister(url: String?) = presenter.onActionRegister(url)
         override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onSubscribeEvent(subscribe: Boolean) = presenter.onSubscribeEventClick(subscribe)
-        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
+        override fun onSubscribeEvent(subscribe: Boolean) =
+            presenter.onSubscribeEventClick(subscribe)
+
+        override fun onShowNeedAuth(eventId: String) {
+            presenter.onShowAuthorization(eventId)
+        }
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
@@ -332,10 +336,10 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun setEventFavoriteButton(isSubscribed: Boolean) {
         mBinding.toolbar.ivAddToFavorite.apply {
-            setImageResource(
-                if (!isSubscribed) R.drawable.ic_star else R.drawable.ic_star_filled
-            )
-            setOnClickListener { presenter.onAddEventToFavoriteClick() }
+            setImageResource(if (!isSubscribed) R.drawable.ic_star else R.drawable.ic_star_filled)
+            setOnClickListener {
+                presenter.onAddEventToFavoriteClick()
+            }
         }
     }
 

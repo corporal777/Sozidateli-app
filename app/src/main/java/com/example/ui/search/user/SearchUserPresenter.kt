@@ -1,8 +1,6 @@
 package com.example.ui.search.user
 
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_CITY
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_REGION
@@ -71,28 +69,21 @@ class SearchUserPresenter
 
     override fun onUserActionCLick(user: UserDetail) {
         val isSubscribed = user.binds?.userFavorite != null
-        if (isSubscribed) {
-            compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    user.binds?.userFavorite = null
-                    viewState.updateUser(user)
-                    viewState.showEventRemovedFromFavoriteDialog()
-                }
-        } else {
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)
-                )
-            )
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    viewState.updateUser(user)
-                    viewState.showEventAddedToFavoriteDialog()
-                }
+        compositeDisposable += Completable.defer {
+            if (isSubscribed)
+                eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
+                    .doOnComplete { user.binds?.userFavorite = null }
+            else eventRepository.addUserToFavorites(user.id.toString())
+                .doOnSuccess { user.binds?.userFavorite = EventUserFavorite(it.id, it.user) }
+                .ignoreElement()
         }
+            .performOnBackgroundOutOnMain()
+            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple {
+                viewState.updateUser(user)
+                if (user.binds?.userFavorite == null) viewState.showRemovedFromFavoriteDialog()
+                else viewState.showAddedToFavoriteDialog()
+            }
     }
 
     override fun onShowFilterRequest() {

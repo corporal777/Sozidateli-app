@@ -48,7 +48,7 @@ class EventActivityItem(
 
     override fun bind(viewBinding: ItemLectureBinding, position: Int) {
         viewBinding.apply {
-            cardActivity.setOnClickListener { onClickListener?.onSubEventClick(eventId, subEvent) }
+            clActivity.setOnClickListener { onClickListener?.onSubEventClick(eventId, subEvent) }
             tvLectureTime.text = date
             tvLectureName.text = subEvent.title
 
@@ -64,6 +64,9 @@ class EventActivityItem(
                 isVisible = !subEvent.description.isNullOrEmpty()
                 isTextCollapsed = isCollapsed
                 originalText = fullMarkdownText(context, subEvent.description)
+                onTextExpandableCallback = {
+                    isMessageLong = it
+                }
             }
             tvReadMore.apply {
                 isVisible = isMessageLong
@@ -130,7 +133,6 @@ class EventActivityItem(
         if (message.isNullOrBlank()) return null
         else {
             val spanned = markWon(context).toMarkdown(message)
-            isMessageLong = spanned.length > 240
             return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {

@@ -18,8 +18,7 @@ class EventDetailOrganizationItem(
 ) : BindableItem<ItemEventDetailOrganizationBlockBinding>(organization?.id ?: 0) {
 
 
-    private val organizationName = organization?.legalInformation?.name?.short
-        ?: organization?.legalInformation?.name?.full
+    private val organizationName = organization?.getOrganizationName()
 
     private var isFavorite: Boolean = organization?.binds?.userFavorite != null
     private val organizationLogo = organization?.logo?.uri
@@ -68,6 +67,14 @@ class EventDetailOrganizationItem(
         }
     }
 
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+        if (other !is EventDetailOrganizationItem) return false
+        if (organizationName != other.organizationName) return false
+        if (isFavorite != other.isFavorite) return false
+        if (organizationLogo != other.organizationLogo) return false
+        if (backgroundColor != other.backgroundColor) return false
+        return true
+    }
 
     private fun getAction(): UserSubscribeButton.Action {
         return if (isFavorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE

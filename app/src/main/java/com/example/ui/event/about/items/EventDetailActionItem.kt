@@ -146,7 +146,8 @@ class EventDetailActionItem(
                     if (eventNew.binds?.isUserSubscribed == true) R.string.event_action_unsubscribe_request
                     else R.string.event_action_subscribe_request
                 clickAction = {
-                    state?.checkStateLevel {
+                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
+                    else state?.checkStateLevel {
                         clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
                     }
                 }

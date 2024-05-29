@@ -2,8 +2,6 @@ package com.example.ui.event.speakers.member
 
 import com.example.data.AppData
 import com.example.data.UserEventData
-import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.CreateChatBody
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
@@ -95,9 +93,7 @@ class UserSpeakerPresenter
 
     override fun onAddSpeakerToFavoriteClick() {
         if (user.binds?.userFavorite == null)
-            compositeDisposable += eventRepository.addToFavorites(
-                AddToFavoriteModel.toBody(appData.getId(), FAVORITE_SPEAKER, user.id)
-            )
+            compositeDisposable += eventRepository.addUserToFavorites(user.id.toString())
                 .performOnBackgroundOutOnMain()
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
@@ -105,10 +101,10 @@ class UserSpeakerPresenter
                         user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                         viewState.apply {
                             updateSpeaker(user)
-                            showEventAddedToFavoriteDialog()
+                            showAddedToFavoriteDialog()
                         }
                     })
-        else compositeDisposable += eventRepository.deleteFromFavorite(user.binds?.userFavorite?.id.toString())
+        else compositeDisposable += eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { onReceiveError(it) },
@@ -116,7 +112,7 @@ class UserSpeakerPresenter
                     user.binds?.userFavorite = null
                     viewState.apply {
                         updateSpeaker(user)
-                        showEventRemovedFromFavoriteDialog()
+                        showRemovedFromFavoriteDialog()
                     }
                 })
     }

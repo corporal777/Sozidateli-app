@@ -475,7 +475,7 @@ class UserRepositoryImp
 
 
     override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
-        return api.searchUsers(map)
+        return api.searchGlobal(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
         //.map { it.users }
     }

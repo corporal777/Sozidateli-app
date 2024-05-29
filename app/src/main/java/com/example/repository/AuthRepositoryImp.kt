@@ -23,6 +23,7 @@ class AuthRepositoryImp
     override fun getTemporaryToken(): Completable {
         return api.getTemporaryToken().doOnSuccess {
             appData.tempToken = it.token
+            appData.tempUserId = it.id ?: -1
         }.ignoreElement()
     }
 

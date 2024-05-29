@@ -1,53 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <!--    <com.example.ui.views.expandableTextView.CustomExpandableTextView-->
-    <!--        android:id="@+id/tvText"-->
-    <!--        fontPath="fonts/sf_pro_display_regular.OTF"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:includeFontPadding="false"-->
-    <!--        android:textColor="@color/black"-->
-    <!--        android:textSize="14sp"-->
-    <!--        android:maxLines="5"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля" />-->
 
-    <com.example.ui.views.expandableTextView.CustomExpandableTextView
-        android:id="@+id/tvText"
-        fontPath="fonts/sf_pro_display_regular.OTF"
+    <com.example.ui.views.dialogs.LayoutTextView
+        android:id="@+id/tvMessage"
+        fontPath="fonts/sf_pro_display.OTF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:includeFontPadding="false"
-        android:maxLines="55"
+        android:letterSpacing="-0.01"
+        android:maxLines="7"
         android:textColor="@color/black"
         android:textSize="14sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:limitedMaxLines="5"
-        tools:text="Вторая половина ХХ в. вошла в историю текстильного искусства как «вторая весна шпалеры» или эпоха «пластического взрыва». В этот период весны были созданы произведения эпоха объемно-пространственного текстиля" />
+        tools:text="@string/about_additional_info_text" />
 
 
     <TextView
-        android:id="@+id/tvShowMore"
-        fontPath="fonts/sf_pro_text_bold.ttf"
+        android:id="@+id/tvReadMore"
+        style="@style/ClickableTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_background_text"
-        android:letterSpacing="-0.02"
         android:paddingVertical="5dp"
-        android:text="@string/notifications_read_more"
-        android:textColor="#C3996C"
-        android:textSize="15sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvText"
-        tools:ignore="MissingPrefix" />
+        android:text="@string/notifications_read_more" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

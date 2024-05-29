@@ -11,7 +11,9 @@ import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.getSpans
@@ -22,11 +24,12 @@ import com.example.R
 import com.example.data.models.NewEventFormat
 import com.example.databinding.LayoutCustomExpandableTextviewBinding
 import com.example.extensions.markWon
+import com.example.ui.views.dialogs.LayoutTextView
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.util.URLSpanNoUnderline
 import io.github.inflationx.calligraphy3.CalligraphyUtils
 
-class ExpandableTextViewLayout : ConstraintLayout {
+class ExpandableTextViewLayout : LinearLayout {
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -37,8 +40,7 @@ class ExpandableTextViewLayout : ConstraintLayout {
     )
 
     private var isCollapsed = true
-    private var collapsedHeight = 0
-    private var expandedHeight = 0
+    private var isMoreVisible = true
     private var originalText: CharSequence? = null
 
     var onCollapsed: (collapsed: Boolean) -> Unit = {}
@@ -47,54 +49,45 @@ class ExpandableTextViewLayout : ConstraintLayout {
         LayoutCustomExpandableTextviewBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
-        layoutView.tvShowMore.apply {
-            text = if (isCollapsed) context.getString(R.string.notifications_read_more)
-            else context.getString(R.string.hide_all_sessions_history)
-
+        layoutView.tvReadMore.apply {
+            setCollapsed(isCollapsed)
             setOnClickListener {
-                layoutView.tvText.toggle()
                 isCollapsed = !isCollapsed
-                layoutView.tvText.isTextCollapsed = isCollapsed
-            }
-        }
-        layoutView.tvText.apply {
-
-        }
-    }
-
-
-    fun setText(text: String?) {
-        layoutView.tvText.apply {
-            if (text.isNullOrEmpty()) isVisible = false
-            else {
-                originalText = text
-                limitedMaxLines = 5
+                changeTextReadMore(isCollapsed)
             }
         }
     }
 
-    fun setTextFont(font: String) {
-        CalligraphyUtils.applyFontToTextView(context, layoutView.tvText, font)
+
+    fun setText(message: String?) {
+        if (message.isNullOrEmpty()) return
+        originalText = getMarkdownText(context, message)
+        layoutView.tvMessage.apply {
+            text = originalText
+            setOnLayoutListener {
+                isMoreVisible = it.length() < (originalText?.length ?: 0)
+            }
+            layoutView.tvReadMore.isVisible = isMoreVisible
+
+        }
     }
 
-    fun setTextSize(res: Int) {
-        layoutView.tvText.setTextSize(
-            TypedValue.COMPLEX_UNIT_PX,
-            context.resources.getDimensionPixelSize(res).toFloat()
-        )
-
-    }
 
     fun setCollapsed(isCollapsed: Boolean) {
         this.isCollapsed = isCollapsed
-        layoutView.tvText.isTextCollapsed = isCollapsed
-        layoutView.tvShowMore.apply {
-            text = if (isCollapsed) context.getString(R.string.notifications_read_more)
-            else context.getString(R.string.hide_all_sessions_history)
+        layoutView.tvReadMore.apply {
+            changeTextReadMore(isCollapsed)
         }
     }
 
-    fun getTextView() = layoutView.tvText
+    fun getTextView() = layoutView.tvMessage
+
+    private fun View.changeTextReadMore(isExpanded: Boolean) {
+        (this as TextView).apply {
+            if (!isExpanded) text = context.getString(R.string.hide_all_sessions_history)
+            else text = context.getString(R.string.notifications_read_more)
+        }
+    }
 
     fun setCollapsedCallback(block: (collapsed: Boolean) -> Unit): ExpandableTextViewLayout {
         onCollapsed = block
@@ -105,7 +98,7 @@ class ExpandableTextViewLayout : ConstraintLayout {
     private fun getMarkdownText(context: Context, text: String?): SpannableStringBuilder? {
         if (text.isNullOrEmpty()) return null
         else {
-            val spanned = markWon(context).toMarkdown(text ?: "")
+            val spanned = markWon(context).toMarkdown(text)
             return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {

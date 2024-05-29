@@ -16,6 +16,6 @@ interface SearchOrganizationContract {
 
     interface Presenter : SearchContract.Presenter<OrganizationNew> {
         fun onOrganizationClick(organization: OrganizationNew)
-        fun onOrganizationSubscriptionClick(organization: OrganizationNew)
+        fun onOrganizationSubscriptionClick(org: OrganizationNew)
     }
 }

@@ -36,8 +36,14 @@ interface EventRepository {
     fun getSpeakers(map: Map<String, Any>): Maybe<PaginationResponse<MemberModel>>
     fun getSpeakersWithoutPagination(map: Map<String, Any>): Maybe<List<MemberModel>>
     fun getPartnerDetails(partnerId : String): Single<PartnerModel>
+
     fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel>
-    fun deleteFromFavorite(id : String): Completable
+
+    fun addEventToFavorites(eventId: String) : Single<AddFavoriteModel>
+    fun addOrgToFavorites(orgId: String) : Single<AddFavoriteModel>
+    fun addUserToFavorites(speakerId: String) : Single<AddFavoriteModel>
+    fun deleteFromFavorites(id : String): Completable
+
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
     fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
 
@@ -61,7 +67,7 @@ interface EventRepository {
     fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>>
 
     //+
-    fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
 
     //+
     fun checkRegistrationAgreement(eventId : String) : Single<RegistrationAgreementStatus>

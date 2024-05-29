@@ -20,7 +20,6 @@ import com.example.data.models.Notification
 import com.example.extensions.markWon
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
-import com.example.ui.views.expandableTextView.ExpandableTextViewLayout
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getDrawable
 import com.xwray.groupie.databinding.BindableItem
@@ -76,8 +75,11 @@ abstract class NotificationItem<T : ViewDataBinding>(
         getMessageView(viewBinding).apply {
             isVisible = !notification.message.isNullOrEmpty()
             isTextCollapsed = isCollapsed
+            limitedMaxLines = 7
             originalText = fullMessage
-
+            onTextExpandableCallback = {
+                isMessageLong = it
+            }
             onLinkClickListener = {
                 listener.onLinkClickListener(it)
             }
@@ -128,7 +130,6 @@ abstract class NotificationItem<T : ViewDataBinding>(
         if (message.isNullOrBlank()) return null
         else {
             val spanned = markWon(context).toMarkdown(message)
-            isMessageLong = spanned.length > 240
             return SpannableStringBuilder(spanned).apply {
                 val urls = getSpans<URLSpan>()
                 urls.forEach {

@@ -80,6 +80,15 @@ class AppData(private val appPrefs: AppPrefs) {
             }
         }
 
+    var tempUserId : Int = appPrefs.temporaryUserId
+        set(value) {
+            val changed = field != value
+            if (changed) {
+                field = value
+                appPrefs.temporaryUserId = value
+            }
+        }
+
     var savedEventId : String? = null
 
     var isStoriesShown: Boolean = appPrefs.isStoriesShown
@@ -238,6 +247,10 @@ class AppData(private val appPrefs: AppPrefs) {
 
     fun getId(): Int {
         return appPrefs.userId
+    }
+
+    fun getTempId(): Int {
+        return appPrefs.temporaryUserId
     }
 
     fun logout() {

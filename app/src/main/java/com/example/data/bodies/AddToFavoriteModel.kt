@@ -5,30 +5,7 @@ data class AddToFavoriteModel(
         val entity: AddToFavoriteEntityModel? = null
 ){
     companion object {
-        fun toBody(userId : Int, type: String?, id : Int) : AddToFavoriteModel {
-            return AddToFavoriteModel(
-                userId,
-                AddToFavoriteEntityModel(
-                    type,
-                    id
-                )
-            )
-        }
 
-        fun toEventBody(userId : Int, eventId : String) : AddToFavoriteModel {
-            return AddToFavoriteModel(
-                userId, AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_EVENT, eventId.toInt())
-            )
-        }
-
-        fun toOrgBody(userId : Int, orgId : Long?) : AddToFavoriteModel {
-            return AddToFavoriteModel(
-                userId, AddToFavoriteEntityModel(
-                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
-                    orgId?.toInt()
-                )
-            )
-        }
     }
 }
 

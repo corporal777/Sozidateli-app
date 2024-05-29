@@ -136,6 +136,11 @@ class MainPresenter
                 onError = {
                     it.printStackTrace()
                     isAuthRequired = true
+                    viewState.apply {
+                        hideSplashScreen()
+                        hideAllLoadingDialogs()
+                        showRecommendations()
+                    }
                 },
                 onComplete = {
                     getAdditionalDataAndInAppList()

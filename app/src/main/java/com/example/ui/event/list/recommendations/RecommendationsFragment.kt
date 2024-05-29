@@ -43,9 +43,8 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
         try {
             val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
-            if (args.isOpenProfile) onProfileClick()
-        } catch (_: Exception) {
-        }
+            this.onShowSavedEventOrProfile(args.isOpenProfile)
+        } catch (_: Exception) { }
     }
 
     private val dataGroup = Section()

@@ -46,12 +46,7 @@ class OrganizationRepositoryImp
         api.getOrganizationMembersWithoutPagination(map)
             .map { it.data }
 
-    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
-        return api.searchOrganizations(map)
-            .map {
-                PaginationResponse(it.totalCount, it.data ?: arrayListOf())
-            }
-    }
+
 
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
         return api.getOrganizationDetails(
@@ -76,8 +71,8 @@ class OrganizationRepositoryImp
     }
 
     //+
-    override fun searchOrganizationsNew(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
-        return api.searchUsers(map)
+    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+        return api.searchGlobal(map)
             .map { PaginationResponse(it.organizations.count, it.organizations.data) }
     }
 

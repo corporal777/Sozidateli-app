@@ -1,8 +1,6 @@
 package com.example.ui.user
 
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
 import com.example.repository.ChatRepository
@@ -92,28 +90,22 @@ class UserPresenter
     }
 
     override fun onSubscribeClick() {
-        compositeDisposable += eventRepository.addToFavorites(
-            AddToFavoriteModel.toBody(
-                appData.getId(),
-                FAVORITE_SPEAKER,
-                userId.toInt()
-            )
-        )
+        compositeDisposable += eventRepository.addUserToFavorites(userId)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                 viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                viewState.showEventAddedToFavoriteDialog()
+                viewState.showAddedToFavoriteDialog()
             }
     }
 
     override fun onUnsubscribeClick() {
-        compositeDisposable += eventRepository.deleteFromFavorite(profileUserData.user.binds?.userFavorite?.id.toString())
+        compositeDisposable += eventRepository.deleteFromFavorites(profileUserData.user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 profileUserData.user.binds?.userFavorite = null
                 viewState.setSubscribeFavoriteAction(profileUserData.user.getUserSubscribeAction())
-                viewState.showEventRemovedFromFavoriteDialog()
+                viewState.showRemovedFromFavoriteDialog()
             }
     }
 
