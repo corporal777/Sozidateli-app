@@ -42,11 +42,16 @@ android {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
         }
+
+        def properties = new Properties()
+        if (rootProject.file("app/src/new/vk.properties").exists()) {
+            properties.load(rootProject.file("app/src/new/vk.properties").newDataInputStream())
+        }
         manifestPlaceholders = [
                 VKIDRedirectHost  : "vk.com",
-                VKIDRedirectScheme: "vk51817061",
-                VKIDClientID      : "51817061",
-                VKIDClientSecret  : "ZPcUM4IDxpFP26ych1qA"
+                VKIDRedirectScheme: properties.getProperty("client_scheme"),
+                VKIDClientID      : properties.getProperty("client_id"),
+                VKIDClientSecret  : properties.getProperty("client_secret")
         ]
     }
 
