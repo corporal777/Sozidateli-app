@@ -36,6 +36,19 @@
             android:paddingTop="20dp"
             app:layout_constraintTop_toTopOf="@id/eventImageShadow">
 
+            <TextView
+                android:id="@+id/tvEventName"
+                fontPath="fonts/sf_pro_text_bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="20dp"
+                android:letterSpacing="-0.01"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/event_detail_name_text_size"
+                tools:text="Разработка и подача проекта: от идеи до гранта, включая план и анализ." />
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvEventLocation"
@@ -43,24 +56,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="20dp"
+                android:letterSpacing="-0.01"
+                android:layout_marginTop="10dp"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 tools:text="Краснодарский край, г. Сочи" />
 
-            <TextView
-                android:id="@+id/tvEventName"
-                fontPath="fonts/sf_pro_text_bold.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                android:letterSpacing="-0.02"
-                android:includeFontPadding="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/event_detail_name_text_size"
-                tools:text="Разработка и подача проекта: от идеи до гранта, включая план и анализ." />
 
         </LinearLayout>
 
@@ -68,17 +70,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvEventDate"
             fontPath="fonts/sf_pro_text.ttf"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
             android:textColor="@color/hint_gray"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_text_title"
-            tools:text="Заявки принимаются до 7 июля" />
+            tools:text="22.05.2024 - 31.05.2024" />
 
         <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnEventAction"
@@ -118,6 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="20dp"
+            android:importantForAccessibility="no"
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="5"
