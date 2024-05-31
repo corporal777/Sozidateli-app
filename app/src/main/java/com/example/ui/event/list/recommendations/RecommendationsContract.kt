@@ -7,6 +7,7 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface RecommendationsContract {
     interface View : EventListContract.View{
@@ -21,11 +22,14 @@ interface RecommendationsContract {
 
         @OneExecution
         fun showUserProfile()
+
+        @Skip
+        fun setAuthorizationButton(isTemporary : Boolean)
     }
 
     interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
-        fun onProfileClick()
+        fun onShowSavedEventOrProfile(isProfile : Boolean?)
         fun onRefreshRequest()
     }
 }

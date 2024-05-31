@@ -100,7 +100,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         mBinding.swipeToRefresh.isRefreshing = false
         eventsSection.update(data.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(it, onEventClickListener,)
+            else EventItemNew(it, presenter.isTemporaryUser(), onEventClickListener)
         })
     }
 

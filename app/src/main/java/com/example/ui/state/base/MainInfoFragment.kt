@@ -130,7 +130,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
 
     private fun baseActionsWithSuccess() {
         if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
-            MessageDialogWithTextButton(requireContext(), getString(R.string.you_got_base_state))
+            MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_base_state))
                 .setSelectCallback { baseActions() }
         } else {
             dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)

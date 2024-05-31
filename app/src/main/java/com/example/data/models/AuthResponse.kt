@@ -21,5 +21,10 @@ data class QrAuthResponse(
     val time: String,
     @SerializedName("timestamp")
     val timeStamp : Date
+)
 
+data class TempAuthResponse(
+    val id: Int? = null,
+    val token: String? = null,
+    val type: String? = null
 )

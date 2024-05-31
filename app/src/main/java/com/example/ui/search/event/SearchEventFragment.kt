@@ -49,6 +49,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         override fun onShowEventClick(view: View, event: String) =
             searchPresenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
+        override fun onShowNeedAuth(eventId: String) { searchPresenter.onShowAuthorization(eventId) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,6 +70,10 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         )
     }
 
+    override fun showAuthorization() {
+        findNavController().navigate(R.id.authorization_fragment)
+    }
+
     override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
         EventAgreementBottomDialog(requireContext(), url)
             .setSelectCallback { searchPresenter.onAcceptRegistrationAgreement(event, formEnabled) }
@@ -84,7 +89,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     override fun createItem(itemData: EventNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventItemNew(itemData, onEventClickListener,)
+        else EventItemNew(itemData, searchPresenter.isTemporaryUser(), onEventClickListener,)
     }
 
 

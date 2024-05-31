@@ -30,7 +30,8 @@ data class RegisterBody(
         val deviceId : String = "",
         val deviceModel : String = "",
         var build : String = "",
-        var version : String = ""
+        var version : String = "",
+        var tempToken : String = ""
 )
 
 data class SnRegisterBody(

@@ -20,6 +20,13 @@ class AuthRepositoryImp
     private val api: Api
 ) : ApiRepository(appData), AuthRepository {
 
+    override fun getTemporaryToken(): Completable {
+        return api.getTemporaryToken().doOnSuccess {
+            appData.tempToken = it.token
+            appData.tempUserId = it.id ?: -1
+        }.ignoreElement()
+    }
+
     override fun getStories(): Maybe<List<String>> {
         return Maybe.just(
             listOf(

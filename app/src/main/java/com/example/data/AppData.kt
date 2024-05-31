@@ -71,6 +71,26 @@ class AppData(private val appPrefs: AppPrefs) {
             }
         }
 
+    var tempToken: String? = appPrefs.temporaryToken
+        set(value) {
+            val changed = field != value
+            if (changed) {
+                field = value
+                appPrefs.temporaryToken = value
+            }
+        }
+
+    var tempUserId : Int = appPrefs.temporaryUserId
+        set(value) {
+            val changed = field != value
+            if (changed) {
+                field = value
+                appPrefs.temporaryUserId = value
+            }
+        }
+
+    var savedEventId : String? = null
+
     var isStoriesShown: Boolean = appPrefs.isStoriesShown
         set(value) {
             val changed = field != value
@@ -229,6 +249,10 @@ class AppData(private val appPrefs: AppPrefs) {
         return appPrefs.userId
     }
 
+    fun getTempId(): Int {
+        return appPrefs.temporaryUserId
+    }
+
     fun logout() {
         isLoggedOut = true
         newUser = null
@@ -240,6 +264,8 @@ class AppData(private val appPrefs: AppPrefs) {
     }
 
     fun isCurrentUser(id: String): Boolean = newUser?.id.toString() == id
+
+    fun isTemporaryUser() = token.isNullOrEmpty()
 
     fun getStateValue(): String {
         return if (hasMaxState && hasBaseState) "Максимальный"

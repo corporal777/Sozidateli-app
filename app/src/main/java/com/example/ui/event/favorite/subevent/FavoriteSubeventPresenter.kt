@@ -80,7 +80,7 @@ class FavoriteSubeventPresenter @Inject constructor(
                     setData(groupData(actions))
                 }
         else
-            compositeDisposable += eventRepository.deleteFromFavorite(subevent.binds.userFavorite?.id.toString())
+            compositeDisposable += eventRepository.deleteFromFavorites(subevent.binds.userFavorite?.id.toString())
                 .performOnBackgroundOutOnMain()
                 .withProgressBarDialogLoading(viewState)
                 .subscribeSimple({

@@ -84,6 +84,10 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
+    }
 
     protected fun transformData(list: List<EventNew?>): MutableList<EventNew?> {
         eventsList = list.toMutableList()

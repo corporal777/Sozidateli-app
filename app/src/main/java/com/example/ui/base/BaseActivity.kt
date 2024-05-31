@@ -25,6 +25,7 @@ import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
+import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
 import com.example.util.cancelWindowTransparency
 import com.example.util.doEdgeWindow
 import com.example.util.setWindowTransparency
@@ -101,8 +102,12 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     abstract fun handleIntent(intent: Intent)
 
-    override fun showEventAddedToFavoriteDialog() {}
-    override fun showEventRemovedFromFavoriteDialog() {}
+    override fun showAddedToFavoriteDialog() {
+        EventAddedToFavoriteDialog(0, this)
+    }
+    override fun showRemovedFromFavoriteDialog() {
+        EventAddedToFavoriteDialog(1, this)
+    }
 
     override fun showLoadingDialog() {
         if (!isFinishing) runOnUiThread {

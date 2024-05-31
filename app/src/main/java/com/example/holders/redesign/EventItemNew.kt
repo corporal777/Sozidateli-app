@@ -21,6 +21,7 @@ import com.example.extensions.parseColor
 
 class EventItemNew(
     event: EventNew,
+    val isTemp : Boolean,
     val clickListener: OnEventClickListener
 ) : BindableItem<ItemEventNewBinding>(event.id?.toLong() ?: 0) {
 
@@ -115,7 +116,8 @@ class EventItemNew(
                     isVisible = true
                     text = context.getString(R.string.event_action_participate)
                     setOnClickListener {
-                        registrationState.checkStateLevel {
+                        if (isTemp) clickListener.onShowNeedAuth(eventId)
+                        else registrationState.checkStateLevel {
                             clickListener.onActionRegister(eventId, userAgreement, eventData.isFormEnabled())
                         }
                     }
@@ -170,5 +172,6 @@ class EventItemNew(
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(view: View, event: String)
         fun onShowUpdateState()
+        fun onShowNeedAuth(eventId : String)
     }
 }

@@ -26,6 +26,7 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
 
         override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
+        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
@@ -52,5 +53,9 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
             R.id.request_fragment,
             EventRegistrationFragmentArgs.Builder(event).build().toBundle()
         )
+    }
+
+    override fun showAuthorization() {
+        findNavController().navigate(R.id.authorization_fragment)
     }
 }

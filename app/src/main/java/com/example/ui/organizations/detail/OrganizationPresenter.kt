@@ -2,10 +2,6 @@ package com.example.ui.organizations.detail
 
 import call
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_ORGANIZATION
-import com.example.data.bodies.AddToFavoriteEntityModel.Companion.FAVORITE_SPEAKER
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.data.socket.SocketIOManager
 import com.example.repository.EventRepository
@@ -15,9 +11,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.zipWith
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
@@ -63,8 +57,8 @@ class OrganizationPresenter
     override fun onAddUserFavoriteCLick(member: OrganizationMemberModel) {
         compositeDisposable += Single.defer {
             if (member.binds?.userFavorite == null)
-                eventRepository.addToFavorites(userFavoriteBody(member.user)).map { true }
-            else eventRepository.deleteFromFavorite(member.binds.userFavorite?.id.toString())
+                eventRepository.addUserToFavorites(member.user.toString()).map { true }
+            else eventRepository.deleteFromFavorites(member.binds.userFavorite?.id.toString())
                 .andThen(Single.just(false))
         }
             .flatMapMaybe { e -> getMembersRequest().map { Triple(it.data, it.totalCount, e) } }
@@ -74,8 +68,8 @@ class OrganizationPresenter
                 onSuccess = {
                     viewState.apply {
                         setMembersData(it.first, it.second ?: it.first.size)
-                        if (it.third) showEventAddedToFavoriteDialog()
-                        else showEventRemovedFromFavoriteDialog()
+                        if (it.third) showAddedToFavoriteDialog()
+                        else showRemovedFromFavoriteDialog()
                     }
                 }
             )
@@ -84,11 +78,11 @@ class OrganizationPresenter
     override fun onAddOrganizationFavoriteClick(organization: OrganizationNew) {
         compositeDisposable += Single.defer {
             if (organization.binds?.userFavorite == null)
-                eventRepository.addToFavorites(organizationFavoriteBody()).flatMap {
+                eventRepository.addOrgToFavorites(organizationId).flatMap {
                     organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     Single.just(organization)
                 }
-            else eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+            else eventRepository.deleteFromFavorites(organization.binds?.userFavorite?.id.toString())
                 .andThen(Single.just(organization.apply { binds?.userFavorite = null }))
         }
             .performOnBackgroundOutOnMain()
@@ -97,8 +91,8 @@ class OrganizationPresenter
                 onSuccess = {
                     viewState.apply {
                         updateOrganizationSubscription(it)
-                        if (it.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
-                        else showEventRemovedFromFavoriteDialog()
+                        if (it.binds?.userFavorite != null) showAddedToFavoriteDialog()
+                        else showRemovedFromFavoriteDialog()
                     }
                 }
             )
@@ -162,6 +156,11 @@ class OrganizationPresenter
         else viewState.showUser(user.toString())
     }
 
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
+    }
+
     override fun onShowMoreEventsClick() = viewState.showAllEvents(organizationId)
     override fun onShowMoreUsersClick() = viewState.showAllUsers(organizationId)
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
@@ -207,20 +206,5 @@ class OrganizationPresenter
                 data = if (it.data.size > 3) it.data.subList(0, 3) else it.data
             )
         }
-    }
-
-
-    private fun organizationFavoriteBody(): AddToFavoriteModel {
-        return AddToFavoriteModel(
-            appData.getId(),
-            AddToFavoriteEntityModel(FAVORITE_ORGANIZATION, organizationId.toInt())
-        )
-    }
-
-    private fun userFavoriteBody(user: Int?): AddToFavoriteModel {
-        return AddToFavoriteModel(
-            appData.getId(),
-            AddToFavoriteEntityModel(FAVORITE_SPEAKER, user)
-        )
     }
 }

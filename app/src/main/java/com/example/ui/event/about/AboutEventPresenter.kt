@@ -1,9 +1,6 @@
 package com.example.ui.event.about
 
 import com.example.data.AppData
-import com.example.data.UserEventData
-import com.example.data.bodies.AddToFavoriteModel.Companion.toEventBody
-import com.example.data.bodies.AddToFavoriteModel.Companion.toOrgBody
 import com.example.data.bodies.EventCalendarBody.Companion.toCalendarBody
 import com.example.data.models.AboutEventData
 import com.example.data.models.EventActivityModel
@@ -92,39 +89,39 @@ class AboutEventPresenter
     }
 
     override fun onAddEventToFavoriteClick() {
-        val userFavorite = aboutEventData.event.binds?.userFavorite
+        val data = aboutEventData.event.binds?.userFavorite
         compositeDisposable += Single.defer {
-            if (userFavorite != null) eventRepository.deleteFromFavorite(userFavorite.id.toString())
+            if (data != null) eventRepository.deleteFromFavorites(data.id.toString())
                 .andThen(Single.just(Optional(null)))
-            else eventRepository.addToFavorites(toEventBody(appData.getId(), eventId))
+            else eventRepository.addEventToFavorites(eventId)
                 .map { Optional(EventUserFavorite(it.id, it.user)) }
         }.doOnSuccess { aboutEventData.event.binds?.userFavorite = it.value }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
                     setEventFavoriteButton(aboutEventData.event.binds?.userFavorite != null)
-                    if (aboutEventData.event.binds?.userFavorite == null) showEventRemovedFromFavoriteDialog()
-                    else showEventAddedToFavoriteDialog()
+                    if (aboutEventData.event.binds?.userFavorite == null) showRemovedFromFavoriteDialog()
+                    else showAddedToFavoriteDialog()
                 }
             }
     }
+
 
     override fun onAddOrganizationToFavoriteClick() {
         val organizationFavorite = aboutEventData.event.binds?.organization?.binds?.userFavorite
         compositeDisposable += Single.defer {
             if (organizationFavorite != null)
-                eventRepository.deleteFromFavorite(organizationFavorite.id.toString())
+                eventRepository.deleteFromFavorites(organizationFavorite.id.toString())
                     .andThen(Single.just(Optional(null)))
-            else eventRepository.addToFavorites(
-                toOrgBody(appData.getId(), aboutEventData.event.binds?.organization?.id)
-            ).map { Optional(EventUserFavorite(it.id, it.user)) }
+            else eventRepository.addOrgToFavorites(aboutEventData.event.binds?.organization?.id.toString())
+            .map { Optional(EventUserFavorite(it.id, it.user)) }
         }.doOnSuccess { aboutEventData.event.binds?.organization?.binds?.userFavorite = it.value }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
                     updateOrganization(it.value != null)
-                    if (it.value == null) showEventRemovedFromFavoriteDialog()
-                    else showEventAddedToFavoriteDialog()
+                    if (it.value == null) showRemovedFromFavoriteDialog()
+                    else showAddedToFavoriteDialog()
                 }
             }
     }
@@ -215,6 +212,11 @@ class AboutEventPresenter
     override fun onShareClick() = viewState.showShare(eventId)
     override fun onAddEventToCalendarClick() = viewState.addEventToCalendar(aboutEventData.event)
 
+
+    override fun onShowAuthorization(id: String) {
+        appData.savedEventId = id
+        viewState.showAuthorization()
+    }
 
     override fun changeAppBarBackgroundColorValue(value: Int) {
         mDy = value

@@ -15,6 +15,9 @@ import retrofit2.http.*
 @JvmSuppressWildcards
 interface Api {
 
+    @GET("v1/user/temp/login")
+    fun getTemporaryToken(): Single<TempAuthResponse>
+
     @POST("v1/user/login")
     fun authEmailOrPhone(@Body body: AuthBody): Single<AuthResponse>
 
@@ -183,10 +186,6 @@ interface Api {
 
 
     //+
-    @GET("v1/organization")
-    fun searchOrganizations(@QueryMap map: Map<String, Any>): Maybe<OrganizationNewModel>
-
-    //+
     @GET("v1/organization/{id}")
     fun getOrganizationDetails(
         @Path("id") organizationId: String,
@@ -253,8 +252,16 @@ interface Api {
     fun addToFavorite(@Body body: AddToFavoriteModel): Single<AddFavoriteModel>
 
     //+
+    @POST("v1/user/temp/user-favorites")
+    fun addToTempFavorite(@Body body: AddToFavoriteModel): Single<AddTempFavoriteModel>
+
+    //+
     @DELETE("v1/user-favorites/{id}")
     fun deleteFromFavorite(@Path("id") id: String): Completable
+
+    //+
+    @DELETE("v1/user/temp/user-favorites/{id}")
+    fun deleteFromTempFavorite(@Path("id") id: String): Completable
 
     @GET("v1/address/search")
     fun searchAddress(
@@ -474,7 +481,7 @@ interface Api {
     fun messageToEvent(@Body body: MessageToEventBody): Completable
 
     @GET("v1/search")
-    fun searchUsers(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
+    fun searchGlobal(@QueryMap map: Map<String, Any>): Maybe<SearchDataNew>
 
     @GET("v1/organization/active-events")
     fun getOrganizationsWithActiveEvents(): Maybe<SearchResponseData<OrganizationNew>>

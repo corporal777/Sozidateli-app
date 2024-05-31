@@ -1,8 +1,6 @@
 package com.example.ui.favoritesTab.organizations
 
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventUserFavorite
 import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationNew
@@ -72,10 +70,10 @@ class FavoriteOrganizationsPresenter
     override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
         compositeDisposable += Completable.defer {
             if (organization.binds?.userFavorite != null) {
-                eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
+                eventRepository.deleteFromFavorites(organization.binds?.userFavorite?.id.toString())
                     .doOnComplete { organization.binds?.userFavorite = null }
             } else {
-                eventRepository.addToFavorites(addToFavoriteBody(organization.id?.toInt()))
+                eventRepository.addOrgToFavorites(organization.id.toString())
                     .doOnSuccess {
                         organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
                     }.ignoreElement()
@@ -85,8 +83,8 @@ class FavoriteOrganizationsPresenter
             .subscribeSimple {
                 viewState.apply {
                     changeSubscription(organization)
-                    if (organization.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
-                    else showEventRemovedFromFavoriteDialog()
+                    if (organization.binds?.userFavorite != null) showAddedToFavoriteDialog()
+                    else showRemovedFromFavoriteDialog()
                 }
             }
     }
@@ -94,12 +92,4 @@ class FavoriteOrganizationsPresenter
     override fun onOrganizationClick(organization: OrganizationNew) = viewState.showOrganization(organization)
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
     override fun onRefreshRequest() = pagination.invalidate()
-
-
-    private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
-        return AddToFavoriteModel(
-            appData.getId(),
-            AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_ORGANIZATION, id)
-        )
-    }
 }

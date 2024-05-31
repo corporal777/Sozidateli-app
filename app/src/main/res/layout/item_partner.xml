@@ -5,8 +5,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:foreground="@drawable/btn_background_text"
         android:layout_height="wrap_content"
+        android:foreground="@drawable/btn_background_text"
         android:paddingHorizontal="15dp">
 
         <com.google.android.material.card.MaterialCardView
@@ -14,15 +14,15 @@
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:layout_margin="5dp"
+            android:elevation="0dp"
             android:gravity="center"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
-            android:elevation="0dp"
-            app:strokeWidth="0.5dp"
-            app:strokeColor="@color/event_item_action_border"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/event_item_action_border"
+            app:strokeWidth="0.5dp">
 
             <ImageView
                 android:id="@+id/ivPartnerImage"
@@ -35,24 +35,23 @@
 
 
         <TextView
-            android:layout_marginTop="25dp"
             android:id="@+id/tvPartnerName"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="10dp"
             android:letterSpacing="-0.03"
-            tools:text="Тинькофф"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/tvPartnerTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cvImage"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Тинькофф" />
 
         <TextView
-            android:maxLines="5"
             android:id="@+id/tvPartnerTitle"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="0dp"
@@ -60,14 +59,16 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="25dp"
-            android:letterSpacing="-0.03"
-            tools:text="Первый партнер проекта"
+            android:ellipsize="end"
+            android:letterSpacing="-0.02"
+            android:maxLines="4"
             android:textColor="@color/input_text_color_disabled_new"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cvImage"
-            app:layout_constraintTop_toBottomOf="@id/tvPartnerName" />
+            app:layout_constraintTop_toBottomOf="@id/tvPartnerName"
+            tools:text="@string/lorem_ipsum_dolor" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

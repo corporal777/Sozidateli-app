@@ -60,6 +60,7 @@ open class BasePresenter<V : BaseContract.View>
 
     fun getHasBase() = appData.hasBaseState
     fun isStoriesShown() = appData.isStoriesShown
+    fun isTemporaryUser() = appData.isTemporaryUser()
 
     private fun createOnErrorConsumer(
         onError: ((Throwable) -> Unit)?,

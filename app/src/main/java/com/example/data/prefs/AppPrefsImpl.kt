@@ -32,6 +32,12 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
             prefs.edit().putInt(USER_ID, value).commit()
         }
 
+    override var temporaryUserId: Int
+        get() = prefs.getInt(TEMP_USER_ID, -1)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putInt(TEMP_USER_ID, value).commit()
+        }
 
     override var isStoriesShown: Boolean
         get() = prefs.getBoolean(STORIES, false)
@@ -45,6 +51,13 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
         @SuppressLint("ApplySharedPref")
         set(value) {
             prefs.edit().putString(USER_TOKEN, value).commit()
+        }
+
+    override var temporaryToken: String?
+        get() = prefs.getString(TEMP_TOKEN, null)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            prefs.edit().putString(TEMP_TOKEN, value).commit()
         }
 
     override var uniqueDeviceId: String?
@@ -73,6 +86,8 @@ class AppPrefsImpl @Inject constructor(context: Context) : AppPrefs {
     companion object {
         const val SELECTED_EVENT = "selected_event"
         const val USER_TOKEN = "user_token"
+        const val TEMP_TOKEN = "temp_token"
+        const val TEMP_USER_ID = "temp_user_id"
         const val USER_DEVICE_ID = "user_device"
         const val USER_ATTEMPTS = "user_attempts"
         const val FCM_TOKEN_SENT = "fcm_token_sent"

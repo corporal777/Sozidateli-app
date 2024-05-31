@@ -1,8 +1,6 @@
 package com.example.ui.organizations.members
 
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.OrganizationMember
 import com.example.data.models.OrganizationMemberModel
 import com.example.extensions.buildList
@@ -62,12 +60,12 @@ class OrganizationMembersPresenter
         compositeDisposable += Single.create<Boolean> { emitter ->
             val disposables = CompositeDisposable()
             disposables += if (member.binds?.userFavorite == null) {
-                eventRepository.addToFavorites(userFavoriteBody(member.user))
+                eventRepository.addUserToFavorites(member.user.toString())
                     .subscribeSimple(
                         onError = { emitter.onError(it) },
                         onSuccess = { emitter.onSuccess(true) })
             } else {
-                eventRepository.deleteFromFavorite(member.binds.userFavorite?.id.toString())
+                eventRepository.deleteFromFavorites(member.binds.userFavorite?.id.toString())
                     .subscribeSimple(
                         onError = { emitter.onError(it) },
                         onComplete = { emitter.onSuccess(false) })
@@ -80,8 +78,8 @@ class OrganizationMembersPresenter
                 onSuccess = {
                     pagination.invalidate()
                     viewState.apply {
-                        if (it) showEventAddedToFavoriteDialog()
-                        else showEventRemovedFromFavoriteDialog()
+                        if (it) showAddedToFavoriteDialog()
+                        else showRemovedFromFavoriteDialog()
                     }
                 }
             )
@@ -95,13 +93,6 @@ class OrganizationMembersPresenter
 
     fun isCurrentUser(id: String): Boolean {
         return appData.isCurrentUser(id)
-    }
-
-    private fun userFavoriteBody(user: Int?): AddToFavoriteModel {
-        return AddToFavoriteModel(
-            appData.getId(),
-            AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user)
-        )
     }
 
     override fun onItemTake(position: Int) = pagination.onItemTake(position)

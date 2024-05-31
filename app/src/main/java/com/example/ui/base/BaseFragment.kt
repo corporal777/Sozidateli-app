@@ -22,7 +22,6 @@ import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
-import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
 import com.example.ui.views.dialogs.MessageDialogWithGreenButton
 import com.example.ui.views.dialogs.StateType
 import com.example.util.Utils
@@ -221,12 +220,12 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
             }.show()
     }
 
-    override fun showEventAddedToFavoriteDialog() {
-        EventAddedToFavoriteDialog(0, requireContext())
+    override fun showAddedToFavoriteDialog() {
+        mActivity?.showAddedToFavoriteDialog()
     }
 
-    override fun showEventRemovedFromFavoriteDialog() {
-        EventAddedToFavoriteDialog(1, requireContext())
+    override fun showRemovedFromFavoriteDialog() {
+        mActivity?.showRemovedFromFavoriteDialog()
     }
 
 

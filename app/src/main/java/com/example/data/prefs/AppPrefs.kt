@@ -3,6 +3,8 @@ package com.example.data.prefs
 interface AppPrefs {
     var selectedEvent: String?
     var userToken: String?
+    var temporaryToken: String?
+    var temporaryUserId: Int
     var isFCMTokenSent: Boolean
     var userId: Int
     var isStoriesShown: Boolean

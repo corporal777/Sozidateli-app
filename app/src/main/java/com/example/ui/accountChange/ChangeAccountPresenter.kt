@@ -6,6 +6,7 @@ import com.example.data.AppData
 import com.example.data.models.UserDetail
 import com.example.data.models.UserSessionModel
 import com.example.data.socket.SocketIOManager
+import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class ChangeAccountPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     private val appData: AppData,
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager
@@ -151,6 +153,7 @@ class ChangeAccountPresenter
     fun getUserId(): String = currentUserId
     fun isCurrentUser(id: String) = id == currentUserId
 
+
     private fun transformData(sessions: List<UserSessionModel>) {
         loggedSessions.clear()
         unLoggedSessions.clear()
@@ -178,7 +181,7 @@ class ChangeAccountPresenter
                     socket.disconnectFromSocket()
                     appData.logout()
                     notificationManager.cancelAll()
-                }
+                }.andThen(authRepository.getTemporaryToken())
         } else Completable.complete()
     }
 }

@@ -39,6 +39,8 @@ class RecommendationsPresenter
         super.attachView(view)
         if (isFirstAttach) isFirstAttach = false
         else pagination.invalidate()
+
+        viewState.setAuthorizationButton(isTemporaryUser())
     }
 
     override fun onFirstViewAttach() {
@@ -51,25 +53,23 @@ class RecommendationsPresenter
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()
                 else viewState.setData(it, appData.isNeedUpdateApp)
             }
-
-        compositeDisposable += connectivity
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (hasNoConnectionError && it) {
-                    hasNoConnectionError = false
-                    pagination.invalidate()
-                }
-            }
     }
 
     override fun onSearchClick() = viewState.showSearch()
     override fun onRefreshRequest() = pagination.invalidate()
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
-    override fun onProfileClick() {
-        val email = getUserData().personalEmail
-        val phone = getUserData().personalPhone?.value
-        if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
+
+    override fun onShowSavedEventOrProfile(isProfile: Boolean?) {
+        val eventId = appData.savedEventId
+        if (!eventId.isNullOrEmpty()) {
+            viewState.showAboutEvent(eventId)
+            appData.savedEventId = null
+        } else if (isProfile == true) {
+            val email = getUserData().personalEmail
+            val phone = getUserData().personalPhone?.value
+            if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
+        } else return
     }
 
     override fun getPaginationRequest(

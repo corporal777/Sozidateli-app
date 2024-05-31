@@ -47,10 +47,10 @@ interface BaseContract {
         fun showErrorMessage(canGoBack: Boolean, message: String)
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventAddedToFavoriteDialog()
+        fun showAddedToFavoriteDialog()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showEventRemovedFromFavoriteDialog()
+        fun showRemovedFromFavoriteDialog()
 
         @StateStrategyType(SkipStrategy::class)
         fun setIgnoreTokenListener(isIgnore: Boolean)

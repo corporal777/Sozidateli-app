@@ -6,7 +6,8 @@ data class AuthBody(
     var deviceId: String = "",
     var deviceModel: String = "",
     var build: String = "",
-    var version: String = ""
+    var version: String = "",
+    var tempToken: String = ""
 )
 
 data class LoginModel(

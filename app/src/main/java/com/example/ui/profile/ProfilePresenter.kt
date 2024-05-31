@@ -63,10 +63,11 @@ class ProfilePresenter
     }
 
     override fun onLogoutClick() {
-        viewState.setIgnoreTokenListener(false)
         compositeDisposable += userRepository.logout(appData.getId())
+            .andThen(authRepository.getTemporaryToken())
             .withDelay(300)
             .doOnComplete {
+                viewState.setIgnoreTokenListener(false)
                 appData.isSubscribedToPush = false
                 socket.disconnectFromSocket()
                 appData.logout()

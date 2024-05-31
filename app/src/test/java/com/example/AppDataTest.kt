@@ -11,6 +11,8 @@ class AppDataTest {
         return AppData(object : AppPrefs {
             override var selectedEvent: String? = null
             override var userToken: String? = userToken
+            override var temporaryToken: String? = userToken
+            override var temporaryUserId: Int = -1
             override var isFCMTokenSent: Boolean = false
             override var userId: Int = -1
             override var isStoriesShown: Boolean = false

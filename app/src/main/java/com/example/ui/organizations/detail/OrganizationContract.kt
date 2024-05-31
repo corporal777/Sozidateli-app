@@ -51,6 +51,9 @@ interface OrganizationContract {
         fun showEventRequest(event: String)
 
         @Skip
+        fun showAuthorization()
+
+        @Skip
         fun showAgreementRegisterDialog(event: String, url: String, formEnabled : Boolean)
 
         @Skip
@@ -70,6 +73,7 @@ interface OrganizationContract {
         fun onActionRegister(event: String, url: String?, formEnabled : Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)
+        fun onShowAuthorization(event: String)
         fun onAcceptRegistrationAgreement(event: String, formEnabled : Boolean)
     }
 }

@@ -204,7 +204,8 @@ class UserRegistrationPresenter
             deviceId = appData.deviceId ?: "",
             deviceModel = getDeviceName(),
             build = getAppVersionCode(),
-            version = getAppVersion()
+            version = getAppVersion(),
+            tempToken = appData.tempToken ?: ""
         )
     }
 

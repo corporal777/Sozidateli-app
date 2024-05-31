@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.MessageToEventBody
@@ -9,7 +10,6 @@ import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.*
 import com.example.data.models.ProfileFieldsData
 import com.example.util.pagination.PaginationResponse
-import com.google.gson.JsonElement
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -43,7 +43,8 @@ class EventRepositoryImp
                 ).map {
                     val formats = appData.getEventFormats()
                     if (!formats.isNullOrEmpty()) {
-                        it.format?.name = formats.firstOrNull { f -> f.id == it.format?.value }?.name
+                        it.format?.name =
+                            formats.firstOrNull { f -> f.id == it.format?.value }?.name
                     }
                     it
                 }
@@ -134,8 +135,76 @@ class EventRepositoryImp
     override fun addToFavorites(body: AddToFavoriteModel): Single<AddFavoriteModel> =
         api.addToFavorite(body)
 
-    override fun deleteFromFavorite(id: String): Completable =
-        api.deleteFromFavorite(id)
+    override fun deleteFromFavorites(id: String): Completable {
+        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
+        else api.deleteFromFavorite(id)
+    }
+
+    override fun addEventToFavorites(eventId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_EVENT,
+                    eventId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_EVENT,
+                    eventId.toInt()
+                )
+            )
+        )
+    }
+
+
+
+    override fun addOrgToFavorites(orgId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        )
+    }
+
+    override fun addUserToFavorites(speakerId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+                    speakerId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+                    speakerId.toInt()
+                )
+            )
+        )
+    }
+
 
     override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
         api.checkUserProfile(appData.getId().toString())
@@ -229,8 +298,8 @@ class EventRepositoryImp
     override fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>> =
         api.getTags(map).map { it.data }
 
-    override fun searchEventsNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
-        return api.searchUsers(map)
+    override fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+        return api.searchGlobal(map)
             .map { PaginationResponse(it.events.count, it.events.data) }
     }
 

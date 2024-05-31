@@ -38,7 +38,7 @@ class SearchEventPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         val data = buildNewFilters(limit, offset)
-        eventRepository.searchEventsNew(data)
+        eventRepository.searchEvents(data)
     }
 
     private var isCommonDataLoaded = false
@@ -128,6 +128,10 @@ class SearchEventPresenter
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
+    }
 
     override fun onShowFilterRequest() {
         val showFilter = {

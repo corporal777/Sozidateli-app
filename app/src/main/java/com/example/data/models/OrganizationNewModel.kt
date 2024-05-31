@@ -4,12 +4,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-data class OrganizationNewModel(
-        val data: List<OrganizationNew?>? = null,
-        @SerializedName("totalCount")
-        val totalCount: Int? = null
-)
-
 @Parcelize
 data class OrganizationNew(
     val id: Long? = null,
@@ -40,6 +34,10 @@ data class OrganizationNew(
     //val state: Any? = null,
     var binds: OrganizationBindsModel? = null
 ): Parcelable {
+
+    fun getOrganizationName(): String? {
+        return legalInformation?.name?.short ?: legalInformation?.name?.full
+    }
 
     companion object {
         const val ORGANIZATION_SORT_FIELD = "sortField"

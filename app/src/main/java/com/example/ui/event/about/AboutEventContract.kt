@@ -13,6 +13,9 @@ interface AboutEventContract {
         fun setEventData(eventData: AboutEventData)
 
         @OneExecution
+        fun showPage(eventId: String, pageId: String)
+
+        @OneExecution
         fun showPartner(eventId: String, partnerId: String)
 
         @OneExecution
@@ -32,6 +35,15 @@ interface AboutEventContract {
 
         @OneExecution
         fun showSpeakerProfile(speakerId: Int, eventId: String)
+
+        @OneExecution
+        fun showEventFormResult(formResult: UserFormResultModel)
+
+        @OneExecution
+        fun showAuthorization()
+
+        @OneExecution
+        fun showMap(mapInfo: MapInfo?)
 
         @Skip
         fun setActionButton(event: EventNew?)
@@ -55,9 +67,6 @@ interface AboutEventContract {
         fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
 
         @Skip
-        fun showEventSubscribedDialog(isSubscribed: Boolean?)
-
-        @Skip
         fun showAgreementRegisterDialog(event: String, url: String)
 
         @Skip
@@ -71,6 +80,7 @@ interface AboutEventContract {
     }
 
     interface Presenter : BaseContract.Presenter {
+        fun onPageClick(page: Int)
         fun onPartnerClick(partner: Int)
         fun onRefreshRequest()
 
@@ -84,6 +94,7 @@ interface AboutEventContract {
         fun onSubEventClick(subEvent: EventActivityModel)
         fun onSpeakerClick(memberId: Int)
         fun onShowAllSpeakersClick()
+        fun onMapPageSelected()
         fun onTagSelected()
 
         fun onShowEventActivitiesClick()
@@ -94,5 +105,8 @@ interface AboutEventContract {
         fun changeAppBarBackgroundColorValue(value: Int)
 
         fun onAddEventToCalendarClick()
+
+        fun onShowFormResult()
+        fun onShowAuthorization(id : String)
     }
 }

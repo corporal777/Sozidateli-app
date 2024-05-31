@@ -9,6 +9,7 @@ import io.reactivex.Single
 interface AuthRepository {
 
     //fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable
+    fun getTemporaryToken() : Completable
     fun getStories() : Maybe<List<String>>
     fun authEmailOrPhone(login: AuthBody): Completable
     fun authEmailOrPhoneWithResult(login: AuthBody):Single<AuthResponse>

@@ -99,7 +99,8 @@ class LoginPresenter
             appData.deviceId ?: "",
             getDeviceName(),
             getAppVersionCode(),
-            getAppVersion()
+            getAppVersion(),
+            appData.tempToken ?: ""
         )
     }
 

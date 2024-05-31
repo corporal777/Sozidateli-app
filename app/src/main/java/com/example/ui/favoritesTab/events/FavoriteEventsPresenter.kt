@@ -72,21 +72,20 @@ class FavoriteEventsPresenter
     override fun onEventActionClick(event: EventNew) {
         compositeDisposable += Completable.defer {
             if (event.binds?.userFavorite != null) {
-                eventRepository.deleteFromFavorite(event.binds?.userFavorite?.id.toString())
+                eventRepository.deleteFromFavorites(event.binds?.userFavorite?.id.toString())
                     .doOnComplete { event.binds?.userFavorite = null }
             } else {
-                eventRepository.addToFavorites(addToFavoriteBody(event.id ?: 0))
-                    .doOnSuccess {
-                        event.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    }.ignoreElement()
+                eventRepository.addEventToFavorites(event.id.toString())
+                    .doOnSuccess { event.binds?.userFavorite = EventUserFavorite(it.id, it.user) }
+                    .ignoreElement()
             }
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
                     paginationList.invalidate()
-                    if (event.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
-                    else showEventRemovedFromFavoriteDialog()
+                    if (event.binds?.userFavorite != null) showAddedToFavoriteDialog()
+                    else showRemovedFromFavoriteDialog()
                 }
             }
     }

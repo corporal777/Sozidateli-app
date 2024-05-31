@@ -32,31 +32,30 @@ class SearchOrganizationPresenter
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
         val data = buildFilterNew(limit, offset)
-        organizationRepository.searchOrganizationsNew(data)
+        organizationRepository.searchOrganizations(data)
     }
 
     override fun onOrganizationClick(organization: OrganizationNew) {
         viewState.showOrganization(organization)
     }
 
-    override fun onOrganizationSubscriptionClick(organization: OrganizationNew) {
+    override fun onOrganizationSubscriptionClick(org: OrganizationNew) {
         compositeDisposable += Completable.defer {
-            if (organization.binds?.userFavorite != null) {
-                eventRepository.deleteFromFavorite(organization.binds?.userFavorite?.id.toString())
-                    .doOnComplete { organization.binds?.userFavorite = null }
+            if (org.binds?.userFavorite != null) {
+                eventRepository.deleteFromFavorites(org.binds?.userFavorite?.id.toString())
+                    .doOnComplete { org.binds?.userFavorite = null }
             } else {
-                eventRepository.addToFavorites(addToFavoriteBody(organization.id?.toInt()))
-                    .doOnSuccess {
-                        organization.binds?.userFavorite = EventUserFavorite(it.id, it.user)
-                    }.ignoreElement()
+                eventRepository.addOrgToFavorites(org.id.toString())
+                    .doOnSuccess { org.binds?.userFavorite = EventUserFavorite(it.id, it.user) }
+                    .ignoreElement()
             }
         }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    changeSubscription(organization)
-                    if (organization.binds?.userFavorite != null) showEventAddedToFavoriteDialog()
-                    else showEventRemovedFromFavoriteDialog()
+                    changeSubscription(org)
+                    if (org.binds?.userFavorite != null) showAddedToFavoriteDialog()
+                    else showRemovedFromFavoriteDialog()
                 }
             }
     }
