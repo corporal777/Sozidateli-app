@@ -11,7 +11,7 @@ interface EventListContract {
         @Skip
         fun showEventRequest(event: String)
 
-        @Skip
+        @OneExecution
         fun showAboutEvent(event: String)
 
         @Skip

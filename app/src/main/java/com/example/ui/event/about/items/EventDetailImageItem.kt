@@ -32,6 +32,7 @@ import com.example.util.setImagePicasso
 class EventDetailImageItem(
     event: EventNew,
     private val context: Context,
+    private val isTemporary: Boolean,
     private val clickListener: OnActionClickListener,
     private val onMoreClick: () -> Unit,
     private val onShowFormResult: () -> Unit
@@ -102,8 +103,10 @@ class EventDetailImageItem(
         if (eventNew.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = getActionButtonText("register")
-                clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
-
+                clickAction = {
+                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
+                    else state.checkStateLevel { clickListener.onActionRegister(userAgreement) }
+                }
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnBackground = R.drawable.btn_background_white_ghost
                 btnText = getActionButtonText("withdraw")
@@ -133,7 +136,8 @@ class EventDetailImageItem(
                 } else btnText = getActionButtonText("subscribe")
 
                 clickAction = {
-                    state?.checkStateLevel {
+                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
+                    else state?.checkStateLevel {
                         clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
                     }
                 }
@@ -309,6 +313,7 @@ class EventDetailImageItem(
         fun onActionCancel()
         fun onShowUpdateState()
         fun onSubscribeEvent(subscribe: Boolean)
+        fun onShowNeedAuth(eventId: String)
     }
 
 
