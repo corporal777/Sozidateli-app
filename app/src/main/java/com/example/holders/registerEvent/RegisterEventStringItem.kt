@@ -4,16 +4,18 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.Spanned
 import android.text.TextWatcher
+import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
+import com.example.databinding.ItemRegisterEventCheckboxBinding
 import com.example.databinding.ItemRegisterEventInputBinding
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
 
 class RegisterEventStringItem(
     private val fieldData: EventRegisterFieldData<String>,
-    private val editable: Boolean = true,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventInputBinding>(fieldData, onDataChange) {
 
@@ -25,15 +27,11 @@ class RegisterEventStringItem(
     private var textWatcher: TextWatcher? = null
 
     override fun bind(viewBinding: ItemRegisterEventInputBinding, position: Int) {
+        super.bind(viewBinding, position)
         viewBinding.apply {
             textInputEditText.apply {
-                isEnabled = editable
                 when (field.type) {
                     EventRegisterField.Type.STRING, EventRegisterField.Type.GROUP -> {
-                        inputType =
-                            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                    }
-                    EventRegisterField.Type.GROUP -> {
                         inputType =
                             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                     }
@@ -89,6 +87,7 @@ class RegisterEventStringItem(
         }
     }
 
+    override fun getTitleView(binding: ItemRegisterEventInputBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_input
 
 }

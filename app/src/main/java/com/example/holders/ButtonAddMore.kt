@@ -21,10 +21,6 @@ class ButtonAddMore(
         viewBinding.apply {
             tvHelp.visibility = View.GONE
             btnEdit.apply {
-                updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    marginStart =
-                        resources.getDimensionPixelSize(R.dimen.profile_data_margin_compact)
-                }
                 text = this@ButtonAddMore.text
                 setOnClickListener(onClickListener)
             }

@@ -65,7 +65,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
-            btnLogin.setOnClickListener { showAuthorization() }
+            btnLogin.setOnClickListener { presenter.onAuthorizationClick() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
                 updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }

@@ -3,6 +3,7 @@ package com.example.ui.event.about
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -383,14 +384,14 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
     }
 
     private fun setupBlurView() {
-        val algorithm: BlurAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            RenderEffectBlur()
-        } else RenderScriptBlur(requireContext())
-
-        val windowBackground = requireActivity().window.decorView.background
-        mBinding.toolbar.tbBackground.setupWith(mBinding.eventContentList, algorithm)
-            .setFrameClearDrawable(windowBackground)
-            .setBlurRadius(15f)
+//        val algorithm: BlurAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            RenderEffectBlur()
+//        } else RenderScriptBlur(requireContext())
+//
+//        val windowBackground = requireActivity().window.decorView.background
+//        mBinding.toolbar.tbBackground.setupWith(mBinding.eventContentList, algorithm)
+//            .setFrameClearDrawable(windowBackground)
+//            .setBlurRadius(15f)
     }
 
     override fun updateAppBarBackgroundColorValue(value: Int) {

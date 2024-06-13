@@ -1,9 +1,11 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
+import android.widget.TextView
 import com.example.R
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
+import com.example.databinding.ItemRegisterEventBooleanBinding
 import com.example.databinding.ItemRegisterEventPassportBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
@@ -17,7 +19,6 @@ import java.util.*
 
 class RegisterEventPassportItem(
     private val fieldData: EventRegisterFieldData<EventPassport>,
-    private val editable: Boolean = true,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventPassportBinding>(fieldData, onDataChange) {
 
@@ -29,11 +30,11 @@ class RegisterEventPassportItem(
 
 
     override fun bind(viewBinding: ItemRegisterEventPassportBinding, position: Int) {
+        super.bind(viewBinding, position)
         viewBinding.apply {
             val passport = fieldData.value ?: EventPassport().apply { fieldData.value = this }
 
             etSerial.apply {
-                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.series)
                 serialTextWatcher = onTextChanged {
@@ -43,7 +44,6 @@ class RegisterEventPassportItem(
             }
 
             etNumber.apply {
-                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.number)
                 numberTextWatcher = onTextChanged {
@@ -53,7 +53,6 @@ class RegisterEventPassportItem(
             }
 
             etAgency.apply {
-                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.issuedBy)
                 agencyTextWatcher = onTextChanged {
@@ -64,14 +63,12 @@ class RegisterEventPassportItem(
 
             val date = passport.issuedDate?.let { defaultServerDateFormatter.parse(it) }
             tilDate.apply {
-                isEnabled = editable
                 initAsDatePicker(date, maxDate = Date()) { year, month, day ->
                     String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
                 }
             }
 
             etDate.apply {
-                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(date?.let { defaultDateFormatter.format(it) })
                 dateTextWatcher = onTextChanged {
@@ -81,7 +78,6 @@ class RegisterEventPassportItem(
             }
 
             etCode.apply {
-                isEnabled = editable
                 hint = hint?.setRequired(fieldData.field.required)
                 setText(passport.issuedDepartment)
                 codeTextWatcher = onTextChanged {
@@ -103,5 +99,6 @@ class RegisterEventPassportItem(
         super.unbind(viewHolder)
     }
 
+    override fun getTitleView(binding: ItemRegisterEventPassportBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_passport
 }

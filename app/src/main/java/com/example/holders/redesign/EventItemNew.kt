@@ -21,13 +21,14 @@ import com.example.extensions.parseColor
 
 class EventItemNew(
     event: EventNew,
-    val isTemp : Boolean,
+    val isTemp: Boolean,
     val clickListener: OnEventClickListener
 ) : BindableItem<ItemEventNewBinding>(event.id?.toLong() ?: 0) {
 
     private var eventData = event
     private val eventId = eventData.id.toString()
-    private val imageColor = ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
+    private val imageColor =
+        ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
     private val eventDate =
         eventData.holdingDate?.from?.formatToDefaultDate() + " - " + eventData.holdingDate?.to?.formatToDefaultDate()
 
@@ -66,11 +67,13 @@ class EventItemNew(
                 statusText = R.string.event_status_finished
 
             }
+
             Event.Status.CANCELED -> {
                 statusVisibility = true
                 statusBackground = R.color.event_status_cancelled_background
                 statusText = R.string.event_status_cancelled
             }
+
             else -> {
                 when (userRegistration) {
                     Event.Status.APPROVED -> {
@@ -78,21 +81,25 @@ class EventItemNew(
                         statusBackground = R.color.event_status_approved_background
                         statusText = R.string.event_status_approved_new
                     }
+
                     Event.Status.PENDING -> {
                         statusVisibility = true
                         statusBackground = R.color.event_status_wait_confirmation_background
                         statusText = R.string.event_status_wait_confirmation
                     }
+
                     Event.Status.DECLINED -> {
                         statusVisibility = true
                         statusBackground = R.color.event_status_declined_background
                         statusText = R.string.event_status_decline_new
                     }
+
                     Event.Status.REGISTRATION_FINISHED -> {
                         statusVisibility = true
                         statusBackground = R.color.event_status_wait_confirmation_background
                         statusText = R.string.event_action_closed_request
                     }
+
                     else -> statusVisibility = false
                 }
             }
@@ -110,14 +117,19 @@ class EventItemNew(
         val userAgreement = eventData.userAgreement?.uri
         val actions = registrationState?.availableActions ?: arrayListOf("")
 
-        if (eventData.isStatusActionAvailable() && registrationState != null && !eventData.isRegistrationClosed()) {
+        if (isTemp) {
+            btnAction.apply {
+                isVisible = true
+                text = context.getString(R.string.event_action_participate)
+                setOnClickListener { clickListener.onShowNeedAuth(eventId) }
+            }
+        } else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
             if (actions.contains("register")) {
                 btnAction.apply {
                     isVisible = true
                     text = context.getString(R.string.event_action_participate)
                     setOnClickListener {
-                        if (isTemp) clickListener.onShowNeedAuth(eventId)
-                        else registrationState.checkStateLevel {
+                        registrationState.checkStateLevel {
                             clickListener.onActionRegister(eventId, userAgreement, eventData.isFormEnabled())
                         }
                     }
@@ -168,10 +180,10 @@ class EventItemNew(
     }
 
     interface OnEventClickListener {
-        fun onActionRegister(event: String, agreementUrl: String?, formEnabled : Boolean)
+        fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(view: View, event: String)
         fun onShowUpdateState()
-        fun onShowNeedAuth(eventId : String)
+        fun onShowNeedAuth(eventId: String)
     }
 }

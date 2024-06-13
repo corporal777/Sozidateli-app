@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Handler
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.example.R
@@ -39,6 +40,10 @@ class FcmMessagingService : FirebaseMessagingService() {
         AndroidInjection.inject(this)
         super.onCreate()
         channel = getString(R.string.app_name)
+    }
+
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -169,10 +174,7 @@ class FcmMessagingService : FirebaseMessagingService() {
     private fun sendNoTypeNotification(id: Int, title: String?, body: String?) {
         if (title == null && body == null) return
 
-        notificationUtil.createNotification(
-                notificationId = id,
-                channel = channel
-        ) {
+        notificationUtil.createNotification(notificationId = id, channel = channel) {
             setContentTitle(title)
             setContentText(body)
             setTicker(body)

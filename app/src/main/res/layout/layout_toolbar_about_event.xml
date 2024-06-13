@@ -13,19 +13,20 @@
         android:id="@+id/tb_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:visibility="visible"
         android:visibility="invisible">
 
-        <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--            android:id="@+id/tb_background"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:background="@android:color/white" />-->
-
-        <eightbitlab.com.blurview.BlurView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tb_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:blurOverlayColor="@color/blurColorOverlay" />
+            android:background="@android:color/white" />
+
+        <!--        <eightbitlab.com.blurview.BlurView-->
+        <!--            android:id="@+id/tb_background"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            app:blurOverlayColor="@color/blurColorOverlay" />-->
 
         <ImageView
             android:id="@+id/iv_back"

@@ -3,21 +3,23 @@ package com.example.holders.registerEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
 import com.example.databinding.ItemRegisterEventCheckboxBinding
+import com.example.databinding.ItemRegisterEventRadioBinding
 
 open class RegisterEventCheckboxItem(
     private val fieldData: EventRegisterFieldData<Set<String>>,
-    private val editable: Boolean = true,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventCheckboxBinding>(fieldData, onDataChange) {
 
     override fun bind(viewBinding: ItemRegisterEventCheckboxBinding, position: Int) {
+        super.bind(viewBinding, position)
         val values = field.values ?: emptyList()
         viewBinding.apply {
             checkGroup.apply {
-                isEnabled = editable
                 removeAllViews()
                 values.forEachIndexed { index, value ->
                     addView(
@@ -60,5 +62,6 @@ open class RegisterEventCheckboxItem(
         }
     }
 
+    override fun getTitleView(binding: ItemRegisterEventCheckboxBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_checkbox
 }

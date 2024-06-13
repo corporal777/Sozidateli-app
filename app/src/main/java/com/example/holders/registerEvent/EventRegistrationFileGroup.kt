@@ -19,28 +19,23 @@ class EventRegistrationFileGroup(
 
     private var fileItem: EventRegistrationFileItem? = null
     private val fileAddItem =
-        ProfileButtonEditItem(context.getString(R.string.add_file), true, onAddClick).apply {
-            hasDivider = false
-            compactMargin = true
-        }
+        ProfileButtonEditItem(context.getString(R.string.add_file), onAddClick)
 
     private val descriptions: MutableList<Item<*>> = mutableListOf()
 
     init {
         checkFile()
 
+        descriptions.add(EventRegistrationDescriptionItem(fieldData.field.name, null))
         if (fieldData.field.description != null) {
-            descriptions.add(EventRegistrationDescriptionItem(fieldData.field.description))
+            descriptions.add(EventRegistrationDescriptionItem(null, fieldData.field.description))
         }
 
         if (!fieldData.field.values.isNullOrEmpty()) {
             val availableExtensions = EventRegistrationDescriptionItem(
-                String.format(
-                    context.getString(R.string.event_register_available_extensions),
-                    fieldData.field.values.joinToString()
-                )
+                null,
+                String.format(context.getString(R.string.event_register_available_extensions), fieldData.field.values.joinToString())
             )
-
             descriptions.add(availableExtensions)
         }
     }

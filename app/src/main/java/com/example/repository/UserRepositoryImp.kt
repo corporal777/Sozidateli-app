@@ -17,6 +17,8 @@ import io.reactivex.functions.Function3
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.example.extensions.toBodyPart
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import javax.inject.Inject
 
 
@@ -493,5 +495,15 @@ class UserRepositoryImp
 
     override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
         return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
+    }
+
+    override fun getFcmToken(): Maybe<String> {
+        return Maybe.create { emitter ->
+            FirebaseMessaging.getInstance().token
+                .addOnSuccessListener { token ->
+                    emitter.onSuccess(token)
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
     }
 }

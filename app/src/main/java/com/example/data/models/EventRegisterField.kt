@@ -26,6 +26,9 @@ data class EventRegisterField(
         @SerializedName("string")
         STRING,
 
+        @SerializedName("separator")
+        SEPARATOR,
+
         @SerializedName("number")
         NUMBER,
 

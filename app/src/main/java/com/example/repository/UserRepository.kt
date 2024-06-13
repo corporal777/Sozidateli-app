@@ -22,7 +22,7 @@ interface UserRepository {
 
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
-    //fun getFcmToken(): Maybe<InstanceIdResult>
+    fun getFcmToken(): Maybe<String>
 
     fun changePassword(id: Int, body: PasswordBody): Completable
     fun checkPassword(password: String): Completable

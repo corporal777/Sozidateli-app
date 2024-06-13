@@ -52,6 +52,10 @@ fun String.formatToDefaultDate(): String? {
     return parseAndFormat(defaultServerDateFormatter, defaultDateFormatter)
 }
 
+fun String.formatToDefaultTime(): String? {
+    return parseAndFormat(defaultServerDateTimeFormatter, defaultTimeFormatter)
+}
+
 fun String.formatToDefaultDateTime(): String? {
     return parseAndFormat(defaultServerDateTimeFormatter, defaultDateTimeFormatter)
 }

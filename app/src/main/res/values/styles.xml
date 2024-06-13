@@ -257,6 +257,13 @@
         <item name="android:layout_height">1dp</item>
     </style>
 
+    <style name="ViewDivider.Form">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
     <style name="ViewDivider.Vertical">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -664,6 +671,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">10dp</item>
         <item name="android:orientation">vertical</item>
     </style>
 

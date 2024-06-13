@@ -5,6 +5,17 @@
 
     <LinearLayout style="@style/EventRegistrationItemContainer">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView"
+            fontPath="fonts/sf_pro_display_regular.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="-0.01"
+            android:textColor="@color/profile_data_text_hint"
+            android:textSize="14sp"
+            tools:text="Title" />
+
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/textInputLayout"
             style="@style/Profile.Edit.PasswordNew"
@@ -18,5 +29,7 @@
                 android:gravity="top"
                 tools:hint="@string/profile_phone_hint" />
         </com.example.ui.views.CustomTextInputLayout>
+
+        <View style="@style/ViewDivider.Form" />
     </LinearLayout>
 </layout>

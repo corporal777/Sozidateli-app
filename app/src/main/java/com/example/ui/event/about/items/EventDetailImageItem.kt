@@ -44,7 +44,7 @@ class EventDetailImageItem(
         ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
 
     private val eventDate = getEventDate()
-    private val eventDescription = eventData.description?.replace("\n", " ")
+    private val eventDescription = getMarkdownText(eventData.description?.replace("\n", " "))
     private val requestDate = getEventRequestDate()
 
 
@@ -57,7 +57,8 @@ class EventDetailImageItem(
                 text = eventData.address?.getShortAddress()
             }
             tvEventName.apply {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
                     if ((eventData.name ?: "").length < 150)
                         resources.getDimension(R.dimen.event_detail_name_text_size)
                     else resources.getDimension(R.dimen.event_detail_name_text_size_min)
@@ -70,7 +71,11 @@ class EventDetailImageItem(
                 text = eventDate
             }
 
-            tvEventDescription.text = eventDescription
+            tvEventDescription.apply {
+                text = eventDescription
+                highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
 
             ivLogo.apply {
                 setImagePicasso(
@@ -100,13 +105,13 @@ class EventDetailImageItem(
 
         var actionText: CharSequence? = null
 
-        if (eventNew.isStatusActionAvailable() && state != null) {
+        if (isTemporary) {
+            btnText = getActionButtonText("temporary")
+            clickAction = { clickListener.onShowNeedAuth(eventData.id.toString()) }
+        } else if (eventNew.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = getActionButtonText("register")
-                clickAction = {
-                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
-                    else state.checkStateLevel { clickListener.onActionRegister(userAgreement) }
-                }
+                clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnBackground = R.drawable.btn_background_white_ghost
                 btnText = getActionButtonText("withdraw")
@@ -130,14 +135,13 @@ class EventDetailImageItem(
 
         } else {
             if (actions.contains("subscribe")) {
-                if (eventNew.binds?.isUserSubscribed == true){
+                if (eventNew.binds?.isUserSubscribed == true) {
                     btnText = getActionButtonText("unsubscribe")
                     btnBackground = R.drawable.btn_background_white_ghost
                 } else btnText = getActionButtonText("subscribe")
 
                 clickAction = {
-                    if (isTemporary) clickListener.onShowNeedAuth(eventData.id.toString())
-                    else state?.checkStateLevel {
+                    state?.checkStateLevel {
                         clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
                     }
                 }
@@ -187,6 +191,7 @@ class EventDetailImageItem(
     }
 
     private fun getEventDate(): String? {
+
         val eventDateStart = eventData.holdingDate?.from
         val eventDateEnd = eventData.holdingDate?.to
         val startCalendar = eventDateStart?.parseToDate(defaultServerDateFormatter)?.calendar()
@@ -195,10 +200,15 @@ class EventDetailImageItem(
         if (eventDateStart.isNullOrEmpty() || eventDateEnd.isNullOrEmpty()) return null
         if (startCalendar == null || endCalendar == null) return null
 
-        return if (startCalendar.isSameYear(endCalendar))
-            eventDateStart.formatToDefaultDayMonthDate() + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
-        else eventDateStart.formatToDefaultDayMonthYearDate() + " г." + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+//        return if (startCalendar.isSameYear(endCalendar))
+//            eventDateStart.formatToDefaultDayMonthDate() + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+//        else eventDateStart.formatToDefaultDayMonthYearDate() + " г." + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+//
+//        return eventData.holdingDate?.from?.formatToDefaultDate() +
+//                " - " + eventData.holdingDate?.to?.formatToDefaultDate()
 
+        return eventDateStart.formatToDefaultDayMonthYearDate() + " г." +
+                " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
     }
 
     private fun getEventRequestDate(): String? {
@@ -214,21 +224,10 @@ class EventDetailImageItem(
                     else -> "До начала приема заявок $day дней"
                 }
             } else {
-//                val limitDate = requestsApply.dateLimit.parseAndFormat(
-//                    defaultServerDateTimeFormatter,
-//                    dateFormatterShortMonthShortYear
-//                )
-//                val limitTime = requestsApply.dateLimit.parseAndFormat(
-//                    defaultServerDateTimeFormatter,
-//                    defaultTimeFormatter
-//                )
-//                return "Заявки принимаются по $limitDate, $limitTime"
-
-                val limitDate = requestsApply.dateLimit.parseAndFormat(
-                    defaultServerDateTimeFormatter,
-                    dateFormatterFullMothNoYear
-                )
-                return "Заявки принимаются по $limitDate"
+//                val limitDate = requestsApply.dateLimit.formatToDefaultDate()
+                val limitDate = requestsApply.dateLimit.formatToDefaultDayMonthYearDate() + " г."
+                val limitTime = requestsApply.dateLimit.formatToDefaultTime()
+                return "Заявки принимаются по $limitDate, $limitTime"
             }
         } else return null
     }
@@ -236,7 +235,7 @@ class EventDetailImageItem(
 
     private fun getActionButtonText(description: String?): CharSequence {
         return when (description) {
-            "register" -> {
+            "register", "temporary" -> {
                 SpannableStringBuilder().apply {
                     append(CustomSpannableString(context.getString(R.string.event_action_participate)).apply {
                         setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
@@ -248,11 +247,13 @@ class EventDetailImageItem(
                     })
                 }
             }
+
             "withdraw" -> {
                 CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
                     setColorSpan(R.color.black, context)
                 }
             }
+
             "view" -> context.getString(R.string.event_status_approved)
 
             "closed" -> {
@@ -286,7 +287,7 @@ class EventDetailImageItem(
                     setClickSpan(textView) { showCancelRegisterDialog() }
                 })
             }
-            if (eventData.isFormEnabled() && eventData.isHasFormResult()){
+            if (eventData.isFormEnabled() && eventData.isHasFormResult()) {
                 if (withDelimiter) append(" ∙ ")
 
                 append(CustomSpannableString(context.getString(R.string.my_event_form)).apply {
@@ -307,6 +308,21 @@ class EventDetailImageItem(
         else return null
     }
 
+    private fun getMarkdownText(message: String?): SpannableStringBuilder? {
+        if (message.isNullOrBlank()) return null
+        else {
+            val spanned = markWon(context).toMarkdown(message)
+            return SpannableStringBuilder(spanned).apply {
+                val urls = getSpans<URLSpan>()
+                urls.forEach {
+                    val start = getSpanStart(it)
+                    val end = getSpanEnd(it)
+                    removeSpan(it)
+                    set(start..end, URLSpanNoUnderline(it.url))
+                }
+            }
+        }
+    }
 
     interface OnActionClickListener {
         fun onActionRegister(url: String?)

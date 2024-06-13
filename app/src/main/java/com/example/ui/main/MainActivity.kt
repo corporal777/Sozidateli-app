@@ -38,7 +38,6 @@ import com.example.ui.event.list.recommendations.RecommendationsFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
-import com.example.ui.event.rating.EventRatingFragmentArgs
 import com.example.ui.main.inApp.InAppNotificationFragment
 import com.example.ui.notification.NotificationsListFragment
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
@@ -413,13 +412,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         findNavController().navigate(
             R.id.organization_fragment_new,
             OrganizationFragmentArgs.Builder(organization).build().toBundle()
-        )
-    }
-
-    override fun showRating(event: String) {
-        findNavController().navigate(
-            R.id.event_rating_fragment,
-            EventRatingFragmentArgs.Builder(event).build().toBundle()
         )
     }
 

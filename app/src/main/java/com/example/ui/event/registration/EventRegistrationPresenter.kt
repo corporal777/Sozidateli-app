@@ -176,9 +176,11 @@ class EventRegistrationPresenter
     ): List<EventRegisterFieldData<*>>? {
         return fields?.mapNotNull { field ->
             when (field.type) {
+                EventRegisterField.Type.SEPARATOR -> {
+                    EventRegisterFieldData.Title(field, findValue(field, results).fromJson<String>())
+                }
                 EventRegisterField.Type.STRING,
                 EventRegisterField.Type.TEXT_AREA,
-                EventRegisterField.Type.GROUP,
                 EventRegisterField.Type.NUMBER ->
                     EventRegisterFieldData.String(
                         field,
@@ -345,9 +347,8 @@ class EventRegistrationPresenter
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
 
-                        if (fieldData is EventRegisterFieldData.Prefilled) {
-                            return@forEachIndexed
-                        } else if (fieldData is EventRegisterFieldData.File) {
+                        if (fieldData is EventRegisterFieldData.Prefilled) return@forEachIndexed
+                        else if (fieldData is EventRegisterFieldData.File) {
                             val path = (value as EventFile).path
                             addFormDataPart("fields[$index][id]", key)
                             if (checkHttpScheme(path)) {
@@ -363,18 +364,9 @@ class EventRegistrationPresenter
                             addFormDataPart("fields[$index][id]", key)
                             addFormDataPart("fields[$index][value][series]", passport.series ?: "")
                             addFormDataPart("fields[$index][value][number]", passport.number ?: "")
-                            addFormDataPart(
-                                "fields[$index][value][issuedBy]",
-                                passport.issuedBy ?: ""
-                            )
-                            addFormDataPart(
-                                "fields[$index][value][issuedDepartment]",
-                                passport.issuedDepartment ?: ""
-                            )
-                            addFormDataPart(
-                                "fields[$index][value][issuedDate]",
-                                passport.issuedDate ?: ""
-                            )
+                            addFormDataPart("fields[$index][value][issuedBy]", passport.issuedBy ?: "")
+                            addFormDataPart("fields[$index][value][issuedDepartment]", passport.issuedDepartment ?: "")
+                            addFormDataPart("fields[$index][value][issuedDate]", passport.issuedDate ?: "")
                         } else if (value is Iterable<*>) {
                             if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
                             value.forEachIndexed { _, a ->

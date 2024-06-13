@@ -6,12 +6,17 @@ import com.example.databinding.ItemEventRegistrationFieldDescriptionBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class EventRegistrationDescriptionItem(
+    private val title : String?,
     private val description: String?
 ) : BindableItem<ItemEventRegistrationFieldDescriptionBinding>(description.hashCode().toLong()) {
 
     override fun bind(viewBinding: ItemEventRegistrationFieldDescriptionBinding, position: Int) {
         viewBinding.apply {
-            textView.apply {
+            textViewTitle.apply {
+                text = title
+                isVisible = !title.isNullOrEmpty()
+            }
+            textViewDescription.apply {
                 text = description
                 isVisible = !description.isNullOrEmpty()
             }

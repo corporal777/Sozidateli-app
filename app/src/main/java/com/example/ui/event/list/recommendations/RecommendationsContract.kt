@@ -29,6 +29,7 @@ interface RecommendationsContract {
 
     interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
         fun onSearchClick()
+        fun onAuthorizationClick()
         fun onShowSavedEventOrProfile(isProfile : Boolean?)
         fun onRefreshRequest()
     }

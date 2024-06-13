@@ -23,7 +23,10 @@ class StoriesPresenter
         super.onFirstViewAttach()
         compositeDisposable += authRepository.getTemporaryToken()
             .performOnBackgroundOutOnMain()
-            .subscribeBy {}
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onComplete = {}
+            )
     }
 
     override fun onStoriesComplete() {

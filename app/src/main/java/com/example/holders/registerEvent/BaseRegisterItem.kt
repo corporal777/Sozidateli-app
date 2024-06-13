@@ -1,5 +1,8 @@
 package com.example.holders.registerEvent
 
+import android.widget.TextView
+import androidx.annotation.CallSuper
+import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.data.models.EventRegisterFieldData
 import com.xwray.groupie.databinding.BindableItem
@@ -11,6 +14,16 @@ abstract class BaseRegisterItem<T : ViewDataBinding>(
 ) : BindableItem<T>(fieldData.field.id.toLong()) {
 
     protected val field = fieldData.field
+
+    abstract fun getTitleView(binding: T): TextView
+
+    @CallSuper
+    override fun bind(viewBinding: T, position: Int) {
+        getTitleView(viewBinding).apply {
+            text = fieldData.field.name
+            isVisible = !fieldData.field.name.isNullOrEmpty()
+        }
+    }
 
     protected fun onDataChange() {
         onDataChange(fieldData)

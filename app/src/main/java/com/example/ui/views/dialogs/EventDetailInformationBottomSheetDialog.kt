@@ -1,21 +1,29 @@
 package com.example.ui.views.dialogs
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.core.text.getSpans
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventNew
 import com.example.data.models.createMapInfo
 import com.example.databinding.BottomSheetEventDetailInformationBinding
+import com.example.extensions.markWon
+import com.example.extensions.parsePhone
 import com.example.ui.event.location.map.MapFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.page.PageFragment
 import com.example.ui.views.CustomSpannableString
+import com.example.util.URLSpanNoUnderline
+import com.example.util.Utils.formatMobilePhone
 import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -51,7 +59,11 @@ class EventDetailInformationBottomSheetDialog(
             tvEventFormatText.text = event.getEventFormat().name
 
             lnEventDescription.isVisible = !event.description.isNullOrEmpty()
-            tvEventDescriptionText.text = event.description
+            tvEventDescriptionText.apply {
+                text = getMarkdownText(event.description)
+                highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
 
             lnEventLocation.isVisible = !event.address?.getFullAddress().isNullOrEmpty()
             tvEventLocationText.apply {
@@ -79,6 +91,24 @@ class EventDetailInformationBottomSheetDialog(
             tvEventPhoneText.apply {
                 text = SpannableStringBuilder().apply {
                     event.phone?.forEachIndexed { index, it ->
+                        if (index > 0) append("\n\n")
+                        append(CustomSpannableString(it.value?.parsePhone(context)).apply {
+                            setColorSpan(R.color.bottom_nav_item_selected_color, context)
+                        })
+                        append("\n")
+                        append(CustomSpannableString(it.title).apply {
+                            setTextSizeSpan(R.dimen.user_short_name_text_size, context)
+                            setColorSpan(R.color.register_event_go_to_profile_text_color, context)
+                        })
+
+                    }
+                }
+            }
+
+            lnEventEmail.isVisible = !event.email.isNullOrEmpty()
+            tvEventEmailText.apply {
+                text = SpannableStringBuilder().apply {
+                    event.email?.forEachIndexed { index, it ->
                         if (index > 0) append("\n\n")
                         append(CustomSpannableString(it.value).apply {
                             setColorSpan(R.color.bottom_nav_item_selected_color, context)
@@ -150,5 +180,21 @@ class EventDetailInformationBottomSheetDialog(
         if (event.id == null || id == null) return
         PageFragment(event.id.toString(), id.toString())
             .show((activity as MainActivity).supportFragmentManager)
+    }
+
+    private fun getMarkdownText(message: String?): SpannableStringBuilder? {
+        if (message.isNullOrBlank()) return null
+        else {
+            val spanned = markWon(context).toMarkdown(message)
+            return SpannableStringBuilder(spanned).apply {
+                val urls = getSpans<URLSpan>()
+                urls.forEach {
+                    val start = getSpanStart(it)
+                    val end = getSpanEnd(it)
+                    removeSpan(it)
+                    set(start..end, URLSpanNoUnderline(it.url))
+                }
+            }
+        }
     }
 }

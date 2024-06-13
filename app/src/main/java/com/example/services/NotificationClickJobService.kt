@@ -2,6 +2,7 @@ package com.example.services
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.util.Log
 import com.example.data.AppData
 import com.example.repository.UserRepository
 import com.example.util.FIELD_ACTION

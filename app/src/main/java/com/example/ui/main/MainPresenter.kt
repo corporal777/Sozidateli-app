@@ -15,6 +15,8 @@ import com.example.ui.base.BasePresenter
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

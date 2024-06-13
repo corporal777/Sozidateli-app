@@ -45,6 +45,7 @@ import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
 import com.example.extensions.onScrolled
 import com.example.extensions.statusBarColorValue
+import com.example.ui.event.registration.items.RegisterEventTitleItem
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import java.util.*
 import javax.inject.Inject
@@ -80,8 +81,7 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         ActionButtonItem(-200L, ACTION_EVENT_REQUEST) { presenter.onRegisterClick() }
     }
 
-    private val personalDataFileClickListener: OnPersonalDataFileClickListener =
-        { presenter.onPersonalDataFileClick(it) }
+
     private val onFieldDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit =
         { presenter.onDataChange(it) }
 
@@ -135,55 +135,36 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
                         if (it.value == null) null
                         else RegisterEventProfileItemsGroup(it.value!!) { showEditProfile() }
                     }
+                    is  EventRegisterFieldData.Title ->
+                        RegisterEventTitleItem(it.field.name)
 
                     is EventRegisterFieldData.String ->
-                        RegisterEventStringItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        RegisterEventStringItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.Date ->
-                        RegisterEventDateItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        RegisterEventDateItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.SelectBox ->
-                        EventRegistrationSelectBoxItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        EventRegistrationSelectBoxItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        RegisterEventRadioBoxItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        RegisterEventCheckboxItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.Boolean ->
-                        RegisterEventBooleanItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it, withTitle = false)
+                        RegisterEventBooleanItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(
-                            it,
-                            onDataChange = onFieldDataChange
-                        ).createFieldItemFrom(it)
+                        RegisterEventPassportItem(it, onFieldDataChange)
 
                     is EventRegisterFieldData.File ->
                         EventRegistrationFileGroup(
                             requireContext(),
                             it,
                             onFieldDataChange
-                        ) { presenter.onAddFileClick(it) }.createFieldItemFrom(it)
+                        ) { presenter.onAddFileClick(it) }
                 }
             })
         }
@@ -256,25 +237,6 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    private fun Group.createFieldItemFrom(
-        fieldData: EventRegisterFieldData<*>,
-        customTitle: String? = null,
-        withTitle: Boolean = true,
-        withFile: Boolean = true
-    ): Group {
-        val field = fieldData.field
-        return let {
-            val title = if (withTitle) customTitle ?: field.name else null
-            it.withEventRegistrationTitle(title?.setRequired(field.required)?.toString())
-        }
-            .let {
-                val file = if (withFile) field.rightFile else null
-                it.withEventRegistrationPersonalDataFile(
-                    file?.file, field.rightFileDescription
-                        ?: file?.filename, personalDataFileClickListener
-                )
-            }
-    }
 
     private fun findEventRegistrationFileGroup(
         parent: NestedGroup,

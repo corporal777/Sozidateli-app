@@ -56,6 +56,11 @@ class RecommendationsPresenter
     }
 
     override fun onSearchClick() = viewState.showSearch()
+    override fun onAuthorizationClick() {
+        appData.savedEventId = null
+        viewState.showAuthorization()
+    }
+
     override fun onRefreshRequest() = pagination.invalidate()
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 

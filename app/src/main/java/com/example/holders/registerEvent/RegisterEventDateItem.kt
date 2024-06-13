@@ -1,9 +1,12 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
+import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
+import com.example.databinding.ItemRegisterEventCheckboxBinding
 import com.example.databinding.ItemRegisterEventDateBinding
 import com.example.extensions.*
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -17,7 +20,6 @@ import java.util.*
 
 open class RegisterEventDateItem(
     private val fieldData: EventRegisterFieldData<String>,
-    private val editable: Boolean = true,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventDateBinding>(fieldData, onDataChange) {
 
@@ -32,9 +34,9 @@ open class RegisterEventDateItem(
     private var textWatcher: TextWatcher? = null
 
     override fun bind(viewBinding: ItemRegisterEventDateBinding, position: Int) {
+        super.bind(viewBinding, position)
         viewBinding.apply {
             textInputEditText.apply {
-                isEnabled = editable
                 val valueString = fieldData.value
                 val date = valueString?.let { defaultServerDateFormatter.parse(it) }
                 val value: String?
@@ -92,8 +94,6 @@ open class RegisterEventDateItem(
                 setText(value)
                 textWatcher = onTextChanged(textChangeListener)
             }
-
-            baseTextInputLayout.isEnabled = editable
         }
     }
 
@@ -107,6 +107,6 @@ open class RegisterEventDateItem(
         super.unbind(viewHolder)
     }
 
-
+    override fun getTitleView(binding: ItemRegisterEventDateBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_date
 }

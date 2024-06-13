@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/checkGroup"
-        style="@style/EventRegistrationItemContainer" />
+    <LinearLayout style="@style/EventRegistrationItemContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView"
+            fontPath="fonts/sf_pro_display_regular.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:letterSpacing="-0.01"
+            android:textColor="@color/profile_data_text_hint"
+            android:textSize="14sp"
+            tools:text="Title" />
+
+        <LinearLayout
+            android:id="@+id/checkGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical" />
+
+
+        <View style="@style/ViewDivider.Form" />
+    </LinearLayout>
+
+
 </layout>
 

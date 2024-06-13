@@ -14,6 +14,12 @@ sealed class EventRegisterFieldData<T>(
         override fun hasForm() = value != null
     }
 
+    class Title(field: EventRegisterField, value: kotlin.String?):
+        EventRegisterFieldData<kotlin.String>(field, value) {
+        override fun isValid() = true
+        override fun hasForm() = false
+    }
+
     class String(field: EventRegisterField, value: kotlin.String?) :
         EventRegisterFieldData<kotlin.String>(field, value) {
         override fun isValid() = !field.required || !value.isNullOrEmpty()

@@ -36,18 +36,6 @@ class NotificationUtil @Inject constructor(
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && groupId != null) {
-            val summaryNotificationBuilder = NotificationCompat.Builder(context, channel)
-                    .setSmallIcon(smallIcon)
-                    .setGroup(groupId)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setSound(null)
-                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                    .setGroupSummary(true)
-
-            notificationManager.notify(groupId.hashCode(), summaryNotificationBuilder.build())
-        }
-
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
@@ -61,7 +49,9 @@ class NotificationUtil @Inject constructor(
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
 
-            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            else PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
         }
     }
 }

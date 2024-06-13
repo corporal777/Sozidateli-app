@@ -11,10 +11,20 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textView"
+            android:id="@+id/textViewTitle"
+            fontPath="fonts/sf_pro_display_regular.OTF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:letterSpacing="-0.01"
+            android:textColor="@color/profile_data_text_hint"
+            android:textSize="14sp"
+            tools:text="Title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewDescription"
             style="@style/Profile.Edit.InputTitle"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="10dp"
             android:textSize="13sp"
             tools:text="Title" />
     </LinearLayout>
