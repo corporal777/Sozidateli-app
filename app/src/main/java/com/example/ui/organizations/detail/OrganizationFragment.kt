@@ -256,12 +256,6 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
             .show()
     }
 
-    override fun showEventRegistrationSuccessDialog() {
-        EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback { }
-            .show()
-    }
-
     override fun layout(): Int = R.layout.fragment_organization
     override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
     override fun actionIconContainer(view: ViewGroup) {}

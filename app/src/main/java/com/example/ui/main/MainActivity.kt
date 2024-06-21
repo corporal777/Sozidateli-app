@@ -87,6 +87,7 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -431,6 +432,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         inAppNotification.show(supportFragmentManager, "inAppDialog")
     }
 
+
     override fun showNoConnectionMessage(show: Boolean) {
         if (show && noInternetDialog?.isShowing != true) {
 
@@ -466,6 +468,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     override fun onDestroy() {
         unregisterFragmentLifecycleCallback()
         super.onDestroy()
+    }
+
+    override fun showEventRegistrationSuccessDialog() {
+        EventRegistrationSuccessBottomDialog(this)
+            .setSelectCallback { }
+            .show()
     }
 
     override fun showEmailErrorMessage() {

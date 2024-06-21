@@ -258,11 +258,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             .show()
     }
 
-    override fun showEventRegistrationSuccessDialog() {
-        EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback { }
-            .show()
-    }
 
     private fun showEventFormResult(event: EventNew) {
         val formResult = event.binds?.userFormResult

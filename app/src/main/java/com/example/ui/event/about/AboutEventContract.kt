@@ -62,9 +62,6 @@ interface AboutEventContract {
         fun showAgreementRegisterDialog(event: String, url: String)
 
         @Skip
-        fun showEventRegistrationSuccessDialog()
-
-        @Skip
         fun showEventSubscribedDialog(isSubscribed: Boolean?)
 
         @Skip

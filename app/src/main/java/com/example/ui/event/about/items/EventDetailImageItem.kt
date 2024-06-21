@@ -191,22 +191,8 @@ class EventDetailImageItem(
     }
 
     private fun getEventDate(): String? {
-
-        val eventDateStart = eventData.holdingDate?.from
-        val eventDateEnd = eventData.holdingDate?.to
-        val startCalendar = eventDateStart?.parseToDate(defaultServerDateFormatter)?.calendar()
-        val endCalendar = eventDateEnd?.parseToDate(defaultServerDateFormatter)?.calendar()
-
-        if (eventDateStart.isNullOrEmpty() || eventDateEnd.isNullOrEmpty()) return null
-        if (startCalendar == null || endCalendar == null) return null
-
-//        return if (startCalendar.isSameYear(endCalendar))
-//            eventDateStart.formatToDefaultDayMonthDate() + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
-//        else eventDateStart.formatToDefaultDayMonthYearDate() + " г." + " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
-//
-//        return eventData.holdingDate?.from?.formatToDefaultDate() +
-//                " - " + eventData.holdingDate?.to?.formatToDefaultDate()
-
+        val eventDateStart = eventData.holdingDate?.from ?: return null
+        val eventDateEnd = eventData.holdingDate?.to ?: return null
         return eventDateStart.formatToDefaultDayMonthYearDate() + " г." +
                 " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
     }

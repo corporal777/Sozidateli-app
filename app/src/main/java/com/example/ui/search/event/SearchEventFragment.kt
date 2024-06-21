@@ -80,13 +80,6 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
             .show()
     }
 
-    override fun showEventRegistrationSuccessDialog() {
-        EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback {  }
-            .show()
-    }
-
-
     override fun createItem(itemData: EventNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
         else EventItemNew(itemData, searchPresenter.isTemporaryUser(), onEventClickListener,)

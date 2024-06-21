@@ -9,18 +9,6 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingPrefix">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="30dp"
-            android:layout_height="4dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/bottom_sheet_top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvRegisterTitle"
@@ -33,7 +21,7 @@
             android:text="@string/event_register_sent_moderate_title"
             android:textColor="@color/black"
             android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@id/view" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvRegisterDesc"

@@ -35,12 +35,6 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
             .show()
     }
 
-    override fun showEventRegistrationSuccessDialog() {
-        EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback {  }
-            .show()
-    }
-
     override fun showAboutEvent(event: String) {
         findNavController().navigate(
             R.id.about_event_fragment,

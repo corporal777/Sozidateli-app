@@ -20,9 +20,6 @@ interface EventListContract {
         @Skip
         fun showAgreementRegisterDialog(event: String, url : String, formEnabled : Boolean)
 
-        @Skip
-        fun showEventRegistrationSuccessDialog()
-
         @OneExecution
         fun updateEvent(event: EventNew)
     }

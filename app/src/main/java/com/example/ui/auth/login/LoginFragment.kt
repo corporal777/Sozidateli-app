@@ -11,6 +11,7 @@ import com.example.R
 import com.example.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.MessageDialogWithTextButtons
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -86,9 +87,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
     override fun showWrongPasswordError() {
         val message = getString(R.string.auth_register_wrong_password_error)
         showErrorMessage(false, message)
+        //DefaultAlertDialog(requireContext(), null, message, null, null)
     }
 
     override fun showAccountBlockingDialog() {
+//        DefaultAlertDialog(
+//            requireContext(),
+//            "Ваш аккаунт заблокирован",
+//            "Превышено количество попыток ввода пароля. Обратитесь в техническую поддержку, чтобы разблокировать аккаунт.",
+//            "Помощь",
+//            "Отмена",
+//            true
+//        ).setSelectCallback { sendHelpEmail() }
         MessageDialogWithTextButtons(
             requireContext(),
             "Ваш аккаунт заблокирован",

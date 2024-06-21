@@ -1,16 +1,8 @@
 package com.example.ui.views.dialogs
 
 import android.content.Context
-import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.BottomSheetDialogEventAgreementBinding
 import com.example.databinding.BottomSheetEventRegistrationSuccessBinding
-import com.example.ui.views.CustomSpannableString
-import com.example.util.ClickableSpanNew
-import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

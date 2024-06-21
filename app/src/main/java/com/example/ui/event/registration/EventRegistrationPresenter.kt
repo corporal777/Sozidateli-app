@@ -142,7 +142,7 @@ class EventRegistrationPresenter
             .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { viewState.showSuccessRegister(approvingMode) })
+                onComplete = { viewState.showEventRegistrationSuccessDialog() })
     }
 
     private fun mapFields(it: List<EventRegisterFields>?): List<EventRegisterField> {

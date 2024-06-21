@@ -214,11 +214,10 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
         }
     }
 
-    override fun showSuccessRegister(moderation: String?) {
+    override fun showEventRegistrationSuccessDialog() {
         EventRegistrationSuccessBottomDialog(requireContext())
-            .setSelectCallback {
-                presenter.onSuccessGoToList()
-            }.show()
+            .setSelectCallback { presenter.onSuccessGoToList() }
+            .show()
     }
 
     override fun openUrl(url: String) = showCustomTabsBrowser(requireContext(), url)

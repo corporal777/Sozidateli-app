@@ -42,9 +42,6 @@ interface EventRegistrationContract {
         @OneExecution
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
-        @Skip
-        fun showSuccessRegister(moderation: String?)
-
         @OneExecution
         fun openUrl(url: String)
 

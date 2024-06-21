@@ -135,6 +135,10 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         mActivity?.setIgnoreTokenListener(isIgnore)
     }
 
+    override fun showEventRegistrationSuccessDialog() {
+        mActivity?.showEventRegistrationSuccessDialog()
+    }
+
     override fun navigateUp() {
         mActivity?.navigateUp()
     }

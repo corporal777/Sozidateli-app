@@ -55,9 +55,6 @@ interface OrganizationContract {
 
         @Skip
         fun showAgreementRegisterDialog(event: String, url: String, formEnabled : Boolean)
-
-        @Skip
-        fun showEventRegistrationSuccessDialog()
     }
 
     interface Presenter : BaseContract.Presenter {

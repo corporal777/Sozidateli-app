@@ -19,9 +19,6 @@ interface SearchEventContract {
 
         @Skip
         fun showAgreementRegisterDialog(event: String, url : String, formEnabled: Boolean)
-
-        @Skip
-        fun showEventRegistrationSuccessDialog()
     }
 
     interface Presenter : SearchContract.Presenter<EventNew> {

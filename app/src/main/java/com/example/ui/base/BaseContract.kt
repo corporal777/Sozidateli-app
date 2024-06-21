@@ -7,6 +7,7 @@ import moxy.MvpView
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
+import moxy.viewstate.strategy.alias.Skip
 
 interface BaseContract {
     interface View : MvpView, LoadingView {
@@ -54,6 +55,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun setIgnoreTokenListener(isIgnore: Boolean)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventRegistrationSuccessDialog()
     }
 
     interface LoadingView {
