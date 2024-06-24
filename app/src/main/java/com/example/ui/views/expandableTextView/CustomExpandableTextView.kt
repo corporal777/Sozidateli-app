@@ -16,12 +16,15 @@ import android.util.Log
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.View.MeasureSpec.UNSPECIFIED
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.ViewTreeObserver
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.R
 import com.example.data.models.NewUserAddress
+import com.example.extensions.checkIsEllipsized
 import com.example.ui.views.CustomSpannableString
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import kotlin.math.abs
@@ -39,7 +42,6 @@ class CustomExpandableTextView : AppCompatTextView {
 
     private var collapsedDisplayedText: CharSequence? = ""
 
-    var expandAction: CharSequence = ""
 
     var isTextCollapsed = true
     var limitedMaxLines: Int = 5
@@ -47,16 +49,9 @@ class CustomExpandableTextView : AppCompatTextView {
     private var oldTextWidth = 0
     private var animator: Animator? = null
 
-    var onLinkClickListener: OnExpandLinkListener? = null
-    var onTextExpandableCallback: (isHas: Boolean) -> Unit = {}
-
     init {
         ellipsize = END
-        BetterLinkMovementMethod.linkifyHtml(this)
-            .setOnLinkClickListener { _, url ->
-                onLinkClickListener?.invoke(url)
-                true
-            }
+        movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -85,43 +80,9 @@ class CustomExpandableTextView : AppCompatTextView {
         super.setEllipsize(END)
     }
 
-    fun toggle() {
+    private fun toggle() {
         if (originalText == collapsedDisplayedText) return
-
-        val height0 = height
-        text = if (isTextCollapsed) originalText else collapsedDisplayedText
-        measure(
-            MeasureSpec.makeMeasureSpec(width, EXACTLY),
-            MeasureSpec.makeMeasureSpec(height, UNSPECIFIED)
-        )
-        val height1 = measuredHeight
-        animator?.cancel()
-        val dur = (abs(height1 - height0) * 2L).coerceAtMost(300L)
-        animator = ValueAnimator.ofInt(height0, height1)
-            .apply {
-                interpolator = FastOutSlowInInterpolator()
-                duration = dur
-                addUpdateListener { value ->
-                    val params = layoutParams
-                    layoutParams.height = value.animatedValue as Int
-                    layoutParams = params
-                }
-                addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationStart(animation: Animator) {
-                        super.onAnimationStart(animation)
-                        text = originalText
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        text = if (isTextCollapsed) collapsedDisplayedText else originalText
-                        val params = layoutParams
-                        layoutParams.height = WRAP_CONTENT
-                        layoutParams = params
-                    }
-                })
-                start()
-            }
+        text = getExpandableText()
     }
 
 
@@ -146,10 +107,8 @@ class CustomExpandableTextView : AppCompatTextView {
 
             val collapsedText =
                 SpannableStringBuilder(truncatedText.subSequence(0, defaultEllipsisStart))
-            onTextExpandableCallback.invoke(true)
             return collapsedText.append("\u2026")
         } else {
-            onTextExpandableCallback.invoke(false)
             return originalText
         }
     }
@@ -159,7 +118,8 @@ class CustomExpandableTextView : AppCompatTextView {
 
         val collapsedStaticLayout = getStaticLayout(limitedMaxLines, originalText!!, textWidth)
         collapsedDisplayedText = collapseOriginalText(collapsedStaticLayout)
-        text = if (isTextCollapsed) collapsedDisplayedText else originalText
+        text = getExpandableText()
+
     }
 
 
@@ -178,16 +138,24 @@ class CustomExpandableTextView : AppCompatTextView {
             .build()
     }
 
-    private fun getExpandActionText(): CharSequence {
-        return CustomSpannableString(
-            if (isTextCollapsed) context.getString(R.string.notifications_read_more)
-            else context.getString(R.string.hide_all_sessions_history)
-        ).apply {
-            setColorSpan(R.color.main_brown_color_new, context)
-            setTextSizeSpan(R.dimen.clickable_text_view_size, context)
-            setFontSpan("fonts/sf_pro_text_bold.ttf", context)
-            setClickSpan(this@CustomExpandableTextView) {
-                toggle()
+    private fun isAllTextVisible() = collapsedDisplayedText == originalText
+
+    private fun getExpandableText(): CharSequence {
+        return SpannableStringBuilder(if (isTextCollapsed) collapsedDisplayedText else originalText).apply {
+            if (!isAllTextVisible()) {
+                append("\n")
+                append(CustomSpannableString(
+                    if (isTextCollapsed) context.getString(R.string.notifications_read_more)
+                    else context.getString(R.string.hide_all_sessions_history)
+                ).apply {
+                    setColorSpan(R.color.main_brown_color_new, context)
+                    setTextSizeSpan(R.dimen.clickable_text_view_size, context)
+                    setFontSpan("fonts/sf_pro_text_bold.ttf", context)
+                    setClickSpan(this@CustomExpandableTextView) {
+                        isTextCollapsed = !isTextCollapsed
+                        toggle()
+                    }
+                })
             }
         }
     }

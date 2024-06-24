@@ -44,27 +44,24 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         var data = getDataFromResult(result)
         val totalCount = result.totalCount
 
-        if (totalCount == null) callback.onResult(data, startPosition)
-        else if (data.size < params.requestedLoadSize) callback.onResult(data, startPosition)
-        else {
-            var dataPosition = startPosition
-            if (data.isEmpty() && totalCount > 0) {
-                dataPosition = totalCount - min(params.requestedLoadSize, totalCount)
-                data = executeRequestData(params.requestedLoadSize, dataPosition)
-            }
-            if (totalCount == 0) dataPosition = 0
-
-            lastTotalCount = totalCount
-            //callback.onResult(data, dataPosition, totalCount)
-            try {
-                callback.onResult(data, dataPosition, totalCount)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                if (e.message == "List size + position too large, last item in list beyond totalCount.") {
-                    callback.onResult(data, dataPosition, data.size)
+        try {
+            if (totalCount == null) callback.onResult(data, startPosition)
+            else if (data.size < params.requestedLoadSize) callback.onResult(data, startPosition)
+            else {
+                var dataPosition = startPosition
+                if (data.isEmpty() && totalCount > 0) {
+                    dataPosition = totalCount - min(params.requestedLoadSize, totalCount)
+                    data = executeRequestData(params.requestedLoadSize, dataPosition)
                 }
+                if (totalCount == 0) dataPosition = 0
+
+                lastTotalCount = totalCount
+                callback.onResult(data, dataPosition, totalCount)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     private fun executeRequest(limit: Int, offset: Int): PaginationResponse<I>? {

@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/Notification.TitleNew"
+            style="@style/Notification.Title"
             android:text="@string/notifications_simple_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +39,8 @@
 
         <com.example.ui.views.expandableTextView.CustomExpandableTextView
             android:id="@+id/tvMessage"
-            style="@style/Notification.MessageNew"
-            app:layout_constraintBottom_toTopOf="@+id/tvReadMore"
+            style="@style/Notification.Message"
+            app:layout_constraintBottom_toTopOf="@+id/btnMarkAsRead"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,20 +50,6 @@
             tools:ignore="MissingPrefix"
             tools:text="@string/about_additional_info_text" />
 
-
-        <TextView
-            android:id="@+id/tvReadMore"
-            style="@style/ClickableTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:paddingVertical="5dp"
-            android:text="@string/notifications_read_more"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvMessage"
-            tools:ignore="MissingPrefix" />
 
 
         <androidx.appcompat.widget.AppCompatButton
@@ -82,7 +68,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvReadMore"
+            app:layout_constraintTop_toBottomOf="@+id/tvMessage"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

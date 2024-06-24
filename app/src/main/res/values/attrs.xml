@@ -84,10 +84,25 @@
     </declare-styleable>
 
     <declare-styleable name="ExpandableTextView">
-        <attr name="limitedMaxLines" format="integer" />
-        <attr name="originalText" format="string" />
-        <attr name="expandAction" format="string" />
-        <attr name="expandActionColor" format="string" />
+        <attr format="integer" name="collapsedLines"/>
+        <attr format="integer" name="animDuration"/>
+        <attr format="string" name="readMoreText"/>
+        <attr format="string" name="readLessText"/>
+        <attr format="color" name="anchorTextColor"/>
+        <attr format="integer" name="anchorPoint"/>
+        <attr format="boolean" name="isExpanded"/>
+        <attr format="enum" name="textMode">
+            <enum name="length" value="0"/>
+            <enum name="line" value="1"/>
+        </attr>
+        <attr format="color" name="foregroundColor"/>
+        <attr format="string" name="ellipsizeText"/>
+        <attr format="boolean" name="isUnderlined"/>
+        <attr format="color" name="ellipsizeTextColor"/>
+        <attr format="enum" name="expandType">
+            <enum name="layout" value="0"/>
+            <enum name="popup" value="1"/>
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="food">

@@ -36,7 +36,6 @@ class EventActivityItem(
     private val date = subEvent.holdingDate?.from.formatTimeIntervalFromTo(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
     private var canShowButton = canShow
     private var isCollapsed = true
-    private var isMessageLong = false
 
 
     init {
@@ -60,23 +59,11 @@ class EventActivityItem(
                 else isVisible = false
             }
 
+
             tvLectureDesc.apply {
                 isVisible = !subEvent.description.isNullOrEmpty()
-                isTextCollapsed = isCollapsed
                 originalText = fullMarkdownText(context, subEvent.description)
-                onTextExpandableCallback = {
-                    isMessageLong = it
-                }
-            }
-            tvReadMore.apply {
-                isVisible = isMessageLong
-                changeTextReadMore(!isCollapsed)
-                setOnClickListener {
-                    tvLectureDesc.toggle()
-                    isCollapsed = !isCollapsed
-                    changeTextReadMore(!isCollapsed)
-                    tvLectureDesc.isTextCollapsed = isCollapsed
-                }
+                isTextCollapsed = isCollapsed
             }
 
             tagGroup.apply {
@@ -129,7 +116,7 @@ class EventActivityItem(
         }
     }
 
-    private fun fullMarkdownText(context: Context, message: String?): SpannableStringBuilder? {
+    private fun fullMarkdownText(context: Context, message: String?): CharSequence? {
         if (message.isNullOrBlank()) return null
         else {
             val spanned = markWon(context).toMarkdown(message)
@@ -154,12 +141,6 @@ class EventActivityItem(
         }
     }
 
-    private fun View.changeTextReadMore(isExpanded: Boolean) {
-        (this as TextView).apply {
-            if (isExpanded) text = context.getString(R.string.hide_all_sessions_history)
-            else text = context.getString(R.string.notifications_read_more)
-        }
-    }
 
     override fun getLayout(): Int = R.layout.item_lecture
 

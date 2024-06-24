@@ -8,6 +8,7 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationRateBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.ui.views.expandableTextView.ExpandableTextView
 
 class RateNotificationItem(
     private val context: Context,
@@ -52,7 +53,6 @@ class RateNotificationItem(
 
     override fun getTitleView(binding: ItemNotificationRateBinding): TextView = binding.tvTitle
     override fun getMessageView(binding: ItemNotificationRateBinding): CustomExpandableTextView = binding.tvMessage
-    override fun getReadMoreView(binding: ItemNotificationRateBinding): View = binding.tvReadMore
     override fun getBadgeView(binding: ItemNotificationRateBinding): View = binding.viewBadge
     override fun getRootView(binding: ItemNotificationRateBinding): View = binding.clRateNotification
 

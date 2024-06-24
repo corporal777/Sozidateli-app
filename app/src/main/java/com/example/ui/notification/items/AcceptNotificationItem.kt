@@ -14,6 +14,7 @@ import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationAcceptBinding
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.ui.views.expandableTextView.ExpandableTextView
 import com.example.util.ClickableSpanNew
 
 class AcceptNotificationItem(
@@ -124,9 +125,7 @@ class AcceptNotificationItem(
 
     override fun getTitleView(binding: ItemNotificationAcceptBinding): TextView = binding.tvTitle
     override fun getMessageView(binding: ItemNotificationAcceptBinding): CustomExpandableTextView = binding.tvMessage
-    override fun getReadMoreView(binding: ItemNotificationAcceptBinding): View = binding.tvReadMore
     override fun getBadgeView(binding: ItemNotificationAcceptBinding): View = binding.viewBadge
     override fun getRootView(binding: ItemNotificationAcceptBinding): View = binding.lnAcceptNotification
-
     override fun getLayout() = R.layout.item_notification_accept
 }

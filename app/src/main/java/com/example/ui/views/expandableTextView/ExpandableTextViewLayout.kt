@@ -50,6 +50,7 @@ class ExpandableTextViewLayout : LinearLayout {
 
     init {
         layoutView.tvReadMore.apply {
+            isVisible = isMoreVisible
             setCollapsed(isCollapsed)
             setOnClickListener {
                 isCollapsed = !isCollapsed
@@ -62,36 +63,32 @@ class ExpandableTextViewLayout : LinearLayout {
     fun setText(message: String?) {
         if (message.isNullOrEmpty()) return
         originalText = getMarkdownText(context, message)
+
         layoutView.tvMessage.apply {
             text = originalText
             setOnLayoutListener {
-                isMoreVisible = it.length() < (originalText?.length ?: 0)
+                if (it.text == originalText) {
+                    layoutView.tvReadMore.isVisible = false
+                }
+                //isMoreVisible = it.length() < (originalText?.length ?: 0)
+
+                //invalidate()
             }
-            layoutView.tvReadMore.isVisible = isMoreVisible
+
 
         }
     }
 
 
-    fun setCollapsed(isCollapsed: Boolean) {
+    private fun setCollapsed(isCollapsed: Boolean) {
         this.isCollapsed = isCollapsed
-        layoutView.tvReadMore.apply {
-            changeTextReadMore(isCollapsed)
-        }
+        layoutView.tvReadMore.changeTextReadMore(isCollapsed)
     }
 
-    fun getTextView() = layoutView.tvMessage
 
-    private fun View.changeTextReadMore(isExpanded: Boolean) {
-        (this as TextView).apply {
-            if (!isExpanded) text = context.getString(R.string.hide_all_sessions_history)
-            else text = context.getString(R.string.notifications_read_more)
-        }
-    }
-
-    fun setCollapsedCallback(block: (collapsed: Boolean) -> Unit): ExpandableTextViewLayout {
-        onCollapsed = block
-        return this
+    private fun TextView.changeTextReadMore(isExpanded: Boolean) {
+        if (!isExpanded) text = context.getString(R.string.hide_all_sessions_history)
+        else text = context.getString(R.string.notifications_read_more)
     }
 
 
@@ -109,9 +106,5 @@ class ExpandableTextViewLayout : LinearLayout {
                 }
             }
         }
-    }
-
-    companion object {
-        private const val MAX_LINES_COLLAPSED = 5
     }
 }

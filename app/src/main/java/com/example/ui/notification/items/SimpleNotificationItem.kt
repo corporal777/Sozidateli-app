@@ -1,13 +1,16 @@
 package com.example.ui.notification.items
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationSimpleBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.ui.views.expandableTextView.ExpandableTextView
 
 class SimpleNotificationItem(
     private val context: Context,
@@ -58,7 +61,6 @@ class SimpleNotificationItem(
     override fun getBadgeView(binding: ItemNotificationSimpleBinding): View = binding.viewBadge
     override fun getTitleView(binding: ItemNotificationSimpleBinding): TextView = binding.tvTitle
     override fun getMessageView(binding: ItemNotificationSimpleBinding): CustomExpandableTextView = binding.tvMessage
-    override fun getReadMoreView(binding: ItemNotificationSimpleBinding): View = binding.tvReadMore
     override fun getRootView(binding: ItemNotificationSimpleBinding): View = binding.clSimpleNotification
 
     override fun getLayout() = R.layout.item_notification_simple
