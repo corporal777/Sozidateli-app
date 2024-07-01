@@ -44,13 +44,12 @@ abstract class NotificationItem<T : ViewDataBinding>(
     @CallSuper
     override fun bind(viewBinding: T, position: Int) {
         getRootView(viewBinding).apply {
-            background = if (!notification.wasRead)
-                getDrawable(R.drawable.background_notification_unread)
-            else getDrawable(R.drawable.background_notification_normal)
+            background = getDrawable(
+                if (!notification.wasRead) R.drawable.background_notification_unread
+                else R.drawable.background_notification_normal
+            )
         }
-        getBadgeView(viewBinding).apply {
-            isVisible = !notification.wasRead
-        }
+        getBadgeView(viewBinding).isVisible = !notification.wasRead
         getTitleView(viewBinding).apply {
             if (notification.eventId != 0 && notification.eventActivityId == 0) {
                 text = getNotificationTitle(this)
@@ -65,7 +64,6 @@ abstract class NotificationItem<T : ViewDataBinding>(
                         Notification.Type.ACCEPTABLE -> R.string.notifications_acceptable_title
                         Notification.Type.RATE -> R.string.notifications_rate_title
                     }
-
                     text = resources.getString(titleRes)
                 }
             }
@@ -122,7 +120,8 @@ abstract class NotificationItem<T : ViewDataBinding>(
     private fun getNotificationTitle(textView: TextView): SpannableStringBuilder? {
         if (notification.eventInfo?.name.isNullOrEmpty()) return null
         else {
-            val notificationTitle = SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
+            val notificationTitle =
+                SpannableStringBuilder(context.getString(R.string.notification_event_title_new))
             val eventName = CustomSpannableString(notification.eventInfo?.name).apply {
                 setClickSpan(textView) {
                     if (notification.eventId != null) {

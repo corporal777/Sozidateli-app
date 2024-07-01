@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.edit.maindata
 
 import android.Manifest
+import android.os.Build
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -9,6 +10,7 @@ import com.example.ui.base.BasePresenter
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Action
@@ -58,12 +60,10 @@ class EditMainDataPresenter
         isUpdating = true
         compositeDisposable += Completable.defer {
             if (data.isEmpty()) Completable.complete()
-            else {
-                updatedFilesRequestBody(data)
-                    .flatMap { userRepository.changeRecommendedFiles(it) }
-                    .doOnSuccess { it.forEach { res -> appData.updateUserFiles(res) } }
-                    .ignoreElement()
-            }
+            else updatedFilesRequestBody(data)
+                .flatMap { userRepository.changeRecommendedFiles(it) }
+                .doOnSuccess { it.forEach { res -> appData.updateUserFiles(res) } }
+                .ignoreElement()
         }
             .andThen(userRepository.updateUserProfile(appData.getId(), d))
             .flatMap { userRepository.checkUserProfileSingle() }
@@ -76,15 +76,17 @@ class EditMainDataPresenter
     }
 
 
-
     override fun onAddFileClick() {
-        compositeDisposable += rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onNext = {
-                    if (it) viewState.showFileSelector()
-                    else viewState.showToast(R.string.event_register_file_no_permission)
-                })
+        compositeDisposable += Observable.defer {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
+            else rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }.subscribeSimple(
+            onError = { it.printStackTrace() },
+            onNext = {
+                if (it) viewState.showFileSelector()
+                else viewState.showToast(R.string.event_register_file_no_permission)
+            })
     }
 
     override fun onFilePicked(path: String, mimeType: String) {
@@ -115,7 +117,6 @@ class EditMainDataPresenter
                 onSuccess = { viewState.deleteUserFile(it, appData.getUser().filesCount) }
             )
     }
-
 
 
     override fun onFileClick(file: FileModel) {
