@@ -14,8 +14,8 @@ android {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 67
-        versionName "1.0.40"
+        versionCode 69
+        versionName "1.0.42"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
