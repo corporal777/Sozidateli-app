@@ -9,12 +9,12 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: "com.hiya.jacoco-android"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
         minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 69
+        targetSdkVersion 34
+        versionCode 70
         versionName "1.0.42"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }

@@ -52,7 +52,7 @@ data class UserDetail(
     val blockedNotifications: BlockedNotifications? = null,
     @SerializedName("qrLink")
     val qrCodeLink: String? = null,
-    @SerializedName("recomendationFilesCount")
+    @SerializedName("recommendationFilesCount")
     var filesCount: Int = 0,
     val socialBinds: SocialBindsModel? = null,
     var avatarIsDefault : Boolean? = true

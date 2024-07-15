@@ -34,30 +34,22 @@ class EditMainDataPresenter
     private val rxPermissions: RxPermissions,
 ) : BasePresenter<EditMainDataContract.View>(appData), EditMainDataContract.Presenter {
 
-    private var isFileEdit = false
-    private var withUpdate = true
-    private var isUpdating = false
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setPlaceholder()
 
-        compositeDisposable += appData.userChangeSubject
+        compositeDisposable += Maybe.defer { Maybe.just(appData.getUser()) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.navigateUp() },
-                onNext = {
-                    val user = it.value
-                    if (user == null) viewState.navigateUp()
-                    else if (isUpdating) isUpdating = false
-                    else viewState.setPersonalData(user, appData.getStateValue())
+                onSuccess = { user ->
+                    viewState.setPersonalData(user, appData.getStateValue())
                 })
     }
 
 
     override fun onSavePersonalDataClick(data: List<FileModel>, d: Map<String, Any?>) {
-        isUpdating = true
         compositeDisposable += Completable.defer {
             if (data.isEmpty()) Completable.complete()
             else updatedFilesRequestBody(data)

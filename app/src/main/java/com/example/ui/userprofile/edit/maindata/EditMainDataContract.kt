@@ -1,6 +1,7 @@
 package com.example.ui.userprofile.edit.maindata
 
-import com.example.data.models.*
+import com.example.data.models.FileModel
+import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
