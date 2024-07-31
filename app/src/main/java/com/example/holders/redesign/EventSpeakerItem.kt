@@ -3,7 +3,7 @@ package com.example.holders.redesign
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemEventSpeakerBinding
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage
 import com.example.util.setImagePicasso
 import com.squareup.picasso.Picasso
@@ -48,7 +48,7 @@ class EventSpeakerItem(
                     }
                     else -> isVisible = false
                 }
-                setOnClickListener { MessageDialogWithBrownButton(context, message) }
+                setOnClickListener { DefaultAlertDialog(context, null,message) }
             }
             itemContainer.apply {
                 clipToOutline = true

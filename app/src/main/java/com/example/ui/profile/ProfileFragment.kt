@@ -1,15 +1,20 @@
 package com.example.ui.profile
 
 import android.content.Intent
-import android.content.Intent.*
+import android.content.Intent.ACTION_SENDTO
+import android.content.Intent.ACTION_VIEW
+import android.content.Intent.EXTRA_EMAIL
+import android.content.Intent.EXTRA_SUBJECT
+import android.content.Intent.EXTRA_TEXT
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.util.Log
+import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResultListener
@@ -23,11 +28,13 @@ import com.example.extensions.firstLetterToUppercase
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.views.*
+import com.example.ui.views.CtpDialog
+import com.example.ui.views.dialogs.AddPhoneEmailDialog
+import com.example.ui.views.dialogs.ContactsType
+import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.MessageDialogWithTextButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
@@ -158,18 +165,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
 
-    override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_email_text, email),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.checkEmailIsUnique(false, email) }
-    }
-
-    override fun showPhoneNotUnique(phone: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_phone_text, phone),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.checkPhoneIsUnique(false, phone) }
+    override fun showEmailPhoneNotUnique(email: String?, phone: String?) {
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            if (email.isNullOrEmpty()) getString(R.string.confirm_phone_text, phone)
+            else getString(R.string.confirm_email_text, email),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback {
+            if (email.isNullOrEmpty()) presenter.checkPhoneIsUnique(false, phone!!)
+            else presenter.checkEmailIsUnique(false, email)
+        }
     }
 
 

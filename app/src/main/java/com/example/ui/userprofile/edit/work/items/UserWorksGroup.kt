@@ -11,7 +11,7 @@ import com.example.extensions.forEachGroups
 import com.example.extensions.updateItem
 import com.example.holders.ButtonAddMore
 import com.example.holders.ProfileDataNoExperienceItem
-import com.example.ui.views.NoWorkDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -29,14 +29,20 @@ class UserWorksGroup(
 
     private val checkBoxNoWork = ProfileDataNoExperienceItem {
         if (it && isDataNotEmpty()) {
-            NoWorkDialog(context)
-                .setSelectCallback { isDelete ->
-                    if (isDelete) {
-                        setNoExperience(it)
-                        isWorkEditable(it)
-                        validateEnableButton()
-                    } else setNoExperience(!it)
+            DefaultAlertDialog(
+                context,
+                title = context.getString(R.string.work_experience_data_delete_title),
+                message = context.getString(R.string.work_experience_data_delete_text),
+                positiveText = context.getString(R.string.yes_delete),
+                negativeText = context.getString(R.string.revoke),
+                false
+            )
+                .setSelectCallback {
+                    setNoExperience(it)
+                    isWorkEditable(it)
+                    validateEnableButton()
                 }
+                .setCancelCallback { setNoExperience(!it) }
         } else {
             setNoExperience(it)
             isWorkEditable(it)

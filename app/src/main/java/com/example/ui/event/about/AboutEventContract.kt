@@ -56,7 +56,7 @@ interface AboutEventContract {
         fun showShare(eventId: String)
 
         @Skip
-        fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String)
+        fun showErrorMessageWithResult(with: Boolean, eventId: String, message: String)
 
         @Skip
         fun showAgreementRegisterDialog(event: String, url: String)

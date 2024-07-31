@@ -18,11 +18,9 @@ import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
 import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.ContactsType
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.MessageDialogWithTextButton
+import com.example.ui.views.dialogs.AddPhoneEmailDialog
+import com.example.ui.views.dialogs.ContactsType
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
@@ -93,13 +91,17 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     override fun showMaxStateDone(screen: Int) {
-        MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_max_state))
-            .setSelectCallback {
-                when (screen) {
-                    1 -> findNavController().popBackStack(R.id.profile_fragment, false)
-                    2 -> findNavController().popBackStack(R.id.userStateFragment, false)
-                }
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.you_got_max_state),
+            withCancel = false
+        ).setSelectCallback {
+            when (screen) {
+                1 -> findNavController().popBackStack(R.id.profile_fragment, false)
+                2 -> findNavController().popBackStack(R.id.userStateFragment, false)
             }
+        }
     }
 
     override fun showAddEmailDialog() {
@@ -111,13 +113,13 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     override fun hideAddEmailDialog() = dialog.hideDialog()
 
     override fun showEmailIsNotUnique(email: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_email_text, email),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        )
-            .setSelectCallback {
-                if (it) presenter.checkEmailIsUnique(false, email)
-            }
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.confirm_email_text, email),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback { presenter.checkEmailIsUnique(false, email) }
     }
 
     override fun showEmailConfirmation(email: String) {

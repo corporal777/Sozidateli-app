@@ -14,7 +14,6 @@ import com.example.databinding.FragmentRegistrationUserBinding
 import com.example.extensions.getClickablePrivacyPolitics
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.ClickableSpan
 import com.example.util.Utils.validatePhoneBeforeSend
@@ -23,6 +22,7 @@ import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.removeUrlUnderline
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -133,12 +133,13 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
             if (presenter.getLoginType() == "phone") getString(R.string.confirm_phone_text, login)
             else getString(R.string.confirm_email_text, login)
 
-        ConfirmPhoneDialog(
+        DefaultAlertDialog(
             requireContext(),
+            null,
             message,
-            getString(R.string.event_register_no_form_negative),
-            getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.registerUser(false) }
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback { presenter.registerUser(false) }
     }
 
     override fun showCodeConfirmation(login: String) {

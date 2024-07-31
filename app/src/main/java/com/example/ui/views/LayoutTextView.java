@@ -1,4 +1,4 @@
-package com.example.ui.views.dialogs;
+package com.example.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

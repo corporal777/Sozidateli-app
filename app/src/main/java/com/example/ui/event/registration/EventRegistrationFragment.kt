@@ -46,6 +46,7 @@ import com.example.extensions.onBackPressedCallback
 import com.example.extensions.onScrolled
 import com.example.extensions.statusBarColorValue
 import com.example.ui.event.registration.items.RegisterEventTitleItem
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import java.util.*
 import javax.inject.Inject
@@ -187,31 +188,26 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     }
 
     override fun showSaveFormResultDraftDialog() {
-        EventRegistrationRequestDialog(
+        DefaultAlertDialog(
             requireContext(),
             "Анкета",
             "Вы можете сохранить черновик анкеты и вернуться к ее заполнению позже.",
-            "Сохранить",
-            "Закрыть",
-            true
-        ).setSelectCallback { state ->
-            if (state) presenter.saveEventFormResultDraft()
-            else findNavController().navigateUp()
-        }
+            positiveText = "Сохранить",
+            negativeText = "Закрыть"
+        ).setSelectCallback { presenter.saveEventFormResultDraft() }
+            .setCancelCallback { findNavController().navigateUp() }
     }
 
     override fun showSavedFormResultDraftDialog(result: EventRegisterData) {
-        EventRegistrationRequestDialog(
+        DefaultAlertDialog(
             requireContext(),
             "Анкета",
             "У вас есть черновик анкеты. Хотите продолжить заполнение?",
-            "Продолжить",
-            "Начать заново",
-            false
-        ).setSelectCallback { state ->
-            if (state) presenter.initFormResultData(result.event, result.getSortedDraftFields())
-            else presenter.initFormResultData(result.event, result.getSortedFields())
-        }
+            positiveText = "Продолжить",
+            negativeText = "Начать заново"
+        )
+            .setSelectCallback { presenter.initFormResultData(result.event, result.getSortedDraftFields()) }
+            .setCancelCallback { presenter.initFormResultData(result.event, result.getSortedFields()) }
     }
 
     override fun showEventRegistrationSuccessDialog() {

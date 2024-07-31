@@ -8,22 +8,26 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.example.R
 import com.example.databinding.DialogAlertDefaultBinding
 import com.example.databinding.DialogMessageWithGrayButtonBinding
+import com.example.extensions.removeUrlUnderline
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class DefaultAlertDialog(
     private val context: Context,
     private val title : String?,
-    private val message: String,
-    private val positiveText : String?,
-    private val negativeText : String?,
-    private val withCancel: Boolean = false
+    private val message: CharSequence,
+    private val positiveText : String? = null,
+    private val negativeText : String? = null,
+    private val withCancel: Boolean = true
 ) {
 
     private val mBinding = DialogAlertDefaultBinding.inflate(LayoutInflater.from(context))
 
     private var onActionClick: () -> Unit = {}
+    private var onCancelClick: () -> Unit = {}
 
 
     private lateinit var mAlertDialog: AlertDialog
@@ -31,26 +35,33 @@ class DefaultAlertDialog(
 
     init {
         mBuilder.setView(mBinding.root)
-        mBinding.tvTitle.apply {
-            isVisible = !title.isNullOrEmpty()
-            text = title
-        }
-        mBinding.tvMessage.apply {
-            text = message
-        }
-        mBinding.tvOk.apply {
-            if (!positiveText.isNullOrEmpty()) text = positiveText
-            setOnClickListener {
-                onActionClick.invoke()
-                mAlertDialog.dismiss()
-            }
-        }
+        mBuilder.setCancelable(withCancel)
 
-        mBinding.tvCancel.apply {
-            isVisible = withCancel
-            if (!negativeText.isNullOrEmpty()) text = negativeText
-            setOnClickListener {
-                mAlertDialog.dismiss()
+        mBinding.apply {
+            tvTitle.apply {
+                isVisible = !title.isNullOrEmpty()
+                text = title
+            }
+            tvMessage.apply {
+                text = message
+                movementMethod = BetterLinkMovementMethod.getInstance()
+                removeUrlUnderline()
+            }
+            tvOk.apply {
+                if (!positiveText.isNullOrEmpty()) text = positiveText
+                setOnClickListener {
+                    onActionClick.invoke()
+                    mAlertDialog.dismiss()
+                }
+            }
+
+            tvCancel.apply {
+                isVisible = !negativeText.isNullOrEmpty()
+                if (!negativeText.isNullOrEmpty()) text = negativeText
+                setOnClickListener {
+                    onCancelClick.invoke()
+                    mAlertDialog.dismiss()
+                }
             }
         }
 
@@ -63,6 +74,11 @@ class DefaultAlertDialog(
 
     fun setSelectCallback(block: () -> Unit): DefaultAlertDialog {
         onActionClick = block
+        return this
+    }
+
+    fun setCancelCallback(block: () -> Unit): DefaultAlertDialog {
+        onCancelClick = block
         return this
     }
 }

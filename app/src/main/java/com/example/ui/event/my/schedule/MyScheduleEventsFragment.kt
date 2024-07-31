@@ -27,7 +27,6 @@ import com.example.ui.event.my.schedule.items.EventScheduleGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.dialogs.CustomProgressDialog
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -36,6 +35,7 @@ import com.example.extensions.getLocationOfView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onScrolled
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -233,7 +233,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
     }
 
     override fun showErrorMessage(eventId: String, message: String) {
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
+        DefaultAlertDialog(requireContext(),null, message).setSelectCallback {
             if (!eventId.isNullOrEmpty()) {
                 presenter.getEventsList()
                 showLoadingAlertDialog()

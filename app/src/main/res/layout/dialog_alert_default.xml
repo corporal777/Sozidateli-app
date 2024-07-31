@@ -25,6 +25,7 @@
 
 
     <TextView
+        android:breakStrategy="simple"
         android:id="@+id/tvMessage"
         fontPath="fonts/sf_pro_text.ttf"
         android:layout_width="match_parent"

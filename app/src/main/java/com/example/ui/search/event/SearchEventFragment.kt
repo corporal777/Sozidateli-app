@@ -15,8 +15,7 @@ import com.example.holders.redesign.EventItemNew
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.example.ui.views.dialogs.EventAgreementBottomDialog
-import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
+import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
@@ -75,7 +74,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
-        EventAgreementBottomDialog(requireContext(), url)
+        EventAgreementBottomSheet(requireContext(), url)
             .setSelectCallback { searchPresenter.onAcceptRegistrationAgreement(event, formEnabled) }
             .show()
     }

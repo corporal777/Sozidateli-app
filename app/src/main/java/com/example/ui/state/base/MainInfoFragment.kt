@@ -13,7 +13,6 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentMainInfoBinding
-import com.example.extensions.findItemBy
 import com.example.extensions.findItemByShort
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
@@ -23,11 +22,9 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
-import com.example.ui.views.AddPhoneEmailDialog
-import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.ContactsType
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.MessageDialogWithTextButton
+import com.example.ui.views.dialogs.AddPhoneEmailDialog
+import com.example.ui.views.dialogs.ContactsType
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.Utils.maxStateScreen
@@ -101,37 +98,48 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
                             R.id.maxStatusContactsFragment,
                             bundleOf("screen" to presenter.screen),
                         )
+
                     MaxStateScreenType.INTERESTS ->
                         findNavController().navigate(
                             R.id.maxStatusInterestsFragment,
                             bundleOf("screen" to presenter.screen)
                         )
+
                     MaxStateScreenType.EDUCATION ->
                         findNavController().navigate(
                             R.id.maxStatusEducationFragment,
                             bundleOf("screen" to presenter.screen)
                         )
+
                     MaxStateScreenType.WORK ->
                         findNavController().navigate(
                             R.id.maxStatusWorkFragment,
                             bundleOf("screen" to presenter.screen)
                         )
+
                     MaxStateScreenType.DONE -> {
-                        MessageDialogWithTextButton(
+                        DefaultAlertDialog(
                             requireContext(),
-                            getString(R.string.you_got_max_state)
+                            null,
+                            getString(R.string.you_got_max_state),
+                            withCancel = false
                         ).setSelectCallback { baseActions() }
                     }
                 }
             }
+
             UserState.BASE -> baseActionsWithSuccess()
         }
     }
 
     private fun baseActionsWithSuccess() {
         if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
-            MessageDialogWithBrownButton(requireContext(), getString(R.string.you_got_base_state))
-                .setSelectCallback { baseActions() }
+            DefaultAlertDialog(
+                requireContext(),
+                null,
+                getString(R.string.you_got_base_state),
+                withCancel = false
+            ).setSelectCallback { baseActions() }
         } else {
             dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
                 .setSelectEmailCallback {
@@ -151,10 +159,14 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
 
 
     override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_email_text, email),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.checkEmailIsUnique(false, email) }
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.confirm_email_text, email),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative),
+            true
+        ).setSelectCallback { presenter.checkEmailIsUnique(false, email) }
     }
 
     override fun showEmailConfirm(email: String) {

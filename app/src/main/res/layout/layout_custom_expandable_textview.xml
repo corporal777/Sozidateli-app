@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
 
-    <com.example.ui.views.dialogs.LayoutTextView
+    <com.example.ui.views.LayoutTextView
         android:id="@+id/tvMessage"
         fontPath="fonts/sf_pro_display.OTF"
         android:layout_width="match_parent"

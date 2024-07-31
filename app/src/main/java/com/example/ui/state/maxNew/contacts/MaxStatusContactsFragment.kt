@@ -6,7 +6,7 @@ import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.MaxStateContactsEditItem
 import com.example.ui.state.maxNew.base.BaseMaxStateFragment
-import com.example.ui.views.InfoDialog
+import com.example.ui.views.dialogs.AboutAdditionalInfoBottomSheet
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import moxy.presenter.InjectPresenter
@@ -73,11 +73,6 @@ class MaxStatusContactsFragment : BaseMaxStateFragment<MaxStatusContactsPresente
     }
 
     private fun showWhyUserShouldAddDataToNotesField() {
-        InfoDialog(
-            requireContext(),
-            getString(R.string.profile_edit_additional_notes_data),
-            requireActivity()
-        )
-            .setSelectCallback { }
+        AboutAdditionalInfoBottomSheet(requireContext()).show()
     }
 }

@@ -302,6 +302,7 @@
     <string name="event_map_tab_building_scheme">Схема комплекса</string>
 
     <string name="image_load_error">Ошибка загрузки изображения</string>
+    <string name="request_server_error">На сервере произошла ошибка, попробуйте позже</string>
     <string name="request_execution_error">Ошибка выполнения запроса</string>
     <string name="title_activity_maps">Map</string>
 

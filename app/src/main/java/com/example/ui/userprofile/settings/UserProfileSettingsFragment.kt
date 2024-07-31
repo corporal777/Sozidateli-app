@@ -13,19 +13,18 @@ import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
 import com.example.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
+import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment
 import com.example.ui.views.CustomCheckView
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
-import com.example.ui.views.dialogs.MessageDialogWithTextButtons
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.TitleMessageDialog
 import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -110,9 +109,6 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
             tvEmail.apply {
                 setText(user.personalEmail)
                 setIconVisibility(user.isHasEmailOnConfirmation())
-                getInputLayout().setEndIconOnClickListener {
-                    showEmailInformation(user)
-                }
             }
             ivPrivacyProfile.setChecked(user.state?.isHidden.toBoolean())
             ivBlockEvent.setChecked(user.blockedNotifications?.event ?: false)
@@ -156,20 +152,20 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
     }
 
     override fun showAccountAlreadyBoundDialog(view: ViewGroup, snAuth: SnAuth?) {
-        MessageDialogWithTextButtons(
+        DefaultAlertDialog(
             requireContext(),
-            "",
-            "Данный аккаунт привязан к\n другому профилю. Перепривязать к\n вашему аккаунту?",
+            null,
+            "Данный аккаунт привязан к другому профилю. Перепривязать к вашему аккаунту?",
             "Да",
             "Отменить"
         ).setSelectCallback { presenter.onBindVkAccount(requireContext(), view, snAuth) }
     }
 
     private fun showUnbindAccountDialog(onBind: () -> Unit) {
-        MessageDialogWithTextButtons(
+        DefaultAlertDialog(
             requireContext(),
             "Отменить связь?",
-            "После отмены вы не сможете\n входить в аккаунт этим способом",
+            "После отмены вы не сможете входить в аккаунт этим способом",
             "Отменить",
             "Оставить"
         ).setSelectCallback { onBind.invoke() }
@@ -214,20 +210,17 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
                 .format(supportEmail)
                 .toSpannable()
         Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
-        MessageDialogWithBrownButton(requireContext(), message)
+        DefaultAlertDialog(requireContext(), null, message)
     }
 
     override fun showDeleteProfile() {
-        TitleMessageDialog(
+        DefaultAlertDialog(
             requireContext(),
             getString(R.string.user_profile_delete_confirm_title),
             getString(R.string.user_profile_delete_confirm_message),
             getString(R.string.remove),
-            getString(R.string.revoke),
-            false
-        ).setPositiveSelectCallback {
-            presenter.onDeleteProfileConfirm()
-        }
+            getString(R.string.revoke)
+        ).setSelectCallback { presenter.onDeleteProfileConfirm() }
     }
 
 
@@ -238,9 +231,14 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
         onAction: (state: Boolean) -> Unit
     ) {
         if (!status) {
-            TitleMessageDialog(requireContext(), title, message)
-                .setPositiveSelectCallback { onAction.invoke(true) }
-                .setNegativeSelectCallback { onAction.invoke(false) }
+            DefaultAlertDialog(
+                requireContext(),
+                title,
+                message,
+                getString(R.string.yes),
+                getString(R.string.no)
+            ).setSelectCallback { onAction.invoke(true) }
+                .setCancelCallback { onAction.invoke(false) }
         } else onAction.invoke(false)
     }
 

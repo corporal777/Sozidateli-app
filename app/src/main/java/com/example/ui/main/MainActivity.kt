@@ -29,7 +29,6 @@ import com.example.databinding.LayoutNoInternetBinding
 import com.example.extensions.decodeBase64ToJson
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragmentActivity
 import com.example.ui.chatList.ChatListTabsFragment
@@ -47,7 +46,6 @@ import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.ApiErrorDialog
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.StateType
@@ -87,6 +85,7 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
 import javax.inject.Provider
@@ -367,7 +366,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showRecommendations() {
-        val args = RecommendationsFragmentArgs.Builder(presenter.isFinishRegister).build().toBundle()
+        val args =
+            RecommendationsFragmentArgs.Builder(presenter.isFinishRegister).build().toBundle()
         findNavController().navigate(
             R.id.recommendations_fragment, args,
             navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
@@ -477,17 +477,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showEmailErrorMessage() {
-        ApiErrorDialog(
-            this, getString(R.string.email_exist_error_title),
+        DefaultAlertDialog(
+            this,
+            getString(R.string.email_exist_error_title),
             getString(R.string.email_exist_error_text)
-        ).setSelectCallback { }
+        )
     }
 
     override fun showPhoneErrorMessage() {
-        ApiErrorDialog(
-            this, getString(R.string.phone_exist_error_title),
+        DefaultAlertDialog(
+            this,
+            getString(R.string.phone_exist_error_title),
             getString(R.string.phone_exist_error_text)
-        ).setSelectCallback { }
+        )
     }
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
@@ -643,7 +645,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showRequestErrorMessage() {
-        presenter.onRequestShowErrorMessage(getString(R.string.request_execution_error))
+        DefaultAlertDialog(this, null, getString(R.string.request_server_error))
     }
 
     override fun showErrorMessage(message: String) {

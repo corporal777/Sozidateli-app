@@ -7,17 +7,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
-import com.example.extensions.findItemBy
 import com.example.extensions.findItemByShort
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.ProfileContactsEditItem
 import com.example.ui.userprofile.base.BaseUserProfileEditFragment
-import com.example.ui.views.ConfirmPhoneDialog
-import com.example.ui.views.dialogs.TitleMessageDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -69,10 +66,13 @@ class EditContactsFragment : BaseUserProfileEditFragment(), EditContactsContract
     }
 
     override fun showPhoneNotUnique(phone: String, withUpdate: Boolean) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_phone_text, phone),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) showPhoneConfirmation(phone, withUpdate) }
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.confirm_phone_text, phone),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback { showPhoneConfirmation(phone, withUpdate) }
     }
 
     override fun showPhoneConfirmation(phone: String, withUpdate: Boolean) {
@@ -92,15 +92,13 @@ class EditContactsFragment : BaseUserProfileEditFragment(), EditContactsContract
     }
 
     override fun showChangeEmail() {
-        TitleMessageDialog(
+        DefaultAlertDialog(
             requireContext(),
-            "",
-            message = getString(R.string.change_email_text),
-            btnPositiveText = getString(R.string.change_email_positive_button),
-            btnNegativeText = getString(R.string.revoke)
-        ).setPositiveSelectCallback {
-            findNavController().navigate(R.id.user_profile_settings_fragment)
-        }
+            null,
+            getString(R.string.change_email_text),
+            getString(R.string.change_email_positive_button),
+            getString(R.string.revoke)
+        ).setSelectCallback { findNavController().navigate(R.id.user_profile_settings_fragment) }
     }
 
     private fun showEditWarning(block: () -> Unit) {

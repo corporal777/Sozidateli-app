@@ -48,10 +48,7 @@ interface ProfileContract {
         fun showSessions()
 
         @Skip
-        fun showEmailNotUnique(email: String)
-
-        @Skip
-        fun showPhoneNotUnique(phone: String)
+        fun showEmailPhoneNotUnique(email: String?, phone: String?)
 
         @Skip
         fun showPhoneConfirmation(phone: String)

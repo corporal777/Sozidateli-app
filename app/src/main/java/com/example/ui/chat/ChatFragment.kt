@@ -27,7 +27,7 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.dialogs.BlockingChatDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar
@@ -277,13 +277,12 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
 
 
     override fun showChatBlockConfirmation() {
-        BlockingChatDialog(
+        DefaultAlertDialog(
             context = requireContext(),
             title = null,
             message = getString(R.string.user_ban_confirmation_title),
-            btnPositiveText = getString(R.string.yes),
-            btnNegativeText = getString(R.string.no),
-            canCancel = true
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
         ).setSelectCallback { presenter.onBlockChatConfirm() }
     }
 

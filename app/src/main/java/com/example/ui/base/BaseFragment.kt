@@ -22,7 +22,7 @@ import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
-import com.example.ui.views.dialogs.MessageDialogWithGreenButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.util.Utils
 import com.google.android.material.transition.MaterialFadeThrough
@@ -152,27 +152,17 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     override fun showEmailErrorMessage() {
-        context?.let {
-            ApiErrorDialog(
-                it, getString(R.string.email_exist_error_title),
-                getString(R.string.email_exist_error_text)
-            ).setSelectCallback { }
-        }
+        mActivity?.showEmailErrorMessage()
+
     }
 
     override fun showPhoneErrorMessage() {
-        context?.let {
-            ApiErrorDialog(
-                it, getString(R.string.phone_exist_error_title),
-                getString(R.string.phone_exist_error_text)
-            ).setSelectCallback { }
-        }
+        mActivity?.showPhoneErrorMessage()
     }
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
-        MessageDialogWithGreenButton(requireContext(), message).setSelectCallback {
-            if (canGoBack) findNavController().navigateUp()
-        }
+        DefaultAlertDialog(requireContext(), null, message)
+            .setSelectCallback { if (canGoBack) findNavController().navigateUp() }
     }
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
@@ -305,10 +295,13 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         data: () -> T?
     ) {
         if ((isBase && isEmptyBaseFields) || (isMax && isEmptyMaxFields)) {
-            WarningDialog(requireActivity(), resources.getString(R.string.warning_dialog_text))
-                .setSelectCallback {
-                    if (it) data.invoke()
-                }
+            DefaultAlertDialog(
+                requireActivity(),
+                null,
+                getString(R.string.warning_dialog_text),
+                getString(R.string.yes),
+                getString(R.string.no)
+            ).setSelectCallback { data.invoke() }
         } else data.invoke()
     }
 

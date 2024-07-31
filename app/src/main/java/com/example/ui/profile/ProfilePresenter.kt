@@ -93,7 +93,7 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is EmailNotUniqueException) viewState.showEmailNotUnique(email)
+                    if (it is EmailNotUniqueException) viewState.showEmailPhoneNotUnique(email, null)
                     else onReceiveError(it)
                 },
                 onComplete = { viewState.showEmailConfirmation(email) }
@@ -112,7 +112,7 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is PhoneNotUniqueException) viewState.showPhoneNotUnique(phone)
+                    if (it is PhoneNotUniqueException) viewState.showEmailPhoneNotUnique(null, phone)
                     else onReceiveError(it)
                 },
                 onComplete = { viewState.showPhoneConfirmation(phone) }

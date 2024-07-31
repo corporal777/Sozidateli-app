@@ -10,7 +10,7 @@ import com.example.databinding.FragmentRegisterSnBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
@@ -101,12 +101,13 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
 
     override fun showEmailIsNotUnique(email: String?) {
         val message = getString(R.string.confirm_email_text, email)
-        ConfirmPhoneDialog(
+        DefaultAlertDialog(
             requireContext(),
+            null,
             message,
-            getString(R.string.event_register_no_form_negative),
-            getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.onClickContinue(false) }
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback { presenter.onClickContinue(false) }
     }
 
     override fun showEmailConfirmation(email: String) {

@@ -8,7 +8,7 @@ import com.example.R
 import com.example.databinding.FragmentAuthWebBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -71,7 +71,7 @@ class QrScannerToAuthWebFragment : BaseFragment<FragmentAuthWebBinding>(),
 
     override fun showErrorScanningMessage() {
         val message = "Не удалось отсканировать"
-        MessageDialogWithBrownButton(requireContext(), message, isCancelable = false)
+        DefaultAlertDialog(requireContext(), null, message, withCancel = false)
             .setSelectCallback { startPreview() }
     }
 

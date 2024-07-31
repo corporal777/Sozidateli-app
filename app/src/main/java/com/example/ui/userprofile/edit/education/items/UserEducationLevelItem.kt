@@ -9,7 +9,7 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.EducationLevel
 import com.example.data.models.ToggleIntModel
 import com.example.databinding.ItemUserEducationLevelBinding
-import com.example.ui.views.ClearDegreeDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.initSwitch
 import com.xwray.groupie.databinding.BindableItem
 
@@ -76,13 +76,19 @@ class UserEducationLevelItem(
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 val level = availableEducations[position].name
                 if (!isTrigger(level)){
-                    ClearDegreeDialog(mBinding.root.context).setSelectCallback {
-                        if (it) onLevelChange.invoke(level)
-                        else {
+                    DefaultAlertDialog(
+                        mBinding.root.context,
+                        null,
+                        mBinding.root.context.getString(R.string.change_degree_text),
+                        mBinding.root.context.getString(R.string.ok),
+                        mBinding.root.context.getString(R.string.revoke),
+                        false
+                    )
+                        .setSelectCallback { onLevelChange.invoke(level) }
+                        .setCancelCallback {
                             setText(mSelectedLevel)
                             onLevelChange.invoke(mSelectedLevel)
                         }
-                    }
                 } else onLevelChange.invoke(level)
             }
             isCursorVisible = false

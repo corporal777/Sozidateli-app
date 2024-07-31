@@ -18,7 +18,6 @@ import com.example.ui.auth.register.UserRegistrationPresenter
 import com.example.ui.auth.register.sn.SnRegisterFragment
 import com.example.ui.auth.register.sn.SnRegisterFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import com.example.util.setTint

@@ -45,7 +45,7 @@
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/tilEmailOrPhone"
-            style="@style/Profile.Edit.InputLayout"
+            style="@style/Profile.Edit.PasswordNew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -57,6 +57,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLogin"
+                tools:hint="@string/new_email"
                 style="@style/Profile.Edit.Input.SingleLine"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"

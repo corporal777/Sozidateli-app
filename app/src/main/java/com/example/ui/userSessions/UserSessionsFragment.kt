@@ -15,7 +15,7 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.userSessions.items.CurrentSessionItem
 import com.example.ui.userSessions.items.OtherSessionItem
 import com.example.ui.userSessions.items.SessionsHeaderItem
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.SessionBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
@@ -102,7 +102,7 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
 
     private fun showSessionInfoDialog() {
         val message = getString(R.string.session_info_message)
-        MessageDialogWithBrownButton(requireContext(), message)
+        DefaultAlertDialog(requireContext(), null, message)
     }
 
     override fun animationType(): AnimType = AnimType.AXIS

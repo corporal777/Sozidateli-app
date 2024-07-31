@@ -7,7 +7,6 @@ import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.R
-import com.example.ui.views.ClearDegreeDialog
 import com.example.util.settings
 
 class EducationPopupWindow(val context: Context, val data: List<String>): PopupWindow() {
@@ -22,10 +21,7 @@ class EducationPopupWindow(val context: Context, val data: List<String>): PopupW
                 if (isTrigger(it)) {
                     educationClickCallback.invoke(it)
                 } else {
-                    ClearDegreeDialog(context)
-                            .setSelectCallback { isAgree ->
-                                getOldEducation(EducationChangeModel(isAgree, it))
-                            }
+
                 }
             }
 

@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.example.R
 import com.example.ui.base.BaseActivity
-import com.example.ui.views.WarningDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
@@ -101,10 +101,13 @@ abstract class BaseBottomSheetFragment<binding : ViewDataBinding>(
         data: () -> T?
     ) {
         if ((isBase && isEmptyBaseFields) || (isMax && isEmptyMaxFields)) {
-            WarningDialog(requireActivity(), resources.getString(R.string.warning_dialog_text))
-                .setSelectCallback {
-                    if (it) data.invoke()
-                }
+            DefaultAlertDialog(
+                requireActivity(),
+                null,
+                getString(R.string.warning_dialog_text),
+                getString(R.string.yes),
+                getString(R.string.no)
+            ).setSelectCallback { data.invoke() }
         } else data.invoke()
     }
 

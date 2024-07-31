@@ -9,7 +9,7 @@ import androidx.navigation.navOptions
 import com.example.R
 import com.example.databinding.FragmentChangeEmailBinding
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.ConfirmPhoneDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -59,10 +59,13 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
 
 
     override fun showEmailNotUnique(email: String) {
-        ConfirmPhoneDialog(
-            requireContext(), getString(R.string.confirm_email_text, email),
-            getString(R.string.revoke), getString(R.string.confirm_phone_positive)
-        ).setSelectCallback { if (it) presenter.onShowEmailConfirm() }
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.confirm_email_text, email),
+            getString(R.string.confirm_phone_positive),
+            getString(R.string.event_register_no_form_negative)
+        ).setSelectCallback { presenter.onShowEmailConfirm() }
     }
 
     override fun showEmailConfirm(email: String) {

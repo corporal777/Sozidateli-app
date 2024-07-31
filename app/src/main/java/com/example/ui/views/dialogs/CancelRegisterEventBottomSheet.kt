@@ -6,7 +6,7 @@ import com.example.R
 import com.example.databinding.DialogCancelRegisterEventBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class CancelRegisterEventDialog (
+class CancelRegisterEventBottomSheet (
     context: Context,
 ) : BottomSheetDialog(context, R.style.TransparentBottomSheetDialogTheme) {
 
@@ -28,7 +28,7 @@ class CancelRegisterEventDialog (
     }
 
 
-    fun setCancelRegisterCallback(block: () -> Unit): CancelRegisterEventDialog {
+    fun setCancelRegisterCallback(block: () -> Unit): CancelRegisterEventBottomSheet {
         onCancelClick = block
         return this
     }

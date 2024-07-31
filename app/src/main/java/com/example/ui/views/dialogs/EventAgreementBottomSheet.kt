@@ -1,26 +1,19 @@
 package com.example.ui.views.dialogs
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.example.R
 import com.example.databinding.BottomSheetDialogEventAgreementBinding
-import com.example.extensions.getClickablePrivacyPolitics
-import com.example.extensions.removeUrlUnderline
-import com.example.extensions.setOnClickListener
 import com.example.ui.views.CustomSpannableString
-import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class EventAgreementBottomDialog (
+class EventAgreementBottomSheet (
     context: Context,
     val data: String
 ) : BottomSheetDialog(context) {
@@ -63,7 +56,7 @@ class EventAgreementBottomDialog (
         }
     }
 
-    fun setSelectCallback(block: () -> Unit): EventAgreementBottomDialog {
+    fun setSelectCallback(block: () -> Unit): EventAgreementBottomSheet {
         onSelect = block
         return this
     }

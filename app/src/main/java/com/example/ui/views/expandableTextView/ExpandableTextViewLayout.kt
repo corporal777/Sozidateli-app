@@ -1,33 +1,19 @@
 package com.example.ui.views.expandableTextView
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Parcelable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.text.style.URLSpan
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
-import androidx.viewpager.widget.ViewPager
 import com.example.R
-import com.example.data.models.NewEventFormat
 import com.example.databinding.LayoutCustomExpandableTextviewBinding
 import com.example.extensions.markWon
-import com.example.ui.views.dialogs.LayoutTextView
-import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
 import com.example.util.URLSpanNoUnderline
-import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class ExpandableTextViewLayout : LinearLayout {
 

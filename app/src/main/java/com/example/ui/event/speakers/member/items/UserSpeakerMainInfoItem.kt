@@ -5,7 +5,7 @@ import androidx.core.view.isVisible
 import com.example.R
 import com.example.databinding.ItemUserSpeakerMainInfoBinding
 import com.example.extensions.markWon
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 
@@ -72,9 +72,7 @@ class UserSpeakerMainInfoItem(
         imageView.apply {
             isVisible = visibility
             setImageResource(mIcon)
-            setOnClickListener {
-                MessageDialogWithBrownButton(context, mText)
-            }
+            setOnClickListener { DefaultAlertDialog(context, null, mText) }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.ui.views
+package com.example.ui.views.dialogs
 
 import android.content.Context
 import android.graphics.Color
@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import com.example.R
 import com.example.databinding.DialogAddPhoneEmailBinding
-import com.example.util.AuthValidateUtil
 import com.example.util.Utils
 
 class AddPhoneEmailDialog(val context: Context, val type: ContactsType) {
@@ -40,7 +39,7 @@ class AddPhoneEmailDialog(val context: Context, val type: ContactsType) {
         binding.etLogin.doAfterTextChanged {
             when (type) {
                 ContactsType.EMAIL -> {
-                    binding.btnPositive.isEnabled = AuthValidateUtil.isValidEmail(it.toString())
+                    binding.btnPositive.isEnabled = Utils.isEmailValid(it.toString())
                 }
 
                 ContactsType.PHONE -> {

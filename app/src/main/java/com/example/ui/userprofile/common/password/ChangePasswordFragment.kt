@@ -8,7 +8,7 @@ import com.example.R
 import com.example.databinding.FragmentChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -99,10 +99,10 @@ class ChangePasswordFragment() : BaseFragment<FragmentChangePasswordBinding>(),
     }
 
     override fun showLoginAgainDialog() {
-        MessageDialogWithBrownButton(
+        DefaultAlertDialog(
             requireContext(),
-            "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново.",
-            false
+            null,
+            "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново."
         ).setSelectCallback { presenter.logoutFromAccount() }
     }
 

@@ -33,7 +33,7 @@ import com.example.ui.user.items.ProfileDataDividerItem
 import com.example.ui.user.items.UserProfileActionsItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.ui.views.UserSubscribeImageView
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
@@ -365,9 +365,8 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
 
     override fun showUserHiddenDialog() {
         val message = "Данный профиль недоступен"
-        MessageDialogWithBrownButton(requireContext(), message, false).setSelectCallback {
-            findNavController().navigateUp()
-        }
+        DefaultAlertDialog(requireContext(), null, message, withCancel = false)
+            .setSelectCallback { findNavController().navigateUp() }
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {

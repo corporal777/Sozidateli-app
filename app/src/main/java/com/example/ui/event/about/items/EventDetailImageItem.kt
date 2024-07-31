@@ -1,14 +1,11 @@
 package com.example.ui.event.about.items
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.widget.TextView
 import androidx.core.text.getSpans
@@ -23,7 +20,7 @@ import com.example.extensions.*
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
 import com.example.ui.views.CustomSpannableString
-import com.example.ui.views.dialogs.CancelRegisterEventDialog
+import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
@@ -284,7 +281,7 @@ class EventDetailImageItem(
     }
 
     private fun showCancelRegisterDialog() {
-        CancelRegisterEventDialog(context)
+        CancelRegisterEventBottomSheet(context)
             .setCancelRegisterCallback { clickListener.onActionCancel() }
             .show()
     }

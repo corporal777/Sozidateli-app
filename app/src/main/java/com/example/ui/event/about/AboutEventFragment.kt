@@ -1,9 +1,7 @@
 package com.example.ui.event.about
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -15,20 +13,16 @@ import com.example.data.models.AboutEventData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventFormModel
 import com.example.data.models.EventNew
-import com.example.data.models.MapInfo
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
-import com.example.data.models.UserFormResultModel
 import com.example.databinding.FragmentAboutEventNewBinding
 import com.example.extensions.findItemBy
-import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseFragment
-import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.about.items.EventDetailImageItem
 import com.example.ui.event.about.items.EventDetailOrganizationItem
@@ -45,23 +39,18 @@ import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.ui.views.dialogs.StateType
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import eightbitlab.com.blurview.BlurAlgorithm
-import eightbitlab.com.blurview.RenderEffectBlur
-import eightbitlab.com.blurview.RenderScriptBlur
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onScrolled
 import com.example.extensions.setOnClickListener
 import com.example.extensions.statusBarColorValue
-import com.example.ui.views.dialogs.EventAgreementBottomDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
-import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
-import com.example.ui.views.dialogs.MessageDialogWithTwoButtons
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -240,20 +229,19 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 
     override fun showEventSubscribedDialog(isSubscribed: Boolean?) {
         if (isSubscribed == true)
-            MessageDialogWithTwoButtons(requireContext(), "Спасибо", "Мы пришлем Вам уведомление")
-        else MessageDialogWithTwoButtons(
+            DefaultAlertDialog(requireContext(), "Спасибо", "Мы пришлем Вам уведомление")
+        else DefaultAlertDialog(
             requireContext(),
             null,
             "Вы отписались от уведомления о старте приема заявок на мероприятие",
             "Отмена",
-            "Ок"
-        ).setSelectCallback {
-            if (it) presenter.onSubscribeEventClick(isSubscribed ?: false)
-        }
+            "Ок",
+            false
+        ).setSelectCallback { presenter.onSubscribeEventClick(isSubscribed ?: false) }
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementBottomDialog(requireContext(), url)
+        EventAgreementBottomSheet(requireContext(), url)
             .setSelectCallback { presenter.onAcceptRegistrationAgreement(event) }
             .show()
     }
@@ -321,11 +309,9 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         findNavController().navigate(R.id.authorization_fragment)
     }
 
-    override fun showErrorMessageWithResult(withResult: Boolean, eventId: String, message: String) {
-        MessageDialogWithBrownButton(requireContext(), message).setSelectCallback {
-            if (withResult) {
-                setFragmentResult("eventKey", bundleOf("eventId" to eventId))
-            }
+    override fun showErrorMessageWithResult(with: Boolean, eventId: String, message: String) {
+        DefaultAlertDialog(requireContext(), null, message).setSelectCallback {
+            if (with) setFragmentResult("eventKey", bundleOf("eventId" to eventId))
             findNavController().navigateUp()
         }
     }

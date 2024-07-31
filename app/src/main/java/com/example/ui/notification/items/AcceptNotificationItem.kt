@@ -4,15 +4,18 @@ import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationAcceptBinding
 import com.example.ui.views.CtpDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.ui.views.expandableTextView.ExpandableTextView
 import com.example.util.ClickableSpanNew
@@ -95,7 +98,14 @@ class AcceptNotificationItem(
 
     private fun getNotificationAcceptedText(textView: TextView): SpannableString {
         val clickableSpan = ClickableSpanNew(textView) {
-            CtpDialog(context).setSelectCallback {}
+            val supportEmail = context.getString(R.string.support_email)
+            val message = context.getString(R.string.ctp_text).format(supportEmail).toSpannable()
+            Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
+            DefaultAlertDialog(
+                context,
+                context.getString(R.string.dear_user_text),
+                message
+            )
         }
         return when (notification.partitionType) {
             //"event" -> SpannableString("Приглашение было принято.")

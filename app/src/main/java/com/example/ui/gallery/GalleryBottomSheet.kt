@@ -16,7 +16,7 @@ import com.example.extensions.updateItems
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.gallery.items.CameraPreviewItem
 import com.example.ui.gallery.items.GalleryItem
-import com.example.ui.views.WarningDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.getMakeSceneTransition
 import com.example.util.rxtakephoto.CropActivity
 import com.example.util.rxtakephoto.CropCallbackHelper
@@ -44,7 +44,7 @@ class GalleryBottomSheet() :
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
-    private var onPhotoUpdated: (photo : ImageModel?) -> Unit = {}
+    private var onPhotoUpdated: (photo: ImageModel?) -> Unit = {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,7 +78,7 @@ class GalleryBottomSheet() :
         onPhotoUpdated.invoke(image)
     }
 
-    fun setPhotoUpdated(block : (image : ImageModel?) -> Unit) : GalleryBottomSheet {
+    fun setPhotoUpdated(block: (image: ImageModel?) -> Unit): GalleryBottomSheet {
         onPhotoUpdated = block
         return this
     }
@@ -115,8 +115,13 @@ class GalleryBottomSheet() :
 
     private fun showRemovePhotoWarning() {
         if (presenter.isHasAnyState()) {
-            WarningDialog(requireActivity(), resources.getString(R.string.warning_dialog_text))
-                .setSelectCallback { if (it) presenter.onRemovePhotoClick() }
+            DefaultAlertDialog(
+                requireActivity(),
+                null,
+                getString(R.string.warning_dialog_text),
+                getString(R.string.yes),
+                getString(R.string.no)
+            ).setSelectCallback { presenter.onRemovePhotoClick() }
         }
     }
 
