@@ -23,6 +23,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.removeUrlUnderline
 import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.util.getColor
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -70,15 +71,8 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
                 presenter.onChangePasswordText(it.password, it.isValid)
             }
             viewAgreement.apply {
-                getTextView().apply {
-                    text = getClickablePrivacyPolitics(requireContext())
-                    highlightColor = ContextCompat.getColor(requireContext(), R.color.profile_id_text)
-                    movementMethod = LinkMovementMethod.getInstance()
-                    removeUrlUnderline()
-                }
-                setOnCheckedListener {
-                    presenter.onChangeUserAgreement(it)
-                }
+                getTextView().apply { text = getClickablePrivacyPolitics(requireContext()) }
+                setOnCheckedListener { presenter.onChangeUserAgreement(it) }
             }
             btnSave.setOnClickListener {
                 presenter.registerUser(true)

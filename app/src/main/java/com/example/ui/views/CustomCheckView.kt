@@ -74,9 +74,7 @@ class CustomCheckView : ConstraintLayout {
 
     fun getTextView(): AppCompatTextView = checkView.tvCheck
 
-    fun setText(text: CharSequence?) {
-        checkView.tvCheck.text = text
-    }
+    fun setText(text: CharSequence?) { checkView.tvCheck.text = text }
 
     fun setClickableText(text: CharSequence?, start: Int, onClick: () -> Unit) {
         checkView.tvCheck.text = CustomSpannableString(text).apply {

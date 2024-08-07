@@ -219,35 +219,41 @@ internal class QrCodeDrawableImpl(
 
         modifiedMatrix = codeMatrix.copy()
         logo = if (options.logo.drawable != DrawableSource.Empty) {
-            val logoSize = size * options.logo.size
-            val logoDrawable = runBlocking {
-                options.logo.drawable.get(context)
-            }
+            try {
+                val logoSize = size * options.logo.size
+                val logoDrawable = runBlocking {
+                    options.logo.drawable.get(context)
+                }
 
-            val logoSizeInQrPixels = (logoSize * (1 + options.logo.padding.value) / pixelSize)
-                .roundToInt()
-            val start = (codeMatrix.size - logoSizeInQrPixels) / 2
-            val end = (codeMatrix.size + logoSizeInQrPixels) / 2
+                val logoSizeInQrPixels = (logoSize * (1 + options.logo.padding.value) / pixelSize)
+                    .roundToInt()
+                val start = (codeMatrix.size - logoSizeInQrPixels) / 2
+                val end = (codeMatrix.size + logoSizeInQrPixels) / 2
 
-            for (x in start until end) {
-                for (y in start until end) {
-                    kotlin.runCatching {
-                        if (options.logo.shape.invoke(
-                                (x - start),
-                                (y - start),
-                                logoSizeInQrPixels,
-                                Neighbors.Empty
-                            )
-                        ) {
-                            modifiedMatrix[x, y] = QrCodeMatrix.PixelType.Logo
+                for (x in start until end) {
+                    for (y in start until end) {
+                        kotlin.runCatching {
+                            if (options.logo.shape.invoke(
+                                    (x - start),
+                                    (y - start),
+                                    logoSizeInQrPixels,
+                                    Neighbors.Empty
+                                )
+                            ) {
+                                modifiedMatrix[x, y] = QrCodeMatrix.PixelType.Logo
+                            }
                         }
                     }
                 }
+
+                options.logo.scale.scale(
+                    logoDrawable, logoSize.roundToInt(), logoSize.roundToInt()
+                )
+            }catch (e : Exception){
+                e.printStackTrace()
+                null
             }
 
-            options.logo.scale.scale(
-                logoDrawable, logoSize.roundToInt(), logoSize.roundToInt()
-            )
         } else null
 
 

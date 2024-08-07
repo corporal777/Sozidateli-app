@@ -607,7 +607,7 @@
     <string name="invalid_phone_number_error">Введите номер телефона</string>
     <string name="invalid_phone_number_second_error">Введите корректный номер</string>
     <string name="register_phone_error">Введите номер в международном формате</string>
-    <string name="passwords_do_not_match">Пароли не совпадают</string>
+    <string name="passwords_do_not_match">Пожалуйста, проверьте корректность повторно введенного пароля</string>
 
     <string name="no_internet_error_message">Hет подключения к интернету</string>
     <string name="no_internet_title">Hет подключения\nк интернету</string>

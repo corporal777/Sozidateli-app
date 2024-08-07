@@ -3,6 +3,7 @@ package com.example.ui.views.passwordView
 import android.content.Context
 import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -29,12 +30,10 @@ class CustomPasswordView : FrameLayout {
     private val defaultTypeFace = ResourcesCompat.getFont(context, R.font.sf_pro_display)
     private val boldTypeFace = ResourcesCompat.getFont(context, R.font.sf_pro_display_semibold)
     private val symbols = getSymbols()
+
     private var firstPassword: CharSequence? = null
     private var secondPassword: CharSequence? = null
 
-    private var isPasswordLengthValid = false
-    private var isPasswordSymbolsValid = false
-    private var isPasswordLettersValid = false
     private var isUncaughtSymbolsUsed = false
 
     private var isFirstPasswordValid = false
@@ -90,11 +89,11 @@ class CustomPasswordView : FrameLayout {
                 onTextChanged { showSecondPasswordError(false) }
                 onFocusChanged { hasFocus ->
                     tilPasswordTwo.changeBackground(hasFocus)
-                    if (hasFocus) matchPasswords(secondPassword)
+                    if (hasFocus) matchPasswords(false, secondPassword)
                 }
                 doAfterTextChanged {
                     secondPassword = it.toString()
-                    matchPasswords(secondPassword)
+                    matchPasswords(false, secondPassword)
                     toggleTwo.isVisible = !secondPassword.isNullOrEmpty()
                 }
             }
@@ -120,14 +119,13 @@ class CustomPasswordView : FrameLayout {
             isVisible = isUncaughtSymbolsUsed
         }
 
-        isFirstPasswordValid = !isUncaughtSymbolsUsed && isLengthValid && isLettersValid
-                && isNumbersValid && firstPassword == secondPassword
+        isFirstPasswordValid = !isUncaughtSymbolsUsed && isLengthValid && isLettersValid && isNumbersValid
         isSecondPasswordValid = isFirstPasswordValid && firstPassword == secondPassword
         onPasswordValid(getPasswordModel())
     }
 
-    private fun matchPasswords(password: CharSequence?) {
-        if (password != firstPassword) {
+    private fun matchPasswords(isRegister: Boolean, password: CharSequence?) {
+        if (!password.isNullOrEmpty() && password != firstPassword) {
             binding.lnErrorDescription.isVisible = false
             binding.tvErrorUncaughtSymbols.apply {
                 text = context.getString(R.string.passwords_do_not_match)
@@ -140,25 +138,12 @@ class CustomPasswordView : FrameLayout {
     }
 
 
-    private fun showFirstPasswordError(show: Boolean) {
-        binding.apply {
-            if (show) tvNew.setTextColor(getColor(R.color.title_text_error_red))
-            else tvNew.setTextColor(getColor(R.color.chat_list_date))
-        }
-    }
-
-    private fun showSecondPasswordError(show: Boolean) {
-        binding.apply {
-            if (show) tvConfirm.setTextColor(getColor(R.color.title_text_error_red))
-            else tvConfirm.setTextColor(getColor(R.color.chat_list_date))
-        }
-    }
-
     fun showErrors(show: Boolean) {
         showFirstPasswordError(!isFirstPasswordValid)
         showSecondPasswordError(!isSecondPasswordValid)
+
         if (!isFirstPasswordValid) validatePassword(firstPassword.isNullOrEmpty(), firstPassword)
-        else matchPasswords(secondPassword)
+        else matchPasswords(true, secondPassword)
     }
 
     private fun View.changeBackground(hasFocus: Boolean) {
@@ -179,10 +164,23 @@ class CustomPasswordView : FrameLayout {
         }
     }
 
+    private fun showFirstPasswordError(show: Boolean) {
+        binding.apply {
+            if (show) tvNew.setTextColor(getColor(R.color.title_text_error_red))
+            else tvNew.setTextColor(getColor(R.color.chat_list_date))
+        }
+    }
+
+    private fun showSecondPasswordError(show: Boolean) {
+        binding.apply {
+            if (show) tvConfirm.setTextColor(getColor(R.color.title_text_error_red))
+            else tvConfirm.setTextColor(getColor(R.color.chat_list_date))
+        }
+    }
+
     private fun getPasswordModel(): PasswordModel {
         return PasswordModel(
-            isFirstPasswordValid &&
-                    isSecondPasswordValid,
+            isFirstPasswordValid && isSecondPasswordValid,
             firstPassword.toString()
         )
     }

@@ -10,6 +10,8 @@ import com.example.R
 import com.example.data.AppData
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.ImageUtil
+import com.example.util.ImageUtil.Companion.getBitmapFromUri
+import com.example.util.ImageUtil.Companion.getBitmapFromUrlAsync
 import com.example.util.rxtakephoto.RxTakePhoto
 import com.example.util.saveImageToCache
 import com.generator.qrcodegenerator.QrCodeGenerator
@@ -85,7 +87,7 @@ class ProfileDataPresenter
         return Maybe.fromCallable {
             val data = QrData.Url(link)
             val opt = createReadyBitmapQrOptions(
-                ImageUtil.getBitmapFromUrlAsync(context, uri),
+                getBitmapFromUrlAsync(context, uri),
                 R.drawable.ic_about_app,
                 ContextCompat.getColor(context, R.color.qr_code_pixels_color)
             )
@@ -96,8 +98,9 @@ class ProfileDataPresenter
     private fun getQrCodeImageFromDrawable(link: String, uri: String): Maybe<Bitmap> {
         return Maybe.fromCallable {
             val data = QrData.Url(link)
+            val avatar = getBitmapFromUrlAsync(context, uri)
             val options = createReadyVectorQrOptions(
-                ImageUtil.getBitmapFromUrlAsync(context, uri),
+                avatar,
                 R.drawable.ic_about_app,
                 ContextCompat.getColor(context, R.color.qr_code_pixels_color)
             )

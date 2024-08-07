@@ -33,8 +33,8 @@ class AddPhoneEmailDialog(val context: Context, val type: ContactsType) {
             }
         }
         binding.btnNegative.setOnClickListener {
-            onNegativeClick.invoke()
             alertDialog.dismiss()
+            onNegativeClick.invoke()
         }
         binding.etLogin.doAfterTextChanged {
             when (type) {

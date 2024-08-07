@@ -296,36 +296,7 @@ fun ImageRequest.Builder.setParams(
 }
 
 
-fun ViewPager2.setCurrentItemWithDuration(
-    item: Int,
-    duration: Long,
-    pagePxWidth: Int = width
-) {
-    val pxToDrag: Int = pagePxWidth * (item - currentItem)
-    val animator = ValueAnimator.ofInt(0, pxToDrag)
-    var previousValue = 0
-    animator.addUpdateListener { valueAnimator ->
-        val currentValue = valueAnimator.animatedValue as Int
-        val currentPxToDrag = (currentValue - previousValue).toFloat()
-        fakeDragBy(-currentPxToDrag)
-        previousValue = currentValue
-    }
-    animator.addListener(object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator) {
-            beginFakeDrag()
-        }
 
-        override fun onAnimationEnd(animation: Animator) {
-            endFakeDrag()
-        }
-
-        override fun onAnimationCancel(animation: Animator) {}
-        override fun onAnimationRepeat(animation: Animator) {}
-    })
-    animator.interpolator = AccelerateDecelerateInterpolator()
-    animator.duration = duration
-    animator.start()
-}
 
 fun LinearLayoutManager.smoothScrollToFirstItem(
     context: Context,
@@ -346,14 +317,6 @@ fun LinearLayoutManager.smoothScrollToFirstItem(
                 super.onStop()
                 appBar?.setExpanded(true)
             }
-
-//                override fun calculateDxToMakeVisible(view: View?, snapPreference: Int): Int {
-//                    return super.calculateDxToMakeVisible(view, snapPreference) - dp2px(height.toFloat())
-//                }
-//
-//                override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
-//                    return super.calculateDyToMakeVisible(view, snapPreference) - dp2px(mBinding.eventsList.scaleX)
-//                }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
                 return 20f / displayMetrics.densityDpi

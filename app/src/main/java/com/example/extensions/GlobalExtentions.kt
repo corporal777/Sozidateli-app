@@ -65,12 +65,12 @@ import java.util.Calendar.YEAR
 import kotlin.math.roundToInt
 
 
-fun decodeBase64ToJson(data : String?): JSONObject? {
+fun decodeBase64ToJson(data: String?): JSONObject? {
     if (data.isNullOrEmpty()) return null
     try {
         val base = Base64.decode(data, Base64.DEFAULT)
         return JSONObject(String(base, StandardCharsets.UTF_8))
-    } catch (e : Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         return null
     }
@@ -79,9 +79,10 @@ fun decodeBase64ToJson(data : String?): JSONObject? {
 
 fun getClickablePrivacyPolitics(context: Context): CharSequence {
     return SpannableString(context.getString(R.string.auth_user_agreement)).apply {
-        setSpan(ClickableSpan {
-            showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
-        }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        setSpan(
+            ClickableSpan(false) {
+                showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
+            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }
 

@@ -81,7 +81,8 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
 
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
-    override fun showToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    override fun showToast(message: String) =
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
     override fun showLoadingDialog() {
         mActivity?.showLoadingDialog()
@@ -176,6 +177,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
                             bundleOf("type" to UserState.BASE, "screen" to 3)
                         )
                     }
+
                     ClickType.MAX -> {
                         if (hasBase) {
                             if (user != null) {
@@ -185,21 +187,25 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
                                             R.id.maxStatusContactsFragment,
                                             bundleOf("screen" to 1)
                                         )
+
                                     MaxStateScreenType.INTERESTS ->
                                         findNavController().navigate(
                                             R.id.maxStatusInterestsFragment,
                                             bundleOf("screen" to 1)
                                         )
+
                                     MaxStateScreenType.EDUCATION ->
                                         findNavController().navigate(
                                             R.id.maxStatusEducationFragment,
                                             bundleOf("screen" to 1)
                                         )
+
                                     MaxStateScreenType.WORK ->
                                         findNavController().navigate(
                                             R.id.maxStatusWorkFragment,
                                             bundleOf("screen" to 1)
                                         )
+
                                     else -> {}
                                 }
                             }
@@ -232,8 +238,10 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     fun checkIfFragmentAttached(operation: Context.() -> Unit) {
-        if (isAdded && context != null) {
-            operation(requireContext())
+        try {
+            if (isAdded && context != null) operation(requireContext())
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -319,6 +327,7 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
                     }
                     cashCollapseState = Pair(first, SWITCHED)
                 }
+
                 else -> cashCollapseState = Pair(first, WAIT_FOR_SWITCH)
             }
         }
