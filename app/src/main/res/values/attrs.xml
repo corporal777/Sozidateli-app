@@ -105,11 +105,6 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="food">
-        <attr name="password_hint_state_correct" format="boolean" />
-        <attr name="password_hint_state_incorrect" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CropImageView">
         <attr name="scv_img_src" format="reference" />
         <attr name="scv_crop_mode">

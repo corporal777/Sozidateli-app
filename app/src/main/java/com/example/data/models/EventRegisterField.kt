@@ -11,15 +11,19 @@ data class EventRegisterField(
         val type: Type,
         val required: Boolean,
         val description: String?,
-        val values: List<String>?,
-        @SerializedName("right_file")
-        val rightFile: Document?,
-        @SerializedName("right_file_description")
-        val rightFileDescription: String?,
-        val mask: String?
+        val values: List<String>?
 ) {
 
     enum class Type {
+        @SerializedName("email")
+        EMAIL,
+
+        @SerializedName("phone")
+        PHONE,
+
+        @SerializedName("site")
+        SITE,
+
         @SerializedName("prefilled")
         PREFILLED,
 

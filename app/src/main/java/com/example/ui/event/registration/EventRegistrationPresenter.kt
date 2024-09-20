@@ -1,22 +1,19 @@
 package com.example.ui.event.registration
 
-import android.Manifest
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.example.R
 import com.example.data.AppData
 import com.example.data.models.*
+import com.example.data.models.EventRegisterProfilePrefilledFields.Companion.prefilledFromJson
 import com.example.data.models.Optional
 import com.example.data.socket.SocketIOManager
-import com.example.exceptions.NoEventFormException
 import com.example.extensions.getFileNameAndExtension
 import com.example.repository.EventRepository
-import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.rxtakephoto.PermissionNotGrantedException
 import com.google.gson.JsonElement
-import com.tbruyelle.rxpermissions2.RxPermissions
 import com.example.extensions.fileName
 import com.example.extensions.fromJson
 import com.example.util.rxtakephoto.RxTakePhoto
@@ -25,7 +22,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.MaybeSubject
 import moxy.InjectViewState
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -37,6 +33,7 @@ import withDelay
 import withProgressBarDialogLoading
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @InjectViewState
 class EventRegistrationPresenter
@@ -51,65 +48,40 @@ class EventRegistrationPresenter
     lateinit var eventId: String
     private var isFirstLaunch = true
 
-    private var selectedGroup: String? = null
     private var fieldsData = arrayListOf<EventRegisterFieldData<*>>()
-    private var invalidFieldsData: MutableSet<EventRegisterFieldData<*>> = mutableSetOf()
+    private var invalidFieldsData = mutableSetOf<EventRegisterFieldData<*>>()
 
-    private val formId: Int
-        get() = eventData.event.formId ?: 0
-
-    private var mDy = 0
     private lateinit var eventData: EventRegisterData
-
+    private val formId get() = eventData.event.formId ?: 0
     private var approvingMode: String? = ""
 
-
-    override fun changeAppBarBackground(value: Int) {
-        mDy = value
-        viewState.updateAppBarBackgroundColorValue(mDy)
-    }
 
     override fun attachView(view: EventRegistrationContract.View?) {
         super.attachView(view)
         if (isFirstLaunch) isFirstLaunch = false
         else compositeDisposable += getProfileFieldsData().map { it.value }
-            .doOnSuccess {
-                val field = fieldsData.find { x -> x.field.id == it?.field?.id }
-                if (field != null && it?.field?.type == EventRegisterField.Type.PREFILLED) {
-                    fieldsData.set(fieldsData.indexOf(field), it)
-                    invalidFieldsData = fieldsData.filter { f -> !f.isValid() }.toMutableSet()
-                }
-            }
-            .withDelay(500)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                if (it?.value != null) {
-                    viewState.updateProfileFields(it.value!!)
-                    checkDataValid()
-                }
+                if (it == null || it !is EventRegisterFieldData.Prefilled) return@subscribeSimple
+                viewState.updateProfileFields(it)
+                onDataChange(it)
             }
     }
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.apply {
-            updateAppBarBackgroundColorValue(mDy)
-            enableActionButton(true)
-        }
-
         compositeDisposable += eventRepository.getEventDetailForRegister(eventId)
-            .doOnSuccess { e ->
+            .flatMap { e ->
                 approvingMode = e.state?.registration?.approvingMode
-                val form = e.binds?.form?.firstOrNull { o -> o.type == EventFormModel.Type.PARTICIPATION }
-                val formFields = mapFields(form?.fields?.filter { x -> x.type != EventRegisterField.Type.PREFILLED })
-                val formResultFields = mapFieldsResult(e.binds?.userFormResult?.firstOrNull()?.result?.fields, formFields)
-                eventData = EventRegisterData.init(e).apply {
-                    addFields(createFieldsData(formFields, formResultFields))
+                eventData = EventRegisterData.init(e)
+                getPrefilledFieldsIfNeed(e).map {
+                    val formFields = mapFields(it.first)
+                    val formResultFields = mapFieldsResult(it.second, formFields)
+                    eventData.addFields(createFieldsData(formFields, formResultFields))
                 }
             }
             .flatMap { getRegisterDraftsData() }
-            .flatMapSingle { getProfileFieldsData().doOnSuccess { eventData.addField(it.value) } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { onReceiveError(it) },
@@ -126,23 +98,47 @@ class EventRegistrationPresenter
     ) {
         fieldsData.addAll(result)
         invalidFieldsData = fieldsData.filter { field -> !field.isValid() }.toMutableSet()
-        val hasForm = !result.filter { x -> x.value != null || x.field != null }.isNullOrEmpty()
         viewState.apply {
-            setFormFields(event, result, hasForm)
-            if (hasForm) checkDataValid()
+            setFormFields(event, result)
+            checkDataValid()
         }
     }
 
     override fun onRegisterClick() {
-        compositeDisposable += getRequestBody(0)
-            .flatMap { eventRepository.eventRegisterNew(it) }
-            .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
-            .andThen(socket.connectToUpdates())
+        if (checkDataValid()) {
+            compositeDisposable += getRequestBody(0)
+                .flatMap { eventRepository.eventRegisterNew(it) }
+                .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
+                .andThen(socket.connectToUpdates())
+                .performOnBackgroundOutOnMain()
+                .withCustomLoading(viewState)
+                .subscribeSimple(
+                    onError = { onReceiveError(it) },
+                    onComplete = { viewState.showEventRegistrationSuccessDialog() })
+        } else viewState.showErrors(invalidFieldsData)
+    }
+
+    override fun saveEventFormResultDraft() {
+        compositeDisposable += getRequestBody(1)
+            .flatMap { body -> eventRepository.saveEventFormResultDraft(body) }
+            .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
-            .withCustomLoading(viewState)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { viewState.showEventRegistrationSuccessDialog() })
+                onSuccess = { viewState.navigateUpClick() }
+            )
+    }
+
+    private fun checkDataValid(): Boolean {
+        val isValid = invalidFieldsData.isNullOrEmpty()
+        viewState.enableActionButton(isValid)
+        return isValid
+    }
+
+    override fun onDataChange(field: EventRegisterFieldData<*>) {
+        if (field.isValid()) invalidFieldsData.remove(field) else invalidFieldsData.add(field)
+        checkDataValid()
     }
 
     private fun mapFields(it: List<EventRegisterFields>?): List<EventRegisterField> {
@@ -176,11 +172,31 @@ class EventRegistrationPresenter
     ): List<EventRegisterFieldData<*>>? {
         return fields?.mapNotNull { field ->
             when (field.type) {
-                EventRegisterField.Type.SEPARATOR -> {
-                    EventRegisterFieldData.Title(field, findValue(field, results).fromJson<String>())
+                EventRegisterField.Type.PREFILLED -> {
+                    EventRegisterFieldData.Prefilled(
+                        field,
+                        findValue(field, results).prefilledFromJson(field.values)
+                    )
                 }
+
+                EventRegisterField.Type.SEPARATOR -> {
+                    EventRegisterFieldData.Title(
+                        field,
+                        findValue(field, results).fromJson<String>()
+                    )
+                }
+
+                EventRegisterField.Type.PHONE -> {
+                    EventRegisterFieldData.Phone(
+                        field,
+                        findValue(field, results).fromJson<String>()
+                    )
+                }
+
                 EventRegisterField.Type.STRING,
                 EventRegisterField.Type.TEXT_AREA,
+                EventRegisterField.Type.EMAIL,
+                EventRegisterField.Type.SITE,
                 EventRegisterField.Type.NUMBER ->
                     EventRegisterFieldData.String(
                         field,
@@ -234,58 +250,31 @@ class EventRegistrationPresenter
     }
 
 
-    override fun onDataChange(field: EventRegisterFieldData<*>) {
-        if (field.isValid()) invalidFieldsData.remove(field) else invalidFieldsData.add(field)
-        checkDataValid()
-    }
-
-    override fun onBackClick() {
+    override fun onNavigateUpClick() {
+        viewState.hideKeyboard()
         val fields = fieldsData.filter { x -> x.field.type != EventRegisterField.Type.PREFILLED }
-        if (fields.filter { f -> f.value != null }.isNullOrEmpty()) viewState.navigateUp()
+        if (fields.filter { f -> f.value != null }.isNullOrEmpty()) viewState.navigateUpClick()
         else viewState.showSaveFormResultDraftDialog()
     }
 
-    override fun saveEventFormResultDraft() {
-        compositeDisposable += getRequestBody(1)
-            .flatMap { body -> eventRepository.saveEventFormResultDraft(body) }
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { viewState.navigateUp() }
-            )
-    }
 
-    override fun onSuccessCancel() = viewState.navigateUp()
+    override fun onSuccessCancel() = viewState.navigateUpClick()
     override fun onSuccessGoToList() = viewState.showEventLists()
-    override fun onPersonalDataFileClick(url: String) = viewState.openUrl(url)
-
-    override fun onSelectedGroupChange(groupId: String?) {
-        selectedGroup = groupId
-        checkDataValid()
-    }
-
-    private fun checkDataValid() {
-        val isValid = invalidFieldsData.isNullOrEmpty()
-        viewState.enableActionButton(isValid)
-    }
 
 
-
-    override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) {
+    override fun onAddFileClick(field: EventRegisterFieldData<EventFile?>) =
         viewState.openFileSelector(field)
-    }
 
-    override fun onTakeFile(field: EventRegisterFieldData<EventFile?>) {
+    override fun onTakeFile(field: EventRegisterFieldData<EventFile?>) =
         takeFileRequest(rxTakePhoto.takeFile(), field)
-    }
 
-    override fun onTakeImage(field: EventRegisterFieldData<EventFile?>) {
+    override fun onTakeImage(field: EventRegisterFieldData<EventFile?>) =
         takeFileRequest(rxTakePhoto.takeImage(), field)
-    }
 
-    private fun takeFileRequest(request: Observable<Result>, field: EventRegisterFieldData<EventFile?>) {
+    private fun takeFileRequest(
+        request: Observable<Result>,
+        field: EventRegisterFieldData<EventFile?>
+    ) {
         compositeDisposable += request.map { it.uri }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
@@ -295,7 +284,8 @@ class EventRegistrationPresenter
                     else it.printStackTrace()
                 },
                 onNext = { path ->
-                    val nameAndExtension = (path.fileName(contentResolver) ?: path.toString()).getFileNameAndExtension()
+                    val nameAndExtension = (path.fileName(contentResolver)
+                        ?: path.toString()).getFileNameAndExtension()
 
                     val fileName = nameAndExtension.first
                     val fileExtension = nameAndExtension.second
@@ -315,8 +305,6 @@ class EventRegistrationPresenter
     }
 
 
-
-
     override fun onReceiveApiError(apiError: ApiError) {
         super.onReceiveApiError(apiError)
         val toast = when {
@@ -331,23 +319,23 @@ class EventRegistrationPresenter
 
     private fun getRequestBody(isDraft: Int): Single<RequestBody> {
         return Single.fromCallable {
-            val group = selectedGroup
-            val fieldsData = fieldsData
-            if (group == null && fieldsData.isEmpty()) return@fromCallable "".toRequestBody()
+            val formFields = fieldsData
 
+            if (formFields.isEmpty()) return@fromCallable "".toRequestBody()
             MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .apply {
-                    if (group != null) addFormDataPart("category_id", group)
+                    //if (group != null) addFormDataPart("category_id", group)
 
                     addFormDataPart("form", formId.toString())
                     addFormDataPart("isDraft", isDraft.toString())
 
-                    fieldsData.forEachIndexed { index, fieldData ->
+                    formFields.forEachIndexed { index, fieldData ->
                         val key = fieldData.field.id
                         val value = fieldData.value ?: return@forEachIndexed
 
                         if (fieldData is EventRegisterFieldData.Prefilled) return@forEachIndexed
+
                         else if (fieldData is EventRegisterFieldData.File) {
                             val path = (value as EventFile).path
                             addFormDataPart("fields[$index][id]", key)
@@ -369,11 +357,8 @@ class EventRegistrationPresenter
                             addFormDataPart("fields[$index][value][issuedDate]", passport.issuedDate ?: "")
                         } else if (value is Iterable<*>) {
                             if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
-                            value.forEachIndexed { _, a ->
-                                if (a != null) addFormDataPart(
-                                    "fields[$index][value]",
-                                    a.toString()
-                                )
+                            value.filterNotNull().forEachIndexed { i, a ->
+                                addFormDataPart("fields[$i][value]", a.toString())
                             }
                         } else {
                             val data = value.toString()
@@ -387,19 +372,23 @@ class EventRegistrationPresenter
     }
 
 
-    private fun getProfileFieldsData(): Single<Optional<EventRegisterFieldData.Prefilled>> {
-        val form = eventData.event.form
-        val field = form?.fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
-        if (field != null) {
-            return eventRepository.loadEventFormResult(field.id.toString())
-                .map {
-                    EventRegisterFieldData.Prefilled(
-                        field.createData(),
-                        it.toFormResult(field.parameters?.options)
-                    ).asOptional()
-                }
+    private fun getProfileFieldsData(): Maybe<Optional<EventRegisterFieldData<*>>> {
+        val data = fieldsData.find { x -> x.field.type == EventRegisterField.Type.PREFILLED }
 
-        } else return Single.just(Optional(null))
+        return if (data != null && data is EventRegisterFieldData.Prefilled) {
+            eventRepository.getPrefilledEventFormResult(data.field.id)
+                .map { it.fields.prefilledToJson() }
+                .flatMapMaybe {
+                    val prefilled = it.prefilledFromJson(data.field.values!!)
+                    if (prefilled == data.value) Maybe.just(Optional(null))
+                    else fieldsData.find { x -> x.field.id == data.field.id }.let { f ->
+                        if (f is EventRegisterFieldData.Prefilled) f.value = prefilled
+                        Maybe.just(f.asOptional()).withDelay(400)
+                    }
+                }
+                .onErrorResumeNext(Maybe.just(Optional(null)))
+
+        } else Maybe.just(Optional(null))
     }
 
     private fun getRegisterDraftsData(): Maybe<EventRegisterData> {
@@ -417,6 +406,24 @@ class EventRegistrationPresenter
 
     private fun checkHttpScheme(path: Uri): Boolean {
         return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
+    }
+
+    private fun getPrefilledFieldsIfNeed(e : EventNew): Maybe<Pair<List<EventRegisterFields>?, ArrayList<EventFormResultFieldsModel>>> {
+        val fields = e.binds?.getParticipationForm()?.fields
+        val results = arrayListOf<EventFormResultFieldsModel>().apply {
+            addAll(e.binds?.getFormResult() ?: emptyList())
+        }
+        val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
+
+        return if (pref != null)
+            return if (results.isEmpty() || results.none { it.id == pref.id }){
+                eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
+                    val jsonData = it.fields.prefilledToJson()
+                    results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
+                    Maybe.just(Pair(fields, results))
+                }
+            } else Maybe.just(Pair(fields, results))
+        else Maybe.just(Pair(fields, results))
     }
 
     companion object {

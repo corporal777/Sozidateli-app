@@ -7,20 +7,17 @@ import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegisterFields
+import com.example.data.models.EventRegisterProfilePrefilledFields.Companion.prefilledFromJson
 import com.example.data.models.EventRegisterResponseField
-import com.example.data.models.Optional
 import com.example.data.models.UserFormResultModel
-import com.example.data.models.asOptional
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultDateTime
-import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.google.gson.JsonElement
 import com.example.extensions.fromJson
 import com.example.repository.EventRepository
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -39,14 +36,11 @@ class EventFormResultPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Maybe.just(mapFields(formResult.formType?.fields))
-            .map { Pair(it, mapFieldsResult(formResult.result?.fields, it)) }
+        compositeDisposable += getProfileFieldsData()
             .map {
-                //val compressedList = it.first.filter { x -> it.second.any { f -> f.id == x.id } }
-                //createFieldsData(compressedList, it.second)
-                createFieldsData(it.first, it.second)
+                val list = mapFields(it.first)
+                createFieldsData(list, mapFieldsResult(it.second, list))
             }
-            .flatMap { getProfileFieldsData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.setFormResult(it)
@@ -59,6 +53,13 @@ class EventFormResultPresenter
     ): List<EventRegisterFieldData<*>>? {
         return fields?.mapNotNull { field ->
             when (field.type) {
+                EventRegisterField.Type.PREFILLED -> {
+                    EventRegisterFieldData.Prefilled(
+                        field,
+                        findFormResultValue(field, responseField).prefilledFromJson(field.values)
+                    )
+                }
+
                 EventRegisterField.Type.DATE -> {
                     val date = findFormResultValue(field, responseField).fromJson<String>()
                     EventRegisterFieldData.String(field, date?.formatToDefaultDate())
@@ -142,19 +143,22 @@ class EventFormResultPresenter
         return result
     }
 
-    private fun getProfileFieldsData(list: List<EventRegisterFieldData<*>>): Maybe<List<EventRegisterFieldData<*>>> {
-        val field =
-            formResult.formType?.fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
-        if (field != null) {
-            return eventRepository.loadEventFormResult(field.id.toString())
-                .flatMapMaybe {
-                    val data = EventRegisterFieldData.Prefilled(
-                        field.createData(),
-                        it.toFormResult(field.parameters?.options)
-                    )
-                    Maybe.just(list.plus(data).sortedBy { x -> x.field.id })
-                }
+    private fun getProfileFieldsData(): Maybe<Pair<List<EventRegisterFields>?, List<EventFormResultFieldsModel>>> {
+        val fields = formResult.formType?.fields
+        val results = arrayListOf<EventFormResultFieldsModel>().apply {
+            addAll(formResult.result?.fields ?: emptyList())
+        }
+        val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
 
-        } else return Maybe.just(list)
+        if (pref != null) {
+            if (results.isEmpty() || results.none { it.id == pref.id })
+                return eventRepository.getPrefilledEventFormResult(pref.id.toString())
+                    .flatMapMaybe {
+                        val jsonData = it.fields.prefilledToJson()
+                        results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
+                        Maybe.just(Pair(fields, results))
+                    }
+            else return Maybe.just(Pair(fields, results))
+        } else return Maybe.just(Pair(fields, results))
     }
 }

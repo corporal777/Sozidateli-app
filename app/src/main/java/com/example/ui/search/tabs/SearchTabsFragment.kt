@@ -77,12 +77,12 @@ class SearchTabsFragment : BaseFragment<FragmentSearchTabsBinding>(), SearchTabs
                     presenter.onSearchTextSubmit(it)
                     hideKeyboard(mBinding.etSearch)
                 }
-            }
-            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                mBinding.clSearch.setBackgroundResource(
-                    if (hasFocus) R.drawable.background_search_field_rounded_focused
-                    else R.drawable.background_search_field_rounded_normal
-                )
+                setOnFocusChange { hasFocus ->
+                    mBinding.clSearch.setBackgroundResource(
+                        if (hasFocus) R.drawable.background_search_field_rounded_focused
+                        else R.drawable.background_search_field_rounded_normal
+                    )
+                }
             }
         }
 

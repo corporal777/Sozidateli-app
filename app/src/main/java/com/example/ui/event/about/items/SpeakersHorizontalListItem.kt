@@ -27,8 +27,8 @@ class SpeakersHorizontalListItem(
                 data.map {
                     EventSpeakerItem(
                         it.id,
-                        it.binds?.user?.nameLastName,
-                        it.binds?.user?.loadUserImage(),
+                        it.memberNameLastName,
+                        it.memberImage,
                         it.getSpeakerStatus()
                     ) { id -> onItemClick(id) }
                 }

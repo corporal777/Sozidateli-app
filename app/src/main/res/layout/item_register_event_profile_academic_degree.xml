@@ -4,53 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <LinearLayout
-        android:id="@+id/ln_academic_degree"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:orientation="vertical"
-        tools:visibility="visible">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_academic_degree"
-            style="@style/EventRegistration.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/profile_degrees_level" />
+            android:id="@+id/academicDegreeTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            android:text="@string/profile_degrees_level"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_academic_degree"
-            style="@style/EventRegistration.Field"
+            android:id="@+id/academicDegreeTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            tools:text="25.10.2003" />
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/academicDegreeTitleTextView" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionDegree"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/academicDegreeTextView"
+            app:layout_constraintEnd_toEndOf="@id/academicDegreeTextView"
+            app:layout_constraintTop_toTopOf="@id/academicDegreeTextView" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_academic_speciality"
-            style="@style/EventRegistration.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/search_filter_specialization" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_academic_speciality"
-            style="@style/EventRegistration.Field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            tools:text="25.10.2003" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginHorizontal="16dp"
+            android:id="@+id/academicSpecTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
             android:layout_marginTop="10dp"
-            android:background="@drawable/divider_darker" />
-    </LinearLayout>
+            android:text="@string/search_filter_specialization"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/academicDegreeTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/academicSpecTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/academicSpecTitleTextView" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionSpec"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/academicSpecTextView"
+            app:layout_constraintEnd_toEndOf="@id/academicSpecTextView"
+            app:layout_constraintTop_toTopOf="@id/academicSpecTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

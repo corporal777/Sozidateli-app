@@ -214,7 +214,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
     }
 
     fun setupBackgroundTransparency(f : Fragment){
-        if (f is AboutEventFragment || f is EventRegistrationFragment) {
+        if (f is AboutEventFragment) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
             setWindowTransparency()
         }

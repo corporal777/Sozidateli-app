@@ -1,12 +1,11 @@
 package com.example.ui.event.registration
 
-import android.net.Uri
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
 import com.example.ui.base.BaseContract
-import com.example.data.models.ProfileFieldsFormResult
+import com.example.ui.event.registration.items.PrefilledFieldClickType
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
@@ -15,20 +14,16 @@ interface EventRegistrationContract {
     interface View : BaseContract.View {
 
         @OneExecution
-        fun setFormFields(
-            event: EventRegistration,
-            fieldsData: List<EventRegisterFieldData<*>>,
-            withConfirm: Boolean
-        )
+        fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterFieldData<*>>)
 
         @OneExecution
-        fun updateProfileFields(profileForm : ProfileFieldsFormResult)
+        fun updateProfileFields(profileForm : EventRegisterFieldData.Prefilled)
 
         @Skip
         fun showSaveFormResultDraftDialog()
 
         @Skip
-        fun showSavedFormResultDraftDialog(result : EventRegisterData)
+        fun showSavedFormResultDraftDialog(res : EventRegisterData)
 
         @AddToEndSingle
         fun enableActionButton(enable: Boolean)
@@ -43,20 +38,19 @@ interface EventRegistrationContract {
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
         @OneExecution
-        fun openUrl(url: String)
-
-        @OneExecution
         fun showEventLists()
 
         @OneExecution
-        fun showEditProfile()
+        fun showEditProfile(type: PrefilledFieldClickType)
 
-        @Skip
-        fun updateAppBarBackgroundColorValue(offset : Int)
+        @OneExecution
+        fun navigateUpClick()
+
+        @OneExecution
+        fun showErrors(invalidFields : MutableSet<EventRegisterFieldData<*>>)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onPersonalDataFileClick(url: String)
 
         fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
         fun onTakeFile(field: EventRegisterFieldData<EventFile?>)
@@ -64,14 +58,12 @@ interface EventRegistrationContract {
 
         fun onRegisterClick()
         fun onDataChange(field: EventRegisterFieldData<*>)
-        fun onSelectedGroupChange(groupId: String?)
 
         fun onSuccessCancel()
         fun onSuccessGoToList()
-        fun onBackClick()
+        fun onNavigateUpClick()
 
         fun saveEventFormResultDraft()
         fun initFormResultData(event : EventRegistration, result : List<EventRegisterFieldData<*>>)
-        fun changeAppBarBackground(value : Int)
     }
 }

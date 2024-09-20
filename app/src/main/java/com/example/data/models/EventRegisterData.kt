@@ -1,5 +1,7 @@
 package com.example.data.models
 
+import android.util.Log
+
 data class EventRegisterData(
     val event: EventRegistration,
     var hasDraft: Boolean = false,
@@ -7,40 +9,37 @@ data class EventRegisterData(
     var draftFieldsData: MutableList<EventRegisterFieldData<*>> = mutableListOf(),
 ) {
     fun getSortedFields(): List<EventRegisterFieldData<*>> {
-        return fieldsData.sortedBy { x -> x.field.id }
+        //return fieldsData.sortedBy { x -> x.field.id }
+        return fieldsData
     }
 
-    fun getSortedDraftFields(): List<EventRegisterFieldData<*>> {
-        return draftFieldsData.sortedBy { x -> x.field.id }
+    fun getDraftFields(): List<EventRegisterFieldData<*>> {
+        //return draftFieldsData.sortedBy { x -> x.field.id }
+        return draftFieldsData
     }
 
 
-    fun addFields(fields: List<EventRegisterFieldData<*>>?) {
-        if (!fields.isNullOrEmpty()) {
-            this.fieldsData.addAll(fields)
-        }
-    }
-
-    fun addField(field: EventRegisterFieldData<*>?) {
-        if (field != null){
-            this.fieldsData.add(field)
-            this.draftFieldsData.add(field)
-        }
+    fun addFields(fields: List<EventRegisterFieldData<*>>?): EventRegisterData {
+        if (!fields.isNullOrEmpty()) this.fieldsData.addAll(fields)
+        return this
     }
 
     fun addDraftFields(draft: List<EventRegisterFieldData<*>>?) {
-        if (!draft.isNullOrEmpty()){
-            this.draftFieldsData.addAll(draft)
+        if (!draft.isNullOrEmpty()) {
+            draftFieldsData.addAll(draft)
+            val prefilled = fieldsData.find { x -> x is EventRegisterFieldData.Prefilled }
+            if (prefilled != null) {
+                draftFieldsData.find { x -> x is EventRegisterFieldData.Prefilled }.apply {
+                    if (this is EventRegisterFieldData.Prefilled)
+                        value = prefilled.value as EventRegisterPrefilledFields?
+                }
+            }
         }
     }
 
     companion object {
-        fun init(event : EventNew): EventRegisterData {
-            return EventRegisterData(EventRegistration.setEventRegistration(event).apply {
-                setBackgroundColor(event)
-                registrationHeadline = form?.title
-                registrationSubtitle = form?.subtitle
-            })
+        fun init(event: EventNew): EventRegisterData {
+            return EventRegisterData(EventRegistration.setEventRegistration(event))
         }
     }
 

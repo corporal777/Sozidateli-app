@@ -55,17 +55,23 @@ data class EventNew(
         else EventFormat(binds?.format?.id ?: 0, binds?.format?.name ?: "")
     }
 
+    fun isHasOneActivity(): Boolean {
+        return if (binds?.activity.isNullOrEmpty()) true
+        else binds?.activity?.size!! < 2
+    }
+
     fun isStatusActionAvailable(): Boolean {
-        return when(status?.value) {
+        return when (status?.value) {
             Event.Status.REGISTRATION,
             Event.Status.REGISTRATION_FINISHED,
             Event.Status.RUNNING,
             Event.Status.APPROVED -> true
+
             else -> false
         }
     }
 
-    fun isRegistrationClosed() : Boolean {
+    fun isRegistrationClosed(): Boolean {
         return binds?.eventRegistrationState?.prohibitions?.registrationClosed ?: false
     }
 
@@ -200,8 +206,6 @@ data class EventBindsModel(
     val eventRegistrationState: EventRegistrationStateModel? = null,
     @SerializedName("userFavoriteActivities")
     val userFavoriteActivities: List<EventActivityModel>? = null,
-//        @SerializedName("destination-scheme")
-//        val destinationScheme: Any? = null,
     @SerializedName("is-user-subscribed")
     val isUserSubscribed: Boolean,
     @SerializedName("event-subscribe")
@@ -211,11 +215,12 @@ data class EventBindsModel(
     val destinationScheme: List<DestinationSchemeModel>? = null
 ) : Parcelable {
 
-    fun getFirstActionStartDate(): String? {
-        return if (activity.isNullOrEmpty())
-            null
-        else
-            activity.first().holdingDate?.from
+    fun getParticipationForm(): EventFormModel? {
+        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.formType
+    }
+
+    fun getFormResult(): List<EventFormResultFieldsModel>? {
+        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.result?.fields
     }
 }
 
@@ -305,67 +310,21 @@ data class EventRegisterFields(
     val id: Int? = null,
     val name: String? = null,
     val description: String? = null,
-    @SerializedName("isRequired")
     val isRequired: Boolean,
     val sort: Int? = null,
     val type: EventRegisterField.Type? = null,
     val parameters: FieldsParameters? = null
 ) : Parcelable {
-    enum class Type {
-        @SerializedName("prefilled")
-        PREFILLED,
-
-        @SerializedName("string")
-        STRING,
-
-        @SerializedName("textarea")
-        TEXT_AREA,
-
-        @SerializedName("number")
-        NUMBER,
-
-        @SerializedName("date")
-        DATE,
-
-        @SerializedName("datetime")
-        DATETIME,
-
-        @SerializedName("file")
-        FILE,
-
-        @SerializedName("list")
-        LIST,
-
-        @SerializedName("checkbox")
-        CHECKBOX,
-
-        @SerializedName("radiobuttons")
-        RADIO_BUTTONS,
-
-        @SerializedName("boolean")
-        BOOLEAN,
-
-        @SerializedName("passport")
-        PASSPORT,
-
-        @SerializedName("separator")
-        SEPARATOR,
-
-        @SerializedName("selectbox")
-        SELECT_BOX,
-
-        @SerializedName("radiobox")
-        RADIO_BOX,
-
-        @SerializedName("datetimeplaned")
-        DATETIMEPLANED
-    }
 
     fun createData(): EventRegisterField {
         return EventRegisterField(
-            id.toString(), name, sort ?: 0,
-            type ?: EventRegisterField.Type.PREFILLED, isRequired,
-            description, parameters?.options, null, null, null
+            id.toString(),
+            name,
+            sort ?: 0,
+            type ?: EventRegisterField.Type.PREFILLED,
+            isRequired,
+            description,
+            parameters?.options
         )
     }
 }
@@ -434,13 +393,35 @@ data class MemberModel(
     val description: String? = null,
     val isLead: Boolean? = null,
     val isNewUser: Boolean? = null,
+    val isRegistered: Boolean? = null,
+    val name: String? = null,
+    val lastName: String? = null,
+    val middleName: String? = null,
+    val imageUri: ImageModel? = null,
     @SerializedName("organizationAndPosition")
     val organizationAndPosition: String? = null,
     val binds: MemberBindsModel? = null
 ) : Parcelable {
 
+    val memberNameLastName: String
+        get() {
+            val nameList = if (name.isNullOrEmpty() || lastName.isNullOrEmpty())
+                listOfNotNull(binds?.user?.name, binds?.user?.lastName)
+            else listOfNotNull(name, lastName)
+            return nameList.joinToString(" ")
+        }
+
+    val memberImage: String?
+        get() {
+            return if (imageUri == null || imageUri.uri.isNullOrEmpty()) {
+                if (binds?.user == null) null
+                else binds.user.loadUserImage()
+            } else imageUri.uri
+        }
+
+
     fun getSpeakerStatus(): String? {
-        return if (binds?.user?.state?.isRegistered == false) "not_registered"
+        return if (isRegistered == false) "not_registered"
         else status
     }
 

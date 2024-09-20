@@ -455,19 +455,51 @@
         <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
 
-    <style name="Profile.Edit.InputEventRegister">
+    <style name="Profile.Edit.InputEventRegisterText">
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:paddingBottom">11dp</item>
+
         <item name="android:letterSpacing">-0.01</item>
         <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">@dimen/event_register_input_text_size</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">30dp</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/input_text_color</item>
-        <item name="android:backgroundTint">@color/background_input_participant_profile</item>
+        <item name="android:background">@drawable/background_input_text_field_new</item>
+        <item name="android:textColorHint">@color/input_hint_text_color</item>
+        <item name="android:minHeight">45dp</item>
+    </style>
+
+    <style name="Profile.Edit.InputEventRegister">
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:paddingBottom">11dp</item>
+
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/event_register_input_text_size</item>
+        <item name="android:textColor">@color/input_text_color</item>
+        <item name="android:backgroundTint">@color/background_input_event_register_required</item>
         <item name="android:textColorHint">@color/input_hint_text_color</item>
         <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
         <item name="android:minHeight">45dp</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="Profile.Edit.InputEventRegisterTitle">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="fontPath">fonts/sf_pro_text_regular.ttf</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/profile_data_text_hint</item>
     </style>
 
 
@@ -645,6 +677,21 @@
         <item name="android:theme">@style/SelectorTheme</item>
     </style>
 
+    <style name="CheckBoxNew">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:theme">@style/SelectorThemeNew</item>
+    </style>
+
+    <style name="SelectorThemeNew">
+        <item name="colorAccent">@color/main_brown_color_new</item>
+        <item name="android:colorAccent">@color/main_brown_color_new</item>
+        <item name="android:colorControlNormal">@color/input_border_color</item>
+    </style>
+
     <style name="SelectorTheme">
         <item name="colorAccent">@color/badge_attention_low</item>
         <item name="android:colorAccent">@color/badge_attention_low</item>
@@ -783,23 +830,23 @@
     <style name="EventRegistration" />
 
 
-    <style name="EventRegistration.Title">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
-        <item name="android:textColor">@color/profile_data_text_hint</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-    </style>
+<!--    <style name="EventRegistration.Title">-->
+<!--        <item name="android:letterSpacing">-0.01</item>-->
+<!--        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>-->
+<!--        <item name="android:textColor">@color/profile_data_text_hint</item>-->
+<!--        <item name="android:textSize">14sp</item>-->
+<!--        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>-->
+<!--        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>-->
+<!--    </style>-->
 
-    <style name="EventRegistration.Field">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textColor">@color/profile_edit_button_text_enabled</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-    </style>
+<!--    <style name="EventRegistration.Field">-->
+<!--        <item name="android:letterSpacing">-0.01</item>-->
+<!--        <item name="fontPath">fonts/sf_pro_display.OTF</item>-->
+<!--        <item name="android:textColor">@color/profile_edit_button_text_enabled</item>-->
+<!--        <item name="android:textSize">14sp</item>-->
+<!--        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>-->
+<!--        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>-->
+<!--    </style>-->
 
     <style name="EventDetailInformationTextStyle">
         <item name="android:letterSpacing">-0.01</item>

@@ -1,31 +1,14 @@
 package com.example.ui.event.formResult.items
 
 import android.content.Context
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.util.Log
-import androidx.core.net.toUri
-import androidx.room.util.joinIntoString
-import com.example.R
-import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterField
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventRegisterPrefilledFields
 import com.example.data.models.FileModel
-import com.example.data.models.ProfileFieldFiles
-import com.example.data.models.ProfileFieldsFormResult
-import com.example.extensions.updateItem
-import com.example.extensions.updateItems
-import com.example.ui.event.registration.items.RegisterEventAcademicDegreeItem
-import com.example.ui.event.registration.items.RegisterEventEducationItem
-import com.example.ui.event.registration.items.RegisterEventProfileEducationLevelItem
-import com.example.ui.event.registration.items.RegisterEventProfileHeaderItem
-import com.example.ui.event.registration.items.RegisterEventProfileMainItem
-import com.example.ui.event.registration.items.RegisterEventProfileWorkItem
-import com.example.ui.views.CustomSpannableString
-import com.example.util.ClickableSpan
-import com.example.util.ClickableSpanNew
-import com.example.util.showCustomTabsBrowser
+import com.example.data.models.PrefilledFieldContacts
+import com.example.data.models.PrefilledFieldEducation
+import com.example.data.models.PrefilledFieldFiles
+import com.example.data.models.PrefilledFieldString
+import com.example.data.models.PrefilledFieldWorkExperience
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -33,15 +16,12 @@ import com.xwray.groupie.Section
 class EventFormResultProfileGroup(
     val context: Context,
     val field: EventRegisterField,
-    val value: ProfileFieldsFormResult?,
+    val value: EventRegisterPrefilledFields?,
 ) : NestedGroup() {
 
     private val mainSection = Section().apply {
         setHeader(EventFormResultProfileItem(99, field.name, null, null))
     }
-
-    private val options = value?.options ?: emptyList()
-
 
     init {
         setMainData()
@@ -50,75 +30,54 @@ class EventFormResultProfileGroup(
 
 
     private fun setMainData() {
-        options.forEachIndexed { index, option ->
-            when (option) {
-                "user_fio" ->
-                    addMainField(index, R.string.user_profile_fio, value?.user_name?.value)
+        if (value?.prefilledFields.isNullOrEmpty()) return
+        value!!.prefilledFields.forEachIndexed { index, it ->
+            if (it is PrefilledFieldString) addMainField(index, it.name, it.value)
 
-                "user_birthday" ->
-                    addMainField(index, R.string.user_profile_birthday, value?.user_birthday?.value)
-
-                "user_gender" ->
-                    addMainField(index, R.string.user_profile_gender, value?.user_gender?.value)
-
-                "user_notes" ->
-                    addMainField(index, R.string.user_profile_additional, value?.user_notes?.value)
-
-                "user_phone" ->
-                    addMainField(index, R.string.profile_phone_mobile, value?.user_phone?.value)
-
-                "user_work_phone" ->
-                    addMainField(index, R.string.profile_phone_work, value?.user_work_phone?.value)
-
-                "user_email" ->
-                    addMainField(index, R.string.profile_edit_main_email_hint, value?.user_email?.value)
-
-                "address" ->
-                    addMainField(index, R.string.user_profile_address, value?.address?.value)
-
-                "socialNetwork" -> addLinkField(index, R.string.profile_sn, value?.user_links?.value)
-
-                "site" -> addLinkField(index, R.string.profile_site, value?.user_sites?.value)
-
-                "publicEmail" -> addMainField(index, R.string.profile_edit_public_email_hint, value?.user_public_email?.value)
-
-                "recommendationFile" ->
-                    mainSection.add(EventFormResultProfileFileItem(index + 100, "Файлы", value?.user_files))
-
-                "workExperience" -> addWorkField(value!!)
-
-                "education" -> addEducationField(value!!)
-
-                else -> return@forEachIndexed
+            else if (it is PrefilledFieldContacts) {
+                if (it.name == "Рабочий телефон" || it.name == "Публичный e-mail")
+                    addMainField(index, it.name, it.value)
+                else addLinkField(index, it.name, it.value)
             }
+
+            else if (it is PrefilledFieldFiles) addFileField(index, it.name, it.value)
+
+            else if (it is PrefilledFieldEducation) addEducationField(it)
+
+            else if (it is PrefilledFieldWorkExperience) addWorkField(it)
+            else null
         }
     }
 
-    private fun addMainField(id: Int, title: Int, field: String?) {
-        mainSection.add(EventFormResultProfileItem(id + 100, null, context.getString(title), field))
+    private fun addMainField(id: Int, title: String, field: String?) {
+        mainSection.add(EventFormResultProfileItem(id + 100, null, title, field))
     }
 
-    private fun addLinkField(id: Int, title: Int, field: String?) {
+
+    private fun addFileField(id: Int, title: String, field: List<FileModel>?) {
+        mainSection.add(EventFormResultProfileFileItem(id + 100, title, field))
+    }
+
+    private fun addLinkField(id: Int, title: String, field: String?) {
         val files =
             if (field.isNullOrEmpty()) emptyList()
             else field.split("\n").map { FileModel(uri = it, name = it) }
-        val fields = ProfileFieldFiles(false, value = files)
-        mainSection.add(EventFormResultProfileFileItem(id + 100, context.getString(title), fields))
+        mainSection.add(EventFormResultProfileFileItem(id + 100, title, files))
     }
 
 
-    private fun addWorkField(data: ProfileFieldsFormResult) {
-        mainSection.addAll(data.work_experience.value?.mapIndexed { index, work ->
+    private fun addWorkField(data: PrefilledFieldWorkExperience) {
+        mainSection.addAll(data.value?.mapIndexed { index, work ->
             EventFormResultWorkItem(index == 0, work)
         } ?: emptyList())
     }
 
-    private fun addEducationField(data: ProfileFieldsFormResult) {
-        mainSection.add(EventFormResultEducationLevelItem(data.educationLevel.value?.name))
-        mainSection.addAll(data.academic_degree.value?.map { p ->
+    private fun addEducationField(data: PrefilledFieldEducation) {
+        mainSection.add(EventFormResultEducationLevelItem(data.educationLevel))
+        mainSection.addAll(data.academicDegree?.map { p ->
             EventFormResultAcademicDegreeItem(p.degree, p.speciality)
         } ?: emptyList())
-        mainSection.addAll(data.education.value?.map { educationModel ->
+        mainSection.addAll(data.education?.map { educationModel ->
             EventFormResultEducationItem(
                 educationModel.organization,
                 educationModel.speciality,

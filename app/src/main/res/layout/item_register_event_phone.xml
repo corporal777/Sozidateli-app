@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/phoneTextInputLayout"
+            style="@style/Profile.Edit.PasswordNew"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:endIconMode="none"
+            app:layout_constraintTop_toBottomOf="@id/textView">
+
+            <com.example.ui.views.phoneText.PhoneFormatEditText
+                android:id="@+id/phoneInputEditText"
+                style="@style/Profile.Edit.InputEventRegister"
+                android:gravity="top"
+                android:inputType="phone"
+                tools:hint="@string/profile_phone_hint" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <View
+            android:id="@+id/viewInputError"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_input_frame_error"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/phoneTextInputLayout"
+            app:layout_constraintEnd_toEndOf="@id/phoneTextInputLayout"
+            app:layout_constraintStart_toStartOf="@id/phoneTextInputLayout"
+            app:layout_constraintTop_toTopOf="@id/phoneTextInputLayout"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

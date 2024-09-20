@@ -85,6 +85,7 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
+import com.example.ui.base.BaseFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
@@ -158,7 +159,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         setupMainNavBar()
         subscribeOnNotificationChanel()
 
-        mBinding.toolbar.ivBack.setOnClickListener { navigateUp() }
+        mBinding.toolbar.ivBack.setOnClickListener {
+            val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
+            if (fragment != null && fragment is BaseFragment<*>) fragment.navigateUp()
+            else navigateUp()
+        }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
 
@@ -459,10 +464,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
-    override fun navigateUp() {
-        onSupportNavigateUp()
-    }
 
+    override fun navigateUp() { onSupportNavigateUp() }
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onDestroy() {

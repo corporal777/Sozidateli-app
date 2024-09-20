@@ -21,10 +21,10 @@ class EventSpeakerItem(
     override fun bind(viewBinding: ItemEventSpeakerBinding, position: Int) {
         viewBinding.apply {
             ivSpeakerImage.apply {
-                setImagePicasso(
-                    url = image,
-                    placeholder = R.drawable.background_image_placeholder,
-                    error = R.drawable.empty_speaker_avatar
+                setImage(
+                    image = image,
+                    error = R.drawable.empty_speaker_avatar,
+                    placeholder = R.drawable.background_image_placeholder
                 )
             }
             tvSpeakersName.text = name
@@ -36,19 +36,24 @@ class EventSpeakerItem(
                         setImageResource(R.drawable.ic_speaker_status_not_confirmed)
                         message = "Спикер еще не зарегистрирован в «Созидателях»"
                     }
+
                     "pending" -> {
                         isVisible = true
                         setImageResource(R.drawable.ic_speaker_status_pending)
-                        message = "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                        message =
+                            "Спикер еще не подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                     }
+
                     "approved" -> {
                         isVisible = true
                         setImageResource(R.drawable.ic_speaker_status_confirmed)
-                        message = "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
+                        message =
+                            "Спикер подтвердил свое участие в мероприятии с помощью профиля в «Созидателях»"
                     }
+
                     else -> isVisible = false
                 }
-                setOnClickListener { DefaultAlertDialog(context, null,message) }
+                setOnClickListener { DefaultAlertDialog(context, null, message) }
             }
             itemContainer.apply {
                 clipToOutline = true

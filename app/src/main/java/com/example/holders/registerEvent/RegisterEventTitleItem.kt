@@ -1,4 +1,4 @@
-package com.example.ui.event.registration.items
+package com.example.holders.registerEvent
 
 import androidx.core.view.isVisible
 import com.example.R

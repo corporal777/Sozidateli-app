@@ -3,17 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout style="@style/EventRegistrationItemContainer">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            fontPath="fonts/sf_pro_display_regular.OTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="-0.01"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="14sp"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
         <com.example.ui.views.CustomTextInputLayout
@@ -21,7 +17,9 @@
             style="@style/Profile.Edit.PasswordNew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:endIconMode="none">
+            android:layout_marginTop="5dp"
+            app:endIconMode="none"
+            app:layout_constraintTop_toBottomOf="@id/textView">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEditText"
@@ -30,6 +28,34 @@
                 tools:hint="@string/profile_phone_hint" />
         </com.example.ui.views.CustomTextInputLayout>
 
-        <View style="@style/ViewDivider.Form" />
-    </LinearLayout>
+        <View
+            android:id="@+id/viewInputError"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_input_frame_error"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/textInputLayout"
+            app:layout_constraintEnd_toEndOf="@id/textInputLayout"
+            app:layout_constraintStart_toStartOf="@id/textInputLayout"
+            app:layout_constraintTop_toTopOf="@id/textInputLayout"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/textViewSymbolsLeft"
+            fontPath="fonts/sf_pro_text_regular.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:textColor="#993C3C43"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+            tools:text="Осталось 5 символов"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

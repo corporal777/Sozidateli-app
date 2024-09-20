@@ -52,7 +52,7 @@ class UserSpeakerPresenter
 
     private fun loadSpeakerData() {
         compositeDisposable += eventRepository.getEventMember(memberId)
-            .zipWith(eventRepository.getEventDetailForRegister(eventId))
+            .zipWith(eventRepository.getEvent(eventId, "current-user-registration"))
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { onReceiveError(it) },

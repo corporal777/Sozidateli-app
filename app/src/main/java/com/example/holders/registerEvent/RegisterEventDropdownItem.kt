@@ -1,17 +1,16 @@
 package com.example.holders.registerEvent
 
+import android.view.View
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventCheckboxBinding
 import com.example.databinding.ItemRegisterEventSelectorBinding
 import com.example.extensions.initDropDownView
 
-open class EventRegistrationSelectBoxItem(
+open class RegisterEventDropdownItem(
     private val fieldData: EventRegisterFieldData<String>,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem<ItemRegisterEventSelectorBinding>(fieldData, onDataChange) {
+) : BaseRegisterInputItem<ItemRegisterEventSelectorBinding>(fieldData, onDataChange) {
 
 
     override fun bind(viewBinding: ItemRegisterEventSelectorBinding, position: Int) {
@@ -28,6 +27,7 @@ open class EventRegistrationSelectBoxItem(
                     {
                         fieldData.value = it
                         onDataChange()
+                        showError(false)
                     }
                 )
                 hint = fieldData.field.description
@@ -35,6 +35,8 @@ open class EventRegistrationSelectBoxItem(
         }
     }
 
+    override fun getInputView(binding: ItemRegisterEventSelectorBinding): View = binding.autoCompleteTextView
+    override fun getErrorFrameView(binding: ItemRegisterEventSelectorBinding): View = binding.viewInputError
     override fun getTitleView(binding: ItemRegisterEventSelectorBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_selector
 }

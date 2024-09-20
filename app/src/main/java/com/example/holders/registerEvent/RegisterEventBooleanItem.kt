@@ -1,5 +1,6 @@
 package com.example.holders.registerEvent
 
+import android.util.Log
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.R
@@ -16,12 +17,13 @@ open class RegisterEventBooleanItem(
     override fun bind(viewBinding: ItemRegisterEventBooleanBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.apply {
-            include.checkbox.apply {
-                text = field.name
-                isChecked = fieldData.value ?: false
-                setOnCheckedChangeListener { _, isChecked ->
+            checkbox.apply {
+                setText(field.name)
+                setChecked(fieldData.value ?: false)
+                setOnCheckedListener { isChecked ->
                     fieldData.value = isChecked
                     onDataChange()
+                    this@RegisterEventBooleanItem.showError(false)
                 }
             }
 

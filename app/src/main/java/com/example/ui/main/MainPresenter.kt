@@ -6,27 +6,33 @@ import android.util.Log
 import call
 import com.example.BuildConfig
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.EventNew
 import com.example.data.models.Notification
+import com.example.data.models.NotificationModel
+import com.example.data.models.RemoteNotification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
-import com.example.repository.*
+import com.example.repository.AuthRepository
+import com.example.repository.ChatRepository
+import com.example.repository.CommonRepository
+import com.example.repository.EventRepository
+import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.ChatHelper
 import com.example.util.ConnectivityProvider
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
-import io.reactivex.*
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import java.util.*
+import java.util.Deque
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
@@ -511,7 +517,6 @@ class MainPresenter
             .build()
         viewState.showBrowser(uri.toString())
     }
-
 
     fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
 

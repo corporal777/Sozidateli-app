@@ -8,7 +8,6 @@ import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationRateBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
-import com.example.ui.views.expandableTextView.ExpandableTextView
 
 class RateNotificationItem(
     private val context: Context,

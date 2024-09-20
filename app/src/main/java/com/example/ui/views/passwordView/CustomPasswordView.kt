@@ -76,7 +76,6 @@ class CustomPasswordView : FrameLayout {
                     if (hasFocus) validatePassword(false, firstPassword)
                     if (!hasFocus) {
                         showFirstPasswordError(isUncaughtSymbolsUsed)
-                        showSecondPasswordError(!isFirstPasswordValid && !etPasswordTwo.hasFocus() && secondPassword.isNullOrEmpty())
                     }
                 }
                 doAfterTextChanged {
@@ -106,8 +105,7 @@ class CustomPasswordView : FrameLayout {
         val isLengthValid = (password?.length ?: 0) >= MIN_LENGTH
         val isLettersValid = password?.matches(Regex(".*[A-Z].*")) == true
         val isNumbersValid = password?.matches(Regex(".*\\d.*")) == true
-        val isUncaughtSymbolsUsed = password?.contains(Regex("[$symbols]")) == true
-
+        isUncaughtSymbolsUsed = password?.contains(Regex("[$symbols]")) == true
         binding.apply {
             tvErrorLength.changeTextColorError(isRegister, isLengthValid)
             tvErrorLetters.changeTextColorError(isRegister, isLettersValid)
@@ -155,12 +153,11 @@ class CustomPasswordView : FrameLayout {
 
     private fun TextView.changeTextColorError(isRegistered: Boolean, isValid: Boolean) {
         if (isValid) {
-            setTextColor(context.getColor(R.color.password_errors_text_color_valid))
+            setTextColor(getColor(R.color.password_errors_text_color_valid))
             typeface = boldTypeFace
         } else {
-            setTextColor(context.getColor(R.color.password_errors_text_color))
-            if (isRegistered) typeface = boldTypeFace
-            else typeface = defaultTypeFace
+            setTextColor(getColor(R.color.password_errors_text_color))
+            typeface = if (isRegistered) boldTypeFace else defaultTypeFace
         }
     }
 

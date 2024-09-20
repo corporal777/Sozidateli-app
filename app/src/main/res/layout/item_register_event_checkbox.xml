@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout style="@style/EventRegistrationItemContainer">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            fontPath="fonts/sf_pro_display_regular.OTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:letterSpacing="-0.01"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="14sp"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
         <LinearLayout
@@ -20,11 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/textView" />
 
-
-        <View style="@style/ViewDivider.Form" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

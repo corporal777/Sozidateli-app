@@ -20,7 +20,7 @@ class EventDetailOrganizationItem(
 
     private val organizationName = organization?.getOrganizationName()
 
-    private var isFavorite: Boolean = organization?.binds?.userFavorite != null
+    private var isFavorite = organization?.binds?.userFavorite != null
     private val organizationLogo = organization?.logo?.uri
     private val backgroundColor = organization?.backgroundColor?.value.parseColor() ?: Color.DKGRAY
 
@@ -34,12 +34,8 @@ class EventDetailOrganizationItem(
                         text = organizationName
                     }
                     setBackgroundColor(backgroundColor)
-                } else {
-                    setImagePicasso(
-                        url = organizationLogo,
-                        placeholder = R.drawable.background_image_placeholder
-                    )
-                }
+                } else setImagePicasso(organizationLogo, R.drawable.background_image_placeholder)
+
             }
             btnActionFavorite.apply {
                 setAction(getAction())

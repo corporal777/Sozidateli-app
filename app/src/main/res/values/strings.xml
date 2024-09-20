@@ -666,11 +666,11 @@
     <string name="event_register_passport">Паспортные данные</string>
     <string name="event_register_serial">Серия</string>
     <string name="event_register_number">Номер</string>
-    <string name="event_register_agency">Кем выдано</string>
-    <string name="event_register_code">Код подразделения</string>
+    <string name="event_register_agency">Наимен. органа, выдавшего паспорт</string>
+    <string name="event_register_code">Код подр.</string>
     <string name="event_register_date">Дата выдачи</string>
     <string name="event_register_personal_data_file">Файл, разрешающий обработку перс.данных</string>
-    <string name="event_register_request">Подать заявку</string>
+    <string name="event_register_request">Подать заявку на участие</string>
     <string name="event_register_file_extension_wrong">Можно добавить только файлы с раширением: %s</string>
     <string name="event_register_file_no_permission">Для добавления файла необходимо разрешение на доступ к памяти устройства</string>
     <string name="event_register_form_request_error">Произошла ошибка, пожалуйста, попробуйте позже.</string>
@@ -694,6 +694,7 @@
     <string name="support_email">support@sozidateli.ru</string>
 
     <string name="event_rating_title">Анкета оценки</string>
+    <string name="event_registration_title">Анкета участника</string>
     <string name="event_rating_success">Оценка отправлена</string>
     <string name="event_rating_documents">Документы</string>
 
@@ -742,6 +743,7 @@
     <string name="user_profile_address_hint">Не указан</string>
     <string name="user_profile_additional">Дополнительные сведения</string>
     <string name="user_profile_additional_hint">Не указано</string>
+    <string name="user_profile_files_absent">Нет файлов</string>
     <string name="user_profile_files">Файлы</string>
     <string name="user_profile_files_hint">Не указано</string>
     <string name="user_profile_social_networks_hint">Соцсети</string>
@@ -772,6 +774,7 @@
     <string name="user_education_end_date_error">Укажите корректную дату окончания</string>
     <string name="user_profile_status_name">Максимальный</string>
     <string name="user_profile_upload_photo_help">PDF, JPEG, PNG, TIFF; не более 10 МБ\nМаксимальное число файлов – 10 штук</string>
+    <string name="user_profile_upload_photo_help_short">PDF, JPEG, PNG, TIFF; не более 10 МБ</string>
     <string name="user_profile_receipt_date">Поступление</string>
     <string name="user_profile_expiration_date">Окончание</string>
     <string name="enter_specialty">Введите специальность</string>

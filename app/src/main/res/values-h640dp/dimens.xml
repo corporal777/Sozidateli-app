@@ -27,6 +27,8 @@
     <dimen name="clickable_text_view_size">14sp</dimen>
     <dimen name="check_view_text_size">14sp</dimen>
     <dimen name="profile_page_button_text_size">16sp</dimen>
+
+    <dimen name="event_register_input_text_size">16sp</dimen>
     <!--  new auth views margins  -->
 
     <dimen name="auth_logo_margin_top">44dp</dimen>
@@ -62,7 +64,10 @@
     <dimen name="in_app_notification_fragment_margin_top">50dp</dimen>
 
     <dimen name="update_app_image">250dp</dimen>
+    <dimen name="toolbar_icons_size">25dp</dimen>
 
+    <dimen name="toolbar_circle_button_height">25dp</dimen>
+    <dimen name="toolbar_circle_button_width">140dp</dimen>
     <!--  new margins  -->
 
     <!--  code view margins  -->

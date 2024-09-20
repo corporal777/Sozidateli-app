@@ -17,14 +17,14 @@ import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.databinding.ItemEventDetailMainBinding
 import com.example.extensions.*
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.parseColor
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
+import com.example.util.setImage
 import com.example.util.setImagePicasso
+import com.xwray.groupie.databinding.BindableItem
 
 class EventDetailImageItem(
     event: EventNew,
@@ -56,7 +56,7 @@ class EventDetailImageItem(
             tvEventName.apply {
                 setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    if ((eventData.name ?: "").length < 150)
+                    if ((eventData.name ?: "").length < 120)
                         resources.getDimension(R.dimen.event_detail_name_text_size)
                     else resources.getDimension(R.dimen.event_detail_name_text_size_min)
                 )
@@ -69,21 +69,17 @@ class EventDetailImageItem(
             }
 
             tvEventDescription.apply {
-                text = eventDescription
-                highlightColor = getColor(R.color.event_tabs_text_unchecked)
-                movementMethod = LinkMovementMethod.getInstance()
+                originalText = eventDescription
             }
 
-            ivLogo.apply {
-                setImagePicasso(
-                    url = eventData.image?.uri,
-                    placeholder = imageColor,
-                    error = imageColor
-                )
-            }
+            ivLogo.setImage(
+                image = eventData.image?.uri ?: imageColor,
+            )
+
             tvShowMore.setOnClickListener {
                 onMoreClick.invoke()
             }
+
             tvCancelRegister.apply {
                 highlightColor = getColor(R.color.event_tabs_text_unchecked)
                 movementMethod = LinkMovementMethod.getInstance()
@@ -92,7 +88,11 @@ class EventDetailImageItem(
         }
     }
 
-    private fun decorActionButton(eventNew: EventNew, btnAction: CustomLoadingButton, tvCancel: TextView) {
+    private fun decorActionButton(
+        eventNew: EventNew,
+        btnAction: CustomLoadingButton,
+        tvCancel: TextView
+    ) {
         var clickAction: (() -> Unit)? = null
         var btnText: CharSequence = ""
         var btnBackground = R.drawable.btn_background_green
@@ -108,7 +108,8 @@ class EventDetailImageItem(
         } else if (eventNew.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
                 btnText = getActionButtonText("register")
-                clickAction = { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
+                clickAction =
+                    { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
             } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
                 btnBackground = R.drawable.btn_background_white_ghost
                 btnText = getActionButtonText("withdraw")
@@ -188,10 +189,18 @@ class EventDetailImageItem(
     }
 
     private fun getEventDate(): String? {
-        val eventDateStart = eventData.holdingDate?.from ?: return null
-        val eventDateEnd = eventData.holdingDate?.to ?: return null
-        return eventDateStart.formatToDefaultDayMonthYearDate() + " г." +
-                " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+        if (eventData.isHasOneActivity()) {
+            val eventDateStart = eventData.holdingDate?.from ?: return null
+            val eventDateEnd = eventData.holdingDate?.to ?: return null
+            return eventDateStart.let {
+                it.formatToDefaultDayMonthDate() + ", " + it.formatToDefaultTime()
+            } + " - " + eventDateEnd.let { it.formatToDefaultDayMonthDate() + ", " + it.formatToDefaultTime() }
+        } else {
+            val eventDateStart = eventData.holdingDate?.from ?: return null
+            val eventDateEnd = eventData.holdingDate?.to ?: return null
+            return eventDateStart.formatToDefaultDayMonthYearDate() + " г." +
+                    " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
+        }
     }
 
     private fun getEventRequestDate(): String? {
@@ -291,7 +300,7 @@ class EventDetailImageItem(
         else return null
     }
 
-    private fun getMarkdownText(message: String?): SpannableStringBuilder? {
+    private fun getMarkdownText(message: String?): CharSequence? {
         if (message.isNullOrBlank()) return null
         else {
             val spanned = markWon(context).toMarkdown(message)

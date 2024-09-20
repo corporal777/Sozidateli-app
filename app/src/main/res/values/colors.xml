@@ -110,8 +110,6 @@
     <color name="auth_email_color">#bd9b72</color>
     <color name="auth_background_overlay">#80000000</color>
     <color name="auth_title_text">#E6000000</color>
-    <color name="password_hint_correct_text">#2bb673</color>
-    <color name="password_hint_invalid_text">#F44336</color>
 
     <color name="input_border">#D5D7D8</color>
 

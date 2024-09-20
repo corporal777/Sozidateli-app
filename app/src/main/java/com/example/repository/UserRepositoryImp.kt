@@ -31,7 +31,8 @@ class UserRepositoryImp
     override fun getUserInternal(): Maybe<UserDetail> {
         return Maybe.zip(
             api.getUserById(appData.getId(), emptyList()),
-            api.checkUserProfile(appData.getId().toString()).doOnSuccess { appData.checkUserState(it.fields) },
+            api.checkUserProfile(appData.getId().toString())
+                .doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
             })
@@ -59,7 +60,8 @@ class UserRepositoryImp
     override fun getUserFullData(): Maybe<UserDetail> =
         Maybe.zip(
             getUserShortData(),
-            api.checkUserProfile(appData.getId().toString()).doOnSuccess { appData.checkUserState(it.fields) },
+            api.checkUserProfile(appData.getId().toString())
+                .doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
             })
@@ -274,19 +276,27 @@ class UserRepositoryImp
     override fun getEducationLevel(): Single<EducationLevelModel> {
         val education = appData.educationLevels
         return if (!education.isNullOrEmpty()) Single.just(EducationLevelModel(education, 6))
-        else api.getEducationLevel().doOnSuccess { appData.educationLevels.addAll(it.data ?: emptyList()) }
+        else api.getEducationLevel()
+            .doOnSuccess { appData.educationLevels.addAll(it.data ?: emptyList()) }
     }
 
     override fun getSpeciality(): Single<EducationLevelModel> {
         val speciality = appData.specialities
         return if (!speciality.isNullOrEmpty()) Single.just(EducationLevelModel(speciality, 23))
-        else api.getSpeciality(100).doOnSuccess { appData.specialities.addAll(it.data ?: emptyList()) }
+        else api.getSpeciality(100)
+            .doOnSuccess { appData.specialities.addAll(it.data ?: emptyList()) }
     }
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
         val academicDegrees = appData.academicDegrees
-        return if (!academicDegrees.isNullOrEmpty()) Single.just(EducationLevelModel(academicDegrees, 4))
-        else api.getAcademicDegrees().doOnSuccess { appData.academicDegrees.addAll(it.data?: emptyList()) }
+        return if (!academicDegrees.isNullOrEmpty()) Single.just(
+            EducationLevelModel(
+                academicDegrees,
+                4
+            )
+        )
+        else api.getAcademicDegrees()
+            .doOnSuccess { appData.academicDegrees.addAll(it.data ?: emptyList()) }
     }
 
     override fun getUserProfileAdditionalData(): Completable {
@@ -296,30 +306,23 @@ class UserRepositoryImp
 
     private fun sendUserEducation(body: EducationBodyModel): Single<EducationBodyModel> =
         api.updateUserEducation(appData.getId(), body)
-            .doOnSuccess {
-                appData.updateUserEducation(it.data)
-            }
+            .doOnSuccess { appData.updateUserEducation(it.data) }
 
     private fun sendUserAcademicDegree(body: AcademicDegreeBodyModel): Single<AcademicDegreeBodyModel> =
         api.updateUserAcademicDegree(appData.getId(), body)
-            .doOnSuccess {
-                appData.updateUserAcademicDegree(it.data)
-            }
+            .doOnSuccess { appData.updateUserAcademicDegree(it.data) }
+
+    private fun sendUserEducationLevel(educationLevel: ToggleIntModel?): Single<UserDetail> =
+        updateUserProfile(appData.getId(), mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel))
 
     override fun updateUserEducation(
         educationLevel: ToggleIntModel?,
         educationsList: List<EducationModel>?,
         degree: List<AcademicDegreeModel>?
     ): Single<String> {
-        return Single.zip(sendUserEducation(EducationBodyModel(educationsList)),
-            sendUserAcademicDegree(AcademicDegreeBodyModel(degree)),
-            updateUserProfile(
-                appData.getId(),
-                mapOf(UserDetail.USER_EDUCATION_LEVEL to educationLevel)
-            ),
-            Function3<EducationBodyModel, AcademicDegreeBodyModel, UserDetail, String> { _, _, _ ->
-                return@Function3 ""
-            })
+        return sendUserEducation(EducationBodyModel(educationsList))
+            .flatMap { sendUserAcademicDegree(AcademicDegreeBodyModel(degree)) }
+            .flatMap { sendUserEducationLevel(educationLevel) }.map { "" }
     }
 
     override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>> {
@@ -336,8 +339,6 @@ class UserRepositoryImp
 
     override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
         return api.getUserNotifications(map).map {
-            Log.e("SIZE", it.data.size.toString())
-            Log.e("TOTAL", it.totalCount.toString())
             NotificationsResponse(
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },
@@ -351,12 +352,14 @@ class UserRepositoryImp
     }
 
     override fun getInAppList(): Maybe<List<NotificationModel>> {
-        return api.getNotifications(mapOf(
-            NotificationModel.NOTIFICATION_LIMIT to 50,
-            NotificationModel.NOTIFICATION_USER to appData.getId(),
-            NotificationModel.NOTIFICATION_IS_IN_APP to true,
-            NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
-        )).map { it.data }
+        return api.getNotifications(
+            mapOf(
+                NotificationModel.NOTIFICATION_LIMIT to 50,
+                NotificationModel.NOTIFICATION_USER to appData.getId(),
+                NotificationModel.NOTIFICATION_IS_IN_APP to true,
+                NotificationModel.NOTIFICATION_ACKNOWLEDGED to false
+            )
+        ).map { it.data }
     }
 
     override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
@@ -482,7 +485,11 @@ class UserRepositoryImp
         //.map { it.users }
     }
 
-    override fun bindSocialAccount(uuid: String, socialType: String, isRebind : Boolean): Maybe<SnBindDataModel> {
+    override fun bindSocialAccount(
+        uuid: String,
+        socialType: String,
+        isRebind: Boolean
+    ): Maybe<SnBindDataModel> {
         return api.bindSocialAccount(
             BindSocialAccountBody(
                 uuid,

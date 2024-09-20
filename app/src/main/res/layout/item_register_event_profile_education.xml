@@ -3,70 +3,100 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <LinearLayout
-        android:id="@+id/ln_education"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:orientation="vertical"
-        tools:visibility="visible">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_organization"
-            style="@style/EventRegistration.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/profile_educate_institution" />
+            android:id="@+id/educationOrgTitle"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            android:text="@string/profile_educate_institution"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvOrganization"
-            style="@style/EventRegistration.Field"
+            android:id="@+id/educationOrgTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            tools:text="25.10.2003" />
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/educationOrgTitle" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionOrg"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/educationOrgTextView"
+            app:layout_constraintEnd_toEndOf="@id/educationOrgTextView"
+            app:layout_constraintTop_toTopOf="@id/educationOrgTextView" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_speciality"
-            style="@style/EventRegistration.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/profile_educate_speciality" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSpeciality"
-            style="@style/EventRegistration.Field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/user_profile_additional_hint" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_education_date"
-            style="@style/EventRegistration.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/profile_social_date" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvEducationDate"
-            style="@style/EventRegistration.Field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/user_profile_additional_hint" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginHorizontal="16dp"
+            android:id="@+id/educationSpecTitle"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
             android:layout_marginTop="10dp"
-            android:background="@drawable/divider_darker" />
-    </LinearLayout>
+            android:text="@string/profile_educate_speciality"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/educationOrgTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/educationSpecTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/educationSpecTitle" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionSpec"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/educationSpecTextView"
+            app:layout_constraintEnd_toEndOf="@id/educationSpecTextView"
+            app:layout_constraintTop_toTopOf="@id/educationSpecTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/educationDateTitle"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            android:layout_marginTop="10dp"
+            android:text="@string/profile_social_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/educationSpecTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/educationDateTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/educationDateTitle" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionDate"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/educationDateTextView"
+            app:layout_constraintEnd_toEndOf="@id/educationDateTextView"
+            app:layout_constraintTop_toTopOf="@id/educationDateTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

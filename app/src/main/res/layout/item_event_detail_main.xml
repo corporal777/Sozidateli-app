@@ -110,7 +110,7 @@
             app:layout_constraintTop_toBottomOf="@id/btnEventAction" />
 
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.example.ui.views.expandableTextView.ExpandableTextView
             android:id="@+id/tvEventDescription"
             fontPath="fonts/sf_pro_text.ttf"
             android:layout_width="match_parent"

@@ -1,13 +1,13 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
+import android.view.View
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventCheckboxBinding
 import com.example.databinding.ItemRegisterEventDateBinding
+import com.example.databinding.ItemRegisterEventInputBinding
 import com.example.extensions.*
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
@@ -15,13 +15,14 @@ import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initAsDateTimePicker
 import com.example.extensions.onTextChanged
+import com.example.util.getColorStateList
 import java.util.*
 
 
 open class RegisterEventDateItem(
     private val fieldData: EventRegisterFieldData<String>,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
-) : BaseRegisterItem<ItemRegisterEventDateBinding>(fieldData, onDataChange) {
+) : BaseRegisterInputItem<ItemRegisterEventDateBinding>(fieldData, onDataChange) {
 
     private val textChangeListener: (CharSequence?) -> Unit = {
         fieldData.value = if (field.type == EventRegisterField.Type.DATE) it?.toString()
@@ -29,6 +30,7 @@ open class RegisterEventDateItem(
         else it?.toString()
             ?.parseAndFormat(defaultDateTimeFormatter, defaultServerDateTimeFormatter)
         onDataChange()
+        showError(false)
     }
 
     private var textWatcher: TextWatcher? = null
@@ -107,6 +109,8 @@ open class RegisterEventDateItem(
         super.unbind(viewHolder)
     }
 
+    override fun getInputView(binding: ItemRegisterEventDateBinding): View = binding.textInputEditText
+    override fun getErrorFrameView(binding: ItemRegisterEventDateBinding): View = binding.viewInputError
     override fun getTitleView(binding: ItemRegisterEventDateBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_date
 }

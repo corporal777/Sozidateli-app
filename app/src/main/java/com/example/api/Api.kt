@@ -3,7 +3,6 @@ package com.example.api
 import com.example.data.bodies.*
 import com.example.data.models.*
 import com.example.data.bodies.MessageBodyNew
-import com.example.data.models.ProfileFieldsData
 import com.example.util.pagination.NotificationsResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -331,8 +330,8 @@ interface Api {
     fun eventRegister(@Body body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>>
 
     //+
-    @GET("v1/event-form-result/prefilled/{ID}")
-    fun loadProfileFieldsFormResult(@Path("ID") id: String): Single<ProfileFieldsData>
+    @GET("v1/event-form-result/prefilled/{id}")
+    fun getPrefilledEventFormResult(@Path("id") id: String): Single<EventRegisterProfilePrefilledData>
 
     //+
     @POST("v1/event-form-result")

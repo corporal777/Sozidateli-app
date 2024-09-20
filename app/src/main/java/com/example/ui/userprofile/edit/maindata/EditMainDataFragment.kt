@@ -120,7 +120,5 @@ class EditMainDataFragment : BaseUserProfileEditFragment(), EditMainDataContract
         groupAdapter.findGroupBy<ProfileDataFileEditableGroup> { true }?.hideUploadLoading()
     }
 
-
-
     override val title: CharSequence by lazy { getString(R.string.user_profile_main_info) }
 }

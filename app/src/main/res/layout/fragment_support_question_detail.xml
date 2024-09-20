@@ -37,6 +37,7 @@
                 android:letterSpacing="-0.01"
                 android:textColor="@color/black"
                 android:textSize="17sp"
+                tools:text="Как изменить ФИО?"
                 android:includeFontPadding="false" />
 
             <androidx.appcompat.widget.AppCompatTextView

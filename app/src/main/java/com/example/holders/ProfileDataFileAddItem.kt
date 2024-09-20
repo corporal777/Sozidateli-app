@@ -1,8 +1,11 @@
 package com.example.holders
 
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.example.R
 import com.example.databinding.ItemProfileAttachFileBinding
 import com.example.extensions.dp
@@ -10,7 +13,8 @@ import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataFileAddItem(
     private val isButtonEditable : Boolean,
-    private val onClickListener: () -> Unit
+    private val onClickListener: () -> Unit,
+    private val isShort : Boolean = false
 ) : BindableItem<ItemProfileAttachFileBinding>(-1001L) {
 
     private var isEditable = isButtonEditable
@@ -30,7 +34,12 @@ class ProfileDataFileAddItem(
                 setOnClickListener {
                     onClickListener.invoke()
                 }
+                updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    this.topMargin = if (isShort) 10.dp else 15.dp
+                }
             }
+            tvHelp.text = if (!isShort) root.context.getString(R.string.user_profile_upload_photo_help)
+            else root.context.getString(R.string.user_profile_upload_photo_help_short)
         }
     }
 

@@ -3,383 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
-        <LinearLayout
-            android:id="@+id/ln_name"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/prefilledFieldTitle"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/prefilledFieldTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/prefilledFieldTitle" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/user_profile_fio" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnAction"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/prefilledFieldTextView"
+            app:layout_constraintEnd_toEndOf="@id/prefilledFieldTextView"
+            app:layout_constraintTop_toTopOf="@id/prefilledFieldTextView" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvName"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="Иванов Геннадий Тун-вин-зи" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_birthday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/user_profile_birthday" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvBirthday"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="25.10.2003" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/user_profile_gender" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvGender"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ln_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/user_profile_address" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvAddress"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_additional"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/user_profile_additional" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvAdditional"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_files"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/user_profile_files" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvFiles"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ln_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_edit_main_email_hint" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvEmail"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_public_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_edit_public_email_hint" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPublicEmail"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_personal_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_phone_mobile" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPersonalPhone"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_work_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_phone_work" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvWorkPhone"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_social_links"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_sn" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvSocialLinks"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ln_sites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_site" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvSite"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint"
-                android:textColor="@color/profile_edit_button_text_enabled" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/divider_darker" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
+        <View
+            android:id="@+id/viewInputError"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_input_frame_error"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/prefilledFieldTextView"
+            app:layout_constraintEnd_toEndOf="@id/prefilledFieldTextView"
+            app:layout_constraintStart_toStartOf="@id/prefilledFieldTextView"
+            app:layout_constraintTop_toTopOf="@id/prefilledFieldTextView"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

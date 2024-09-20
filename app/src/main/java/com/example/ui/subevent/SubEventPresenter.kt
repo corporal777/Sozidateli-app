@@ -89,18 +89,21 @@ class SubEventPresenter @Inject constructor(
 
     private fun loadData(): Single<AboutSubEventData> {
         return Single.zip(eventRepository.getEventActivityDetail(subEventId),
-            eventRepository.getEventDetailForRegister(eventId).toSingle(),
-            BiFunction<EventActivityModel, EventNew, AboutSubEventData> { subEvent, event ->
-                val speakersList = arrayListOf<MemberModel>()
-                speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == true }?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
-                speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == false }?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+            eventRepository.getEvent(eventId, "current-user-registration").toSingle()
+        ) { subEvent, event ->
+            val speakersList = arrayListOf<MemberModel>()
+            speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == true }
+                ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
+            speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == false }
+                ?.sortedBy { x -> x.binds?.user?.fullName } ?: emptyList())
 
-                subEvent.binds?.member?.forEach { speaker ->
-                    speaker.binds?.user?.isCurrentUser = speaker.user == appData.getId()
-                }
-                val isApproved = event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
-                AboutSubEventData(subEvent, isApproved, speakersList)
-            })
+            subEvent.binds?.member?.forEach { speaker ->
+                speaker.binds?.user?.isCurrentUser = speaker.user == appData.getId()
+            }
+            val isApproved =
+                event.binds?.currentUserRegistration?.status?.value == Event.Status.APPROVED
+            AboutSubEventData(subEvent, isApproved, speakersList)
+        }
     }
 
     private fun catchSubEventError(t: Throwable) {

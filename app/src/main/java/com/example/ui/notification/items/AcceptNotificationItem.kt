@@ -17,7 +17,6 @@ import com.example.databinding.ItemNotificationAcceptBinding
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
-import com.example.ui.views.expandableTextView.ExpandableTextView
 import com.example.util.ClickableSpanNew
 
 class AcceptNotificationItem(

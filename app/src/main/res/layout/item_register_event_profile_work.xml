@@ -3,101 +3,109 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/EventRegistrationItemContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title_work_experience"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:layout_marginTop="20dp"
+            android:id="@+id/workTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
             android:text="@string/user_profile_experience"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:id="@+id/ln_work_experience"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:orientation="vertical">
-
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/title_work_date"
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/profile_social_date" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvWorkDate"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="25.10.2003" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/title_organization"
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_social_project_name" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvOrganization"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/title_position"
-                style="@style/EventRegistration.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="@string/profile_social_project_role" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPosition"
-                style="@style/EventRegistration.Field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/user_profile_additional_hint" />
-
-        </LinearLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_no_work_experience"
-            style="@style/EventRegistration.Field"
+            android:id="@+id/workDateTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            android:layout_marginTop="10dp"
+            app:layout_goneMarginTop="20dp"
+            android:text="@string/profile_social_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/workTitleTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/workDateTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/user_profile_additional_hint"
-            android:textColor="@color/red_new"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/workDateTitleTextView" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginHorizontal="16dp"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionDate"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/workDateTextView"
+            app:layout_constraintEnd_toEndOf="@id/workDateTextView"
+            app:layout_constraintTop_toTopOf="@id/workDateTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/workOrgTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
             android:layout_marginTop="10dp"
-            android:background="@drawable/divider_darker" />
+            android:text="@string/profile_social_project_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/workDateTextView" />
 
-    </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/workOrgTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/workOrgTitleTextView" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionOrg"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/workOrgTextView"
+            app:layout_constraintEnd_toEndOf="@id/workOrgTextView"
+            app:layout_constraintTop_toTopOf="@id/workOrgTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/workPositionTitleTextView"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
+            android:layout_marginTop="10dp"
+            android:text="@string/profile_social_project_role"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/workOrgTextView" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/workPositionTextView"
+            style="@style/Profile.Edit.InputEventRegisterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:hint="@string/user_profile_files_hint"
+            app:layout_constraintTop_toBottomOf="@id/workPositionTitleTextView" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnActionPosition"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="#C3996C"
+            app:layout_constraintBottom_toBottomOf="@id/workPositionTextView"
+            app:layout_constraintEnd_toEndOf="@id/workPositionTextView"
+            app:layout_constraintTop_toTopOf="@id/workPositionTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

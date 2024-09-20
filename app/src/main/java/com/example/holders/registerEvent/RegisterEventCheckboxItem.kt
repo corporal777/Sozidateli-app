@@ -1,6 +1,7 @@
 package com.example.holders.registerEvent
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
@@ -18,18 +19,16 @@ open class RegisterEventCheckboxItem(
     override fun bind(viewBinding: ItemRegisterEventCheckboxBinding, position: Int) {
         super.bind(viewBinding, position)
         val values = field.values ?: emptyList()
-        viewBinding.apply {
-            checkGroup.apply {
-                removeAllViews()
-                values.forEachIndexed { index, value ->
-                    addView(
-                        createCheckbox(index, value),
-                        ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
+        viewBinding.checkGroup.apply {
+            removeAllViews()
+            values.forEachIndexed { index, value ->
+                addView(
+                    createCheckbox(index, value),
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
                     )
-                }
+                )
             }
         }
     }
@@ -44,16 +43,12 @@ open class RegisterEventCheckboxItem(
 
             setOnCheckedChangeListener { _, isChecked ->
                 val valuesData = if (fieldData.value == null) {
-                    val set = mutableSetOf<String>()
-                    fieldData.value = set
-                    set
-                } else {
-                    fieldData.value as MutableSet<String>
-                }
+                    mutableSetOf<String>().apply { fieldData.value = this }
+                } else fieldData.value as MutableSet<String>
 
-                if (isChecked) valuesData.add(value)
-                else valuesData.remove(value)
+                if (isChecked) valuesData.add(value) else valuesData.remove(value)
                 onDataChange()
+                showError(false)
             }
 
             fieldData.value?.let {

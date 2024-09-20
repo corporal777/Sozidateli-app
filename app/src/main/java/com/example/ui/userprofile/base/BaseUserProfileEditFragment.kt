@@ -20,6 +20,7 @@ abstract class BaseUserProfileEditFragment : BaseFragment<FragmentUserEditBindin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (animationType() != AnimType.NONE) startPostponedEnterTransition()
         onBackPressedCallback(true) {
             hideKeyboard()
             navigateUp()
@@ -41,6 +42,9 @@ abstract class BaseUserProfileEditFragment : BaseFragment<FragmentUserEditBindin
         mBinding.btnSave.isEnabled = enable
     }
 
+    override fun animationType(): AnimType {
+        return if (isPreviousDestination(R.id.request_fragment)) AnimType.AXIS else AnimType.NONE
+    }
     override fun layout() = R.layout.fragment_user_edit
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}

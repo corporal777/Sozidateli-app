@@ -1,41 +1,38 @@
 package com.example.ui.event.registration.items
 
-import com.example.data.models.ProfileFieldsFormResult
+import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.PrefilledFieldContacts
+import com.example.data.models.PrefilledFieldEducation
+import com.example.data.models.PrefilledFieldFiles
+import com.example.data.models.PrefilledFieldString
+import com.example.data.models.PrefilledFieldWorkExperience
+import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class RegisterEventProfileItemsGroup(
-    profileForm: ProfileFieldsFormResult,
-    private val onShowProfileClick: () -> Unit
+    private val profileForm: EventRegisterFieldData.Prefilled,
+    private val onShowProfileClick: (type: PrefilledFieldClickType) -> Unit,
 ) : NestedGroup() {
 
-    private val headerSection = Section()
+    private val headerSection = Section().apply {
+        updateItem(REProfileHeaderItem(profileForm.field.id.toLong()) { observeClick(null) })
+    }
     private val mainSection = Section()
-    private val educationSection = Section()
-    private val workSection = Section()
-
-    private var oldWork = profileForm.work_experience
-    private var oldEducation = profileForm.education
-    private var oldProfileForm = profileForm
 
     init {
-        setMain(profileForm)
-        setEducation(profileForm)
-        setWork(profileForm)
+        updateData()
+
         headerSection.registerGroupDataObserver(this)
         mainSection.registerGroupDataObserver(this)
-        educationSection.registerGroupDataObserver(this)
-        workSection.registerGroupDataObserver(this)
     }
 
     override fun getGroup(position: Int): Group {
         return when (position) {
             0 -> headerSection
             1 -> mainSection
-            2 -> educationSection
-            3 -> workSection
             else -> throw IndexOutOfBoundsException("Invalid item position: $position")
         }
     }
@@ -44,126 +41,97 @@ class RegisterEventProfileItemsGroup(
         return when (group) {
             headerSection -> 0
             mainSection -> 1
-            educationSection -> 2
-            workSection -> 3
             else -> -1
         }
     }
 
-    private fun setMain(profileForm: ProfileFieldsFormResult) {
-        headerSection.updateItem(
-            RegisterEventProfileHeaderItem(
-                100L,
-                profileForm.checkProfileFieldsIsValid(profileForm)
-            ) { onShowProfileClick.invoke() }
-        )
+    fun updateData() {
+        if (profileForm.value == null) return
+        mainSection.update(profileForm.value!!.prefilledFields.mapNotNull {
+            if (it is PrefilledFieldString)
+                REProfileStringItem(it.name, it.value) { observeClick(it.name) }
 
-        mainSection.updateItem(
-            RegisterEventProfileMainItem(
-                101L,
-                profileForm.user_name,
-                profileForm.user_birthday,
-                profileForm.user_gender,
-                profileForm.address,
-                profileForm.user_notes,
-                profileForm.user_email,
-                profileForm.user_phone,
-                profileForm.user_work_phone,
-                profileForm.user_links,
-                profileForm.user_sites,
-                profileForm.user_public_email,
-                profileForm.user_files
-            )
-        )
+            else if (it is PrefilledFieldContacts)
+                REProfileContactItem(it.name, it.value, it.isAbsent) { observeClick(it.name) }
+
+            else if (it is PrefilledFieldFiles) REProfileFileItem(it.name, it.value)
+
+            else if (it is PrefilledFieldEducation)
+                Section().apply {
+                    setHeader(REProfileStringItem(it.name, it.educationLevel) { observeClick(it.name) })
+                    it.education?.forEach { e ->
+                        add(REProfileEducationItem(e.id, e) { observeClick(it.name) })
+                    }
+                    it.academicDegree?.forEach { d ->
+                        add(REProfileAcademicItem(d.id, d) { observeClick(it.name) })
+                    }
+                }
+
+            else if (it is PrefilledFieldWorkExperience)
+                if (it.isAbsent)
+                    REProfileStringItem(it.name, "Нет опыта работы") { observeClick(it.name) }
+                else if (!it.isValid)
+                    REProfileStringItem(it.name, "") { observeClick(it.name) }
+                else Section().apply {
+                    it.value?.forEachIndexed { index, work ->
+                        add(REProfileWorkItem(work.id, work,index) { observeClick(it.name) })
+                    }
+                }
+
+            else null
+        })
     }
 
-    private fun setWork(profileForm: ProfileFieldsFormResult) {
-        if (profileForm.work_experience.isChosen) {
-            if (profileForm.work_experience.value.isNullOrEmpty()) {
-                workSection.updateItem(
-                    RegisterEventProfileWorkItem(
-                        200L,
-                        profileForm.work_experience.isRequired,
-                        profileForm.work_experience.isAbsent,
-                        true,
-                        null
-                    )
-                )
-            } else {
-                workSection.update(
-                    profileForm.work_experience.value?.mapIndexed { index, workExperience ->
-                        RegisterEventProfileWorkItem(
-                            200L + index,
-                            profileForm.work_experience.isRequired,
-                            profileForm.work_experience.isAbsent,
-                            index == 0,
-                            workExperience
-                        )
-                    } ?: emptyList()
-                )
+    fun showError() {
+        profileForm.value?.prefilledFields?.filter { x -> !x.isValid }?.forEach {
+            val item = when (it) {
+                is PrefilledFieldString ->
+                    mainSection.findItemBy<REProfileStringItem> { x -> x.name == it.name }
+
+                is PrefilledFieldContacts ->
+                    mainSection.findItemBy<REProfileContactItem> { x -> x.name == it.name }
+
+                is PrefilledFieldFiles ->
+                    mainSection.findItemBy<REProfileFileItem> { x -> x.name == it.name }
+
+                is PrefilledFieldEducation ->
+                    mainSection.findItemBy<REProfileStringItem> { x -> x.name == it.name }
+
+                is PrefilledFieldWorkExperience ->
+                    mainSection.findItemBy<REProfileStringItem> { x -> x.name == it.name }
             }
+            if (item != null) {
+                item.isErrorShown = true
+                item.notifyChanged()
+            }
+
         }
     }
 
-    private fun setEducation(profileForm: ProfileFieldsFormResult) {
+    private fun observeClick(name: String?) {
+        val type = when (name) {
+            "ФИО" -> PrefilledFieldClickType.NAME
 
-        val fieldsRequired = profileForm.fieldsIsRequired
+            "Дата рождения", "Дополнительные сведения",
+            "Пол", "Регион и населенный пункт фактического проживания",
+            "Файлы" -> PrefilledFieldClickType.MAIN
 
-        if (profileForm.education.isChosen || profileForm.academic_degree.isChosen) {
-            educationSection.update(
-                listOf(
-                    RegisterEventProfileEducationLevelItem(
-                        103L,
-                        profileForm.educationLevel.value?.name,
-                        fieldsRequired,
-                        profileForm.education.value.isNullOrEmpty(),
-                        profileForm.academic_degree.value.isNullOrEmpty()
-                    )
-                ).plus(
-                    profileForm.academic_degree.value?.mapIndexed { index, p ->
-                        RegisterEventAcademicDegreeItem(
-                            300L + index,
-                            p.degree,
-                            p.speciality
-                        )
-                    } ?: emptyList()
-                ).plus(
-                    profileForm.education.value?.mapIndexed { index, educationModel ->
-                        RegisterEventEducationItem(
-                            400L + index,
-                            educationModel.organization,
-                            educationModel.speciality,
-                            educationModel.begin,
-                            educationModel.end,
-                        )
-                    } ?: emptyList()
-                )
-            )
+            "Основной e-mail", "Мобильный телефон", "Рабочий телефон",
+            "Социальные сети", "Публичный e-mail", "Сайт" -> PrefilledFieldClickType.CONTACTS
+
+            "Уровень образования" -> PrefilledFieldClickType.EDUCATION
+
+            "Опыт работы" -> PrefilledFieldClickType.WORK
+
+            else -> PrefilledFieldClickType.PROFILE
         }
+
+        onShowProfileClick.invoke(type)
     }
 
+    override fun getGroupCount() = 2
+}
 
-    fun updateProfileFields(profileForm: ProfileFieldsFormResult) {
-
-        setMain(profileForm)
-        setEducation(profileForm)
-        setWork(profileForm)
-
-//        if (oldProfileForm != profileForm) {
-//            headerSection.findItemBy<RegisterEventProfileMainItem> { true }?.updateFields(profileForm)
-//            oldProfileForm = profileForm
-//        }
-//        if (profileForm.education != oldEducation) {
-//            setEducation(profileForm)
-//            oldEducation = profileForm.education
-//        }
-//        if (profileForm.work_experience != oldWork) {
-//            setWork(profileForm)
-//            oldWork = profileForm.work_experience
-//        }
-//        val isValid = profileForm.checkProfileFieldsIsValid(profileForm)
-//        headerSection.findItemBy<RegisterEventProfileHeaderItem> { true }?.updateFooterText(isValid)
-    }
-
-    override fun getGroupCount() = 4
+enum class PrefilledFieldClickType {
+    PROFILE, NAME, MAIN, CONTACTS, EDUCATION, WORK
 }

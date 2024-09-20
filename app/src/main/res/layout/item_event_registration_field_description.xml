@@ -7,24 +7,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewTitle"
-            fontPath="fonts/sf_pro_display_regular.OTF"
+            style="@style/Profile.Edit.InputEventRegisterTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:letterSpacing="-0.01"
-            android:textColor="@color/profile_data_text_hint"
-            android:textSize="14sp"
             tools:text="Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewDescription"
             style="@style/Profile.Edit.InputTitle"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:includeFontPadding="false"
             android:textSize="13sp"
             tools:text="Title" />
     </LinearLayout>

@@ -1,17 +1,10 @@
 package com.example.ui.event.formResult.items
 
-import android.content.Context
 import android.text.method.LinkMovementMethod
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.EventPassport
-import com.example.data.models.ProfileFieldString
-import com.example.data.models.ProfileFieldsFormResult
-import com.example.databinding.ItemEventFormResultPassportBinding
 import com.example.databinding.ItemEventFormResultProfileBinding
-import com.example.extensions.formatToDefaultDate
 import com.xwray.groupie.databinding.BindableItem
 
 class EventFormResultProfileItem(

@@ -1,6 +1,7 @@
 package com.example.holders.registerEvent
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -34,6 +35,7 @@ open class RegisterEventRadioBoxItem(
                 setOnCheckedChangeListener { _, id ->
                     fieldData.value = values[id]
                     onDataChange()
+                    showError(false)
                 }
             }
         }

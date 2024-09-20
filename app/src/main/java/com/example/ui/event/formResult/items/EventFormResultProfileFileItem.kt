@@ -3,7 +3,8 @@ package com.example.ui.event.formResult.items
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.R
-import com.example.data.models.ProfileFieldFiles
+import com.example.data.models.FileModel
+import com.example.data.models.PrefilledFieldFiles
 import com.example.databinding.ItemEventFormResultProfileBinding
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.util.showCustomTabsBrowser
@@ -14,15 +15,15 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 class EventFormResultProfileFileItem(
     val id: Int,
     val title : String,
-    val field: ProfileFieldFiles?
+    val field: List<FileModel>?
 ) : BindableItem<ItemEventFormResultProfileBinding>(id.toLong()) {
 
-    private val fieldAlpha = if (field == null || field.value.isNullOrEmpty()) 0.4f else 1.0f
+    private val fieldAlpha = if (field == null || field.isNullOrEmpty()) 0.4f else 1.0f
 
-    private val fieldText = if (field == null || field.value.isNullOrEmpty()) "Не заполнено"
+    private val fieldText = if (field == null || field.isNullOrEmpty()) "Не заполнено"
     else {
         var filesText = ""
-        field.value.forEachIndexed { index, file ->
+        field.forEachIndexed { index, file ->
             val divider = if (index == 0) "" else "<br>"
             filesText += "$divider<a href='${file.uri}'>${file.name}</a>"
         }
@@ -47,7 +48,7 @@ class EventFormResultProfileFileItem(
 
                 BetterLinkMovementMethod.linkifyHtml(this)
                     .setOnLinkClickListener { _, url ->
-                        val type = field?.value?.find { x -> x.uri == url }
+                        val type = field?.find { x -> x.uri == url }
                         if (type?.isFilePDF() == true) showFileBrowser(context, url)
                         else showCustomTabsBrowser(context, url)
 

@@ -1,16 +1,13 @@
 package com.example.ui.notification.items
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.R
 import com.example.data.models.Notification
 import com.example.databinding.ItemNotificationSimpleBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
-import com.example.ui.views.expandableTextView.ExpandableTextView
 
 class SimpleNotificationItem(
     private val context: Context,

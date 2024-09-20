@@ -6,10 +6,12 @@ import com.example.databinding.ItemEventRegistrationFileBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
+import com.example.util.getColorStateList
 
 open class EventRegistrationFileItem(
     id: Long,
     private val filename: String,
+    private val required : Boolean,
     private val editable: Boolean,
     private val onRemoveFileClick: () -> Unit,
     private val onNameChange: (String) -> Unit
@@ -20,6 +22,10 @@ open class EventRegistrationFileItem(
     override fun bind(viewBinding: ItemEventRegistrationFileBinding, position: Int) {
         viewBinding.apply {
             textInputEditText.apply {
+                backgroundTintList = if (required)
+                    getColorStateList(R.color.background_input_event_register_required)
+                else getColorStateList(R.color.background_input_event_register)
+
                 setText(filename)
                 textWatcher = onTextChanged {
                     text?.toString()?.let {

@@ -99,9 +99,7 @@ class CustomTextInputLayout : TextInputLayout {
 
 
     private fun getResizedDrawable(drawable: Drawable): Drawable {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            LayerDrawable(arrayOf(drawable)).also { it.setLayerSize(0, 25.dp, 25.dp) }
-        } else drawable
+        return LayerDrawable(arrayOf(drawable)).also { it.setLayerSize(0, 25.dp, 25.dp) }
     }
 
 }

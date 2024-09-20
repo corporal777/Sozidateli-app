@@ -6,7 +6,9 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.example.R
@@ -63,13 +65,8 @@ class CustomTextInputView : LinearLayout {
         layoutView.etInput.apply {
             hint = hintText
             setTextColor(inputTextColor)
+            setMinMaxLines(inputMinLines, inputMaxLines)
             inputType = inputTextType
-            if (inputMinLines > 1 || inputMaxLines > 1) {
-                gravity = Gravity.START and Gravity.TOP
-                setPadding(0, 5.dp, 0, 5.dp)
-            }
-            maxLines = inputMaxLines
-            minLines = inputMinLines
             isEnabled = inputEnabled
         }
         layoutView.passwordToggle.apply {
@@ -144,11 +141,40 @@ class CustomTextInputView : LinearLayout {
     }
 
     fun setText(text: String?) = layoutView.etInput.setText(text)
+    fun setHint(text: String?) = layoutView.etInput.setHint(text)
+    fun setTitle(title: String?) {
+        titleText = title
+        layoutView.tvTitle.apply {
+            isVisible = !titleText.isNullOrEmpty()
+            text = titleText
+        }
+    }
 
     override fun setEnabled(enabled: Boolean) {
         layoutView.etInput.isEnabled = enabled
         layoutView.btnAction.isEnabled = enabled
     }
+
+    fun setMinMaxLines(min : Int, max : Int){
+        layoutView.etInput.apply {
+            inputMinLines = min
+            inputMaxLines = max
+            if (inputMinLines > 1 || inputMaxLines > 1) {
+                gravity = Gravity.START and Gravity.TOP
+                setPadding(0, 5.dp, 0, 5.dp)
+            } else setPadding(0, 0, 0, 0)
+            minLines = inputMinLines
+            maxLines = inputMaxLines
+        }
+    }
+    var View.textInputType: Int
+        get() = layoutView.etInput.inputType
+        set(value) {
+            inputTextType = value
+            layoutView.etInput.inputType = value
+        }
+
+    fun getEditText() : EditText = layoutView.etInput
 
     private fun isPasswordInputType(inputType: Int): Boolean {
         val variation = inputType and (EditorInfo.TYPE_MASK_CLASS or EditorInfo.TYPE_MASK_VARIATION)

@@ -180,19 +180,22 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             )
         }
 
-        eventProgramSection.updateItems(
-            if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() }
-            else null,
-            eventData.subEvents.map {
-                EventActivityItem(
-                    eventData.event.id.toString(),
-                    it,
-                    emptyList(),
-                    onSubEventClickListener,
-                    eventData.getUserRegistrationState()
-                )
-            }
-        )
+        if (!eventData.event.isHasOneActivity()){
+            eventProgramSection.updateItems(
+                if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() }
+                else null,
+                eventData.subEvents.map {
+                    EventActivityItem(
+                        eventData.event.id.toString(),
+                        it,
+                        emptyList(),
+                        onSubEventClickListener,
+                        eventData.getUserRegistrationState()
+                    )
+                }
+            )
+        }
+
         eventPartnersSection.update(
             eventData.partners.map {
                 EventPartnerItem(

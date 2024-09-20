@@ -2,6 +2,7 @@ package com.example.extensions
 
 import android.content.Context
 import android.os.Build
+import android.text.InputFilter
 import android.text.Spannable
 import android.text.Spanned
 import android.text.TextUtils
@@ -162,3 +163,22 @@ fun getMonthName(calendar: Calendar?): String {
 }
 
 fun getSymbols() = "\\@\\#\\$\\_\\&\\-\\+\\(\\)\\/\\*\\\"\\'\\:\\;\\!\\?\\,\\.\\~\\`\\|\\÷\\×\\^\\=\\{\\}\\%\\<\\>"
+
+class SpecialCharacterInputFilter(pattern: String) : InputFilter {
+    private val regex = pattern.toRegex()
+
+    override fun filter(
+        source: CharSequence,
+        start: Int,
+        end: Int,
+        dest: Spanned?,
+        dstart: Int,
+        dend: Int
+    ): CharSequence? {
+        return if (source.toString() == "" || source.matches(regex)) {
+            source
+        } else {
+            ""
+        }
+    }
+}

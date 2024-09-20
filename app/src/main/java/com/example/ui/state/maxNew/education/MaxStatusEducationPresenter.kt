@@ -1,5 +1,6 @@
 package com.example.ui.state.maxNew.education
 
+import call
 import com.example.data.AppData
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
@@ -52,17 +53,13 @@ class MaxStatusEducationPresenter
         degree: List<AcademicDegreeModel>?
     ) {
         isUpdating = true
-        compositeDisposable += userRepository.updateUserEducation(
-            educationLevel,
-            educationsList,
-            degree
-        )
+        userRepository.updateUserEducation(educationLevel, educationsList, degree)
             .performOnBackgroundOutOnMain()
             .withInfinityCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = { checkNextScreen() }
-            )
+            ).call(compositeDisposable)
     }
 
 }

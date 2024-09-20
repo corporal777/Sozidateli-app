@@ -1,5 +1,6 @@
 package com.example.repository
 
+import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
@@ -7,8 +8,26 @@ import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
-import com.example.data.models.*
-import com.example.data.models.ProfileFieldsData
+import com.example.data.models.AddFavoriteModel
+import com.example.data.models.ApiNewResponse
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventCalendarModel
+import com.example.data.models.EventFormModel
+import com.example.data.models.EventFormResultDraftModel
+import com.example.data.models.EventFormResultFieldsModel
+import com.example.data.models.EventFormResultModel
+import com.example.data.models.EventNew
+import com.example.data.models.EventRegisterField
+import com.example.data.models.EventRegisterProfilePrefilledData
+import com.example.data.models.EventSubscriptionRequest
+import com.example.data.models.EventTagModel
+import com.example.data.models.EventUserFavorite
+import com.example.data.models.MemberModel
+import com.example.data.models.NewEventFormat
+import com.example.data.models.PageModel
+import com.example.data.models.PartnerModel
+import com.example.data.models.RegistrationAgreementStatus
+import com.example.data.models.UserProfileFieldsModel
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -52,10 +71,7 @@ class EventRepositoryImp
 
 
     override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
-        api.getEventDetails(
-            eventId,
-            "rights,current-user-registration,form,organization,user-form-result"
-        )
+        api.getEventDetails(eventId, "user-form-result")
 
 
     override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
@@ -249,8 +265,8 @@ class EventRepositoryImp
         api.eventRegister(body)
 
     //+
-    override fun loadEventFormResult(id: String): Single<ProfileFieldsData> {
-        return api.loadProfileFieldsFormResult(id)
+    override fun getPrefilledEventFormResult(id: String): Single<EventRegisterProfilePrefilledData> {
+        return api.getPrefilledEventFormResult(id)
     }
 
     override fun registerToEvent(eventId: Int): Completable =

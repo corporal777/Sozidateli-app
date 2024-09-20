@@ -14,9 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.R
 import com.example.data.models.UserDetail
+import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.*
@@ -343,6 +345,13 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
 
     enum class AnimType {
         FADE, AXIS, NONE
+    }
+
+    fun isPreviousDestination(id: Int): Boolean {
+        val navHostFragment =
+            requireActivity().supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val prevId = navHostFragment.navController.previousBackStackEntry?.destination?.id
+        return prevId == id
     }
 
     private var cashCollapseState: Pair<Int, Int>? = null
