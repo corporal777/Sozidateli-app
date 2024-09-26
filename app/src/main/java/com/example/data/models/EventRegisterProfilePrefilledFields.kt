@@ -18,10 +18,11 @@ data class EventRegisterProfilePrefilledData(
 @Parcelize
 data class EventRegisterProfilePrefilledFields(
     val user_fio: String? = null,
-    val user_name: String? = null,
-    val user_last_name: String? = null,
-    val user_middle_name: String? = null,
-    val user_birthday: String? = null,
+    val userName: String? = null,
+    val userLastName: String? = null,
+    val userMiddleName: String? = null,
+    @SerializedName("user_birthday")
+    val userBirthday: String? = null,
     val user_gender: String? = null,
     val user_notes: String? = null,
     val recommendationFile: List<FileModel>? = null,
@@ -43,7 +44,7 @@ data class EventRegisterProfilePrefilledFields(
     @SerializedName("user_social_links_absent")
     val social_links_absent: Boolean,
     @SerializedName("user_site_absent")
-    val site_absent: Boolean
+    val siteAbsent: Boolean
 ) : Parcelable {
 
     fun prefilledToJson(): JsonElement {
@@ -57,10 +58,13 @@ data class EventRegisterProfilePrefilledFields(
 
             val data = Gson().fromJson(this, EventRegisterProfilePrefilledFields::class.java)
             val mainDataList = arrayListOf<ProfileField>().apply {
-                if (options.contains("user_fio"))
-                    add(PrefilledFieldString("ФИО", data.user_fio))
+                if (options.contains("user_fio")){
+                    add(PrefilledFieldString("Фамилия", data.userLastName))
+                    add(PrefilledFieldString("Имя", data.userName))
+                    add(PrefilledFieldString("Отчество", data.userMiddleName ?: "«Нет отчества»"))
+                }
                 if (options.contains("user_birthday"))
-                    add(PrefilledFieldString("Дата рождения", data.user_birthday))
+                    add(PrefilledFieldString("Дата рождения", data.userBirthday))
                 if (options.contains("user_notes"))
                     add(PrefilledFieldString("Дополнительные сведения", data.user_notes))
                 if (options.contains("user_gender"))
@@ -111,7 +115,7 @@ data class EventRegisterProfilePrefilledFields(
                             data.contactInformation?.site?.values?.joinToString("\n") {
                                 it.value ?: ""
                             },
-                            data.site_absent
+                            data.siteAbsent
                         )
                     )
                 if (options.contains("education"))
@@ -166,7 +170,7 @@ data class PrefilledFieldFiles(
 
 data class PrefilledFieldEducation(
     val name: String,
-    val educationLevel : String?,
+    val educationLevel: String?,
     val education: List<EducationModel>?,
     val academicDegree: List<PrefilledFieldAcademicDegreeModel>?
 ) : ProfileField(!educationLevel.isNullOrEmpty())
