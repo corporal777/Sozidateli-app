@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.App
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SupportFile
-import com.example.databinding.BottomSheetSupportQuestionBinding
+import com.example.app.databinding.BottomSheetSupportQuestionBinding
 import com.example.ui.support.sendFile.SupportFilesBottomSheet
 import com.example.util.initDropDownAdapter
 import com.example.util.initInput

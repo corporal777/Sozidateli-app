@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserProfileMainDataBinding
+import com.example.app.databinding.FragmentUserProfileMainDataBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.extensions.setOnClickListener

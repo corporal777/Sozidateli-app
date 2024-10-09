@@ -1,7 +1,7 @@
 package com.example.holders.redesign
 
-import com.example.R
-import com.example.databinding.ItemEventPageNewBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventPageNewBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 

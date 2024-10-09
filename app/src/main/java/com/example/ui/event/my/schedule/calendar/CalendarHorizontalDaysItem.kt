@@ -6,10 +6,10 @@ import android.widget.LinearLayout
 import androidx.core.view.allViews
 import androidx.core.view.children
 import androidx.core.view.isInvisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.ItemCalendarHorizontalDaysBinding
+import com.example.app.databinding.ItemCalendarHorizontalDaysBinding
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.views.CalendarDayView
 import com.xwray.groupie.databinding.BindableItem

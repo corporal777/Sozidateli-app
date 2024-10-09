@@ -1,8 +1,8 @@
 package com.example.holders.registerEvent
 
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemRegisterEventTitleBinding
+import com.example.app.R
+import com.example.app.databinding.ItemRegisterEventTitleBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class RegisterEventTitleItem(

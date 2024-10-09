@@ -8,16 +8,16 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.OrganizationMemberModel
 import com.example.data.models.OrganizationNew
-import com.example.databinding.FragmentOrganizationBinding
+import com.example.app.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventItemNew
+import com.example.holders.redesign.EventListItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
@@ -67,7 +67,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
         )
     }
 
-    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
+    private val onEventClickListener = object : EventListItem.OnEventClickListener {
         override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
             presenter.onActionRegister(event, agreementUrl, formEnabled)
 
@@ -155,7 +155,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
     override fun setEventsData(events: List<EventNew>) {
         eventsDataSection.update(events.map {
-            EventItemNew(
+            EventListItem(
                 it,
                 presenter.isTemporaryUser(),
                 onEventClickListener
@@ -201,7 +201,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
     override fun updateEvent(event: EventNew) {
         val idLong = event.id?.toLong()
-        val item = eventsDataSection.findItemBy<EventItemNew> { i -> i.id == idLong } ?: return
+        val item = eventsDataSection.findItemBy<EventListItem> { i -> i.id == idLong } ?: return
         item.notifyChanged(event)
     }
 

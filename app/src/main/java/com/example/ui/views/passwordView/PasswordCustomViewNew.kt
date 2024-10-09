@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.example.R
+import com.example.app.R
 import com.example.util.ClickableSpan
 import com.google.android.material.textfield.TextInputEditText
 import java.util.regex.Pattern

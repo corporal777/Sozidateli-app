@@ -1,5 +1,6 @@
 package com.example.ui.gallery.items
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -15,9 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isInvisible
 import androidx.lifecycle.LifecycleOwner
-import com.example.BuildConfig
-import com.example.R
-import com.example.databinding.ItemCameraPreviewBinding
+import com.example.app.BuildConfig
+import com.example.app.R
+import com.example.app.databinding.ItemCameraPreviewBinding
 import com.example.util.convertBitmapToFile
 import com.example.util.imageCaptureCallback
 import com.google.common.util.concurrent.ListenableFuture
@@ -34,7 +35,7 @@ class CameraPreviewItem(
 
     private var cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
         ProcessCameraProvider.getInstance(context)
-    private lateinit var cameraProvider : ProcessCameraProvider
+    private lateinit var cameraProvider: ProcessCameraProvider
 
     private var imageCapture: ImageCapture? = null
     private var isCameraShown = false
@@ -60,6 +61,7 @@ class CameraPreviewItem(
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun startPreview(viewBinding: ItemCameraPreviewBinding) {
         isCameraShown = true
         viewBinding.apply {
@@ -74,12 +76,21 @@ class CameraPreviewItem(
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                         .build()
 
-                    val cameraSelector: CameraSelector = CameraSelector.Builder()
-                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                        .build()
+                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//                    val cameraSelector = CameraSelector.Builder()
+//                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+//                        .build()
 
                     cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview, imageCapture)
+                    if (cameraProvider.hasCamera(cameraSelector) && cameraSelector.cameraFilterSet.isNotEmpty()) {
+                        cameraProvider.bindToLifecycle(
+                            viewLifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageCapture
+                        )
+                    }
+
                     previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                     preview.setSurfaceProvider(previewView.surfaceProvider)
 
@@ -94,10 +105,12 @@ class CameraPreviewItem(
         val imageCapture = imageCapture ?: return
         val photoFile = getOutputCacheFilePicture()
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(context),
+        imageCapture.takePicture(
+            outputOptions, ContextCompat.getMainExecutor(context),
             imageCaptureCallback({
                 it.printStackTrace()
-                viewBinding.previewImage.transitionName = context.getString(R.string.camera_transition_name)
+                viewBinding.previewImage.transitionName =
+                    context.getString(R.string.camera_transition_name)
                 onCameraClick.invoke(null, viewBinding.previewImage)
             }, {
                 viewBinding.apply {
@@ -130,9 +143,9 @@ class CameraPreviewItem(
         return photoFile
     }
 
-    private fun scaleCamera(view : View){
+    private fun scaleCamera(view: View) {
         view.animate().scaleX(2f).scaleY(2f).setDuration(500).start();
-        val scalingFactor = 2f
+        //val scalingFactor = 2f
         //view.scaleX = scalingFactor
         //view.scaleY = scalingFactor
     }

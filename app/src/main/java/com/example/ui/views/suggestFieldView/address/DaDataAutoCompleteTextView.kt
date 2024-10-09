@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.example.App
-import com.example.R
+import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.NewUserAddress
 import com.example.util.SimpleTextWatcher

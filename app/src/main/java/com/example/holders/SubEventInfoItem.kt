@@ -6,10 +6,10 @@ import android.widget.CompoundButton
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tags
-import com.example.databinding.ItemSubeventInfoBinding
+import com.example.app.databinding.ItemSubeventInfoBinding
 import com.example.extensions.*
 import com.example.ui.views.TagChipNew
 import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR

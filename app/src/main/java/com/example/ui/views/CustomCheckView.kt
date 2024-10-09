@@ -11,8 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCustomCheckViewBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCustomCheckViewBinding
 import com.example.extensions.dp
 
 class CustomCheckView : ConstraintLayout {

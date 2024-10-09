@@ -4,25 +4,25 @@ import android.content.res.ColorStateList
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
-import com.example.ui.views.UserSubscribeButton
-import com.squareup.picasso.Picasso
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_event_favorite.*
+import com.example.app.databinding.ItemEventFavoriteBinding
 import com.example.extensions.parseColor
 import com.example.extensions.setOnClickListener
+import com.example.ui.views.UserSubscribeButton
+import com.squareup.picasso.Picasso
+import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class EventFavoriteItem(
         val event: EventNew,
         private val onEventClick: () -> Unit,
         private val onEventActionClick: () -> Unit,
         private val onEventSubeventsClick: () -> Unit
-) : Item(event.id?.toLong()?: 0) {
+) : BindableItem<ItemEventFavoriteBinding>(event.id?.toLong()?: 0) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemEventFavoriteBinding, position: Int) {
+        viewBinding.apply {
             tvEventName.text = event.name
             ivLogo.apply {
                 clipToOutline = true
@@ -47,15 +47,19 @@ class EventFavoriteItem(
                 setOnClickListener(onEventActionClick)
             }
 
-            itemView.setOnClickListener { onEventClick.invoke() }
+            root.setOnClickListener { onEventClick.invoke() }
         }
     }
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewHolder, position, payloads)
+    override fun bind(
+        viewBinding: ItemEventFavoriteBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload == null) super.bind(viewBinding, position, payloads)
         else {
-            if (payload is Boolean) setAction(viewHolder.userSubscribeButton, payload)
+            if (payload is Boolean) setAction(viewBinding.userSubscribeButton, payload)
         }
     }
 

@@ -1,19 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: "com.hiya.jacoco-android"
 
 android {
-    compileSdkVersion 34
+    namespace 'com.example.app'
+    compileSdk 34
     defaultConfig {
         applicationId "ru.houseofapps.sozidateli"
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdk 24
+        targetSdk 34
         versionCode 70
         versionName "1.0.42"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -42,17 +42,16 @@ android {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
         }
-
-        def properties = new Properties()
         if (rootProject.file("app/src/new/vk.properties").exists()) {
+            def properties = new Properties()
             properties.load(rootProject.file("app/src/new/vk.properties").newDataInputStream())
+            manifestPlaceholders = [
+                    VKIDRedirectHost  : properties.getProperty("client_host"),
+                    VKIDRedirectScheme: properties.getProperty("client_scheme"),
+                    VKIDClientID      : properties.getProperty("client_id"),
+                    VKIDClientSecret  : properties.getProperty("client_secret")
+            ]
         }
-        manifestPlaceholders = [
-                VKIDRedirectHost  : "vk.com",
-                VKIDRedirectScheme: properties.getProperty("client_scheme"),
-                VKIDClientID      : properties.getProperty("client_id"),
-                VKIDClientSecret  : properties.getProperty("client_secret")
-        ]
     }
 
     buildTypes {
@@ -64,32 +63,23 @@ android {
 
             buildConfigField "String", "SHARE_URL", "\"https://sozidateli.ru/\""
             buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
-
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
         }
         beta {
             initWith(debug)
             buildConfigField "String", "SHARE_URL", "\"https://beta.sozidateli.ru/\""
             buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
-
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "false"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "false"
             matchingFallbacks = ['debug', 'release']
         }
         "new" {
             initWith(debug)
             buildConfigField "String", "SHARE_URL", "\"https://alfa.sozidateli.ru/\""
             buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
-
             buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
-            buildConfigField "Boolean", "REGISTER_AGREEMENT_ENABLED", "true"
-            buildConfigField "Boolean", "NEW_PROFILE_EDIT", "true"
             matchingFallbacks = ['debug', 'release']
         }
     }
@@ -109,9 +99,7 @@ android {
 //    }
 
     variantFilter { variant ->
-        if (variant.name == "debug") {
-            setIgnore(true)
-        }
+        if (variant.name == "debug") setIgnore(true)
     }
 
     lintOptions {
@@ -131,16 +119,11 @@ android {
     testOptions {
         unitTests.includeAndroidResources = true
     }
-
-    androidExtensions {
-        experimental = true
-    }
 }
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':filepicker')
     implementation project(':qrcodegenerator')
     implementation project(':calendarpager')
 
@@ -150,6 +133,7 @@ dependencies {
     }
 
     // support
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -162,8 +146,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'com.google.maps.android:android-maps-utils:0.4'
 
     // navigation
@@ -224,7 +208,7 @@ dependencies {
     //utils
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
     implementation 'io.michaelrocks:libphonenumber-android:8.12.31'
-    implementation 'com.hbb20:ccp:2.4.5'
+    implementation 'com.hbb20:ccp:2.5.0'
     implementation 'com.github.tbruyelle:rxpermissions:0.11'
 
     //markdown
@@ -243,7 +227,18 @@ dependencies {
     // sn
     implementation 'com.vk.id:vkid:1.0.0'
 
-    // tests
+    //Shake bugs
+    //implementation 'com.shakebugs:shake:15.3.0'
+
+    // CameraX
+    implementation "androidx.camera:camera-camera2:1.0.0-rc01"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-rc01"
+    implementation 'androidx.camera:camera-view:1.0.0-alpha20'
+
+    // Custom tabs Browser
+    implementation 'androidx.browser:browser:1.4.0'
+
+    // Tests
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
     testImplementation 'junit:junit:4.13.2'
@@ -253,22 +248,4 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
     androidTestImplementation 'com.google.firebase:testlab-instr-lib:0.2'
-
-    //Shake bugs
-    //implementation 'com.shakebugs:shake:15.3.0'
-
-    // CameraX
-    implementation "androidx.camera:camera-camera2:1.0.0-rc01"
-    implementation "androidx.camera:camera-lifecycle:1.0.0-rc01"
-    implementation 'androidx.camera:camera-view:1.0.0-alpha20'
-
-    //Custom tabs Browser
-    implementation 'androidx.browser:browser:1.4.0'
-}
-
-sonarqube {
-    properties {
-        property "sonar.jacoco.reportPaths", "build/jacoco/testDebugUnitTest.exec"
-        property "sonar.junit.reportsPaths", "build/test-results/*/*.xml"
-    }
 }

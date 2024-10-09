@@ -15,7 +15,7 @@ import androidx.core.text.set
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
 import com.example.extensions.checkIsEllipsized
 import com.example.extensions.markWon

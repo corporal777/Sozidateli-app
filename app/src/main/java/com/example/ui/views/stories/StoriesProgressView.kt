@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import com.example.R
+import com.example.app.R
 
 import java.util.ArrayList;
 

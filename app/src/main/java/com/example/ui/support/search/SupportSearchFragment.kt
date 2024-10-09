@@ -5,9 +5,9 @@ import android.view.View
 import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SupportData
-import com.example.databinding.FragmentSupportSearchBinding
+import com.example.app.databinding.FragmentSupportSearchBinding
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs

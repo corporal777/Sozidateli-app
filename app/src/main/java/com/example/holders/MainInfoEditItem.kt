@@ -1,8 +1,8 @@
 package com.example.holders
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.*
-import com.example.databinding.ItemEditMainInfoBinding
+import com.example.app.databinding.ItemEditMainInfoBinding
 import com.example.extensions.*
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet

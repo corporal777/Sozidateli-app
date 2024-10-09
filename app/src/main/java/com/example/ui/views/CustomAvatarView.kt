@@ -12,7 +12,7 @@ import androidx.core.view.isVisible
 import coil.load
 import coil.request.CachePolicy
 import coil.size.Scale
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 import com.example.extensions.px
 import com.example.util.getColor

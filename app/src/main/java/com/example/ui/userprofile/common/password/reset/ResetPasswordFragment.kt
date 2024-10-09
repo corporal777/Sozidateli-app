@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentResetPasswordBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentResetPasswordBinding
 import com.example.ui.base.BaseFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

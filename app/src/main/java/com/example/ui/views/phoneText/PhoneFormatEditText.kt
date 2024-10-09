@@ -11,20 +11,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
-import com.example.R
+import com.example.app.R
 import com.example.extensions.onFocusChanged
 import com.example.extensions.onTextChanged
 import com.google.android.material.textfield.TextInputEditText
 
 class PhoneFormatEditText : TextInputEditText {
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
-        context,
-        attrs,
-        defStyle
-    )
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.PhoneFormatEditText)
+        val hintText = a.getText(R.styleable.PhoneFormatEditText_phoneFormatHint)
+        a.recycle()
+        setPhoneHint(hintText)
+    }
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
     private var onInputFocusChanged: (hasFocus: Boolean) -> Unit = {}
     private var onInputTextChanged: (text: CharSequence?) -> Unit = {}
@@ -77,7 +78,7 @@ class PhoneFormatEditText : TextInputEditText {
         return formattedText
     }
 
-    fun setPhoneHint(text: CharSequence?) {
+    private fun setPhoneHint(text: CharSequence?) {
         hint = formatPhoneText(text.toString())
     }
 

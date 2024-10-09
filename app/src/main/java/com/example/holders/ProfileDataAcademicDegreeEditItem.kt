@@ -3,11 +3,11 @@ package com.example.holders
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
-import com.example.R
+import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
-import com.example.databinding.ItemProfileDataEditAcademicDegreeBinding
+import com.example.app.databinding.ItemProfileDataEditAcademicDegreeBinding
 import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
 import com.xwray.groupie.databinding.BindableItem

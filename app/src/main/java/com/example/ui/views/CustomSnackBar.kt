@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.api.Context
 

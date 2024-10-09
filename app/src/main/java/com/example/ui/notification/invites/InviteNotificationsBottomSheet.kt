@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
-import com.example.databinding.BottomSheetInviteNotificationsBinding
+import com.example.app.databinding.BottomSheetInviteNotificationsBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.notification.NotificationType

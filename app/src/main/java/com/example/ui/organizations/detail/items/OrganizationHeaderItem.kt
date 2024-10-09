@@ -4,9 +4,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.OrganizationNew
-import com.example.databinding.ItemOrganizationHeaderBinding
+import com.example.app.databinding.ItemOrganizationHeaderBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.Item

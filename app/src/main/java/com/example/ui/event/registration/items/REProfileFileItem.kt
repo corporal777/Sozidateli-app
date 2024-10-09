@@ -3,9 +3,9 @@ package com.example.ui.event.registration.items
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FileModel
-import com.example.databinding.ItemRegisterEventProfileFileBinding
+import com.example.app.databinding.ItemRegisterEventProfileFileBinding
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.holders.registerEvent.BaseRegisterProfileItem
 import com.example.util.getColor

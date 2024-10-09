@@ -1,9 +1,9 @@
 package com.example.holders
 
 import android.view.ViewGroup
-import com.example.R
+import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.databinding.ItemProfileDataWorkExperienceBinding
+import com.example.app.databinding.ItemProfileDataWorkExperienceBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.dp
 import com.example.extensions.parseAndFormatOrDefault

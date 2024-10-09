@@ -1,8 +1,8 @@
 package com.example.ui.notification.types.projects.items
 
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemNotificationsTagsBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNotificationsTagsBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 

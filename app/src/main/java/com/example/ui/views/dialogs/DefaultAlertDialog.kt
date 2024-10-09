@@ -9,9 +9,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.example.R
-import com.example.databinding.DialogAlertDefaultBinding
-import com.example.databinding.DialogMessageWithGrayButtonBinding
+import com.example.app.R
+import com.example.app.databinding.DialogAlertDefaultBinding
+import com.example.app.databinding.DialogMessageWithGrayButtonBinding
 import com.example.extensions.removeUrlUnderline
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 

@@ -9,9 +9,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
-import com.example.databinding.FragmentNotificationsTypesBinding
+import com.example.app.databinding.FragmentNotificationsTypesBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem

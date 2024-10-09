@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserProfileBinding
+import com.example.app.databinding.FragmentUserProfileBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.gallery.GalleryBottomSheet

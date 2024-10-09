@@ -1,9 +1,9 @@
 package com.example.holders.redesign
 
 import android.view.View
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.ItemEventTimetableBinding
+import com.example.app.databinding.ItemEventTimetableBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.firstLetterToUppercase
 import com.example.extensions.parseAndFormat
@@ -30,13 +30,9 @@ class EventActivityDateItem(
     }
 
 
-    fun getDay(): String? = data?.date
     fun getDate(): EventScheduleDay? = data
-    fun getView(): View? {
-        return if (this::binding.isInitialized){
-            binding.root
-        }else null
-    }
+    fun getView(): View? = if (this::binding.isInitialized)binding.root else null
+
 
     override fun getLayout(): Int = R.layout.item_event_timetable
 

@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationSimpleBinding
+import com.example.app.databinding.ItemNotificationSimpleBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class SimpleNotificationItem(

@@ -3,8 +3,8 @@ package com.example.ui.userprofile.base
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import com.example.R
-import com.example.databinding.FragmentUserEditBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentUserEditBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent

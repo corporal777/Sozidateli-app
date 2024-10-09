@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentChangePasswordBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog

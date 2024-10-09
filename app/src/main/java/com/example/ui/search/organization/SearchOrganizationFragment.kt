@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
-import com.example.databinding.LayoutFilterOrganizationSearchBinding
+import com.example.app.databinding.LayoutFilterOrganizationSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem

@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.example.R
+import com.example.app.R
 import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
 import com.google.android.material.textfield.TextInputEditText

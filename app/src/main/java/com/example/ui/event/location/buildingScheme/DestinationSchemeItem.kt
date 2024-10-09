@@ -3,12 +3,11 @@ package com.example.ui.event.location.buildingScheme
 import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemBuildingSchemeBinding
+import com.example.app.R
+import com.example.app.databinding.ItemBuildingSchemeBinding
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.item_building_scheme.*
 import com.example.extensions.onScrolled
 
 class DestinationSchemeItem(

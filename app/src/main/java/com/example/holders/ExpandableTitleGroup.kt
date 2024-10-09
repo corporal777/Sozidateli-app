@@ -2,7 +2,7 @@ package com.example.holders
 
 import com.xwray.groupie.ExpandableGroup
 
-abstract class ExpandableTitleGroup<T : ExpandableTitleItem>(
+abstract class ExpandableTitleGroup<T : ExpandableTitleItem<*>>(
         val titleItem: T,
         isInitiallyExpanded: Boolean = false,
         val onExpandChange: OnExpandChange<T>

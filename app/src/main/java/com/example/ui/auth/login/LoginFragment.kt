@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.BuildConfig
-import com.example.R
-import com.example.databinding.FragmentLoginBinding
+import com.example.app.BuildConfig
+import com.example.app.R
+import com.example.app.databinding.FragmentLoginBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog

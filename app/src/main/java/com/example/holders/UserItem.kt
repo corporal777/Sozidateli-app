@@ -2,8 +2,8 @@ package com.example.holders
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemUserBinding
+import com.example.app.R
+import com.example.app.databinding.ItemUserBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.databinding.BindableItem

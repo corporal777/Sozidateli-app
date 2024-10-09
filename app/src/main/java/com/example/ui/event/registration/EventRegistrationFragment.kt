@@ -7,12 +7,12 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
-import com.example.databinding.FragmentRequestBinding
+import com.example.app.databinding.FragmentRequestBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.extensions.onBackPressedCallback
@@ -39,7 +39,6 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
-import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -131,18 +130,16 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
     }
 
     override fun showErrors(invalidFields: MutableSet<EventRegisterFieldData<*>>) {
-        invalidFields.forEach {
+        invalidFields.filter { x -> x.field.required }.forEach {
             if (it is EventRegisterFieldData.Prefilled) {
                 val item = fieldsSection.findGroupBy<RegisterEventProfileItemsGroup> { true }
-                if (it.field.required && item != null) item.showError()
+                item?.showError()
             } else if (it is EventRegisterFieldData.File) {
-                val item =
-                    fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId() == it.field.id }
-                if (it.field.required && item != null) item.showError(true)
+                val item = fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId() == it.field.id }
+                item?.showError(true)
             } else {
-                val item =
-                    fieldsSection.findItemBy<BaseRegisterItem<*>> { x -> x.id == it.field.id.toLong() }
-                if (it.field.required && item != null) item.showError(true)
+                val item = fieldsSection.findItemBy<BaseRegisterItem<*>> { x -> x.id == it.field.id.toLong() }
+                item?.showError(true)
             }
         }
     }

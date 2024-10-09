@@ -3,7 +3,7 @@ package com.example.ui.event.registration
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
-import com.example.R
+import com.example.app.R
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.models.EventRegisterProfilePrefilledFields.Companion.prefilledFromJson

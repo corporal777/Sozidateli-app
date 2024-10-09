@@ -42,8 +42,8 @@ data class EventFile(
     }
 
     fun isFilePDF() : Boolean{
-        if (mimeType == "application/pdf" || mimeType?.contains("pdf", true) == true)
-            return true
-        else return name.contains("pdf", true)
+        return if (mimeType == "application/pdf" || mimeType?.contains("pdf", true) == true)
+            true
+        else name.contains("pdf", true)
     }
 }

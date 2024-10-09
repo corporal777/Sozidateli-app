@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -11,9 +10,12 @@
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
 
     <application
         android:name="com.example.App"
@@ -47,22 +49,22 @@
         </activity>
 
         <activity
-            android:name=".util.rxtakephoto.CropActivity"
+            android:name="com.example.util.rxtakephoto.CropActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.gallery.cropImage.CropImageActivity"
+            android:name="com.example.ui.gallery.cropImage.CropImageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.gallery.camera.CustomCameraActivity"
+            android:name="com.example.ui.gallery.camera.CustomCameraActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.auth.snAuth.SnAuthActivity"
+            android:name="com.example.ui.auth.snAuth.SnAuthActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".ui.image.ImageViewActivity"
+            android:name="com.example.ui.image.ImageViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent" />
 
@@ -77,7 +79,7 @@
         </provider>
 
         <service
-            android:name=".services.FcmMessagingService"
+            android:name="com.example.services.FcmMessagingService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -85,11 +87,11 @@
         </service>
 
         <service
-            android:name=".services.NotificationClickJobService"
+            android:name="com.example.services.NotificationClickJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".receivers.NotificationClickBroadcastReceiver" />
+        <receiver android:name="com.example.receivers.NotificationClickBroadcastReceiver" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

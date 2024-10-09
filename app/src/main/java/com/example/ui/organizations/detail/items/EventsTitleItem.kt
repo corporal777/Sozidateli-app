@@ -1,8 +1,8 @@
 package com.example.ui.organizations.detail.items
 
 import androidx.core.view.updatePadding
-import com.example.R
-import com.example.databinding.ItemEventsTitleBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventsTitleBinding
 import com.example.extensions.dp
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem

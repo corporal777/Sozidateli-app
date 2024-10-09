@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.example.R;
+import com.example.app.R;
 import com.example.ui.views.crop.cropView.cropWindow.CropOverlayView;
 import com.example.ui.views.crop.cropView.cropWindow.edge.Edge;
 import com.example.ui.views.crop.cropView.cropWindow.util.CustomCropCallback;

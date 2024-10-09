@@ -1,8 +1,8 @@
 package com.example.ui.event.registration.items
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EducationModel
-import com.example.databinding.ItemRegisterEventProfileEducationBinding
+import com.example.app.databinding.ItemRegisterEventProfileEducationBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS

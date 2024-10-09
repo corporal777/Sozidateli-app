@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCustomTextMenuViewBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCustomTextMenuViewBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.getDrawable

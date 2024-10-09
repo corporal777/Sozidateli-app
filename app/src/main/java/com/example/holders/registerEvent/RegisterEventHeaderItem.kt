@@ -1,9 +1,9 @@
 package com.example.holders.registerEvent
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegistration
-import com.example.databinding.ItemRegisterEventHeaderBinding
+import com.example.app.databinding.ItemRegisterEventHeaderBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.markWon
 import com.xwray.groupie.databinding.BindableItem

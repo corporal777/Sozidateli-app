@@ -1,7 +1,7 @@
 package com.example.ui.support.newQuestion
 
-import com.example.R
-import com.example.databinding.ItemSupportAddFileBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSupportAddFileBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class SupportAddFileItem (

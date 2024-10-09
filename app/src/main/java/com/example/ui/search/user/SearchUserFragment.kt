@@ -5,10 +5,10 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.databinding.LayoutFilterUserSearchBinding
+import com.example.app.databinding.LayoutFilterUserSearchBinding
 import com.example.extensions.findItemBy
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem

@@ -3,9 +3,9 @@ package com.example.ui.userprofile.common.name
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.BottomSheetChangeNameBinding
+import com.example.app.databinding.BottomSheetChangeNameBinding
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

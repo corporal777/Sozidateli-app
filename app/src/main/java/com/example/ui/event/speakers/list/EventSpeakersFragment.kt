@@ -3,9 +3,9 @@ package com.example.ui.event.speakers.list
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.MemberModel
-import com.example.databinding.FragmentEventSpeakersBinding
+import com.example.app.databinding.FragmentEventSpeakersBinding
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs

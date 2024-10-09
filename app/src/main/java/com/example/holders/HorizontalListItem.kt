@@ -2,8 +2,8 @@ package com.example.holders
 
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
-import com.example.R
-import com.example.databinding.ItemHorizontalListBinding
+import com.example.app.R
+import com.example.app.databinding.ItemHorizontalListBinding
 import com.xwray.groupie.databinding.BindableItem
 
 open class HorizontalListItem<VH : RecyclerView.ViewHolder>(id: Long) :

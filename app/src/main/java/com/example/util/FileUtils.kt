@@ -17,7 +17,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import io.reactivex.Maybe
 import okhttp3.OkHttp
 import okhttp3.OkHttpClient

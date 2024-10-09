@@ -2,8 +2,8 @@ package com.example.ui.event.speakers.member.items
 
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemUserSpeakerMainInfoBinding
+import com.example.app.R
+import com.example.app.databinding.ItemUserSpeakerMainInfoBinding
 import com.example.extensions.markWon
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage

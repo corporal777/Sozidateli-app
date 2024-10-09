@@ -3,12 +3,13 @@ package com.example.ui.views
 import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.example.R
+import com.example.app.R
+import com.example.app.databinding.PhoneViewBinding
+import com.example.extensions.onTextChanged
 import com.google.android.material.textfield.TextInputEditText
 import com.hbb20.CountryCodePicker
-import kotlinx.android.synthetic.main.phone_view.view.*
-import com.example.extensions.onTextChanged
 
 class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs) {
 
@@ -18,16 +19,18 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     private var textChanged: (phone: String) -> Unit = {}
     private var textChangedWithoutPlus: (phone: String) -> Unit = {}
 
+    val view = PhoneViewBinding.inflate(LayoutInflater.from(context), this, false)
+
     init {
-        inflate(context, R.layout.phone_view, this)
+
         ccp = findViewById(R.id.ccp)
-        ccp.registerCarrierNumberEditText(etCountryCodePhone)
+        ccp.registerCarrierNumberEditText(view.etCountryCodePhone)
         ccp.changeDefaultLanguage(CountryCodePicker.Language.RUSSIAN)
         ccp.setPhoneNumberValidityChangeListener {
             isPhoneValid(it)
             isPhoneValidd = it
         }
-        etCountryCodePhone.apply {
+        view.etCountryCodePhone.apply {
             filters = arrayOf(
                 InputFilter { source, _, _, _, _, _ ->
                     source.toString().filterIndexed { index, it -> it.isDigit() }
@@ -67,40 +70,40 @@ class PhoneView(context: Context, attrs: AttributeSet): LinearLayout(context, at
     }
 
     fun showError(show: Boolean) {
-        tilCountryCodePhone.apply {
+        view.tilCountryCodePhone.apply {
             error = if (show) context.resources.getString(R.string.invalid_phone_number_second_error) else null
         }
     }
 
     fun showEmptyError(show: Boolean){
-        tilCountryCodePhone.apply {
+        view.tilCountryCodePhone.apply {
             error = if (show) context.resources.getString(R.string.invalid_phone_number_error) else null
             requestFocus()
         }
     }
 
     fun showErrorWithFocus(invalidNumberError: String) {
-        tilCountryCodePhone.apply {
+        view.tilCountryCodePhone.apply {
             error = invalidNumberError
             requestFocus()
         }
     }
 
-    fun getError(): CharSequence? = tilCountryCodePhone.error
+    fun getError(): CharSequence? = view.tilCountryCodePhone.error
 
     fun getFullNumber(): String = ccp.fullNumber
 
     fun getFullNumberWithPlus(): String = ccp.fullNumberWithPlus
 
-    fun getNumberWithoutCode(): String = etCountryCodePhone.text.toString()
+    fun getNumberWithoutCode(): String = view.etCountryCodePhone.text.toString()
 
     fun getIsValid(): Boolean = isPhoneValidd
 
-    fun getEditTextLayout() : TextInputEditText = etCountryCodePhone
+    fun getEditTextLayout() : TextInputEditText = view.etCountryCodePhone
 
     fun setCursorPosition(){
-        etCountryCodePhone.apply {
-            val text = etCountryCodePhone.text
+        view.etCountryCodePhone.apply {
+            val text = view.etCountryCodePhone.text
             if (!text.toString().isNullOrEmpty()) setSelection(text.toString().length)
             else setSelection(0)
         }

@@ -5,9 +5,9 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserChat
-import com.example.databinding.FragmentInviteListBinding
+import com.example.app.databinding.FragmentInviteListBinding
 import com.example.extensions.dp
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems

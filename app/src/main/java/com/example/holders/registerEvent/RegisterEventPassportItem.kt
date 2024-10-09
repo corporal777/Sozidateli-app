@@ -3,11 +3,11 @@ package com.example.holders.registerEvent
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventBooleanBinding
-import com.example.databinding.ItemRegisterEventPassportBinding
+import com.example.app.databinding.ItemRegisterEventBooleanBinding
+import com.example.app.databinding.ItemRegisterEventPassportBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate

@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.databinding.ActivityCropBinding
 import com.example.ui.views.crop.cropHelper.CropImageView
 import com.example.ui.views.crop.cropHelper.util.Utils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,7 +16,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.SingleSubject
-import kotlinx.android.synthetic.main.activity_crop.*
 
 
 class CropActivity : AppCompatActivity() {
@@ -31,10 +30,11 @@ class CropActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    private val mBinding = ActivityCropBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_crop)
+        setContentView(mBinding.root)
 
         val extras = intent.extras!!
         uri = extras.getParcelable(ARG_URI) ?: return
@@ -52,7 +52,7 @@ class CropActivity : AppCompatActivity() {
 
         this.cropSubject = cropSubject
 
-        cropView.apply {
+        mBinding.cropView.apply {
             setOutputMaxSize(outputMaxWidth, outputMaxHeight)
             setCompressQuality(outputQuality)
             setCompressFormat(Bitmap.CompressFormat.PNG)
@@ -60,10 +60,10 @@ class CropActivity : AppCompatActivity() {
             setCropMode(cropMode)
         }
 
-        btnSave.setOnClickListener { crop() }
-        btnCancel.setOnClickListener { cancelCrop() }
+        mBinding.btnSave.setOnClickListener { crop() }
+        mBinding.btnCancel.setOnClickListener { cancelCrop() }
 
-        compositeDisposable += cropView.loadAsCompletable(uri)
+        compositeDisposable += mBinding.cropView.loadAsCompletable(uri)
                 .subscribe({
                     val rotation = rotation - Utils.getExifOrientation(this, uri)
                     if (rotation != 0) {
@@ -77,7 +77,7 @@ class CropActivity : AppCompatActivity() {
                             else -> null
                         }
                         if (rotate != null) {
-                            cropView.rotateImage(rotate, 0)
+                            mBinding.cropView.rotateImage(rotate, 0)
                         }
                     }
                 }, {
@@ -86,29 +86,29 @@ class CropActivity : AppCompatActivity() {
     }
 
     private fun crop() {
-        flLoading.isVisible = true
+        mBinding.flLoading.isVisible = true
         compositeDisposable.add(
-                cropView.cropAsSingle()
+            mBinding.cropView.cropAsSingle()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             cropSubject.onSuccess(it)
-                            flLoading.isVisible = false
+                            mBinding.flLoading.isVisible = false
                             finish()
                         }, {
                             cropSubject.onError(it)
-                            flLoading.isVisible = false
+                            mBinding.flLoading.isVisible = false
                         })
         )
     }
     private fun cancelCrop(){
-        flLoading.isVisible = false
+        mBinding.flLoading.isVisible = false
         cropSubject.onError(NullPointerException("Cancel crop pressed!"))
         finish()
     }
 
     override fun onBackPressed() {
-        flLoading.isVisible = false
+        mBinding.flLoading.isVisible = false
         intent.removeExtra(uri.toString())
         cropSubject.onError(NullPointerException("Cancel crop pressed!"))
         super.onBackPressed()

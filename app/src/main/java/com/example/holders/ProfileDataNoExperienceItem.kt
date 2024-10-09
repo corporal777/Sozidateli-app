@@ -1,7 +1,7 @@
 package com.example.holders
 
-import com.example.R
-import com.example.databinding.ItemProfileDataEditNoWorkBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileDataEditNoWorkBinding
 import com.example.util.initSwitch
 import com.xwray.groupie.databinding.BindableItem
 

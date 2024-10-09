@@ -5,10 +5,10 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentChatListBinding
+import com.example.app.databinding.FragmentChatListBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateItem
 import com.example.holders.ChatListEmptyItem

@@ -1,7 +1,7 @@
 package com.example.ui.accountChange.items
 
-import com.example.R
-import com.example.databinding.ItemLoginAccountButtonBinding
+import com.example.app.R
+import com.example.app.databinding.ItemLoginAccountButtonBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class LoginButtonItem(

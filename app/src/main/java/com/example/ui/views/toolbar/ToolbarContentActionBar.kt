@@ -7,7 +7,7 @@ import android.widget.SpinnerAdapter
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 import java.lang.ref.WeakReference
 

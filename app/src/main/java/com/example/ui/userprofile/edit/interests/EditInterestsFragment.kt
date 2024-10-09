@@ -1,7 +1,7 @@
 package com.example.ui.userprofile.edit.interests
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.InterestNew
 import com.example.data.models.UserInterest
 import com.example.holders.OnExpandChange

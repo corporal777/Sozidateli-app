@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.InterestNew
-import com.example.databinding.FragmentUserProfileInterestsBinding
+import com.example.app.databinding.FragmentUserProfileInterestsBinding
 import com.example.holders.OnExpandChange
 import com.example.holders.PlaceholderItem
 import com.example.holders.ProfileDataInterestItem

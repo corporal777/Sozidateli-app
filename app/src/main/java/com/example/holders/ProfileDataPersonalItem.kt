@@ -6,10 +6,10 @@ import android.text.method.LinkMovementMethod
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.LinksModel
 import com.example.data.models.OrganizationNew
-import com.example.databinding.ItemProfileDataPersonalBinding
+import com.example.app.databinding.ItemProfileDataPersonalBinding
 import com.example.extensions.parsePhone
 import com.example.util.ClickableSpan
 import com.xwray.groupie.databinding.BindableItem

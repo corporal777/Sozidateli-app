@@ -7,8 +7,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.R
-import com.example.databinding.FragmentPhoneCodeConfirmBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent

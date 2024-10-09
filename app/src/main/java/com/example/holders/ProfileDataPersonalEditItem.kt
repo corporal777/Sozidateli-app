@@ -2,12 +2,12 @@ package com.example.holders
 
 import android.content.Context
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
-import com.example.databinding.ItemProfileDataEditPersonalBinding
+import com.example.app.databinding.ItemProfileDataEditPersonalBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.ui.views.dialogs.AboutAdditionalInfoBottomSheet

@@ -8,8 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.example.App
-import com.example.R
-import kotlinx.android.synthetic.main.image_with_badge.view.*
+import com.example.app.R
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -70,7 +69,7 @@ class ChatView : FrameLayout, ChatViewContract.View {
     }
 
     private fun showBadge(count: String, backgroundDrawable: Drawable) {
-        view.tvBadge.apply {
+        view.findViewById<View>(R.id.tvBadge).apply {
 //            text = count
             background = backgroundDrawable
             visibility = View.VISIBLE
@@ -78,10 +77,10 @@ class ChatView : FrameLayout, ChatViewContract.View {
     }
 
     override fun hideCounter() {
-        view.tvBadge.visibility = View.GONE
+        view.findViewById<View>(R.id.tvBadge).visibility = View.GONE
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        ivImage.setOnClickListener(l)
+        view.findViewById<View>(R.id.ivImage).setOnClickListener(l)
     }
 }

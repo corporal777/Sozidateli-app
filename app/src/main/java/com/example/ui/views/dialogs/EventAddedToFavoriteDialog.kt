@@ -7,8 +7,8 @@ import android.graphics.drawable.InsetDrawable
 import android.os.Handler
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import com.example.R
-import com.example.databinding.DialogEventAddedToFavoriteBinding
+import com.example.app.R
+import com.example.app.databinding.DialogEventAddedToFavoriteBinding
 
 
 class EventAddedToFavoriteDialog(

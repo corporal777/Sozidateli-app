@@ -2,8 +2,8 @@ package com.example.ui.views.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
-import com.example.R
-import com.example.databinding.DialogCancelRegisterEventBinding
+import com.example.app.R
+import com.example.app.databinding.DialogCancelRegisterEventBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class CancelRegisterEventBottomSheet (

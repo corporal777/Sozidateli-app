@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import com.example.R
+import com.example.app.R
 import com.example.adapters.PagerStateAdapter
-import com.example.databinding.FragmentFavoriteBinding
+import com.example.app.databinding.FragmentFavoriteBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.favoritesTab.events.FavoriteEventsFragment

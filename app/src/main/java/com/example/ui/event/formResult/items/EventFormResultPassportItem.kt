@@ -1,8 +1,8 @@
 package com.example.ui.event.formResult.items
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventPassport
-import com.example.databinding.ItemEventFormResultPassportBinding
+import com.example.app.databinding.ItemEventFormResultPassportBinding
 import com.example.extensions.formatToDefaultDate
 import com.xwray.groupie.databinding.BindableItem
 

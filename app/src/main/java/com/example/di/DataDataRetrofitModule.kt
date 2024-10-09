@@ -1,6 +1,6 @@
 package com.example.di
 
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.api.ApiDataData
 import com.google.gson.GsonBuilder
 import dagger.Module

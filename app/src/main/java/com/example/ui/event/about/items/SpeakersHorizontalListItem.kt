@@ -2,9 +2,9 @@ package com.example.ui.event.about.items
 
 import android.graphics.Color
 import android.util.Log
-import com.example.R
+import com.example.app.R
 import com.example.data.models.MemberModel
-import com.example.databinding.ItemSpeakersHorizontalListBinding
+import com.example.app.databinding.ItemSpeakersHorizontalListBinding
 import com.example.holders.HorizontalListItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventSpeakerItem

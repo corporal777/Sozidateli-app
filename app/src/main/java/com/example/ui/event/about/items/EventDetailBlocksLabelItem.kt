@@ -1,8 +1,8 @@
 package com.example.ui.event.about.items
 
 import androidx.core.view.updatePadding
-import com.example.R
-import com.example.databinding.ItemEventDetailLabelBlockBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventDetailLabelBlockBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class EventDetailBlocksLabelItem(

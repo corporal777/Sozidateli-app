@@ -2,7 +2,7 @@ package com.example.di
 
 import android.content.Context
 import android.util.Log
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.api.AuthInterceptor
 import com.example.api.Api
 import com.example.data.AppData

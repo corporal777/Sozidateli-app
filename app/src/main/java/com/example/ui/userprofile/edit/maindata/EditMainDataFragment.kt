@@ -4,7 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.R
+import com.example.app.R
 import com.example.data.models.*
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateItem

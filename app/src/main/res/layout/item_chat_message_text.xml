@@ -1,59 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:ignore="MissingPrefix">
+<layout>
 
-    <TextView
-        android:id="@+id/tvChatMessage"
-        fontPath="fonts/sf_pro_text.ttf"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:padding="10dp"
-        android:textSize="16sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/chat_message_background_outgoing"
-        tools:layout_constraintHorizontal_bias="1.0"
-        tools:text="Всем привет"
-        tools:textColor="@android:color/white" />
+        tools:ignore="MissingPrefix">
 
-    <TextView
-        fontPath="fonts/sf_pro_text_regular.ttf"
-        android:id="@+id/tvMessageDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/chat_message_date"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tvChatMessage"
-        app:layout_constraintStart_toStartOf="@+id/tvChatMessage"
-        app:layout_constraintTop_toBottomOf="@+id/tvChatMessage"
-        tools:layout_constraintHorizontal_bias="1.0"
-        tools:text="14:20" />
+        <TextView
+            android:id="@+id/tvChatMessage"
+            fontPath="fonts/sf_pro_text.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:padding="10dp"
+            android:textSize="16sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+            app:layout_constraintStart_toEndOf="@id/guidelineStart"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/chat_message_background_outgoing"
+            tools:layout_constraintHorizontal_bias="1.0"
+            tools:text="Всем привет"
+            tools:textColor="@android:color/white" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:layout_constraintGuide_percent="0.3" />
+        <TextView
+            android:id="@+id/tvMessageDate"
+            fontPath="fonts/sf_pro_text_regular.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/chat_message_date"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvChatMessage"
+            app:layout_constraintStart_toStartOf="@+id/tvChatMessage"
+            app:layout_constraintTop_toBottomOf="@+id/tvChatMessage"
+            tools:layout_constraintHorizontal_bias="1.0"
+            tools:text="14:20" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:layout_constraintGuide_percent="1" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:layout_constraintGuide_percent="0.3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:layout_constraintGuide_percent="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

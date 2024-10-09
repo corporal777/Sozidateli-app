@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.FloatRange
 import androidx.annotation.RawRes
 import androidx.core.content.res.ResourcesCompat
-import com.example.R
+import com.example.app.R
 
 object AuthBackground {
 

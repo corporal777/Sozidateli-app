@@ -1,9 +1,9 @@
 package com.example.holders
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserInterest
-import com.example.databinding.ItemProfileDataEditInterestBinding
+import com.example.app.databinding.ItemProfileDataEditInterestBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
 

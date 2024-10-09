@@ -3,8 +3,8 @@ package com.example.ui.auth.welcome
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import com.example.R
-import com.example.databinding.FragmentWelcomeBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentWelcomeBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment
 import com.example.util.AuthBackground

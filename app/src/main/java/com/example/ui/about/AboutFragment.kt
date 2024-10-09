@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.text.util.Linkify.WEB_URLS
 import android.view.View
 import android.view.ViewGroup
-import com.example.BuildConfig
-import com.example.R
-import com.example.databinding.FragmentAboutBinding
+import com.example.app.BuildConfig
+import com.example.app.R
+import com.example.app.databinding.FragmentAboutBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent

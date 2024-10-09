@@ -2,7 +2,7 @@ package com.example.ui.userprofile.edit.work.items
 
 import android.content.Context
 import android.view.View
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.WorkExperience
 import com.example.data.models.WorkExperienceModel

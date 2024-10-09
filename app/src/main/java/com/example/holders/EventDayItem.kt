@@ -1,11 +1,10 @@
 package com.example.holders
 
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.ItemDayBinding
+import com.example.app.databinding.ItemDayBinding
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.android.synthetic.main.item_day.*
 
 
 class EventDayItem(

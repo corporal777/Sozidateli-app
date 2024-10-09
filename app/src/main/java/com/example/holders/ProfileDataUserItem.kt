@@ -3,8 +3,8 @@ package com.example.holders
 import android.view.View
 import android.widget.ImageView
 import coil.transform.RoundedCornersTransformation
-import com.example.R
-import com.example.databinding.ItemProfileDataUserBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileDataUserBinding
 import com.example.extensions.dp
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage

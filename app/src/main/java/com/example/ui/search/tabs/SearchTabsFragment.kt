@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.adapters.PagerStateAdapter
-import com.example.databinding.FragmentSearchTabsBinding
+import com.example.app.databinding.FragmentSearchTabsBinding
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseFragment
 import com.example.ui.search.SearchInterface

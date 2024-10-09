@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.R
+import com.example.app.R
 
 class PopupWindowAdapter(private val values: List<String>, private val onClick: (item: String) -> Unit): RecyclerView.Adapter<PopupWindowAdapter.PopupHolder>() {
 

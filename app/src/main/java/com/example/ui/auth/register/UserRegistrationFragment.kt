@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentRegistrationUserBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentRegistrationUserBinding
 import com.example.extensions.getClickablePrivacyPolitics
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

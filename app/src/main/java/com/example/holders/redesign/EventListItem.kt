@@ -9,17 +9,17 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
-import com.example.databinding.ItemEventNewBinding
+import com.example.app.databinding.ItemEventNewBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
 
-class EventItemNew(
+class EventListItem(
     event: EventNew,
     val isTemp: Boolean,
     val clickListener: OnEventClickListener
@@ -157,7 +157,7 @@ class EventItemNew(
     override fun getLayout() = R.layout.item_event_new
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
-        if (other !is EventItemNew) return false
+        if (other !is EventListItem) return false
         if (eventData != other.eventData) return false
         return true
     }

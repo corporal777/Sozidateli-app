@@ -2,7 +2,7 @@ package com.example.ui.userprofile.edit.education.items
 
 import android.content.Context
 import android.view.View
-import com.example.R
+import com.example.app.R
 import com.example.data.models.*
 import com.example.extensions.findItemBy
 import com.example.extensions.forEachGroups

@@ -8,7 +8,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
-import com.example.R
+import com.example.app.R
 import com.example.ui.main.MainActivity
 import javax.inject.Inject
 

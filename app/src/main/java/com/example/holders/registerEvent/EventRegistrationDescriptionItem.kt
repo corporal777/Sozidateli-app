@@ -2,9 +2,9 @@ package com.example.holders.registerEvent
 
 import android.util.Log
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemEventRegistrationFieldDescriptionBinding
-import com.example.databinding.ItemRegisterEventInputBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventRegistrationFieldDescriptionBinding
+import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.example.util.getColor
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder

@@ -10,8 +10,8 @@ import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentFinishRegisterBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentFinishRegisterBinding
 import com.example.extensions.removeFirstAndLastSpaces
 import com.example.ui.base.BaseFragment
 import com.example.ui.main.MainActivity

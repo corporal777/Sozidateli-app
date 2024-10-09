@@ -13,8 +13,8 @@ import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutLoadingButtonBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.extensions.inverseSp
 import com.example.extensions.px

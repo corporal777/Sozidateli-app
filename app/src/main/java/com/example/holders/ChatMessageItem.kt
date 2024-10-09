@@ -10,16 +10,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
-import com.example.R
+import androidx.databinding.ViewDataBinding
+import com.example.app.R
 import com.example.data.models.ChatMessage
 import com.example.extensions.defaultTimeFormatter
 import com.example.extensions.dp
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 
-abstract class ChatMessageItem(
+abstract class ChatMessageItem<T : ViewDataBinding>(
         val message: ChatMessage.Personal
-) : Item(message.message._id.hashCode().toLong()) {
+) : BindableItem<T>(message.message._id.hashCode().toLong()) {
 
     val incomingMessageGuildLineStartPercent = INCOMING_MESSAGE_GUID_LINE_START
     val incomingMessageGuildLineEndPercent = INCOMING_MESSAGE_GUID_LINE_END
@@ -34,9 +36,9 @@ abstract class ChatMessageItem(
     var onBindListener: (() -> Unit)? = null
 
     @CallSuper
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+    override fun bind(viewBinding: T, position: Int) {
         onBindListener?.invoke()
-        viewHolder.apply {
+        viewBinding.apply {
             getGuidLineStart(this)
                     .setGuidelinePercent(
                             if (message.isMyMessage) outgoingMessageGuildLineStartPercent
@@ -93,10 +95,10 @@ abstract class ChatMessageItem(
         }
     }
 
-    abstract fun getGuidLineStart(viewHolder: GroupieViewHolder): Guideline
-    abstract fun getGuidLineEnd(viewHolder: GroupieViewHolder): Guideline
-    abstract fun getMessageContainer(viewHolder: GroupieViewHolder): View
-    abstract fun getDateView(viewHolder: GroupieViewHolder): TextView
+    abstract fun getGuidLineStart(binding : T): Guideline
+    abstract fun getGuidLineEnd(binding : T): Guideline
+    abstract fun getMessageContainer(binding : T): View
+    abstract fun getDateView(binding : T): TextView
 
     companion object {
         const val INCOMING_MESSAGE_GUID_LINE_START = 0f

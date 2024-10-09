@@ -1,9 +1,9 @@
 package com.example.holders
 
 import android.text.TextWatcher
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FileModel
-import com.example.databinding.ItemProfileDataEditableFileBinding
+import com.example.app.databinding.ItemProfileDataEditableFileBinding
 import com.example.util.initSwitch
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem

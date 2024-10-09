@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.example.R
+import com.example.app.R
 import com.example.ui.base.BaseActivity
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior

@@ -2,8 +2,8 @@ package com.example.ui.event.formResult.items
 
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.ItemEventFormResultStringBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventFormResultStringBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class EventFormResultStringItem(

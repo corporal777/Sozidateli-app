@@ -1,7 +1,7 @@
 package com.example.ui.notification.types.projects
 
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
 import com.example.extensions.updateItem
 import com.example.ui.notification.NotificationsSortedData

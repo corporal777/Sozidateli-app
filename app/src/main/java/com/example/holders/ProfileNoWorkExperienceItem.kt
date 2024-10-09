@@ -1,7 +1,7 @@
 package com.example.holders
 
-import com.example.R
-import com.example.databinding.ItemNoWorkDataBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNoWorkDataBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class ProfileNoWorkExperienceItem(

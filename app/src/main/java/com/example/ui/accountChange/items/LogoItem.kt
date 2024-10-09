@@ -1,7 +1,7 @@
 package com.example.ui.accountChange.items
 
-import com.example.R
-import com.example.databinding.ItemAccountChangeLogoBinding
+import com.example.app.R
+import com.example.app.databinding.ItemAccountChangeLogoBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class LogoItem : BindableItem<ItemAccountChangeLogoBinding>() {

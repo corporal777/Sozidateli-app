@@ -2,8 +2,8 @@ package com.example.ui.partner.items
 
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemMainInfoPartnerBinding
+import com.example.app.R
+import com.example.app.databinding.ItemMainInfoPartnerBinding
 import com.example.extensions.markWon
 import com.example.util.setImage
 import com.xwray.groupie.Item

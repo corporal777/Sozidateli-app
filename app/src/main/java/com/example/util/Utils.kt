@@ -1,7 +1,7 @@
 package com.example.util
 
 import android.content.Context
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
 import com.example.data.models.UserProfileFieldsModel
 import com.example.ui.state.maxNew.MaxStateScreenType

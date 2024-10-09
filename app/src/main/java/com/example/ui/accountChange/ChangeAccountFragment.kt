@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.FragmentChangeAccountBinding
+import com.example.app.databinding.FragmentChangeAccountBinding
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment

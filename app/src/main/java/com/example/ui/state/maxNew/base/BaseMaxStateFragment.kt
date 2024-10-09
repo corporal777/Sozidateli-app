@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentMaxStateInfoBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentMaxStateInfoBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.state.maxNew.MaxStateScreenType

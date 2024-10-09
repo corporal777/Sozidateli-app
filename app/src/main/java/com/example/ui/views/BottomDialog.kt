@@ -4,27 +4,27 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.databinding.LayoutBottomDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.layout_bottom_dialog.view.*
 
 class BottomDialog : BottomSheetDialog {
 
 
-    private val contentLayout = LayoutInflater.from(context).inflate(R.layout.layout_bottom_dialog, null)
+    private val contentLayout = LayoutBottomDialogBinding.inflate(LayoutInflater.from(context))
 
     constructor(context: Context) : super(context)
     constructor(context: Context, theme: Int) : super(context, theme)
 
     init {
-        setContentView(contentLayout)
-        BottomSheetBehavior.from(contentLayout.parent as View).apply {
+        setContentView(contentLayout.root)
+        BottomSheetBehavior.from(contentLayout.root as View).apply {
             isHideable = false
         }
     }
 
     override fun setTitle(titleId: Int) {
+
         setTitle(context.getText(titleId))
     }
 

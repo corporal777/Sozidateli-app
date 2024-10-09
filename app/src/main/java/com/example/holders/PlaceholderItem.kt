@@ -1,6 +1,6 @@
 package com.example.holders
 
-import com.example.R
+import com.example.app.R
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 

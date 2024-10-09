@@ -9,8 +9,8 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentPhoneCodeConfirmBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment

@@ -1,10 +1,10 @@
 package com.example.ui.userprofile.edit.education.items
 
 import android.view.View
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EducationModel
 import com.example.data.models.FieldDetails
-import com.example.databinding.ItemProfileDataEditEducationBinding
+import com.example.app.databinding.ItemProfileDataEditEducationBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth

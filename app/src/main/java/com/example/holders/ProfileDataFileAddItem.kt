@@ -6,8 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.example.R
-import com.example.databinding.ItemProfileAttachFileBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileAttachFileBinding
 import com.example.extensions.dp
 import com.xwray.groupie.databinding.BindableItem
 

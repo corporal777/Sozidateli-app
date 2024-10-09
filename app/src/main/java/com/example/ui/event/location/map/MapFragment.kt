@@ -12,9 +12,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.MapInfo
-import com.example.databinding.FragmentMapBinding
+import com.example.app.databinding.FragmentMapBinding
 import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

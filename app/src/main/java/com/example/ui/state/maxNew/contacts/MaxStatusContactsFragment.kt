@@ -1,6 +1,6 @@
 package com.example.ui.state.maxNew.contacts
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem

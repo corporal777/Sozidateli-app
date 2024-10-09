@@ -1,6 +1,6 @@
 package com.example.ui.state.maxNew.education
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
 import com.example.ui.userprofile.edit.education.items.UserEducationGroup
 import com.example.ui.userprofile.edit.education.items.UserEducationLevelGroup

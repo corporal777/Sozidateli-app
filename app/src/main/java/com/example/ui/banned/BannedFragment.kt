@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserChat
-import com.example.databinding.LayoutListBinding
+import com.example.app.databinding.LayoutListBinding
 import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem

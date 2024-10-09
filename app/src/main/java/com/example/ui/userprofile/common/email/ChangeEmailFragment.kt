@@ -6,8 +6,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentChangeEmailBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentChangeEmailBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter

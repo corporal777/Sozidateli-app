@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.FragmentUserSessionsBinding
+import com.example.app.databinding.FragmentUserSessionsBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem

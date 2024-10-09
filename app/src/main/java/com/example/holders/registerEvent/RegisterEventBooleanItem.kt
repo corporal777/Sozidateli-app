@@ -3,10 +3,10 @@ package com.example.holders.registerEvent
 import android.util.Log
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventBooleanBinding
-import com.example.databinding.ItemRegisterEventCheckboxBinding
+import com.example.app.databinding.ItemRegisterEventBooleanBinding
+import com.example.app.databinding.ItemRegisterEventCheckboxBinding
 import com.example.extensions.setRequired
 
 open class RegisterEventBooleanItem(

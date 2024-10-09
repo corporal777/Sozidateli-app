@@ -1,6 +1,6 @@
 package com.example.data
 
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.data.models.*
 import com.example.data.models.Optional
 import com.example.data.models.user.User

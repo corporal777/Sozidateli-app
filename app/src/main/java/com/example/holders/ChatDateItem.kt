@@ -1,8 +1,8 @@
 package com.example.holders
 
 import android.content.Context
-import com.example.R
-import com.example.databinding.ItemChatDateBinding
+import com.example.app.R
+import com.example.app.databinding.ItemChatDateBinding
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.extensions.isYesterday

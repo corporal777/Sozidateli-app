@@ -9,8 +9,8 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentRegisterEmailNewBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentRegisterEmailNewBinding
 import com.example.extensions.removeFirstAndLastSpaces
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.ConfirmPhoneDialog

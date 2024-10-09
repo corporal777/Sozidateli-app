@@ -5,8 +5,8 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.BottomSheetDialogEventAgreementBinding
+import com.example.app.R
+import com.example.app.databinding.BottomSheetDialogEventAgreementBinding
 import com.example.ui.views.CustomSpannableString
 import com.example.util.ClickableSpanNew
 import com.example.util.showCustomTabsBrowser
@@ -42,12 +42,10 @@ class EventAgreementBottomSheet (
                 getTextView().apply {
                     text = CustomSpannableString(context.getString(R.string.auth_agree_user_agreement)).apply {
                         setFontSpan("fonts/sf_pro_display_semibold.ttf", context, 11)
-                        setSpan(ClickableSpanNew(getTextView()) {
+                        setClickSpanWithLength(getTextView(), 11, length){
                             showCustomTabsBrowser(context, data)
-                        }, 11, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                        }
                     }
-                    highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
-                    movementMethod = LinkMovementMethod.getInstance()
                 }
                 setOnCheckedListener {
                     btnApply.isEnabled = it

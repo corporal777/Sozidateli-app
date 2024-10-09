@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentEnterCodeBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentEnterCodeBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent

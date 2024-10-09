@@ -1,7 +1,7 @@
 package com.example.ui.event.registration.items
 
-import com.example.R
-import com.example.databinding.ItemRegisterEventProfileFooterBinding
+import com.example.app.R
+import com.example.app.databinding.ItemRegisterEventProfileFooterBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class REProfileHeaderItem(

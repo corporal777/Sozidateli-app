@@ -1,8 +1,8 @@
 package com.example.holders
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.InterestNew
-import com.example.databinding.ItemProfileDataInterestBinding
+import com.example.app.databinding.ItemProfileDataInterestBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataInterestItem(

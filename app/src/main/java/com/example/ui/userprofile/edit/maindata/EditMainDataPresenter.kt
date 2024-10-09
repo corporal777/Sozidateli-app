@@ -2,7 +2,7 @@ package com.example.ui.userprofile.edit.maindata
 
 import android.Manifest
 import android.os.Build
-import com.example.R
+import com.example.app.R
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.repository.UserRepository

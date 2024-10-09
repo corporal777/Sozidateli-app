@@ -7,7 +7,7 @@ import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import com.example.databinding.DialogTitleMessageBinding
+import com.example.app.databinding.DialogTitleMessageBinding
 
 class TitleMessageDialog(
     val context: Context,

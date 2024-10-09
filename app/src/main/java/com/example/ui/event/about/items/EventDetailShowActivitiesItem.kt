@@ -1,7 +1,7 @@
 package com.example.ui.event.about.items
 
-import com.example.R
-import com.example.databinding.ItemEventDetailShowActivitiesBlockBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventDetailShowActivitiesBlockBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class EventDetailShowActivitiesItem(

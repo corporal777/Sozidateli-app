@@ -3,11 +3,11 @@ package com.example.holders.registerEvent
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventDateBinding
-import com.example.databinding.ItemRegisterEventInputBinding
+import com.example.app.databinding.ItemRegisterEventDateBinding
+import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.example.extensions.*
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR

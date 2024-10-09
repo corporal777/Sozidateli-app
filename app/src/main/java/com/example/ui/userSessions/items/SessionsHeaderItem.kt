@@ -1,7 +1,7 @@
 package com.example.ui.userSessions.items
 
-import com.example.R
-import com.example.databinding.ItemSessionsHeaderBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSessionsHeaderBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class SessionsHeaderItem(val title : String): BindableItem<ItemSessionsHeaderBinding>() {

@@ -5,9 +5,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Tag
-import com.example.databinding.ItemEventDetailTagsBlockBinding
+import com.example.app.databinding.ItemEventDetailTagsBlockBinding
 import com.example.ui.views.TagChipNew
 import com.xwray.groupie.databinding.BindableItem
 

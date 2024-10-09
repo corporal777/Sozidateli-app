@@ -3,9 +3,9 @@ package com.example.ui.views.dialogs
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.ImageView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.BottomSheetSessionBinding
+import com.example.app.databinding.BottomSheetSessionBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class SessionBottomSheet(

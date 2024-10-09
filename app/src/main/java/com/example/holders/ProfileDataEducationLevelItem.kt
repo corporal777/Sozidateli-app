@@ -1,10 +1,10 @@
 package com.example.holders
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
-import com.example.databinding.ItemProfileDataEducationLevelBinding
+import com.example.app.databinding.ItemProfileDataEducationLevelBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataEducationLevelItem(

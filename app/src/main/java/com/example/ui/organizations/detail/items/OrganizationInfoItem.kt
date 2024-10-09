@@ -1,8 +1,8 @@
 package com.example.ui.organizations.detail.items
 
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemOrganizationInfoBinding
+import com.example.app.R
+import com.example.app.databinding.ItemOrganizationInfoBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.removeUrlUnderline

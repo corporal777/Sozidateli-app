@@ -2,29 +2,30 @@ package com.example.ui.subevent.items
 
 import android.widget.CompoundButton
 import androidx.core.view.isInvisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tags
+import com.example.app.databinding.ItemSubEventBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatTimeIntervalFromTo
 import com.example.ui.views.TagChip
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.weak
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_sub_event.*
 
 open class SubEventItem(
     private val subEvent: EventActivityModel,
     private val mode: Mode,
     clickListener: OnSubEventClickListener,
     private val canDoActions: Boolean = true
-) : Item(subEvent.id?.toLong()?: 0) {
+) : BindableItem<ItemSubEventBinding>(subEvent.id?.toLong()?: 0) {
 
     private val clickListener by weak(clickListener)
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemSubEventBinding, position: Int) {
+        viewBinding.apply {
             tvTime.text = subEvent.holdingDate?.from.formatTimeIntervalFromTo(subEvent.holdingDate?.to, defaultServerDateTimeFormatter, true)
             tvStatus.text = subEvent.title
 

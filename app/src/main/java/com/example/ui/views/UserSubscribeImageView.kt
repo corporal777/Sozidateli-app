@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 
 class UserSubscribeImageView : AppCompatImageView {

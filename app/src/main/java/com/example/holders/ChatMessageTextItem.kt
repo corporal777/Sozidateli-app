@@ -5,19 +5,17 @@ import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.data.models.ChatMessage
+import com.example.app.databinding.ItemChatMessageTextBinding
 import com.example.extensions.markWon
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_chat_message_text.*
 
-class ChatMessageTextItem(
-        message: ChatMessage.Personal
-) : ChatMessageItem(message) {
+class ChatMessageTextItem(message: ChatMessage.Personal) : ChatMessageItem<ItemChatMessageTextBinding>(message) {
 
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        super.bind(viewHolder, position)
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemChatMessageTextBinding, position: Int) {
+        super.bind(viewBinding, position)
+        viewBinding.apply {
             tvChatMessage.apply {
                 markWon(context).setMarkdown(this, message.message.message)
                 //text = message.message.message
@@ -28,10 +26,10 @@ class ChatMessageTextItem(
         }
     }
 
-    override fun getGuidLineStart(viewHolder: GroupieViewHolder): Guideline = viewHolder.guidelineStart
-    override fun getGuidLineEnd(viewHolder: GroupieViewHolder): Guideline = viewHolder.guidelineEnd
-    override fun getMessageContainer(viewHolder: GroupieViewHolder): View = viewHolder.tvChatMessage
-    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessageDate
+    override fun getGuidLineStart(binding: ItemChatMessageTextBinding): Guideline = binding.guidelineStart
+    override fun getGuidLineEnd(binding: ItemChatMessageTextBinding): Guideline = binding.guidelineEnd
+    override fun getMessageContainer(binding: ItemChatMessageTextBinding): View = binding.tvChatMessage
+    override fun getDateView(binding: ItemChatMessageTextBinding): TextView = binding.tvMessageDate
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is ChatMessageTextItem) return false

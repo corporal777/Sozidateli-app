@@ -4,8 +4,8 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import com.example.R
-import com.example.databinding.ItemNoEventBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNoEventBinding
 import com.example.extensions.dp
 import com.xwray.groupie.databinding.BindableItem
 

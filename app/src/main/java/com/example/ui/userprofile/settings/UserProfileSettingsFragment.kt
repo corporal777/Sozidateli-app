@@ -8,10 +8,10 @@ import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserProfileSettingsBinding
+import com.example.app.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
 import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment

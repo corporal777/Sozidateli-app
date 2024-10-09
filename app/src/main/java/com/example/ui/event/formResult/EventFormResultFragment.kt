@@ -6,11 +6,11 @@ import android.text.Spanned
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.UserFormResultModel
-import com.example.databinding.BottomSheetEventFormResultBinding
+import com.example.app.databinding.BottomSheetEventFormResultBinding
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment

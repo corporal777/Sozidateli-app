@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentRecoveryPasswordBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentRecoveryPasswordBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.common.password.confirm.EmailConfirmPasswordDialog
 import com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragmentArgs

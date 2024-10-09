@@ -1,7 +1,7 @@
 package com.example.holders
 
-import com.example.R
-import com.example.databinding.ItemDayHeaderBinding
+import com.example.app.R
+import com.example.app.databinding.ItemDayHeaderBinding
 import com.example.extensions.firstLetterToUppercase
 import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat

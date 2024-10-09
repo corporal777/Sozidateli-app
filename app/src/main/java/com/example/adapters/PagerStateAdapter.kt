@@ -7,17 +7,17 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager.widget.PagerAdapter
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 
 abstract class PagerStateAdapter : PagerAdapter {
     private val TAG = "FragmentStatePagerAdapt"
     private val DEBUG = false
 
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(AnnotationRetention.SOURCE)
     @IntDef(VISIBLE_HINT, RESUME_ONLY_CURRENT_FRAGMENT)
     private annotation class Behavior()
 

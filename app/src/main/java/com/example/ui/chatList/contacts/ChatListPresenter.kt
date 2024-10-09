@@ -1,5 +1,6 @@
 package com.example.ui.chatList.contacts
 
+import call
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.*
@@ -10,6 +11,8 @@ import com.example.data.models.ChatModel.Companion.CHAT_SHOW_EVENTS
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.ChatModel.Companion.CHAT_USER
 import com.example.data.models.ChatModel.Companion.CHAT_USER_STATUS
+import com.example.data.models.UserDetail.Companion.USER_BINDS
+import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildList
 import com.example.repository.ChatRepository
@@ -18,6 +21,7 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -75,21 +79,14 @@ class ChatListPresenter
     }
 
     private fun dispatchChatsListUpdate(data: List<UserChat?>) {
-        compositeDisposable += userRepository.getUsersWithoutPagination(
-            mapOf(
-                UserDetail.USER_LIMIT to 50,
-                UserDetail.USER_BINDS to "userFavorite,chat-room-with-me"
-            )
-        ).performOnBackgroundOutOnMain()
+        userRepository.getUsersWithoutPagination(
+            mapOf(USER_LIMIT to 50, USER_BINDS to "userFavorite,chat-room-with-me")
+        ).map { it.filter { x -> x.binds != null }.filter { x -> x.binds?.userFavorite != null } }
+            .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onSuccess = {
-                    val favorites = it.filter { userDetail -> userDetail.binds?.userFavorite != null }
-                    viewState.setChatsData(data, favorites)
-                },
-                onError = {
-                    viewState.setChatsData(data, emptyList())
-                }
-            )
+                onSuccess = { viewState.setChatsData(data, it) },
+                onError = { viewState.setChatsData(data, emptyList()) }
+            ).call(compositeDisposable)
     }
 
     private fun subscribeChatSocketMessages() {
@@ -127,7 +124,7 @@ class ChatListPresenter
 
     override fun onAddChatClick() = viewState.openSearch()
     override fun onItemTake(position: Int) = chatsPagination.onItemTake(position)
-    override fun onRefreshRequest() =  chatsPagination.invalidate()
+    override fun onRefreshRequest() = chatsPagination.invalidate()
 
     private fun prepareListOfChats(it: List<ChatModel>): List<UserChat> {
         return it.sortedByDescending { x -> x.binds?.lastMessage?.createdDate }.mapNotNull {
@@ -145,7 +142,7 @@ class ChatListPresenter
                     ),
                     isCurrentUser = false
                 )
-            } else it.binds?.users?.filterNotNull()?.firstOrNull{ us -> us.id != appData.getId()}
+            } else it.binds?.users?.filterNotNull()?.firstOrNull { us -> us.id != appData.getId() }
 
             if (user == null) null
             else {

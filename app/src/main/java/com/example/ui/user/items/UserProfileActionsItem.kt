@@ -1,8 +1,8 @@
 package com.example.ui.user.items
 
 import android.widget.TextView
-import com.example.R
-import com.example.databinding.ItemProfileUserActionsBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileUserActionsBinding
 import com.example.ui.views.UserSubscribeButton
 import com.xwray.groupie.databinding.BindableItem
 

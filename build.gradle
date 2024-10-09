@@ -1,6 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.7.21'
-    ext.dagger_version = '2.45'
+    ext.agp_version = '8.6.0'
+    ext.kotlin_version = '1.9.0'
+    ext.dagger_version = '2.50'
     ext.nav_version = '2.5.2'
     ext.moxy_version = '2.2.2'
     ext.paging_version = '2.1.2'
@@ -13,19 +14,16 @@ buildscript {
         jcenter()
         mavenCentral()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "com.android.tools.build:gradle:$agp_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
         classpath 'com.google.firebase:perf-plugin:1.4.2'
         classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.hiya:jacoco-android:0.2'
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
     }
-}
-plugins {
-    id "org.sonarqube" version "3.2.0"
 }
 allprojects {
     repositories {
@@ -38,10 +36,4 @@ allprojects {
 }
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-sonarqube {
-    androidVariant 'fullDebug'
-    properties {
-        property "sonar.java.coveragePlugin", "jacoco"
-    }
 }

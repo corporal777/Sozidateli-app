@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.net.NetworkInfo
-import com.example.R
+import com.example.app.R
 import com.example.data.AppData
 import com.example.data.UserEventData
 import com.example.data.database.Db

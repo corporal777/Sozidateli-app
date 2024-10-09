@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentInviteRegisterBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentInviteRegisterBinding
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.auth.login.LoginFragmentArgs
 import com.example.ui.base.BaseFragment

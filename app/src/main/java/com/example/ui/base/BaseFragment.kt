@@ -16,7 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
 import com.example.ui.main.MainActivity
 import com.example.ui.state.UserState

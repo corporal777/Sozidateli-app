@@ -1,32 +1,34 @@
 package com.example.holders
 
 import android.widget.TextView
+import androidx.databinding.ViewDataBinding
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
+import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
-abstract class ExpandableTitleItem(
+abstract class ExpandableTitleItem<T : ViewDataBinding>(
         private val title: String
-) : Item(title.hashCode().toLong()), ExpandableItem {
+) : BindableItem<T>(title.hashCode().toLong()), ExpandableItem {
 
     var isExpanded: Boolean = false
     private lateinit var onToggleListener: ExpandableGroup
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        viewHolder.apply {
-            getTitleTextView(viewHolder).text = title
+    override fun bind(viewBinding: T, position: Int) {
+        viewBinding.apply {
+            getTitleTextView(viewBinding).text = title
             setExpanded(this)
-            itemView.setOnClickListener { onToggleListener.onToggleExpanded() }
+            root.setOnClickListener { onToggleListener.onToggleExpanded() }
         }
     }
 
-    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) super.bind(holder, position, payloads)
-        else holder.apply {
-            (payloads[0] as? Boolean)?.let {
+    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>?) {
+        if (payloads?.isEmpty() == true) super.bind(viewBinding, position, payloads)
+        else viewBinding.apply {
+            (payloads?.get(0) as? Boolean)?.let {
                 isExpanded = it
-                setExpanded(holder, true)
+                setExpanded(viewBinding, true)
             }
         }
     }
@@ -37,8 +39,8 @@ abstract class ExpandableTitleItem(
         registerGroupDataObserver(onToggleListener)
     }
 
-    abstract fun setExpanded(viewHolder:GroupieViewHolder, isUpdate: Boolean = false)
-    abstract fun getTitleTextView(viewHolder:GroupieViewHolder): TextView
+    abstract fun setExpanded(binding: T, isUpdate: Boolean = false)
+    abstract fun getTitleTextView(binding: T): TextView
 
     companion object {
         private const val EXPAND_CHANGE_ANIMATION_DURATION = 200

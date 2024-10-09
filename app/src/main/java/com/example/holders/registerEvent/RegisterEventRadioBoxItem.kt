@@ -7,9 +7,9 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventRadioBinding
+import com.example.app.databinding.ItemRegisterEventRadioBinding
 
 open class RegisterEventRadioBoxItem(
     private val fieldData: EventRegisterFieldData<String>,

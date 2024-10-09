@@ -10,11 +10,11 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.FragmentMyScheduleEventsBinding
+import com.example.app.databinding.FragmentMyScheduleEventsBinding
 import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem

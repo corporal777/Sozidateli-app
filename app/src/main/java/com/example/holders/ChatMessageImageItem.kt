@@ -4,28 +4,27 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
-import com.example.R
+import androidx.databinding.ViewDataBinding
+import com.example.app.R
 import com.example.data.models.ChatMessage
+import com.example.app.databinding.ItemChatMessageImageBinding
 import com.example.extensions.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_chat_message_image.*
-import kotlinx.android.synthetic.main.item_chat_message_image.guidelineEnd
-import kotlinx.android.synthetic.main.item_chat_message_image.guidelineStart
-import kotlinx.android.synthetic.main.item_chat_message_image.tvMessageDate
+
 
 class ChatMessageImageItem(
         message: ChatMessage.Personal,
         private val onImageClick: (url: String, imageView: ImageView) -> Unit
-) : ChatMessageItem(message) {
+) : ChatMessageItem<ItemChatMessageImageBinding>(message) {
 
     private val imageUrl = message.message.message
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        super.bind(viewHolder, position)
-        viewHolder.apply {
+    override fun bind(viewBinding: ItemChatMessageImageBinding, position: Int) {
+        super.bind(viewBinding, position)
+        viewBinding.apply {
             pbImageLoading.visibility = View.VISIBLE
             ivChatImage.apply {
                 transitionName = message.message._id
@@ -52,9 +51,9 @@ class ChatMessageImageItem(
         }
     }
 
-    override fun getGuidLineStart(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineStart
-    override fun getGuidLineEnd(viewHolder:GroupieViewHolder): Guideline = viewHolder.guidelineEnd
-    override fun getMessageContainer(viewHolder:GroupieViewHolder): View = viewHolder.imageContainer
-    override fun getDateView(viewHolder: GroupieViewHolder): TextView = viewHolder.tvMessageDate
+    override fun getGuidLineStart(binding: ItemChatMessageImageBinding): Guideline = binding.guidelineStart
+    override fun getGuidLineEnd(binding: ItemChatMessageImageBinding): Guideline = binding.guidelineEnd
+    override fun getMessageContainer(binding: ItemChatMessageImageBinding): View = binding.imageContainer
+    override fun getDateView(binding: ItemChatMessageImageBinding): TextView = binding.tvMessageDate
     override fun getLayout() = R.layout.item_chat_message_image
 }

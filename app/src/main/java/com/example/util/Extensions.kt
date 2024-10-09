@@ -52,8 +52,8 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.Transformation
-import com.example.BuildConfig
-import com.example.R
+import com.example.app.BuildConfig
+import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter

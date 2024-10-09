@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SnAuth
 import com.example.data.models.SnUser
-import com.example.databinding.FragmentRegistrationUserBinding
-import com.example.databinding.FragmentSnAuthBinding
+import com.example.app.databinding.FragmentRegistrationUserBinding
+import com.example.app.databinding.FragmentSnAuthBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
 import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs

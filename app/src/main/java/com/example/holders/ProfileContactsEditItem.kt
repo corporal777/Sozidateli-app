@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.*
-import com.example.databinding.ItemProfileDataEditContactsBinding
-import com.example.databinding.ItemProfileEmailBinding
-import com.example.databinding.ItemProfileSocialNetworkBinding
+import com.example.app.databinding.ItemProfileDataEditContactsBinding
+import com.example.app.databinding.ItemProfileEmailBinding
+import com.example.app.databinding.ItemProfileSocialNetworkBinding
 import com.example.extensions.phoneToServer
 import com.example.util.*
 import com.example.util.Utils.isPhoneNumberValid

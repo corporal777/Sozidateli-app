@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import com.example.App
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SearchRegion
-import com.example.databinding.BottomSheetEventFormatBinding
+import com.example.app.databinding.BottomSheetEventFormatBinding
 import com.example.extensions.updateItem
 import com.example.ui.views.suggestFieldView.region.SearchEmptyItem
 import com.example.ui.views.suggestFieldView.region.SearchItem

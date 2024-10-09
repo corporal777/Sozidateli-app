@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isInvisible
-import com.example.R
+import com.example.app.R
 import com.example.util.setTint
 
 class ToolbarContent(

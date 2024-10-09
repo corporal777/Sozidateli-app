@@ -20,10 +20,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import com.example.BuildConfig
-import com.example.R
+import com.example.app.BuildConfig
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentProfileBinding
+import com.example.app.databinding.FragmentProfileBinding
 import com.example.extensions.firstLetterToUppercase
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

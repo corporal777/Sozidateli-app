@@ -2,10 +2,10 @@ package com.example.ui.event.formResult.items
 
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FileModel
 import com.example.data.models.PrefilledFieldFiles
-import com.example.databinding.ItemEventFormResultProfileBinding
+import com.example.app.databinding.ItemEventFormResultProfileBinding
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.util.showCustomTabsBrowser
 import com.example.util.showFileBrowser

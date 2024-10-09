@@ -3,8 +3,8 @@ package com.example.ui.subevent.items
 import android.content.Context
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemSubEventSpeakerBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSubEventSpeakerBinding
 import com.example.extensions.markWon
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.MarkdownEmphasisPlugin

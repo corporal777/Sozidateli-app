@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentChangeShortNameBinding
+import com.example.app.databinding.FragmentChangeShortNameBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.views.CustomSpannableString

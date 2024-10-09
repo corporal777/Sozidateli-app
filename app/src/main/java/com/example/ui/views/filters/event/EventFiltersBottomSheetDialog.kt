@@ -7,7 +7,7 @@ import com.example.App
 import com.example.data.models.InterestNew
 import com.example.data.models.NewEventFormat
 import com.example.data.models.SearchFilter
-import com.example.databinding.BottomSheetEventFiltersBinding
+import com.example.app.databinding.BottomSheetEventFiltersBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate

@@ -1,7 +1,7 @@
 package com.example.ui.notification.items
 
-import com.example.R
-import com.example.databinding.ItemNotificationsDateBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNotificationsDateBinding
 import com.example.extensions.dateFormatterFullMothFullYear
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormat

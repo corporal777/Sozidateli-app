@@ -2,8 +2,8 @@ package com.example.ui.event.activities.items
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemSearchActivityBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSearchActivityBinding
 import com.example.util.SearchInput
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.onTextChanged

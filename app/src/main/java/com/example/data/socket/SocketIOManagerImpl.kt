@@ -1,7 +1,7 @@
 package com.example.data.socket
 
 import android.util.Log
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.*
 import com.google.gson.Gson

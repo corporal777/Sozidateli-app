@@ -1,9 +1,9 @@
 package com.example.holders
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EducationModel
-import com.example.databinding.ItemProfileDataEducationBinding
+import com.example.app.databinding.ItemProfileDataEducationBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS

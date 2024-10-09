@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
-import com.example.R
+import com.example.app.R
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class CtpDialog(val context: Context) {

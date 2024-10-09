@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventCheckboxBinding
-import com.example.databinding.ItemRegisterEventRadioBinding
+import com.example.app.databinding.ItemRegisterEventCheckboxBinding
+import com.example.app.databinding.ItemRegisterEventRadioBinding
 
 open class RegisterEventCheckboxItem(
     private val fieldData: EventRegisterFieldData<Set<String>>,

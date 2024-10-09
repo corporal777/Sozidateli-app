@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserProfileContactsBinding
+import com.example.app.databinding.FragmentUserProfileContactsBinding
 import com.example.extensions.parsePhone
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

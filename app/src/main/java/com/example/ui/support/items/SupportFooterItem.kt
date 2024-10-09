@@ -2,8 +2,8 @@ package com.example.ui.support.items
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.example.R
-import com.example.databinding.ItemSupportCenterFooterBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSupportCenterFooterBinding
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.xwray.groupie.databinding.BindableItem

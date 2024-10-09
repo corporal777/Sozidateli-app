@@ -3,7 +3,7 @@ package com.example.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.R
+import com.example.app.R
 
 class CustomSwipeRefreshLayout : SwipeRefreshLayout {
 

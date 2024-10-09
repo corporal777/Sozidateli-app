@@ -22,7 +22,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.example.R
+import com.example.app.R
 import com.example.data.models.NewUserAddress
 import com.example.extensions.checkIsEllipsized
 import com.example.ui.views.CustomSpannableString

@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.databinding.FragmentUserProfileInterestsBinding
+import com.example.app.databinding.FragmentUserProfileInterestsBinding
 import com.example.extensions.updateItem
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem

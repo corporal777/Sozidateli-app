@@ -4,7 +4,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.UserDetail
 import com.example.extensions.findItemByShort

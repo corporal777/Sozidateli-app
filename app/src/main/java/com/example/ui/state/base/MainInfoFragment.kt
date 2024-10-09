@@ -8,11 +8,11 @@ import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentMainInfoBinding
+import com.example.app.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemByShort
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem

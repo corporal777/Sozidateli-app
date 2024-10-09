@@ -2,8 +2,8 @@ package com.example.ui.gallery.items
 
 import android.net.Uri
 import android.widget.ImageView
-import com.example.R
-import com.example.databinding.ItemGalleryBinding
+import com.example.app.R
+import com.example.app.databinding.ItemGalleryBinding
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 

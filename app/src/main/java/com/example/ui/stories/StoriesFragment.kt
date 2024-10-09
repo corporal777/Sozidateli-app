@@ -9,8 +9,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.example.R
-import com.example.databinding.FragmentStoriesBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentStoriesBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.ui.base.BaseFragment
@@ -19,7 +19,6 @@ import com.example.ui.main.MainActivity
 import com.example.ui.views.stories.StoriesProgressView
 import com.example.util.getColor
 import com.example.util.getDrawable
-import kotlinx.android.synthetic.main.activity_image_view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

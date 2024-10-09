@@ -5,9 +5,9 @@ import android.graphics.Color
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.OrganizationNew
-import com.example.databinding.ItemOrganizationBinding
+import com.example.app.databinding.ItemOrganizationBinding
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem

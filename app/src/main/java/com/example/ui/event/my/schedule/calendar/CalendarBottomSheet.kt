@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isInvisible
 import com.example.App
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.BottomSheetCalendarBinding
+import com.example.app.databinding.BottomSheetCalendarBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.pagercalendar.calendar.CalendarDay

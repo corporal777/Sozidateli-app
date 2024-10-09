@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import android.net.Uri
 import android.util.Log
 import call
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.Notification
@@ -28,6 +28,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -144,17 +145,13 @@ class MainPresenter
                 onError = {
                     it.printStackTrace()
                     isAuthRequired = true
-                    viewState.apply {
-                        hideSplashScreen()
-                        hideAllLoadingDialogs()
-                        showRecommendations()
-                    }
+                    hideLoadings()
+                    viewState.showRecommendations()
                 },
                 onComplete = {
                     getAdditionalDataAndInAppList()
+                    hideLoadings()
                     viewState.apply {
-                        hideSplashScreen()
-                        hideAllLoadingDialogs()
                         showRecommendations()
                         checkIntent()
                     }
@@ -168,14 +165,12 @@ class MainPresenter
             .subscribe({
                 val connected = it == SocketConnectionState.CONNECTED
                 chatHelper.isConnectingToSocket = connected
-                if (connected) {
-                    if (chatCompositeDisposable.size() == 1) {
-                        subscribeChatNewMessage()
-                        subscribeToNotifications()
-                        subscribeChatUnreadCount()
-                        subscribeChatRequestsCount()
-                        updateEmitValues()
-                    }
+                if (connected && chatCompositeDisposable.size() == 1) {
+                    subscribeChatNewMessage()
+                    subscribeToNotifications()
+                    subscribeChatUnreadCount()
+                    subscribeChatRequestsCount()
+                    updateEmitValues()
                 }
             }, {
                 it.printStackTrace()
@@ -516,6 +511,13 @@ class MainPresenter
             .appendQueryParameter("access_token", appData.token)
             .build()
         viewState.showBrowser(uri.toString())
+    }
+
+    private fun hideLoadings() {
+        viewState.apply {
+            hideSplashScreen()
+            hideAllLoadingDialogs()
+        }
     }
 
     fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))

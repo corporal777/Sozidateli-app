@@ -8,12 +8,12 @@ import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentChatSearchBinding
-import com.example.databinding.LayoutFilterUserBinding
+import com.example.app.databinding.FragmentChatSearchBinding
+import com.example.app.databinding.LayoutFilterUserBinding
 import com.example.extensions.updateItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem

@@ -3,10 +3,10 @@ package com.example.holders
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
-import com.example.databinding.ItemChatBinding
+import com.example.app.databinding.ItemChatBinding
 import com.example.extensions.*
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.setCircleAvatar

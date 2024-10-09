@@ -8,12 +8,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
+import com.example.app.databinding.ActivityImageViewBinding
 import com.example.ui.base.MvpAppCompatActivity
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_image_view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -46,6 +46,7 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
         }
     }
 
+    private val mBinding = ActivityImageViewBinding.inflate(layoutInflater)
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -58,41 +59,41 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
             presenter.customTransitionName = transitionName
         }
 
-        setContentView(R.layout.activity_image_view)
-        setSupportActionBar(toolbar)
+        setContentView(mBinding.root)
+        setSupportActionBar(mBinding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
 
-        flingLayout.apply {
+        mBinding.flingLayout.apply {
             positionChangeListener = { _, _, dragRangeRate ->
-                flingLayout.setBackgroundColor(Color.argb((255 * (1.0F - dragRangeRate)).roundToInt(), 0, 0, 0))
+                mBinding.flingLayout.setBackgroundColor(Color.argb((255 * (1.0F - dragRangeRate)).roundToInt(), 0, 0, 0))
             }
             dismissListener = { onBackPressed() }
         }
 
-        photoView.apply {
-            setOnMatrixChangeListener { flingLayout.isDragEnabled = scale <= 1 }
+        mBinding.photoView.apply {
+            setOnMatrixChangeListener { mBinding.flingLayout.isDragEnabled = scale <= 1 }
         }
     }
 
     override fun setCustomTransitionName(transitionName: String) {
-        photoView.transitionName = transitionName
+        mBinding.photoView.transitionName = transitionName
     }
 
     override fun setDefaultTransitionName() {
-        photoView.transitionName = getString(R.string.image_transition_name)
+        mBinding.photoView.transitionName = getString(R.string.image_transition_name)
     }
 
     override fun setImage(bitmap: Bitmap) {
-        photoView.setImageBitmap(bitmap)
+        mBinding.photoView.setImageBitmap(bitmap)
         startPostponedEnterTransition()
     }
 
     override fun showError() {
         Toast.makeText(this, R.string.image_load_error, Toast.LENGTH_LONG).show()
-        photoView.apply {
+        mBinding.photoView.apply {
             setImageResource(R.drawable.ic_broken_image)
             setBackgroundColor(ContextCompat.getColor(context, R.color.image_view_error_background))
         }

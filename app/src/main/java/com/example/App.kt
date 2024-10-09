@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.example.app.BuildConfig
+import com.example.app.R
 import com.example.di.AppComponent
 import com.example.di.DaggerAppComponent
 import dagger.android.AndroidInjector
@@ -31,7 +33,6 @@ class App : Application(), HasAndroidInjector {
 
     override fun onCreate() {
         super.onCreate()
-
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
         appComponent = DaggerAppComponent.builder()

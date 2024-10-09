@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
-import com.example.databinding.ItemEventDetailMainBinding
+import com.example.app.databinding.ItemEventDetailMainBinding
 import com.example.extensions.*
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet

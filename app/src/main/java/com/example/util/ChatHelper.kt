@@ -7,7 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
-import com.example.R
+import com.example.app.R
 import com.example.data.models.MessageModel
 import javax.inject.Inject
 

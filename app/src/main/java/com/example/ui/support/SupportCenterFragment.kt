@@ -8,9 +8,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SupportData
-import com.example.databinding.FragmentSupportCenterBinding
+import com.example.app.databinding.FragmentSupportCenterBinding
 import com.example.holders.OnGroupExpandChange
 import com.example.holders.redesign.EventPageItem
 import com.example.interfaces.ToolbarFragment

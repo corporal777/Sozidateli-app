@@ -1,7 +1,7 @@
 package com.example.holders
 
-import com.example.R
-import com.example.databinding.ItemRatingBinding
+import com.example.app.R
+import com.example.app.databinding.ItemRatingBinding
 import com.xwray.groupie.databinding.BindableItem
 import kotlin.math.roundToInt
 

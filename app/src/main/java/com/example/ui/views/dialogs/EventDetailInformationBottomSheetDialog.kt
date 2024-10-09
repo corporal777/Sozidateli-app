@@ -12,10 +12,10 @@ import android.widget.Toast
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.createMapInfo
-import com.example.databinding.BottomSheetEventDetailInformationBinding
+import com.example.app.databinding.BottomSheetEventDetailInformationBinding
 import com.example.extensions.markWon
 import com.example.extensions.parsePhone
 import com.example.ui.event.location.map.MapFragment

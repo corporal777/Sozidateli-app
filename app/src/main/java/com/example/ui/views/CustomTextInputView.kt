@@ -11,8 +11,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCustomTextInputViewBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCustomTextInputViewBinding
 import com.example.extensions.dp
 import com.example.util.getColor
 import com.example.extensions.onFocusChanged

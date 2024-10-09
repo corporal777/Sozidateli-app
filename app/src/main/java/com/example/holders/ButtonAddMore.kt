@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.example.R
-import com.example.databinding.ItemProfileButtonEditBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileButtonEditBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.setOnClickListener
 

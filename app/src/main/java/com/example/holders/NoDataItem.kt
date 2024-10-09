@@ -1,8 +1,8 @@
 package com.example.holders
 
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemNoDataBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNoDataBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class NoDataItem(

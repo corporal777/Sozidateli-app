@@ -15,7 +15,7 @@ import android.renderscript.RenderScript
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.example.databinding.DialogBlurredEventAddedToFavoriteBinding
+import com.example.app.databinding.DialogBlurredEventAddedToFavoriteBinding
 
 
 class BlurredDialog (

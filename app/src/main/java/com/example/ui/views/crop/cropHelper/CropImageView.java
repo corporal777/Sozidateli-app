@@ -31,7 +31,7 @@ import android.view.animation.Interpolator;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-import com.example.R;
+import com.example.app.R;
 import com.example.ui.views.crop.cropHelper.animation.SimpleValueAnimator;
 import com.example.ui.views.crop.cropHelper.animation.SimpleValueAnimatorListener;
 import com.example.ui.views.crop.cropHelper.animation.ValueAnimatorV14;

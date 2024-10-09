@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.Space
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserSpeakerBinding
+import com.example.app.databinding.FragmentUserSpeakerBinding
 import com.example.extensions.dp
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem

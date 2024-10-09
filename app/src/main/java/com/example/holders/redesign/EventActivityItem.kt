@@ -10,10 +10,10 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
-import com.example.databinding.ItemLectureBinding
+import com.example.app.databinding.ItemLectureBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatTimeIntervalFromTo
 import com.example.extensions.markWon

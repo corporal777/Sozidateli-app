@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
-import com.example.R
-import com.example.databinding.FragmentSupportQuestionDetailBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentSupportQuestionDetailBinding
 import com.example.extensions.markWon
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

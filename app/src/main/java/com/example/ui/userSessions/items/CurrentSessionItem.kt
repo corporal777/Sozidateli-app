@@ -2,9 +2,9 @@ package com.example.ui.userSessions.items
 
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.ItemCurrentSessionBinding
+import com.example.app.databinding.ItemCurrentSessionBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class CurrentSessionItem(

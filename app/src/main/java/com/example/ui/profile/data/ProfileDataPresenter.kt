@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import com.example.BuildConfig
-import com.example.R
+import com.example.app.BuildConfig
+import com.example.app.R
 import com.example.data.AppData
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.ImageUtil

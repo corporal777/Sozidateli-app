@@ -12,7 +12,7 @@ import android.util.TypedValue
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 import com.example.util.getDrawable
 import com.example.util.setRightDrawableWithIntrinsicBounds

@@ -2,8 +2,8 @@ package com.example.ui.splash
 
 import android.os.Bundle
 import android.view.View
-import com.example.R
-import com.example.databinding.FragmentSplashBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentSplashBinding
 import com.example.ui.base.BaseFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

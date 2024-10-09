@@ -16,7 +16,7 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.core.content.res.ResourcesCompat
-import com.example.R
+import com.example.app.R
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 
 private const val textPaintAlphaAnimDuration = 25L

@@ -5,7 +5,7 @@ import android.content.res.TypedArray
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
-import com.example.R
+import com.example.app.R
 
 internal object CodeConfirmationViewUtils {
 

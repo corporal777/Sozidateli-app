@@ -26,7 +26,7 @@
                 style="@style/Profile.Edit.InputEventRegister"
                 android:gravity="top"
                 android:inputType="phone"
-                tools:hint="@string/profile_phone_hint" />
+                app:phoneFormatHint="+79123456789" />
         </com.example.ui.views.CustomTextInputLayout>
 
         <View

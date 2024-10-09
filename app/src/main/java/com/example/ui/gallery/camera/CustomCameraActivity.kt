@@ -12,8 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import coil.load
-import com.example.R
-import com.example.databinding.ActivityCustomCameraBinding
+import com.example.app.R
+import com.example.app.databinding.ActivityCustomCameraBinding
 import com.example.ui.base.BaseCustomActivity
 import com.example.ui.gallery.cropImage.CropImageActivity
 import com.example.util.rxtakephoto.CropActivity

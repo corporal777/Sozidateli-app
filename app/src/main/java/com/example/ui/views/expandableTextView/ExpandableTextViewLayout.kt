@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCustomExpandableTextviewBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCustomExpandableTextviewBinding
 import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
 

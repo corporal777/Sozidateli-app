@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import com.example.App
-import com.example.R
+import com.example.app.R
 import com.example.data.models.NewEventFormat
-import com.example.databinding.BottomSheetEventFormatBinding
+import com.example.app.databinding.BottomSheetEventFormatBinding
 import com.example.util.SimpleTextWatcher
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

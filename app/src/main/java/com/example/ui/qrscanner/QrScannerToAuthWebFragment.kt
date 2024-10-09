@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.budiyev.android.codescanner.*
-import com.example.R
-import com.example.databinding.FragmentAuthWebBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentAuthWebBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.views.dialogs.DefaultAlertDialog

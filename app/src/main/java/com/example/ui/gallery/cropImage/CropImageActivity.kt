@@ -5,8 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
-import com.example.R
-import com.example.databinding.ActivityImageCropBinding
+import com.example.app.R
+import com.example.app.databinding.ActivityImageCropBinding
 import com.example.ui.base.BaseCustomActivity
 import com.example.util.rxtakephoto.CropCallbackHelper
 import io.reactivex.subjects.SingleSubject

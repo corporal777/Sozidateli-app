@@ -7,12 +7,12 @@ plugins {
 
 
 android {
+    namespace 'com.generator.qrcodegenerator'
+    compileSdk 34
     defaultConfig {
-        targetSdk 31
+        targetSdk 34
         minSdk 21
     }
-    compileSdk 31
-
     buildTypes {
         release {
             minifyEnabled false

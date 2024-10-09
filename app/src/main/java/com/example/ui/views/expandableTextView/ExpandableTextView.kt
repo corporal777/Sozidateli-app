@@ -12,7 +12,7 @@ import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.example.R
+import com.example.app.R
 import com.example.ui.views.CustomSpannableString
 import kotlin.math.abs
 

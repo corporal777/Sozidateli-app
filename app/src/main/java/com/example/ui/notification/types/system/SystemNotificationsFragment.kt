@@ -1,6 +1,6 @@
 package com.example.ui.notification.types.system
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
 import com.example.ui.notification.NotificationsSortedData
 import com.example.ui.notification.items.*

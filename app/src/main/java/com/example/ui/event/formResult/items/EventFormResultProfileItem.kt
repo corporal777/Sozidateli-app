@@ -3,8 +3,8 @@ package com.example.ui.event.formResult.items
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemEventFormResultProfileBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventFormResultProfileBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class EventFormResultProfileItem(

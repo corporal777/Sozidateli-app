@@ -6,9 +6,9 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SnUser
-import com.example.databinding.FragmentAuthorizationBinding
+import com.example.app.databinding.FragmentAuthorizationBinding
 import com.example.holders.StoriesItem
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.auth.snAuth.SnAuthFragmentArgs

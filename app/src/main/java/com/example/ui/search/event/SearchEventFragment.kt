@@ -6,12 +6,12 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.SearchFilter
-import com.example.databinding.LayoutFilterEventSearchBinding
+import com.example.app.databinding.LayoutFilterEventSearchBinding
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventItemNew
+import com.example.holders.redesign.EventListItem
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
@@ -40,7 +40,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
 
-    private val onEventClickListener = object : EventItemNew.OnEventClickListener {
+    private val onEventClickListener = object : EventListItem.OnEventClickListener {
         override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
             searchPresenter.onActionRegister(event, agreementUrl, formEnabled)
         override fun onActionCancel(event: String, registrationId: String?) =
@@ -81,7 +81,7 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
 
     override fun createItem(itemData: EventNew?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventItemNew(itemData, searchPresenter.isTemporaryUser(), onEventClickListener,)
+        else EventListItem(itemData, searchPresenter.isTemporaryUser(), onEventClickListener,)
     }
 
 

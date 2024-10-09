@@ -8,9 +8,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.ImageModel
-import com.example.databinding.BottomSheetGalleryBinding
+import com.example.app.databinding.BottomSheetGalleryBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItems
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment

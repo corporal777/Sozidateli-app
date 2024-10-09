@@ -8,11 +8,11 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
 import com.example.data.models.Tag
-import com.example.databinding.FragmentActivitysBinding
+import com.example.app.databinding.FragmentActivitysBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem

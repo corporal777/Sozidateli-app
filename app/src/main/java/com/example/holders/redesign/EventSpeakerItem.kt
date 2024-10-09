@@ -1,8 +1,8 @@
 package com.example.holders.redesign
 
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.ItemEventSpeakerBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventSpeakerBinding
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage
 import com.example.util.setImagePicasso

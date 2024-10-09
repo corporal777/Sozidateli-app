@@ -2,13 +2,12 @@ package com.example.ui.support.items
 
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.ItemSupportExpandableQuestionTitleBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSupportExpandableQuestionTitleBinding
 import com.example.holders.BindExpandableTitleItem
 import com.example.holders.ExpandableTitleItem
 import com.example.holders.redesign.EventPageItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_expandable_title.*
 
 class SupportQuestionExpandableTitleItem(
     title: String

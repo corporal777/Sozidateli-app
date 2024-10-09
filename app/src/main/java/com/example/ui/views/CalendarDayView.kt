@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventScheduleDay
-import com.example.databinding.ItemDayBinding
+import com.example.app.databinding.ItemDayBinding
 
 class CalendarDayView : LinearLayout {
 

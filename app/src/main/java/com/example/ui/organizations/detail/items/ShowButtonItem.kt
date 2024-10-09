@@ -1,7 +1,7 @@
 package com.example.ui.organizations.detail.items
 
-import com.example.R
-import com.example.databinding.ItemProfileButtonEditNewBinding
+import com.example.app.R
+import com.example.app.databinding.ItemProfileButtonEditNewBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class ShowButtonItem(val btnText: String, val clickListener: () -> Unit) :

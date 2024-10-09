@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.BottomSheetUpdateAppBinding
+import com.example.app.R
+import com.example.app.databinding.BottomSheetUpdateAppBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

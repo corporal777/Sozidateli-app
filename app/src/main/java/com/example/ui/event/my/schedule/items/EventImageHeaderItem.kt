@@ -2,8 +2,8 @@ package com.example.ui.event.my.schedule.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import com.example.R
-import com.example.databinding.ItemEventImageHeaderBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventImageHeaderBinding
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor

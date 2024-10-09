@@ -3,9 +3,9 @@ package com.example.ui.event.formResult.items
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventFile
-import com.example.databinding.ItemEventFormResultStringBinding
+import com.example.app.databinding.ItemEventFormResultStringBinding
 import com.example.ui.views.CustomSpannableString
 import com.example.util.showCustomTabsBrowser
 import com.example.util.showFileBrowser

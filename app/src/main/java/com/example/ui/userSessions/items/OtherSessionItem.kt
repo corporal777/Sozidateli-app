@@ -1,9 +1,9 @@
 package com.example.ui.userSessions.items
 
 import android.widget.ImageView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.ItemOtherSessionBinding
+import com.example.app.databinding.ItemOtherSessionBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.xwray.groupie.databinding.BindableItem

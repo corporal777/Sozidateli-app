@@ -8,9 +8,9 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.PartnerModel
-import com.example.databinding.FragmentPartnerBinding
+import com.example.app.databinding.FragmentPartnerBinding
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment

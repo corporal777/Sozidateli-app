@@ -13,9 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCircleLoadingButtonBinding
-import com.example.databinding.LayoutLoadingButtonBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCircleLoadingButtonBinding
+import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.util.getColor
 import com.example.util.getDrawable

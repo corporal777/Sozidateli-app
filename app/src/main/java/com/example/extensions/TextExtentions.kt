@@ -8,7 +8,7 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import androidx.core.text.toSpannable
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon

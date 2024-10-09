@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.databinding.FragmentRegisterSnBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentRegisterSnBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
 import com.example.ui.base.BaseFragment

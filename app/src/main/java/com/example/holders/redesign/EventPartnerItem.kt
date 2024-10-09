@@ -5,8 +5,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
 import androidx.core.text.getSpans
 import androidx.core.text.set
-import com.example.R
-import com.example.databinding.ItemPartnerBinding
+import com.example.app.R
+import com.example.app.databinding.ItemPartnerBinding
 import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
 import com.example.util.setImage

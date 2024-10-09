@@ -12,9 +12,9 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.LifecycleOwner
-import com.example.R
-import com.example.databinding.ItemCameraPreviewBinding
-import com.example.databinding.ItemSupportCameraPreviewBinding
+import com.example.app.R
+import com.example.app.databinding.ItemCameraPreviewBinding
+import com.example.app.databinding.ItemSupportCameraPreviewBinding
 import com.example.util.imageCaptureCallback
 import com.google.common.util.concurrent.ListenableFuture
 import com.xwray.groupie.databinding.BindableItem

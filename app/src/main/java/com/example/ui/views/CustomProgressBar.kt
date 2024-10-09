@@ -10,7 +10,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 
 class CustomProgressBar : View {

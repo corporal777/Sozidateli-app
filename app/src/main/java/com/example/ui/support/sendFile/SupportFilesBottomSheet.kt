@@ -4,9 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SupportFile
-import com.example.databinding.BottomSheetSupportFilesBinding
+import com.example.app.databinding.BottomSheetSupportFilesBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItems
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment

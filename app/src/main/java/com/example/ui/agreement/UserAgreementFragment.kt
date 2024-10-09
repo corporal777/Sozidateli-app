@@ -3,11 +3,10 @@ package com.example.ui.agreement
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.FragmentPageBinding
+import com.example.app.R
+import com.example.app.databinding.FragmentPageBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
-import kotlinx.android.synthetic.main.fragment_page.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -29,11 +28,11 @@ class UserAgreementFragment : BaseFragment<FragmentPageBinding>(), UserAgreement
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ivLogo.isVisible = false
+        mBinding.ivLogo.isVisible = false
     }
 
     override fun setContent(content: String) {
-        tvInfo.setText(content)
+        mBinding.tvInfo.setText(content)
     }
 
     override fun setTitle(title: String) {

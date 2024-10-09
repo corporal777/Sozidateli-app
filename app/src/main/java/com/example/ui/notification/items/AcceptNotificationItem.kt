@@ -11,9 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationAcceptBinding
+import com.example.app.databinding.ItemNotificationAcceptBinding
 import com.example.ui.views.CtpDialog
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.expandableTextView.CustomExpandableTextView

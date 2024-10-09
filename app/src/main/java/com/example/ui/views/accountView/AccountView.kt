@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.example.App
-import com.example.R
-import kotlinx.android.synthetic.main.image_with_badge.view.*
+import com.example.app.R
+import com.example.extensions.setCircleImage
+import com.example.ui.views.toolbar.ToolbarButton
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setCircleImage
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -44,7 +44,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     }
 
     private var view: View = LayoutInflater.from(context).inflate(R.layout.image_with_badge, this, true).apply {
-        ivImage.setImageResource(PLACEHOLDER)
+        findViewById<ToolbarButton>(R.id.ivImage).setImageResource(PLACEHOLDER)
     }
 
     init {
@@ -52,11 +52,11 @@ class AccountView : FrameLayout, AccountViewContract.View {
     }
 
     override fun showCounter(show: Boolean) {
-        view.tvBadge.visibility = if (show) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.tvBadge).visibility = if (show) View.VISIBLE else View.GONE
     }
 
     override fun setAvatar(url: String?) {
-        ivImage.setCircleImage(url, PLACEHOLDER)
+        view.findViewById<ToolbarButton>(R.id.ivImage).setCircleImage(url, PLACEHOLDER)
     }
 
     override fun onAttachedToWindow() {
@@ -74,7 +74,7 @@ class AccountView : FrameLayout, AccountViewContract.View {
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        ivImage.setOnClickListener(l)
+        view.findViewById<ToolbarButton>(R.id.ivImage).setOnClickListener(l)
     }
 
     companion object {

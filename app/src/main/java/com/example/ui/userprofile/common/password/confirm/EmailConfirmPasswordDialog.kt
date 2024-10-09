@@ -6,8 +6,8 @@ import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.BottomSheetEmailMessageSentBinding
+import com.example.app.R
+import com.example.app.databinding.BottomSheetEmailMessageSentBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.Observable

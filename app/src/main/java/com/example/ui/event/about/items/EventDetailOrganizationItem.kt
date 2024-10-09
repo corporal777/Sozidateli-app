@@ -2,9 +2,9 @@ package com.example.ui.event.about.items
 
 import android.graphics.Color
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.OrganizationNew
-import com.example.databinding.ItemEventDetailOrganizationBlockBinding
+import com.example.app.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem

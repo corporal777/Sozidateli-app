@@ -5,15 +5,14 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Tag
-import com.example.databinding.ItemTagsHorizontalListBinding
+import com.example.app.databinding.ItemTagsHorizontalListBinding
 import com.example.ui.views.TagChipNew
 import com.example.util.getDrawable
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
-import kotlinx.android.synthetic.main.item_tags_horizontal_list.*
 
 class TagsHorizontalListItem(
     private val tags: List<Tag>,

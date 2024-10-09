@@ -1,10 +1,10 @@
 package com.example.ui.event.formResult.items
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.databinding.ItemEventFormResultPassportBinding
-import com.example.databinding.ItemEventFormResultWorkBinding
+import com.example.app.databinding.ItemEventFormResultPassportBinding
+import com.example.app.databinding.ItemEventFormResultWorkBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS

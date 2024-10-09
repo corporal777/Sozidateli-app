@@ -6,7 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import com.example.databinding.DialogEventRegistrationRequestBinding
+import com.example.app.databinding.DialogEventRegistrationRequestBinding
 
 class EventRegistrationRequestDialog(
     val context: Context,

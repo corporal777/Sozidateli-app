@@ -1,7 +1,7 @@
 package com.example.ui.event.activities.items
 
-import com.example.R
-import com.example.databinding.ItemNoActivityBinding
+import com.example.app.R
+import com.example.app.databinding.ItemNoActivityBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class NoSubEventItem(

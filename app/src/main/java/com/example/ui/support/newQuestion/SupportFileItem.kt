@@ -3,10 +3,10 @@ package com.example.ui.support.newQuestion
 import android.content.Context
 import android.net.Uri
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.SupportFile
 import com.example.data.models.SupportFileType
-import com.example.databinding.ItemSupportFileBinding
+import com.example.app.databinding.ItemSupportFileBinding
 import com.example.holders.redesign.EventPageItem
 import com.example.util.FileUtils
 import com.example.util.UriUtils

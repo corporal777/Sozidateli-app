@@ -1,8 +1,8 @@
 package com.example.holders.redesign
 
 import androidx.databinding.Bindable
-import com.example.R
-import com.example.databinding.ItemShowSpeakersBinding
+import com.example.app.R
+import com.example.app.databinding.ItemShowSpeakersBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class ShowAllSpeakersItem(

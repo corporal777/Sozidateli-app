@@ -2,40 +2,40 @@ package com.example.holders
 
 import android.widget.TextView
 import androidx.core.view.isInvisible
-import com.example.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.item_profile_expandable_subtitle.*
+import com.example.app.R
+import com.example.app.databinding.ItemProfileExpandableSubtitleBinding
 
 class ProfileExpandableSubtitleItem(
         title: String
-) : ExpandableTitleItem(title) {
+) : ExpandableTitleItem<ItemProfileExpandableSubtitleBinding>(title) {
 
     var badgeCount = 0
 
-    override fun bind(viewHolder:GroupieViewHolder, position: Int) {
-        super.bind(viewHolder, position)
-        setBadge(viewHolder, badgeCount)
+    override fun bind(viewBinding: ItemProfileExpandableSubtitleBinding, position: Int) {
+        super.bind(viewBinding, position)
+        setBadge(viewBinding, badgeCount)
     }
 
-    override fun bind(holder:GroupieViewHolder, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload as? Int != null) {
-            setBadge(holder, payload)
-        } else {
-            super.bind(holder, position, payloads)
-        }
+    override fun bind(
+        viewBinding: ItemProfileExpandableSubtitleBinding,
+        position: Int,
+        payloads: MutableList<Any>?
+    ) {
+        val payload = payloads?.firstOrNull()
+        if (payload as? Int != null) setBadge(viewBinding, payload)
+        else super.bind(viewBinding, position, payloads)
     }
 
-    private fun setBadge(viewHolder:GroupieViewHolder, count: Int) {
+    private fun setBadge(viewBinding: ItemProfileExpandableSubtitleBinding, count: Int) {
         badgeCount = count
-        viewHolder.tvBadge.apply {
+        viewBinding.tvBadge.apply {
             isInvisible = count <= 0
             text = count.toString()
         }
     }
 
-    override fun setExpanded(viewHolder:GroupieViewHolder, isUpdate: Boolean) {
-        viewHolder.ivArrow.apply {
+    override fun setExpanded(binding: ItemProfileExpandableSubtitleBinding, isUpdate: Boolean) {
+        binding.ivArrow.apply {
             val toRotation = if (isExpanded) 0f else 180f
             if (isUpdate) {
                 animate().rotation(toRotation).duration = EXPAND_CHANGE_ANIMATION_DURATION.toLong()
@@ -45,7 +45,7 @@ class ProfileExpandableSubtitleItem(
         }
     }
 
-    override fun getTitleTextView(viewHolder:GroupieViewHolder): TextView = viewHolder.tvTitle
+    override fun getTitleTextView(binding: ItemProfileExpandableSubtitleBinding): TextView = binding.tvTitle
 
     override fun getLayout() = R.layout.item_profile_expandable_subtitle
 

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.databinding.FragmentBaseStateBinding
-import com.example.databinding.FragmentMaxStateBinding
+import com.example.app.databinding.FragmentBaseStateBinding
+import com.example.app.databinding.FragmentMaxStateBinding
 
 class UserStateAdapter(val onGetStateClick:(type: UserState) -> Unit): ListAdapter<StateItemModel, ViewHolder<*>>(UserStateDiffCallback()) {
 

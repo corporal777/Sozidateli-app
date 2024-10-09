@@ -1,9 +1,9 @@
 package com.example.ui.event.registration.items
 
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.databinding.ItemRegisterEventProfileWorkBinding
+import com.example.app.databinding.ItemRegisterEventProfileWorkBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS

@@ -1,8 +1,8 @@
 package com.example.ui.event.registration.items
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.PrefilledFieldAcademicDegreeModel
-import com.example.databinding.ItemRegisterEventProfileAcademicDegreeBinding
+import com.example.app.databinding.ItemRegisterEventProfileAcademicDegreeBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class REProfileAcademicItem(

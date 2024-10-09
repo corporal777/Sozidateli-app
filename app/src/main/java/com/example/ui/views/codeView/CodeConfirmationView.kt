@@ -13,7 +13,7 @@ import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.view.children
 import androidx.core.view.postDelayed
-import com.example.R
+import com.example.app.R
 
 class CodeConfirmationView : LinearLayout {
 

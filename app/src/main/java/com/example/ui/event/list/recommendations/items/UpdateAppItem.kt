@@ -3,8 +3,8 @@ package com.example.ui.event.list.recommendations.items
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.example.R
-import com.example.databinding.ItemUpdateAppBinding
+import com.example.app.R
+import com.example.app.databinding.ItemUpdateAppBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 

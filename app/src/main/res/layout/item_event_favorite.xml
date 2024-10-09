@@ -1,87 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/background_user_item">
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvImageName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/background_organization_logo"
-        android:gravity="center"
-        android:maxLines="3"
-        android:padding="4dp"
-        android:textColor="@android:color/white"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
-        app:layout_constraintEnd_toEndOf="@+id/ivLogo"
-        app:layout_constraintStart_toStartOf="@+id/ivLogo"
-        app:layout_constraintTop_toTopOf="@+id/ivLogo"
-        tools:ignore="ContentDescription"
-        tools:text="@tools:sample/full_names" />
-
-    <ImageView
-        android:id="@+id/ivLogo"
-        style="@style/UserItem.Avatar"
-        android:layout_width="106dp"
-        android:layout_height="106dp"
-        android:background="@drawable/background_organization_logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tvEventName"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:ellipsize="end"
-        android:lines="2"
-        android:maxLines="2"
-        android:textSize="17sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
-        app:layout_constraintTop_toTopOf="@+id/ivLogo"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="@tools:sample/full_names" />
+        android:background="@drawable/background_user_item">
 
-    <com.example.ui.views.UserSubscribeButton
-        android:id="@+id/userSubscribeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintStart_toEndOf="@+id/ivLogo"
-        app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvImageName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_organization_logo"
+            android:gravity="center"
+            android:maxLines="3"
+            android:padding="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+            app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+            app:layout_constraintStart_toStartOf="@+id/ivLogo"
+            app:layout_constraintTop_toTopOf="@+id/ivLogo"
+            tools:ignore="ContentDescription"
+            tools:text="@tools:sample/full_names" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSubevents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/background_corners_large"
-        android:backgroundTint="@color/favorites_events_subevents_background"
-        android:minHeight="36dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:text="@string/favorites_events_subevents"
-        android:textAllCaps="false"
-        android:textColor="@color/favorites_events_subevents_text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tvEventName"
-        app:layout_constraintTop_toBottomOf="@+id/userSubscribeButton" />
+        <ImageView
+            android:id="@+id/ivLogo"
+            style="@style/UserItem.Avatar"
+            android:layout_width="106dp"
+            android:layout_height="106dp"
+            android:background="@drawable/background_organization_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
 
-    <View
-        android:id="@+id/divider"
-        style="@style/ViewDivider.Horizontal"
-        android:layout_width="0dp"
-        android:layout_marginEnd="@dimen/margin_horizontal_default"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tvEventName" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvEventName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivLogo"
+            app:layout_constraintTop_toTopOf="@+id/ivLogo"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@tools:sample/full_names" />
+
+        <com.example.ui.views.UserSubscribeButton
+            android:id="@+id/userSubscribeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintStart_toEndOf="@+id/ivLogo"
+            app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSubevents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/background_corners_large"
+            android:backgroundTint="@color/favorites_events_subevents_background"
+            android:minHeight="36dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/favorites_events_subevents"
+            android:textAllCaps="false"
+            android:textColor="@color/favorites_events_subevents_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvEventName"
+            app:layout_constraintTop_toBottomOf="@+id/userSubscribeButton" />
+
+        <View
+            android:id="@+id/divider"
+            style="@style/ViewDivider.Horizontal"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvEventName" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

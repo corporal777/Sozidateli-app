@@ -41,8 +41,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
-import com.example.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.app.R
 import com.example.data.models.user.User
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.util.*
@@ -283,72 +283,27 @@ fun TextView.calculateTextLinesCount(text: String): Int {
     return (textWidth / width).roundToInt()
 }
 
-var TextView.maxLength: Int
-    get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
-    set(value) {
-        filters = arrayOf(InputFilter.LengthFilter(value))
-    }
+//var TextView.maxLength: Int
+//    get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
+//    set(value) {
+//        filters = arrayOf(InputFilter.LengthFilter(value))
+//    }
 
-fun TextView.setUserStatus(status: User.Status, toFormat: String? = null) {
-    val statusTextRes: Int
-    val statusTextColorRes: Int
-    val statusBackgroundStyleRes: Int
-    when (status) {
-        User.Status.LOW_PROTECTION -> {
-            statusTextRes = R.string.profile_status_low
-            statusTextColorRes = R.color.profile_status_low_text
-            statusBackgroundStyleRes = R.style.ViewBackgroundStatusLow
-        }
-
-        User.Status.MID_PROTECTION -> {
-            statusTextRes = R.string.profile_status_mid
-            statusTextColorRes = R.color.profile_status_mid_text
-            statusBackgroundStyleRes = R.style.ViewBackgroundStatusMid
-        }
-
-        User.Status.MAX_PROTECTION -> {
-            statusTextRes = R.string.profile_status_max
-            statusTextColorRes = R.color.profile_status_max_text
-            statusBackgroundStyleRes = R.style.ViewBackgroundStatusMax
-        }
-    }
-
-    val statusText = resources.getString(statusTextRes).toUpperCase(Locale.getDefault())
-    text = toFormat?.format(statusText) ?: statusText
-    setTextColor(ContextCompat.getColor(context, statusTextColorRes))
-    background = ResourcesCompat.getDrawable(
-        resources,
-        R.drawable.background_corners,
-        ContextThemeWrapper(context, statusBackgroundStyleRes).theme
-    )
+fun TextView.setMaxLength(max : Int){
+    filters = arrayOf(InputFilter.LengthFilter(max))
 }
 
-fun User.Status.getUserStatusText(context: Context): String {
-    return "${context.getString(R.string.status_your_status)} ${
-        context.getString(
-            when (this) {
-                User.Status.LOW_PROTECTION -> R.string.profile_status_low
-                User.Status.MID_PROTECTION -> R.string.profile_status_mid
-                User.Status.MAX_PROTECTION -> R.string.profile_status_max
-            }
-        )
-    }"
+fun TextView.setMinMaxLines(min : Int, max : Int){
+    minLines = min
+    maxLines = max
 }
+
 
 fun ImageView.setCircleImage(url: String?, placeholder: Int? = null) {
     Picasso.get().load(url.let { if (it.isNullOrBlank()) null else it })
         .transform(CropCircleTransformation())
         .apply { placeholder?.let { placeholder(it) } }
         .into(this)
-}
-
-fun ImageView.setCircleImage(bitmap: Bitmap?, placeholder: Int? = null) {
-    if (bitmap == null) setImageResource(placeholder ?: return)
-    else setImageBitmap(CropCircleTransformation().transform(bitmap))
-}
-
-fun SimpleDateFormat.parseTimestamp(source: String): Long {
-    return this.parse(source).time
 }
 
 fun Context.isConnectedToNetwork(): Boolean {

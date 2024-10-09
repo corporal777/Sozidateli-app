@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.example.BuildConfig
+import com.example.app.BuildConfig
 import com.example.util.rxtakephoto.rx_image_picker.ui.BaseSystemPickerFragment
 import com.example.util.rxtakephoto.rx_image_picker.ui.ICustomPickerConfiguration
 import io.reactivex.Observable

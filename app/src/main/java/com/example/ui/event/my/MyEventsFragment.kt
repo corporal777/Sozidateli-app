@@ -5,13 +5,13 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
-import com.example.databinding.FragmentMyEventsBinding
+import com.example.app.databinding.FragmentMyEventsBinding
 import com.example.extensions.*
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventItemNew
+import com.example.holders.redesign.EventListItem
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
@@ -100,7 +100,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         mBinding.swipeToRefresh.isRefreshing = false
         eventsSection.update(data.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(it, presenter.isTemporaryUser(), onEventClickListener)
+            else EventListItem(it, presenter.isTemporaryUser(), onEventClickListener)
         })
     }
 
@@ -137,7 +137,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
 
     override fun updateEvent(event: EventNew) {
         val id = event.id?.toLong()
-        eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
+        eventsSection.findItemBy<EventListItem> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun setShowScheduleEvents(canShow: Boolean) {

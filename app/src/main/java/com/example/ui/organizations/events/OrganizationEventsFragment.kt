@@ -3,14 +3,14 @@ package com.example.ui.organizations.events
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
-import com.example.databinding.LayoutListBinding
+import com.example.app.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventItemNew
+import com.example.holders.redesign.EventListItem
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.views.toolbar.ToolbarContent
@@ -63,7 +63,7 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
     override fun setData(events: List<EventNew?>) {
         dataGroup.update(events.map {
             if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-            else EventItemNew(it, presenter.isTemporaryUser(), onEventClickListener)
+            else EventListItem(it, presenter.isTemporaryUser(), onEventClickListener)
         })
 
         mBinding.swipeToRefresh.isRefreshing = false
@@ -71,7 +71,7 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
 
     override fun updateEvent(event: EventNew) {
         val id = event.id?.toLong()
-        dataGroup.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
+        dataGroup.findItemBy<EventListItem> { x -> x.id == id }?.notifyChanged(event)
     }
 
     override fun showEmptyListPlaceholder() {

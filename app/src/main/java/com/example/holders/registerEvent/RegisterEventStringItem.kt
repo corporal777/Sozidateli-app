@@ -1,16 +1,23 @@
 package com.example.holders.registerEvent
 
 import android.text.InputType
+import android.text.InputType.TYPE_CLASS_NUMBER
+import android.text.InputType.TYPE_CLASS_TEXT
+import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+import android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+import android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventInputBinding
+import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
+import com.example.extensions.setMaxLength
+import com.example.extensions.setMinMaxLines
 import com.example.util.getColorStateList
 
 class RegisterEventStringItem(
@@ -20,6 +27,7 @@ class RegisterEventStringItem(
 
     private var textWatcher: TextWatcher? = null
 
+    private var maxSymbolsLength = 100
 
     override fun bind(viewBinding: ItemRegisterEventInputBinding, position: Int) {
         super.bind(viewBinding, position)
@@ -27,40 +35,42 @@ class RegisterEventStringItem(
             textInputEditText.apply {
                 when (field.type) {
                     EventRegisterField.Type.STRING, EventRegisterField.Type.GROUP -> {
-                        inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                        minLines = 1
-                        maxLines = 1
+                        maxSymbolsLength = 200
+                        setMinMaxLines(1, 1)
+                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES
                     }
                     EventRegisterField.Type.TEXT_AREA -> {
-                        inputType =
-                            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                        minLines = 2
-                        maxLines = 8
+                        maxSymbolsLength = 500
+                        setMinMaxLines(2, 8)
+                        //inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES or TYPE_TEXT_FLAG_MULTI_LINE
+                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_MULTI_LINE
                     }
                     EventRegisterField.Type.NUMBER -> {
-                        inputType = InputType.TYPE_CLASS_NUMBER
-                        minLines = 1
-                        maxLines = 1
+                        maxSymbolsLength = 100
+                        setMinMaxLines(1, 1)
+                        inputType = TYPE_CLASS_NUMBER
                     }
-                    EventRegisterField.Type.EMAIL -> {
-                        inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                        minLines = 1
-                        maxLines = 1
-                    }
-                    EventRegisterField.Type.SITE -> {
-                        inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
-                        minLines = 1
-                        maxLines = 1
+
+                    EventRegisterField.Type.EMAIL, EventRegisterField.Type.SITE -> {
+                        maxSymbolsLength = 100
+                        setMinMaxLines(1, 1)
+                        inputType = TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                     }
                     else -> throw IllegalArgumentException("Wrong field type ${field.type} for RegisterEventStringItem")
                 }
 
+
+                setMaxLength(maxSymbolsLength)
+
                 setHint(field.description)
                 setText(fieldData.value)
+
                 textWatcher = onTextChanged {
                     fieldData.value = it?.toString()
                     onDataChange()
                     showError(false)
+
+                    setSymbolsLeftVisible(fieldData.value, textViewSymbolsLeft)
                 }
 
             }
@@ -69,14 +79,27 @@ class RegisterEventStringItem(
 
 
     override fun unbind(viewHolder: GroupieViewHolder<ItemRegisterEventInputBinding>) {
-        viewHolder.binding.apply {
-            textInputEditText.apply {
-                textWatcher?.let { removeTextChangedListener(it) }
-            }
+        viewHolder.binding.textInputEditText.apply {
+            textWatcher?.let { removeTextChangedListener(it) }
         }
         super.unbind(viewHolder)
     }
 
+    private fun setSymbolsLeftVisible(text : CharSequence?, textView: TextView) {
+        textView.apply {
+            isVisible = when (field.type) {
+                EventRegisterField.Type.STRING ->
+                    !text.isNullOrEmpty() && text.length > 149 && text.length < maxSymbolsLength
+                EventRegisterField.Type.TEXT_AREA ->
+                    !text.isNullOrEmpty() && text.length > 374 && text.length < maxSymbolsLength
+                EventRegisterField.Type.NUMBER ->
+                    !text.isNullOrEmpty() && text.length > 74 && text.length < maxSymbolsLength
+                else -> false
+            }
+        }
+        if (textView.isVisible && !text.isNullOrEmpty())
+            textView.text = "Осталось " + (maxSymbolsLength - text.length) + " символов"
+    }
 
     override fun getInputView(binding: ItemRegisterEventInputBinding): View = binding.textInputEditText
     override fun getErrorFrameView(binding: ItemRegisterEventInputBinding): View = binding.viewInputError

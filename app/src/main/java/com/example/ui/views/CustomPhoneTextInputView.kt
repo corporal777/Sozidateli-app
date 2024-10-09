@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.R
-import com.example.databinding.LayoutCustomPhoneTextInputViewBinding
+import com.example.app.R
+import com.example.app.databinding.LayoutCustomPhoneTextInputViewBinding
 import com.example.util.getDrawable
 
 class CustomPhoneTextInputView : LinearLayout {

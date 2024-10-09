@@ -7,8 +7,8 @@ import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
-import com.example.R
-import com.example.databinding.DialogAddPhoneEmailBinding
+import com.example.app.R
+import com.example.app.databinding.DialogAddPhoneEmailBinding
 import com.example.util.Utils
 
 class AddPhoneEmailDialog(val context: Context, val type: ContactsType) {

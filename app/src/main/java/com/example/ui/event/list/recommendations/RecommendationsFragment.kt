@@ -7,9 +7,9 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventNew
-import com.example.databinding.FragmentRecommendationsBinding
+import com.example.app.databinding.FragmentRecommendationsBinding
 import com.example.extensions.dp
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateGroup

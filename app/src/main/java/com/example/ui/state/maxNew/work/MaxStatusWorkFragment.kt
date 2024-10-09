@@ -1,6 +1,6 @@
 package com.example.ui.state.maxNew.work
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserDetail
 import com.example.extensions.updateGroup
 import com.example.ui.userprofile.edit.work.items.UserWorksGroup

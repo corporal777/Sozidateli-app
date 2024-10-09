@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.navArgs
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FileModel
-import com.example.databinding.FragmentPageBinding
+import com.example.app.databinding.FragmentPageBinding
 import com.example.extensions.markWon
 import com.example.extensions.setOnClickListener
 import com.example.holders.DocumentItem

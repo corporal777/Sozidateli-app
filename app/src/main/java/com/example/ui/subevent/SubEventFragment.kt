@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
-import com.example.databinding.FragmentSubeventBinding
+import com.example.app.databinding.FragmentSubeventBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem

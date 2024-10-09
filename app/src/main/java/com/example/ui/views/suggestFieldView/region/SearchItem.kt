@@ -1,7 +1,7 @@
 package com.example.ui.views.suggestFieldView.region
 
-import com.example.R
-import com.example.databinding.ItemFormatBinding
+import com.example.app.R
+import com.example.app.databinding.ItemFormatBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 

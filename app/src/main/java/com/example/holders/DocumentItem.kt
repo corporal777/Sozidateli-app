@@ -3,9 +3,9 @@ package com.example.holders
 import android.content.Context
 import android.webkit.MimeTypeMap
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.FileModel
-import com.example.databinding.ItemDocumentBinding
+import com.example.app.databinding.ItemDocumentBinding
 import com.example.extensions.formatToDefaultDate
 import com.xwray.groupie.databinding.BindableItem
 import java.text.DecimalFormat

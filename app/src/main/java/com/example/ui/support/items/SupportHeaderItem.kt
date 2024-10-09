@@ -12,8 +12,8 @@ import android.speech.SpeechRecognizer
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.app.ActivityCompat
-import com.example.R
-import com.example.databinding.ItemSupportCenterHeaderBinding
+import com.example.app.R
+import com.example.app.databinding.ItemSupportCenterHeaderBinding
 import com.example.util.VoiceInput
 import com.xwray.groupie.databinding.BindableItem
 import java.util.*

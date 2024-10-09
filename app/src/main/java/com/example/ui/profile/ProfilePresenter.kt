@@ -1,7 +1,7 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
-import com.example.R
+import com.example.app.R
 import com.example.data.AppData
 import com.example.data.bodies.FieldPhoneBody
 import com.example.data.models.FieldDetails

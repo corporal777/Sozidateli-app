@@ -7,7 +7,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
-import com.example.R
+import com.example.app.R
 import com.example.data.AppData
 import com.example.data.models.RemoteNotification
 import com.example.data.models.RemoteNotification.Companion.TYPE_INVITE

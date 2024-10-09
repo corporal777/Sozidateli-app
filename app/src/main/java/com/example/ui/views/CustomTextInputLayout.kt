@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getDrawableOrThrow
-import com.example.R
+import com.example.app.R
 import com.example.extensions.dp
 import com.example.util.getDrawable
 import com.google.android.material.textfield.TextInputLayout

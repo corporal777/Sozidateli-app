@@ -7,8 +7,8 @@ import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.example.R
-import com.example.databinding.DialogMessageWithGrayButtonBinding
+import com.example.app.R
+import com.example.app.databinding.DialogMessageWithGrayButtonBinding
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import com.example.extensions.removeUrlUnderline
 

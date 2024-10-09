@@ -7,9 +7,9 @@ import androidx.core.view.isInvisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.R
+import com.example.app.R
 import com.example.data.models.QrAuthResponse
-import com.example.databinding.FragmentAuthWebsiteBinding
+import com.example.app.databinding.FragmentAuthWebsiteBinding
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.base.BaseFragment

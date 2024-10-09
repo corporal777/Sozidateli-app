@@ -1,8 +1,8 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
-import com.example.R
-import com.example.databinding.ItemEventRegistrationFileBinding
+import com.example.app.R
+import com.example.app.databinding.ItemEventRegistrationFileBinding
 import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged

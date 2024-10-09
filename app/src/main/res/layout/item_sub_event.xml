@@ -1,117 +1,119 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidUnknownAttribute -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/margin_horizontal_default"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="@dimen/margin_horizontal_default"
-    android:background="@drawable/background_sub_event"
-    android:minHeight="@dimen/card_min_height">
-
-    <TextView
-        android:id="@+id/tvTime"
-        fontPath="fonts/Roboto-Bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_horizontal_default"
-        android:layout_marginEnd="8dp"
-        android:textSize="16sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@+id/btnAction"
-        app:layout_constraintEnd_toStartOf="@+id/btnAction"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnAction"
-        app:layout_constraintVertical_bias="0.6"
-        tools:ignore="MissingPrefix"
-        tools:text="9:00 - 10:00" />
-
-    <TextView
-        android:id="@+id/tvMskTime"
-        fontPath="fonts/Roboto-Bold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sub_event_time_msk"
-        android:textSize="12sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="@+id/tvTime"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvTime"
-        app:layout_constraintTop_toBottomOf="@+id/tvTime"
-        tools:ignore="MissingPrefix" />
-
-    <TextView
-        android:id="@+id/tvStatus"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_width="0dp"
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_horizontal_default"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/margin_horizontal_default"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:lines="3"
-        android:maxLines="3"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAction"
-        tools:ignore="MissingPrefix"
-        tools:text="@string/sub_event_register_users" />
+        android:background="@drawable/background_sub_event"
+        android:minHeight="@dimen/card_min_height">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/margin_horizontal_default"
-        android:paddingEnd="@dimen/margin_horizontal_default"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvStatus"
-        app:layout_constraintVertical_bias="1.0">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/tagGroup"
+        <TextView
+            android:id="@+id/tvTime"
+            fontPath="fonts/Roboto-Bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:chipSpacingHorizontal="8dp"
-            app:chipSpacingVertical="8dp" />
-    </HorizontalScrollView>
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/btnAction"
+            app:layout_constraintEnd_toStartOf="@+id/btnAction"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnAction"
+            app:layout_constraintVertical_bias="0.6"
+            tools:ignore="MissingPrefix"
+            tools:text="9:00 - 10:00" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAction"
-        fontPath="fonts/Roboto-Medium.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/background_add_to_schedule"
-        android:minHeight="42dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:text="@string/sub_event_add_to_schedule"
-        android:textAllCaps="false"
-        android:textColor="@color/text_color_add_to_schedule"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tvMskTime"
+            fontPath="fonts/Roboto-Bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sub_event_time_msk"
+            android:textSize="12sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="@+id/tvTime"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tvTime"
+            app:layout_constraintTop_toBottomOf="@+id/tvTime"
+            tools:ignore="MissingPrefix" />
 
-    <com.example.ui.views.UserSubscribeButton
-        android:id="@+id/btnSubscribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:minHeight="42dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:showText="false"
-        app:subscribeAction="favorite" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvStatus"
+            fontPath="fonts/Roboto-Medium.ttf"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="3"
+            android:maxLines="3"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAction"
+            tools:ignore="MissingPrefix"
+            tools:text="@string/sub_event_register_users" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/margin_horizontal_default"
+            android:paddingEnd="@dimen/margin_horizontal_default"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvStatus"
+            app:layout_constraintVertical_bias="1.0">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tagGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
+        </HorizontalScrollView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAction"
+            fontPath="fonts/Roboto-Medium.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/background_add_to_schedule"
+            android:minHeight="42dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/sub_event_add_to_schedule"
+            android:textAllCaps="false"
+            android:textColor="@color/text_color_add_to_schedule"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.example.ui.views.UserSubscribeButton
+            android:id="@+id/btnSubscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:minHeight="42dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:showText="false"
+            app:subscribeAction="favorite" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

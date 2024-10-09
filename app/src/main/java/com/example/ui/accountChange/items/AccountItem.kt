@@ -2,9 +2,9 @@ package com.example.ui.accountChange.items
 
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.UserSessionModel
-import com.example.databinding.ItemAccountChangeBinding
+import com.example.app.databinding.ItemAccountChangeBinding
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.databinding.BindableItem
 

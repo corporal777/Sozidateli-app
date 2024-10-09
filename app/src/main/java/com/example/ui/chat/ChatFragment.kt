@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
@@ -15,10 +16,10 @@ import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.transition.*
-import com.example.R
+import com.example.app.R
 import com.example.data.models.ChatMessage
 import com.example.data.models.Message
-import com.example.databinding.FragmentChatBinding
+import com.example.app.databinding.FragmentChatBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.*
@@ -33,8 +34,6 @@ import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import kotlinx.android.synthetic.main.layout_chat_action_confirmation.*
-import kotlinx.android.synthetic.main.layout_chat_action_text.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import moxy.presenter.ProvidePresenterTag
@@ -203,49 +202,49 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
 
     override fun showChatConfirm(userName: String?) {
         showActionView(R.layout.layout_chat_action_confirmation, true) {
-            tvNeedConfirm.text = userName
+            findViewById<TextView>(R.id.tvNeedConfirm).text = userName
                 ?.takeIf { it.isNotBlank() }
                 ?.let { getString(R.string.chat_need_confirm_user_name, it) }
                 ?: getString(R.string.chat_need_confirm)
 
-            btnConfirm.setOnClickListener { presenter.onAcceptChatClick() }
-            btnBlock.setOnClickListener { presenter.onBlockChatClick() }
+            findViewById<TextView>(R.id.btnConfirm).setOnClickListener { presenter.onAcceptChatClick() }
+            findViewById<TextView>(R.id.btnBlock).setOnClickListener { presenter.onBlockChatClick() }
         }
     }
 
     override fun showYouBanUser() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(
+            findViewById<TextView>(R.id.textActionContainer).setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.chat_action_baned_by_you_background
                 )
             )
-            tvActionText.text = getString(R.string.chat_banned_by_you)
+            findViewById<TextView>(R.id.tvActionText).text = getString(R.string.chat_banned_by_you)
         }
     }
 
     override fun showYouBanned() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(
+            findViewById<TextView>(R.id.textActionContainer).setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.chat_action_you_baned_background
                 )
             )
-            tvActionText.text = getString(R.string.chat_you_banned)
+            findViewById<TextView>(R.id.tvActionText).text = getString(R.string.chat_you_banned)
         }
     }
 
     override fun showWaitForInviteAccept() {
         showActionView(R.layout.layout_chat_action_text, true) {
-            textActionContainer.setBackgroundColor(
+            findViewById<TextView>(R.id.textActionContainer).setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.chat_action_wait_for_accept_background
                 )
             )
-            tvActionText.text = getString(R.string.chat_wait_accept)
+            findViewById<TextView>(R.id.tvActionText).text = getString(R.string.chat_wait_accept)
         }
     }
 

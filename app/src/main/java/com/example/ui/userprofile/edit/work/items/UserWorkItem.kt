@@ -2,9 +2,9 @@ package com.example.ui.userprofile.edit.work.items
 
 import android.view.View
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.databinding.ItemProfileDataEditWorkBinding
+import com.example.app.databinding.ItemProfileDataEditWorkBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameMonth

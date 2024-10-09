@@ -17,13 +17,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.example.BuildConfig
-import com.example.R
+import com.example.app.BuildConfig
+import com.example.app.R
 import com.example.data.models.InterestNew
 import com.example.data.models.OrganizationNew
 import com.example.data.models.ProfileUserData
 import com.example.data.models.UserDetail
-import com.example.databinding.FragmentUserBinding
+import com.example.app.databinding.FragmentUserBinding
 import com.example.extensions.*
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment

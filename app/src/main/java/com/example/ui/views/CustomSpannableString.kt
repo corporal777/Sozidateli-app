@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.R
+import com.example.app.R
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
@@ -44,22 +44,6 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
     fun setTextSizeSpan(size: Int, context: Context) {
         val textSize = context.resources.getDimensionPixelSize(size)
         setSpan(AbsoluteSizeSpan(textSize), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    }
-
-    fun setClickSpanInternal(onClick: () -> Unit){
-        val clickableSpan = object : android.text.style.ClickableSpan() {
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.color = ds.linkColor
-                ds.isUnderlineText = false
-            }
-            override fun onClick(widget: View) {
-                onClick.invoke()
-            }
-
-        }
-        if (length < 0) return
-        setSpan(clickableSpan, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun setClickSpan(textView: TextView, onClick: () -> Unit) {

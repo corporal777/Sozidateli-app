@@ -1,9 +1,9 @@
 package com.example.data.models
 
 import android.content.Context
+import android.os.Parcel
 import android.os.Parcelable
 import coil.transform.RoundedCornersTransformation
-import com.example.R
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter

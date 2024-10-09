@@ -4,11 +4,11 @@ import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.data.models.EducationLevel
 import com.example.data.models.ToggleIntModel
-import com.example.databinding.ItemUserEducationLevelBinding
+import com.example.app.databinding.ItemUserEducationLevelBinding
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.initSwitch
 import com.xwray.groupie.databinding.BindableItem

@@ -12,7 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
-import com.example.R
+import com.example.app.R
 
 internal class PausableProgressBar : FrameLayout {
 

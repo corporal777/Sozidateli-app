@@ -2,9 +2,10 @@ plugins {
     id 'com.android.library'
 }
 android {
-    compileSdk 31
+    namespace 'com.pagercalendar.calendar'
+    compileSdk 34
     defaultConfig {
-        targetSdk 31
+        targetSdk 34
         minSdk 21
     }
     buildTypes {

@@ -4,7 +4,7 @@ import com.example.data.models.EventNew
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventItemNew
+import com.example.holders.redesign.EventListItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
@@ -13,7 +13,7 @@ class RecommendationItemsGroup(
     val events: List<EventNew?>,
     val isTemp : Boolean,
     val isNeedUpdateApp: Boolean?,
-    val eventClickListener: EventItemNew.OnEventClickListener,
+    val eventClickListener: EventListItem.OnEventClickListener,
 ) : NestedGroup() {
 
     private val updateAppSection = Section()
@@ -34,7 +34,7 @@ class RecommendationItemsGroup(
         eventsSection.apply {
             update(events.map {
                 if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-                else EventItemNew(it, isTemp, eventClickListener)
+                else EventListItem(it, isTemp, eventClickListener)
             })
         }
     }
@@ -57,7 +57,7 @@ class RecommendationItemsGroup(
 
     fun updateButtonState(event: EventNew?) {
         val id = event?.id?.toLong()
-        eventsSection.findItemBy<EventItemNew> { x -> x.id == id }?.notifyChanged(event)
+        eventsSection.findItemBy<EventListItem> { x -> x.id == id }?.notifyChanged(event)
     }
 
 

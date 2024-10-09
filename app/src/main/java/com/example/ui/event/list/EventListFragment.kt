@@ -3,8 +3,8 @@ package com.example.ui.event.list
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
-import com.example.R
-import com.example.holders.redesign.EventItemNew
+import com.example.app.R
+import com.example.holders.redesign.EventListItem
 import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -16,7 +16,7 @@ abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBi
 
     abstract var presenter: P
 
-    protected val onEventClickListener = object : EventItemNew.OnEventClickListener {
+    protected val onEventClickListener = object : EventListItem.OnEventClickListener {
         override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
             presenter.onActionRegister(event, agreementUrl, formEnabled)
 

@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
-import com.example.databinding.ItemNotificationRateBinding
+import com.example.app.databinding.ItemNotificationRateBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class RateNotificationItem(

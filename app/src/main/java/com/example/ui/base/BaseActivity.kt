@@ -14,9 +14,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.R
-import com.example.databinding.ActivityMainBinding
-import com.example.databinding.LayoutBottomNavBadgeBinding
+import com.example.app.R
+import com.example.app.databinding.ActivityMainBinding
+import com.example.app.databinding.LayoutBottomNavBadgeBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.event.about.AboutEventFragment

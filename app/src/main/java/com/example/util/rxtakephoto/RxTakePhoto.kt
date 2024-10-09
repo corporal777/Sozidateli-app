@@ -47,11 +47,11 @@ class RxTakePhoto(
     }
 
     fun takeAllGalleryImages(): Observable<MutableList<Uri>> {
-        return rxPermissions.request(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-            else Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-        ).flatMapMaybe {
+        val readMedia = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            Manifest.permission.READ_MEDIA_IMAGES
+        else Manifest.permission.READ_EXTERNAL_STORAGE
+
+        return rxPermissions.request(readMedia, Manifest.permission.CAMERA).flatMapMaybe {
             if (it) Maybe.defer { ImageUtil.getGalleryImages(context) }
             else Maybe.error(PermissionNotGrantedException())
         }

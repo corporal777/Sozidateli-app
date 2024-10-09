@@ -20,12 +20,12 @@ import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
-import com.example.R
+import com.example.app.R
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
 import com.example.data.models.UserDetail
-import com.example.databinding.LayoutNoInternetBinding
+import com.example.app.databinding.LayoutNoInternetBinding
 import com.example.extensions.decodeBase64ToJson
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment

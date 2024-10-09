@@ -2,9 +2,9 @@ package com.example.holders.registerEvent
 
 import android.view.View
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventSelectorBinding
+import com.example.app.databinding.ItemRegisterEventSelectorBinding
 import com.example.extensions.initDropDownView
 
 open class RegisterEventDropdownItem(

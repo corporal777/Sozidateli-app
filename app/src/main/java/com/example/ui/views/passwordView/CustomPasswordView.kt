@@ -11,8 +11,8 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.example.R
-import com.example.databinding.ViewPasswordCustomBinding
+import com.example.app.R
+import com.example.app.databinding.ViewPasswordCustomBinding
 import com.example.extensions.getSymbols
 import com.example.util.getColor
 import com.example.extensions.onFocusChanged

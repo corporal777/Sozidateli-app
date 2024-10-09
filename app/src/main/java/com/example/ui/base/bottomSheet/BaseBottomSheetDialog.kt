@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import androidx.viewbinding.ViewBindings
-import com.example.databinding.BottomSheetEventDetailInformationBinding
+import com.example.app.databinding.BottomSheetEventDetailInformationBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

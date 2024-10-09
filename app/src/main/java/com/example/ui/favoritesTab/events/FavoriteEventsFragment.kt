@@ -3,10 +3,10 @@ package com.example.ui.favoritesTab.events
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
-import com.example.databinding.LayoutListBinding
+import com.example.app.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.EventFavoriteItem

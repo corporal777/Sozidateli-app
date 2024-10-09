@@ -2,9 +2,9 @@ package com.example.holders.registerEvent
 
 import android.view.View
 import android.widget.TextView
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventRegisterFieldData
-import com.example.databinding.ItemRegisterEventPhoneBinding
+import com.example.app.databinding.ItemRegisterEventPhoneBinding
 import com.example.util.AuthValidateUtil
 import com.example.util.getColorStateList
 
@@ -17,8 +17,8 @@ class RegisterEventPhoneItem (
     override fun bind(viewBinding: ItemRegisterEventPhoneBinding, position: Int) {
         super.bind(viewBinding, position)
         viewBinding.phoneInputEditText.apply {
-            setPhoneHint("+79123456789")
             setPhoneText(fieldData.value)
+
             onInputTextChanged {
                 fieldData.value = it?.toString()
                 onDataChange()

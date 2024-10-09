@@ -2,8 +2,8 @@ package com.example.ui.views.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
-import com.example.R
-import com.example.databinding.DialogChangeStateBinding
+import com.example.app.R
+import com.example.app.databinding.DialogChangeStateBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

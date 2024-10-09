@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.example.R
+import com.example.app.R
 
 class ConfirmPhoneDialog(
     val context: Context,

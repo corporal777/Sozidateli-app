@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
-import com.example.R
+import com.example.app.R
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
-import com.example.databinding.LayoutFilterBinding
-import com.example.databinding.LayoutListSearchBinding
+import com.example.app.databinding.LayoutFilterBinding
+import com.example.app.databinding.LayoutListSearchBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate

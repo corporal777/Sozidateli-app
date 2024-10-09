@@ -1,9 +1,9 @@
 package com.example.holders
 
-import com.example.R
+import com.example.app.R
 import com.example.data.models.EventActivityModel
-import com.example.databinding.ItemActionButtonBinding
-import com.example.databinding.ItemLectureBinding
+import com.example.app.databinding.ItemActionButtonBinding
+import com.example.app.databinding.ItemLectureBinding
 import com.xwray.groupie.databinding.BindableItem
 
 
