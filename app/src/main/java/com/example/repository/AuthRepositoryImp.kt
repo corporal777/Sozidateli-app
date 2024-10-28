@@ -156,14 +156,15 @@ class AuthRepositoryImp
         token: String?
     ): Completable {
         return if (userId == null || token.isNullOrEmpty()) Completable.error(NullPointerException())
-        else api.bindSocialAccountWithToken(
-            BindSocialAccountBody(
-                uuid,
-                userId,
-                socialType,
-                false
-            ),
-            "Token $token"
-        )
+        else {
+            val oldTempToken = appData.tempToken
+            appData.tempToken = null
+
+            api.bindSocialAccountWithToken(
+                BindSocialAccountBody(uuid, userId, socialType, false),
+                "Token $token"
+            ).doOnComplete { appData.tempToken = oldTempToken }
+                .doOnError { appData.tempToken = oldTempToken }
+        }
     }
 }

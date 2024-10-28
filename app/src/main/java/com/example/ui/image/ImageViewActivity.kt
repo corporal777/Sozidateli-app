@@ -9,7 +9,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.app.R
+import com.example.app.databinding.ActivityImageCropBinding
 import com.example.app.databinding.ActivityImageViewBinding
+import com.example.ui.base.BaseCustomActivity
 import com.example.ui.base.MvpAppCompatActivity
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -21,7 +23,10 @@ import javax.inject.Provider
 import kotlin.math.roundToInt
 
 
-class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
+class ImageViewActivity : BaseCustomActivity<ActivityImageViewBinding>(), ImageViewContract.View {
+
+    override fun getViewBinding() = ActivityImageViewBinding.inflate(layoutInflater)
+
 
     @InjectPresenter
     lateinit var presenter: ImageViewPresenter
@@ -46,12 +51,10 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
         }
     }
 
-    private val mBinding = ActivityImageViewBinding.inflate(layoutInflater)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        overridePendingTransition(0, 0)
-        postponeEnterTransition()
         intent.extras?.let { ImageViewActivityArgs.fromBundle(it) }?.apply {
             presenter.url = url
             presenter.resource = resource
@@ -59,7 +62,6 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
             presenter.customTransitionName = transitionName
         }
 
-        setContentView(mBinding.root)
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -101,19 +103,13 @@ class ImageViewActivity : MvpAppCompatActivity(), ImageViewContract.View {
     }
 
     override fun findImageBitmap(url: String) {
-        if (url.isBlank()) {
-            presenter.onBitmapFoundFailed(RuntimeException("url is empty"))
-        } else {
-            Picasso.get().load(Uri.parse(url)).into(dummyTarget)
-        }
+        if (url.isBlank()) presenter.onBitmapFoundFailed(RuntimeException("url is empty"))
+        else Picasso.get().load(Uri.parse(url)).into(dummyTarget)
     }
 
     override fun findImageBitmap(resource: Int) = Picasso.get().load(resource).into(dummyTarget)
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(0, 0)
-    }
+
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when {

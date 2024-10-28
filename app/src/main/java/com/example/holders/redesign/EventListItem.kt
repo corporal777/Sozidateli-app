@@ -14,10 +14,17 @@ import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
 import com.example.app.databinding.ItemEventNewBinding
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultDate
+import com.example.extensions.formatToDefaultDayMonthDate
+import com.example.extensions.formatToDefaultDayMonthYearDate
+import com.example.extensions.formatToDefaultTime
+import com.example.extensions.isSameDay
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
+import com.example.extensions.parseToDate
 
 class EventListItem(
     event: EventNew,
@@ -29,8 +36,7 @@ class EventListItem(
     private val eventId = eventData.id.toString()
     private val imageColor =
         ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
-    private val eventDate =
-        eventData.holdingDate?.from?.formatToDefaultDate() + " - " + eventData.holdingDate?.to?.formatToDefaultDate()
+    private val eventDate = getEventDate()
 
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
@@ -117,24 +123,27 @@ class EventListItem(
         val userAgreement = eventData.userAgreement?.uri
         val actions = registrationState?.availableActions ?: arrayListOf("")
 
-        if (isTemp) {
-            btnAction.apply {
-                isVisible = true
-                text = context.getString(R.string.event_action_participate)
-                setOnClickListener { clickListener.onShowNeedAuth(eventId) }
-            }
-        } else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
-            if (actions.contains("register")) {
+        if (isTemp) btnAction.apply {
+            isVisible = true
+            text = context.getString(R.string.event_action_participate)
+            setOnClickListener { clickListener.onShowNeedAuth(eventId) }
+        }
+        else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
+            if (actions.contains("register"))
                 btnAction.apply {
                     isVisible = true
                     text = context.getString(R.string.event_action_participate)
                     setOnClickListener {
                         registrationState.checkStateLevel {
-                            clickListener.onActionRegister(eventId, userAgreement, eventData.isFormEnabled())
+                            clickListener.onActionRegister(
+                                eventId,
+                                userAgreement,
+                                eventData.isFormEnabled()
+                            )
                         }
                     }
                 }
-            } else if (actions.contains("withdraw")) {
+            else if (actions.contains("withdraw"))
                 btnAction.apply {
                     isVisible = true
                     text = context.getString(R.string.event_action_cancel_request)
@@ -144,7 +153,7 @@ class EventListItem(
                         }
                     }
                 }
-            } else btnAction.isVisible = false
+            else btnAction.isVisible = false
         } else btnAction.isVisible = false
     }
 
@@ -177,6 +186,19 @@ class EventListItem(
             }
         }
 
+    }
+
+    private fun getEventDate(): String? {
+        val dateStart = eventData.holdingDate?.from ?: return null
+        val dateEnd = eventData.holdingDate?.to ?: return null
+
+        val startDate =
+            dateStart.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+        val finishDate =
+            dateEnd.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+
+        return if (startDate.isSameDay(finishDate)) dateStart.formatToDefaultDate()
+        else dateStart.formatToDefaultDate() + " - " + dateEnd.formatToDefaultDate()
     }
 
     interface OnEventClickListener {

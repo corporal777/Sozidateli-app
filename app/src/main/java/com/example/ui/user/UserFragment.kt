@@ -284,9 +284,9 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
             onExpandChange = onItemExpandChange
         ).apply {
             add(Section().apply {
-                add(UserProfileActionsItem(getString(R.string.complain_about_user_label)) {
-
-                })
+//                add(UserProfileActionsItem(getString(R.string.complain_about_user_label)) {
+//
+//                })
                 add(UserProfileActionsItem(action) {
                     if (action == UserSubscribeButton.Action.UNBLOCK) presenter.onUnblockClick()
                     else presenter.onBlockClick()
@@ -391,11 +391,13 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     }
 
     override fun showBlockConfirmation() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.user_ban_confirmation_title)
-            .setPositiveButton(R.string.ok) { _, _ -> presenter.onBlockConfirm() }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        DefaultAlertDialog(
+            context = requireContext(),
+            title = null,
+            message = getString(R.string.user_ban_confirmation_title),
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.cancel),
+        ).setSelectCallback { presenter.onBlockConfirm() }
     }
 
     override fun showUpdateError(message: String?) {

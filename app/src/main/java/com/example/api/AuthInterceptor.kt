@@ -12,7 +12,8 @@ class AuthInterceptor(private val appData: AppData) : Interceptor {
         val request = chain.request()
         val authenticatedRequest = request.newBuilder()
         val token = appData.token ?: appData.tempToken ?: ""
-        authenticatedRequest.header("Authorization", "Token $token")
+        if (token.isNotEmpty())
+            authenticatedRequest.header("Authorization", "Token $token")
         return chain.proceed(authenticatedRequest.build())
     }
 }

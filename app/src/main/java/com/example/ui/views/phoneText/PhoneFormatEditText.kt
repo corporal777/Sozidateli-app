@@ -25,7 +25,12 @@ class PhoneFormatEditText : TextInputEditText {
         a.recycle()
         setPhoneHint(hintText)
     }
-    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
+
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    )
 
     private var onInputFocusChanged: (hasFocus: Boolean) -> Unit = {}
     private var onInputTextChanged: (text: CharSequence?) -> Unit = {}
@@ -67,8 +72,7 @@ class PhoneFormatEditText : TextInputEditText {
         } else if (formattedText.length < mask.length || formattedText == mask) {
             formattedText = mask
             textSelection = mask.length
-        }
-        else if (formattedText.length > mask.length && formattedText.contains(mask)) {
+        } else if (formattedText.length > mask.length && formattedText.contains(mask)) {
             formattedText = formatPhoneText(formattedText)
             textSelection = formattedText.length
         } else {
@@ -96,7 +100,7 @@ class PhoneFormatEditText : TextInputEditText {
             val str = text.replace(" ", "")
                 .replace("(", "")
                 .replace(")", "")
-                .replace("-","")
+                .replace("-", "")
             if (str.length > 12) return str.substring(0, 12)
             else return str
         }
@@ -105,36 +109,35 @@ class PhoneFormatEditText : TextInputEditText {
     private fun formatPhoneText(text: String?): String {
         if (text.isNullOrBlank()) return ""
         else {
-//            if (text.length <= 5) {
-//                return StringBuilder(text).insert(2, " ").toString()
-//            } else if (text.length <= 8) {
-//                return StringBuilder(text).insert(2, " ").insert(6, " ").toString()
-//            } else if (text.length <= 10) {
-//                return StringBuilder(text)
-//                    .insert(2, " ")
-//                    .insert(6, " ")
-//                    .insert(10, " ").toString()
-//            } else return StringBuilder(text)
-//                .insert(2, " ")
-//                .insert(6, " ")
-//                .insert(10, " ")
-//                .insert(13, " ").toString()
-
-            return if (text.length <= 5) StringBuilder(text).insert(2, " (").toString()
-            else if (text.length in 5..8)
-                StringBuilder(text)
-                    .insert(2, " (")
-                    .insert(7, ") ").toString()
-            else if (text.length in 8..10)
-                StringBuilder(text)
-                    .insert(2, " (")
-                    .insert(7, ") ")
-                    .insert(12, "-").toString()
+            return if (text.length <= 5)
+                StringBuilder(text).insert(2, " ").toString()
+            else if (text.length <= 8)
+                StringBuilder(text).insert(2, " ").insert(6, " ").toString()
+            else if (text.length <= 10) StringBuilder(text)
+                .insert(2, " ")
+                .insert(6, " ")
+                .insert(10, " ").toString()
             else StringBuilder(text)
-                .insert(2, " (")
-                .insert(7, ") ")
-                .insert(12, "-")
-                .insert(15, "-").toString()
+                .insert(2, " ")
+                .insert(6, " ")
+                .insert(10, " ")
+                .insert(13, " ").toString()
+
+//            return if (text.length <= 5) StringBuilder(text).insert(2, " (").toString()
+//            else if (text.length in 5..8)
+//                StringBuilder(text)
+//                    .insert(2, " (")
+//                    .insert(7, ") ").toString()
+//            else if (text.length in 8..10)
+//                StringBuilder(text)
+//                    .insert(2, " (")
+//                    .insert(7, ") ")
+//                    .insert(12, "-").toString()
+//            else StringBuilder(text)
+//                .insert(2, " (")
+//                .insert(7, ") ")
+//                .insert(12, "-")
+//                .insert(15, "-").toString()
         }
     }
 

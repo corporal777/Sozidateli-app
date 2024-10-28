@@ -161,7 +161,6 @@ class UserPresenter
         }
     }
 
-    private fun isCurrentUser() = userId == appData.getId().toString()
 
     override fun onRefreshRequest() = loadUserData()
 }

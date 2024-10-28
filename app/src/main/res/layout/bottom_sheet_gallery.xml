@@ -62,12 +62,14 @@
                         android:textSize="18sp" />
 
                     <View
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:background="#C6C6C8" />
 
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_remove_photo"
                         fontPath="fonts/sf_pro_display.OTF"
                         android:layout_width="match_parent"

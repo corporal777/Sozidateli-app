@@ -189,18 +189,26 @@ class EventDetailImageItem(
     }
 
     private fun getEventDate(): String? {
+        val dateStart = eventData.holdingDate?.from ?: return null
+        val dateEnd = eventData.holdingDate?.to ?: return null
+
         if (eventData.isHasOneActivity()) {
-            val eventDateStart = eventData.holdingDate?.from ?: return null
-            val eventDateEnd = eventData.holdingDate?.to ?: return null
-            return eventDateStart.let {
-                it.formatToDefaultDayMonthDate() + ", " + it.formatToDefaultTime()
-            } + " - " + eventDateEnd.let { it.formatToDefaultDayMonthDate() + ", " + it.formatToDefaultTime() }
-        } else {
-            val eventDateStart = eventData.holdingDate?.from ?: return null
-            val eventDateEnd = eventData.holdingDate?.to ?: return null
-            return eventDateStart.formatToDefaultDayMonthYearDate() + " г." +
-                    " - " + eventDateEnd.formatToDefaultDayMonthYearDate() + " г."
-        }
+            val startDate =
+                dateStart.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+            val finishDate =
+                dateEnd.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+
+            if (startDate.isSameDay(finishDate)) {
+                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г."
+                val secondDate = dateStart.formatToDefaultTime() + " - " + dateEnd.formatToDefaultTime()
+                return "$firstDate, $secondDate"
+            } else {
+                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + dateStart.formatToDefaultTime()
+                val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + dateEnd.formatToDefaultTime()
+                return "$firstDate - $secondDate"
+            }
+        } else return dateStart.formatToDefaultDayMonthYearDate() + " г." +
+                " - " + dateEnd.formatToDefaultDayMonthYearDate() + " г."
     }
 
     private fun getEventRequestDate(): String? {
@@ -216,7 +224,6 @@ class EventDetailImageItem(
                     else -> "До начала приема заявок $day дней"
                 }
             } else {
-//                val limitDate = requestsApply.dateLimit.formatToDefaultDate()
                 val limitDate = requestsApply.dateLimit.formatToDefaultDayMonthYearDate() + " г."
                 val limitTime = requestsApply.dateLimit.formatToDefaultTime()
                 return "Заявки принимаются по $limitDate, $limitTime"

@@ -36,11 +36,9 @@ class UserProfileActionsItem(
 
     private fun decorTitle(textView: TextView, title: UserSubscribeButton.Action?) {
         textView.apply {
-            text = if (title == UserSubscribeButton.Action.UNBLOCK) {
-                context.getString(R.string.unblock_user)
-            } else {
-                context.getString(R.string.block_user)
-            }
+            text =
+                if (title == UserSubscribeButton.Action.UNBLOCK) context.getString(R.string.unblock_user)
+                else context.getString(R.string.block_user)
         }
     }
 
