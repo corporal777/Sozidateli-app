@@ -6,10 +6,11 @@ import com.example.util.initSwitch
 import com.xwray.groupie.databinding.BindableItem
 
 class ProfileDataNoExperienceItem(
+    private val noExperience : Boolean,
     private val noWorkListener: (hasWork: Boolean) -> Unit
 ) : BindableItem<ItemProfileDataEditNoWorkBinding>() {
 
-    private var hasWork: Boolean = true
+    private var hasWork: Boolean = noExperience
 
     private lateinit var mViewHolder: ItemProfileDataEditNoWorkBinding
     override fun bind(viewBinding: ItemProfileDataEditNoWorkBinding, position: Int) {

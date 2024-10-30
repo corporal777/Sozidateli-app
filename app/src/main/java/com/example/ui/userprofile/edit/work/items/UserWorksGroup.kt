@@ -27,7 +27,7 @@ class UserWorksGroup(
 
     private val worksSection = Section()
 
-    private val checkBoxNoWork = ProfileDataNoExperienceItem {
+    private val checkBoxNoWork = ProfileDataNoExperienceItem(isNoExperience) {
         if (it && isDataNotEmpty()) {
             DefaultAlertDialog(
                 context,
@@ -66,9 +66,9 @@ class UserWorksGroup(
         setNoExperience(isNoExperience)
 
         worksSection.apply {
-            if (work != null && !work.models.isNullOrEmpty()) {
+            if (work != null && !work.models.isNullOrEmpty())
                 update(work.models!!.map { createWorkItem(it) })
-            } else updateItem(createWorkItem(null))
+            else updateItem(createWorkItem(null))
             isDeleteVisible()
         }
 

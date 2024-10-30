@@ -75,7 +75,7 @@ class UserEducationLevelItem(
 
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 val level = availableEducations[position].name
-                if (!isTrigger(level)){
+                if (mHasAcademicDegree && !isTrigger(level)){
                     DefaultAlertDialog(
                         mBinding.root.context,
                         null,

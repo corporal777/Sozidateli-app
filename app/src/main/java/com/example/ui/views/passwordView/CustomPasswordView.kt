@@ -17,6 +17,7 @@ import com.example.extensions.getSymbols
 import com.example.util.getColor
 import com.example.extensions.onFocusChanged
 import com.example.extensions.onTextChanged
+import java.nio.charset.Charset
 
 class CustomPasswordView : FrameLayout {
 
@@ -100,12 +101,17 @@ class CustomPasswordView : FrameLayout {
 
     }
 
-
     private fun validatePassword(isRegister: Boolean, password: CharSequence?) {
         val isLengthValid = (password?.length ?: 0) >= MIN_LENGTH
         val isLettersValid = password?.matches(Regex(".*[A-Z].*")) == true
         val isNumbersValid = password?.matches(Regex(".*\\d.*")) == true
-        isUncaughtSymbolsUsed = password?.contains(Regex("[$symbols]")) == true
+
+        isUncaughtSymbolsUsed = if (password.isNullOrEmpty()) false
+        else if (password.contains(Regex("[$symbols]"))) true
+        else if (!Charset.forName("US-ASCII").newEncoder().canEncode(password)) true
+        else false
+
+
         binding.apply {
             tvErrorLength.changeTextColorError(isRegister, isLengthValid)
             tvErrorLetters.changeTextColorError(isRegister, isLettersValid)

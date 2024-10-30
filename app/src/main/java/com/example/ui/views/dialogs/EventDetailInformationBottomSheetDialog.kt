@@ -3,6 +3,8 @@ package com.example.ui.views.dialogs
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_SENDTO
+import android.content.Intent.EXTRA_EMAIL
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -94,6 +96,7 @@ class EventDetailInformationBottomSheetDialog(
                         if (index > 0) append("\n\n")
                         append(CustomSpannableString(it.value?.parsePhone(context)).apply {
                             setColorSpan(R.color.bottom_nav_item_selected_color, context)
+                            setClickSpan(tvEventPhoneText){ openSupportPhone(it.value) }
                         })
                         append("\n")
                         append(CustomSpannableString(it.title).apply {
@@ -103,6 +106,8 @@ class EventDetailInformationBottomSheetDialog(
 
                     }
                 }
+                highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                movementMethod = LinkMovementMethod.getInstance()
             }
 
             lnEventEmail.isVisible = !event.email.isNullOrEmpty()
@@ -112,6 +117,7 @@ class EventDetailInformationBottomSheetDialog(
                         if (index > 0) append("\n\n")
                         append(CustomSpannableString(it.value).apply {
                             setColorSpan(R.color.bottom_nav_item_selected_color, context)
+                            setClickSpan(tvEventEmailText){ openSupportEmail(it.value) }
                         })
                         append("\n")
                         append(CustomSpannableString(it.title).apply {
@@ -121,6 +127,8 @@ class EventDetailInformationBottomSheetDialog(
 
                     }
                 }
+                highlightColor = getColor(R.color.event_tabs_text_unchecked)
+                movementMethod = LinkMovementMethod.getInstance()
             }
 
             lnEventLinks.isVisible = !event.site.isNullOrEmpty() || !event.socialLink.isNullOrEmpty()
@@ -155,6 +163,28 @@ class EventDetailInformationBottomSheetDialog(
                 highlightColor = getColor(R.color.event_tabs_text_unchecked)
                 movementMethod = LinkMovementMethod.getInstance()
             }
+        }
+    }
+
+    private fun openSupportEmail(email : String?) {
+        if (email.isNullOrEmpty()) return
+        try {
+            val intent = Intent(ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
+            intent.putExtra(EXTRA_EMAIL, arrayOf(email))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun openSupportPhone(phone : String?) {
+        if (phone.isNullOrEmpty()) return
+        try {
+            val intent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null))
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

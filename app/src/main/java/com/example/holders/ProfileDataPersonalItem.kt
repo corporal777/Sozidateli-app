@@ -46,22 +46,24 @@ class ProfileDataPersonalItem(
 
     override fun bind(viewBinding: ItemProfileDataPersonalBinding, position: Int) {
         viewBinding.apply {
-            tvOrganization.movementMethod = LinkMovementMethod.getInstance()
-            val organizationStringBuilder = SpannableStringBuilder().apply {
-                organizations?.forEachIndexed { index, org ->
-                    if (index > 0) append("\n")
-                    append(CustomSpannableString(org.getOrganizationName()).apply {
-                        setClickSpan(tvOrganization) { onOrganizationClick(org) }
-                    })
+            groupOrganization.apply {
+                tvOrganization.movementMethod = LinkMovementMethod.getInstance()
+                val organizationStringBuilder = SpannableStringBuilder().apply {
+                    organizations?.forEachIndexed { index, org ->
+                        if (index > 0) append("\n")
+                        append(CustomSpannableString(org.getOrganizationName()).apply {
+                            setClickSpan(tvOrganization) { onOrganizationClick(org) }
+                        })
+                    }
                 }
+                setTextDataOrHide(tvOrganization, organizationStringBuilder, true)
             }
-            groupOrganization.setTextDataOrHide(tvOrganization, organizationStringBuilder, true)
 
-            if (email == null || email.isVisible == false) {
-                val public = publicEmail?.joinToString("\n") { it.value ?: "" }
-                groupEmail.setTextDataOrHide(tvEmail, public, true)
-            } else groupEmail.setTextDataOrHide(tvEmail, email.value, email.isVisible)
 
+            groupEmail.apply {
+                val public = publicEmail?.filter { x -> x.showInProfile }?.joinToString("\n") { it.value ?: "" }
+                setTextDataOrHide(tvEmail, public, true)
+            }
 
             tvAdditionalNumber.additionalNumber(userPhoneWorkAdditional)
             groupPhoneWork.apply {

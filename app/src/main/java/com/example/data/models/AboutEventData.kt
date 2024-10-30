@@ -39,7 +39,7 @@ data class AboutEventData(
     }
 
     private fun setSubEvents() {
-        val list = event.binds?.activity
+        val list = event.binds?.activity?.sortedBy { it.holdingDate?.from }
         if (!list.isNullOrEmpty()) {
             if (list.size > 4) this.subEvents = list.subList(0, 4)
             else this.subEvents = list

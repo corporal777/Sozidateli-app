@@ -162,7 +162,12 @@ fun getMonthName(calendar: Calendar?): String {
     }
 }
 
-fun getSymbols() = "\\@\\#\\$\\_\\&\\-\\+\\(\\)\\/\\*\\\"\\'\\:\\;\\!\\?\\,\\.\\~\\`\\|\\÷\\×\\^\\=\\{\\}\\%\\<\\>"
+fun getSymbols(): String {
+    return "\\@\\#\\$\\_\\&\\-\\+\\(\\)\\/\\*\\\"\\'\\:\\;\\!\\?\\,\\.\\~\\`\\|\\÷\\×\\^\\=\\{\\}\\%\\<\\>" +
+            "\\•\\√\\π\\§\\∆\\£\\¢\\€\\¥\\°\\©\\®\\™\\✓\\[\\]"
+}
+
+
 
 class SpecialCharacterInputFilter(pattern: String) : InputFilter {
     private val regex = pattern.toRegex()
