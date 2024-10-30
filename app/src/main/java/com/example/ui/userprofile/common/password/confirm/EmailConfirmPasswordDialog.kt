@@ -2,6 +2,10 @@ package com.example.ui.userprofile.common.password.confirm
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LabeledIntent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -96,11 +100,32 @@ class EmailConfirmPasswordDialog(
     }
 
     private fun showMessages(){
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_APP_EMAIL)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+        try {
+            val emailIntent = Intent(Intent.ACTION_VIEW, Uri.parse("mailto:"))
+            val resInfo = context.packageManager.queryIntentActivities(emailIntent, 0)
+            if (resInfo.isNotEmpty()) {
+                val intentChooser = context.packageManager.getLaunchIntentForPackage(
+                    resInfo.first().activityInfo.packageName
+                )
+                val openInChooser = Intent.createChooser(intentChooser, "Open E-mail")
+                val packageManager = context.packageManager
+                val emailApps = resInfo.toLabeledIntentArray(packageManager)
+                openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, emailApps)
+                openInChooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(openInChooser, null)
+            } else {
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
+
+    private fun List<ResolveInfo>.toLabeledIntentArray(packageManager: PackageManager): Array<LabeledIntent> =
+        map {
+            val packageName = it.activityInfo.packageName
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            LabeledIntent(intent, packageName, it.loadLabel(packageManager), it.icon)
+        }.toTypedArray()
 
     fun setOnDismissCallback(block : () -> Unit) : EmailConfirmPasswordDialog {
         onDismiss = block

@@ -96,15 +96,14 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/edit_title" />
 
-            <com.example.ui.views.CustomTextMenuView
+            <com.example.ui.views.CustomTextInputView
                 android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:inputHintText="@string/user_profile_email_title"
-                app:inputIconDrawable="@drawable/ic_info_us"
-                app:inputIconMode="custom"
-                app:inputTitleText="@string/user_profile_email_title" />
+                app:hintText="@string/user_profile_email_title"
+                app:inputEnabled="false"
+                app:titleText="@string/user_profile_email_title" />
 
             <TextView
                 android:id="@+id/tvEditEmail"

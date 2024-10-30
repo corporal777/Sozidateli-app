@@ -106,10 +106,7 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
                 else setText(user.personalPhone?.value)
             }
             tvShortname.setText(user.shortNameFormatted)
-            tvEmail.apply {
-                setText(user.personalEmail)
-                setIconVisibility(user.isHasEmailOnConfirmation())
-            }
+            tvEmail.setText(user.personalEmail)
             ivPrivacyProfile.setChecked(user.state?.isHidden.toBoolean())
             ivBlockEvent.setChecked(user.blockedNotifications?.event ?: false)
             ivBlockProject.setChecked(user.blockedNotifications?.projects ?: false)

@@ -182,31 +182,26 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
         )
     }
 
-    private fun initPersonalDataItem(user: UserDetail): Group? {
-        val organizations: List<OrganizationNew>? = user.binds?.organization
-        val email = user.email?.value
-        val workPhone = user.phone?.firstOrNull { it.type == PHONE_WORK }?.value
-        val mobilePhone = user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.value
-        val gender = user.gender
-        val birthday = user.birthday?.value?.formatToDefaultDate()
-        val city = user.address?.shortAddres ?: user.address?.city
-        val socialNetworks = user.contactInformation.socialLinks
+    private fun initPersonalDataItem(user: UserDetail): Group {
         return ProfileExpandableTitleGroup(
             getString(R.string.profile_title_general_info),
             onExpandChange = onItemExpandChange
         ).apply {
             add(
                 ProfileDataPersonalItem(
-                    organizations,
-                    email,
-                    workPhone,
-                    mobilePhone,
+                    user.binds?.organization,
+                    user.email,
+                    user.contactInformation.emails,
+                    user.phone?.firstOrNull { it.type == PHONE_PERSONAL },
+                    user.phone?.firstOrNull { it.type == PHONE_WORK },
+
                     user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false,
-                    gender?.value,
-                    birthday,
-                    city,
-                    socialNetworks,
-                    user.phone?.firstOrNull { it.type == PHONE_WORK }?.value,
+                    user.gender,
+                    user.birthday,
+                    user.address?.shortAddres ?: user.address?.city,
+                    user.contactInformation.socialLinks,
+                    user.contactInformation.site,
+                    user.phone?.firstOrNull { it.type == PHONE_WORK }?.additional,
                     onOrganizationClickListener
                 )
             )
@@ -219,13 +214,14 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
             presenter.getEducationLevels().firstOrNull { it.id == user.educationLevel?.value }?.name
         val academicDegrees = user.binds?.academicDegree ?: emptyList()
         val education = user.binds?.education ?: emptyList()
-        return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || !academicDegrees.isNullOrEmpty()) {
+
+        return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || academicDegrees.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_title_education),
                 onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    if (!educationLevel.isNullOrEmpty()) setHeader(
+                    if (!educationLevel.isNullOrEmpty() || academicDegrees.isNotEmpty()) setHeader(
                         ProfileDataEducationLevelItem(
                             educationLevel, academicDegrees,
                             presenter.getAcademicDegrees(),

@@ -31,6 +31,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initDropDownView
 import com.example.extensions.onTextChanged
+import com.example.util.pagination.PaginationGroupAdapter
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
     BaseFragment<LayoutListSearchBinding>(), SearchContract.View<I, F> {
@@ -43,8 +44,8 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
     protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
     protected val adapter by lazy {
-        PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
+        PaginationGroupAdapter<GroupieViewHolder>().apply {
+            setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
                     searchPresenter.onItemTake(position)
                 }

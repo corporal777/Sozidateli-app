@@ -312,8 +312,8 @@ fun Context.isConnectedToNetwork(): Boolean {
     return connectivityManager?.activeNetworkInfo?.isConnected ?: false
 }
 
-fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
-    if (dataText.isNullOrBlank()) {
+fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?, isVisible : Boolean?) {
+    if (dataText.isNullOrBlank() || isVisible == false) {
         visibility = View.GONE
         textField.text = null
     } else {
@@ -324,6 +324,7 @@ fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?) {
         visibility = View.VISIBLE
     }
 }
+
 
 fun TextView.additionalNumber(number: String?) {
     text = if (!number.isNullOrEmpty()) " (доб.$number)" else ""

@@ -283,10 +283,37 @@
             app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworksTitle"
             tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
 
+        <TextView
+            android:id="@+id/tvSiteTitle"
+            style="@style/Profile.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/tvSocialNetworks"
+            android:text="@string/site"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworks" />
+
+        <TextView
+            android:id="@+id/tvSite"
+            style="@style/Profile.Data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:hint="@string/user_profile_no_social_networks"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSiteTitle"
+            tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
+
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupSocialNetworks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tvSocialNetworks,tvSocialNetworksTitle" />
+            app:constraint_referenced_ids="tvSite,tvSiteTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
