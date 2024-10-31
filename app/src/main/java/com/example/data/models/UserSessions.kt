@@ -1,9 +1,17 @@
 package com.example.data.models
 
 import android.util.Log
+import com.example.extensions.calendar
+import com.example.extensions.isSameDay
+import com.example.extensions.isSameMonth
+import com.example.extensions.isYesterday
+import com.example.extensions.parseToDate
 import com.google.gson.annotations.SerializedName
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 
 data class UserSessions(
     @SerializedName("currentSession")
@@ -72,19 +80,21 @@ data class UserSessionModel(
             else "Устройство не определено"
         }
 
-    val sessionDate: String
+    val sessionDate: String?
         get() {
-            val format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-            val today = LocalDateTime.now()
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+            val startDate = (sessionStart ?: sessionEnd)?.parseToDate(format)?.calendar() ?: return null
 
-            val date =
-                if (!sessionStart.isNullOrEmpty()) LocalDateTime.parse(sessionStart, format)
-                else if (!sessionEnd.isNullOrEmpty()) LocalDateTime.parse(sessionEnd, format)
-                else today
+            val defaultDate = startDate.get(Calendar.DAY_OF_MONTH).toString() + "." +
+                    startDate.get(Calendar.MONTH).toString() + "." + startDate.get(Calendar.YEAR)
 
-            return if (today.monthValue == date.monthValue && today.dayOfMonth - date.dayOfMonth == 1) "вчера"
-            else if (today.dayOfMonth == date.dayOfMonth && today.monthValue == date.monthValue) "сегодня"
-            else date.dayOfMonth.toString() + "." + date.monthValue.toString() + "." + date.year
+            val today = System.currentTimeMillis().calendar()
+
+            return if (startDate.isSameMonth(today)) {
+                if (startDate.isSameDay(today)) "сегодня"
+                else if (startDate.isYesterday(today)) "вчера"
+                else defaultDate
+            } else defaultDate
         }
 }
 

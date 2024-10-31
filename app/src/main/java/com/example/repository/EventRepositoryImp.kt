@@ -43,6 +43,19 @@ class EventRepositoryImp
 
 
     //Alfa API
+    override fun getEventByCode(code: String): Single<EventNew> {
+        return api.getEventsList(
+            mapOf(
+                EventNew.EVENT_LIMIT to 1,
+                EventNew.EVENT_OFFSET to 0,
+                EventNew.EVENT_CODE to code
+            )
+        ).flatMapSingle {
+            if (it.data.isNullOrEmpty()) Single.error(NullPointerException())
+            else Single.just(it.data.first())
+        }
+    }
+
     override fun getEvent(eventId: String, binds: String?): Maybe<EventNew> {
         return api.getEventDetails(eventId, binds ?: "")
     }

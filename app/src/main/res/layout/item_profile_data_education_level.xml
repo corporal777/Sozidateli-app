@@ -5,6 +5,7 @@
     <LinearLayout style="@style/Profile.Edit.InputContainer">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEducationLevelTitle"
             style="@style/Profile.Edit.InputTitle"
             android:layout_marginBottom="0dp"
             android:text="@string/profile_education_level" />

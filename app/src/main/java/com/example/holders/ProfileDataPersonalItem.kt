@@ -61,7 +61,8 @@ class ProfileDataPersonalItem(
 
 
             groupEmail.apply {
-                val public = publicEmail?.filter { x -> x.showInProfile }?.joinToString("\n") { it.value ?: "" }
+                val public = publicEmail?.filter { x -> x.showInProfile }
+                    ?.joinToString("\n") { it.value ?: "" }
                 setTextDataOrHide(tvEmail, public, true)
             }
 
@@ -92,21 +93,21 @@ class ProfileDataPersonalItem(
             groupCity.setTextDataOrHide(tvCity, city, true)
 
             tvSocialNetworks.apply {
-                val scNetworks = socialNetworks?.values?.joinToString("\n") { it.value ?: "" }
-                text =
-                    if (socialNetworks?.absent == true) context.getString(R.string.user_profile_no_social_networks)
-                    else if (socialNetworks?.absent == false && scNetworks.isNullOrEmpty()) context.getString(
-                        R.string.user_profile_files_hint
-                    )
-                    else socialNetworks?.values?.joinToString("\n") { it.value ?: "" }
+                val scNetworks = socialNetworks?.values?.filter { it.showInProfile == true }
+                    ?.joinToString("\n") { it.value ?: "" }
+
+                text = if (socialNetworks?.absent == true) context.getString(R.string.user_profile_no_social_networks) else scNetworks
+                isVisible = !scNetworks.isNullOrEmpty()
+                tvSocialNetworksTitle.isVisible = !scNetworks.isNullOrEmpty()
                 removeUrlUnderline()
             }
             tvSite.apply {
-                val site = sites?.values?.joinToString("\n") { it.value ?: "" }
-                text =
-                    if (sites?.absent == true) context.getString(R.string.user_profile_no_social_networks)
-                    else if (sites?.absent == false && site.isNullOrEmpty()) context.getString(R.string.user_profile_files_hint)
-                    else sites?.values?.joinToString("\n") { it.value ?: "" }
+                val site = sites?.values?.filter { it.showInProfile == true }
+                    ?.joinToString("\n") { it.value ?: "" }
+
+                text = if (sites?.absent == true) context.getString(R.string.user_profile_no_site) else site
+                isVisible = !site.isNullOrEmpty()
+                tvSiteTitle.isVisible = !site.isNullOrEmpty()
                 removeUrlUnderline()
             }
 

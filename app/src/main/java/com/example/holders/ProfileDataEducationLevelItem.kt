@@ -16,7 +16,12 @@ class ProfileDataEducationLevelItem(
 
     override fun bind(viewBinding: ItemProfileDataEducationLevelBinding, position: Int) {
         viewBinding.apply {
-            tvEducationLevel.text = education
+
+            tvEducationLevel.apply {
+                tvEducationLevelTitle.isVisible = !education.isNullOrEmpty()
+                isVisible = !education.isNullOrEmpty()
+                text = education
+            }
 
             if ((academicDegrees.size == 1 && academicDegrees[0].degree == 0) || academicDegrees.isEmpty()) {
                 tvDegreesTitle.isVisible = false

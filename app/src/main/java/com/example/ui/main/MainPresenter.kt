@@ -133,6 +133,7 @@ class MainPresenter
                     }
                 else loadUser()
             }
+        getAdditionalData()
     }
 
     private fun loadUser() {
@@ -149,8 +150,8 @@ class MainPresenter
                     viewState.showRecommendations()
                 },
                 onComplete = {
-                    getAdditionalDataAndInAppList()
                     hideLoadings()
+                    getInAppNotifications()
                     viewState.apply {
                         showRecommendations()
                         checkIntent()
@@ -288,16 +289,6 @@ class MainPresenter
     }
 
 
-    private fun getAdditionalDataAndInAppList() {
-        compositeDisposable += userRepository.getUserProfileAdditionalData()
-            .andThen(userRepository.getInAppList())
-            .map { it.map { n -> Notification.fromRemoteNotification(n) } }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (!it.isNullOrEmpty()) viewState.showInAppNew(it)
-            }
-    }
-
     override fun onHandleChat(chatId: String, userName: String, notificationId: String) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else viewState.apply {
@@ -307,28 +298,18 @@ class MainPresenter
     }
 
     override fun onHandleEventCode(event: String?) {
-        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
-        else if (event.isNullOrEmpty()) return
-        else {
-            compositeDisposable += eventRepository.getEventsList(
-                mapOf(
-                    EventNew.EVENT_LIMIT to 1,
-                    EventNew.EVENT_OFFSET to 0,
-                    EventNew.EVENT_CODE to event
-                )
-            ).map { it.data }
-                .performOnBackgroundOutOnMain()
-                .subscribe({
-                    if (!it.isNullOrEmpty()) viewState.showAboutEvent(it.first()?.id.toString())
-                    viewState.clearIntentData()
-                }, { it.printStackTrace() })
-        }
+        if (event.isNullOrEmpty()) return
+        else compositeDisposable += eventRepository.getEventByCode(event)
+            .performOnBackgroundOutOnMain()
+            .subscribe({
+                viewState.showAboutEvent(it.id.toString())
+                viewState.clearIntentData()
+            }, { it.printStackTrace() })
 
     }
 
     override fun onHandleEvent(event: String?) {
-        if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
-        else if (event.isNullOrEmpty()) return
+        if (event.isNullOrEmpty()) return
         else viewState.apply {
             showAboutEvent(event)
             clearIntentData()
@@ -501,6 +482,21 @@ class MainPresenter
                         timerCompositeDisposable.clear()
                     }
                 }
+            }
+    }
+
+    private fun getAdditionalData() {
+        compositeDisposable += userRepository.getUserProfileAdditionalData()
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {}
+    }
+
+    private fun getInAppNotifications(){
+        compositeDisposable += userRepository.getInAppList()
+            .map { it.map { n -> Notification.fromRemoteNotification(n) } }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (!it.isNullOrEmpty()) viewState.showInAppNew(it)
             }
     }
 

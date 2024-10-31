@@ -37,6 +37,7 @@ interface EventRepository {
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
 
+    fun getEventByCode(code: String): Single<EventNew>
     fun getEvent(eventId: String, binds : String?): Maybe<EventNew>
     fun getEventDetails(eventId: String): Maybe<EventNew>
     fun getEventDetailForRegister(eventId: String): Maybe<EventNew>

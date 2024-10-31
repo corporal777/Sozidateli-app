@@ -194,7 +194,6 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
                     user.contactInformation.emails,
                     user.phone?.firstOrNull { it.type == PHONE_PERSONAL },
                     user.phone?.firstOrNull { it.type == PHONE_WORK },
-
                     user.phone?.firstOrNull { it.type == PHONE_PERSONAL }?.isConfirmed ?: false,
                     user.gender,
                     user.birthday,
@@ -212,18 +211,18 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     private fun initEducationDataItem(user: UserDetail): Group? {
         val educationLevel =
             presenter.getEducationLevels().firstOrNull { it.id == user.educationLevel?.value }?.name
-        val academicDegrees = user.binds?.academicDegree ?: emptyList()
-        val education = user.binds?.education ?: emptyList()
+        val degrees = user.binds?.academicDegree?.filter { it.showInProfile == true } ?: emptyList()
+        val education = user.binds?.education?.filter { it.showInProfile == true } ?: emptyList()
 
-        return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || academicDegrees.isNotEmpty()) {
+        return if (education.isNotEmpty() || !educationLevel.isNullOrEmpty() || degrees.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_title_education),
                 onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    if (!educationLevel.isNullOrEmpty() || academicDegrees.isNotEmpty()) setHeader(
+                    if (!educationLevel.isNullOrEmpty() || degrees.isNotEmpty()) setHeader(
                         ProfileDataEducationLevelItem(
-                            educationLevel, academicDegrees,
+                            educationLevel, degrees,
                             presenter.getAcademicDegrees(),
                             presenter.getSpecialities()
                         )
@@ -235,17 +234,15 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     }
 
     private fun initWorkExperience(user: UserDetail): Group? {
-        val work = user.binds?.workExperience?.models ?: emptyList()
+        val work = user.binds?.workExperience?.models?.filter { it.showInProfile == true } ?: emptyList()
         return if (work.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_work_experience),
                 onExpandChange = onItemExpandChange
             ).apply {
                 add(Section().apply {
-                    if (work.isNullOrEmpty()) add(ProfileNoWorkExperienceItem(resources.getString(R.string.no_experience)))
-                    addAll(work.mapIndexed { index, socialRoles ->
-                        ProfileDataWorkExperienceItem(socialRoles)
-                    })
+                    if (work.isEmpty()) add(ProfileNoWorkExperienceItem(resources.getString(R.string.no_experience)))
+                    addAll(work.map { ProfileDataWorkExperienceItem(it) })
                 })
             }
         } else null
@@ -292,39 +289,37 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     }
 
     private fun initAdditionalInformation(user: UserDetail): Group? {
-        val notes = user.notes
-        val files = user.binds?.recommendationFile ?: emptyList()
+        val notes = if (user.notes?.showInProfile == true) user.notes?.value else ""
+        val files =
+            user.binds?.recommendationFile?.filter { it.showInProfile == true } ?: emptyList()
 
-        val subgroups = mutableListOf<Group>()
-        subgroups.add(
-            ProfileExpandableSubtitleGroup(
-                getString(R.string.profile_notes),
-                onExpandChange = onItemExpandChange
-            ).apply {
-                add(ProfileDataNotesItem(notes?.value.let { if (it.isNullOrEmpty()) "-" else it }))
-            })
-
-        subgroups.add(
-            ProfileExpandableSubtitleGroup(
-                getString(R.string.profile_files),
-                onExpandChange = onItemExpandChange
-            ).apply {
-                if (files.isNotEmpty()) {
-                    addAll(files.map { file ->
-                        ProfileDataFileItem(
-                            file.name ?: "file"
-                        ) { presenter.onFileClick(file) }
+        val subgroups = mutableListOf<Group>().apply {
+            if (!notes.isNullOrEmpty()) {
+                add(
+                    ProfileExpandableSubtitleGroup(
+                        getString(R.string.profile_notes),
+                        onExpandChange = onItemExpandChange
+                    ).apply { add(ProfileDataNotesItem(notes)) })
+            }
+            if (!files.isNullOrEmpty()) {
+                add(
+                    ProfileExpandableSubtitleGroup(
+                        getString(R.string.profile_files),
+                        onExpandChange = onItemExpandChange
+                    ).apply {
+                        addAll(files.map { file ->
+                            ProfileDataFileItem(file.name ?: "file") { presenter.onFileClick(file) }
+                        })
                     })
-                }
-            })
+            }
 
-        return if (!notes?.value.isNullOrEmpty() || files.isNotEmpty()) {
+        }
+
+        return if (!notes.isNullOrEmpty() || files.isNotEmpty()) {
             ProfileExpandableTitleGroup(
                 getString(R.string.profile_additional_data),
                 onExpandChange = onItemExpandChange
-            ).apply {
-                addAll(subgroups)
-            }
+            ).apply { addAll(subgroups) }
         } else null
     }
 
@@ -366,7 +361,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     }
 
     override fun openChat(userName: String, userAvatar: String?, chatId: String) {
-        if (!findNavController().popBackStack(R.id.chat_fragment, false)){
+        if (!findNavController().popBackStack(R.id.chat_fragment, false)) {
             findNavController().navigate(UserFragmentDirections.userToChat(userName, chatId).apply {
                 setUserAvatar(userAvatar)
             })

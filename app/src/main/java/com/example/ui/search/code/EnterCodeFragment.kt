@@ -66,6 +66,9 @@ class EnterCodeFragment : BaseFragment<FragmentEnterCodeBinding>(), EnterCodeCon
         showToast(R.string.qr_scan_not_found_event)
     }
 
+    override fun showCustomLoading() = mBinding.btnSearch.showProgressLoading(true)
+    override fun hideCustomLoading() = mBinding.btnSearch.showProgressLoading(false)
+
     override fun layout() = R.layout.fragment_enter_code
     override val title: CharSequence by lazy { getString(R.string.code_input_label) }
     override fun actionIconContainer(view: ViewGroup) {}
