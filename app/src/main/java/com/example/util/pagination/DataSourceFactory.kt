@@ -2,7 +2,7 @@ package com.example.util.pagination
 
 import androidx.paging.DataSource
 
-abstract class DataSourceFactory<K, V> : DataSource.Factory<K, V>() {
+abstract class DataSourceFactory<K : Any, V : Any> : DataSource.Factory<K, V>() {
 
     var source: DataSource<K, V>? = null
         private set

@@ -31,7 +31,9 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initDropDownView
 import com.example.extensions.onTextChanged
+import com.example.holders.PlaceholderItem
 import com.example.util.pagination.PaginationGroupAdapter
+import com.xwray.groupie.Section
 
 abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilter> :
     BaseFragment<LayoutListSearchBinding>(), SearchContract.View<I, F> {
@@ -43,11 +45,16 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
 
     protected val filterNotChosenVariant by lazy { getString(R.string.search_filters_not_chosen) }
 
+    private val placeholderSection = Section()
+    private val dataSection = Section()
     protected val adapter by lazy {
         PaginationGroupAdapter<GroupieViewHolder>().apply {
+            add(dataSection)
+            add(placeholderSection)
             setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
                 override fun onItemTake(position: Int) {
-                    searchPresenter.onItemTake(position)
+                    val pos = position - placeholderSection.itemCount
+                    searchPresenter.onItemTake(pos)
                 }
             })
         }
@@ -69,28 +76,6 @@ abstract class SearchFragment<P : SearchContract.Presenter<I>, I, F : SearchFilt
         (parentFragment as? SearchTabsFragment)?.apply {
             setFiltersChosen(searchPresenter.isHasFilter())
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mBinding.searchList.apply {
-            adapter = this@SearchFragment.adapter
-        }
-        mBinding.swipeToRefresh.setOnRefreshListener { searchPresenter.onRefreshRequest() }
-
-    }
-
-    override fun setData(data: List<I?>) {
-        if (data.isEmpty()) {
-            adapter.updateItem(
-                NoEventItem(
-                    getString(R.string.search_no_data_text),
-                    getString(R.string.search_no_data_description)
-                )
-            )
-        } else adapter.update(data.map(::createItem))
-
-        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showFilter(filter: F) {

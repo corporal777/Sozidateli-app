@@ -6,7 +6,7 @@ import com.example.util.pagination.DataSourceFactory
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 
-open class PaginationDataSourceFactory<I>(
+open class PaginationDataSourceFactory<I : Any>(
         private val paginationRequest: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
 ) : DataSourceFactory<Int, I>() {
 
@@ -24,11 +24,11 @@ open class PaginationDataSourceFactory<I>(
         return source
     }
 
-    fun <R> map(converter: (item: I) -> R) = mapIndexedTotal { item, _, _ -> converter.invoke(item) }
+    override fun <R : Any> map(converter: (item: I) -> R) = mapIndexedTotal { item, _, _ -> converter.invoke(item) }
 
-    fun <R> mapIndexed(converter: (item: I, index: Int) -> R) = mapIndexedTotal { item, index, _ -> converter.invoke(item, index) }
+    fun <R : Any> mapIndexed(converter: (item: I, index: Int) -> R) = mapIndexedTotal { item, index, _ -> converter.invoke(item, index) }
 
-    fun <R> mapIndexedTotal(converter: (item: I, index: Int, total: Int?) -> R) = object : DataSourceFactory<Int, R>() {
+    fun <R : Any> mapIndexedTotal(converter: (item: I, index: Int, total: Int?) -> R) = object : DataSourceFactory<Int, R>() {
         override fun createDataSource(): DataSource<Int, R> {
             return this@PaginationDataSourceFactory.createDataSource().mapIndexed(converter)
         }
@@ -44,7 +44,7 @@ open class PaginationDataSourceFactory<I>(
     }
 }
 
-fun <I> PaginationDataSourceFactory<I>.applyErrorHandler(handler: PaginationErrorHandler): PaginationDataSourceFactory<I> {
+fun <I : Any> PaginationDataSourceFactory<I>.applyErrorHandler(handler: PaginationErrorHandler): PaginationDataSourceFactory<I> {
     paginationErrorHandler = handler
     return this
 }

@@ -1,10 +1,13 @@
 package com.example.ui.search.user
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import com.example.app.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
@@ -15,6 +18,9 @@ import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
 import com.xwray.groupie.Group
 import com.example.extensions.initDropDownView
+import com.example.ui.views.adapter.UserPagingAdapter
+import com.example.ui.views.adapter.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.ui.views.adapter.UserPlaceholderAdapter
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -32,6 +38,25 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     @ProvidePresenter
     fun providePresenter(): SearchUserPresenter = presenterProvider.get()
 
+    private val mAdapter by lazy(LazyThreadSafetyMode.NONE) { UserPagingAdapter() }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mBinding.apply {
+            searchList.adapter = mAdapter.withLoadStateAdapters(
+                refresh = UserPlaceholderAdapter(3),
+                footer = UserPlaceholderAdapter(1)
+            )
+
+
+            swipeToRefresh.setOnRefreshListener { searchPresenter.onRefreshRequest() }
+        }
+    }
+
+    override fun setData(data: PagingData<UserDetail>) {
+        mAdapter.submitData(lifecycle, data)
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
 
     override fun createItem(itemData: UserDetail?): Group {
         return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
@@ -62,7 +87,11 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
 
 
     override fun createFilterView(filter: SearchFilter.UserNew): View {
-        return LayoutFilterUserSearchBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        return LayoutFilterUserSearchBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            null,
+            false
+        )
             .apply {
                 initRegions(filter, tvRegion, tilRegion, tilTown)
                 initTowns(filter, tvTown, tilTown)
@@ -74,7 +103,10 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     }
 
 
-    private fun initUserInterests(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
+    private fun initUserInterests(
+        filter: SearchFilter.UserNew,
+        binding: LayoutFilterUserSearchBinding
+    ) {
         binding.apply {
             val interests = filter.interests
             if (interests.isNullOrEmpty()) {

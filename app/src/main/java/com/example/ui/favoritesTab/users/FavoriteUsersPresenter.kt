@@ -24,52 +24,58 @@ class FavoriteUsersPresenter
 
     private var firstLaunch = true
 
-    private val pagination = PaginationDataSourceFactory { limit, offset ->
-        val data = mutableMapOf<String, Any>().apply {
-            put(UsersFavoriteModel.USERS_FAVORITE_LIMIT, limit)
-            put(UsersFavoriteModel.USERS_FAVORITE_OFFSET, offset)
-            put(UsersFavoriteModel.USERS_FAVORITE_TYPE, UsersFavoriteModel.USERS_TYPE)
-            put(UsersFavoriteModel.USERS_FAVORITE_LOAD_MODEL, true)
-            put(UsersFavoriteModel.USERS_FAVORITE_USER, appData.getId())
-        }
-        userRepository.getUsersFavoritesList(data)
-    }.buildList(enablePlaceholders = false, initialSize = 30)
+//    private val pagination = PaginationDataSourceFactory { limit, offset ->
+//        val data = mutableMapOf<String, Any>().apply {
+//            put(UsersFavoriteModel.USERS_FAVORITE_LIMIT, limit)
+//            put(UsersFavoriteModel.USERS_FAVORITE_OFFSET, offset)
+//            put(UsersFavoriteModel.USERS_FAVORITE_TYPE, UsersFavoriteModel.USERS_TYPE)
+//            put(UsersFavoriteModel.USERS_FAVORITE_LOAD_MODEL, true)
+//            put(UsersFavoriteModel.USERS_FAVORITE_USER, appData.getId())
+//        }
+//        userRepository.getUsersFavoritesList(data)
+//    }.buildList(enablePlaceholders = false, initialSize = 30)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setData(List(20) { null })
-        compositeDisposable += Observable.create(pagination)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onNext = {
-                    if (it.isEmpty()) viewState.setUsersFavoriteEmptyPlaceholder()
-                    else {
-                        val uid = appData.getId()
-                        it.forEach { user -> user?.isCurrentUser = user?.id == uid }
-                        viewState.setData(it)
-                    }
-                })
+//        compositeDisposable += Observable.create(pagination)
+//            .performOnBackgroundOutOnMain()
+//            .subscribeSimple(
+//                onError = { it.printStackTrace() },
+//                onNext = {
+//                    if (it.isEmpty()) viewState.setUsersFavoriteEmptyPlaceholder()
+//                    else {
+//                        val uid = appData.getId()
+//                        it.forEach { user -> user?.isCurrentUser = user?.id == uid }
+//                        viewState.setData(it)
+//                    }
+//                })
     }
 
     override fun attachView(view: FavoriteUsersContract.View?) {
         super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
+//        if (firstLaunch) firstLaunch = false
+//        else pagination.invalidate()
     }
 
     override fun onUserRemoveFromFavoritesClick(user: UserDetail) {
         compositeDisposable += eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { pagination.invalidate() },
+                onError = {
+                    //pagination.invalidate()
+                          },
                 onComplete = {
                     viewState.showRemovedFromFavoriteDialog()
-                    pagination.invalidate()
+                    //pagination.invalidate()
                 })
     }
 
     override fun onUserClick(user: UserDetail) = viewState.showUser(user)
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
-    override fun onRefreshRequest() = pagination.invalidate()
+    override fun onItemTake(position: Int) {
+        //pagination.onItemTake(position)
+    }
+    override fun onRefreshRequest() {
+        //pagination.invalidate()
+    }
 }

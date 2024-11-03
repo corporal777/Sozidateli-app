@@ -29,9 +29,9 @@ class FavoriteEventsPresenter
     private val eventRepository: EventRepository,
 ) : BasePresenter<FavoriteEventsContract.View>(appData), FavoriteEventsContract.Presenter {
 
-    private val pagination: PaginationDataSourceFactory<EventNew?> =
-        PaginationDataSourceFactory(::getPaginationRequest)
-    private lateinit var paginationList: PaginationList<EventNew?>
+//    private val pagination: PaginationDataSourceFactory<EventNew?> =
+//        PaginationDataSourceFactory(::getPaginationRequest)
+//    private lateinit var paginationList: PaginationList<EventNew?>
 
     private fun getPaginationRequest(
         limit: Int,
@@ -53,16 +53,16 @@ class FavoriteEventsPresenter
         super.onFirstViewAttach()
         viewState.setData(List(10) { null })
 
-        paginationList = pagination.applyErrorHandler {
-            if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false, initialSize = 30)
-
-        compositeDisposable += Observable.create(paginationList)
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
-                else viewState.setData(it)
-            }
+//        paginationList = pagination.applyErrorHandler {
+//            if (it.cause is UnknownHostException) hasNoConnectionError = true
+//        }.buildList(enablePlaceholders = false, initialSize = 30)
+//
+//        compositeDisposable += Observable.create(paginationList)
+//            .performOnBackgroundOutOnMain()
+//            .subscribeSimple {
+//                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
+//                else viewState.setData(it)
+//            }
     }
 
     override fun onShowEventClick(event: String?) {
@@ -83,7 +83,7 @@ class FavoriteEventsPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.apply {
-                    paginationList.invalidate()
+                    //paginationList.invalidate()
                     if (event.binds?.userFavorite != null) showAddedToFavoriteDialog()
                     else showRemovedFromFavoriteDialog()
                 }
@@ -94,8 +94,12 @@ class FavoriteEventsPresenter
         viewState.showSubEvents(event.id.toString(), event.binds?.activity ?: emptyList())
     }
 
-    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
-    override fun onRefreshRequest() = paginationList.invalidate()
+    override fun onItemTake(position: Int) {
+        //paginationList.onItemTake(position)
+    }
+    override fun onRefreshRequest() {
+        //paginationList.invalidate()
+    }
 
     private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
         return AddToFavoriteModel(

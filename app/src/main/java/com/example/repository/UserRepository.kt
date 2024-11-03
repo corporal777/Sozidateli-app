@@ -87,7 +87,7 @@ interface UserRepository {
 
     fun checkEmailPhone(email: String?, phone: String?): Completable
 
-    fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
 
     //+
     fun bindSocialAccount(uuid : String, socialType : String, isRebind : Boolean): Maybe<SnBindDataModel>

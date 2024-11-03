@@ -10,9 +10,6 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface SearchContract {
     interface View<I, F : SearchFilter> : BaseContract.View {
-        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "list data")
-        fun setData(data: List<I?>)
-
         @OneExecution
         fun showFilter(filter: F)
 

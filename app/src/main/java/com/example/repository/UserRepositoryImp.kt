@@ -479,10 +479,11 @@ class UserRepositoryImp
         api.checkEmailPhone(email, phone)
 
 
-    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
         return api.searchGlobal(map)
-            .map { PaginationResponse(it.users.count, it.users.data) }
-        //.map { it.users }
+            .doOnSuccess {
+                it.users.data.forEach { user -> user.isCurrentUser = user.id == appData.getId() }
+            }.map { PaginationResponse(it.users.count, it.users.data) }
     }
 
     override fun bindSocialAccount(

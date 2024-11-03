@@ -13,8 +13,10 @@ import com.example.data.models.SearchFilter
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
+import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -30,10 +32,10 @@ class SearchOrganizationPresenter
     appData
 ), SearchOrganizationContract.Presenter {
 
-    override val pagination = PaginationDataSourceFactory { limit, offset ->
-        val data = buildFilterNew(limit, offset)
-        organizationRepository.searchOrganizations(data)
-    }
+//    override val pagination = PaginationDataSourceFactory { limit, offset ->
+//        val data = buildFilterNew(limit, offset)
+//        (organizationRepository.searchOrganizations(data) as Maybe<PaginationResponse<Any>>)
+//    }
 
     override fun onOrganizationClick(organization: OrganizationNew) {
         viewState.showOrganization(organization)

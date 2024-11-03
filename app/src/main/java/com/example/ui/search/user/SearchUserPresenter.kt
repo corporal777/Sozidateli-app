@@ -7,16 +7,24 @@ import com.example.data.models.UserDetail.Companion.USER_ADDRESS_REGION
 import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.models.UserDetail.Companion.USER_OFFSET
 import com.example.data.models.UserDetail.Companion.USER_SEARCH
+import com.example.extensions.buildList
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
+import com.example.util.PAGE_SIZE
+import com.example.util.pagination.flow.PagingDataSourceFactory
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withCustomLoading
+import withDelay
 import withProgressBarDialogLoading
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -36,31 +44,38 @@ class SearchUserPresenter
     private var interests: Map<InterestNew, List<InterestNew>>? = null
 
 
-    override val pagination = PaginationDataSourceFactory { limit, offset ->
-        val data = buildFilterNew(limit, offset)
-        userRepository.searchUsers(data).doOnSuccess {
-            val uid = appData.getId()
-            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
-        }
-    }
+    private val pagination = PagingDataSourceFactory { limit, offset ->
+        userRepository.searchUsers(buildFilterNew(limit, offset)).withDelay(1000)
+    }.buildList(initialSize = PAGE_SIZE, distance = 4)
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += commonRepository.getInterests()
-            .map { interests ->
-                interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
-            }
+//        compositeDisposable += commonRepository.getInterests()
+//            .map { interests ->
+//                interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
+//            }
+//            .performOnBackgroundOutOnMain()
+//            .subscribe({
+//                isInterestsLoaded = true
+//                this.interests = it
+//            }, {
+//                it.printStackTrace()
+//                isInterestsLoaded = true
+//            })
+
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                isInterestsLoaded = true
-                this.interests = it
-            }, {
-                it.printStackTrace()
-                isInterestsLoaded = true
-            })
+            .subscribeSimple {
+                viewState.setData(it)
+            }
+
     }
 
+    override fun onRefreshRequest() {
+        super.onRefreshRequest()
+        pagination.invalidate()
+    }
 
     override fun onUserClick(user: UserDetail) {
         if (appData.isCurrentUser(user.id.toString())) viewState.showCurrentUser()

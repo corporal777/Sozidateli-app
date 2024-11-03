@@ -11,6 +11,7 @@ import com.example.util.PAGE_PLACEHOLDER
 import com.example.util.PAGE_SIZE
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
 import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
@@ -23,9 +24,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private val socket: SocketIOManager,
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
-    protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
+    protected val pagination = PaginationDataSourceFactory { limit, offset ->
+        getPaginationRequest(limit, offset) as Maybe<PaginationResponse<Any>>
+    }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = PAGE_PLACEHOLDER, initialSize = PAGE_SIZE)
+        .buildList(enablePlaceholders = PAGE_PLACEHOLDER, initialSize = PAGE_SIZE) as PaginationList<EventNew>
 
     var eventsList = mutableListOf<EventNew?>()
 

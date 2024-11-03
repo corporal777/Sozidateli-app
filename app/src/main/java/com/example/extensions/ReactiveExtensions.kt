@@ -1,3 +1,4 @@
+import android.util.Log
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.base.BaseContract
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
@@ -456,6 +457,50 @@ fun <T> Single<T>.withCustomLoading(baseView: BaseContract.LoadingView): Single<
         .doOnDispose(actionHide)
         .doOnSuccess(actionConsumer())
         .doOnError(actionConsumer())
+}
+
+fun <T> Observable<T>.withCustomLoading(baseView: BaseContract.LoadingView): Observable<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { baseView.showCustomLoading() }
+        .doOnDispose { baseView.hideCustomLoading() }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+    var isFirstHidden = false
+    return doOnSubscribe {
+        baseView.showCustomLoading()
+    }
+        .doOnError {
+            baseView.hideCustomLoading()
+        }
+        .doOnComplete {
+            baseView.hideCustomLoading()
+        }
+//    this
+//        .doFinally(actionHide)
+//        .doOnDispose(actionHide)
+//        .doOnNext{
+//            baseView.hideCustomLoading()
+//        }
+////        .doOnEach {
+////            baseView.showCustomLoading()
+////        }
+//
+//        .doOnComplete {
+//            baseView.hideCustomLoading()
+//        }
+//        .doOnError(actionConsumer())
+
+
+
 }
 
 fun Completable.withCustomLoading(baseView: BaseContract.LoadingView): Completable {

@@ -27,44 +27,44 @@ class FavoriteOrganizationsPresenter
 ) : BasePresenter<FavoriteOrganizationsContract.View>(appData),
     FavoriteOrganizationsContract.Presenter {
 
-    private val pagination = PaginationDataSourceFactory { limit, offset ->
-        organizationRepository.getFavoriteOrganization(
-            mutableMapOf<String, Any>().apply {
-                put(FavoriteModel.ORGANIZATION_FAVORITE_LIMIT, limit)
-                put(FavoriteModel.ORGANIZATION_FAVORITE_OFFSET, offset)
-                put(FavoriteModel.ORGANIZATION_FAVORITE_TYPE, FavoriteModel.ORGANIZATION_TYPE)
-                put(FavoriteModel.ORGANIZATION_FAVORITE_LOAD_MODEL, true)
-                put(FavoriteModel.ORGANIZATION_FAVORITE_USER, appData.getId())
-            }
-        )
-    }.buildList(enablePlaceholders = false, initialSize = 30)
+//    private val pagination = PaginationDataSourceFactory { limit, offset ->
+//        organizationRepository.getFavoriteOrganization(
+//            mutableMapOf<String, Any>().apply {
+//                put(FavoriteModel.ORGANIZATION_FAVORITE_LIMIT, limit)
+//                put(FavoriteModel.ORGANIZATION_FAVORITE_OFFSET, offset)
+//                put(FavoriteModel.ORGANIZATION_FAVORITE_TYPE, FavoriteModel.ORGANIZATION_TYPE)
+//                put(FavoriteModel.ORGANIZATION_FAVORITE_LOAD_MODEL, true)
+//                put(FavoriteModel.ORGANIZATION_FAVORITE_USER, appData.getId())
+//            }
+//        )
+//    }.buildList(enablePlaceholders = false, initialSize = 30)
 
     private var firstLaunch = true
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setOrganizations(List(20) { null })
-        compositeDisposable += Observable.create(pagination)
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    if (it.isEmpty()) viewState.showFavoritesEmptyListPlaceholder()
-                    else viewState.setOrganizations(it)
-                }
-
-        compositeDisposable += connectivity
-                .performOnBackgroundOutOnMain()
-                .subscribeSimple {
-                    if (hasNoConnectionError && it) {
-                        hasNoConnectionError = false
-                        pagination.invalidate()
-                    }
-                }
+//        compositeDisposable += Observable.create(pagination)
+//                .performOnBackgroundOutOnMain()
+//                .subscribeSimple {
+//                    if (it.isEmpty()) viewState.showFavoritesEmptyListPlaceholder()
+//                    else viewState.setOrganizations(it)
+//                }
+//
+//        compositeDisposable += connectivity
+//                .performOnBackgroundOutOnMain()
+//                .subscribeSimple {
+//                    if (hasNoConnectionError && it) {
+//                        hasNoConnectionError = false
+//                        pagination.invalidate()
+//                    }
+//                }
     }
 
     override fun attachView(view: FavoriteOrganizationsContract.View?) {
         super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
+//        if (firstLaunch) firstLaunch = false
+//        else pagination.invalidate()
     }
 
     override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
@@ -90,6 +90,10 @@ class FavoriteOrganizationsPresenter
     }
 
     override fun onOrganizationClick(organization: OrganizationNew) = viewState.showOrganization(organization)
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
-    override fun onRefreshRequest() = pagination.invalidate()
+    override fun onItemTake(position: Int) {
+        //pagination.onItemTake(position)
+    }
+    override fun onRefreshRequest() {
+        //pagination.invalidate()
+    }
 }

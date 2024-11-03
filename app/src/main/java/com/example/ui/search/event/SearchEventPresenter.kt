@@ -13,6 +13,7 @@ import com.example.repository.OrganizationRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
+import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -36,10 +37,10 @@ class SearchEventPresenter
 ) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData),
     SearchEventContract.Presenter {
 
-    override val pagination = PaginationDataSourceFactory { limit, offset ->
-        val data = buildNewFilters(limit, offset)
-        eventRepository.searchEvents(data)
-    }
+//    override val pagination = PaginationDataSourceFactory { limit, offset ->
+//        val data = buildNewFilters(limit, offset)
+//        eventRepository.searchEvents(data) as Maybe<PaginationResponse<Any>>
+//    }
 
     private var isCommonDataLoaded = false
     private var interests: Map<InterestNew, List<InterestNew>>? = null
@@ -112,7 +113,7 @@ class SearchEventPresenter
                 onError = { onReceiveError(it) },
                 onComplete = {
                     viewState.showEventRegistrationSuccessDialog()
-                    pagination.invalidate()
+                    //pagination.invalidate()
                 }
             ).call(compositeDisposable)
     }
@@ -122,7 +123,7 @@ class SearchEventPresenter
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
-                pagination.invalidate()
+                //pagination.invalidate()
             }.call(compositeDisposable)
     }
 
