@@ -54,8 +54,6 @@ class EventActivityItem(
             auditoryContainer.apply {
                 if (!subEvent.binds?.auditorium?.name.isNullOrEmpty())
                     tvLectureAuditory.text = subEvent.binds?.auditorium?.name
-                else if (!subEvent.auditorium.isNullOrEmpty())
-                    tvLectureAuditory.text = subEvent.auditorium
                 else isVisible = false
             }
 
@@ -64,6 +62,8 @@ class EventActivityItem(
                 isVisible = !subEvent.description.isNullOrEmpty()
                 originalText = fullMarkdownText(context, subEvent.description)
                 isTextCollapsed = isCollapsed
+                isClickable = true
+                isFocusable = true
             }
 
             tagGroup.apply {

@@ -147,15 +147,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             userShortName = SpannableStringBuilder(user.shortName)
         } else {
             val userId = getString(R.string.user_id, user.id.toString())
-            CustomSpannableString(getString(R.string.put_user_short_name)).apply {
-                setColorSpan(R.color.main_brown_color_new, requireContext())
-                setTextSizeSpan(R.dimen.user_short_name_text_size, requireContext())
-                setFontSpan("fonts/sf_pro_text_medium.ttf", requireContext())
-                setClickSpan(toolbarContent.getToolbarTitleView()) {
-                    presenter.onShowChangeUserShortName()
-                }
-                userShortName = SpannableStringBuilder(userId + "\n").append(this)
-            }
+//            CustomSpannableString(getString(R.string.put_user_short_name)).apply {
+//                setColorSpan(R.color.main_brown_color_new, requireContext())
+//                setTextSizeSpan(R.dimen.user_short_name_text_size, requireContext())
+//                setFontSpan("fonts/sf_pro_text_medium.ttf", requireContext())
+//                setClickSpan(toolbarContent.getToolbarTitleView()) {
+//                    presenter.onShowChangeUserShortName()
+//                }
+//                userShortName = SpannableStringBuilder(userId + "\n").append(this)
+//            }
+            userShortName = SpannableStringBuilder(userId)
         }
         toolbarContent.getToolbarTitleView().apply {
             highlightColor = getColor(R.color.profile_id_text)

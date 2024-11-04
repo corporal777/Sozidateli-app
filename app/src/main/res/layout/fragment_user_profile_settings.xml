@@ -60,6 +60,7 @@
                 android:text="@string/edit_name_title" />
 
             <com.example.ui.views.CustomTextInputView
+                android:visibility="gone"
                 android:id="@+id/tvShortname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,6 +71,7 @@
 
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tvEditShortName"
                 style="@style/ClickableTextView"
                 android:layout_width="wrap_content"

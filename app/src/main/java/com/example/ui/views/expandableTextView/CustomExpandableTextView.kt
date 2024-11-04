@@ -29,7 +29,7 @@ import com.example.ui.views.CustomSpannableString
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import kotlin.math.abs
 
-class CustomExpandableTextView : AppCompatTextView {
+class CustomExpandableTextView : CustomTextViewWithUrls {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -51,7 +51,7 @@ class CustomExpandableTextView : AppCompatTextView {
 
     init {
         ellipsize = END
-        movementMethod = LinkMovementMethod.getInstance()
+        movementMethod = LocalLinkMovementMethod.getInstance()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
