@@ -37,8 +37,7 @@ class SearchUserPresenter
 
 
     override val pagination = PaginationDataSourceFactory { limit, offset ->
-        val data = buildFilterNew(limit, offset)
-        userRepository.searchUsers(data).doOnSuccess {
+        userRepository.searchUsers(buildFilterNew(limit, offset)).doOnSuccess {
             val uid = appData.getId()
             it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
         }
@@ -116,6 +115,10 @@ class SearchUserPresenter
             put(USER_LIMIT, limit)
             put(USER_OFFSET, offset)
 
+            //new binds filter
+            put(SEARCH_USER_BINDS, "userFavorite")
+            put(SEARCH_USER_TYPE, true)
+
             if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
 
             //new interests filter
@@ -126,43 +129,10 @@ class SearchUserPresenter
             if (filter.ageFrom != null) put(SEARCH_AGE_FROM, filter.ageFrom!!)
             if (filter.ageTo != null) put(SEARCH_AGE_TO, filter.ageTo!!)
 
-            //new binds filter
-            put(SEARCH_USER_BINDS, "userFavorite")
-            put(SEARCH_USER_TYPE, true)
-
             //new address filters
-            if (!filter.addressRegion.isNullOrEmpty()) {
-                put(USER_ADDRESS_REGION, filter.addressRegion!!)
-            }
-            if (!filter.addressTown.isNullOrEmpty()) {
-                put(USER_ADDRESS_CITY, filter.addressTown!!)
-            }
-            if (!filter.addressTownType.isNullOrEmpty()) {
-                put("type", filter.addressTownType!!)
-            }
-
-
-//            val index = filter.index
-//            if (!index.isNullOrEmpty()) put(USER_ADDRESS_INDEX, index)
-//            val country = filter.country
-//            if (!country.isNullOrEmpty()) put(USER_ADDRESS_COUNTRY, country)
-//            val federal = filter.federal
-//            if (!federal.isNullOrEmpty()) put(USER_ADDRESS_FEDERAL, federal)
-//            val region = filter.region
-//            if (!region.isNullOrEmpty()) put(USER_ADDRESS_REGION, region)
-//            val area = filter.area
-//            if (!area.isNullOrEmpty()) put(USER_ADDRESS_AREA, area)
-//            val city = filter.city
-//            if (!city.isNullOrEmpty()) put(USER_ADDRESS_CITY, city)
-//            val settlement = filter.settlement
-//            if (!settlement.isNullOrEmpty()) put(USER_ADDRESS_SETTLEMENT, settlement)
-//            val street = filter.street
-//            if (!street.isNullOrEmpty()) put(USER_ADDRESS_STREET, street)
-//            val house = filter.house
-//            if (!house.isNullOrEmpty()) put(USER_ADDRESS_HOUSE, house)
-//            val flat = filter.flat
-//            if (!flat.isNullOrEmpty()) put(USER_ADDRESS_FLAT, flat)
-
+            if (!filter.addressRegion.isNullOrEmpty()) put(USER_ADDRESS_REGION, filter.addressRegion!!)
+            if (!filter.addressTown.isNullOrEmpty()) put(USER_ADDRESS_CITY, filter.addressTown!!)
+            if (!filter.addressTownType.isNullOrEmpty()) put("type", filter.addressTownType!!)
         }
     }
 

@@ -19,6 +19,7 @@ import com.example.ui.event.formResult.items.EventFormResultPassportItem
 import com.example.ui.event.formResult.items.EventFormResultProfileGroup
 import com.example.ui.event.formResult.items.EventFormResultProfileItem
 import com.example.ui.event.formResult.items.EventFormResultStringItem
+import com.example.ui.event.formResult.items.EventFormResultTitleItem
 import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -72,6 +73,9 @@ class EventFormResultFragment(
                 when (it) {
                     is EventRegisterFieldData.Prefilled ->
                         EventFormResultProfileGroup(requireContext(), it.field, it.value)
+
+                    is EventRegisterFieldData.Title ->
+                        EventFormResultTitleItem(it.field.id, it.field.name)
 
                     is EventRegisterFieldData.String ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)

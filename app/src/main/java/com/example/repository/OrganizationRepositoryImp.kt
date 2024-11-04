@@ -49,10 +49,7 @@ class OrganizationRepositoryImp
 
 
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
-        return api.getOrganizationDetails(
-            organizationId,
-            "rights,leader,member,user,userFavorite"
-        )
+        return api.getOrganizationDetails(organizationId, "userFavorite")
     }
 
     override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {

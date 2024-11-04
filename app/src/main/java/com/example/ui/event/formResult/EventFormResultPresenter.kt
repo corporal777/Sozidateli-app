@@ -60,6 +60,13 @@ class EventFormResultPresenter
                     )
                 }
 
+                EventRegisterField.Type.SEPARATOR -> {
+                    EventRegisterFieldData.Title(
+                        field,
+                        findFormResultValue(field, responseField).fromJson<String>()
+                    )
+                }
+
                 EventRegisterField.Type.DATE -> {
                     val date = findFormResultValue(field, responseField).fromJson<String>()
                     EventRegisterFieldData.String(field, date?.formatToDefaultDate())
