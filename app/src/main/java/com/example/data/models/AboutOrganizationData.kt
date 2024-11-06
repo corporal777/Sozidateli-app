@@ -8,7 +8,7 @@ data class AboutOrganizationData(
     val organization: OrganizationNew,
     val events: List<EventNew>?,
     val member: List<OrganizationMemberModel>?,
-    val membersSize: Int = 0
+    val membersSize: Int? = 0
 )
 
 
