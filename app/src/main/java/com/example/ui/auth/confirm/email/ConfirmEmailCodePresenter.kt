@@ -123,7 +123,7 @@ class ConfirmEmailCodePresenter
 
     private fun actionConfirmCodeRequest(): Completable {
         return authRepository.confirmEmailCode(EmailCodeBody(code, email))
-            .onErrorResumeNext{ Completable.error(CodeInvalidException()) }
+            .onErrorResumeNext { Completable.error(CodeInvalidException()) }
     }
 
     private fun actionAfterConfirmRequest(): Completable {

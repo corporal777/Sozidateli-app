@@ -2,43 +2,57 @@ package com.example.ui.views.filters.event
 
 import android.content.Context
 import android.view.LayoutInflater
-import androidx.core.view.isVisible
 import com.example.App
+import com.example.app.databinding.BottomSheetEventFiltersBinding
 import com.example.data.models.InterestNew
 import com.example.data.models.NewEventFormat
+import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
-import com.example.app.databinding.BottomSheetEventFiltersBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initDropDownView
+import com.example.extensions.onTextChanged
+import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
+import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.initInput
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputLayout
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventFiltersBottomSheetDialog(
-    context: Context,
+class EventFiltersBottomSheetDialog (
+    val requireContext: Context,
     filter: SearchFilter.EventNew
-) : BottomSheetDialog(context), EventFiltersBottomSheetContract.View {
+) : BottomSheetDialog(requireContext), EventFiltersBottomSheetContract.View {
 
-    private val mBinding = BottomSheetEventFiltersBinding.inflate(LayoutInflater.from(context))
+    private val mBinding = BottomSheetEventFiltersBinding.inflate(LayoutInflater.from(requireContext))
     private val mvpDelegate by lazy { MvpDelegate(this) }
 
     private var filterName = filter.name
     private var filterDateStart = filter.dateStart
     private var filterDateFinish = filter.dateFinish
-    private var filterFormat = filter.format
+
     private var filterTheme = filter.theme
     private var filterSpec = filter.spec
-    private var filterAddress = filter.address
-    private var filterFullAddress = filter.fullAddress
+
+    private var filterFormat = filter.format
+    private var filterCustomFormat = filter.customFormat
+
+    private var filterOrganizationId = filter.organizationId
+    private var filterOrganizationName = filter.organizationName
+
+    private var filterRegion = filter.addressRegion
+    private var filterTown = filter.addressTown
+    private var filterTownType = filter.addressTownType
 
 
     @InjectPresenter
@@ -77,20 +91,64 @@ class EventFiltersBottomSheetDialog(
         }
     }
 
-    override fun initAddressFilter() {
-        mBinding.etAddress.apply {
-            setTextWithoutSearch(filterAddress)
-            onTextChanged {
-                filterAddress = it.toString()
-                filterFullAddress = null
-            }
-            onDataSelectedListener = {
-                filterFullAddress = it
+    override fun initRegions() {
+        mBinding.apply {
+            tilRegion.setEndIconOnClickListener { tvRegion.performClick() }
+            tvRegion.apply {
+                isCursorVisible = false
+                isFocusable = false
+                isFocusableInTouchMode = false
+
+                setOnClickListener {
+                    SearchRegionBottomSheet(requireContext)
+                        .setRegionSelectedCallback {
+                            filterRegion = it?.name
+                            this.setText(it?.name)
+                        }.show()
+                }
+                initInput(filterRegion) {
+                    tilTown.isEnabled = !it.isNullOrBlank()
+                    if (it.isNullOrBlank()) filterRegion = null
+                }
             }
         }
+
     }
 
-    override fun initDateFilter() {
+    override fun initTowns() {
+        mBinding.apply {
+            tilTown.apply {
+                isEnabled = !filterRegion.isNullOrBlank()
+                setEndIconOnClickListener {
+                    tvTown.performClick()
+                }
+            }
+            tvTown.apply {
+                isCursorVisible = false
+                isFocusable = false
+                isFocusableInTouchMode = false
+
+                setOnClickListener {
+                    SearchTownBottomSheet(requireContext, filterRegion, "event")
+                        .setTownSelectedCallback {
+                            filterTown = it?.name
+                            filterTownType = it?.type
+                            this.setText(it?.name)
+                        }.show()
+                }
+                initInput(filterTown) {
+                    if (it.isNullOrBlank()) {
+                        filterTown = null
+                        filterTownType = null
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    override fun initDateStart(){
         mBinding.etStart.apply {
             val parsedDate = filterDateStart?.let { defaultServerDateFormatter.parse(it) }
             val formattedDate = parsedDate?.let { defaultDateFormatter.format(it) }
@@ -102,8 +160,9 @@ class EventFiltersBottomSheetDialog(
                 String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, day, month + 1, year)
             }
         }
+    }
 
-
+    override fun initDateEnd() {
         mBinding.etFinish.apply {
             val parsedDate = filterDateFinish?.let { defaultServerDateFormatter.parse(it) }
             val formattedDate = parsedDate?.let { defaultDateFormatter.format(it) }
@@ -118,19 +177,53 @@ class EventFiltersBottomSheetDialog(
     }
 
     override fun initFormats(formats: List<NewEventFormat>) {
-        if (formats.isNullOrEmpty()) {
-            mBinding.tilFormat.isVisible = false
-        } else {
-            mBinding.tilFormat.isVisible = true
-            initDropDownView(
-                mBinding.tvFormat,
-                formats,
-                formats.find { it.id == filterFormat }?.name,
-                null,
-                { it.name ?: "" },
-                { it?.id },
-                { filterFormat = it }
-            )
+        mBinding.tvFormat.apply {
+            mBinding.tilFormat.endIconMode = TextInputLayout.END_ICON_NONE
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                EventFormatBottomSheet(requireContext, formats)
+                    .setFormatSelectedCallback {
+                        filterFormat = it?.id
+                        filterCustomFormat = it?.name
+                        this.setText(presenter.getFormatName(formats, filterFormat, filterCustomFormat))
+                    }
+                    .show()
+            }
+            initInput(presenter.getFormatName(formats, filterFormat, filterCustomFormat)) {
+                if (it.isNullOrBlank()) {
+                    filterFormat = null
+                    filterCustomFormat = null
+                }
+            }
+        }
+    }
+
+    override fun initOrganizations(organizations: List<OrganizationNew>?) {
+        mBinding.tvOrganization.apply {
+            mBinding.tilOrganization.endIconMode = TextInputLayout.END_ICON_NONE
+            isCursorVisible = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            setOnClickListener {
+                EventOrgBottomSheet(requireContext, organizations)
+                    .setOrganizationSelectedCallback {
+                        filterOrganizationId = it?.id
+                        filterOrganizationName = it?.legalInformation?.name?.short
+
+                        this.setText(presenter.getOrgName(organizations, filterOrganizationName, filterOrganizationId))
+                    }
+                    .show()
+            }
+            initInput(presenter.getOrgName(organizations, filterOrganizationName, filterOrganizationId)) {
+                if (it.isNullOrBlank()) {
+                    filterOrganizationId = null
+                    filterOrganizationName = null
+                }
+            }
         }
     }
 
@@ -183,13 +276,15 @@ class EventFiltersBottomSheetDialog(
 
     private fun clearFiltersView() {
         mBinding.apply {
-            etAddress.text?.clear()
-            etName.text?.clear()
-            etStart.text?.clear()
-            etFinish.text?.clear()
-            tvTheme.text.clear()
-            tvSpec.text.clear()
-            tvFormat.text.clear()
+            etName.text = null
+            tvRegion.text = null
+            tvTown.text = null
+            tvFormat.text = null
+            tvOrganization.text = null
+            tvTheme.text = null
+            tvSpec.text = null
+            etStart.text = null
+            etFinish.text = null
         }
     }
 
@@ -201,13 +296,22 @@ class EventFiltersBottomSheetDialog(
     private fun getEventFilters(): SearchFilter.EventNew {
         return SearchFilter.EventNew(
             name = filterName,
+
             dateStart = filterDateStart,
             dateFinish = filterDateFinish,
+
             format = filterFormat,
+            customFormat = filterCustomFormat,
+
             theme = filterTheme,
             spec = filterSpec,
-            address = filterAddress,
-            fullAddress = filterFullAddress
+
+            organizationName = filterOrganizationName,
+            organizationId = filterOrganizationId,
+
+            addressRegion = filterRegion,
+            addressTown = filterTown,
+            addressTownType = filterTownType,
         )
     }
 

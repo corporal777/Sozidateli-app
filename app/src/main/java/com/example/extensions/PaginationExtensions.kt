@@ -38,12 +38,12 @@ fun <K : Any> PagingDataSourceFactory<K>.buildList(
     initialSize: Int = 20,
     pageSize: Int = initialSize,
     distance : Int = 5,
-    enablePlaceholders: Boolean = true
+    enablePlaceholders: Boolean = false
 ): PagingList<K> {
     val config = PagingConfig(
         pageSize = pageSize,
         initialLoadSize = initialSize,
-        maxSize = pageSize + 10,
+        //maxSize = pageSize * 3,
         prefetchDistance = distance,
         enablePlaceholders = enablePlaceholders
     )

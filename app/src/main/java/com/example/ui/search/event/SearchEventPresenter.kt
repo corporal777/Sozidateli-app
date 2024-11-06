@@ -27,56 +27,21 @@ import javax.inject.Inject
 @InjectViewState
 class SearchEventPresenter
 @Inject constructor(
-    private val eventData: UserEventData,
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository,
-    private val organizationRepository: OrganizationRepository,
-    private val commonRepository: CommonRepository,
     private val appData: AppData,
     private val socket: SocketIOManager
-) : SearchPresenter<SearchEventContract.View, EventNew, SearchFilter.EventNew>(appData),
+) : SearchPresenter<SearchEventContract.View, SearchFilter.EventNew>(appData),
     SearchEventContract.Presenter {
+
+    private var eventFilter = SearchFilter.EventNew()
 
 //    override val pagination = PaginationDataSourceFactory { limit, offset ->
 //        val data = buildNewFilters(limit, offset)
 //        eventRepository.searchEvents(data) as Maybe<PaginationResponse<Any>>
 //    }
 
-    private var isCommonDataLoaded = false
-    private var interests: Map<InterestNew, List<InterestNew>>? = null
-    private var formats: ArrayList<NewEventFormat> = arrayListOf()
-    private var organizations: List<OrganizationNew>? = null
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val organizations = organizationRepository.getOrganizationsWithActiveEvents()
-        val interests = userRepository.getInterestsList(null)
-            .map { i -> i.data.groupByNotNull { child -> i.data.firstOrNull { it.id == child.parent } } }
-        val eventFormats = eventRepository.getActiveEventFormatsList()
-
-        compositeDisposable += Maybe.zip(interests, eventFormats, organizations) { i, f, o ->
-            this.interests = i
-            this.formats.apply { if (!f.isNullOrEmpty()) addAll(f) }
-            this.organizations = o
-        }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { isCommonDataLoaded = true },
-                onSuccess = { isCommonDataLoaded = true }
-            )
-    }
-
-
-    override fun onResume(searchInterface: SearchInterface) {
-        super.onResume(searchInterface)
-        searchInterface.apply {
-            val initWithFilter = this.initWithFilter
-            if (initWithFilter != null && initWithFilter is SearchFilter.EventNew) {
-                tmpFilter = initWithFilter
-                filter = initWithFilter
-                this.initWithFilter = null
-            }
-        }
     }
 
     override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
@@ -127,38 +92,26 @@ class SearchEventPresenter
             }.call(compositeDisposable)
     }
 
-    override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
     override fun onShowAuthorization(event: String) {
         appData.savedEventId = event
         viewState.showAuthorization()
     }
 
-    override fun onShowFilterRequest() {
-        val showFilter = {
-            tmpFilter.interests = this.interests
-            tmpFilter.formats = this.formats
-            tmpFilter.organizations = this.organizations
-            super.onShowFilterRequest()
-        }
-        if (isCommonDataLoaded) showFilter()
-        else {
-            compositeDisposable += Completable.complete()
-                .timeout(3, TimeUnit.SECONDS)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribe({
-                    showFilter()
-                }, {
-                    showFilter()
-                })
-        }
+    override fun onFiltersApplyClick(filter: SearchFilter.EventNew) {
+        eventFilter = filter
+        viewState.setHasFilter()
+        //pagination.invalidate()
     }
 
-    override fun createFilter() = SearchFilter.EventNew()
-    override fun copyFilter(filter: SearchFilter.EventNew) = filter.copy()
-    override fun isHasFilter(): Boolean = filter.isHasFilter()
-    override fun getSearchType(): String = SEARCH_EVENT_TYPE
+    override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
+
+    override fun onShowFilterRequest() = viewState.showFilter(eventFilter)
+
+    override fun onRefreshRequest() {}
+
+    override fun isHasFilter(): Boolean = eventFilter.isHasFilter()
+
 
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
@@ -168,43 +121,42 @@ class SearchEventPresenter
 
             put(SEARCH_EVENT_TYPE, true)
 
-            //if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, "%$searchText%")
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            val binds =
-                "userFavorite,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+            val binds = "user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
             put(SEARCH_EVENT_BINDS, binds)
 
-            val name = filter.name
+            val name = eventFilter.name
             if (!name.isNullOrEmpty()) put(SEARCH_EVENT_NAME, "%$name%")
 
-            if (filter.format != null) put(EventNew.EVENT_FORMAT, filter.format!!)
-            if (filter.format == null && !filter.customFormat.isNullOrBlank())
-                put(SEARCH_EVENT_FORMAT_CUSTOM, filter.customFormat!!)
+            if (eventFilter.format != null) put(EventNew.EVENT_FORMAT, eventFilter.format!!)
+            if (eventFilter.format == null && !eventFilter.customFormat.isNullOrBlank())
+                put(SEARCH_EVENT_FORMAT_CUSTOM, eventFilter.customFormat!!)
 
-            if (filter.organizationId != null)
-                put(SEARCH_EVENT_ORGANIZATION, filter.organizationId!!)
+            if (eventFilter.organizationId != null)
+                put(SEARCH_EVENT_ORGANIZATION, eventFilter.organizationId!!)
 
-            if (filter.organizationId == null && !filter.organizationName.isNullOrBlank())
-                put(SEARCH_ORG_NAME, filter.organizationName!!)
+            if (eventFilter.organizationId == null && !eventFilter.organizationName.isNullOrBlank())
+                put(SEARCH_ORG_NAME, eventFilter.organizationName!!)
 
-            if (filter.dateStart != null)
-                put(EventNew.EVENT_START_DATE, filter.dateStart + "," + filter.dateFinish)
+            if (eventFilter.dateStart != null)
+                put(EventNew.EVENT_START_DATE, eventFilter.dateStart + "," + eventFilter.dateFinish)
 
             //address
-            if (!filter.addressRegion.isNullOrEmpty()) {
-                put(EventNew.EVENT_ADDRESS_REGION, filter.addressRegion!!)
+            if (!eventFilter.addressRegion.isNullOrEmpty()) {
+                put(EventNew.EVENT_ADDRESS_REGION, eventFilter.addressRegion!!)
             }
-            if (!filter.addressTown.isNullOrEmpty()) {
-                put(EventNew.EVENT_ADDRESS_CITY, filter.addressTown!!)
+            if (!eventFilter.addressTown.isNullOrEmpty()) {
+                put(EventNew.EVENT_ADDRESS_CITY, eventFilter.addressTown!!)
             }
-            if (!filter.addressTownType.isNullOrEmpty()) {
-                put("type", filter.addressTownType!!)
+            if (!eventFilter.addressTownType.isNullOrEmpty()) {
+                put("type", eventFilter.addressTownType!!)
             }
 
-            val topicCategory = filter.theme
+            //interest
+            val topicCategory = eventFilter.theme
             if (topicCategory != null) put(SEARCH_EVENT_TOPIC_CATEGORY, topicCategory)
-            val topicSubcategory = filter.spec
+            val topicSubcategory = eventFilter.spec
             if (topicSubcategory != null) put(SEARCH_EVENT_TOPIC_SUBCATEGORY, topicSubcategory)
         }
     }
@@ -212,7 +164,6 @@ class SearchEventPresenter
     companion object {
         private const val SEARCH_EVENT_TYPE = "event"
         private const val SEARCH_EVENT_NAME = "eventName"
-        private const val SEARCH_EVENT_INTERESTS = "interests"
         private const val SEARCH_EVENT_TOPIC_CATEGORY = "topicCategory"
         private const val SEARCH_EVENT_TOPIC_SUBCATEGORY = "topicSubcategories"
         private const val SEARCH_EVENT_BINDS = "eventBinds"

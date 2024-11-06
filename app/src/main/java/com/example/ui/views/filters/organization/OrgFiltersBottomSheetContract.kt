@@ -1,29 +1,22 @@
-package com.example.ui.views.filters.event
+package com.example.ui.views.filters.organization
 
-import com.example.data.models.OrganizationNew
 import com.example.ui.views.filters.BaseFiltersBottomSheetContract
 import moxy.viewstate.strategy.alias.Skip
 
-interface EventFiltersBottomSheetContract {
+interface OrgFiltersBottomSheetContract {
     interface View : BaseFiltersBottomSheetContract.View {
 
         @Skip
-        fun initTextFilter()
+        fun initOrganizationName()
 
         @Skip
-        fun initDateStart()
-
-        @Skip
-        fun initDateEnd()
+        fun initOrganizationInn()
 
         @Skip
         fun initRegions()
 
         @Skip
         fun initTowns()
-
-        @Skip
-        fun initOrganizations(organizations: List<OrganizationNew>?)
     }
 
     interface Presenter : BaseFiltersBottomSheetContract.Presenter {

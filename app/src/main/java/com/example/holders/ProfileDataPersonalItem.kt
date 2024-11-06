@@ -111,7 +111,7 @@ class ProfileDataPersonalItem(
                 removeUrlUnderline()
             }
 
-            tvPhoneConfirmed.isVisible = mobilePhoneConfirmed
+            tvPhoneConfirmed.isVisible = mobilePhoneConfirmed && tvPhoneMobile.isVisible
         }
     }
 

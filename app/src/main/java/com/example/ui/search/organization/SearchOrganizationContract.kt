@@ -6,7 +6,7 @@ import com.example.ui.search.SearchContract
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface SearchOrganizationContract {
-    interface View : SearchContract.View<OrganizationNew, SearchFilter.Organization> {
+    interface View : SearchContract.View<SearchFilter.Organization> {
         @OneExecution
         fun showOrganization(organization: OrganizationNew)
 
@@ -14,7 +14,7 @@ interface SearchOrganizationContract {
         fun changeSubscription(organization: OrganizationNew)
     }
 
-    interface Presenter : SearchContract.Presenter<OrganizationNew> {
+    interface Presenter : SearchContract.Presenter<SearchFilter.Organization> {
         fun onOrganizationClick(organization: OrganizationNew)
         fun onOrganizationSubscriptionClick(org: OrganizationNew)
     }

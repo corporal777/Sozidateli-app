@@ -14,7 +14,7 @@ import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
-import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
+import com.example.ui.views.filters.event.my.MyEventsFiltersBottomSheetDialog
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.smoothScrollToFirstItem
@@ -105,7 +105,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
     }
 
     override fun showFilters() {
-        EventFiltersBottomSheetDialog(requireContext(), presenter.searchFilter)
+        MyEventsFiltersBottomSheetDialog(requireContext(), presenter.searchFilter)
             .setFiltersSelected { presenter.onSearchFiltersClick(it) }
             .show()
     }

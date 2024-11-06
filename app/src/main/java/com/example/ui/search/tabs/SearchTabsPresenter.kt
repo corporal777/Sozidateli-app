@@ -14,8 +14,6 @@ class SearchTabsPresenter
 ) : BasePresenter<SearchTabsContract.View>(appData), SearchTabsContract.Presenter {
 
     lateinit var searchInterface: SearchInterface
-    var filter: SearchFilter? = null
-
 
     override fun onSearchTextChange(text: String) {
         onSearchTextSubmit(text)

@@ -42,7 +42,7 @@ class RetrofitModule {
 
         clientBuilder.addInterceptor(authInterceptor)
 
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             val logInterceptor = HttpLoggingInterceptor { message ->
                 Log.e("REQUEST INFO: ", message)
             }

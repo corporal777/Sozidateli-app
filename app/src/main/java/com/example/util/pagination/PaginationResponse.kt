@@ -3,7 +3,9 @@ package com.example.util.pagination
 data class PaginationResponse<T>(
     val totalCount: Int?,
     val data: List<T>
-)
+){
+    fun isEmptyData() = data.isEmpty() && totalCount == 0
+}
 
 data class NotificationsResponse<T>(
     val totalCount: Int?,

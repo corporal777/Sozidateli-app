@@ -37,6 +37,8 @@
 
 
     <!--  new margins  -->
+    <dimen name="margin_horizontal_default">15dp</dimen>
+
     <dimen name="auth_login_circle_logo_height">55dp</dimen>
 
     <dimen name="margin_horizontal_main_data">25dp</dimen>

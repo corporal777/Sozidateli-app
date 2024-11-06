@@ -1,12 +1,9 @@
 package com.example.ui.views.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.app.R
+import com.example.exceptions.EmptyDataException
 
 abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 
@@ -17,33 +14,35 @@ abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerVi
                 val newItem = displayLoadStateAsItem(loadState)
 
                 if (oldItem && !newItem) {
-                    notifyItemRangeRemoved(0,getItemsCount())
+                    notifyItemRangeRemoved(0, getItemsCount())
                 } else if (newItem && !oldItem) {
-                    notifyItemRangeInserted(0,getItemsCount())
+                    notifyItemRangeInserted(0, getItemsCount())
                 } else if (oldItem && newItem) {
-                    notifyItemRangeChanged(0,getItemsCount())
+                    notifyItemRangeChanged(0, getItemsCount())
                 }
                 field = loadState
             }
         }
 
-    abstract fun getViewHolder(view : ViewGroup) : VH
-    abstract fun getItemsCount() : Int
+    abstract fun getViewHolder(view: ViewGroup): VH
+    abstract fun getItemsCount(): Int
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return getViewHolder(parent)
     }
 
 
-
     final override fun getItemViewType(position: Int): Int = getStateViewType(loadState)
 
-    final override fun getItemCount(): Int = if (displayLoadStateAsItem(loadState)) getItemsCount() else 0
+    final override fun getItemCount(): Int =
+        if (displayLoadStateAsItem(loadState)) getItemsCount() else 0
 
 
     open fun getStateViewType(loadState: LoadState): Int = 0
 
     open fun displayLoadStateAsItem(loadState: LoadState): Boolean {
-        return loadState is LoadState.Loading || loadState is LoadState.Error
+        return if (loadState is LoadState.Loading) true
+        else if (loadState is LoadState.Error && loadState.error !is EmptyDataException) true
+        else false
     }
 }

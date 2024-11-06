@@ -24,6 +24,14 @@ public class MvpAppCompatFragment extends Fragment {
     private boolean mIsStateSaved;
     private MvpDelegate<? extends MvpAppCompatFragment> mMvpDelegate;
 
+    public MvpAppCompatFragment() {
+        super();
+    }
+
+    public MvpAppCompatFragment(int contentLayoutId) {
+        super(contentLayoutId);
+    }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

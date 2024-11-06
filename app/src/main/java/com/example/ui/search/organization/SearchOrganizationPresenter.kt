@@ -26,20 +26,16 @@ import javax.inject.Inject
 class SearchOrganizationPresenter
 @Inject constructor(
     private val appData: AppData,
-    private val organizationRepository: OrganizationRepository,
     private val eventRepository: EventRepository
-) : SearchPresenter<SearchOrganizationContract.View, OrganizationNew, SearchFilter.Organization>(
-    appData
-), SearchOrganizationContract.Presenter {
+) : SearchPresenter<SearchOrganizationContract.View, SearchFilter.Organization>(appData),
+    SearchOrganizationContract.Presenter {
+
+    private var orgFilter = SearchFilter.Organization()
 
 //    override val pagination = PaginationDataSourceFactory { limit, offset ->
 //        val data = buildFilterNew(limit, offset)
 //        (organizationRepository.searchOrganizations(data) as Maybe<PaginationResponse<Any>>)
 //    }
-
-    override fun onOrganizationClick(organization: OrganizationNew) {
-        viewState.showOrganization(organization)
-    }
 
     override fun onOrganizationSubscriptionClick(org: OrganizationNew) {
         compositeDisposable += Completable.defer {
@@ -62,6 +58,21 @@ class SearchOrganizationPresenter
             }
     }
 
+    override fun onOrganizationClick(organization: OrganizationNew) {
+        viewState.showOrganization(organization)
+    }
+
+    override fun onFiltersApplyClick(filter: SearchFilter.Organization) {
+        orgFilter = filter
+        viewState.setHasFilter()
+    }
+
+    override fun onRefreshRequest() {}
+
+    override fun isHasFilter(): Boolean = orgFilter.isHasFilter()
+
+    override fun onShowFilterRequest() = viewState.showFilter(orgFilter)
+
     private fun buildFilterNew(limit: Int, offset: Int): Map<String, Any> =
         mutableMapOf<String, Any>().apply {
             put(ORGANIZATION_LIMIT, limit)
@@ -69,10 +80,10 @@ class SearchOrganizationPresenter
 
             if (searchText.isNotEmpty()) put(ORGANIZATION_SEARCH, searchText)
 
-            val name = filter.name
+            val name = orgFilter.name
             if (!name.isNullOrEmpty()) put(ORGANIZATION_SEARCH_NAME, "%$name%")
 
-            val inn = filter.inn
+            val inn = orgFilter.inn
             if (!inn.isNullOrEmpty()) {
                 if (inn.length > 10) put(ORGANIZATION_SEARCH_OGRN, inn)
                 else put(ORGANIZATION_SEARCH_INN, inn)
@@ -82,21 +93,16 @@ class SearchOrganizationPresenter
             put(ORGANIZATION_SEARCH_TYPE, true)
 
             //new address filters
-            if (!filter.addressRegion.isNullOrEmpty()) {
-                put(ORGANIZATION_ADDRESS_REGION, filter.addressRegion!!)
+            if (!orgFilter.addressRegion.isNullOrEmpty()) {
+                put(ORGANIZATION_ADDRESS_REGION, orgFilter.addressRegion!!)
             }
-            if (!filter.addressTown.isNullOrEmpty()) {
-                put(ORGANIZATION_ADDRESS_CITY, filter.addressTown!!)
+            if (!orgFilter.addressTown.isNullOrEmpty()) {
+                put(ORGANIZATION_ADDRESS_CITY, orgFilter.addressTown!!)
             }
-            if (!filter.addressTownType.isNullOrEmpty()) {
-                put("type", filter.addressTownType!!)
+            if (!orgFilter.addressTownType.isNullOrEmpty()) {
+                put("type", orgFilter.addressTownType!!)
             }
         }
-
-    override fun createFilter() = SearchFilter.Organization()
-    override fun copyFilter(filter: SearchFilter.Organization) = filter.copy()
-    override fun isHasFilter(): Boolean = filter.isHasFilter()
-    override fun getSearchType(): String = ORGANIZATION_SEARCH_TYPE
 
     private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
         return AddToFavoriteModel(
@@ -106,13 +112,6 @@ class SearchOrganizationPresenter
     }
 
     companion object {
-        private const val FILTER_CONTENT = "content"
-        private const val FILTER_ADDRESS = "address"
-        private const val FILTER_NAME = "name"
-        private const val FILTER_INN = "ogrn_inn"
-        private const val FILTER_TYPE = "type"
-        private const val FILTER_SUBSCRIPTION = "is_subscribed"
-
         private const val ORGANIZATION_SEARCH_BINDS = "orgBinds"
         private const val ORGANIZATION_SEARCH_INN = "inn"
         private const val ORGANIZATION_SEARCH_OGRN = "ogrn"

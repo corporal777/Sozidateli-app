@@ -1,36 +1,28 @@
 package com.example.ui.search.user
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.example.app.R
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.app.databinding.LayoutFilterUserSearchBinding
-import com.example.extensions.findItemBy
-import com.example.holders.PlaceholderItem
-import com.example.holders.UserItem
 import com.example.ui.search.SearchFragment
-import com.xwray.groupie.Group
-import com.example.extensions.initDropDownView
 import com.example.ui.views.adapter.UserPagingAdapter
 import com.example.ui.views.adapter.UserPagingAdapter.Companion.withLoadStateAdapters
 import com.example.ui.views.adapter.UserPlaceholderAdapter
+import com.example.ui.views.filters.user.UserFiltersBottomSheetDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, SearchFilter.UserNew>(),
+class SearchUserFragment : SearchFragment<SearchUserPresenter, SearchFilter.UserNew>(),
     SearchUserContract.View {
 
     @InjectPresenter
-    override lateinit var searchPresenter: SearchUserPresenter
+    override lateinit var presenter: SearchUserPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchUserPresenter>
@@ -38,43 +30,37 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
     @ProvidePresenter
     fun providePresenter(): SearchUserPresenter = presenterProvider.get()
 
-    private val mAdapter by lazy(LazyThreadSafetyMode.NONE) { UserPagingAdapter() }
+
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        UserPagingAdapter({ presenter.onUserClick(it) }, { presenter.onUserActionCLick(it) })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
-            searchList.adapter = mAdapter.withLoadStateAdapters(
-                refresh = UserPlaceholderAdapter(3),
-                footer = UserPlaceholderAdapter(1)
-            )
-
-
-            swipeToRefresh.setOnRefreshListener { searchPresenter.onRefreshRequest() }
+        viewBinding.apply {
+            searchList.adapter = pagingAdapter
+                .withLoadStateAdapters(
+                    UserPlaceholderAdapter(9),
+                    UserPlaceholderAdapter(1)
+                ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
     override fun setData(data: PagingData<UserDetail>) {
-        mAdapter.submitData(lifecycle, data)
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun createItem(itemData: UserDetail?): Group {
-        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.USER)
-        else UserItem(
-            itemData.id,
-            itemData.nameLastName,
-            itemData.address?.city,
-            itemData.loadUserImage(),
-            { searchPresenter.onUserClick(itemData) },
-            itemData.getUserSubscribeAction(),
-            { searchPresenter.onUserActionCLick(itemData) })
+        pagingAdapter.submitData(lifecycle, data)
+        viewBinding.swipeToRefresh.isRefreshing = false
     }
 
 
     override fun updateUser(user: UserDetail) {
-        val idLong = user.id.toLong()
-        val item = adapter.findItemBy { userItem: UserItem -> userItem.id == idLong } ?: return
-        item.notifyChanged(user.getUserSubscribeAction())
+        pagingAdapter.updateUserFavorite(user)
+    }
+
+    override fun showFilter(filter: SearchFilter.UserNew) {
+        UserFiltersBottomSheetDialog(requireContext(), filter)
+            .setFiltersSelected { presenter.onFiltersApplyClick(it) }
+            .show()
     }
 
     override fun showUser(user: UserDetail) {
@@ -83,93 +69,5 @@ class SearchUserFragment : SearchFragment<SearchUserPresenter, UserDetail, Searc
 
     override fun showCurrentUser() {
         findNavController().navigate(R.id.user_profile_fragment)
-    }
-
-
-    override fun createFilterView(filter: SearchFilter.UserNew): View {
-        return LayoutFilterUserSearchBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            null,
-            false
-        )
-            .apply {
-                initRegions(filter, tvRegion, tilRegion, tilTown)
-                initTowns(filter, tvTown, tilTown)
-
-                initUserInterests(filter, this)
-                initAgeFrom(filter, this)
-                initAgeTo(filter, this)
-            }.root
-    }
-
-
-    private fun initUserInterests(
-        filter: SearchFilter.UserNew,
-        binding: LayoutFilterUserSearchBinding
-    ) {
-        binding.apply {
-            val interests = filter.interests
-            if (interests.isNullOrEmpty()) {
-                tilTheme.isVisible = false
-                tilSpec.isVisible = false
-            } else {
-                initInterests(
-                    interests,
-                    tvTheme,
-                    tilSpec,
-                    tvSpec,
-                    filter.theme,
-                    filter.spec
-                ) { theme, spec ->
-                    filter.theme = theme
-                    filter.spec = spec
-                }
-                tilTheme.isVisible = true
-                tilSpec.isVisible = true
-            }
-        }
-    }
-
-    private fun initAgeFrom(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
-        binding.apply {
-            initDropDownView(
-                tvAgeFrom,
-                searchPresenter.getAgesList(null),
-                searchPresenter.getAgesList(null).find { it.toInt() == filter.ageFrom },
-                null,
-                { it },
-                { it },
-                {
-                    filter.ageFrom = it?.toInt()
-                    initAgeTo(filter, binding)
-                }
-            )
-        }
-    }
-
-    private fun initAgeTo(filter: SearchFilter.UserNew, binding: LayoutFilterUserSearchBinding) {
-        binding.apply {
-            initDropDownView(
-                tvAgeTo,
-                searchPresenter.getAgesList(filter.ageFrom),
-                searchPresenter.getAgesList(filter.ageFrom).find { it.toInt() == filter.ageTo },
-                null,
-                { it },
-                { it },
-                { filter.ageTo = it?.toInt() }
-            )
-        }
-    }
-
-    override fun clearFilterView(filterView: View) {
-        LayoutFilterUserSearchBinding.bind(filterView).apply {
-            //etAddress.text = null
-            tvRegion.text = null
-            tvTown.text = null
-            tvTheme.text = null
-            tvSpec.text = null
-            tvAgeFrom.text = null
-            tvAgeTo.text = null
-        }
     }
 }

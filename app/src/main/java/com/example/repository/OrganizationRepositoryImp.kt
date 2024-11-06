@@ -11,7 +11,7 @@ import javax.inject.Inject
 class OrganizationRepositoryImp
 @Inject constructor(
     private val api: Api,
-    appData: AppData
+    private val appData: AppData
 ) : ApiRepository(appData), OrganizationRepository {
 
 
@@ -74,7 +74,11 @@ class OrganizationRepositoryImp
     }
 
     override fun getOrganizationsWithActiveEvents(): Maybe<List<OrganizationNew>> {
-        return api.getOrganizationsWithActiveEvents()
-            .map { it.data }
+        return if (appData.organizationsActiveEvents.isNullOrEmpty()) {
+            api.getOrganizationsWithActiveEvents().map {
+                it.data.forEach { s -> appData.organizationsActiveEvents.add(s) }
+                appData.organizationsActiveEvents
+            }
+        } else Maybe.just(appData.organizationsActiveEvents)
     }
 }

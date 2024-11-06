@@ -149,6 +149,7 @@ class AppData(private val appPrefs: AppPrefs) {
     var interests: List<InterestNew>? = null
     var supportQuestions: List<SupportData> = emptyList()
     val filterRegionsList = arrayListOf<SearchRegion>()
+    val organizationsActiveEvents = arrayListOf<OrganizationNew>()
     val educationLevels = arrayListOf<EducationLevel>()
     val academicDegrees = arrayListOf<EducationLevel>()
     val specialities = arrayListOf<EducationLevel>()

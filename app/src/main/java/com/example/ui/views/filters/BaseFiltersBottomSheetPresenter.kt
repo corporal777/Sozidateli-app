@@ -16,7 +16,7 @@ abstract class BaseFiltersBottomSheetPresenter<V : BaseFiltersBottomSheetContrac
     val eventRepository: EventRepository
 ) : MvpPresenter<V>(), BaseFiltersBottomSheetContract.Presenter {
 
-    private val compositeDisposable = CompositeDisposable()
+    val compositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

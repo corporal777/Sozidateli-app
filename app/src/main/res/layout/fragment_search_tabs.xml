@@ -95,7 +95,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clTabs"
             android:layout_width="match_parent"
@@ -117,9 +116,9 @@
                 android:layout_marginBottom="2dp"
                 android:background="@drawable/background_custom_tab_left_selector_new"
                 android:elevation="2dp"
-                android:textColor="@color/black"
                 android:letterSpacing="-0.01"
                 android:text="@string/search_events"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnTabOrganizations"
                 app:layout_constraintStart_toStartOf="parent"
@@ -217,5 +216,22 @@
             android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardQrScanner" />
+
+        <TextView
+            android:id="@+id/tvEmptyData"
+            fontPath="fonts/sf_pro_display_bold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="3"
+            android:textColor="@color/no_data_item_title_color"
+            android:textSize="25sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/empty_list_placeholder_message"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

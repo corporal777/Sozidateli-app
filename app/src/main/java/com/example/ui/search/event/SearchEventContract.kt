@@ -7,7 +7,7 @@ import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface SearchEventContract {
-    interface View : SearchContract.View<EventNew, SearchFilter.EventNew> {
+    interface View : SearchContract.View<SearchFilter.EventNew> {
         @OneExecution
         fun showAboutEvent(event: String)
 
@@ -21,7 +21,7 @@ interface SearchEventContract {
         fun showAgreementRegisterDialog(event: String, url : String, formEnabled: Boolean)
     }
 
-    interface Presenter : SearchContract.Presenter<EventNew> {
+    interface Presenter : SearchContract.Presenter<SearchFilter.EventNew> {
         fun onActionRegister(event: String, url : String?, formEnabled : Boolean)
         fun onActionCancel(event: String, registrationId: String?)
         fun onShowEventClick(event: String)

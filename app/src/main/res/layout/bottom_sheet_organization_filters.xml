@@ -59,17 +59,17 @@
         app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilName"
+        android:id="@+id/tilOrganizationName"
         style="@style/Profile.Edit.InputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etName"
+            android:id="@+id/etOrganizationName"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:hint="@string/search_filter_event_name"
+            android:hint="@string/search_filter_organization_name"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences" />
     </com.example.ui.views.CustomTextInputLayout>
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         app:endIconDrawable="@drawable/ic_arrow_right"
-        app:layout_constraintTop_toBottomOf="@+id/tilName">
+        app:layout_constraintTop_toBottomOf="@id/tilOrganizationName">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvRegion"
@@ -94,12 +94,13 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilTown"
+
         style="@style/Profile.Edit.InputLayout.DropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         app:endIconDrawable="@drawable/ic_arrow_right"
-        app:layout_constraintTop_toBottomOf="@+id/tilRegion">
+        app:layout_constraintTop_toBottomOf="@id/tilRegion">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/tvTown"
@@ -110,121 +111,20 @@
 
     </com.example.ui.views.CustomTextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvDateTitle"
-        style="@style/Profile.Edit.InputTitle"
-        android:layout_marginTop="15dp"
-        android:text="@string/search_filter_event_dates"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilTown" />
-
     <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilStart"
+        android:id="@+id/tilInn"
         style="@style/Profile.Edit.InputLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        app:endIconMode="custom"
-        app:layout_constraintEnd_toStartOf="@id/tilFinish"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDateTitle">
+        android:layout_marginTop="15dp"
+        android:imeOptions="actionDone"
+        app:layout_constraintTop_toBottomOf="@id/tilTown">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etStart"
+            android:id="@+id/etInn"
             style="@style/Profile.Edit.Input.SingleLine"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/search_filter_start" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilFinish"
-        style="@style/Profile.Edit.InputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        app:endIconMode="custom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tilStart"
-        app:layout_constraintTop_toTopOf="@id/tilStart">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etFinish"
-            style="@style/Profile.Edit.Input.SingleLine"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/search_filter_finish" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilFormat"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilFinish">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvFormat"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_format"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-
-    </com.example.ui.views.CustomTextInputLayout>
-
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilOrganization"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilFormat">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvOrganization"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/profile_work_organization"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilTheme"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilOrganization">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvTheme"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_theme"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
-    </com.example.ui.views.CustomTextInputLayout>
-
-    <com.example.ui.views.CustomTextInputLayout
-        android:id="@+id/tilSpec"
-        style="@style/Profile.Edit.InputLayout.DropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilTheme">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/tvSpec"
-            style="@style/Profile.Edit.Input.SingleLine.DropDown"
-            android:hint="@string/search_filter_specialization"
-            android:paddingStart="@dimen/background_input_padding"
-            android:paddingEnd="@dimen/background_input_padding" />
+            android:hint="@string/search_filter_inn_ogrn"
+            android:inputType="number" />
     </com.example.ui.views.CustomTextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -239,6 +139,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilSpec" />
+        app:layout_constraintTop_toBottomOf="@id/tilInn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
