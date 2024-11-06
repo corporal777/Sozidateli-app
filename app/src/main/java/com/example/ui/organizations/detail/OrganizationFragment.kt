@@ -164,11 +164,11 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
 
-    override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
+    override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int?) {
         membersDataSection.apply {
             updateItems(
                 EventsTitleItem(
-                    getString(R.string.organization_peoples).format(totalSize),
+                    getString(R.string.organization_peoples).format(totalSize ?: 0),
                     pBottom = 10
                 ),
                 members.map { member ->

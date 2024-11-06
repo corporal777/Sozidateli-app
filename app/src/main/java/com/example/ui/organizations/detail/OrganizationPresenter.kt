@@ -126,7 +126,12 @@ class OrganizationPresenter
         if (formEnabled) viewState.showEventRequest(event)
         else eventRepository.registerToEvent(event.toInt())
             .andThen(socket.connectToUpdates())
-            .andThen(eventRepository.getEvent(event, "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"))
+            .andThen(
+                eventRepository.getEvent(
+                    event,
+                    "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"
+                )
+            )
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
@@ -142,7 +147,12 @@ class OrganizationPresenter
 
     override fun onActionCancel(event: String, registrationId: String?) {
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEvent(event, "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"))
+            .andThen(
+                eventRepository.getEvent(
+                    event,
+                    "organization,user-registration,current-user-registration,eventRegistrationState,current-user-registration-state"
+                )
+            )
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple {
@@ -181,18 +191,11 @@ class OrganizationPresenter
             ),
             getMembersRequest()
         ) { org, e, m ->
-            AboutOrganizationData(
-                org,
-                e.data.mapNotNull { it },
-                m.data,
-                m.totalCount ?: m.data.size
-            )
+            AboutOrganizationData(org, e.data.mapNotNull { it }, m.data, m.totalCount)
         }
     }
 
-    fun isCurrentUser(id: String): Boolean {
-        return appData.isCurrentUser(id)
-    }
+    fun isCurrentUser(id: String): Boolean = appData.isCurrentUser(id)
 
     private fun getMembersRequest(): Maybe<PaginationResponse<OrganizationMemberModel>> {
         return organizationRepository.getOrganizationMembers(

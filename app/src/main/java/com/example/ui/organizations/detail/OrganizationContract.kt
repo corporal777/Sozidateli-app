@@ -21,7 +21,7 @@ interface OrganizationContract {
         fun setEventsData(events: List<EventNew>)
 
         @AddToEndSingle
-        fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int)
+        fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int?)
 
         @OneExecution
         fun showAllEvents(organizationId: String)

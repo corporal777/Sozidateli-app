@@ -37,11 +37,6 @@ class MyEventsPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += eventRepository.getUserCalendarEvents()
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.setShowScheduleEvents(!it.isNullOrEmpty())
-            }
         getEventsData(true)
     }
 
@@ -57,10 +52,14 @@ class MyEventsPresenter
             .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { viewState.showEmptyListPlaceholder(isFirst) },
+                onError = {
+                    it.printStackTrace()
+                    viewState.showEmptyListPlaceholder(isFirst)
+                },
                 onNext = { eventList ->
                     if (eventList.isEmpty()) viewState.showEmptyListPlaceholder(isFirst)
                     else viewState.setData(eventList)
+                    viewState.setShowScheduleEvents(!eventList.isNullOrEmpty())
                 })
     }
 
@@ -86,7 +85,10 @@ class MyEventsPresenter
     override fun onRefreshRequest() = pagination.invalidate()
     override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
-    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew?>> {
+    override fun getPaginationRequest(
+        limit: Int,
+        offset: Int
+    ): Maybe<PaginationResponse<EventNew?>> {
         return eventRepository.getSortedEventsList(
             mutableMapOf<String, Any>().apply {
                 put(EventNew.EVENT_LIMIT, limit)
@@ -120,28 +122,23 @@ class MyEventsPresenter
 
                 if (searchFilter.format != null) put(EventNew.EVENT_FORMAT, searchFilter.format!!)
 
-                if (!searchFilter.address.isNullOrEmpty() || searchFilter.fullAddress != null) {
-                    if (searchFilter.fullAddress != null) {
-                        if (searchFilter.fullAddress?.country != null) put(
-                            EventNew.EVENT_ADDRESS_COUNTRY,
-                            searchFilter.fullAddress?.country!!
-                        )
-                        if (searchFilter.fullAddress?.city != null) put(
-                            EventNew.EVENT_ADDRESS_CITY,
-                            searchFilter.fullAddress?.city!!
-                        )
-                        if (searchFilter.fullAddress?.region != null) put(
-                            EventNew.EVENT_ADDRESS_REGION,
-                            searchFilter.fullAddress?.region!!
-                        )
-                        if (searchFilter.fullAddress?.street != null) put(
-                            EventNew.EVENT_ADDRESS_STREET,
-                            searchFilter.fullAddress?.street!!
-                        )
-
-                    } else {
-
-                    }
+                if (searchFilter.fullAddress != null) {
+                    if (searchFilter.fullAddress?.country != null) put(
+                        EventNew.EVENT_ADDRESS_COUNTRY,
+                        searchFilter.fullAddress?.country!!
+                    )
+                    if (searchFilter.fullAddress?.city != null) put(
+                        EventNew.EVENT_ADDRESS_CITY,
+                        searchFilter.fullAddress?.city!!
+                    )
+                    if (searchFilter.fullAddress?.region != null) put(
+                        EventNew.EVENT_ADDRESS_REGION,
+                        searchFilter.fullAddress?.region!!
+                    )
+                    if (searchFilter.fullAddress?.street != null) put(
+                        EventNew.EVENT_ADDRESS_STREET,
+                        searchFilter.fullAddress?.street!!
+                    )
                 }
                 val category = searchFilter.spec ?: searchFilter.theme
                 if (category != null) put(EventNew.EVENT_CATEGORY, category)

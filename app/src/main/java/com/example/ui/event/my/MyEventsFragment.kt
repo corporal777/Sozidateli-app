@@ -142,7 +142,7 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
 
     override fun setShowScheduleEvents(canShow: Boolean) {
         mBinding.toolbar.apply {
-            isVisible = true
+            isVisible = canShow
             mBinding.btnGoToMyTimeTable.setOnClickListener {
                 findNavController().navigate(R.id.my_schedule_events_fragment)
             }
