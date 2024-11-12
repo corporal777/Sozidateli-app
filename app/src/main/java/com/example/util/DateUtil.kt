@@ -6,7 +6,6 @@ import com.example.extensions.defaultServerDateFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.max
 
 fun validateEndDate(mStart: String?, mFinish: String?): Boolean {
     return if (!mStart.isNullOrBlank() && !mFinish.isNullOrBlank()) {

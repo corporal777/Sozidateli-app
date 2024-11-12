@@ -1,14 +1,9 @@
 package com.example.ui.auth.login
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.AuthBody
 import com.example.data.bodies.LoginModel
-import com.example.data.bodies.RebaseInviteBody
-import com.example.data.models.ApiError
-import com.example.data.models.AuthResponse
 import com.example.data.models.SnAuth
-import com.example.exceptions.VkAccountAlreadyBoundException
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
@@ -20,7 +15,6 @@ import com.example.util.Utils.isContainLetters
 import com.example.util.Utils.isPhone
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState

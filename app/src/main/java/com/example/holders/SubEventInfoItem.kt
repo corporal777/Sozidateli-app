@@ -1,23 +1,29 @@
 package com.example.holders
 
 import android.content.Context
-import android.util.Log
 import android.widget.CompoundButton
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.example.extensions.calendar
+import com.example.extensions.defaultDateFormatter
+import com.example.extensions.defaultDateTimeFormatterNoYear
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.defaultTimeFormatter
+import com.example.extensions.getCalendarDay
+import com.example.extensions.getCalendarDayOfWeek
+import com.example.extensions.getCalendarMonth
+import com.example.extensions.isSameDay
+import com.example.extensions.isSameMonth
+import com.example.extensions.isSameYear
+import com.example.extensions.markWon
+import com.example.extensions.parseToDate
 import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tags
 import com.example.app.databinding.ItemSubeventInfoBinding
-import com.example.extensions.*
 import com.example.ui.views.TagChipNew
-import com.example.util.DATE_FORMAT_SHORT_MONTH_NO_YEAR
 import com.example.util.getDrawable
 import com.xwray.groupie.databinding.BindableItem
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
 
 
 class SubEventInfoItem(

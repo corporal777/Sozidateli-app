@@ -3,7 +3,6 @@ package com.example.ui.views.passwordView
 import android.content.Context
 import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout

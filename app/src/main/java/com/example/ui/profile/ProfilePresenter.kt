@@ -1,7 +1,6 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
-import com.example.app.R
 import com.example.data.AppData
 import com.example.data.bodies.FieldPhoneBody
 import com.example.data.models.FieldDetails
@@ -9,23 +8,19 @@ import com.example.data.models.UserDetail
 import com.example.data.socket.SocketIOManager
 import com.example.exceptions.EmailNotUniqueException
 import com.example.exceptions.PhoneNotUniqueException
-import com.example.extensions.phoneToServer
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.PHONE_PERSONAL
-import com.example.util.Utils
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withCustomLoading
 import withDelay
 import withProgressBarDialogLoading
-import withProgressBarLoading
 import javax.inject.Inject
 
 

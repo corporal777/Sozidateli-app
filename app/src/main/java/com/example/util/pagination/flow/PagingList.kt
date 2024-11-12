@@ -33,4 +33,9 @@ class PagingList<T : Any>(
         if (this::emitter.isInitialized) emitter.onNext(PagingData.empty())
         dataSourceFactory.source!!.invalidateFromStart()
     }
+
+    fun invalidateStart(){
+        if (dataSourceFactory.source == null) return
+        dataSourceFactory.source!!.invalidateFromStart()
+    }
 }

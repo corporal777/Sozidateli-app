@@ -4,15 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import com.example.App
 import com.example.app.databinding.BottomSheetOrganizationFiltersBinding
-import com.example.app.databinding.BottomSheetUserFiltersBinding
 import com.example.data.models.InterestNew
 import com.example.data.models.NewEventFormat
 import com.example.data.models.SearchFilter
-import com.example.extensions.initDropDownView
-import com.example.extensions.onTextChanged
-import com.example.ui.views.filters.user.UserFiltersBottomSheetContract
-import com.example.ui.views.filters.user.UserFiltersBottomSheetDialog
-import com.example.ui.views.filters.user.UserFiltersBottomSheetPresenter
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
 import com.example.util.initInput

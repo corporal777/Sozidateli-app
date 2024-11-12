@@ -1,6 +1,5 @@
 package com.example.data.models
 
-import android.util.Log
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.extensions.isSameMonth
@@ -8,8 +7,6 @@ import com.example.extensions.isYesterday
 import com.example.extensions.parseToDate
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 

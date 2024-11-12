@@ -1,10 +1,7 @@
 package com.example.ui.event.formResult.items
 
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventFormResultEducationBinding
-import com.example.app.databinding.ItemEventFormResultPassportBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS

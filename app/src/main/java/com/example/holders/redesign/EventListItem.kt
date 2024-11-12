@@ -17,14 +17,12 @@ import com.example.app.databinding.ItemEventNewBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultDate
-import com.example.extensions.formatToDefaultDayMonthDate
-import com.example.extensions.formatToDefaultDayMonthYearDate
-import com.example.extensions.formatToDefaultTime
 import com.example.extensions.isSameDay
 import com.example.util.setImage
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
+import com.example.ui.views.loading.CustomLoadingButton
 
 class EventListItem(
     event: EventNew,
@@ -41,10 +39,12 @@ class EventListItem(
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
-            cardEvent.setOnClickListener {
-                clickListener.onShowEventClick(viewBinding.root, eventId)
+            itemContainer.apply {
+                clipToOutline = true
+                setOnClickListener {
+                    clickListener.onShowEventClick(viewBinding.root, eventId)
+                }
             }
-
             tvDate.text = eventDate
             tvLocation.text = eventData.address?.getShortAddress()
             tvTitle.text = eventData.name
@@ -65,13 +65,13 @@ class EventListItem(
         val userRegistration = eventData.binds?.currentUserRegistration?.status?.value
         var statusBackground = R.color.event_status_finished_background
         var statusText = R.string.event_status_finished
+
         val statusVisibility: Boolean
         when (status) {
             Event.Status.FINISHED -> {
                 statusVisibility = true
                 statusBackground = R.color.event_status_finished_background
                 statusText = R.string.event_status_finished
-
             }
 
             Event.Status.CANCELED -> {
@@ -79,7 +79,6 @@ class EventListItem(
                 statusBackground = R.color.event_status_cancelled_background
                 statusText = R.string.event_status_cancelled
             }
-
             else -> {
                 when (userRegistration) {
                     Event.Status.APPROVED -> {
@@ -105,7 +104,6 @@ class EventListItem(
                         statusBackground = R.color.event_status_wait_confirmation_background
                         statusText = R.string.event_action_closed_request
                     }
-
                     else -> statusVisibility = false
                 }
             }
@@ -117,7 +115,7 @@ class EventListItem(
         }
     }
 
-    private fun decorActionButton(btnAction: Button) {
+    private fun decorActionButton(btnAction: CustomLoadingButton) {
         val registrationId = eventData.binds?.currentUserRegistration?.id.toString()
         val registrationState = eventData.binds?.eventRegistrationState
         val userAgreement = eventData.userAgreement?.uri
@@ -125,14 +123,14 @@ class EventListItem(
 
         if (isTemp) btnAction.apply {
             isVisible = true
-            text = context.getString(R.string.event_action_participate)
+            setButtonText(context.getString(R.string.event_action_participate))
             setOnClickListener { clickListener.onShowNeedAuth(eventId) }
         }
         else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
             if (actions.contains("register"))
                 btnAction.apply {
                     isVisible = true
-                    text = context.getString(R.string.event_action_participate)
+                    setButtonText(context.getString(R.string.event_action_participate))
                     setOnClickListener {
                         registrationState.checkStateLevel {
                             clickListener.onActionRegister(
@@ -146,7 +144,7 @@ class EventListItem(
             else if (actions.contains("withdraw"))
                 btnAction.apply {
                     isVisible = true
-                    text = context.getString(R.string.event_action_cancel_request)
+                    setButtonText(context.getString(R.string.event_action_cancel_request))
                     setOnClickListener {
                         registrationState.checkStateLevel {
                             clickListener.onActionCancel(eventId, registrationId)

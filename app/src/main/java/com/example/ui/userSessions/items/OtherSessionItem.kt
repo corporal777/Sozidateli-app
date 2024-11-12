@@ -4,12 +4,7 @@ import android.widget.ImageView
 import com.example.app.R
 import com.example.data.models.UserSessionModel
 import com.example.app.databinding.ItemOtherSessionBinding
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.xwray.groupie.databinding.BindableItem
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class OtherSessionItem(
     val session: UserSessionModel?,

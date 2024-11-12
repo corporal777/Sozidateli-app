@@ -3,7 +3,6 @@ package com.example.ui.event.formResult.items
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.data.models.WorkExperience
-import com.example.app.databinding.ItemEventFormResultPassportBinding
 import com.example.app.databinding.ItemEventFormResultWorkBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault

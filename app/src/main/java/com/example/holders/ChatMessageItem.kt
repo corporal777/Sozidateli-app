@@ -16,8 +16,6 @@ import com.example.data.models.ChatMessage
 import com.example.extensions.defaultTimeFormatter
 import com.example.extensions.dp
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
 
 abstract class ChatMessageItem<T : ViewDataBinding>(
         val message: ChatMessage.Personal

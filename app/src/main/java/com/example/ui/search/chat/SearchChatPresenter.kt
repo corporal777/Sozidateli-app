@@ -3,15 +3,10 @@ package com.example.ui.search.chat
 import com.example.data.AppData
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.extensions.buildList
 import com.example.extensions.groupByNotNull
 import com.example.repository.CommonRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.PaginationList
-import com.example.util.pagination.observable.applyErrorHandler
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain

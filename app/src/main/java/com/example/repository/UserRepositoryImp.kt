@@ -1,7 +1,6 @@
 package com.example.repository
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.*
@@ -13,11 +12,9 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function3
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.example.extensions.toBodyPart
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import javax.inject.Inject
 

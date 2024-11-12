@@ -6,12 +6,10 @@ import android.widget.TextView
 import com.example.app.R
 import com.example.data.models.EventPassport
 import com.example.data.models.EventRegisterFieldData
-import com.example.app.databinding.ItemRegisterEventBooleanBinding
 import com.example.app.databinding.ItemRegisterEventPassportBinding
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
-import com.example.extensions.setRequired
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.initAsDatePicker

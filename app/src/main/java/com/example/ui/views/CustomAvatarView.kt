@@ -2,8 +2,6 @@ package com.example.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -13,7 +11,6 @@ import coil.load
 import coil.request.CachePolicy
 import coil.size.Scale
 import com.example.app.R
-import com.example.extensions.dp
 import com.example.extensions.px
 import com.example.util.getColor
 import com.example.util.getDrawable

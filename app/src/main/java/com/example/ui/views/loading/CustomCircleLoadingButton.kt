@@ -1,26 +1,19 @@
 package com.example.ui.views.loading
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutCircleLoadingButtonBinding
-import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.util.getColor
 import com.example.util.getDrawable
 import com.example.util.setLeftDrawableWithIntrinsicBounds
-import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class CustomCircleLoadingButton : ConstraintLayout {
 

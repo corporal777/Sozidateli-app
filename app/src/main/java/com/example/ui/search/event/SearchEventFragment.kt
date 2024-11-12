@@ -1,17 +1,29 @@
 package com.example.ui.search.event
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.EventPagingAdapter
+import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.EventPlaceholderAdapter
+import com.example.adapters.UserPagingAdapter
+import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.SearchFilter
 import com.example.app.databinding.LayoutFilterEventSearchBinding
+import com.example.app.databinding.LayoutListEventSearchBinding
+import com.example.app.databinding.LayoutListSearchBinding
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
+import com.example.ui.agreement.UserAgreementBottomSheetDialog
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
@@ -29,7 +41,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment : SearchFragment<SearchEventPresenter, SearchFilter.EventNew>(),
+class SearchEventFragment :
+    SearchFragment<SearchEventPresenter, SearchFilter.EventNew>(R.layout.layout_list_event_search),
     SearchEventContract.View {
 
     @InjectPresenter
@@ -42,21 +55,41 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, SearchFilter.Ev
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
 
+    private val viewBinding: LayoutListEventSearchBinding by viewBinding()
 
-
-    private val onEventClickListener = object : EventListItem.OnEventClickListener {
-        override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
-            presenter.onActionRegister(event, agreementUrl, formEnabled)
-        override fun onActionCancel(event: String, registrationId: String?) =
-            presenter.onActionCancel(event, registrationId)
-        override fun onShowEventClick(view: View, event: String) =
-            presenter.onShowEventClick(event)
-        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        EventPagingAdapter(
+            { presenter.onActionRegister(it, false) },
+            { presenter.onActionCancel(it) },
+            { presenter.onShowEventClick(it.id.toString()) },
+            { presenter.onShowAuthorization(it.id.toString()) },
+            { showStateErrorMessage(StateType.BASE, false, null) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewBinding.apply {
+            searchEventList.adapter = pagingAdapter.withLoadStateAdapters(
+                EventPlaceholderAdapter(1),
+                EventPlaceholderAdapter(1)
+            ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            clQrScanner.setOnClickListener { presenter.onScanClick() }
+        }
+    }
+
+    override fun setData(data: PagingData<EventNew>, isTemporary: Boolean) {
+        pagingAdapter.submitData(lifecycle, data, isTemporary, false)
+        viewBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun invalidatePagingData() {
+        pagingAdapter.refreshData()
+    }
+
+    override fun updateEvent(event: EventNew) {
+        pagingAdapter.updateEventAction(event)
     }
 
     override fun showFilter(filter: SearchFilter.EventNew) {
@@ -83,9 +116,15 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, SearchFilter.Ev
         findNavController().navigate(R.id.authorization_fragment)
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
-        EventAgreementBottomSheet(requireContext(), url)
-            .setSelectCallback { presenter.onAcceptRegistrationAgreement(event, formEnabled) }
-            .show()
+    override fun showQrScanner() {
+        findNavController().navigate(R.id.qr_scanner_fragment)
+    }
+
+    override fun showAgreementRegisterDialog(event: EventNew) {
+        UserAgreementBottomSheetDialog(requireContext(), event)
+            .setAcceptedCallback { isAccept, eventNew ->
+                if (isAccept) presenter.onActionRegister(eventNew, true)
+                else updateEvent(eventNew)
+            }.show()
     }
 }

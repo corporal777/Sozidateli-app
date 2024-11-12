@@ -2,15 +2,11 @@ package com.example.extensions
 
 import android.text.SpannableStringBuilder
 import android.text.util.Linkify
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.toSpannable
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.example.app.R
-import com.example.util.AuthValidateUtil
-import com.google.android.material.textfield.TextInputLayout
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 fun Fragment.showChangeEmailCompleteDialog(email: String) {

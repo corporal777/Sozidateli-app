@@ -1,25 +1,15 @@
 package com.example.ui.state.base
 
-import android.util.Log
 import com.example.data.AppData
-import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
-import com.example.data.models.UserDetail
-import com.example.extensions.formatToDefaultDate
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.state.UserState
-import com.example.util.GENDER_FEMALE
-import com.example.util.GENDER_MALE
-import com.example.util.PHONE_PERSONAL
-import com.example.util.rxtakephoto.RxTakePhoto
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withCheckInternetConnectivity
 import withCustomLoading
 import withProgressBarDialogLoading
 import javax.inject.Inject

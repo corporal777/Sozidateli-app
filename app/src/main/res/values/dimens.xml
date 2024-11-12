@@ -42,6 +42,7 @@
     <dimen name="margin_fourteen">14dp</dimen>
     <dimen name="margin_fifteen">15dp</dimen>
     <dimen name="margin_twenty">20dp</dimen>
+    <dimen name="margin_twenty_five">25dp</dimen>
     <dimen name="margin_thirty">30dp</dimen>
     <dimen name="margin_forty">40dp</dimen>
     <dimen name="margin_fifty">50dp</dimen>

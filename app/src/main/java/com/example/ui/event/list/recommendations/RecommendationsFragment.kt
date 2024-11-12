@@ -1,12 +1,15 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.EventPagingAdapter
+import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.app.databinding.FragmentRecommendationsBinding
@@ -25,12 +28,15 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.offsetChangedListener
-import com.example.extensions.setOnClickListener
+import com.example.ui.event.list.EventListFragmentNew
+import com.example.ui.views.dialogs.StateType
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
+import kotlin.reflect.KClass
 
-class RecommendationsFragment : EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
+class RecommendationsFragment :
+    EventListFragmentNew<RecommendationsPresenter>(R.layout.fragment_recommendations),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -44,74 +50,52 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
         try {
             val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
             this.onShowSavedEventOrProfile(args.isOpenProfile)
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
-    private val dataGroup = Section()
-    private val groupAdapter = PaginationGroupAdapter<GroupieViewHolder>().apply {
-        add(dataGroup)
-        setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
-            override fun onItemTake(position: Int) {
-                presenter.onItemTake(position)
-            }
-        })
-    }
+
+    private val viewBinding: FragmentRecommendationsBinding by viewBinding()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
+        viewBinding.apply {
             eventsList.apply {
-                adapter = groupAdapter
+                adapter = pagingAdapter.withLoadStateAdapters(
+                    EventPlaceholderAdapter(1),
+                    EventPlaceholderAdapter(1)
+                ) {
+                    //setDataEmpty(it, getString(R.string.no_data_found))
+                }
             }
-            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
-            etSearch.setOnClickListener { presenter.onSearchClick() }
-            btnLogin.setOnClickListener { presenter.onAuthorizationClick() }
+            swipeToRefresh.setOnRefreshListener {
+                presenter.onRefreshRequest()
+            }
+
+            etSearch.setOnClickListener {
+                presenter.onSearchClick()
+            }
+            btnLogin.setOnClickListener { presenter.onShowAuthorization(null) }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
-                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                presenter.onAppBarOffsetChanged(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
         }
     }
 
+    override fun setData(data: PagingData<EventNew>, isNeedUpdateApp: Boolean) {
+        pagingAdapter.submitData(lifecycle, data, presenter.isTemporaryUser(), isNeedUpdateApp)
+        viewBinding.swipeToRefresh.isRefreshing = false
+    }
+
+
     override fun setAuthorizationButton(isTemporary: Boolean) {
-        mBinding.btnLogin.isVisible = isTemporary
-    }
-
-    override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
-        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
-        if (group == null)
-            dataGroup.updateGroup(
-                RecommendationItemsGroup(
-                    events,
-                    presenter.isTemporaryUser(),
-                    isNeedUpdateApp,
-                    onEventClickListener
-                )
-            )
-        else group.updateItems(events, isNeedUpdateApp)
-
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-
-    override fun updateEvent(event: EventNew) {
-        dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
+        viewBinding.btnLogin.isVisible = isTemporary
     }
 
     override fun showEmptyListPlaceholder() {
-        dataGroup.updateItem(
-            NoScheduleEventItem(
-                getString(R.string.no_active_events_found_title),
-                padding = 70.dp
-            )
-        )
-        mBinding.swipeToRefresh.isRefreshing = false
+        viewBinding.swipeToRefresh.isRefreshing = false
     }
-
-    override fun scrollToFirstItem() {
-        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
-    }
-
 
     override fun showSearch() {
         findNavController().navigate(R.id.search_tabs_fragment)
@@ -122,9 +106,17 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
         findNavController().navigate(R.id.profile_fragment, args)
     }
 
+    override fun scrollToFirstItem() {
+        val mLayoutManager = viewBinding.eventsList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), viewBinding.appBarLayout, 1)
+    }
+
+    override fun setAppBarViews(value: Float) {
+        updateAppBarViews(value)
+    }
 
     override fun onExpandedState() {
-        mBinding.apply {
+        viewBinding.apply {
             tvLabelSmall.apply {
                 alpha = 1F
                 animate().setDuration(500).alpha(0.0f)
@@ -139,7 +131,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
     }
 
     override fun onCollapsedState() {
-        mBinding.apply {
+        viewBinding.apply {
             tvLabelSmall.apply {
                 alpha = 0F
                 animate().setDuration(500).alpha(1.0f)
@@ -153,6 +145,6 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
         }
     }
 
-    override fun layout(): Int = R.layout.fragment_recommendations
+    //override fun layout(): Int = R.layout.fragment_recommendations
 
 }

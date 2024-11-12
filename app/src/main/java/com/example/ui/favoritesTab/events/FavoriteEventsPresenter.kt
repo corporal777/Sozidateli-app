@@ -6,20 +6,14 @@ import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventFavoriteModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventUserFavorite
-import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.PaginationList
-import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @InjectViewState

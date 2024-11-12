@@ -58,15 +58,15 @@
             app:isCheckable="true"
             app:layout_constraintTop_toBottomOf="@id/tvAgreementDesc" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.example.ui.views.loading.CustomLoadingButton
             android:id="@+id/btnApply"
-            style="@style/BtnBrownStyle"
+            style="@style/BtnLoadingStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="20dp"
-            android:background="@drawable/btn_background_brown_radius_14"
-            android:text="@string/auth_action_continue"
+            app:buttonBackground="@drawable/btn_background_brown_radius_14"
+            app:buttonText="@string/auth_action_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_agreement" />
     </androidx.constraintlayout.widget.ConstraintLayout>

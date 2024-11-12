@@ -1,6 +1,5 @@
 package com.example.data
 
-import android.util.Log
 import com.example.data.database.EventMemberDao
 import com.example.data.database.UserEventDao
 import com.example.data.models.*
@@ -8,17 +7,12 @@ import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
-import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function
-import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.CompletableSubject
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.collections.ArrayList
 
 class UserEventData(
     private val eventRepository: EventRepository,

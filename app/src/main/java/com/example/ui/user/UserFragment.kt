@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -17,6 +16,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.firstLetterToUppercase
+import com.example.extensions.updateGroup
+import com.example.extensions.updateItem
 import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.data.models.InterestNew
@@ -24,7 +28,6 @@ import com.example.data.models.OrganizationNew
 import com.example.data.models.ProfileUserData
 import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentUserBinding
-import com.example.extensions.*
 import com.example.holders.*
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment

@@ -1,5 +1,6 @@
 package com.example.ui.search
 
+import androidx.paging.PagingData
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
@@ -19,6 +20,9 @@ interface SearchContract {
 
         @Skip
         fun setDataEmpty(isEmpty : Boolean, title : String)
+
+        @Skip
+        fun invalidatePagingData()
     }
 
     interface Presenter<F : SearchFilter> : BaseContract.Presenter {

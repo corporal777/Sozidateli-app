@@ -1,22 +1,10 @@
 package com.example.ui.userprofile.edit.work
 
-import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentEditWorkFragmentBinding
-import com.example.extensions.findGroupBy
 import com.example.extensions.updateGroup
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.base.BaseUserProfileEditFragment
 import com.example.ui.userprofile.edit.work.items.UserWorksGroup
-import com.example.ui.views.toolbar.ToolbarContent
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

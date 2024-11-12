@@ -5,11 +5,13 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.updateItem
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.app.databinding.FragmentMyEventsBinding
-import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
 import com.example.ui.event.list.EventListFragment

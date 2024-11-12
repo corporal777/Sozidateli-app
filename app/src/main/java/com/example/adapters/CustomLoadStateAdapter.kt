@@ -1,4 +1,4 @@
-package com.example.ui.views.adapter
+package com.example.adapters
 
 import android.view.ViewGroup
 import androidx.paging.LoadState
@@ -7,6 +7,7 @@ import com.example.exceptions.EmptyDataException
 
 abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 
+    val notRefresh = LoadState.NotLoading(endOfPaginationReached = false)
     var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
         set(loadState) {
             if (field != loadState) {
@@ -23,6 +24,8 @@ abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerVi
                 field = loadState
             }
         }
+
+
 
     abstract fun getViewHolder(view: ViewGroup): VH
     abstract fun getItemsCount(): Int

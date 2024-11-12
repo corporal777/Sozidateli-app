@@ -12,7 +12,6 @@ import com.example.extensions.setOnClickListener
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class EventFavoriteItem(
         val event: EventNew,

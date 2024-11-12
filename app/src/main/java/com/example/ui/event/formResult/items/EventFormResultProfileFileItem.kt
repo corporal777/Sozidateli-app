@@ -4,7 +4,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.data.models.FileModel
-import com.example.data.models.PrefilledFieldFiles
 import com.example.app.databinding.ItemEventFormResultProfileBinding
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.util.showCustomTabsBrowser

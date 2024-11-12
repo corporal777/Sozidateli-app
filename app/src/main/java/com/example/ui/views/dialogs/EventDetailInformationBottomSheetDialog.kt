@@ -1,7 +1,6 @@
 package com.example.ui.views.dialogs
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_SENDTO
 import android.content.Intent.EXTRA_EMAIL
@@ -25,7 +24,6 @@ import com.example.ui.main.MainActivity
 import com.example.ui.page.PageFragment
 import com.example.ui.views.CustomSpannableString
 import com.example.util.URLSpanNoUnderline
-import com.example.util.Utils.formatMobilePhone
 import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior

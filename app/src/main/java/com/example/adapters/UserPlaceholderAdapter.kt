@@ -1,17 +1,12 @@
-package com.example.ui.views.adapter
+package com.example.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
-import com.example.app.databinding.ItemUserBinding
 import com.example.app.databinding.ItemUserPlaceholderBinding
-import com.example.data.models.UserDetail
-import com.example.util.setCircleAvatar
 
 class UserPlaceholderAdapter(val count : Int) : CustomLoadStateAdapter<UserPlaceholderAdapter.UserPlaceholderViewHolder>() {
 

@@ -1,28 +1,23 @@
 package com.example.ui.search.organization
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
-import com.example.app.databinding.LayoutFilterOrganizationSearchBinding
-import com.example.extensions.findItemBy
-import com.example.holders.OrganizationItem
-import com.example.holders.PlaceholderItem
+import com.example.app.databinding.LayoutListSearchBinding
 import com.example.ui.search.SearchFragment
-import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import com.example.ui.views.filters.organization.OrgFiltersBottomSheetDialog
-import com.xwray.groupie.Group
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchOrganizationFragment :
-    SearchFragment<SearchOrganizationPresenter, SearchFilter.Organization>(),
+    SearchFragment<SearchOrganizationPresenter, SearchFilter.Organization>(R.layout.layout_list_search),
     SearchOrganizationContract.View {
 
     @InjectPresenter
@@ -34,10 +29,14 @@ class SearchOrganizationFragment :
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
-
+    private val viewBinding: LayoutListSearchBinding by viewBinding()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun invalidatePagingData() {
+
     }
 
     override fun changeSubscription(organization: OrganizationNew) {

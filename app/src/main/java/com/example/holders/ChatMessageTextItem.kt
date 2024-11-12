@@ -1,7 +1,6 @@
 package com.example.holders
 
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
@@ -9,7 +8,6 @@ import com.example.app.R
 import com.example.data.models.ChatMessage
 import com.example.app.databinding.ItemChatMessageTextBinding
 import com.example.extensions.markWon
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class ChatMessageTextItem(message: ChatMessage.Personal) : ChatMessageItem<ItemChatMessageTextBinding>(message) {
 

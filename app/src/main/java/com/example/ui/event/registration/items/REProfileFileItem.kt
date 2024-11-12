@@ -11,7 +11,6 @@ import com.example.holders.registerEvent.BaseRegisterProfileItem
 import com.example.util.getColor
 import com.example.util.showCustomTabsBrowser
 import com.example.util.showFileBrowser
-import com.xwray.groupie.databinding.BindableItem
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class REProfileFileItem (

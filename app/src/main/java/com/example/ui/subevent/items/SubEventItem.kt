@@ -12,8 +12,6 @@ import com.example.ui.views.TagChip
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.weak
 import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
 
 open class SubEventItem(
     private val subEvent: EventActivityModel,

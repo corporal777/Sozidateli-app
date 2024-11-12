@@ -5,7 +5,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
 import android.view.View
 import android.widget.CompoundButton
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.text.getSpans
 import androidx.core.text.set

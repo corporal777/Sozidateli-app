@@ -1,19 +1,11 @@
 package com.example.ui.views.phoneText
 
 import android.content.Context
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
-import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import com.example.app.R
 import com.example.extensions.onFocusChanged
-import com.example.extensions.onTextChanged
 import com.google.android.material.textfield.TextInputEditText
 
 class PhoneFormatEditText : TextInputEditText {

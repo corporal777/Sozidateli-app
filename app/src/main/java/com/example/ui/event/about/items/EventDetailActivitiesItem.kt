@@ -2,7 +2,6 @@ package com.example.ui.event.about.items
 
 import com.example.data.models.EventActivityModel
 import com.example.extensions.findItemBy
-import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup

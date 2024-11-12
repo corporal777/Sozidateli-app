@@ -91,9 +91,9 @@ class EventRepositoryImp
         api.getEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getEventsListNew(map)
-            .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
+            .map { PaginationResponse(it.totalCount, it.data ?: emptyList()) }
     }
 
     override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
@@ -327,7 +327,7 @@ class EventRepositoryImp
     override fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>> =
         api.getTags(map).map { it.data }
 
-    override fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.searchGlobal(map)
             .map { PaginationResponse(it.events.count, it.events.data) }
     }

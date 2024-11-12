@@ -10,11 +10,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.text.toSpannable
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.clearFragmentResultListener
@@ -28,10 +26,8 @@ import com.example.extensions.firstLetterToUppercase
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.views.CtpDialog
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
 import com.example.ui.views.dialogs.ContactsType
-import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
 import com.example.ui.views.dialogs.DefaultAlertDialog

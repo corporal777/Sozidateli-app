@@ -1,27 +1,18 @@
 package com.example.ui.views.loading
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
-import com.example.extensions.inverseSp
-import com.example.extensions.px
-import com.example.extensions.sp
-import com.example.ui.views.UserSubscribeButton
 import com.example.util.getDrawable
-import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 class CustomLoadingButton : ConstraintLayout {
 
@@ -63,8 +54,10 @@ class CustomLoadingButton : ConstraintLayout {
         val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText) ?: ""
         val buttonDrawable = a.getDrawable(R.styleable.CustomLoadingButton_buttonDrawable)
 
+        val buttonPadding = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonPaddingHorizontal, 0.dp)
+
         a.recycle()
-        initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText, buttonDrawable)
+        initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText, buttonDrawable, buttonPadding)
 
         buttonInitText = buttonText
         loadingView.progressLoad.apply {
@@ -80,7 +73,8 @@ class CustomLoadingButton : ConstraintLayout {
         buttonHeight: Int,
         buttonTextSize: Int,
         buttonText: CharSequence?,
-        buttonDrawable: Drawable?
+        buttonDrawable: Drawable?,
+        buttonPaddingHorizontal : Int
     ) {
         loadingView.ivButton.apply {
             isVisible = buttonDrawable != null
@@ -93,6 +87,7 @@ class CustomLoadingButton : ConstraintLayout {
             text = buttonText
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize.toFloat())
+            setPadding(buttonPaddingHorizontal, 0, buttonPaddingHorizontal,0)
         }
 
     }

@@ -7,7 +7,6 @@ import com.example.app.databinding.ItemEventTimetableBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.firstLetterToUppercase
 import com.example.extensions.parseAndFormat
-import com.example.extensions.parseToLong
 import com.xwray.groupie.databinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.*

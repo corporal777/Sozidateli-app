@@ -21,7 +21,6 @@ import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.observable.PaginationDataSourceFactory
 import com.example.util.pagination.observable.applyErrorHandler
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState

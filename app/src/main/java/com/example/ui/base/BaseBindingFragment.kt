@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.ViewBindingProperty
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentSearchTabsBinding
@@ -26,11 +28,13 @@ import com.example.util.Utils
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.android.support.AndroidSupportInjection
+import kotlin.reflect.KClass
 
-abstract class BaseBindingFragment(layoutRes : Int): MvpAppCompatFragment(layoutRes), BaseContract.View {
+abstract class BaseBindingFragment(res: Int) : MvpAppCompatFragment(res), BaseContract.View {
+
+    //abstract fun layout(): Int
 
     private var mActivity: BaseActivity? = null
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

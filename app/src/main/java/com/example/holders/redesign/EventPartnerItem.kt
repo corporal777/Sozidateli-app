@@ -9,9 +9,7 @@ import com.example.app.R
 import com.example.app.databinding.ItemPartnerBinding
 import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
-import com.example.util.setImage
 import com.example.util.setImagePicasso
-import com.xwray.groupie.Item
 import com.xwray.groupie.databinding.BindableItem
 
 class EventPartnerItem(

@@ -10,12 +10,16 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.example.extensions.calendar
+import com.example.extensions.dp
+import com.example.extensions.findItem
+import com.example.extensions.findItemByShort
+import com.example.extensions.updateItem
 import com.example.app.R
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleData
 import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.FragmentMyScheduleEventsBinding
-import com.example.extensions.*
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
@@ -32,6 +36,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import com.example.extensions.getLocationOfView
+import com.example.extensions.getMonthName
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onScrolled

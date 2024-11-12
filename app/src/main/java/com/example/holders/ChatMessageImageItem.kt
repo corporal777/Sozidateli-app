@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
-import androidx.databinding.ViewDataBinding
 import com.example.app.R
 import com.example.data.models.ChatMessage
 import com.example.app.databinding.ItemChatMessageImageBinding
@@ -12,7 +11,6 @@ import com.example.extensions.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 
 class ChatMessageImageItem(

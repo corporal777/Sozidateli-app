@@ -1,7 +1,6 @@
 package com.example.ui.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -18,7 +17,6 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
 import com.example.ui.notification.items.*
-import com.example.ui.views.LinearLayoutManagerAccurateOffset
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem

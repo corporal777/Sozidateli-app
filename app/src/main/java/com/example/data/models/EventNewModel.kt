@@ -2,10 +2,10 @@ package com.example.data.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class EventNewModel(
-    val data: List<EventNew?>? = null,
+    val data: List<EventNew>? = null,
     @SerializedName("totalCount")
     val totalCount: Int? = null
 )
@@ -72,7 +72,7 @@ data class EventNew(
     }
 
     fun isRegistrationClosed(): Boolean {
-        return binds?.eventRegistrationState?.prohibitions?.registrationClosed ?: false
+        return binds?.currentUserRegistrationState?.prohibitions?.registrationClosed ?: false
     }
 
     fun isFormEnabled(): Boolean {
@@ -199,7 +199,9 @@ data class EventBindsModel(
     val auditorium: List<EventAuditoriumModel>? = null,
     val form: List<EventFormModel>? = null,
     @SerializedName("current-user-registration")
-    val currentUserRegistration: CurrentUserRegistrationModel? = null,
+    var currentUserRegistration: CurrentUserRegistrationModel? = null,
+    @SerializedName("current-user-registration-state")
+    var currentUserRegistrationState: EventRegistrationStateModel? = null,
     @SerializedName("user-form-result")
     val userFormResult: List<UserFormResultModel>? = null,
     @SerializedName("eventRegistrationState")
@@ -557,8 +559,26 @@ data class EventStateModel(
     @SerializedName("isHidden")
     val isHidden: Boolean? = null,
     val rating: EventRatingModel? = null,
-    val registration: EventRatingModel? = null
-) : Parcelable
+    val registration: EventRatingModel? = null,
+    val agreement : EventAgreementState? = null
+) : Parcelable {
+    fun isAgreementAccepted() : Boolean {
+        if (agreement?.state == null) return false
+        return agreement.state == "accepted"
+    }
+}
+
+
+@Parcelize
+data class EventAgreementState(
+    var state : String?
+): Parcelable {
+
+    fun setAccepted(){
+        state = "accepted"
+    }
+}
+
 
 @Parcelize
 data class EventRatingModel(

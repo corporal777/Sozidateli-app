@@ -3,8 +3,9 @@ package com.example.ui.search.tabs
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.FragmentSearchTabsBinding
@@ -16,7 +17,7 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.util.SearchInput
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onPageChanged
+import com.example.extensions.onPageSelected
 import com.example.ui.base.BaseBindingFragment
 import javax.inject.Inject
 import javax.inject.Provider
@@ -37,7 +38,6 @@ class SearchTabsFragment : BaseBindingFragment(R.layout.fragment_search_tabs),
     }
 
 
-
     private val viewBinding: FragmentSearchTabsBinding by viewBinding()
     private val searchInterface = SearchInterface()
 
@@ -48,26 +48,18 @@ class SearchTabsFragment : BaseBindingFragment(R.layout.fragment_search_tabs),
             SearchUserFragment()
         )
     }
-    private val pageChangeListener = onPageChanged { position ->
-        selectTab(position)
-        setupQrScannerButton(position)
-    }
+    private val pageChangeListener = onPageSelected { position -> selectTab(position) }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.viewPager.apply {
-            addOnPageChangeListener(pageChangeListener)
-            adapter = object : FragmentStatePagerAdapter(
-                childFragmentManager,
-                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-            ) {
-                override fun getItem(position: Int) = fragments[position]
-                override fun getCount() = fragments.size
+            registerOnPageChangeCallback(pageChangeListener)
+            adapter = object : FragmentStateAdapter(this@SearchTabsFragment) {
+                override fun getItemCount(): Int = fragments.size
+                override fun createFragment(position: Int): Fragment = fragments[position]
             }
-
             selectTab(currentItem)
-            setupQrScannerButton(currentItem)
         }
 
         viewBinding.tvCancel.setOnClickListener {
@@ -77,7 +69,7 @@ class SearchTabsFragment : BaseBindingFragment(R.layout.fragment_search_tabs),
         viewBinding.etSearch.apply {
             SearchInput(this).apply {
                 setOnTextChange {
-                    viewBinding.btnClear.isVisible = !it.isNullOrEmpty()
+                    viewBinding.btnClear.isVisible = it.isNotEmpty()
                     presenter.onSearchTextChange(it)
                 }
                 setOnTextChangeDone {
@@ -100,7 +92,7 @@ class SearchTabsFragment : BaseBindingFragment(R.layout.fragment_search_tabs),
             }
 
             btnFilter.setOnClickListener { presenter.onFilterClick() }
-            cardQrScanner.setOnClickListener { presenter.onScanClick() }
+
             btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
             btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
             btnTabUsers.setOnClickListener { viewPager.currentItem = 2 }
@@ -116,30 +108,22 @@ class SearchTabsFragment : BaseBindingFragment(R.layout.fragment_search_tabs),
     }
 
     fun showEmptyDataText(show: Boolean, title: String) {
-        viewBinding.apply {
-            tvEmptyData.isVisible = show
-            tvEmptyData.text = title
+        try {
+            viewBinding.apply {
+                tvEmptyData.isVisible = show
+                tvEmptyData.text = title
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
         }
+
     }
 
     private fun selectTab(position: Int) {
-        viewBinding.clTabs.apply {
-            for (p in 0 until childCount) {
-                getChildAt(p).isSelected = p == position
-            }
+        viewBinding.clTabs.run {
+            for (p in 0 until childCount) getChildAt(p).isSelected = p == position
         }
     }
 
-
-    private fun setupQrScannerButton(position: Int) {
-        viewBinding.cardQrScanner.isVisible = position == 0
-    }
-
-    override fun provideSearchInterface(): SearchInterface {
-        return searchInterface
-    }
-
-    override fun showQrScanner() {
-        findNavController().navigate(R.id.qr_scanner_fragment)
-    }
+    override fun provideSearchInterface(): SearchInterface = searchInterface
 }

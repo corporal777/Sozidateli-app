@@ -28,7 +28,7 @@ import okhttp3.RequestBody
 interface EventRepository {
 
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
 
@@ -82,7 +82,7 @@ interface EventRepository {
     fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>>
 
     //+
-    fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     //+
     fun checkRegistrationAgreement(eventId : String) : Single<RegistrationAgreementStatus>

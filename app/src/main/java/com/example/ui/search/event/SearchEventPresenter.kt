@@ -1,27 +1,28 @@
 package com.example.ui.search.event
 
+import android.content.Context
 import android.util.Log
 import call
 import com.example.data.AppData
-import com.example.data.UserEventData
 import com.example.data.models.*
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.groupByNotNull
-import com.example.repository.CommonRepository
+import com.example.exceptions.EmptyDataException
+import com.example.extensions.buildList
 import com.example.repository.EventRepository
-import com.example.repository.OrganizationRepository
-import com.example.repository.UserRepository
-import com.example.ui.search.SearchInterface
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.flow.PagingDataSourceFactory
+import com.example.util.pagination.flow.applyErrorHandler
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withDelay
 import withProgressBarDialogLoading
-import java.util.concurrent.TimeUnit
+import withTimeOut
 import javax.inject.Inject
 
 @InjectViewState
@@ -29,67 +30,77 @@ class SearchEventPresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
     private val appData: AppData,
-    private val socket: SocketIOManager
+    private val socket: SocketIOManager,
+    private val context: Context
 ) : SearchPresenter<SearchEventContract.View, SearchFilter.EventNew>(appData),
     SearchEventContract.Presenter {
 
     private var eventFilter = SearchFilter.EventNew()
 
-//    override val pagination = PaginationDataSourceFactory { limit, offset ->
-//        val data = buildNewFilters(limit, offset)
-//        eventRepository.searchEvents(data) as Maybe<PaginationResponse<Any>>
-//    }
+    private val pagination = PagingDataSourceFactory { limit, offset ->
+        eventRepository.searchEvents(buildNewFilters(limit, offset))
+    }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
+        .buildList(initialSize = SEARCH_PAGE_SIZE, distance = 3)
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = { viewState.setData(it, isTemporaryUser()) })
     }
 
-    override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
-        if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
-        else compositeDisposable += eventRepository.checkRegistrationAgreement(event)
+
+    override fun onActionRegister(event: EventNew, withRegister: Boolean) {
+        if (withRegister) registerToEvent(event)
+        else if (event.userAgreement?.uri.isNullOrEmpty()) registerToEvent(event)
+        else if (event.state?.isAgreementAccepted() == true) registerToEvent(event)
+        else viewState.showAgreementRegisterDialog(event)
+    }
+
+    private fun registerToEvent(event: EventNew) {
+        compositeDisposable += Maybe.defer {
+            if (event.isFormEnabled()) Maybe.just(event)
+            else eventRepository.registerToEvent(event.id ?: 0)
+                .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEventDetails(event.id.toString()))
+                .doOnSuccess {
+                    event.binds?.currentUserRegistration = it.binds?.currentUserRegistration
+                    event.binds?.currentUserRegistrationState = it.binds?.currentUserRegistrationState
+                }
+        }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
-                onError = { onReceiveError(it) },
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateEvent(event)
+                },
                 onSuccess = {
-                    if (it.isAccepted()) registerToEvent(event, formEnabled)
-                    else viewState.showAgreementRegisterDialog(event, url, formEnabled)
+                    viewState.updateEvent(event)
+                    if (event.isFormEnabled()) viewState.showEventRequest(event.id.toString())
+                    else viewState.showEventRegistrationSuccessDialog()
                 }
             )
     }
 
-    override fun onAcceptRegistrationAgreement(event: String, formEnabled: Boolean) {
-        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
+    override fun onActionCancel(event: EventNew) {
+        val registrationId = event.binds?.currentUserRegistration?.id ?: 0
+        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
+            .andThen(eventRepository.getEventDetails(event.id.toString()))
+            .doOnSuccess {
+                event.binds?.currentUserRegistration = it.binds?.currentUserRegistration
+                event.binds?.currentUserRegistrationState = it.binds?.currentUserRegistrationState
+            }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) registerToEvent(event, formEnabled) }
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateEvent(event)
+                },
+                onSuccess = { viewState.updateEvent(event) }
             )
-    }
-
-    private fun registerToEvent(event: String, formEnabled: Boolean) {
-        if (formEnabled) viewState.showEventRequest(event)
-        else eventRepository.registerToEvent(event.toInt())
-            .andThen(socket.connectToUpdates())
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onComplete = {
-                    viewState.showEventRegistrationSuccessDialog()
-                    //pagination.invalidate()
-                }
-            ).call(compositeDisposable)
-    }
-
-    override fun onActionCancel(event: String, registrationId: String?) {
-        eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                //pagination.invalidate()
-            }.call(compositeDisposable)
     }
 
 
@@ -101,14 +112,16 @@ class SearchEventPresenter
     override fun onFiltersApplyClick(filter: SearchFilter.EventNew) {
         eventFilter = filter
         viewState.setHasFilter()
-        //pagination.invalidate()
+        pagination.invalidate()
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
 
+    override fun onScanClick() = viewState.showQrScanner()
+
     override fun onShowFilterRequest() = viewState.showFilter(eventFilter)
 
-    override fun onRefreshRequest() {}
+    override fun onRefreshRequest() = pagination.invalidate()
 
     override fun isHasFilter(): Boolean = eventFilter.isHasFilter()
 
@@ -123,7 +136,8 @@ class SearchEventPresenter
 
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            val binds = "user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+            val binds =
+                "current-user-registration,current-user-registration-state,eventRegistrationState"
             put(SEARCH_EVENT_BINDS, binds)
 
             val name = eventFilter.name
@@ -162,6 +176,7 @@ class SearchEventPresenter
     }
 
     companion object {
+        private const val SEARCH_PAGE_SIZE = 20
         private const val SEARCH_EVENT_TYPE = "event"
         private const val SEARCH_EVENT_NAME = "eventName"
         private const val SEARCH_EVENT_TOPIC_CATEGORY = "topicCategory"

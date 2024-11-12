@@ -1,7 +1,9 @@
 package com.example.ui.event.list.recommendations
 
+import androidx.paging.PagingData
 import com.example.data.models.EventNew
 import com.example.ui.event.list.EventListContract
+import com.example.ui.event.list.EventListContractNew
 import com.example.util.AddToEndSingleByTagStateStrategy
 import com.example.util.pagination.PaginationListGroupAdapter
 import moxy.viewstate.strategy.StateStrategyType
@@ -10,9 +12,9 @@ import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface RecommendationsContract {
-    interface View : EventListContract.View{
+    interface View : EventListContractNew.View{
         @OneExecution
-        fun setData(events: List<EventNew?>, isNeedUpdateApp : Boolean?)
+        fun setData(data: PagingData<EventNew>, isNeedUpdateApp : Boolean)
 
         @OneExecution
         fun showEmptyListPlaceholder()
@@ -25,12 +27,14 @@ interface RecommendationsContract {
 
         @Skip
         fun setAuthorizationButton(isTemporary : Boolean)
+
+        @Skip
+        fun setAppBarViews(value : Float)
     }
 
-    interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : EventListContractNew.Presenter {
         fun onSearchClick()
-        fun onAuthorizationClick()
         fun onShowSavedEventOrProfile(isProfile : Boolean?)
-        fun onRefreshRequest()
+        fun onAppBarOffsetChanged(offset : Float)
     }
 }

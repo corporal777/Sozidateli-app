@@ -3,8 +3,6 @@ package com.example.holders
 import com.example.extensions.additionalNumber
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import androidx.core.text.set
-import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.data.models.LinksModel
@@ -15,7 +13,6 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.ToggleStringModel
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.parsePhone
-import com.example.util.ClickableSpan
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.removeUrlUnderline
 import com.example.extensions.setTextDataOrHide

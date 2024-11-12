@@ -3,19 +3,22 @@ package com.example.holders.registerEvent
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
+import com.example.extensions.defaultDateTimeFormatter
+import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.formatToDefaultDate
+import com.example.extensions.formatToDefaultServerDate
 import com.example.app.R
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
 import com.example.app.databinding.ItemRegisterEventDateBinding
-import com.example.app.databinding.ItemRegisterEventInputBinding
-import com.example.extensions.*
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initAsDateTimePicker
 import com.example.extensions.onTextChanged
-import com.example.util.getColorStateList
+import com.example.extensions.parseAndFormat
 import java.util.*
 
 

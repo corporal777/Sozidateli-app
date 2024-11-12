@@ -22,6 +22,7 @@ interface EventListContract {
 
         @OneExecution
         fun updateEvent(event: EventNew)
+
     }
 
     interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {

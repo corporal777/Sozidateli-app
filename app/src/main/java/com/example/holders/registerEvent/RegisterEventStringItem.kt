@@ -1,6 +1,5 @@
 package com.example.holders.registerEvent
 
-import android.text.InputType
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -18,7 +17,6 @@ import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
 import com.example.extensions.setMaxLength
 import com.example.extensions.setMinMaxLines
-import com.example.util.getColorStateList
 
 class RegisterEventStringItem(
     private val fieldData: EventRegisterFieldData<String>,

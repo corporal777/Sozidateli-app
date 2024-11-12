@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -15,12 +14,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.app.R
 import com.example.data.models.MapInfo
 import com.example.app.databinding.FragmentMapBinding
-import com.example.extensions.setOnClickListener
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.formResult.EventFormResultFragment
-import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions

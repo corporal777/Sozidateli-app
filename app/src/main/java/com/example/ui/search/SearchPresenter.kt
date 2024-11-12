@@ -10,8 +10,15 @@ abstract class SearchPresenter<V : SearchContract.View<F>, F : SearchFilter>(app
 
 
     private lateinit var searchInterface: SearchInterface
+    private var isFirstLaunch = true
 
     protected var searchText: String = ""
+
+    override fun attachView(view: V) {
+        super.attachView(view)
+        if (isFirstLaunch) isFirstLaunch = false
+        else viewState.invalidatePagingData()
+    }
 
     override fun onResume(searchInterface: SearchInterface) {
         this.searchInterface = searchInterface.apply {

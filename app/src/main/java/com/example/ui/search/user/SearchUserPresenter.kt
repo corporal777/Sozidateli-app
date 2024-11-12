@@ -12,7 +12,6 @@ import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.flow.PagingDataSourceFactory
 import com.example.util.pagination.flow.applyErrorHandler
 import io.reactivex.BackpressureStrategy
@@ -36,23 +35,15 @@ class SearchUserPresenter
 
     private var userFilter = SearchFilter.UserNew()
 
-    private val searchDisposable = CompositeDisposable()
-
     private val pagination = PagingDataSourceFactory { limit, offset ->
         userRepository.searchUsers(buildFilterNew(limit, offset))
     }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
         .buildList(initialSize = SEARCH_PAGE_SIZE, distance = 5)
 
-    override fun attachView(view: SearchUserContract.View?) {
-        super.attachView(view)
-        compositeDisposable += searchDisposable
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-
-        searchDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },

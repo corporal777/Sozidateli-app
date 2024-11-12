@@ -26,10 +26,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -43,7 +40,6 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
-import com.example.data.models.user.User
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.util.*
 import com.google.android.material.appbar.AppBarLayout
@@ -59,7 +55,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.YEAR
 import kotlin.math.roundToInt

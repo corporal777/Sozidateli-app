@@ -6,7 +6,6 @@ import com.example.app.R
 import com.example.data.models.OrganizationNew
 import com.example.app.databinding.ItemEventDetailOrganizationBlockBinding
 import com.example.ui.views.UserSubscribeButton
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
 import com.example.util.setImagePicasso

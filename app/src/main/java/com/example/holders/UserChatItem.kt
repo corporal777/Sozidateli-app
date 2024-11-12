@@ -3,11 +3,15 @@ package com.example.holders
 import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
+import com.example.extensions.calendar
+import com.example.extensions.dateFormatterShortMothNoYear
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.isSameDay
+import com.example.extensions.isYesterday
 import com.example.app.R
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
 import com.example.app.databinding.ItemChatBinding
-import com.example.extensions.*
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.databinding.BindableItem

@@ -1,12 +1,8 @@
 package com.example.ui.auth.register
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
@@ -15,15 +11,11 @@ import com.example.extensions.getClickablePrivacyPolitics
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.ClickableSpan
 import com.example.util.Utils.validatePhoneBeforeSend
 import com.example.util.setTint
-import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.removeUrlUnderline
 import com.example.ui.views.dialogs.DefaultAlertDialog
-import com.example.util.getColor
 import javax.inject.Inject
 import javax.inject.Provider
 
