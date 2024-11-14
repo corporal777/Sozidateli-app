@@ -19,18 +19,19 @@ import com.example.data.models.EventNew
 import com.example.holders.redesign.EventListItem
 import com.example.ui.agreement.UserAgreementBottomSheetDialog
 import com.example.ui.base.BaseBindingFragment
+import com.example.ui.base.BaseFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
 import kotlin.reflect.KClass
 
-abstract class EventListFragmentNew<P : EventListContractNew.Presenter>(res : Int) :
-    BaseBindingFragment(res), EventListContractNew.View {
+abstract class EventListFragmentNew<P : EventListContractNew.Presenter, T : ViewDataBinding> :
+    BaseFragment<T>(), EventListContractNew.View {
 
     abstract var presenter: P
 
-    val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    protected val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EventPagingAdapter(
             { presenter.onActionRegister(it, false) },
             { presenter.onActionCancel(it) },

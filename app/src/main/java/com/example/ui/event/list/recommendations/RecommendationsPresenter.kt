@@ -58,7 +58,6 @@ class RecommendationsPresenter
 
     override fun attachView(view: RecommendationsContract.View) {
         super.attachView(view)
-        viewState.setAppBarViews(appBarOffsetValue)
         viewState.setAuthorizationButton(isTemporaryUser())
     }
 
@@ -84,10 +83,5 @@ class RecommendationsPresenter
             val phone = getUserData().personalPhone?.value
             if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
         } else return
-    }
-
-    override fun onAppBarOffsetChanged(offset: Float) {
-        appBarOffsetValue = offset
-        viewState.setAppBarViews(appBarOffsetValue)
     }
 }

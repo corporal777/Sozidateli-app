@@ -35,8 +35,7 @@ import javax.inject.Provider
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
-class RecommendationsFragment :
-    EventListFragmentNew<RecommendationsPresenter>(R.layout.fragment_recommendations),
+class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -55,12 +54,9 @@ class RecommendationsFragment :
     }
 
 
-    private val viewBinding: FragmentRecommendationsBinding by viewBinding()
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.apply {
+        mBinding.apply {
             eventsList.apply {
                 adapter = pagingAdapter.withLoadStateAdapters(
                     EventPlaceholderAdapter(1),
@@ -69,32 +65,35 @@ class RecommendationsFragment :
                     //setDataEmpty(it, getString(R.string.no_data_found))
                 }
             }
-            swipeToRefresh.setOnRefreshListener {
-                presenter.onRefreshRequest()
-            }
 
             etSearch.setOnClickListener {
                 presenter.onSearchClick()
             }
+
             btnLogin.setOnClickListener { presenter.onShowAuthorization(null) }
+
+            swipeToRefresh.setOnRefreshListener {
+                presenter.onRefreshRequest()
+            }
+
             appBarLayout.offsetChangedListener { appBarLayout, i ->
-                presenter.onAppBarOffsetChanged(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
         }
     }
 
     override fun setData(data: PagingData<EventNew>, isNeedUpdateApp: Boolean) {
         pagingAdapter.submitData(lifecycle, data, presenter.isTemporaryUser(), isNeedUpdateApp)
-        viewBinding.swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
 
     override fun setAuthorizationButton(isTemporary: Boolean) {
-        viewBinding.btnLogin.isVisible = isTemporary
+        mBinding.btnLogin.isVisible = isTemporary
     }
 
     override fun showEmptyListPlaceholder() {
-        viewBinding.swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showSearch() {
@@ -107,16 +106,12 @@ class RecommendationsFragment :
     }
 
     override fun scrollToFirstItem() {
-        val mLayoutManager = viewBinding.eventsList.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), viewBinding.appBarLayout, 1)
-    }
-
-    override fun setAppBarViews(value: Float) {
-        updateAppBarViews(value)
+        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
     override fun onExpandedState() {
-        viewBinding.apply {
+        mBinding.apply {
             tvLabelSmall.apply {
                 alpha = 1F
                 animate().setDuration(500).alpha(0.0f)
@@ -131,7 +126,7 @@ class RecommendationsFragment :
     }
 
     override fun onCollapsedState() {
-        viewBinding.apply {
+        mBinding.apply {
             tvLabelSmall.apply {
                 alpha = 0F
                 animate().setDuration(500).alpha(1.0f)
@@ -145,6 +140,5 @@ class RecommendationsFragment :
         }
     }
 
-    //override fun layout(): Int = R.layout.fragment_recommendations
-
+    override fun layout(): Int = R.layout.fragment_recommendations
 }

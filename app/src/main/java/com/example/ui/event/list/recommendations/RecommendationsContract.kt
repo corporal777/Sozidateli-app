@@ -27,14 +27,10 @@ interface RecommendationsContract {
 
         @Skip
         fun setAuthorizationButton(isTemporary : Boolean)
-
-        @Skip
-        fun setAppBarViews(value : Float)
     }
 
     interface Presenter : EventListContractNew.Presenter {
         fun onSearchClick()
         fun onShowSavedEventOrProfile(isProfile : Boolean?)
-        fun onAppBarOffsetChanged(offset : Float)
     }
 }

@@ -29,8 +29,7 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
 
             val position = if (loadFromStart) lastRequestedKey else params.key ?: 0
             val limit = if (loadFromStart) {
-                if (lastRequestedKey == 0) params.loadSize
-                else params.loadSize * lastRequestedKey
+                if (lastRequestedKey == 0) params.loadSize else params.loadSize * lastRequestedKey
             } else params.loadSize
 
             val offset = if (loadFromStart) 0 else (params.key ?: 0) * limit
@@ -61,10 +60,8 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
     override fun getRefreshKey(state: PagingState<Int, I>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
         val anchorPage = state.closestPageToPosition(anchorPosition) ?: return null
-
         val anchorNextKey = anchorPage.nextKey ?: 0
 
-        Log.e("REQUEST NEXT KEY", anchorPage.nextKey.toString())
         loadFromStart = true
 
         if (anchorNextKey > 0) {
