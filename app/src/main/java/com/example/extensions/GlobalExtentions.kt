@@ -26,6 +26,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.Group
 import androidx.core.text.getSpans
 import androidx.core.text.set
@@ -59,39 +60,9 @@ import java.util.*
 import java.util.Calendar.YEAR
 import kotlin.math.roundToInt
 
-
-fun decodeBase64ToJson(data: String?): JSONObject? {
-    if (data.isNullOrEmpty()) return null
-    try {
-        val base = Base64.decode(data, Base64.DEFAULT)
-        return JSONObject(String(base, StandardCharsets.UTF_8))
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
-
-
-fun getClickablePrivacyPolitics(context: Context): CharSequence {
-    return SpannableString(context.getString(R.string.auth_user_agreement)).apply {
-        setSpan(
-            ClickableSpan(false) {
-                showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
-            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-    }
-}
-
-fun Spanned?.removeUrlUnderline(): Spannable? {
-    if (this.isNullOrEmpty()) return null
-    return toSpannable().apply {
-        val urls = getSpans<URLSpan>()
-        urls.forEach {
-            val start = getSpanStart(it)
-            val end = getSpanEnd(it)
-            removeSpan(it)
-            set(start..end, URLSpanNoUnderline(it.url))
-        }
-    }
+fun AppCompatImageButton.setFiltersBackground(isChosen : Boolean){
+    if (isChosen) setImageResource(R.drawable.ic_filters_selected)
+    else setImageResource(R.drawable.ic_filters_new)
 }
 
 fun TextView.removeUrlUnderline(textColor: Int? = null) {
@@ -107,18 +78,7 @@ fun TextView.removeUrlUnderline(textColor: Int? = null) {
     }
 }
 
-fun String.parseAsHtmlWithoutUnderline(): Spannable? {
-    if (this.isNullOrEmpty()) return null
-    val s: Spannable = Html.fromHtml(this) as Spannable
-    for (u in s.getSpans(0, s.length, URLSpan::class.java)) {
-        s.setSpan(object : UnderlineSpan() {
-            override fun updateDrawState(tp: TextPaint) {
-                tp.isUnderlineText = false
-            }
-        }, s.getSpanStart(u), s.getSpanEnd(u), 0)
-    }
-    return s
-}
+
 
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
     val watcher = object : TextWatcher {

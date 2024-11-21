@@ -17,9 +17,6 @@ interface RecommendationsContract {
         fun setData(data: PagingData<EventNew>, isNeedUpdateApp : Boolean)
 
         @OneExecution
-        fun showEmptyListPlaceholder()
-
-        @OneExecution
         fun showSearch()
 
         @OneExecution

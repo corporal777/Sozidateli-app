@@ -45,7 +45,6 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
                     else position + 1
 
                     loadFromStart = false
-                    Log.e("REQUEST POSITION", nextKey.toString())
 
                     Single.just(toLoadResult(it, prevKey, nextKey))
                 }

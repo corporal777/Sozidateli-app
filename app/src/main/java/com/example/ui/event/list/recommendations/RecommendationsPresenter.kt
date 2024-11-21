@@ -15,7 +15,6 @@ import com.example.di.Connectivity
 import com.example.exceptions.EmptyDataException
 import com.example.extensions.buildList
 import com.example.repository.EventRepository
-import com.example.ui.event.list.EventListPresenter
 import com.example.ui.event.list.EventListPresenterNew
 import com.example.util.pagination.PaginationResponse
 import com.example.util.pagination.flow.PagingDataSourceFactory
@@ -39,22 +38,13 @@ class RecommendationsPresenter
 ) : EventListPresenterNew<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 
-    private var appBarOffsetValue = 0f
 
     override val pagination = PagingDataSourceFactory { limit, offset ->
-        eventRepository.getEventsListNew(
-            mapOf(
-                EVENT_LIMIT to limit,
-                EVENT_OFFSET to offset,
-                EVENT_SORT_TYPE to "desc",
-                EVENT_SORT_FIELD to "id",
-                EVENT_BINDS to "current-user-registration,current-user-registration-state,eventRegistrationState",
-                EVENT_PUBLIC to "true",
-                EVENT_STATUS to "approved,registration,registrationFinished,running"
-            )
-        )
+        getPaginationRequest(limit, offset)
     }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
         .buildList(initialSize = 20, distance = 2)
+
+
 
     override fun attachView(view: RecommendationsContract.View) {
         super.attachView(view)
@@ -83,5 +73,22 @@ class RecommendationsPresenter
             val phone = getUserData().personalPhone?.value
             if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
         } else return
+    }
+
+    override fun getPaginationRequest(
+        limit: Int,
+        offset: Int
+    ): Maybe<PaginationResponse<EventNew>> {
+        return eventRepository.getEventsListNew(
+            mapOf(
+                EVENT_LIMIT to limit,
+                EVENT_OFFSET to offset,
+                EVENT_SORT_TYPE to "desc",
+                EVENT_SORT_FIELD to "id",
+                EVENT_BINDS to "current-user-registration,current-user-registration-state,eventRegistrationState",
+                EVENT_PUBLIC to "true",
+                EVENT_STATUS to "approved,registration,registrationFinished,running"
+            )
+        )
     }
 }

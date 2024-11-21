@@ -92,5 +92,6 @@ abstract class EventListPresenterNew<V : EventListContractNew.View>(
             }
     }
 
+    abstract fun getPaginationRequest(limit : Int, offset : Int) : Maybe<PaginationResponse<EventNew>>
 
 }

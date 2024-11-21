@@ -102,6 +102,7 @@ data class EventNew(
         const val EVENT_FORMAT = "format"
         const val EVENT_CATEGORY = "topicCategory"
         const val EVENT_STATUS = "status"
+        const val EVENT_STATUS_ALL = "cancelled,registration,registrationFinished,running,finished"
         const val EVENT_HIDDEN = "stateIsHidden"
         const val EVENT_PUBLIC = "isPublic"
         const val EVENT_CODE = "code"

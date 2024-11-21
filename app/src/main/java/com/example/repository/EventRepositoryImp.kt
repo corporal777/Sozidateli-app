@@ -96,7 +96,7 @@ class EventRepositoryImp
             .map { PaginationResponse(it.totalCount, it.data ?: emptyList()) }
     }
 
-    override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
+    override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> =
         api.getSortedEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 

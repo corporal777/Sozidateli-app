@@ -105,7 +105,7 @@ class EventPagingAdapter(
                     if (event.image?.uri.isNullOrEmpty()) {
                         val bgColor = event.backgroundColor?.value.parseColor() ?: Color.DKGRAY
                         setImage(ColorDrawable(bgColor))
-                    } else setImage(event.image?.uri)
+                    } else setImage(event.image?.uri, 300)
 
                     colorFilter = if (event.status?.value == Event.Status.CANCELED)
                         ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
@@ -244,6 +244,7 @@ class EventPagingAdapter(
             addOnPagesUpdatedListener {
                 isRefresh = false
             }
+
             addLoadStateListener { loadState ->
 
                 refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
@@ -261,7 +262,6 @@ class EventPagingAdapter(
                 else onEmpty.invoke(false)
             }
             return ConcatAdapter(appUpdateAdapter, refresh, this, footer)
-            //return ConcatAdapter(refresh, this, footer)
         }
     }
 }

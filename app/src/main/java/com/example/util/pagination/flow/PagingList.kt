@@ -25,7 +25,6 @@ class PagingList<T : Any>(
             onError = { emitter.onError(it) },
             onNext = { emitter.onNext(it) })
         emitter.setDisposable(disposable)
-
     }
 
     fun invalidate() {

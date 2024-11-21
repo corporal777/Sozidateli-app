@@ -190,25 +190,39 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <TextView
+            android:id="@+id/tvEmptyData"
+            fontPath="fonts/sf_pro_display_semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/margin_horizontal_default"
+            android:layout_marginEnd="@dimen/margin_horizontal_default"
+            android:gravity="center_horizontal"
+            android:importantForAccessibility="no"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/no_data_item_description_color"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Нажмите Добавить в избранное в списке организаций" />
+
 
         <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/eventsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:paddingBottom="70dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-
+                android:paddingBottom="70dp" />
         </com.example.ui.views.CustomSwipeRefreshLayout>
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

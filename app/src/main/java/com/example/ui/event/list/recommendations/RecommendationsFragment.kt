@@ -1,6 +1,7 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -61,21 +62,12 @@ class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, F
                 adapter = pagingAdapter.withLoadStateAdapters(
                     EventPlaceholderAdapter(1),
                     EventPlaceholderAdapter(1)
-                ) {
-                    //setDataEmpty(it, getString(R.string.no_data_found))
-                }
+                ) { tvEmptyData.isVisible = it }
             }
 
-            etSearch.setOnClickListener {
-                presenter.onSearchClick()
-            }
-
+            etSearch.setOnClickListener { presenter.onSearchClick() }
             btnLogin.setOnClickListener { presenter.onShowAuthorization(null) }
-
-            swipeToRefresh.setOnRefreshListener {
-                presenter.onRefreshRequest()
-            }
-
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
                 updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
             }
@@ -90,10 +82,6 @@ class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, F
 
     override fun setAuthorizationButton(isTemporary: Boolean) {
         mBinding.btnLogin.isVisible = isTemporary
-    }
-
-    override fun showEmptyListPlaceholder() {
-        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun showSearch() {

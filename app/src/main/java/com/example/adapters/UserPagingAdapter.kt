@@ -59,7 +59,7 @@ class UserPagingAdapter(
                     isVisible = false
                     text = null
                 }
-                ivUserAvatar.setCircleAvatar(user.loadUserImage())
+                ivUserAvatar.setCircleAvatar(user.loadUserImage(),300)
 
                 btnAction.apply {
                     val action = user.getUserSubscribeAction()
