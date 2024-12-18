@@ -18,6 +18,7 @@ import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
 import com.example.extensions.setMaxLength
 import com.example.extensions.setMinMaxLines
+import com.example.util.AuthValidateUtil
 import com.example.util.getColorStateList
 
 class RegisterEventStringItem(
@@ -42,7 +43,6 @@ class RegisterEventStringItem(
                     EventRegisterField.Type.TEXT_AREA -> {
                         maxSymbolsLength = 500
                         setMinMaxLines(2, 8)
-                        //inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES or TYPE_TEXT_FLAG_MULTI_LINE
                         inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_MULTI_LINE
                     }
                     EventRegisterField.Type.NUMBER -> {
@@ -61,15 +61,14 @@ class RegisterEventStringItem(
 
 
                 setMaxLength(maxSymbolsLength)
-
                 setHint(field.description)
                 setText(fieldData.value)
 
                 textWatcher = onTextChanged {
                     fieldData.value = it?.toString()
                     onDataChange()
-                    showError(false)
 
+                    checkFieldIsValid(fieldData.value)
                     setSymbolsLeftVisible(fieldData.value, textViewSymbolsLeft)
                 }
 
@@ -77,12 +76,24 @@ class RegisterEventStringItem(
         }
     }
 
-
     override fun unbind(viewHolder: GroupieViewHolder<ItemRegisterEventInputBinding>) {
         viewHolder.binding.textInputEditText.apply {
             textWatcher?.let { removeTextChangedListener(it) }
         }
         super.unbind(viewHolder)
+    }
+
+    private fun checkFieldIsValid(value: String?) {
+        if (value.isNullOrEmpty()) showError(false)
+        else {
+            when (field.type) {
+                EventRegisterField.Type.EMAIL -> {
+                    showErrorText(!AuthValidateUtil.isValidEmail(value), "Неверный формат e-mail")
+                }
+                EventRegisterField.Type.SITE -> showError(!AuthValidateUtil.isValidSite(value))
+                else -> showError(false)
+            }
+        }
     }
 
     private fun setSymbolsLeftVisible(text : CharSequence?, textView: TextView) {

@@ -8,7 +8,7 @@ import com.example.app.databinding.ItemRegisterEventPhoneBinding
 import com.example.util.AuthValidateUtil
 import com.example.util.getColorStateList
 
-class RegisterEventPhoneItem (
+class RegisterEventPhoneItem(
     private val fieldData: EventRegisterFieldData<String>,
     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
 ) : BaseRegisterInputItem<ItemRegisterEventPhoneBinding>(fieldData, onDataChange) {
@@ -22,19 +22,25 @@ class RegisterEventPhoneItem (
             onInputTextChanged {
                 fieldData.value = it?.toString()
                 onDataChange()
-                showError(false)
+                checkPhoneIsValid(fieldData.value)
             }
         }
     }
 
-    private fun checkValueIsValid(fieldData: EventRegisterFieldData<String>) : Boolean {
-        return if (fieldData.field.required){
-            AuthValidateUtil.isValidPhone(fieldData.value ?: "")
-        } else true
+    private fun checkPhoneIsValid(field: String?) {
+        if (field.isNullOrEmpty() || field == "+7") showError(false)
+        else {
+            val isValid = AuthValidateUtil.isValidPhone(field)
+            showError(!isValid)
+        }
     }
 
-    override fun getInputView(binding: ItemRegisterEventPhoneBinding): View = binding.phoneInputEditText
-    override fun getErrorFrameView(binding: ItemRegisterEventPhoneBinding): View = binding.viewInputError
+    override fun getInputView(binding: ItemRegisterEventPhoneBinding): View =
+        binding.phoneInputEditText
+
+    override fun getErrorFrameView(binding: ItemRegisterEventPhoneBinding): View =
+        binding.viewInputError
+
     override fun getTitleView(binding: ItemRegisterEventPhoneBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_phone
 

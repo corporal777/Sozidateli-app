@@ -199,7 +199,9 @@ data class EventBindsModel(
     val auditorium: List<EventAuditoriumModel>? = null,
     val form: List<EventFormModel>? = null,
     @SerializedName("current-user-registration")
-    val currentUserRegistration: CurrentUserRegistrationModel? = null,
+    var currentUserRegistration: CurrentUserRegistrationModel? = null,
+    @SerializedName("current-user-registration-state")
+    var currentUserRegistrationState: EventRegistrationStateModel? = null,
     @SerializedName("user-form-result")
     val userFormResult: List<UserFormResultModel>? = null,
     @SerializedName("eventRegistrationState")

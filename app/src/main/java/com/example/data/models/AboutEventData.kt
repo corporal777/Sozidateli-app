@@ -5,7 +5,7 @@ data class AboutEventData(
     var speakers: List<MemberModel> = emptyList(),
     var showMoreSpeakers: Boolean = false,
     var tags: List<Tag> = emptyList(),
-    var subEvents: List<EventActivityModel> = emptyList(),
+    var subEvents: Map<String, List<EventActivityModel>> = emptyMap(),
     var partners: List<PartnerModel> = emptyList()
 ) {
 
@@ -41,8 +41,9 @@ data class AboutEventData(
     private fun setSubEvents() {
         val list = event.binds?.activity?.sortedBy { it.holdingDate?.from }
         if (!list.isNullOrEmpty()) {
-            if (list.size > 4) this.subEvents = list.subList(0, 4)
-            else this.subEvents = list
+            this.subEvents = list.apply {
+                if (list.size > 4) subList(0, 4)
+            }.groupBy { it.holdingDate?.from?.split(" ")?.get(0) ?: "" }
         }
     }
 

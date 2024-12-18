@@ -42,13 +42,11 @@ class UserRepositoryImp
         api.getUserById(
             appData.getId(),
             arrayListOf(
-                "rights",
                 "education",
                 "academic-degree",
                 "work-experience",
                 "recommendation-file",
                 "organization",
-                "userOrganizationRights",
                 "external-invite-pgrf",
                 "chat-room-with-me",
                 "is-user-in-ban",
@@ -70,13 +68,11 @@ class UserRepositoryImp
     override fun getUserById(id: String): Maybe<UserDetail> = api.getUserById(
         id.toInt(),
         arrayListOf(
-            "rights",
             "education",
             "academic-degree",
             "work-experience",
             "recommendation-file",
             "organization",
-            "userOrganizationRights",
             "userFavorite",
             "chat-room-with-me",
             "is-user-in-ban"
@@ -87,13 +83,11 @@ class UserRepositoryImp
         return api.getUserByShortName(
             name,
             arrayListOf(
-                "rights",
                 "education",
                 "academic-degree",
                 "work-experience",
                 "recommendation-file",
                 "organization",
-                "userOrganizationRights",
                 "userFavorite",
                 "chat-room-with-me",
                 "is-user-in-ban"

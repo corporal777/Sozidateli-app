@@ -283,6 +283,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tvSocialNetworksTitle"
             tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupSocialNetworks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvSocialNetworks,tvSocialNetworksTitle" />
+
         <TextView
             android:id="@+id/tvSiteTitle"
             style="@style/Profile.Title"
@@ -311,7 +317,7 @@
             tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/groupSocialNetworks"
+            android:id="@+id/groupSites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tvSite,tvSiteTitle" />

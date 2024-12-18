@@ -80,6 +80,9 @@ class EventFormResultFragment(
                     is EventRegisterFieldData.String ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
+                    is EventRegisterFieldData.Phone ->
+                        EventFormResultStringItem(it.field.id, it.field.name, it.value)
+
                     is EventRegisterFieldData.File ->
                         EventFormResultFileItem(it.field.id, it.field.name, it.value)
 

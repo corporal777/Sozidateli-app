@@ -14,9 +14,6 @@ import kotlin.math.ceil
 
 object Utils {
 
-    val defaultServerDateFormatter: DateFormat
-        get() = SimpleDateFormat(DATE_FORMAT_SERVER_TIMESTAMP, Locale.getDefault())
-
     fun formatMobilePhone(phone: String?): String {
         return if (phone.isNullOrEmpty()) ""
         else if (phone.length == 12) {

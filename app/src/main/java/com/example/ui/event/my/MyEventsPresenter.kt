@@ -49,7 +49,6 @@ class MyEventsPresenter
     private fun getEventsData(isFirst: Boolean) {
         viewState.setData(List(5) { null })
         compositeDisposable += Observable.create(pagination)
-            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -147,6 +146,6 @@ class MyEventsPresenter
     }
 
     override fun getBinds(): String {
-        return "activity,user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+        return "activity,current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

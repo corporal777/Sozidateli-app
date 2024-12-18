@@ -67,7 +67,6 @@ class MainPresenter
     var isFinishRegister = false
     private var isAuthRequired = false
     private var canShowBrowser = false
-    private var inAppList: Deque<NotificationModel>? = null
 
     private var isDoNotCheckConnectionFragmentOpened = false
     private var isInternetConnected = true

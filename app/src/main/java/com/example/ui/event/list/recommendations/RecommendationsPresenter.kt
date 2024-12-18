@@ -47,7 +47,6 @@ class RecommendationsPresenter
         super.onFirstViewAttach()
         viewState.setData(List(5) { null }, null)
         compositeDisposable += Observable.create(pagination)
-            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 if (it.isEmpty()) viewState.showEmptyListPlaceholder()
@@ -96,6 +95,6 @@ class RecommendationsPresenter
     }
 
     override fun getBinds(): String {
-        return "user-registration,current-user-registration,current-user-registration-state,eventRegistrationState"
+        return "current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

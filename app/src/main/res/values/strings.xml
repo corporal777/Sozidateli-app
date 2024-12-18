@@ -60,6 +60,8 @@
     <string name="auth_with_email">С помощью электронной почты</string>
     <string name="auth_or_login">Уже есть аккаунт?</string>
     <string name="or_auth_in_one_click">Или войдите в один клик</string>
+    <string name="auth_create_new_account">Создать новый аккаунт</string>
+    <string name="auth_create_new_account_and_bind">Зарегистрироваться через VK ID</string>
     <string name="auth_label_login">Войти</string>
     <string name="auth_label_create">Создать</string>
     <string name="auth_label_login_with_vk">Войти через VK ID</string>

@@ -24,10 +24,11 @@ abstract class EventListPresenter<V : EventListContract.View>(
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
     protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
-        .applyErrorHandler { viewState.showRequestErrorMessage() }
+        .applyErrorHandler {
+            it.printStackTrace()
+            viewState.showRequestErrorMessage()
+        }
         .buildList(enablePlaceholders = PAGE_PLACEHOLDER, initialSize = PAGE_SIZE)
-
-    var eventsList = mutableListOf<EventNew?>()
 
     override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
         if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
@@ -57,7 +58,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
         if (formEnabled) viewState.showEventRequest(event)
         else eventRepository.registerToEvent(event.toInt())
             .andThen(socket.connectToUpdates())
-            .andThen(getEventDetailRequest(event))
+            .andThen(eventRepository.getEvent(event, getBinds()))
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
@@ -73,7 +74,7 @@ abstract class EventListPresenter<V : EventListContract.View>(
 
     override fun onActionCancel(event: String, registrationId: String?) {
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(getEventDetailRequest(event))
+            .andThen(eventRepository.getEvent(event, getBinds()))
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
@@ -87,19 +88,6 @@ abstract class EventListPresenter<V : EventListContract.View>(
     override fun onShowAuthorization(event: String) {
         appData.savedEventId = event
         viewState.showAuthorization()
-    }
-
-    protected fun transformData(list: List<EventNew?>): MutableList<EventNew?> {
-        eventsList = list.toMutableList()
-        return eventsList
-    }
-
-    private fun getEventDetailRequest(event: String): Maybe<EventNew> {
-        return eventRepository.getEvent(event, getBinds())
-            .doOnSuccess {
-                val item = eventsList.find { x -> x?.id == it.id }
-                if (item != null) eventsList.set(eventsList.indexOf(item), it)
-            }
     }
 
 

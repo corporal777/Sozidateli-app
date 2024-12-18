@@ -50,7 +50,7 @@
                 android:layout_marginTop="20dp"
                 android:includeFontPadding="false"
                 android:letterSpacing="-0.01"
-                android:text="Мой аккаунт в Созидателях"
+                android:text="У меня есть аккаунт в Созидателях"
                 android:textColor="@color/auth_title_text"
                 android:textSize="20sp" />
 
@@ -62,7 +62,7 @@
                 android:layout_marginTop="15dp"
                 android:includeFontPadding="false"
                 android:letterSpacing="-0.01"
-                android:text="Войти в аккаунт и связать его \nс аккаунтом VK ID"
+                android:text="Связать VK ID с моим аккаунтом на Созидателях. Это позволит быстрее и проще заходить в профиль на портале"
                 android:textColor="@color/auth_title_text"
                 android:textSize="16sp" />
 
@@ -99,7 +99,7 @@
                 android:layout_marginTop="20dp"
                 android:includeFontPadding="false"
                 android:letterSpacing="-0.01"
-                android:text="Создать новый аккаунт"
+                android:text="@string/auth_create_new_account"
                 android:textColor="@color/auth_title_text"
                 android:textSize="20sp" />
 
@@ -111,7 +111,7 @@
                 android:layout_marginTop="15dp"
                 android:includeFontPadding="false"
                 android:letterSpacing="-0.01"
-                android:text="Создать новый аккаунт и связать его \nс аккаунтом VK ID"
+                android:text="@string/auth_create_new_account_and_bind"
                 android:textColor="@color/auth_title_text"
                 android:textSize="16sp" />
 

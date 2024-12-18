@@ -30,4 +30,9 @@ abstract class BaseRegisterInputItem<T : ViewDataBinding>(
         super.showError(show)
         if (binding != null) getErrorFrameView(binding!!).isVisible = show
     }
+
+    override fun showErrorText(show: Boolean, errorText: String) {
+        super.showErrorText(show, errorText)
+        if (binding != null) getErrorFrameView(binding!!).isVisible = show
+    }
 }

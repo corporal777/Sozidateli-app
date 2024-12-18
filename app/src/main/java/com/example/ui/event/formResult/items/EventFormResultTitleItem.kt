@@ -13,7 +13,7 @@ class EventFormResultTitleItem (
 
     override fun bind(viewBinding: ItemEventFormResultStringBinding, position: Int) {
         viewBinding.apply {
-            tvFormTitle.text = "$title"
+            tvFormTitle.text = title
             tvFormValue.isVisible = false
         }
     }

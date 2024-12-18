@@ -27,12 +27,11 @@ import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
 
 class EventListItem(
-    event: EventNew,
+    val eventData: EventNew,
     val isTemp: Boolean,
     val clickListener: OnEventClickListener
-) : BindableItem<ItemEventNewBinding>(event.id?.toLong() ?: 0) {
+) : BindableItem<ItemEventNewBinding>(eventData.id?.toLong() ?: 0) {
 
-    private var eventData = event
     private val eventId = eventData.id.toString()
     private val imageColor =
         ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
@@ -55,12 +54,12 @@ class EventListItem(
                 else null
             }
 
-            setApproveStatus(tvEventState)
-            decorActionButton(btnEventAction)
+            tvEventState.setApproveStatus()
+            btnEventAction.setActionButton()
         }
     }
 
-    private fun setApproveStatus(tvStatus: TextView) {
+    private fun TextView.setApproveStatus() {
         val status = eventData.status?.value
         val userRegistration = eventData.binds?.currentUserRegistration?.status?.value
         var statusBackground = R.color.event_status_finished_background
@@ -110,51 +109,44 @@ class EventListItem(
                 }
             }
         }
-        tvStatus.apply {
-            text = context.getString(statusText)
-            backgroundTintList = ContextCompat.getColorStateList(context, statusBackground)
-            isVisible = statusVisibility
-        }
+        text = context.getString(statusText)
+        backgroundTintList = ContextCompat.getColorStateList(context, statusBackground)
+        isVisible = statusVisibility
     }
 
-    private fun decorActionButton(btnAction: Button) {
+    private fun Button.setActionButton() {
         val registrationId = eventData.binds?.currentUserRegistration?.id.toString()
-        val registrationState = eventData.binds?.eventRegistrationState
+        val registrationState = eventData.binds?.currentUserRegistrationState
         val userAgreement = eventData.userAgreement?.uri
         val actions = registrationState?.availableActions ?: arrayListOf("")
 
-        if (isTemp) btnAction.apply {
+        if (isTemp) {
             isVisible = true
             text = context.getString(R.string.event_action_participate)
             setOnClickListener { clickListener.onShowNeedAuth(eventId) }
-        }
-        else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
-            if (actions.contains("register"))
-                btnAction.apply {
-                    isVisible = true
-                    text = context.getString(R.string.event_action_participate)
-                    setOnClickListener {
-                        registrationState.checkStateLevel {
-                            clickListener.onActionRegister(
-                                eventId,
-                                userAgreement,
-                                eventData.isFormEnabled()
-                            )
-                        }
+        } else if (eventData.isStatusActionAvailable() && !eventData.isRegistrationClosed()) {
+            if (actions.contains("register")) {
+                isVisible = true
+                text = context.getString(R.string.event_action_participate)
+                setOnClickListener {
+                    registrationState.checkStateLevel {
+                        clickListener.onActionRegister(
+                            eventId,
+                            userAgreement,
+                            eventData.isFormEnabled()
+                        )
                     }
                 }
-            else if (actions.contains("withdraw"))
-                btnAction.apply {
-                    isVisible = true
-                    text = context.getString(R.string.event_action_cancel_request)
-                    setOnClickListener {
-                        registrationState.checkStateLevel {
-                            clickListener.onActionCancel(eventId, registrationId)
-                        }
+            } else if (actions.contains("withdraw")) {
+                isVisible = true
+                text = context.getString(R.string.event_action_cancel_request)
+                setOnClickListener {
+                    registrationState.checkStateLevel {
+                        clickListener.onActionCancel(eventId, registrationId)
                     }
                 }
-            else btnAction.isVisible = false
-        } else btnAction.isVisible = false
+            } else isVisible = false
+        } else isVisible = false
     }
 
     private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
@@ -180,9 +172,10 @@ class EventListItem(
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventNew) {
-                eventData = payload
-                decorActionButton(viewBinding.btnEventAction)
-                setApproveStatus(viewBinding.tvEventState)
+                eventData.binds?.currentUserRegistration = payload.binds?.currentUserRegistration
+                eventData.binds?.currentUserRegistrationState = payload.binds?.currentUserRegistrationState
+                viewBinding.btnEventAction.setActionButton()
+                viewBinding.tvEventState.setApproveStatus()
             }
         }
 
