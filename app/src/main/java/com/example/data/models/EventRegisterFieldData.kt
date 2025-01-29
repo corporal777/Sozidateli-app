@@ -1,5 +1,6 @@
 package com.example.data.models
 
+import com.example.util.AuthValidateUtil
 import com.example.util.Utils
 
 sealed class EventRegisterFieldData<T>(
@@ -31,7 +32,7 @@ sealed class EventRegisterFieldData<T>(
                     else true
                 }
                 EventRegisterField.Type.SITE -> {
-                    if (field.required || !value.isNullOrEmpty()) Utils.isEmailValid(value)
+                    if (field.required || !value.isNullOrEmpty()) AuthValidateUtil.isValidSite(value)
                     else true
                 }
                 else -> if (field.required) !value.isNullOrEmpty() else true

@@ -119,7 +119,6 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
         }.show()
     }
 
-    override fun showMessage(message: String) = showToast(message)
     override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)
 
     override fun animationType(): AnimType = AnimType.AXIS

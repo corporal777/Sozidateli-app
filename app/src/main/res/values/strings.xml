@@ -60,6 +60,8 @@
     <string name="auth_with_email">С помощью электронной почты</string>
     <string name="auth_or_login">Уже есть аккаунт?</string>
     <string name="or_auth_in_one_click">Или войдите в один клик</string>
+    <string name="auth_create_new_account">Создать новый аккаунт</string>
+    <string name="auth_create_new_account_and_bind">Зарегистрироваться через VK ID</string>
     <string name="auth_label_login">Войти</string>
     <string name="auth_label_create">Создать</string>
     <string name="auth_label_login_with_vk">Войти через VK ID</string>
@@ -71,6 +73,7 @@
     <string name="email_or_phone_hint">Номер телефона или email</string>
     <string name="auth_login">Укажите логин</string>
     <string name="auth_forgot_password">Забыли пароль?</string>
+    <string name="auth_input_login">Введите логин</string>
     <string name="auth_login_with_email">Введите электронную почту или номер телефона</string>
     <string name="auth_login_with_sn">Войдите с помощью учетной записи социальной сети</string>
     <string name="auth_register">Регистрация</string>
@@ -702,6 +705,9 @@
     <string name="current_password_label">Текущий пароль</string>
     <string name="password_confirm_next">Далее</string>
     <string name="password_confirm_wrong_password">Введен неправильный пароль</string>
+
+    <string name="password_success_changed">Пароль успешно изменен.</string>
+    <string name="password_attempts_has_been_exceeded">Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново.</string>
 
     <string name="phone_confirm_description">На номер %s отправлен код из 6 цифр. Введите его для подтверждения.</string>
     <string name="phone_change_description">Для доступа ко всем возможностям портала укажите Ваш телефон.</string>

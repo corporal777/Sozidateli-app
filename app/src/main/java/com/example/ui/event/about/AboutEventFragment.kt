@@ -48,6 +48,7 @@ import moxy.presenter.ProvidePresenter
 import com.example.extensions.onScrolled
 import com.example.extensions.setOnClickListener
 import com.example.extensions.statusBarColorValue
+import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
@@ -180,20 +181,18 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             )
         }
 
-        if (!eventData.event.isHasOneActivity()){
+        if (!eventData.event.isHasOneActivity()) {
             eventProgramSection.updateItems(
-                if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() }
-                else null,
+                if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() } else null,
                 eventData.subEvents.map {
-                    EventActivityItem(
+                    EventDetailActivitiesItem(
                         eventData.event.id.toString(),
-                        it,
-                        emptyList(),
-                        onSubEventClickListener,
-                        eventData.getUserRegistrationState()
+                        eventData.getUserRegistrationState(),
+                        it.key,
+                        it.value,
+                        onSubEventClickListener
                     )
-                }
-            )
+                })
         }
 
         eventPartnersSection.update(

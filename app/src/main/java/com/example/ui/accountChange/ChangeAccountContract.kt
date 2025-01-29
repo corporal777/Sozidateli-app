@@ -7,28 +7,26 @@ import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface ChangeAccountContract {
     interface View : BaseContract.View {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setAccounts(canShow : Boolean, sessions: List<UserSessionModel?>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setUnLoggedAccounts(canShow : Boolean, sessions: List<UserSessionModel>)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun setLoginToAnotherAccountButton()
 
-        @StateStrategyType(SkipStrategy::class)
-        fun showMessage(message : String)
-
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showAuthorizationFragment()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showLoginFragment(login : String)
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @OneExecution
         fun showBrowser(url : String)
     }
 

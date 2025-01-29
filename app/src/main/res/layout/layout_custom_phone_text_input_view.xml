@@ -24,20 +24,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.ui.views.phoneText.PhoneNumberEditText
+        <com.example.ui.views.phoneText.PhoneFormatEditText
             android:id="@+id/etPhoneInput"
             style="@style/ProfileData.EditText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:background="@null"
-            android:importantForAutofill="no"
             android:imeOptions="actionDone"
+            android:importantForAutofill="no"
             android:inputType="textNoSuggestions|phone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnAction"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:phoneFormatHint="+7" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnAction"

@@ -2,6 +2,7 @@ package com.example.ui.userprofile.edit.maindata
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import com.example.app.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -39,13 +40,12 @@ class EditMainDataPresenter
         super.onFirstViewAttach()
         viewState.setPlaceholder()
 
-        compositeDisposable += Maybe.defer { Maybe.just(appData.getUser()) }
+        compositeDisposable += Maybe.just(appData.getUser())
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { viewState.navigateUp() },
-                onSuccess = { user ->
-                    viewState.setPersonalData(user, appData.getStateValue())
-                })
+                onSuccess = { viewState.setPersonalData(it, appData.getStateValue()) }
+            )
     }
 
 

@@ -37,9 +37,12 @@ class ProfileDataPersonalItem(
 
     private val socialNetworks: LinksModel?,
     private val sites: LinksModel?,
-    private val userPhoneWorkAdditional: String?,
     private val onOrganizationClick: (OrganizationNew) -> Unit
 ) : BindableItem<ItemProfileDataPersonalBinding>() {
+
+    private val workPhoneAdditional =
+        if (!workPhone?.value.isNullOrEmpty() && workPhone?.isVisible == true) workPhone.additional
+        else null
 
     override fun bind(viewBinding: ItemProfileDataPersonalBinding, position: Int) {
         viewBinding.apply {
@@ -63,19 +66,19 @@ class ProfileDataPersonalItem(
                 setTextDataOrHide(tvEmail, public, true)
             }
 
-            tvAdditionalNumber.additionalNumber(userPhoneWorkAdditional)
             groupPhoneWork.apply {
+                tvAdditionalNumber.additionalNumber(workPhoneAdditional)
                 setTextDataOrHide(
                     tvPhoneWork,
                     workPhone?.value?.parsePhone(context),
-                    workPhone?.isVisible
+                    workPhone?.isVisible ?: false
                 )
             }
             groupPhoneMobile.apply {
                 setTextDataOrHide(
                     tvPhoneMobile,
                     mobilePhone?.value?.parsePhone(context),
-                    mobilePhone?.isVisible
+                    mobilePhone?.isVisible ?: false
                 )
             }
 
@@ -90,22 +93,24 @@ class ProfileDataPersonalItem(
             groupCity.setTextDataOrHide(tvCity, city, true)
 
             tvSocialNetworks.apply {
-                val scNetworks = socialNetworks?.values?.filter { it.showInProfile == true }
-                    ?.joinToString("\n") { it.value ?: "" }
+                val scNetworks =
+                    if (socialNetworks?.absent == true) context.getString(R.string.user_profile_no_social_networks)
+                    else socialNetworks?.values?.filter { it.showInProfile == true }
+                        ?.joinToString("\n") { it.value ?: "" }
 
-                text = if (socialNetworks?.absent == true) context.getString(R.string.user_profile_no_social_networks) else scNetworks
-                isVisible = !scNetworks.isNullOrEmpty()
-                tvSocialNetworksTitle.isVisible = !scNetworks.isNullOrEmpty()
+                text = scNetworks
                 removeUrlUnderline()
+                groupSocialNetworks.isVisible = !scNetworks.isNullOrEmpty()
             }
             tvSite.apply {
-                val site = sites?.values?.filter { it.showInProfile == true }
-                    ?.joinToString("\n") { it.value ?: "" }
+                val site =
+                    if (sites?.absent == true) context.getString(R.string.user_profile_no_site)
+                    else sites?.values?.filter { it.showInProfile == true }
+                        ?.joinToString("\n") { it.value ?: "" }
 
-                text = if (sites?.absent == true) context.getString(R.string.user_profile_no_site) else site
-                isVisible = !site.isNullOrEmpty()
-                tvSiteTitle.isVisible = !site.isNullOrEmpty()
+                text = site
                 removeUrlUnderline()
+                groupSites.isVisible = !site.isNullOrEmpty()
             }
 
             tvPhoneConfirmed.isVisible = mobilePhoneConfirmed && tvPhoneMobile.isVisible

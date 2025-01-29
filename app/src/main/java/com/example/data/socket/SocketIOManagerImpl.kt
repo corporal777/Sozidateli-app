@@ -83,8 +83,6 @@ class SocketIOManagerImpl
                 connect()
                 logErrorSocket("Connected")
             }
-            logErrorSocket("Token ${appData.token}")
-            logErrorSocket("Connected to socket")
         } catch (e: URISyntaxException) {
             logErrorSocket("Not connected to socket")
         }

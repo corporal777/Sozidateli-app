@@ -79,7 +79,7 @@ class EditMainDataFragment : BaseUserProfileEditFragment(), EditMainDataContract
                 dataItem.checkBaseFieldsValid(),
                 dataItem.checkMaxFieldsValid()
             ) {
-                val dataToSave = dataItem.getDataToSave() as MutableMap
+                val dataToSave = dataItem.getDataToSave()
                 val file = files.getCurrentFilesToSave()
                 presenter.onSavePersonalDataClick(file.toMutableList(), dataToSave)
             }

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
@@ -128,18 +129,9 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
     override fun setReadAllButton(show: Boolean) {
         mBinding.apply {
             btnReadAll.isVisible = show
-            toolbarLabel.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                if (btnReadAll.isVisible) {
-                    endToStart = btnReadAll.id
-                    //horizontalBias = 0.764F
-                    horizontalBias = 0.8F
-                }
-                else {
-                    endToStart = guidelineRight.id
-                    horizontalBias = 0.5F
-                }
-                toolbarLabel.isVisible = true
-            }
+            if (btnReadAll.isVisible) btnLeft.isInvisible = true else btnLeft.isVisible = false
+
+            toolbarLabel.isVisible = true
         }
     }
 

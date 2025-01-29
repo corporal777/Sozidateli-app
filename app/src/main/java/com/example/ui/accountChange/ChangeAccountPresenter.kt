@@ -51,6 +51,11 @@ class ChangeAccountPresenter
                 })
     }
 
+    override fun attachView(view: ChangeAccountContract.View?) {
+        super.attachView(view)
+        appData.isNeedShowWelcome = false
+    }
+
 
     override fun logoutFromAccount(session: UserSessionModel) {
         compositeDisposable += userRepository.deleteUsersDeviceSession(session.sessionId.toInt())
@@ -103,30 +108,20 @@ class ChangeAccountPresenter
 
     override fun switchAccount(session: UserSessionModel) {
         if (!redirectLink.isNullOrEmpty()) observeDeeplink(session)
-        else {
-            viewState.showCustomProgressDialog()
-            if (!isCurrentUser(session.binds.user.id.toString())) {
-                compositeDisposable += Completable.fromAction {
-                    viewState.setIgnoreTokenListener(false)
-                    appData.login(session.sessionUid)
-                    appData.saveId(session.userId)
-                    appData.setAllUserInfo(session.binds.user)
-                }.performOnBackgroundOutOnMain()
-                    .subscribeSimple {
-                        viewState.showMessage("Аккаунт сменен")
-                    }
-            } else {
-                viewState.apply {
-                    showMessage("Вы уже авторизованы в данном аккаунте")
-                    hideCustomProgressDialog()
-                }
-            }
+        else if (isCurrentUser(session.binds.user.id.toString())) return
+        else viewState.apply {
+            showCustomProgressDialog()
+            setIgnoreTokenListener(false)
+            appData.isNeedShowWelcome = true
+            appData.saveId(session.userId)
+            appData.login(session.sessionUid)
         }
     }
 
 
     override fun authToAccountClick() {
         viewState.apply {
+            appData.isNeedShowWelcome = true
             setIgnoreTokenListener(false)
             showAuthorizationFragment()
         }
@@ -139,7 +134,8 @@ class ChangeAccountPresenter
             } else user.personalPhone?.value ?: ""
 
         viewState.apply {
-            if (!login.isNullOrBlank()) {
+            if (login.isNotBlank()) {
+                appData.isNeedShowWelcome = true
                 setIgnoreTokenListener(false)
                 showLoginFragment(login)
             }

@@ -8,7 +8,7 @@ import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INV
 import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_INVITE_PGFR
 import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_ORGANIZATION_MEMBER
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Notification(

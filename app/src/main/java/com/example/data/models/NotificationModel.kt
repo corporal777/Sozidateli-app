@@ -3,7 +3,7 @@ package com.example.data.models
 import android.os.Parcelable
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class NotificationModel(
     val id: Int? = null,

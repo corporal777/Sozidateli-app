@@ -279,7 +279,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
 
                 extras.containsKey(FIELD_NOTIFICATION) -> {
-                    extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
+                    extras.getParcelable(FIELD_NOTIFICATION, RemoteNotification::class.java)?.let {
                         presenter.onHandleNotification(it)
                     }
                 }

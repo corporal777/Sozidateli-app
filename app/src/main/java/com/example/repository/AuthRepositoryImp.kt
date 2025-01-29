@@ -7,6 +7,7 @@ import com.example.data.models.*
 import com.example.extensions.getAppVersion
 import com.example.extensions.getAppVersionCode
 import com.example.extensions.getDeviceName
+import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -19,6 +20,24 @@ class AuthRepositoryImp
     private val appData: AppData,
     private val api: Api
 ) : ApiRepository(appData), AuthRepository {
+
+    override fun getFcmToken(): Maybe<String> {
+        return Maybe.create { emitter ->
+            FirebaseMessaging.getInstance().token
+                .addOnSuccessListener { token ->
+                    emitter.onSuccess(token)
+                }
+                .addOnFailureListener { e -> emitter.onError(e) }
+        }
+    }
+
+    override fun sendFcmToken(): Completable {
+        return getFcmToken().flatMapCompletable { api.registerFcmToken(FcmTokenBody(it)) }
+    }
+
+    override fun deleteFcmToken(): Completable {
+        return getFcmToken().flatMapCompletable { api.unregisterFcmToken(FcmTokenBody(it)) }
+    }
 
     override fun getTemporaryToken(): Completable {
         return api.getTemporaryToken().doOnSuccess {

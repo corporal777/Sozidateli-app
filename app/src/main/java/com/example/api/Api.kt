@@ -268,13 +268,6 @@ interface Api {
         @Query("limit") limit: Int
     ): Single<SearchAddressModel>
 
-    //+
-    @GET("v1/user-notification")
-    fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<ApiNewResponse<List<NotificationModel>>>
-
-    @GET("v1/user-notification")
-    fun getUserNotifications(@QueryMap map: Map<String, Any>): Maybe<NotificationsResponse<NotificationModel>>
-
     @GET("v1/user/password/recover/send")
     fun sendEmailRecovery(
         @Query("type") type: String,
@@ -376,6 +369,11 @@ interface Api {
         @Query("binds") binds: String
     ): Single<EventActivityModel>
 
+    //+
+    @GET("v1/user-notification")
+    fun getNotifications(@QueryMap map: Map<String, Any>): Maybe<NotificationsResponse<NotificationModel>>
+
+
     @GET("v1/user-notification/{id}")
     fun getNotificationDetail(
         @Path("id") notificationId: String,
@@ -396,6 +394,12 @@ interface Api {
         @Path("id") userId: String,
         @Query("type") type: String
     ): Maybe<UnacceptedInviteNotification>
+
+    @POST("v1/user-notification/register-fcm")
+    fun registerFcmToken(@Body body: FcmTokenBody): Completable
+
+    @DELETE("v1/user-notification/unregister-fcm")
+    fun unregisterFcmToken(@Body body: FcmTokenBody): Completable
 
     @GET("v1/user-external-invite/assistance/{id}")
     fun getInviteAssistanceDetail(@Path("id") assistanceId: String): Single<InviteDetail>

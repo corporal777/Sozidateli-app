@@ -39,8 +39,24 @@ abstract class BaseRegisterItem<T : ViewDataBinding>(
     open fun showError(show: Boolean) {
         if (binding != null) {
             getTitleView(binding!!).apply {
+                text = fieldData.field.name
                 if (show) setTextColor(getColor(R.color.red_new))
                 else setTextColor(getColor(R.color.profile_data_text_hint))
+            }
+        }
+    }
+
+    open fun showErrorText(show: Boolean, errorText: String){
+        if (binding != null) {
+            getTitleView(binding!!).apply {
+                if (show) {
+                    text = errorText
+                    setTextColor(getColor(R.color.red_new))
+                }
+                else {
+                    text = fieldData.field.name
+                    setTextColor(getColor(R.color.profile_data_text_hint))
+                }
             }
         }
     }

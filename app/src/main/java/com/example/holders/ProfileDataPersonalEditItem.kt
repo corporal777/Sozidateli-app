@@ -132,16 +132,11 @@ class ProfileDataPersonalEditItem(
 
     fun getDataToSave(): Map<String, Any?> {
         return mutableMapOf<String, Any?>().apply {
-            if (gender?.value != mGender || gender.showInProfile != mGenderShow) put(
-                UserDetail.USER_GENDER,
-                ToggleStringModel(getGender(), mGenderShow)
-            )
+            if (gender?.value != mGender || gender.showInProfile != mGenderShow)
+                put(UserDetail.USER_GENDER, ToggleStringModel(getGender(), mGenderShow))
             mBirthday?.formatToDefaultServerDate()?.let {
                 if (birthday?.value != it)
-                    put(
-                        UserDetail.USER_BIRTHDAY,
-                        FieldDetails(value = it, isVisible = mShowBirthday)
-                    )
+                    put(UserDetail.USER_BIRTHDAY, FieldDetails(it, isVisible = mShowBirthday))
             }
             if (checkAddressIsEqual()) {
                 put(UserDetail.USER_ADDRESS, getNewAddress())

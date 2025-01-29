@@ -20,6 +20,9 @@ interface ChangePasswordContract {
         @Skip
         fun showLoginAgainDialog()
 
+        @Skip
+        fun showPasswordSuccessChanged()
+
         @OneExecution
         fun showRecoveryPassword()
     }

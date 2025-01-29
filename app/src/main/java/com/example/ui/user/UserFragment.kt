@@ -203,7 +203,6 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
                     user.address?.shortAddres ?: user.address?.city,
                     user.contactInformation.socialLinks,
                     user.contactInformation.site,
-                    user.phone?.firstOrNull { it.type == PHONE_WORK }?.additional,
                     onOrganizationClickListener
                 )
             )

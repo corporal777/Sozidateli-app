@@ -15,7 +15,6 @@ import io.reactivex.functions.BiFunction
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.example.extensions.toBodyPart
-import com.google.firebase.messaging.FirebaseMessaging
 import javax.inject.Inject
 
 
@@ -39,13 +38,11 @@ class UserRepositoryImp
         api.getUserById(
             appData.getId(),
             arrayListOf(
-                "rights",
                 "education",
                 "academic-degree",
                 "work-experience",
                 "recommendation-file",
                 "organization",
-                "userOrganizationRights",
                 "external-invite-pgrf",
                 "chat-room-with-me",
                 "is-user-in-ban",
@@ -67,13 +64,11 @@ class UserRepositoryImp
     override fun getUserById(id: String): Maybe<UserDetail> = api.getUserById(
         id.toInt(),
         arrayListOf(
-            "rights",
             "education",
             "academic-degree",
             "work-experience",
             "recommendation-file",
             "organization",
-            "userOrganizationRights",
             "userFavorite",
             "chat-room-with-me",
             "is-user-in-ban"
@@ -84,13 +79,11 @@ class UserRepositoryImp
         return api.getUserByShortName(
             name,
             arrayListOf(
-                "rights",
                 "education",
                 "academic-degree",
                 "work-experience",
                 "recommendation-file",
                 "organization",
-                "userOrganizationRights",
                 "userFavorite",
                 "chat-room-with-me",
                 "is-user-in-ban"
@@ -322,20 +315,9 @@ class UserRepositoryImp
             .flatMap { sendUserEducationLevel(educationLevel) }.map { "" }
     }
 
-    override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>> {
-        return api.getNotifications(map)
-            .map {
-                PaginationResponse(
-                    it.totalCount,
-                    it.data.map {
-                        Notification.fromRemoteNotification(it)
-                    }
-                )
-            }
-    }
 
     override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
-        return api.getUserNotifications(map).map {
+        return api.getNotifications(map).map {
             NotificationsResponse(
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },
@@ -358,15 +340,6 @@ class UserRepositoryImp
             )
         ).map { it.data }
     }
-
-    override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
-        return api.getNotifications(map)
-            .map { it.totalCount }
-    }
-
-    /*override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
-        return call(api.getNotFilledFields())
-    }*/
 
     override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return api.getUsers(map)
@@ -476,11 +449,10 @@ class UserRepositoryImp
         api.checkEmailPhone(email, phone)
 
 
-    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
+    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return api.searchGlobal(map)
-            .doOnSuccess {
-                it.users.data.forEach { user -> user.isCurrentUser = user.id == appData.getId() }
-            }.map { PaginationResponse(it.users.count, it.users.data) }
+            .map { PaginationResponse(it.users.count, it.users.data) }
+        //.map { it.users }
     }
 
     override fun bindSocialAccount(
@@ -500,15 +472,5 @@ class UserRepositoryImp
 
     override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
         return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
-    }
-
-    override fun getFcmToken(): Maybe<String> {
-        return Maybe.create { emitter ->
-            FirebaseMessaging.getInstance().token
-                .addOnSuccessListener { token ->
-                    emitter.onSuccess(token)
-                }
-                .addOnFailureListener { e -> emitter.onError(e) }
-        }
     }
 }
