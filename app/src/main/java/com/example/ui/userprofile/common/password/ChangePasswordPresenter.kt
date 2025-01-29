@@ -44,7 +44,7 @@ class ChangePasswordPresenter
             .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
-                    appData.attemptsOfChangePassword = appData.attemptsOfChangePassword - 1
+                    appData.attemptsOfChangePassword -= 1
                     if (appData.attemptsOfChangePassword <= 0) {
                         viewState.apply {
                             setPasswordIsNotCorrect(0)
@@ -69,7 +69,7 @@ class ChangePasswordPresenter
             .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { viewState.navigateUp() }
+                onComplete = { viewState.showPasswordSuccessChanged() }
             )
     }
 

@@ -64,5 +64,5 @@ class SystemNotificationsFragment : BaseNotificationTypeFragment<SystemNotificat
 
 
     override val type: CharSequence by lazy { "system" }
-    override val title: CharSequence by lazy { getString(R.string.system_notifications_short) }
+    override val title: CharSequence by lazy { getString(R.string.system_notifications) }
 }

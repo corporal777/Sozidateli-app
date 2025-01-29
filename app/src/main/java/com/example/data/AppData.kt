@@ -136,7 +136,8 @@ class AppData(private val appPrefs: AppPrefs) {
 
     var hasBaseState = false
     var hasMaxState = false
-    var defaultEvent: Int? = null
+
+    var isNeedShowWelcome = false
     var isNeedUpdateApp = false
 
     val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
@@ -154,8 +155,9 @@ class AppData(private val appPrefs: AppPrefs) {
     val specialities = arrayListOf<EducationLevel>()
 
     //new notifications subjects
-    val notificationReadSubject = PublishSubject.create<Pair<Int, Notification.AcceptState>>()
+    val notificationReadSubject = PublishSubject.create<Notification>()
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
+
     private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
     private var notificationsInvites = NotificationInviteModel(0, 0, 0)
     private val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
@@ -186,6 +188,10 @@ class AppData(private val appPrefs: AppPrefs) {
     fun setNotificationsInvites(invites: NotificationInviteModel) {
         this.notificationsInvites = invites
         notificationsInvitesSubject.onNext(notificationsInvites.asOptional())
+    }
+
+    fun setNotificationRead(notification: Notification) {
+        notificationReadSubject.onNext(notification)
     }
 
 
@@ -245,13 +251,8 @@ class AppData(private val appPrefs: AppPrefs) {
         if (id != null) appPrefs.userId = id
     }
 
-    fun getId(): Int {
-        return appPrefs.userId
-    }
-
-    fun getTempId(): Int {
-        return appPrefs.temporaryUserId
-    }
+    fun getId(): Int = appPrefs.userId
+    fun getTempId(): Int = appPrefs.temporaryUserId
 
     fun logout() {
         isLoggedOut = true

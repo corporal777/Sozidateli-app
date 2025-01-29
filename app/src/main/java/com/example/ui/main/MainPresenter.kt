@@ -6,9 +6,7 @@ import android.util.Log
 import call
 import com.example.app.BuildConfig
 import com.example.data.AppData
-import com.example.data.models.EventNew
 import com.example.data.models.Notification
-import com.example.data.models.NotificationModel
 import com.example.data.models.RemoteNotification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
@@ -28,11 +26,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import java.util.Deque
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -122,7 +118,7 @@ class MainPresenter
             .flatMap { if (!isIgnoreToken) Observable.just(it) else Observable.empty() }
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
-                unsubscribeChat()
+                disconnectFromSocket()
                 if (token.value == null)
                     viewState.apply {
                         isAuthRequired = true
@@ -138,8 +134,9 @@ class MainPresenter
     private fun loadUser() {
         compositeDisposable += userRepository.getUserShortData()
             .flatMapSingle { userRepository.checkUserProfileSingle() }
-            .doOnSuccess { connectToSocket() }
-            .flatMapCompletable { Completable.defer { checkShowGreetings() } }
+            .flatMapCompletable { authRepository.sendFcmToken() }
+            .doOnComplete { connectToSocket() }
+            .andThen(Completable.defer { checkShowGreetings() })
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -162,22 +159,21 @@ class MainPresenter
     fun connectToSocket() {
         chatCompositeDisposable += socket.connect()
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                val connected = it == SocketConnectionState.CONNECTED
-                chatHelper.isConnectingToSocket = connected
-                if (connected && chatCompositeDisposable.size() == 1) {
-                    subscribeChatNewMessage()
-                    subscribeToNotifications()
-                    subscribeChatUnreadCount()
-                    subscribeChatRequestsCount()
-                    updateEmitValues()
-                }
-            }, {
-                it.printStackTrace()
-            })
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = {
+                    val connected = it == SocketConnectionState.CONNECTED
+                    if (connected && chatCompositeDisposable.size() == 1) {
+                        subscribeChatNewMessage()
+                        subscribeToNotifications()
+                        subscribeChatUnreadCount()
+                        subscribeChatRequestsCount()
+                        updateSocketEmitValues()
+                    }
+                })
     }
 
-    private fun updateEmitValues() {
+    private fun updateSocketEmitValues() {
         chatCompositeDisposable += socket.connectToUpdates()
             .performOnBackgroundOutOnMain()
             .subscribe()
@@ -185,16 +181,13 @@ class MainPresenter
 
     private fun subscribeToNotifications() {
         chatCompositeDisposable += socket.subscribeToTotalNotificationsCount()
+            .doOnError { it.printStackTrace() }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    appData.notificationsCount = 0
-                },
-                onNext = { nCount ->
-                    Log.e("TOTAL NOTES COUNT", nCount.toString())
-                    appData.notificationsCount = nCount
-                }
+                onError = { appData.notificationsCount = 0 },
+                onNext = {
+                    Log.e("REQUEST INFO NOTIFICATION", it.toString())
+                    appData.notificationsCount = it }
             )
         chatCompositeDisposable += socket.subscribeTotalNotificationsTypesCount()
             .performOnBackgroundOutOnMain()
@@ -218,13 +211,10 @@ class MainPresenter
     private fun subscribeChatUnreadCount() {
         chatCompositeDisposable += socket.subscribeToTotalMessagesCount()
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                Log.e("TOTAL MESSAGES COUNT", it.toString())
-                appData.chatUnreadMessageCount = it
-            }, {
-                it.printStackTrace()
-                appData.chatUnreadMessageCount = 0
-            })
+            .subscribeSimple(
+                onError = { appData.chatUnreadMessageCount = 0 },
+                onNext = { appData.chatUnreadMessageCount = it }
+            )
     }
 
     private fun subscribeChatNewMessage() {
@@ -258,7 +248,7 @@ class MainPresenter
     }
 
 
-    private fun unsubscribeChat() {
+    private fun disconnectFromSocket() {
         socket.disconnectFromSocket()
         chatCompositeDisposable.clear()
     }
@@ -275,8 +265,9 @@ class MainPresenter
     }
 
     private fun checkShowGreetings(): Completable {
-        return if (isAuthRequired) {
+        return if (isAuthRequired || appData.isNeedShowWelcome) {
             isAuthRequired = false
+            appData.isNeedShowWelcome = false
             Completable.fromAction {
                 viewState.apply {
                     hideAllLoadingDialogs()
@@ -414,7 +405,7 @@ class MainPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        unsubscribeChat()
+        disconnectFromSocket()
         chatHelper.currentChatId = null
     }
 
@@ -490,7 +481,7 @@ class MainPresenter
             .subscribeSimple {}
     }
 
-    private fun getInAppNotifications(){
+    private fun getInAppNotifications() {
         compositeDisposable += userRepository.getInAppList()
             .map { it.map { n -> Notification.fromRemoteNotification(n) } }
             .performOnBackgroundOutOnMain()

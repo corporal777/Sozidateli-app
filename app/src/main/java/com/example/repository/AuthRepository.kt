@@ -8,6 +8,10 @@ import io.reactivex.Single
 
 interface AuthRepository {
 
+    fun getFcmToken(): Maybe<String>
+    fun sendFcmToken(): Completable
+    fun deleteFcmToken(): Completable
+
     //fun setEmailSocialNetwork(snType: String, email: String, token: String): Completable
     fun getTemporaryToken() : Completable
     fun getStories() : Maybe<List<String>>

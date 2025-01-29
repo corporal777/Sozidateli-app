@@ -23,3 +23,7 @@ data class VKAuthBody(
     val build: String = "",
     val version: String = ""
 )
+
+data class FcmTokenBody(
+    val token : String
+)

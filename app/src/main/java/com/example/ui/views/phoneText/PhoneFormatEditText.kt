@@ -14,6 +14,9 @@ import androidx.core.widget.doOnTextChanged
 import com.example.app.R
 import com.example.extensions.onFocusChanged
 import com.example.extensions.onTextChanged
+import com.example.util.Utils.isContainLetters
+import com.example.util.Utils.isContainsNumbers
+import com.example.util.Utils.isPhone
 import com.google.android.material.textfield.TextInputEditText
 
 class PhoneFormatEditText : TextInputEditText {
@@ -82,10 +85,12 @@ class PhoneFormatEditText : TextInputEditText {
         return formattedText
     }
 
-    private fun setPhoneHint(text: CharSequence?) {
-        hint = formatPhoneText(text.toString())
+    fun setPhoneHint(text: CharSequence?) {
+        hint =
+            if (isContainsNumbers(text.toString())) formatPhoneText(text.toString())
+            else text
+        //hint = formatPhoneText(text.toString())
     }
-
 
     fun setPhoneText(text: CharSequence?) {
         if (!text.isNullOrBlank()) {

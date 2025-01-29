@@ -22,7 +22,7 @@ interface UserRepository {
 
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
-    fun getFcmToken(): Maybe<String>
+
 
     fun changePassword(id: Int, body: PasswordBody): Completable
     fun checkPassword(password: String): Completable
@@ -59,10 +59,8 @@ interface UserRepository {
 
     fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun searchAddress(query: String?): Single<SearchAddressModel>
-    fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>>
     fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>>
     fun getInAppList(): Maybe<List<NotificationModel>>
-    fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>>
     fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>

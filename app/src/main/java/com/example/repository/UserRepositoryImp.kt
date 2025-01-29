@@ -1,7 +1,6 @@
 package com.example.repository
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.*
@@ -13,12 +12,9 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function3
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import com.example.extensions.toBodyPart
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import javax.inject.Inject
 
 
@@ -319,20 +315,9 @@ class UserRepositoryImp
             .flatMap { sendUserEducationLevel(educationLevel) }.map { "" }
     }
 
-    override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<Notification>> {
-        return api.getNotifications(map)
-            .map {
-                PaginationResponse(
-                    it.totalCount,
-                    it.data.map {
-                        Notification.fromRemoteNotification(it)
-                    }
-                )
-            }
-    }
 
     override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
-        return api.getUserNotifications(map).map {
+        return api.getNotifications(map).map {
             NotificationsResponse(
                 it.totalCount,
                 it.data.map { Notification.fromRemoteNotification(it) },
@@ -355,15 +340,6 @@ class UserRepositoryImp
             )
         ).map { it.data }
     }
-
-    override fun getNotificationNotReadedSize(map: Map<String, Any>): Maybe<Int> {
-        return api.getNotifications(map)
-            .map { it.totalCount }
-    }
-
-    /*override fun getNotFilledFields(): Maybe<List<NotFilledFields>> {
-        return call(api.getNotFilledFields())
-    }*/
 
     override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
         return api.getUsers(map)
@@ -496,15 +472,5 @@ class UserRepositoryImp
 
     override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
         return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
-    }
-
-    override fun getFcmToken(): Maybe<String> {
-        return Maybe.create { emitter ->
-            FirebaseMessaging.getInstance().token
-                .addOnSuccessListener { token ->
-                    emitter.onSuccess(token)
-                }
-                .addOnFailureListener { e -> emitter.onError(e) }
-        }
     }
 }

@@ -289,19 +289,13 @@ class EventRepositoryImp
         api.cancelRegisterToEvent(eventId)
 
     override fun addEventToCalendar(body: EventCalendarBody): Completable =
-        api.addEventToCalendar(body).doOnComplete {
-            appData.defaultEvent = body.entity.id
-        }
+        api.addEventToCalendar(body)
 
     override fun addEventToCalendarWithResult(body: EventCalendarBody): Single<EventCalendarModel> =
-        api.addEventToCalendarWithResult(body).doOnSuccess {
-            appData.defaultEvent = body.entity.id
-        }
+        api.addEventToCalendarWithResult(body)
 
     override fun deleteAllCalendarEvents(entityType: String): Completable =
-        api.deleteAllCalendarEvents(appData.getId(), entityType).doOnComplete {
-            appData.defaultEvent = null
-        }
+        api.deleteAllCalendarEvents(appData.getId(), entityType)
 
 
     override fun deleteCalendarEvent(id: String): Completable =

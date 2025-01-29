@@ -102,8 +102,18 @@ class ChangePasswordFragment() : BaseFragment<FragmentChangePasswordBinding>(),
         DefaultAlertDialog(
             requireContext(),
             null,
-            "Превышено количество попыток ввода пароля. Пожалуйста, авторизуйтесь в приложении заново."
+            getString(R.string.password_attempts_has_been_exceeded),
+            withCancel = false
         ).setSelectCallback { presenter.logoutFromAccount() }
+    }
+
+    override fun showPasswordSuccessChanged() {
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(R.string.password_success_changed),
+            withCancel = false
+        ).setSelectCallback { navigateUp() }
     }
 
 

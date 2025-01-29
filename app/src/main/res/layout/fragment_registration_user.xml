@@ -49,14 +49,14 @@
                 android:layout_marginHorizontal="15dp"
                 android:text="@string/profile_edit_user_no_middle_name" />
 
-            <com.example.ui.views.CustomTextInputView
+            <com.example.ui.views.CustomPhoneTextInputView
                 android:id="@+id/etLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                app:hintText="@string/auth_input_email_or_phone_title"
-                app:inputType="textEmailAddress"
-                app:titleText="@string/auth_input_email_or_phone_hint" />
+                app:layout_constraintTop_toBottomOf="@id/sc_no_middle_name"
+                app:phoneHintText="Введите номер мобильного телефона"
+                app:phoneTitleText="@string/search_filter_phone" />
 
             <com.example.ui.views.CustomTextMenuView
                 android:id="@+id/etBirthday"

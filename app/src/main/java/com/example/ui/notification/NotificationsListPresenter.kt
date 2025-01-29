@@ -2,6 +2,7 @@ package com.example.ui.notification
 
 import android.app.NotificationManager
 import android.net.Uri
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.DeclineBody
@@ -54,8 +55,7 @@ class NotificationsListPresenter
                 totalUnread = it.totalUnread ?: 0
                 totalUnreadInvites = it.totalUnreadInvites ?: 0
                 isHasUnreadNotifications = totalUnread > 0
-            }
-            .map { PaginationResponse(it.totalCount, it.data) }
+            }.map { PaginationResponse(it.totalCount, it.data) }
     }
         .applyErrorHandler { viewState.showRequestErrorMessage() }
         .buildList(enablePlaceholders = false, initialSize = 30)
@@ -72,6 +72,13 @@ class NotificationsListPresenter
                 if (!blockInvalidation && isOnResume) pagination.invalidate()
                 else blockInvalidation = false
             }
+
+        compositeDisposable += appData.notificationReadSubject
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                Log.e("REQUEST INFO NOTE", it.toString())
+            }
+
         loadNotifications()
     }
 
