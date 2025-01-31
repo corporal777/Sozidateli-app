@@ -36,7 +36,6 @@ class PlaceholderItem(
 
         Type.NOTIFICATION -> R.layout.item_notification_placeholder
         Type.NOTIFICATIONS_LIST -> R.layout.item_notifications_list_placeholder
-        Type.NOTIFICATIONS_MAIN -> R.layout.item_notifications_main_placeholder
 
         Type.SCHEDULE_CALENDAR -> R.layout.item_schedule_calendar_placeholder
         Type.SCHEDULE_LIST -> R.layout.item_schedule_list_placeholder
@@ -74,7 +73,6 @@ class PlaceholderItem(
 
         NOTIFICATION,
         NOTIFICATIONS_LIST,
-        NOTIFICATIONS_MAIN,
 
         CHAT_LIST,
         CHAT,

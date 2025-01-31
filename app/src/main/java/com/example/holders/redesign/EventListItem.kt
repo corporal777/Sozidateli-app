@@ -40,9 +40,9 @@ class EventListItem(
 
     override fun bind(viewBinding: ItemEventNewBinding, position: Int) {
         viewBinding.apply {
-            cardEvent.setOnClickListener {
-                clickListener.onShowEventClick(viewBinding.root, eventId)
-            }
+//            cardEvent.setOnClickListener {
+//                clickListener.onShowEventClick(viewBinding.root, eventId)
+//            }
 
             tvDate.text = eventDate
             tvLocation.text = eventData.address?.getShortAddress()
@@ -55,7 +55,7 @@ class EventListItem(
             }
 
             tvEventState.setApproveStatus()
-            btnEventAction.setActionButton()
+            //btnEventAction.setActionButton()
         }
     }
 
@@ -174,7 +174,7 @@ class EventListItem(
             if (payload is EventNew) {
                 eventData.binds?.currentUserRegistration = payload.binds?.currentUserRegistration
                 eventData.binds?.currentUserRegistrationState = payload.binds?.currentUserRegistrationState
-                viewBinding.btnEventAction.setActionButton()
+                //viewBinding.btnEventAction.setActionButton()
                 viewBinding.tvEventState.setApproveStatus()
             }
         }

@@ -3,23 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <LinearLayout
-        android:id="@+id/ln_accept_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/background_notification_normal"
-        android:elevation="10dp"
-        android:orientation="vertical"
-        tools:ignore="MissingPrefix">
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tv_date"
+            fontPath="fonts/sf_pro_text_semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:ellipsize="end"
+            android:letterSpacing="-0.02"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:visibility="gone"
+            tools:text="Вторник, 1 марта"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ln_accept_notification"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/background_notification_normal"
+            android:elevation="9dp">
+
 
             <View
                 android:id="@+id/view_badge"
@@ -42,22 +56,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.example.ui.views.expandableTextView.CustomExpandableTextView
+                android:id="@+id/tvMessage"
+                style="@style/Notification.Message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                tools:text="@string/about_additional_info_text" />
 
 
-        <com.example.ui.views.expandableTextView.CustomExpandableTextView
-            android:id="@+id/tvMessage"
-            style="@style/Notification.Message"
-            tools:text="@string/about_additional_info_text" />
+            <View
+                android:id="@+id/viewActions"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_notification_decline_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvMessage" />
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_actions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_notification_decline_view"
-            android:paddingVertical="15dp">
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="btnAccept,btnCancel"
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAccept"
@@ -65,17 +89,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:minHeight="36dp"
                 android:paddingHorizontal="10dp"
                 android:text="@string/notifications_accept"
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/btnCancel"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintBottom_toBottomOf="@id/viewActions"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toTopOf="@id/viewActions" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancel"
@@ -83,18 +105,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginBottom="20dp"
                 android:minHeight="36dp"
                 android:paddingHorizontal="10dp"
                 android:text="@string/notifications_cancel"
                 android:textColor="@color/main_brown_color_new"
                 android:textSize="14sp"
-                android:visibility="gone"
+                app:layout_constraintBaseline_toBaselineOf="@id/btnAccept"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/btnAccept"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
+                app:layout_constraintHorizontal_bias="0.045"
+                app:layout_constraintStart_toEndOf="@+id/btnAccept" />
 
             <TextView
                 android:id="@+id/tvDecline"
@@ -102,15 +121,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:letterSpacing="-0.02"
                 android:textColor="@color/notification_decline_text_color"
                 android:textSize="13sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/viewActions"
+                app:layout_constraintTop_toTopOf="@id/viewActions"
                 tools:text="Приглашение было принято. Для изменения решения нажмите отклонить."
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
 </layout>

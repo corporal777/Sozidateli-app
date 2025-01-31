@@ -13,9 +13,6 @@ class NotificationsTagsItem(
 
     override fun bind(viewBinding: ItemNotificationsTagsBinding, position: Int) {
         viewBinding.apply {
-            btnAllNotifications.setOnClickListener {
-
-            }
             btnEvents.setOnClickListener {
                 onTypeClick.invoke(NotificationType.EVENTS)
             }

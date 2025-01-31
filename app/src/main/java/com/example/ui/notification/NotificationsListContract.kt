@@ -1,6 +1,8 @@
 package com.example.ui.notification
 
+import androidx.paging.PagingData
 import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
@@ -9,20 +11,14 @@ import moxy.viewstate.strategy.alias.Skip
 interface NotificationsListContract {
     interface View : BaseContract.View {
 
-        @AddToEndSingle
-        fun setNotificationsPlaceholder()
-
-        @AddToEndSingle
-        fun setData(notifications: List<NotificationsSortedData>)
-
-        @AddToEndSingle
-        fun showEmptyListPlaceholder()
-
         @OneExecution
+        fun setData(notifications: PagingData<NotificationLocal>)
+
+        @Skip
         fun showUrl(url: String)
 
         @OneExecution
-        fun onNotificationNeedUpdate(data : Notification)
+        fun updateNotification(data : NotificationLocal?, notificationId : Int)
 
         @OneExecution
         fun showAboutEvent(eventId: String)
@@ -30,7 +26,7 @@ interface NotificationsListContract {
         @OneExecution
         fun showAboutOrganization(id: String?)
 
-        @OneExecution
+        @Skip
         fun setNotReadButtonEnabled(enabled: Boolean)
 
         @Skip
@@ -39,7 +35,6 @@ interface NotificationsListContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
-        fun onItemTake(position: Int)
         fun onRefreshRequest()
         fun onNotificationReadClick(id: Int)
         fun onNotificationAcceptClick(notification: Notification)

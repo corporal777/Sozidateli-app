@@ -60,6 +60,7 @@ interface UserRepository {
     fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun searchAddress(query: String?): Single<SearchAddressModel>
     fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>>
+    fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<NotificationLocal>>
     fun getInAppList(): Maybe<List<NotificationModel>>
     fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
     fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>>

@@ -8,6 +8,7 @@ import com.example.app.R
 import com.example.data.models.Notification
 import com.example.app.databinding.ItemNotificationSimpleBinding
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
+import com.example.ui.views.loading.CustomLoadingButton
 
 class SimpleNotificationItem(
     private val context: Context,
@@ -46,11 +47,11 @@ class SimpleNotificationItem(
         }
     }
 
-    private fun decorViews(button: Button, notification: Notification) {
+    private fun decorViews(button: CustomLoadingButton, notification: Notification) {
         button.apply {
             isEnabled = !notification.wasRead
-            text = if (notification.wasRead) context.getString(R.string.notifications_was_read)
-            else context.getString(R.string.notifications_mark_as_read)
+            setButtonText(if (notification.wasRead) context.getString(R.string.notifications_was_read)
+            else context.getString(R.string.notifications_mark_as_read))
         }
     }
 

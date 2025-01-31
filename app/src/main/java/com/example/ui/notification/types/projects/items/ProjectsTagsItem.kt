@@ -13,8 +13,9 @@ class ProjectsTagsItem(
 
     override fun bind(viewBinding: ItemNotificationsTagsBinding, position: Int) {
         viewBinding.apply {
-            secondLn.isVisible = false
-            thirdLn.isVisible = false
+            btnPgrf.isVisible = false
+            btnOrganizer.isVisible = false
+            btnSystemNotifications.isVisible = false
 
             btnMyProjects.apply {
                 text = context.getString(R.string.active_invites)

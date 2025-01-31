@@ -2,6 +2,7 @@ package com.example.ui.base
 
 import com.example.data.AppData
 import com.example.data.models.ApiError
+import com.example.exceptions.EmptyDataException
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.views.dialogs.StateType
 import com.google.gson.Gson
@@ -31,6 +32,10 @@ open class BasePresenter<V : BaseContract.View>
     protected open fun onReceiveError(error: Throwable) {
         error.printStackTrace()
         viewState.showRequestErrorMessage()
+    }
+
+    protected open fun onReceivePagingError(error: Throwable) {
+        if (error !is EmptyDataException) onReceiveError(error)
     }
 
     protected open fun onReceiveNoInternetError() {

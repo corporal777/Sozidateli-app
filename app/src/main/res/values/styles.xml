@@ -669,7 +669,7 @@
     </style>
 
     <style name="Notification.Tag">
-        <item name="fontPath">fonts/sf_pro_display_semibold.ttf</item>
+        <item name="fontPath">fonts/sf_pro_text_semibold.ttf</item>
         <item name="android:textColor">@color/text_color_tag_new</item>
         <item name="android:letterSpacing">-0.02</item>
         <item name="android:includeFontPadding">false</item>

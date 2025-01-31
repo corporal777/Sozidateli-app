@@ -2,84 +2,71 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:orientation="vertical"
         android:paddingHorizontal="10dp">
 
-        <LinearLayout
-            android:id="@+id/first_ln"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_my_projects"
+            style="@style/Notification.Tag"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="@string/my_projects"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:visibility="gone"
-                android:id="@+id/btn_all_notifications"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Все уведомления" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_events"
+            style="@style/Notification.Tag"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/events"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/btn_my_projects"
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_my_projects"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="@string/my_projects" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_events"
-                android:layout_marginStart="5dp"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="@string/events" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/second_ln"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_pgrf"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="@string/estimates_rf" />
-
-        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_pgrf"
+            style="@style/Notification.Tag"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/estimates_rf"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_events" />
 
 
-        <LinearLayout
-            android:id="@+id/third_ln"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_organizer"
+            style="@style/Notification.Tag"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/organizer"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_pgrf" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_organizer"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="@string/organizer" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_system_notifications"
+            style="@style/Notification.Tag"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/system_notifications"
+            app:layout_constraintBaseline_toBaselineOf="@id/btn_organizer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/btn_organizer" />
 
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_system_notifications"
-                style="@style/Notification.Tag"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="5dp"
-                android:text="@string/system_notifications" />
-        </LinearLayout>
-
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

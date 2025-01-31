@@ -47,13 +47,13 @@ class AcceptNotificationItem(
                 Notification.AcceptState.NONE -> {
                     btnAccept.isVisible = true
                     btnCancel.isVisible = true
-                    clActions.background = null
+                    viewActions.background = null
                     tvDecline.isVisible = false
                 }
                 Notification.AcceptState.DISABLED -> {
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
                     tvDecline.apply {
                         isVisible = true
                         text = context.getString(R.string.notifications_state_disabled)
@@ -62,7 +62,7 @@ class AcceptNotificationItem(
                 Notification.AcceptState.ACCEPTED -> {
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationAcceptedText(tvDecline)
@@ -71,7 +71,7 @@ class AcceptNotificationItem(
                 Notification.AcceptState.CANCELED -> {
                     btnCancel.isVisible = false
                     btnAccept.isVisible = false
-                    clActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationDeclinedText(tvDecline)

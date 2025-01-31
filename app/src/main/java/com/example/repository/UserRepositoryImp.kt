@@ -330,6 +330,15 @@ class UserRepositoryImp
         }
     }
 
+    override fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<NotificationLocal>> {
+        return api.getNotifications(map).map {
+            PaginationResponse(
+                it.totalCount,
+                it.data.map { NotificationLocal.fromRemoteNotification(it) },
+            )
+        }
+    }
+
     override fun getInAppList(): Maybe<List<NotificationModel>> {
         return api.getNotifications(
             mapOf(
@@ -449,7 +458,7 @@ class UserRepositoryImp
         api.checkEmailPhone(email, phone)
 
 
-    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+    override fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
         return api.searchGlobal(map)
             .map { PaginationResponse(it.users.count, it.users.data) }
         //.map { it.users }
