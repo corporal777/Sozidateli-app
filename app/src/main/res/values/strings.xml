@@ -827,6 +827,9 @@
     <string name="password_to_small_error">• 8 символов</string>
     <string name="password_numbers_error">• Цифры</string>
     <string name="password_letters_error">• Заглавные латинские буквы</string>
+    <string name="password_big_small_letters_error">• Заглавные и строчные латинские буквы</string>
+    <string name="password_big_letters_error">• Заглавные латинские буквы</string>
+    <string name="password_small_letters_error">• Строчные латинские буквы</string>
 
     <string name="used_unacceptable_symbols">Пароль содержит недопустимые символы: специальные символы (!%&lt;&gt; и т.д.), кириллица. Пожалуйста, используйте только латиницу и цифры.</string>
     <string name="add_phone_dialog_title">Добавьте Ваш номер телефона</string>

@@ -103,7 +103,11 @@ class CustomPasswordView : FrameLayout {
 
     private fun validatePassword(isRegister: Boolean, password: CharSequence?) {
         val isLengthValid = (password?.length ?: 0) >= MIN_LENGTH
-        val isLettersValid = password?.matches(Regex(".*[A-Z].*")) == true
+
+        val isUpperCaseLettersValid = password.matchesLettersRegister(".*[A-Z].*")
+        val isUnderCaseLettersValid = password.matchesLettersRegister(".*[a-z].*")
+
+        val isLettersValid = isUpperCaseLettersValid && isUnderCaseLettersValid
         val isNumbersValid = password?.matches(Regex(".*\\d.*")) == true
 
         isUncaughtSymbolsUsed = if (password.isNullOrEmpty()) false
@@ -114,7 +118,15 @@ class CustomPasswordView : FrameLayout {
 
         binding.apply {
             tvErrorLength.changeTextColorError(isRegister, isLengthValid)
-            tvErrorLetters.changeTextColorError(isRegister, isLettersValid)
+            tvErrorLetters.apply {
+                if (isUpperCaseLettersValid && !isUnderCaseLettersValid)
+                    text = context.getString(R.string.password_small_letters_error)
+                else if (!isUpperCaseLettersValid && isUnderCaseLettersValid)
+                    text = context.getString(R.string.password_big_letters_error)
+                else text = context.getString(R.string.password_big_small_letters_error)
+
+                changeTextColorError(isRegister, isLettersValid)
+            }
             tvErrorNumbers.changeTextColorError(isRegister, isNumbersValid)
             lnErrorDescription.isVisible = !isUncaughtSymbolsUsed
         }
@@ -186,6 +198,10 @@ class CustomPasswordView : FrameLayout {
             isFirstPasswordValid && isSecondPasswordValid,
             firstPassword.toString()
         )
+    }
+
+    private fun CharSequence?.matchesLettersRegister(regex: String): Boolean {
+        return if (this == "null" || this.isNullOrEmpty()) false else this.matches(Regex(regex))
     }
 
     fun setPasswordValidCallback(block: (password: PasswordModel) -> Unit): CustomPasswordView {
