@@ -18,6 +18,6 @@ interface OrganizationRepository {
     fun getOrganizationMembersWithoutPagination(map: Map<String, Any>): Maybe<List<OrganizationMemberModel>>
 
     //+
-    fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>>
+    fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>>
     fun getOrganizationsWithActiveEvents(): Maybe<List<OrganizationNew>>
 }

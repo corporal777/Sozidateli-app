@@ -20,9 +20,6 @@ interface SearchContract {
 
         @Skip
         fun setDataEmpty(isEmpty : Boolean, title : String)
-
-        @Skip
-        fun invalidatePagingData()
     }
 
     interface Presenter<F : SearchFilter> : BaseContract.Presenter {

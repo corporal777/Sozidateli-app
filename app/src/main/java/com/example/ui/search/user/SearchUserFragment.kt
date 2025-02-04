@@ -48,9 +48,7 @@ class SearchUserFragment :
                     UserPlaceholderAdapter(9),
                     UserPlaceholderAdapter(1)
                 ) { setDataEmpty(it, getString(R.string.no_data_found)) }
-            swipeToRefresh.setOnRefreshListener {
-                presenter.onRefreshRequest()
-            }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
@@ -59,9 +57,6 @@ class SearchUserFragment :
         viewBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun invalidatePagingData() {
-        pagingAdapter.refresh()
-    }
 
     override fun updateUser(user: UserDetail) {
         pagingAdapter.updateUserFavorite(user)

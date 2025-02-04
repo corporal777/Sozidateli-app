@@ -37,8 +37,7 @@ class SearchUserPresenter
 
     private val pagination = PagingDataSourceFactory { limit, offset ->
         userRepository.searchUsers(buildFilterNew(limit, offset))
-    }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
-        .buildList(initialSize = SEARCH_PAGE_SIZE, distance = 5)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = SEARCH_PAGE_SIZE, distance = 5)
 
 
     override fun onFirstViewAttach() {
@@ -65,7 +64,7 @@ class SearchUserPresenter
                 .map { Optional(EventUserFavorite(it.id, it.user)) }
         }
             .doOnSuccess { user.binds?.userFavorite = it.value }
-            .withTimeOut(10000)
+            .withTimeOut(5000)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

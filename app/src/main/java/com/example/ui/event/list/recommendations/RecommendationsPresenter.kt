@@ -38,13 +38,11 @@ class RecommendationsPresenter
 ) : EventListPresenterNew<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 
+    var isOpenProfile = false
 
     override val pagination = PagingDataSourceFactory { limit, offset ->
         getPaginationRequest(limit, offset)
-    }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
-        .buildList(initialSize = 20, distance = 2)
-
-
+    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = 20, distance = 2)
 
     override fun attachView(view: RecommendationsContract.View) {
         super.attachView(view)
@@ -57,22 +55,25 @@ class RecommendationsPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onNext = { viewState.setData(it, appData.isNeedUpdateApp) })
+                onNext = { viewState.setData(it, appData.isNeedUpdateApp) }
+            )
+        showSavedEventOrProfile()
     }
 
     override fun onSearchClick() = viewState.showSearch()
 
 
-    override fun onShowSavedEventOrProfile(isProfile: Boolean?) {
+    private fun showSavedEventOrProfile() {
         val eventId = appData.savedEventId
         if (!eventId.isNullOrEmpty()) {
             viewState.showAboutEvent(eventId)
             appData.savedEventId = null
-        } else if (isProfile == true) {
+        } else if (isOpenProfile) {
+            isOpenProfile = false
             val email = getUserData().personalEmail
             val phone = getUserData().personalPhone?.value
             if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
-        } else return
+        }
     }
 
     override fun getPaginationRequest(

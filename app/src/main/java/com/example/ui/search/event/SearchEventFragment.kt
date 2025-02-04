@@ -84,10 +84,6 @@ class SearchEventFragment :
         viewBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun invalidatePagingData() {
-        pagingAdapter.refreshData()
-    }
-
     override fun updateEvent(event: EventNew) {
         pagingAdapter.updateEventAction(event)
     }

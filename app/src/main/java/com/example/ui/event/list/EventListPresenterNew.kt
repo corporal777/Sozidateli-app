@@ -30,7 +30,7 @@ abstract class EventListPresenterNew<V : EventListContractNew.View>(
     override fun attachView(view: V) {
         super.attachView(view)
         if (isFirstAttach) isFirstAttach = false
-        else viewState.invalidatePagingData()
+        else pagination.invalidateStart()
     }
 
 

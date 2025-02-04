@@ -80,15 +80,15 @@ class EventPagingAdapter(
         }
     }
 
-    fun submitData(lifecycle: Lifecycle, data: PagingData<EventNew>, isTemp: Boolean, withAppUpdate: Boolean) {
+    fun submitData(
+        lifecycle: Lifecycle,
+        data: PagingData<EventNew>,
+        isTemp: Boolean,
+        withAppUpdate: Boolean
+    ) {
         isTemporary = isTemp
         isAppUpdate = withAppUpdate
         submitData(lifecycle, data)
-    }
-
-    fun refreshData(){
-        isRefresh = true
-        refresh()
     }
 
     inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -132,10 +132,20 @@ class EventPagingAdapter(
             } else if (event.isStatusActionAvailable() && !registrationClosed) {
                 if (actions.contains("register")) {
                     buttonText = context.getString(R.string.event_action_participate)
-                    clickAction = { onRegister.invoke(event) }
+                    clickAction = {
+                        registrationState.checkStateLevel {
+                            showProgressLoading(true)
+                            onRegister.invoke(event)
+                        }
+                    }
                 } else if (actions.contains("withdraw")) {
                     buttonText = context.getString(R.string.event_action_cancel_request)
-                    clickAction = { onCancel.invoke(event) }
+                    clickAction = {
+                        registrationState.checkStateLevel {
+                            showProgressLoading(true)
+                            onCancel.invoke(event)
+                        }
+                    }
                 } else clickAction = null
             } else clickAction = null
 
@@ -143,12 +153,7 @@ class EventPagingAdapter(
             showProgressLoading(false)
             setButtonText(buttonText)
             isVisible = clickAction != null
-            setOnClickListener {
-                registrationState.checkStateLevel {
-                    showProgressLoading(true)
-                    clickAction?.invoke()
-                }
-            }
+            setOnClickListener { clickAction?.invoke() }
         }
 
         private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
@@ -237,17 +242,17 @@ class EventPagingAdapter(
 
     companion object {
         fun EventPagingAdapter.withLoadStateAdapters(
-            refresh: CustomLoadStateAdapter<*>,
+            header: CustomLoadStateAdapter<*>,
             footer: CustomLoadStateAdapter<*>,
             onEmpty: (show: Boolean) -> Unit
         ): ConcatAdapter {
-            addOnPagesUpdatedListener {
-                isRefresh = false
-            }
-
+            addOnPagesUpdatedListener {}
             addLoadStateListener { loadState ->
 
-                refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
+                if (itemCount > 0) header.loadState = header.notRefresh
+                else header.loadState = loadState.refresh
+
+                //refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
                 //refresh.loadState = loadState.refresh
                 footer.loadState = loadState.append
 
@@ -261,7 +266,7 @@ class EventPagingAdapter(
                     else onEmpty.invoke(false)
                 else onEmpty.invoke(false)
             }
-            return ConcatAdapter(appUpdateAdapter, refresh, this, footer)
+            return ConcatAdapter(appUpdateAdapter, header, this, footer)
         }
     }
 }

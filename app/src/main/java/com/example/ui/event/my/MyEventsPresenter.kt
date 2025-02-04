@@ -46,8 +46,7 @@ class MyEventsPresenter
 
     override val pagination = PagingDataSourceFactory { limit, offset ->
         getPaginationRequest(limit, offset)
-    }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
-        .buildList(initialSize = 20, distance = 2)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = 20, distance = 2)
 
 
     override fun onFirstViewAttach() {

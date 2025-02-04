@@ -59,8 +59,8 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
         override fun onOpenEventClick(eventId: String) = showAboutEvent(eventId)
         override fun onAcceptClick(notification: NotificationLocal, isAccept: Boolean) =
             presenter.let {
-                //if (isAccept) it.onNotificationAcceptClick(notification)
-                //else it.onNotificationCancelClick(notification)
+                if (isAccept) it.onNotificationAcceptClick(notification)
+                else it.onNotificationCancelClick(notification)
             }
     }
 

@@ -79,24 +79,21 @@ class NotificationsListPresenter
     }
 
 
-    override fun onNotificationAcceptClick(notification: Notification) {
+    override fun onNotificationAcceptClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
         when (notification.entity?.type) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
                 updateNotification(userRepository.approvePgrf(entityId), notification.id)
             }
-
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
                 updateNotification(userRepository.approveAssistance(entityId), notification.id)
             }
-
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
                 updateNotification(
                     userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
                     notification.id
                 )
             }
-
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.approveEventMember(entityId), notification.id)
             }
@@ -104,24 +101,21 @@ class NotificationsListPresenter
     }
 
 
-    override fun onNotificationCancelClick(notification: Notification) {
+    override fun onNotificationCancelClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
         when (notification.entity?.type) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
                 updateNotification(userRepository.declinePgrf(entityId), notification.id)
             }
-
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
                 updateNotification(userRepository.declineAssistance(entityId), notification.id)
             }
-
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
                 updateNotification(
                     userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
                     notification.id
                 )
             }
-
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.declineEventMember(entityId), notification.id)
             }
@@ -164,9 +158,9 @@ class NotificationsListPresenter
     }
 
     override fun onNotificationUrlClick(url: String) {
-        if (url.contains("/organization/")) {
+        if (url.contains("/organization/"))
             viewState.showAboutOrganization(Uri.parse(url).lastPathSegment)
-        } else viewState.showUrl(url)
+        else viewState.showUrl(url)
     }
 
     override fun onRefreshRequest() = pagination.invalidateStart()

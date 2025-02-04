@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.organization.OrganizationPagingAdapter
+import com.example.adapters.organization.OrganizationPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.organization.OrganizationPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
 import com.example.app.databinding.LayoutListSearchBinding
+import com.example.data.models.Organization
+import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.filters.organization.OrgFiltersBottomSheetDialog
 import moxy.presenter.InjectPresenter
@@ -29,18 +35,34 @@ class SearchOrganizationFragment :
     @ProvidePresenter
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
+
     private val viewBinding: LayoutListSearchBinding by viewBinding()
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        OrganizationPagingAdapter(
+            { presenter.onOrganizationClick(it) },
+            { presenter.onOrganizationSubscriptionClick(it) })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewBinding.apply {
+            searchList.adapter = pagingAdapter
+                .withLoadStateAdapters(
+                    OrganizationPlaceholderAdapter(5),
+                    OrganizationPlaceholderAdapter(1)
+                ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+        }
     }
 
-    override fun invalidatePagingData() {
 
+    override fun setData(data: PagingData<OrganizationNew>) {
+        pagingAdapter.submitData(lifecycle, data)
+        viewBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun changeSubscription(organization: OrganizationNew) {
-
+    override fun updateOrganization(organization: OrganizationNew) {
+        pagingAdapter.updateOrganization(organization)
     }
 
     override fun showFilter(filter: SearchFilter.Organization) {
@@ -50,9 +72,7 @@ class SearchOrganizationFragment :
     }
 
     override fun showOrganization(organization: OrganizationNew) {
-        findNavController().navigate(
-            R.id.organization_fragment_new,
-            bundleOf("organizationId" to organization.id.toString())
-        )
+        val args = OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+        findNavController().navigate(R.id.organization_fragment_new, args)
     }
 }

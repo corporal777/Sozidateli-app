@@ -17,7 +17,7 @@ abstract class SearchPresenter<V : SearchContract.View<F>, F : SearchFilter>(app
     override fun attachView(view: V) {
         super.attachView(view)
         if (isFirstLaunch) isFirstLaunch = false
-        else viewState.invalidatePagingData()
+        else {}
     }
 
     override fun onResume(searchInterface: SearchInterface) {

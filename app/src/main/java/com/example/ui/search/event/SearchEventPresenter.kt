@@ -39,8 +39,7 @@ class SearchEventPresenter
 
     private val pagination = PagingDataSourceFactory { limit, offset ->
         eventRepository.searchEvents(buildNewFilters(limit, offset))
-    }.applyErrorHandler { if (it !is EmptyDataException) onReceiveError(it) }
-        .buildList(initialSize = SEARCH_PAGE_SIZE, distance = 3)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = SEARCH_PAGE_SIZE, distance = 3)
 
 
     override fun onFirstViewAttach() {

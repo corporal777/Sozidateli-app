@@ -130,7 +130,6 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
         mBinding.apply {
             btnReadAll.isVisible = show
             if (btnReadAll.isVisible) btnLeft.isInvisible = true else btnLeft.isVisible = false
-
             toolbarLabel.isVisible = true
         }
     }

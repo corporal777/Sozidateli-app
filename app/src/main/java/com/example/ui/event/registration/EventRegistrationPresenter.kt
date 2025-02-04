@@ -334,7 +334,6 @@ class EventRegistrationPresenter
                         val value = fieldData.value ?: return@forEachIndexed
 
                         if (fieldData is EventRegisterFieldData.Prefilled) return@forEachIndexed
-
                         else if (fieldData is EventRegisterFieldData.File) {
                             val path = (value as EventFile).path
                             addFormDataPart("fields[$index][id]", key)
@@ -351,9 +350,18 @@ class EventRegistrationPresenter
                             addFormDataPart("fields[$index][id]", key)
                             addFormDataPart("fields[$index][value][series]", passport.series ?: "")
                             addFormDataPart("fields[$index][value][number]", passport.number ?: "")
-                            addFormDataPart("fields[$index][value][issuedBy]", passport.issuedBy ?: "")
-                            addFormDataPart("fields[$index][value][issuedDepartment]", passport.issuedDepartment ?: "")
-                            addFormDataPart("fields[$index][value][issuedDate]", passport.issuedDate ?: "")
+                            addFormDataPart(
+                                "fields[$index][value][issuedBy]",
+                                passport.issuedBy ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDepartment]",
+                                passport.issuedDepartment ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDate]",
+                                passport.issuedDate ?: ""
+                            )
                         } else if (value is Iterable<*>) {
                             if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
                             value.filterNotNull().forEachIndexed { i, a ->
@@ -407,22 +415,23 @@ class EventRegistrationPresenter
         return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
     }
 
-    private fun getPrefilledFieldsIfNeed(e : EventNew): Maybe<Pair<List<EventRegisterFields>?, ArrayList<EventFormResultFieldsModel>>> {
+    private fun getPrefilledFieldsIfNeed(e: EventNew): Maybe<Pair<List<EventRegisterFields>?, ArrayList<EventFormResultFieldsModel>>> {
         val fields = e.binds?.getParticipationForm()?.fields
         val results = arrayListOf<EventFormResultFieldsModel>().apply {
             addAll(e.binds?.getFormResult() ?: emptyList())
         }
         val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
 
-        return if (pref != null)
-            return if (results.isEmpty() || results.none { it.id == pref.id }){
+        return if (pref == null) Maybe.just(Pair(fields, results))
+        else {
+            if (results.isEmpty() || results.none { it.id == pref.id }) {
                 eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
                     val jsonData = it.fields.prefilledToJson()
                     results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
                     Maybe.just(Pair(fields, results))
                 }
             } else Maybe.just(Pair(fields, results))
-        else Maybe.just(Pair(fields, results))
+        }
     }
 
     companion object {

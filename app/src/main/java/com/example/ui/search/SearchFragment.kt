@@ -12,7 +12,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 abstract class SearchFragment<P : SearchContract.Presenter<F>, F : SearchFilter>(layoutRes: Int) :
     BaseBindingFragment(layoutRes), SearchContract.View<F> {
 
-
     abstract var presenter: P
 
     override fun onResume() {

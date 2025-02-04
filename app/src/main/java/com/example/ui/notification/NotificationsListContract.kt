@@ -37,8 +37,8 @@ interface NotificationsListContract {
         fun onNotificationUrlClick(url: String)
         fun onRefreshRequest()
         fun onNotificationReadClick(id: Int)
-        fun onNotificationAcceptClick(notification: Notification)
-        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationAcceptClick(notification: NotificationLocal)
+        fun onNotificationCancelClick(notification: NotificationLocal)
         fun onNotificationRateClick(eventId: String)
         fun onReadAllNotificationsClick()
     }

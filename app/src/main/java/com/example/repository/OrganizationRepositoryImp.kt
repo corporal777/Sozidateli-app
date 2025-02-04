@@ -68,7 +68,7 @@ class OrganizationRepositoryImp
     }
 
     //+
-    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>> {
         return api.searchGlobal(map)
             .map { PaginationResponse(it.organizations.count, it.organizations.data) }
     }

@@ -28,6 +28,5 @@ interface RecommendationsContract {
 
     interface Presenter : EventListContractNew.Presenter {
         fun onSearchClick()
-        fun onShowSavedEventOrProfile(isProfile : Boolean?)
     }
 }

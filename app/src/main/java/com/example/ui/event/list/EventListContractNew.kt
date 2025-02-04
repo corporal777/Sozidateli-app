@@ -22,9 +22,6 @@ interface EventListContractNew {
 
         @Skip
         fun updateEvent(event: EventNew)
-
-        @Skip
-        fun invalidatePagingData()
     }
 
     interface Presenter : BaseContract.Presenter {

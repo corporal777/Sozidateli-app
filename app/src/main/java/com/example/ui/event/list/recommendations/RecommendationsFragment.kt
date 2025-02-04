@@ -47,10 +47,10 @@ class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, F
 
     @ProvidePresenter
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
-        try {
-            val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
-            this.onShowSavedEventOrProfile(args.isOpenProfile)
+        isOpenProfile = try {
+            RecommendationsFragmentArgs.fromBundle(requireArguments()).isOpenProfile
         } catch (_: Exception) {
+            false
         }
     }
 

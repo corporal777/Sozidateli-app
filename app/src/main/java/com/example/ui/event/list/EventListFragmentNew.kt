@@ -44,10 +44,6 @@ abstract class EventListFragmentNew<P : EventListContractNew.Presenter, T : View
         pagingAdapter.updateEventAction(event)
     }
 
-    override fun invalidatePagingData() {
-        pagingAdapter.refreshData()
-    }
-
     override fun showAgreementRegisterDialog(event: EventNew) {
         UserAgreementBottomSheetDialog(requireContext(), event)
             .setAcceptedCallback { isAccept, eventNew ->
