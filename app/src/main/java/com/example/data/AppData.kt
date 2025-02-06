@@ -168,13 +168,6 @@ class AppData(private val appPrefs: AppPrefs) {
     }
     fun getEventFormats() = eventFormats
 
-    fun setAllUserInfo(user: UserDetail) {
-        val changed = this.newUser != user
-        this.newUser = user
-        appPrefs.userId = user.id
-        if (changed) userChangeSubject.onNext(newUser.asOptional())
-    }
-
     fun setNewChatMessage(message: MessageModel?) {
         this.newChatMessage = message
         chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
@@ -200,6 +193,13 @@ class AppData(private val appPrefs: AppPrefs) {
         val max = data?.filter { it.requiredFor?.contains("maximum") == true }
         hasBaseState = (base?.filter { it.filled == false }?.size ?: 0) == 0
         hasMaxState = (max?.filter { it.filled == false }?.size ?: 0) == 0
+    }
+
+    fun setAllUserInfo(user: UserDetail) {
+        val changed = this.newUser != user
+        this.newUser = user
+        appPrefs.userId = user.id
+        if (changed) userChangeSubject.onNext(newUser.asOptional())
     }
 
     fun setUserShort(user: UserDetail) {

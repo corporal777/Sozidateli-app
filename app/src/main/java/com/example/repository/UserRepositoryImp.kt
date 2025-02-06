@@ -27,57 +27,42 @@ class UserRepositoryImp
     override fun getUserInternal(): Maybe<UserDetail> {
         return Maybe.zip(
             api.getUserById(appData.getId(), emptyList()),
-            api.checkUserProfile(appData.getId().toString())
-                .doOnSuccess { appData.checkUserState(it.fields) },
+            api.checkUserProfile(appData.getId()).doOnSuccess { appData.checkUserState(it.fields) }
+        ) { user, state -> user }
+    }
+
+    override fun getUserShortData(): Maybe<UserDetail> {
+        val binds = arrayListOf(
+            "education",
+            "academic-degree",
+            "work-experience",
+            "recommendation-file"
+        )
+        return api.getUserById(appData.getId(), binds).doOnSuccess { appData.setAllUserInfo(it) }
+    }
+
+
+    override fun getUserFullData(): Maybe<UserDetail> {
+        val binds = arrayListOf(
+            "education",
+            "academic-degree",
+            "work-experience",
+            "recommendation-file",
+            "sessions-count",
+            "device-sessions-count"
+        )
+        return Maybe.zip(
+            api.getUserById(appData.getId(), binds).doOnSuccess { appData.setAllUserInfo(it) },
+            api.checkUserProfile(appData.getId()).doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
             })
     }
 
-    override fun getUserShortData(): Maybe<UserDetail> =
+
+    override fun getUserById(id: String): Maybe<UserDetail> =
         api.getUserById(
-            appData.getId(),
-            arrayListOf(
-                "education",
-                "academic-degree",
-                "work-experience",
-                "recommendation-file",
-                "organization",
-                "external-invite-pgrf",
-                "chat-room-with-me",
-                "is-user-in-ban",
-                "sessions-count",
-                "device-sessions-count"
-            )
-        ).map { it }.doOnSuccess { appData.setAllUserInfo(it) }
-
-    override fun getUserFullData(): Maybe<UserDetail> =
-        Maybe.zip(
-            getUserShortData(),
-            api.checkUserProfile(appData.getId().toString())
-                .doOnSuccess { appData.checkUserState(it.fields) },
-            BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
-                return@BiFunction user
-            })
-
-
-    override fun getUserById(id: String): Maybe<UserDetail> = api.getUserById(
-        id.toInt(),
-        arrayListOf(
-            "education",
-            "academic-degree",
-            "work-experience",
-            "recommendation-file",
-            "organization",
-            "userFavorite",
-            "chat-room-with-me",
-            "is-user-in-ban"
-        )
-    ).map { it }
-
-    override fun getUserByExternalId(name: String): Maybe<UserDetail> {
-        return api.getUserByShortName(
-            name,
+            id.toInt(),
             arrayListOf(
                 "education",
                 "academic-degree",
@@ -89,14 +74,27 @@ class UserRepositoryImp
                 "is-user-in-ban"
             )
         )
-    }
 
-    override fun getUserByShortName(name: String): Maybe<UserDetail> {
-        return api.getUserByShortName(name, emptyList())
+
+    override fun getUserByShortName(name: String, withData: Boolean): Maybe<UserDetail> {
+        return api.getUserByShortName(
+            name,
+            if (withData) arrayListOf(
+                "education",
+                "academic-degree",
+                "work-experience",
+                "recommendation-file",
+                "organization",
+                "userFavorite",
+                "chat-room-with-me",
+                "is-user-in-ban"
+            )
+            else emptyList()
+        )
     }
 
     override fun checkUserProfileSingle(): Single<UserProfileFieldsModel> =
-        api.checkUserProfileSingle(appData.getId().toString()).doOnSuccess { state ->
+        api.checkUserProfileSingle(appData.getId()).doOnSuccess { state ->
             appData.checkUserState(state.fields)
         }
 
@@ -279,12 +277,8 @@ class UserRepositoryImp
 
     override fun getAcademicDegrees(): Single<EducationLevelModel> {
         val academicDegrees = appData.academicDegrees
-        return if (!academicDegrees.isNullOrEmpty()) Single.just(
-            EducationLevelModel(
-                academicDegrees,
-                4
-            )
-        )
+        return if (!academicDegrees.isNullOrEmpty())
+            Single.just(EducationLevelModel(academicDegrees, 4))
         else api.getAcademicDegrees()
             .doOnSuccess { appData.academicDegrees.addAll(it.data ?: emptyList()) }
     }

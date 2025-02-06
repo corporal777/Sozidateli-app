@@ -1,13 +1,11 @@
 package com.example.ui.page
 
 import com.example.data.models.FileModel
-import com.example.ui.base.BaseContract
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
-import moxy.viewstate.strategy.alias.AddToEndSingle
+import com.example.ui.base.bottomSheet.BaseBSContract
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface PageContract {
-    interface View : BaseBottomSheetContract.View {
+    interface View : BaseBSContract.View {
         @OneExecution
         fun setContent(
                 logo: String?,
@@ -21,7 +19,7 @@ interface PageContract {
         fun openLinkInBrowser(link: String)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
+    interface Presenter : BaseBSContract.Presenter {
         fun onDocumentClick(document: FileModel)
     }
 }

@@ -5,24 +5,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.example.app.R
-import com.example.data.models.SupportFile
 import com.example.app.databinding.BottomSheetSupportFilesBinding
+import com.example.data.models.SupportFile
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItems
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.gallery.items.GalleryItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SupportFilesBottomSheet () :
-    BaseBottomSheetFragment<BottomSheetSupportFilesBinding>(lightDim = true, isTransparent = true),
-    SupportFilesContract.View {
 
-    override fun layout(): Int = R.layout.bottom_sheet_support_files
+class SupportFilesBottomSheet : BaseBSFragment(true, true), SupportFilesContract.View {
 
     @InjectPresenter(tag = GALLERY_TAG)
     lateinit var presenter: SupportFilesPresenter
@@ -33,13 +31,17 @@ class SupportFilesBottomSheet () :
     @ProvidePresenter(tag = GALLERY_TAG)
     fun providePresenter(): SupportFilesPresenter = presenterProvider.get()
 
+
+
+    private val viewBinding by viewBinding(BottomSheetSupportFilesBinding::bind)
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     private var onPhotoUpdated: (file : SupportFile) -> Unit = {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
+        viewBinding.apply {
             galleryList.adapter = groupAdapter
             tvOpenGallery.setOnClickListener { presenter.onOpenGalleryClick() }
             tvOpenFile.setOnClickListener { presenter.onOpenFileClick() }
@@ -75,12 +77,12 @@ class SupportFilesBottomSheet () :
     }
 
 
-    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "support_files")
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, GALLERY_TAG)
 
 
     companion object {
-        private const val GALLERY_TAG = "support_files_tag"
+        private const val GALLERY_TAG = "support_files_dialog"
     }
 
-
+    override fun layout(): Int = R.layout.bottom_sheet_support_files
 }

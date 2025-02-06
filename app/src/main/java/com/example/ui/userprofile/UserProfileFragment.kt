@@ -61,27 +61,27 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProf
     }
 
     override fun showMainData() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToMainData())
+        findNavController().navigate(R.id.user_profile_main_data_fragment)
     }
 
     override fun showContacts() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToContacts())
+        findNavController().navigate(R.id.user_profile_contacts_fragment)
     }
 
     override fun showInterests() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToInterests())
+        findNavController().navigate(R.id.user_profile_interests_fragment)
     }
 
     override fun showEducation() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToEducation())
+        findNavController().navigate(R.id.user_profile_education_fragment)
     }
 
     override fun showExperience() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToExperience())
+        findNavController().navigate(R.id.user_profile_experience_fragment)
     }
 
     override fun showEdit() {
-        findNavController().navigate(UserProfileFragmentDirections.profileToInterestsEdit())
+        findNavController().navigate(R.id.editInterestsFragment)
     }
 
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }

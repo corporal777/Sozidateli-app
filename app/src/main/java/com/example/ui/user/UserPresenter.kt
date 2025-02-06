@@ -36,7 +36,7 @@ class UserPresenter
     private fun loadUserData() {
         val userRequest =
             if (userId.first() == '@')
-                userRepository.getUserByExternalId(userId.substring(1, userId.length))
+                userRepository.getUserByShortName(userId.substring(1, userId.length), true)
             else userRepository.getUserById(userId)
 
         compositeDisposable += Maybe.zip(userRequest, commonRepository.getInterests()) { user, i ->

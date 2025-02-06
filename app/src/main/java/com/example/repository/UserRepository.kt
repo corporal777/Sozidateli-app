@@ -17,8 +17,7 @@ interface UserRepository {
     fun getUserFullData(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserById(id: String): Maybe<UserDetail>
-    fun getUserByExternalId(name: String): Maybe<UserDetail>
-    fun getUserByShortName(name: String): Maybe<UserDetail>
+    fun getUserByShortName(name: String, withData : Boolean): Maybe<UserDetail>
 
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable

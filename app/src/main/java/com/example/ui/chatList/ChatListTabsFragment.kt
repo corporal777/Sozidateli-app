@@ -18,8 +18,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
-    ChatListTabsContract.View {
+class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(), ChatListTabsContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListTabsPresenter

@@ -12,11 +12,10 @@ import com.example.data.models.EventRegisterResponseField
 import com.example.data.models.UserFormResultModel
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultDateTime
-import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.google.gson.JsonElement
 import com.example.extensions.fromJson
 import com.example.repository.EventRepository
+import com.example.ui.base.bottomSheet.BaseBSPresenter
+import com.google.gson.JsonElement
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -28,9 +27,7 @@ class EventFormResultPresenter
 @Inject constructor(
     private val appData: AppData,
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository
-) : BaseBottomSheetPresenter<EventFormResultContract.View>(appData),
-    EventFormResultContract.Presenter {
+) : BaseBSPresenter<EventFormResultContract.View>(appData), EventFormResultContract.Presenter {
 
     lateinit var formResult: UserFormResultModel
 
@@ -42,7 +39,7 @@ class EventFormResultPresenter
                 createFieldsData(list, mapFieldsResult(it.second, list))
             }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
+            .subscribe {
                 viewState.setFormResult(it)
             }
     }

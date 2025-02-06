@@ -1,13 +1,12 @@
 package com.example.ui.event.location.map
 
-import com.example.ui.base.BaseContract
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
+import com.example.ui.base.bottomSheet.BaseBSContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface MapContract {
 
-    interface View : BaseBottomSheetContract.View {
+    interface View : BaseBSContract.View {
 
         @OneExecution
         fun initializeMap()
@@ -28,7 +27,7 @@ interface MapContract {
         fun openUrl(url: String)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
+    interface Presenter : BaseBSContract.Presenter {
         fun onMapReady()
         fun onShareClick()
         fun onOpenRouteClick()

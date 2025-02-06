@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.data.AppData
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.ImageUtil
 import com.example.util.ImageUtil.Companion.getBitmapFromUri
@@ -22,6 +23,7 @@ import com.generator.qrcodegenerator.vector.createReadyVectorQrOptions
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCustomLoading
@@ -33,7 +35,7 @@ class ProfileDataPresenter
     private val takePhoto: RxTakePhoto,
     private val appData: AppData,
     private val context: Context
-) : BaseBottomSheetPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
+) : BaseBSPresenter<ProfileDataContract.View>(appData), ProfileDataContract.Presenter {
 
     private var userImageUrl: String = appData.getUser().loadUserImage() ?: ""
     private var userName: String = appData.getUser().nameLastName
@@ -49,7 +51,7 @@ class ProfileDataPresenter
             .onErrorResumeNext(getQrCodeImageFromBitmap(userLink, userImageUrl))
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
-            .subscribeSimple(
+            .subscribeBy(
                 onError = { it.printStackTrace() },
                 onSuccess = { viewState.setImage(it) }
             )
@@ -59,12 +61,13 @@ class ProfileDataPresenter
         compositeDisposable += Single.defer {
             val uri = saveImageToCache(context, image)
             if (uri != null) Single.just(uri)
-            else Single.error(Exception("Uri is null"))
+            else Single.error(NullPointerException("Uri for share is null"))
         }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.showShareImage(it)
-            }
+            .subscribeBy(
+                onError = { it.printStackTrace() },
+                onSuccess = { viewState.showShareImage(it) }
+            )
     }
 
     override fun shareLinkClick(text: String) = viewState.showShareLink(text)
@@ -72,11 +75,11 @@ class ProfileDataPresenter
     override fun saveImageToGalleryClick(context: Context, image: Bitmap) {
         compositeDisposable += takePhoto.saveImage(image)
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
+            .subscribeBy(
                 onError = { it.printStackTrace() },
                 onComplete = {
                     viewState.showSnackBarMessage(
-                        context.getString(R.string.qr_code_is_saved),
+                        R.string.qr_code_is_saved,
                         R.drawable.ic_profile_code_save_filled
                     )
                 }
@@ -84,19 +87,19 @@ class ProfileDataPresenter
     }
 
     private fun getQrCodeImageFromBitmap(link: String, uri: String): Maybe<Bitmap> {
-        return Maybe.fromCallable {
+        return Maybe.defer {
             val data = QrData.Url(link)
             val opt = createReadyBitmapQrOptions(
                 getBitmapFromUrlAsync(context, uri),
                 R.drawable.ic_about_app,
                 ContextCompat.getColor(context, R.color.qr_code_pixels_color)
             )
-            QrCodeGenerator(context).generateQrCode(data, opt)
+            Maybe.just(QrCodeGenerator(context).generateQrCode(data, opt))
         }
     }
 
     private fun getQrCodeImageFromDrawable(link: String, uri: String): Maybe<Bitmap> {
-        return Maybe.fromCallable {
+        return Maybe.defer {
             val data = QrData.Url(link)
             val avatar = getBitmapFromUrlAsync(context, uri)
             val options = createReadyVectorQrOptions(
@@ -109,7 +112,7 @@ class ProfileDataPresenter
             val drawable = QrCodeDrawable(context, data, options)
             drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)
-            bitmap
+            Maybe.just(bitmap)
         }
     }
 

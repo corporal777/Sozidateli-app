@@ -13,10 +13,12 @@ import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
+import com.example.extensions.setArgument
 import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment
+import com.example.ui.userprofile.common.name.ChangeNameFragment.Companion.CHANGE_NAME_FRAGMENT_TAG
 import com.example.ui.views.CustomCheckView
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.TitleMessageDialog
@@ -186,8 +188,11 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
         findNavController().navigate(R.id.changePhoneFragment)
     }
 
-    override fun showChangeName(user: UserDetail) = ChangeNameFragment(user)
-        .show(requireActivity().supportFragmentManager)
+    override fun showChangeName(user: UserDetail) {
+        ChangeNameFragment()
+            .setArgument<ChangeNameFragment>(CHANGE_NAME_FRAGMENT_TAG, user)
+            .show(requireActivity().supportFragmentManager)
+    }
 
     override fun showChangeShortName(user: UserDetail) {
         findNavController().navigate(R.id.changeShortNameFragment)

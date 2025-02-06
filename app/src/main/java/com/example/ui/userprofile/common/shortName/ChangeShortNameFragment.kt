@@ -3,12 +3,9 @@ package com.example.ui.userprofile.common.shortName
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentChangeShortNameBinding
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.views.CustomSpannableString
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

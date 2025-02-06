@@ -34,7 +34,7 @@ class ChangeShortNamePresenter
     override fun onChangeShortName(short: String) {
         userShortName = short
         performDataChange()
-        compositeDisposable += userRepository.getUserByShortName(userShortName!!)
+        compositeDisposable += userRepository.getUserByShortName(userShortName!!, false)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

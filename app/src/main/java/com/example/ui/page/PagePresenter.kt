@@ -3,9 +3,9 @@ package com.example.ui.page
 import com.example.data.AppData
 import com.example.data.models.FileModel
 import com.example.repository.EventRepository
-import com.example.ui.base.BasePresenter
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCheckInternetConnectivity
@@ -16,8 +16,8 @@ import javax.inject.Inject
 class PagePresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
-    appData: AppData
-) : BaseBottomSheetPresenter<PageContract.View>(appData), PageContract.Presenter {
+    private val appData: AppData
+) : BaseBSPresenter<PageContract.View>(appData), PageContract.Presenter {
 
     lateinit var dataEventId: String
     lateinit var dataPageId: String
@@ -28,7 +28,7 @@ class PagePresenter
             .withCheckInternetConnectivity()
             .performOnBackgroundOutOnMain()
             .withProgressBarLoading(viewState)
-            .subscribeSimple {
+            .subscribeBy {
                 viewState.setContent("", it.name, it.title, it.content, it.files)
             }
     }

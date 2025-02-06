@@ -11,8 +11,17 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.OpenableColumns
-import android.text.*
+import android.text.Editable
+import android.text.Html
+import android.text.InputFilter
+import android.text.Layout
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
@@ -26,10 +35,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.BundleCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -43,9 +50,13 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
-import com.example.data.models.user.User
+import com.example.data.models.asArgument
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.util.*
+import com.example.util.ClickableSpan
+import com.example.util.CropCircleTransformation
+import com.example.util.URLSpanNoUnderline
+import com.example.util.showCustomTabsBrowser
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
@@ -56,14 +67,31 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 import java.util.Calendar.YEAR
+import java.util.Date
 import kotlin.math.roundToInt
+import kotlin.properties.ReadOnlyProperty
 
+inline fun <reified F : Fragment> Fragment.setArgument(key: String, args: Any): F {
+    return (this as F).apply {
+        arguments = Bundle(1).apply { putParcelable(key, args.asArgument()) }
+    }
+}
+
+internal inline fun <reified T : Parcelable> parcelableArgument(name: String): ReadOnlyProperty<Fragment, T> {
+    return object : ReadOnlyProperty<Fragment, T> {
+        private var value: T? = null
+        override fun getValue(thisRef: Fragment, property: kotlin.reflect.KProperty<*>): T {
+            val data = BundleCompat.getParcelable(thisRef.requireArguments(), name, T::class.java)
+            return value ?: requireNotNull(data) { "Arg $name is missing" }.also { value = it }
+        }
+    }
+}
 
 fun decodeBase64ToJson(data: String?): JSONObject? {
     if (data.isNullOrEmpty()) return null
@@ -72,7 +100,12 @@ fun decodeBase64ToJson(data: String?): JSONObject? {
         return JSONObject(String(base, StandardCharsets.UTF_8))
     } catch (e: Exception) {
         e.printStackTrace()
-        return null
+        return JSONObject().apply {
+            put("email", "null")
+            put("name", "null")
+            put("lastName", "null")
+            put("middleName", "null")
+        }
     }
 }
 

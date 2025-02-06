@@ -1,6 +1,7 @@
 package com.example.ui.profile
 
 import android.app.NotificationManager
+import android.util.Log
 import com.example.app.R
 import com.example.data.AppData
 import com.example.data.bodies.FieldPhoneBody
@@ -17,6 +18,8 @@ import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
@@ -43,17 +46,16 @@ class ProfilePresenter
 
     override fun attachView(view: ProfileContract.View?) {
         super.attachView(view)
-        compositeDisposable += getUserRequest()
+        compositeDisposable += Maybe.defer {
+            if (firstLaunch) userRepository.getUserFullData().doOnSuccess { getAdditionalData() }
+            else Maybe.just(appData.getUser()).onErrorResumeNext(userRepository.getUserFullData())
+        }
             .performOnBackgroundOutOnMain()
-            .let {
-                if (firstLaunch) {
-                    firstLaunch = false
-                    it.withCustomLoading(viewState)
-                } else it
-            }
+            .let { if (firstLaunch) it.withCustomLoading(viewState) else it }
             .subscribeSimple(
                 onError = { it.printStackTrace() },
                 onSuccess = {
+                    firstLaunch = false
                     viewState.apply {
                         setUser(it)
                         setUserLink(it)
@@ -93,7 +95,8 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is EmailNotUniqueException) viewState.showEmailPhoneNotUnique(email, null)
+                    if (it is EmailNotUniqueException)
+                        viewState.showEmailPhoneNotUnique(email, null)
                     else onReceiveError(it)
                 },
                 onComplete = { viewState.showEmailConfirmation(email) }
@@ -112,7 +115,8 @@ class ProfilePresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
-                    if (it is PhoneNotUniqueException) viewState.showEmailPhoneNotUnique(null, phone)
+                    if (it is PhoneNotUniqueException)
+                        viewState.showEmailPhoneNotUnique(null, phone)
                     else onReceiveError(it)
                 },
                 onComplete = { viewState.showPhoneConfirmation(phone) }
@@ -134,14 +138,6 @@ class ProfilePresenter
     override fun onShowUserProfileLink() = viewState.showUserProfileLinkDialog()
 
     override fun onShowChangeUserShortName() = viewState.showChangeUserShortName()
-
-
-    private fun getUserRequest(): Maybe<UserDetail> {
-        return if (firstLaunch) userRepository.getUserFullData()
-            .doOnSuccess { getAdditionalData() }
-        else Maybe.defer { Maybe.just(appData.getUser()) }
-            .onErrorResumeNext(userRepository.getUserFullData())
-    }
 
     private fun getAdditionalData() {
         compositeDisposable += userRepository.getEducationLevel()

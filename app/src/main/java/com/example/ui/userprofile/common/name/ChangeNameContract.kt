@@ -1,10 +1,10 @@
 package com.example.ui.userprofile.common.name
 
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
+import com.example.ui.base.bottomSheet.BaseBSContract
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface ChangeNameContract {
-    interface View : BaseBottomSheetContract.View {
+    interface View : BaseBSContract.View {
         @OneExecution
         fun setUserName(
             name: String?,
@@ -28,7 +28,7 @@ interface ChangeNameContract {
         fun showMiddleNameError(show: Boolean)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
+    interface Presenter : BaseBSContract.Presenter {
         fun onSaveNameClick()
         fun performChangeName(value: String?)
         fun performChangeLastName(value: String?)

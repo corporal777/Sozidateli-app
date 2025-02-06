@@ -29,6 +29,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withDelay
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -336,7 +337,7 @@ class MainPresenter
         }
     }
 
-    override fun onHandleSupportQuestionLink(id: String?) {
+    override fun onHandleSupportQuestion(id: String?) {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else if (id.isNullOrEmpty()) return
         else commonRepository.getSupportQuestion(id)
@@ -349,7 +350,7 @@ class MainPresenter
             }.call(compositeDisposable)
     }
 
-    override fun onHandleProfileSettingsLink() {
+    override fun onHandleProfileSettings() {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else viewState.apply {
             showProfileSettings()
@@ -357,7 +358,7 @@ class MainPresenter
         }
     }
 
-    override fun onHandleProfileLink() {
+    override fun onHandleProfile() {
         if (isAuthRequired || appData.isLoggedOut) viewState.showLogin()
         else viewState.apply {
             showCurrentUser()
@@ -379,7 +380,7 @@ class MainPresenter
         }
     }
 
-    override fun onHandleChangePasswordLink(userId: String, code: String) {
+    override fun onHandleChangePassword(userId: String, code: String) {
         authRepository.checkPasswordRecoveryCode("email", code)
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
@@ -390,7 +391,7 @@ class MainPresenter
             }.call(compositeDisposable)
     }
 
-    override fun onHandleRecoverPasswordLink() {
+    override fun onHandleRecoverPassword() {
         viewState.apply {
             showPasswordRecovery()
             clearIntentData()

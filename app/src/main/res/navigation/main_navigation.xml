@@ -328,27 +328,7 @@
     <fragment
         android:id="@+id/user_profile_fragment"
         android:name="com.example.ui.userprofile.UserProfileFragment"
-        tools:layout="@layout/fragment_user_profile">
-        <action
-            android:id="@+id/profile_to_main_data"
-            app:destination="@+id/user_profile_main_data_fragment" />
-        <action
-            android:id="@+id/profile_to_contacts"
-            app:destination="@+id/user_profile_contacts_fragment" />
-        <action
-            android:id="@+id/profile_to_interests"
-            app:destination="@+id/user_profile_interests_fragment" />
-
-        <action
-            android:id="@+id/profile_to_interests_edit"
-            app:destination="@+id/editInterestsFragment" />
-        <action
-            android:id="@+id/profile_to_education"
-            app:destination="@+id/user_profile_education_fragment" />
-        <action
-            android:id="@+id/profile_to_experience"
-            app:destination="@+id/user_profile_experience_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_user_profile" />
 
     <fragment
         android:id="@+id/user_profile_experience_fragment"

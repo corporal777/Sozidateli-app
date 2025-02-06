@@ -35,8 +35,8 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
 
     @ProvidePresenter(tag = INVITES_FRAGMENT_TAG)
     fun providePresenter(): InviteNotificationsPresenter = presenterProvider.get().apply {
-            type = notificationType
-        }
+        type = notificationType
+    }
 
     private val notificationsSection = Section()
     private val groupAdapter by lazy {
@@ -113,11 +113,13 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
                             it.data,
                             onNotificationListener
                         )
+
                         Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
                             requireContext(),
                             it.data,
                             onNotificationListener
                         )
+
                         Notification.Type.RATE -> RateNotificationItem(
                             requireContext(),
                             it.data,

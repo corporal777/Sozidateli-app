@@ -2,33 +2,25 @@ package com.example.ui.page
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.fragment.navArgs
 import com.example.app.R
-import com.example.data.models.FileModel
 import com.example.app.databinding.FragmentPageBinding
+import com.example.data.models.FileModel
 import com.example.extensions.markWon
-import com.example.extensions.setOnClickListener
 import com.example.holders.DocumentItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.location.map.MapFragment
-import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.util.setImage
 import com.example.util.showCustomTabsBrowser
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PageFragment(val eventId: String, val pageId: String) :
-    BaseBottomSheetFragment<FragmentPageBinding>(), PageContract.View {
+class PageFragment(val eventId: String, val pageId: String) : BaseBSFragment(), PageContract.View {
 
     @InjectPresenter(tag = PAGE_FRAGMENT_TAG)
     lateinit var presenter: PagePresenter
@@ -42,11 +34,14 @@ class PageFragment(val eventId: String, val pageId: String) :
         dataPageId = pageId
     }
 
+
+    private val viewBinding by viewBinding(FragmentPageBinding::bind)
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
+        viewBinding.apply {
             recyclerView.apply {
                 adapter = groupAdapter
             }
@@ -64,18 +59,18 @@ class PageFragment(val eventId: String, val pageId: String) :
         content: String?,
         documents: List<FileModel>?
     ) {
-        mBinding.tvBottomSheetLabel.text = contentTitle ?: ""
+        viewBinding.tvBottomSheetLabel.text = contentTitle ?: ""
 
-        mBinding.ivLogo.apply {
+        viewBinding.ivLogo.apply {
             clipToOutline = true
             isVisible = !logo.isNullOrEmpty()
             setImage(logo)
         }
-        mBinding.tvTitle.apply {
+        viewBinding.tvTitle.apply {
             isVisible = !title.isNullOrBlank()
             text = markWon(requireContext()).toMarkdown(title ?: "")
         }
-        mBinding.tvInfo.apply {
+        viewBinding.tvInfo.apply {
             isVisible = !content.isNullOrBlank()
             text = markWon(requireContext()).toMarkdown(content ?: "")
         }
@@ -89,7 +84,7 @@ class PageFragment(val eventId: String, val pageId: String) :
     fun show(fragmentManager: FragmentManager) = show(fragmentManager, PAGE_FRAGMENT_TAG)
 
     companion object {
-        const val PAGE_FRAGMENT_TAG = "page_fragment_tag"
+        const val PAGE_FRAGMENT_TAG = "page_bottom_sheet_dialog"
     }
 
     override fun layout() = R.layout.fragment_page

@@ -13,8 +13,6 @@ import com.example.app.R
 import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.base.BaseFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
