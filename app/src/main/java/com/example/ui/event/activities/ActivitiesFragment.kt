@@ -9,34 +9,35 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.example.app.R
+import com.example.app.databinding.FragmentActivitysBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventScheduleDay
 import com.example.data.models.Tag
-import com.example.app.databinding.FragmentActivitysBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.onScrolled
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.event.location.buildingScheme.DestinationSchemeFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarHorizontalDaysItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.util.SearchInput
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onScrolled
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ActivitiesFragment : BaseFragment<FragmentActivitysBinding>(), ActivitiesContract.View {
+class ActivitiesFragment : BaseVBFragment<FragmentActivitysBinding>(), ActivitiesContract.View {
 
+    override fun binding() = FragmentActivitysBinding::class.java
     override fun layout(): Int = R.layout.fragment_activitys
 
     @InjectPresenter
@@ -63,17 +64,13 @@ class ActivitiesFragment : BaseFragment<FragmentActivitysBinding>(), ActivitiesC
     private val eventsSection = Section()
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             add(tagsSection)
             add(eventsSection)
         }
     }
 
-    private val calendarAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
-            add(calendarSection)
-        }
-    }
+    private val calendarAdapter by lazy { GroupieAdapter().apply { add(calendarSection) } }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
         override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)

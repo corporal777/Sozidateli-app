@@ -1,5 +1,6 @@
 package com.example.ui.event.speakers.member.items
 
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.app.R
@@ -7,7 +8,7 @@ import com.example.app.databinding.ItemUserSpeakerMainInfoBinding
 import com.example.extensions.markWon
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class UserSpeakerMainInfoItem(
     private val id: Int?,
@@ -76,7 +77,7 @@ class UserSpeakerMainInfoItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is UserSpeakerMainInfoItem) return false
         if (isCurrentUser != other.isCurrentUser) return false
         if (name != other.name) return false
@@ -88,5 +89,6 @@ class UserSpeakerMainInfoItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemUserSpeakerMainInfoBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_user_speaker_main_info
 }

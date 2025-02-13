@@ -6,28 +6,28 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
+import com.example.app.databinding.FragmentChatListBinding
 import com.example.data.models.UserChat
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentChatListBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.updateItem
 import com.example.holders.ChatListEmptyItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.chatList.contacts.items.UserChatGroup
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatListFragment() : BaseFragment<FragmentChatListBinding>(), ChatListContract.View {
+class ChatListFragment() : BaseVBFragment<FragmentChatListBinding>(), ChatListContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListPresenter
@@ -139,5 +139,6 @@ class ChatListFragment() : BaseFragment<FragmentChatListBinding>(), ChatListCont
         mLayoutManager.smoothScrollToFirstItem(requireContext(), appBarLayout, 3)
     }
 
+    override fun binding() = FragmentChatListBinding::class.java
     override fun layout() = R.layout.fragment_chat_list
 }

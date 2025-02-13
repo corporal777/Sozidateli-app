@@ -6,15 +6,17 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRecoveryPasswordBinding
-import com.example.ui.base.BaseFragment
+import com.example.extensions.onTextChanged
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.userprofile.common.password.confirm.EmailConfirmPasswordDialog
 import com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragmentArgs
+import com.example.util.changeTitleTextColor
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>(),
+class RecoveryPasswordFragment : BaseVBFragment<FragmentRecoveryPasswordBinding>(),
     RecoveryPasswordContract.View {
 
     @InjectPresenter
@@ -33,7 +35,7 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etLogin.initInput {
+            etLogin.onTextChanged {
                 presenter.onChangeEmailText(it.toString())
             }
             btnRecovery.setOnClickListener {
@@ -55,9 +57,10 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
 
     override fun showEmailError(show: Boolean) {
         mBinding.tvEmailError.isVisible = show
-        mBinding.etLogin.apply {
-            if (show) showTextError(getString(R.string.recovery_password_user_not_found_error))
-            else showError(false)
+        mBinding.tvTitleLogin.apply {
+            text = if (show) getString(R.string.recovery_password_user_not_found_error)
+            else getString(R.string.login)
+            changeTitleTextColor(show)
         }
     }
 
@@ -82,5 +85,7 @@ class RecoveryPasswordFragment : BaseFragment<FragmentRecoveryPasswordBinding>()
     override fun showCustomLoading() = mBinding.btnRecovery.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnRecovery.showProgressLoading(false)
 
+
+    override fun binding() = FragmentRecoveryPasswordBinding::class.java
     override fun layout() = R.layout.fragment_recovery_password
 }

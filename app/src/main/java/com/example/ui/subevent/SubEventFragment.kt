@@ -7,30 +7,29 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentSubeventBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
-import com.example.app.databinding.FragmentSubeventBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.SubEventInfoItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
 import com.example.ui.views.dialogs.DefaultAlertDialog
-import com.example.ui.views.dialogs.MessageDialogWithBrownButton
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContract.View,
+class SubEventFragment : BaseVBFragment<FragmentSubeventBinding>(), SubEventContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -116,6 +115,7 @@ class SubEventFragment : BaseFragment<FragmentSubeventBinding>(), SubEventContra
             }
     }
 
+    override fun binding() = FragmentSubeventBinding::class.java
     override fun layout() = R.layout.fragment_subevent
     override val title: CharSequence by lazy { getString(R.string.event) }
     override fun actionIconContainer(view: ViewGroup) {}

@@ -5,21 +5,21 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.LayoutListBinding
+import com.example.data.models.UserDetail
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteUsersFragment : BaseFragment<LayoutListBinding>(), FavoriteUsersContract.View {
+class FavoriteUsersFragment : BaseVBFragment<LayoutListBinding>(), FavoriteUsersContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteUsersPresenter
@@ -79,5 +79,6 @@ class FavoriteUsersFragment : BaseFragment<LayoutListBinding>(), FavoriteUsersCo
         findNavController().navigate(R.id.user_fragment, bundleOf("userId" to user.id.toString()))
     }
 
+    override fun binding() = LayoutListBinding::class.java
     override fun layout() = R.layout.layout_list
 }

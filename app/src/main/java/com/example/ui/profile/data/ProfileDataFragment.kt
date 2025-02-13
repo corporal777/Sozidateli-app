@@ -6,15 +6,11 @@ import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.app.R
 import com.example.app.databinding.BottomSheetProfileDataBinding
-import com.example.data.models.Argument
-import com.example.extensions.parcelableArgument
 import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.views.CustomSnackBar
 import com.example.util.copyTextToBuffer
@@ -53,10 +49,10 @@ class ProfileDataFragment : BaseBSFragment(), ProfileDataContract.View {
         viewBinding.apply {
             ivQrCode.setImage(image, 300)
             btnSave.setOnClickListener {
-                presenter.saveImageToGalleryClick(requireContext(), image)
+                presenter.onSaveImageClick(image)
             }
             btnShare.setOnClickListener {
-                presenter.shareImageClick(requireContext(), image)
+                presenter.onShareImageClick(requireContext(), image)
             }
         }
     }
@@ -64,13 +60,15 @@ class ProfileDataFragment : BaseBSFragment(), ProfileDataContract.View {
     override fun setName(userName: String, userLink: String) {
         viewBinding.apply {
             tvUserName.text = userName
-            tvLink.text = StringBuilder(userLink).substring(8, userLink.length)
-            clCopy.setOnClickListener {
-                copyTextToBuffer(requireContext(), userLink)
-                showSnackBarMessage(R.string.link_is_copied, R.drawable.ic_profile_link_edit)
+            btnCopy.apply {
+                text = StringBuilder(userLink).substring(8, userLink.length)
+                setOnClickListener {
+                    copyTextToBuffer(requireContext(), userLink)
+                    showSnackBarMessage(R.string.link_is_copied, R.drawable.ic_profile_link)
+                }
             }
             ivShareLink.setOnClickListener {
-                presenter.shareLinkClick(userLink)
+                presenter.onShareLinkClick(userLink)
             }
         }
     }

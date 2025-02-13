@@ -1,11 +1,12 @@
 package com.example.ui.userSessions.items
 
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.ItemCurrentSessionBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.UserSessionModel
+import com.xwray.groupie.viewbinding.BindableItem
 
 class CurrentSessionItem(
     val session: UserSessionModel,
@@ -54,7 +55,7 @@ class CurrentSessionItem(
     }
 
 
-    override fun bind(viewBinding: ItemCurrentSessionBinding, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: ItemCurrentSessionBinding, position: Int, payloads: MutableList<Any>) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
@@ -65,5 +66,6 @@ class CurrentSessionItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemCurrentSessionBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_current_session
 }

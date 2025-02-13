@@ -7,14 +7,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentChangePasswordBinding
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangePasswordFragment() : BaseFragment<FragmentChangePasswordBinding>(),
+class ChangePasswordFragment() : BaseVBFragment<FragmentChangePasswordBinding>(),
     ChangePasswordContract.View {
 
     @InjectPresenter
@@ -127,6 +127,7 @@ class ChangePasswordFragment() : BaseFragment<FragmentChangePasswordBinding>(),
     override fun showCustomLoading() = mBinding.btnChange.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnChange.showProgressLoading(false)
 
+    override fun binding() = FragmentChangePasswordBinding::class.java
     override fun layout(): Int = R.layout.fragment_change_password
 
 }

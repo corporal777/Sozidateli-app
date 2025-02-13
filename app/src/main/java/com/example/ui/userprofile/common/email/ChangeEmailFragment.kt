@@ -8,14 +8,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeEmailBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEmailContract.View {
+class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), ChangeEmailContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChangeEmailPresenter
@@ -82,4 +82,5 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
 
     override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_change_email
+    override fun binding() = FragmentChangeEmailBinding::class.java
 }

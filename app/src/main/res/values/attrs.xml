@@ -54,7 +54,27 @@
         <attr name="inputCheckBoxVisible" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CustomTextInputLayout">
+        <attr name="textHint" format="string" />
+        <attr name="text" format="string" />
+        <attr name="textColor" format="reference" />
+        <attr name="iconDrawable" format="reference" />
+        <attr name="textType">
+            <flag name="none" value="0x00000000" />
+            <flag name="text" value="0x00000001" />
+            <flag name="textCapSentences" value="0x00004001" />
+            <flag name="textMultiLine" value="0x00020001" />
+            <flag name="textNoSuggestions" value="0x00080001" />
+            <flag name="textEmailAddress" value="0x00000021" />
+            <flag name="textPassword" value="0x00000081" />
+            <flag name="number" value="0x00000002" />
+            <flag name="phone" value="0x00000003" />
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="CustomCheckView">
+        <attr name="checkViewTextSize" format="dimension" />
+        <attr name="checkViewTextColor" format="reference" />
         <attr name="checkViewText" format="string" />
         <attr name="isCheckable" format="boolean" />
     </declare-styleable>

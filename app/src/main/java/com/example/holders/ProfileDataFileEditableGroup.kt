@@ -9,8 +9,8 @@ import com.xwray.groupie.Section
 
 class ProfileDataFileEditableGroup(
     val files: List<FileModel>,
-    private val filesCount: Int,
-    private val addFileClickListener: () -> Unit,
+    filesCount: Int,
+    addFileClickListener: () -> Unit,
     private val onFileClick: (file: FileModel) -> Unit,
     private val deleteFile: (file: FileModel) -> Unit
 ) : NestedGroup() {
@@ -27,7 +27,6 @@ class ProfileDataFileEditableGroup(
 
     init {
         fileGroup.update(fileItems)
-
         fileGroup.registerGroupDataObserver(this)
         addFileItem.registerGroupDataObserver(this)
     }
@@ -61,9 +60,7 @@ class ProfileDataFileEditableGroup(
     }
 
     private fun createFileItem(file: FileModel): ProfileDataFileEditableItem {
-        return ProfileDataFileEditableItem(file, onFileClick) {
-            deleteFile(it)
-        }
+        return ProfileDataFileEditableItem(file, { onFileClick.invoke(it) }, { deleteFile.invoke(it) })
     }
 
     private fun updateButton(fileCount: Int){

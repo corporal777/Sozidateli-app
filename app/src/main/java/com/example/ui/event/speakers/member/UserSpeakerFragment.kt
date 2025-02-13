@@ -7,17 +7,16 @@ import android.widget.Space
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentUserSpeakerBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentUserSpeakerBinding
 import com.example.extensions.dp
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.chat.ChatFragmentArgs
 import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
@@ -26,17 +25,14 @@ import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.UserSubscribeImageView
 import com.example.ui.views.loading.CustomCircleLoadingButton
-import com.example.ui.views.toolbar.ToolbarContent
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
-    UserSpeakerContract.View, ToolbarFragment {
+class UserSpeakerFragment : BaseToolbarFragment<FragmentUserSpeakerBinding>(), UserSpeakerContract.View {
 
     private val space by lazy {
         Space(requireContext()).apply {
@@ -83,7 +79,7 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
     }
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             add(mainDataSection)
             add(subEventsDataSection)
         }
@@ -175,8 +171,7 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
     }
 
     override fun layout(): Int = R.layout.fragment_user_speaker
-    override val title: CharSequence by lazy { "" }
-
+    override fun binding() = FragmentUserSpeakerBinding::class.java
     override fun actionIconContainer(view: ViewGroup) {
         view.apply {
             removeAllViews()
@@ -185,7 +180,5 @@ class UserSpeakerFragment : BaseFragment<FragmentUserSpeakerBinding>(),
             addView(addToFavoriteButton, 1)
         }
     }
-
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun scrollingView(): View = mBinding.listSpeakersContent
 }

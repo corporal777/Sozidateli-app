@@ -115,7 +115,8 @@ fun getClickablePrivacyPolitics(context: Context): CharSequence {
         setSpan(
             ClickableSpan(false) {
                 showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
-            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
     }
 }
 
@@ -191,6 +192,7 @@ fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
             onPageChanged(state)
         }
     }
+    unregisterOnPageChangeCallback(listener)
     registerOnPageChangeCallback(listener)
 }
 
@@ -215,9 +217,8 @@ fun onPageChanged(onPageChanged: (position: Int) -> Unit): ViewPager.SimpleOnPag
 fun AppBarLayout.offsetChangedListener(
     offsetChanged: (appBarLayout: AppBarLayout, offset: Int) -> Unit
 ): AppBarLayout.OnOffsetChangedListener {
-    val listener = object : AppBarLayout.OnOffsetChangedListener {
-        override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) =
-            offsetChanged(appBarLayout, verticalOffset)
+    val listener = AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        offsetChanged(appBarLayout, verticalOffset)
     }
     addOnOffsetChangedListener(listener)
     return listener
@@ -322,11 +323,11 @@ fun TextView.calculateTextLinesCount(text: String): Int {
 //        filters = arrayOf(InputFilter.LengthFilter(value))
 //    }
 
-fun TextView.setMaxLength(max : Int){
+fun TextView.setMaxLength(max: Int) {
     filters = arrayOf(InputFilter.LengthFilter(max))
 }
 
-fun TextView.setMinMaxLines(min : Int, max : Int){
+fun TextView.setMinMaxLines(min: Int, max: Int) {
     minLines = min
     maxLines = max
 }
@@ -345,7 +346,7 @@ fun Context.isConnectedToNetwork(): Boolean {
     return connectivityManager?.activeNetworkInfo?.isConnected ?: false
 }
 
-fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?, isVisible : Boolean?) {
+fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?, isVisible: Boolean?) {
     if (dataText.isNullOrBlank() || isVisible == false) {
         visibility = View.GONE
         textField.text = null

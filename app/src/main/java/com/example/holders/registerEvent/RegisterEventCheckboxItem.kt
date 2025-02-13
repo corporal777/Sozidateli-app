@@ -5,11 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
 import com.example.app.databinding.ItemRegisterEventCheckboxBinding
-import com.example.app.databinding.ItemRegisterEventRadioBinding
+import com.example.data.models.EventRegisterFieldData
 
 open class RegisterEventCheckboxItem(
     private val fieldData: EventRegisterFieldData<Set<String>>,
@@ -59,4 +57,5 @@ open class RegisterEventCheckboxItem(
 
     override fun getTitleView(binding: ItemRegisterEventCheckboxBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_checkbox
+    override fun initializeViewBinding(view: View) = ItemRegisterEventCheckboxBinding.bind(view)
 }

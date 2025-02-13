@@ -4,15 +4,18 @@ import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemChatBinding
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
-import com.example.app.databinding.ItemChatBinding
-import com.example.extensions.*
+import com.example.extensions.calendar
+import com.example.extensions.dateFormatterShortMothNoYear
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.isSameDay
+import com.example.extensions.isYesterday
 import com.example.util.CHAT_SERVICE_MESSAGE_ACCEPT
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
-import java.util.*
+import com.xwray.groupie.viewbinding.BindableItem
+import java.util.Calendar
 
 
 class UserChatItem(
@@ -93,7 +96,8 @@ class UserChatItem(
         }
     }
 
-    override fun unbind(viewHolder: GroupieViewHolder<ItemChatBinding>) {
+
+    override fun unbind(viewHolder: com.xwray.groupie.viewbinding.GroupieViewHolder<ItemChatBinding>) {
         super.unbind(viewHolder)
         onUnBind?.invoke(this)
     }
@@ -107,7 +111,7 @@ class UserChatItem(
         return true
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is UserChatItem) return false
         if (userChat != other.userChat) return false
         return true
@@ -117,5 +121,6 @@ class UserChatItem(
         return userChat.hashCode()
     }
 
+    override fun initializeViewBinding(view: View) = ItemChatBinding.bind(view)
     override fun getLayout() = R.layout.item_chat
 }

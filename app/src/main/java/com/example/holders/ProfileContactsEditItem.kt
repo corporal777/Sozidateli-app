@@ -9,16 +9,30 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.*
 import com.example.app.databinding.ItemProfileDataEditContactsBinding
 import com.example.app.databinding.ItemProfileEmailBinding
 import com.example.app.databinding.ItemProfileSocialNetworkBinding
+import com.example.data.models.ContactInformationModel
+import com.example.data.models.EmailsModel
+import com.example.data.models.FieldDetails
+import com.example.data.models.LinksModel
+import com.example.data.models.ToggleStringModel
+import com.example.data.models.UserDataSite
+import com.example.data.models.UserDataSocialLink
+import com.example.data.models.UserDetail
+import com.example.data.models.UserEmailsData
 import com.example.extensions.phoneToServer
-import com.example.util.*
+import com.example.extensions.setOnClickListener
+import com.example.util.AuthValidateUtil
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.setOnClickListener
+import com.example.util.getPhoneFilter
+import com.example.util.getSiteFilter
+import com.example.util.initInput
+import com.example.util.initSwitch
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileContactsEditItem(
     private val context: Context,
@@ -443,6 +457,6 @@ class ProfileContactsEditItem(
         updatePhoneConfirmationStatus(mBinding)
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditContactsBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_contacts
 }

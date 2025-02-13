@@ -2,6 +2,7 @@ package com.example.ui.profile.data
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.ViewGroup
 import com.example.ui.base.bottomSheet.BaseBSContract
@@ -30,9 +31,9 @@ interface ProfileDataContract {
     }
 
     interface Presenter : BaseBSContract.Presenter {
-        fun shareImageClick(context: Context,image: Bitmap)
-        fun shareLinkClick(text : String)
-        fun saveImageToGalleryClick(context: Context, image: Bitmap)
+        fun onShareImageClick(context: Context,image: Bitmap)
+        fun onShareLinkClick(text : String)
+        fun onSaveImageClick(image: Bitmap)
     }
 
 }

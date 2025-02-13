@@ -1,8 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemNoWorkDataBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileNoWorkExperienceItem(
     private val message: String
@@ -16,6 +17,6 @@ class ProfileNoWorkExperienceItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemNoWorkDataBinding.bind(view)
     override fun getLayout() = R.layout.item_no_work_data
 }

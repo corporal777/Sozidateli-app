@@ -5,28 +5,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.WorkExperience
 import com.example.app.databinding.FragmentUserProfileInterestsBinding
+import com.example.data.models.WorkExperience
+import com.example.extensions.setOnClickListener
 import com.example.extensions.updateItem
 import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataWorkExperienceItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
+class UserProfileExperienceFragment : BaseVBFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileExperienceContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-
-    override fun layout() = R.layout.fragment_user_profile_interests
 
     @InjectPresenter
     lateinit var presenter: UserProfileExperiencePresenter
@@ -64,4 +62,6 @@ class UserProfileExperienceFragment : BaseFragment<FragmentUserProfileInterestsB
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun binding() = FragmentUserProfileInterestsBinding::class.java
+    override fun layout() = R.layout.fragment_user_profile_interests
 }

@@ -88,6 +88,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
@@ -129,10 +130,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
                     f.actionIconContainer(toolbarContainer)
                 }
-                getBehavior()?.setScrollChangeCallback {
-                    f.scrollValue(it)
-                    presenter.changeScrollingOffset(it)
-                }
             }
         }
     )
@@ -164,6 +161,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.toolbar.ivBack.setOnClickListener {
             val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
             if (fragment != null && fragment is BaseFragment<*>) fragment.navigateUp()
+            else if (fragment != null && fragment is BaseVBFragment<*>) fragment.navigateUp()
             else navigateUp()
         }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }

@@ -59,7 +59,7 @@
 
     <dimen name="user_short_name_text_size">12sp</dimen>
 
-    <dimen name="profile_qr_code_image_size">200dp</dimen>
+    <dimen name="profile_qr_code_image_size">220dp</dimen>
 
     <dimen name="in_app_notification_fragment_margin_top">50dp</dimen>
 

@@ -2,8 +2,6 @@ package com.example.ui.gallery.items
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
@@ -13,19 +11,14 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.view.isInvisible
 import androidx.lifecycle.LifecycleOwner
-import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.app.databinding.ItemCameraPreviewBinding
-import com.example.util.convertBitmapToFile
 import com.example.util.imageCaptureCallback
 import com.google.common.util.concurrent.ListenableFuture
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class CameraPreviewItem(
     val context: Context,
@@ -52,7 +45,7 @@ class CameraPreviewItem(
     override fun bind(
         viewBinding: ItemCameraPreviewBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -150,6 +143,6 @@ class CameraPreviewItem(
         //view.scaleY = scalingFactor
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemCameraPreviewBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_camera_preview
 }

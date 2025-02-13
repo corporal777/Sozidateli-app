@@ -15,6 +15,7 @@ import androidx.core.text.set
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.Notification
 import com.example.extensions.checkIsEllipsized
@@ -24,10 +25,10 @@ import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
 import com.example.util.getDrawable
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
-abstract class NotificationItem<T : ViewDataBinding>(
+abstract class NotificationItem<T : ViewBinding>(
     private val context: Context,
     private val notification: Notification,
     private val listener: OnNotificationActionListener
@@ -79,13 +80,13 @@ abstract class NotificationItem<T : ViewDataBinding>(
 
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is NotificationItem<*>) return false
         if (notification != other.notification) return false
         return true
     }
 
-    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {

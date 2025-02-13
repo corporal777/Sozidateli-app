@@ -1,29 +1,44 @@
 package com.example.data
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.example.data.database.EventMemberDao
 import com.example.data.database.UserEventDao
-import com.example.data.models.*
+import com.example.data.database.UserQrImageDao
+import com.example.data.models.EventActivity
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventDate
+import com.example.data.models.EventMember
+import com.example.data.models.EventScheduleCalendarDay
+import com.example.data.models.EventScheduleDay
+import com.example.data.models.ImageModel
+import com.example.data.models.MemberModel
+import com.example.data.models.Optional
+import com.example.data.models.Tag
+import com.example.data.models.UserEvent
+import com.example.data.models.UserQrImage
+import com.example.data.models.asOptional
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
+import com.example.util.toByArray
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function
-import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.CompletableSubject
-import java.util.*
+import java.io.ByteArrayOutputStream
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.collections.ArrayList
+
 
 class UserEventData(
     private val eventRepository: EventRepository,
     private val userEventDao: UserEventDao,
-    private val eventMemberDao: EventMemberDao
+    private val eventMemberDao: EventMemberDao,
+    private val userQrImageDao: UserQrImageDao
 ) {
 
     var days: List<EventScheduleCalendarDay>? = null
@@ -36,6 +51,29 @@ class UserEventData(
     private val compositeDisposable = CompositeDisposable()
     private val onDataUpdateListeners: MutableList<OnDataUpdateListener> = mutableListOf()
 
+
+    fun loadUserQrImage(image: ImageModel?, qrLink: String): Single<Optional<Bitmap>> {
+        val imageName = if (image?.name == "default_avatar.png") image.name else image?.fileId
+        return userQrImageDao.getByName(imageName ?: "")
+            .map {
+                if (imageName == it.imageName && qrLink == it.imageQrUrl) {
+                    BitmapFactory.decodeByteArray(it.imageData, 0, it.imageData.size).asOptional()
+                } else Optional(null)
+            }.onErrorResumeNext { Single.just(Optional(null)) }
+    }
+
+    fun insertUserQrImage(bitmap: Bitmap, image: ImageModel?, qrLink: String): Maybe<Bitmap> {
+        return userQrImageDao.deleteAll()
+            .andThen(Completable.fromAction {
+                val qrImage = UserQrImage(
+                    image?.id ?: "",
+                    if (image?.name == "default_avatar.png") image.name else image?.fileId ?: "",
+                    qrLink,
+                    bitmap.toByArray()
+                )
+                userQrImageDao.insert(qrImage)
+            }.andThen(Maybe.just(bitmap)))
+    }
 
     fun loadEventData(eventId: String): Maybe<UserEvent> {
         val eventRequest = eventRepository.getEventDetails(eventId)
@@ -56,7 +94,7 @@ class UserEventData(
                 System.currentTimeMillis())
         }
         //.doOnSuccess { userEventDao.insert(it) }
-            //.onErrorResumeNext(loadEventCache(eventId).toMaybe())
+        //.onErrorResumeNext(loadEventCache(eventId).toMaybe())
     }
 
     private fun loadEventCache(event: String): Single<UserEvent> {

@@ -1,13 +1,14 @@
 package com.example.holders
 
 import android.content.Context
+import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.FileModel
 import com.example.app.databinding.ItemDocumentBinding
+import com.example.data.models.FileModel
 import com.example.extensions.formatToDefaultDate
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.DecimalFormat
 import kotlin.math.log10
 import kotlin.math.pow
@@ -48,5 +49,6 @@ class DocumentItem(
         return "${DecimalFormat("###0").format(size)} ${context.getString(unit)}"
     }
 
+    override fun initializeViewBinding(view: View) = ItemDocumentBinding.bind(view)
     override fun getLayout() = R.layout.item_document
 }

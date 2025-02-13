@@ -9,33 +9,33 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentChatSearchBinding
+import com.example.app.databinding.LayoutFilterUserBinding
 import com.example.data.models.InterestNew
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentChatSearchBinding
-import com.example.app.databinding.LayoutFilterUserBinding
+import com.example.extensions.initDropDownView
+import com.example.extensions.onScrolled
+import com.example.extensions.onTextChanged
 import com.example.extensions.updateItem
 import com.example.holders.ListSectionNameItem
 import com.example.holders.NoDataItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.example.extensions.initDropDownView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onScrolled
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchChatFragment : BaseFragment<FragmentChatSearchBinding>(), SearchChatContract.View {
+class SearchChatFragment : BaseVBFragment<FragmentChatSearchBinding>(), SearchChatContract.View {
 
     @InjectPresenter
     lateinit var presenter: SearchChatPresenter
@@ -341,6 +341,7 @@ class SearchChatFragment : BaseFragment<FragmentChatSearchBinding>(), SearchChat
         mBinding.appBarLayout.changeAppBarElevation(value)
     }
 
+    override fun binding() = FragmentChatSearchBinding::class.java
     override fun layout() = R.layout.fragment_chat_search
 
 

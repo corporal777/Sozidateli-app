@@ -1,9 +1,10 @@
 package com.example.holders.registerEvent
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventTitleBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class RegisterEventTitleItem(
     private val title: String?
@@ -26,6 +27,7 @@ class RegisterEventTitleItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemRegisterEventTitleBinding.bind(view)
     override fun getLayout() = R.layout.item_register_event_title
 
 }

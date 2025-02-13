@@ -32,9 +32,9 @@ class UserRegistrationPresenter
     private val userRepository: UserRepository,
 ) : BasePresenter<UserRegistrationContract.View>(appData), UserRegistrationContract.Presenter {
 
-    private var firstName: String? = ""
-    private var lastName: String? = ""
-    private var middleName: String? = ""
+    var firstName: String? = ""
+    var lastName: String? = ""
+    var middleName: String? = ""
     private var isMiddleNameAbsent = middleName == USER_DATA_EMPTY
     private var login: String? = ""
     private var birthday: String? = ""
@@ -43,8 +43,10 @@ class UserRegistrationPresenter
     private var isAgree: Boolean = false
     private var loginType: String? = ""
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+
+    override fun attachView(view: UserRegistrationContract.View?) {
+        super.attachView(view)
+        viewState.setData(lastName, firstName, middleName, isMiddleNameAbsent, login, birthday, password, isAgree)
         performDataChange()
     }
 

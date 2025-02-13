@@ -1,8 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemRatingBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import kotlin.math.roundToInt
 
 class RatingItem(
@@ -24,5 +25,6 @@ class RatingItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemRatingBinding.bind(view)
     override fun getLayout() = R.layout.item_rating
 }

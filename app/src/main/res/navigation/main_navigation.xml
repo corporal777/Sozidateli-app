@@ -563,7 +563,7 @@
     <fragment
         android:id="@+id/about_event_fragment"
         android:name="com.example.ui.event.about.AboutEventFragment"
-        tools:layout="@layout/fragment_about_event_new">
+        tools:layout="@layout/fragment_about_event">
         <argument
             android:name="eventId"
             app:argType="string"

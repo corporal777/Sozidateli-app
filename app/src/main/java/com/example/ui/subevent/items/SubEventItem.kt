@@ -1,19 +1,18 @@
 package com.example.ui.subevent.items
 
+import android.view.View
 import android.widget.CompoundButton
 import androidx.core.view.isInvisible
 import com.example.app.R
+import com.example.app.databinding.ItemSubEventBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tags
-import com.example.app.databinding.ItemSubEventBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatTimeIntervalFromTo
 import com.example.ui.views.TagChip
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.weak
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.viewbinding.BindableItem
 
 open class SubEventItem(
     private val subEvent: EventActivityModel,
@@ -82,6 +81,7 @@ open class SubEventItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemSubEventBinding.bind(view)
     override fun getLayout() = R.layout.item_sub_event
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {

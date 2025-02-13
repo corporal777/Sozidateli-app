@@ -1,21 +1,24 @@
 package com.example.holders
 
 import android.content.Context
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemProfileDataEditPersonalBinding
 import com.example.data.models.FieldDetails
 import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
-import com.example.app.databinding.ItemProfileDataEditPersonalBinding
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.ui.views.dialogs.AboutAdditionalInfoBottomSheet
 import com.example.ui.views.dialogs.AdditionalInfoBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
-import com.example.util.*
-import com.xwray.groupie.databinding.BindableItem
+import com.example.util.GENDER_FEMALE
+import com.example.util.GENDER_MALE
+import com.example.util.initSwitch
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataPersonalEditItem(
     id: Long,
@@ -42,10 +45,8 @@ class ProfileDataPersonalEditItem(
     private var mNotes = notes?.value
     private var mNotesShow = notes?.showInProfile ?: true
 
-    private lateinit var viewBinding: ItemProfileDataEditPersonalBinding
 
     override fun bind(viewBinding: ItemProfileDataEditPersonalBinding, position: Int) {
-        this@ProfileDataPersonalEditItem.viewBinding = viewBinding
         viewBinding.apply {
             etBirthday.apply {
                 initAsDateTimePicker(mBirthday) {
@@ -179,5 +180,6 @@ class ProfileDataPersonalEditItem(
         )
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditPersonalBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_personal
 }

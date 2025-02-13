@@ -11,8 +11,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRegisterEmailNewBinding
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
 import com.example.extensions.removeFirstAndLastSpaces
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.ui.views.CustomSpannableString
 import com.example.util.AuthValidateUtil
@@ -20,17 +23,12 @@ import com.example.util.getNameFilter
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onBackPressedCallback
-import com.example.extensions.onFocusChanged
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
+class RegisterEmailFragment : BaseVBFragment<FragmentRegisterEmailNewBinding>(),
     RegisterEmailContract.View {
-
-    override fun layout() = R.layout.fragment_register_email_new
 
     @InjectPresenter
     lateinit var presenter: RegisterEmailPresenter
@@ -223,4 +221,6 @@ class RegisterEmailFragment : BaseFragment<FragmentRegisterEmailNewBinding>(),
         }
     }
 
+    override fun layout() = R.layout.fragment_register_email_new
+    override fun binding() = FragmentRegisterEmailNewBinding::class.java
 }

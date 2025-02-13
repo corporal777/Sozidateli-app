@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.app.R
@@ -19,5 +20,6 @@ class ProfileExpandableTitleItem(
 
     override fun getTitleTextView(binding: ItemProfileExpandableTitleBinding): TextView = binding.tvTitle
 
+    override fun initializeViewBinding(view: View) = ItemProfileExpandableTitleBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_expandable_title
 }

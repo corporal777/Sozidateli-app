@@ -3,10 +3,9 @@ package com.example.holders.registerEvent
 import android.view.View
 import android.widget.TextView
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
 import com.example.app.databinding.ItemRegisterEventPhoneBinding
+import com.example.data.models.EventRegisterFieldData
 import com.example.util.AuthValidateUtil
-import com.example.util.getColorStateList
 
 class RegisterEventPhoneItem(
     private val fieldData: EventRegisterFieldData<String>,
@@ -43,5 +42,6 @@ class RegisterEventPhoneItem(
 
     override fun getTitleView(binding: ItemRegisterEventPhoneBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_phone
+    override fun initializeViewBinding(view: View) = ItemRegisterEventPhoneBinding.bind(view)
 
 }

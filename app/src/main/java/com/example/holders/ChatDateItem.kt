@@ -1,14 +1,16 @@
 package com.example.holders
 
 import android.content.Context
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemChatDateBinding
 import com.example.extensions.calendar
 import com.example.extensions.isSameDay
 import com.example.extensions.isYesterday
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class ChatDateItem(private val date: Long) : BindableItem<ItemChatDateBinding>() {
 
@@ -30,5 +32,6 @@ class ChatDateItem(private val date: Long) : BindableItem<ItemChatDateBinding>()
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemChatDateBinding.bind(view)
     override fun getLayout() = R.layout.item_chat_date
 }

@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.app.R
 import com.example.adapters.PagerStateAdapter
+import com.example.app.R
 import com.example.app.databinding.FragmentSearchTabsBinding
+import com.example.extensions.onPageChanged
 import com.example.interfaces.SearchInterfaceProvider
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment
 import com.example.ui.search.organization.SearchOrganizationFragment
@@ -16,11 +17,10 @@ import com.example.ui.search.user.SearchUserFragment
 import com.example.util.SearchInput
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchTabsFragment : BaseFragment<FragmentSearchTabsBinding>(), SearchTabsContract.View,
+class SearchTabsFragment : BaseVBFragment<FragmentSearchTabsBinding>(), SearchTabsContract.View,
     SearchInterfaceProvider {
 
 
@@ -131,5 +131,6 @@ class SearchTabsFragment : BaseFragment<FragmentSearchTabsBinding>(), SearchTabs
         findNavController().navigate(R.id.qr_scanner_fragment)
     }
 
+    override fun binding() = FragmentSearchTabsBinding::class.java
     override fun layout() = R.layout.fragment_search_tabs
 }

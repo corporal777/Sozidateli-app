@@ -1,11 +1,12 @@
 package com.example.ui.gallery.items
 
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import com.example.app.R
 import com.example.app.databinding.ItemGalleryBinding
 import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class GalleryItem(
     private val id : Int,
@@ -26,12 +27,12 @@ class GalleryItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is GalleryItem) return false
         if (image != other.image) return false
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemGalleryBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_gallery
 }

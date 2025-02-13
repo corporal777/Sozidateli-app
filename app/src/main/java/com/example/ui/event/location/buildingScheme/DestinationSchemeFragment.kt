@@ -3,29 +3,24 @@ package com.example.ui.event.location.buildingScheme
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import androidx.core.view.isVisible
-import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.Place
 import com.example.app.databinding.FragmentDestinationSchemeBinding
+import com.example.data.models.Place
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.image.ImageViewActivityArgs
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.google.android.material.tabs.TabLayoutMediator
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>(),
+class DestinationSchemeFragment : BaseVBFragment<FragmentDestinationSchemeBinding>(),
     DestinationSchemeContract.View, ToolbarFragment {
 
 
@@ -42,7 +37,7 @@ class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>
 
 
     private val schemeSection = Section()
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
+    private val groupAdapter = GroupieAdapter().apply {
         add(schemeSection)
     }
 
@@ -84,6 +79,7 @@ class DestinationSchemeFragment : BaseFragment<FragmentDestinationSchemeBinding>
         (requireActivity() as MainActivity).setAppBarElevation(value)
     }
 
+    override fun binding() = FragmentDestinationSchemeBinding::class.java
     override fun layout(): Int = R.layout.fragment_destination_scheme
     override val title: CharSequence by lazy { getString(R.string.scheme_of_building) }
     override fun actionIconContainer(view: ViewGroup) {}

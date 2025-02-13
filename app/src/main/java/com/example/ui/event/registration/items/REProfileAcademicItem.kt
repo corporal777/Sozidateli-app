@@ -1,9 +1,10 @@
 package com.example.ui.event.registration.items
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.PrefilledFieldAcademicDegreeModel
 import com.example.app.databinding.ItemRegisterEventProfileAcademicDegreeBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.PrefilledFieldAcademicDegreeModel
+import com.xwray.groupie.viewbinding.BindableItem
 
 class REProfileAcademicItem(
     val itemId : Int?,
@@ -25,11 +26,12 @@ class REProfileAcademicItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is REProfileAcademicItem) return false
         if (degree != other.degree) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemRegisterEventProfileAcademicDegreeBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_register_event_profile_academic_degree
 }

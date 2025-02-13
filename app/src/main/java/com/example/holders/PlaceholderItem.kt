@@ -1,13 +1,13 @@
 package com.example.holders
 
 import com.example.app.R
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 
 
 class PlaceholderItem(
     private val type: Type
-) : Item() {
+) : Item<GroupieViewHolder>() {
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
 

@@ -58,7 +58,6 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.onTextChanged
-import com.generator.qrcodegenerator.QrCodeGenerator
 import com.google.android.material.appbar.AppBarLayout
 import com.squareup.picasso.Picasso
 import io.reactivex.Maybe
@@ -463,6 +462,12 @@ fun copyTextToBuffer(context: Context, link: String) {
 }
 
 
+fun Bitmap.toByArray(): ByteArray {
+    val bos = ByteArrayOutputStream()
+    compress(Bitmap.CompressFormat.PNG, 100, bos)
+    return bos.toByteArray()
+}
+
 fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): File {
     //create a file to write bitmap data
     val file = File(context.cacheDir, fileName)
@@ -542,5 +547,10 @@ fun Fragment.getMakeSceneTransition(view: View): ActivityOptionsCompat {
         requireActivity(),
         Pair(view, view.transitionName)
     )
+}
+
+fun TextView.changeTitleTextColor(show: Boolean){
+    if (show) setTextColor(getColor(R.color.title_text_error_red))
+    else setTextColor(getColor(R.color.chat_list_date))
 }
 

@@ -193,6 +193,11 @@ class CustomPasswordView : FrameLayout {
         }
     }
 
+    fun setPasswords(password : String?){
+        binding.etPasswordOne.setText(password)
+        binding.etPasswordTwo.setText(password)
+    }
+
     private fun getPasswordModel(): PasswordModel {
         return PasswordModel(
             isFirstPasswordValid && isSecondPasswordValid,

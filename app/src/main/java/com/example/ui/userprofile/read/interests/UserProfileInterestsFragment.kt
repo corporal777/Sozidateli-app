@@ -6,26 +6,27 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
-import com.example.data.models.InterestNew
 import com.example.app.databinding.FragmentUserProfileInterestsBinding
+import com.example.data.models.InterestNew
+import com.example.extensions.setOnClickListener
 import com.example.holders.OnExpandChange
 import com.example.holders.PlaceholderItem
 import com.example.holders.ProfileDataInterestItem
 import com.example.holders.ProfileExpandableSubtitleGroup
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileInterestsFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
+class UserProfileInterestsFragment : BaseVBFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileInterestsContract.View, ToolbarFragment {
 
+    override fun binding() = FragmentUserProfileInterestsBinding::class.java
     override fun layout() = R.layout.fragment_user_profile_interests
 
     @InjectPresenter

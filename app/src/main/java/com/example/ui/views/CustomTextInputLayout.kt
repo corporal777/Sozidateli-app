@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.getDrawableOrThrow
 import com.example.app.R
 import com.example.extensions.dp
+import com.example.util.getColorStateList
 import com.example.util.getDrawable
 import com.google.android.material.textfield.TextInputLayout
 
@@ -29,6 +30,8 @@ class CustomTextInputLayout : TextInputLayout {
     )
 
     private var oldIconDrawable: Drawable? = null
+    private var oldIconMode: Int? = null
+    private var oldIconTint: Drawable? = null
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         findViewById<View>(R.id.text_input_end_icon)?.apply {
@@ -59,14 +62,30 @@ class CustomTextInputLayout : TextInputLayout {
         }
     }
 
-    fun setInformationIconVisibility(show: Boolean, onClick: () -> Unit) {
+
+    fun showCustomError(show: Boolean) {
         if (show) {
-            endIconDrawable = getDrawable(R.drawable.ic_about_session)
             endIconMode = END_ICON_CUSTOM
-            setEndIconOnClickListener { onClick.invoke() }
+            setEndIconDrawable(R.drawable.ic_input_error_icon)
+            setEndIconTintList(getColorStateList(R.color.title_text_error_red))
         } else {
             endIconDrawable = null
             endIconMode = END_ICON_NONE
+        }
+    }
+
+    fun showIconError(show: Boolean){
+        if (oldIconDrawable == null) oldIconDrawable = endIconDrawable
+        if (oldIconMode == null) oldIconMode = endIconMode
+
+        if (show) {
+            endIconMode = END_ICON_CUSTOM
+            setEndIconDrawable(R.drawable.ic_input_error_icon)
+            setEndIconTintList(getColorStateList(R.color.title_text_error_red))
+        } else {
+            endIconMode = oldIconMode ?: END_ICON_NONE
+            endIconDrawable = oldIconDrawable
+            setEndIconTintList(getColorStateList(R.color.bottom_nav_item_selected_color))
         }
     }
 

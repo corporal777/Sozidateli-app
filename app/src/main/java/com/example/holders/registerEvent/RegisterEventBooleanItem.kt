@@ -1,12 +1,11 @@
 package com.example.holders.registerEvent
 
-import android.util.Log
+import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
 import com.example.app.databinding.ItemRegisterEventBooleanBinding
-import com.example.app.databinding.ItemRegisterEventCheckboxBinding
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.setRequired
 
 open class RegisterEventBooleanItem(
@@ -37,4 +36,5 @@ open class RegisterEventBooleanItem(
 
     override fun getTitleView(binding: ItemRegisterEventBooleanBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_boolean
+    override fun initializeViewBinding(view: View) = ItemRegisterEventBooleanBinding.bind(view)
 }

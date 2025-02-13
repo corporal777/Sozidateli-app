@@ -13,7 +13,7 @@ import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.util.setImage
 import com.example.util.showCustomTabsBrowser
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

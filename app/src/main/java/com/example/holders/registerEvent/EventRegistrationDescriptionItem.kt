@@ -1,13 +1,11 @@
 package com.example.holders.registerEvent
 
-import android.util.Log
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventRegistrationFieldDescriptionBinding
-import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.example.util.getColor
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventRegistrationDescriptionItem(
     val title: String?,
@@ -42,7 +40,7 @@ class EventRegistrationDescriptionItem(
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventRegistrationFieldDescriptionBinding.bind(view)
     override fun getLayout() = R.layout.item_event_registration_field_description
 
 }

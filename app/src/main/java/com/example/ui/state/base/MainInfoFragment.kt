@@ -9,16 +9,16 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
+import com.example.app.databinding.FragmentMainInfoBinding
 import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentMainInfoBinding
 import com.example.extensions.findItemByShort
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
 import com.example.ui.state.maxNew.MaxStateScreenType
@@ -36,7 +36,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContract.View,
+class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -202,6 +202,7 @@ class MainInfoFragment : BaseFragment<FragmentMainInfoBinding>(), MainInfoContra
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
+    override fun binding() = FragmentMainInfoBinding::class.java
     override fun layout(): Int = R.layout.fragment_main_info
     override val title: CharSequence by lazy { getString(R.string.user_profile_increase_base_state) }
     override fun actionIconContainer(view: ViewGroup) {

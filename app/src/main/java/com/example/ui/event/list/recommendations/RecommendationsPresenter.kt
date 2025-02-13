@@ -27,8 +27,7 @@ class RecommendationsPresenter
 @Inject constructor(
     val appData: AppData,
     private val eventRepository: EventRepository,
-    private val socket: SocketIOManager,
-    @Connectivity val connectivity: Observable<Boolean>
+    private val socket: SocketIOManager
 ) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 

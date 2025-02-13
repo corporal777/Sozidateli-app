@@ -1,12 +1,13 @@
 package com.example.holders.registerEvent
 
 import android.text.TextWatcher
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventRegistrationFileBinding
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
 import com.example.util.getColorStateList
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 open class EventRegistrationFileItem(
     id: Long,
@@ -56,5 +57,6 @@ open class EventRegistrationFileItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventRegistrationFileBinding.bind(view)
     override fun getLayout() = R.layout.item_event_registration_file
 }

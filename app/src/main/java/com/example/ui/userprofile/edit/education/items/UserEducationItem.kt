@@ -2,18 +2,24 @@ package com.example.ui.userprofile.edit.education.items
 
 import android.view.View
 import com.example.app.R
+import com.example.app.databinding.ItemProfileDataEditEducationBinding
 import com.example.data.models.EducationModel
 import com.example.data.models.FieldDetails
-import com.example.app.databinding.ItemProfileDataEditEducationBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.initAsMonthYearPicker
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
-import com.example.util.*
+import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
+import com.example.util.formatDate
+import com.example.util.formatDateYear
+import com.example.util.initInput
+import com.example.util.initSwitch
+import com.example.util.profileDateFormat
+import com.example.util.validateEndDate
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.initAsMonthYearPicker
-import java.util.*
+import com.xwray.groupie.viewbinding.BindableItem
+import java.util.Date
 
 class UserEducationItem(
     private val id: Int?,
@@ -223,7 +229,7 @@ class UserEducationItem(
         )
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is UserEducationItem) return false
         //if (id != other.id) return false
         if (start != other.start) return false
@@ -235,5 +241,6 @@ class UserEducationItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditEducationBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_education
 }

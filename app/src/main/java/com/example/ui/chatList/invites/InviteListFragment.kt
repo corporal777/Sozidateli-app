@@ -6,27 +6,27 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
-import com.example.data.models.UserChat
 import com.example.app.databinding.FragmentInviteListBinding
+import com.example.data.models.UserChat
 import com.example.extensions.dp
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.ListSectionNameItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.UserChatItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class InviteListFragment : BaseFragment<FragmentInviteListBinding>(), InviteListContract.View {
+class InviteListFragment : BaseVBFragment<FragmentInviteListBinding>(), InviteListContract.View {
 
     @InjectPresenter
     lateinit var presenter: InviteListPresenter
@@ -93,5 +93,6 @@ class InviteListFragment : BaseFragment<FragmentInviteListBinding>(), InviteList
         mLayoutManager.smoothScrollToFirstItem(requireContext(), appBarLayout, 3)
     }
 
+    override fun binding() = FragmentInviteListBinding::class.java
     override fun layout() = R.layout.fragment_invite_list
 }

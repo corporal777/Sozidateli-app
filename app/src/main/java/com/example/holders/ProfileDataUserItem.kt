@@ -8,7 +8,7 @@ import com.example.app.databinding.ItemProfileDataUserBinding
 import com.example.extensions.dp
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class ProfileDataUserItem(
@@ -41,7 +41,7 @@ class ProfileDataUserItem(
     override fun bind(
         viewBinding: ItemProfileDataUserBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else viewBinding.apply {
@@ -60,7 +60,7 @@ class ProfileDataUserItem(
         chatButton.alpha = alpha
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is ProfileDataUserItem) return false
         if (avatarUrl != other.avatarUrl) return false
         if (name != other.name) return false
@@ -69,5 +69,6 @@ class ProfileDataUserItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataUserBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_user
 }

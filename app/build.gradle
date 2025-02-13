@@ -42,16 +42,6 @@ android {
                 outputFileName = "sozidateli-${buildType}-${variant.versionName}($variant.versionCode).apk"
             }
         }
-        if (rootProject.file("app/src/new/vk.properties").exists()) {
-            def properties = new Properties()
-            properties.load(rootProject.file("app/src/new/vk.properties").newDataInputStream())
-            manifestPlaceholders = [
-                    VKIDRedirectHost  : properties.getProperty("client_host"),
-                    VKIDRedirectScheme: properties.getProperty("client_scheme"),
-                    VKIDClientID      : properties.getProperty("client_id"),
-                    VKIDClientSecret  : properties.getProperty("client_secret")
-            ]
-        }
     }
 
     buildTypes {
@@ -65,6 +55,13 @@ android {
             buildConfigField "String", "SOCKET_URL", "\"https://socket-data-provider.sozidateli.ru/\""
             buildConfigField "String", "API_URL", "\"https://api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://restapi.sozidateli.ru/\""
+
+            manifestPlaceholders = [
+                    VKIDRedirectHost  : "vk.com",
+                    VKIDRedirectScheme: "vk51869254",
+                    VKIDClientID      : "51869254",
+                    VKIDClientSecret  : "kjx7edb0jsEwtq5Hmia8"
+            ]
         }
         beta {
             initWith(debug)
@@ -72,7 +69,14 @@ android {
             buildConfigField "String", "SOCKET_URL", "\"https://beta-socket-data-provider.sozidateli.ru/\""
             buildConfigField "String", "API_URL", "\"https://beta-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://beta-restapi.sozidateli.ru/\""
+
             matchingFallbacks = ['debug', 'release']
+            manifestPlaceholders = [
+                    VKIDRedirectHost  : "vk.com",
+                    VKIDRedirectScheme: "vk51929340",
+                    VKIDClientID      : "51929340",
+                    VKIDClientSecret  : "2hAUSfP0zjXS7dr2PWuq"
+            ]
         }
         "new" {
             initWith(debug)
@@ -80,7 +84,14 @@ android {
             buildConfigField "String", "SOCKET_URL", "\"https://alfa-socket-data-provider.sozidateli.ru/\""
             buildConfigField "String", "API_URL", "\"http://alfa-api.sozidateli.ru/\""
             buildConfigField "String", "NEW_API_URL", "\"https://alfa-restapi.sozidateli.ru/\""
+
             matchingFallbacks = ['debug', 'release']
+            manifestPlaceholders = [
+                    VKIDRedirectHost  : "vk.com",
+                    VKIDRedirectScheme: "vk51817061",
+                    VKIDClientID      : "51817061",
+                    VKIDClientSecret  : "ZPcUM4IDxpFP26ych1qA"
+            ]
         }
     }
 
@@ -135,7 +146,7 @@ dependencies {
     // support
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
     implementation "androidx.activity:activity-ktx:1.7.2"
@@ -183,12 +194,14 @@ dependencies {
 
     // logs
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    //implementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
     //ui
     implementation 'androidx.core:core-splashscreen:1.0.1'
-    implementation "com.github.lisawray.groupie:groupie:2.6.0"
-    implementation "com.github.lisawray.groupie:groupie-databinding:2.6.0"
-    implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:2.6.0"
+    implementation "com.github.lisawray.groupie:groupie:2.10.1"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:2.10.1"
+    //implementation "com.github.lisawray.groupie:groupie-databinding:2.10.1"
+    //implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:2.10.1"
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
@@ -203,15 +216,13 @@ dependencies {
     implementation "com.airbnb.android:lottie:3.4.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.Dimezis:BlurView:version-2.0.3'
-    implementation 'dev.androidbroadcast.vbpd:vbpd:2.0.0'
-    implementation 'dev.androidbroadcast.vbpd:vbpd-reflection:2.0.0'
-
 
     //utils
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
     implementation 'io.michaelrocks:libphonenumber-android:8.12.31'
-    implementation 'com.hbb20:ccp:2.5.0'
     implementation 'com.github.tbruyelle:rxpermissions:0.11'
+    implementation 'dev.androidbroadcast.vbpd:vbpd:2.0.0'
+    implementation 'dev.androidbroadcast.vbpd:vbpd-reflection:2.0.0'
 
     //markdown
     implementation "io.noties.markwon:core:$markwon_version"

@@ -21,6 +21,7 @@ const val TIME_FORMAT_DEFAULT = "HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT = "dd.MM.yyyy HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT_NO_YEAR = "dd.MM HH:mm"
 const val DATE_TIME_FORMAT_DEFAULT_FULL_MONTH = "dd MMMM yyyy HH:mm"
+const val DATE_FORMAT_FULL_DAY_FULL_MONTH_NO_YEAR = "EEEE, dd MMMM"
 
 const val AUTH_CONFIRM_EMAIL_EMAIL = "confirm_email"
 const val AUTH_CONFIRM_EMAIL = "email"

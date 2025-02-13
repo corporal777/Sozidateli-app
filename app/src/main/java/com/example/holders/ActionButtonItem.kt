@@ -1,10 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.EventActivityModel
 import com.example.app.databinding.ItemActionButtonBinding
-import com.example.app.databinding.ItemLectureBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class ActionButtonItem(
@@ -21,8 +20,8 @@ class ActionButtonItem(
         }
     }
 
-    override fun bind(viewBinding: ItemActionButtonBinding, position: Int, payloads: MutableList<Any>?) {
-        val payload = payloads?.firstOrNull()
+    override fun bind(viewBinding: ItemActionButtonBinding, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is Int) {
@@ -39,5 +38,6 @@ class ActionButtonItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemActionButtonBinding.bind(view)
     override fun getLayout() = R.layout.item_action_button
 }

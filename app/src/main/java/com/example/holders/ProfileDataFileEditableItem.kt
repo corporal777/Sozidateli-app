@@ -1,14 +1,15 @@
 package com.example.holders
 
 import android.text.TextWatcher
+import android.view.View
 import com.example.app.R
 import com.example.data.models.FileModel
 import com.example.app.databinding.ItemProfileDataEditableFileBinding
 import com.example.util.initSwitch
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 
 class ProfileDataFileEditableItem(
@@ -22,46 +23,38 @@ class ProfileDataFileEditableItem(
         fileName = it?.toString()
     }
     private var textWatcher: TextWatcher? = null
-
-
-    private lateinit var mBinding: ItemProfileDataEditableFileBinding
     override fun bind(viewBinding: ItemProfileDataEditableFileBinding, position: Int) {
-        mBinding = viewBinding
         viewBinding.apply {
-            tilFile.apply {
-                setEndIconOnClickListener {
-                    onRemoveClick(file)
-                }
+            tvShowFile.setOnClickListener {
+                onFileClick(file)
             }
             etFile.apply {
-                setText(fileName)
-                textWatcher = onTextChanged(textChangeListener)
-            }
-
-            tvShowFile.apply {
-                setOnClickListener {
-                    onFileClick(file)
+                setIconClickCallback { onRemoveClick(file) }
+                getEditText().apply {
+                    textWatcher?.let { removeTextChangedListener(it) }
+                    setText(fileName)
+                    textWatcher = onTextChanged(textChangeListener)
                 }
             }
-
-            scFile.initSwitch(file.showInProfile ?: false) {
-                file.showInProfile = it
+            scFile.apply {
+                setChecked(file.showInProfile ?: false)
+                setOnCheckedListener {
+                    file.showInProfile = it
+                }
             }
         }
     }
 
     override fun unbind(viewHolder: GroupieViewHolder<ItemProfileDataEditableFileBinding>) {
-        viewHolder.apply {
-            viewHolder.binding.apply {
-                etFile.apply {
-                    textWatcher?.let { removeTextChangedListener(it) }
-                }
+        viewHolder.binding.apply {
+            etFile.getEditText().apply {
+                textWatcher?.let { removeTextChangedListener(it) }
             }
         }
         super.unbind(viewHolder)
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is ProfileDataFileEditableItem) return false
         if (file != other.file) return false
         return true
@@ -70,5 +63,6 @@ class ProfileDataFileEditableItem(
     fun getFileName() = fileName
 
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditableFileBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_editable_file
 }

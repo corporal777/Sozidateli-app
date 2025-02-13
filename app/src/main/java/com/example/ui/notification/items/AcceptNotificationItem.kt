@@ -12,9 +12,8 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.Notification
 import com.example.app.databinding.ItemNotificationAcceptBinding
-import com.example.ui.views.CtpDialog
+import com.example.data.models.Notification
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 import com.example.util.ClickableSpanNew
@@ -81,7 +80,7 @@ class AcceptNotificationItem(
         }
     }
 
-    override fun bind(viewBinding: ItemNotificationAcceptBinding, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: ItemNotificationAcceptBinding, position: Int, payloads: MutableList<Any>) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
@@ -137,4 +136,5 @@ class AcceptNotificationItem(
     override fun getBadgeView(binding: ItemNotificationAcceptBinding): View = binding.viewBadge
     override fun getRootView(binding: ItemNotificationAcceptBinding): View = binding.lnAcceptNotification
     override fun getLayout() = R.layout.item_notification_accept
+    override fun initializeViewBinding(view: View) = ItemNotificationAcceptBinding.bind(view)
 }

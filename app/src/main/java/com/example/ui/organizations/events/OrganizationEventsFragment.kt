@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.example.app.R
-import com.example.data.models.EventNew
 import com.example.app.databinding.LayoutListBinding
+import com.example.data.models.EventNew
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.NoDataItem
@@ -15,8 +15,8 @@ import com.example.interfaces.ToolbarFragment
 import com.example.ui.event.list.EventListFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -80,6 +80,7 @@ class OrganizationEventsFragment : EventListFragment<OrganizationEventsPresenter
     }
 
 
+    override fun binding() = LayoutListBinding::class.java
     override fun layout(): Int = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_events) }
     override fun actionIconContainer(view: ViewGroup) {}

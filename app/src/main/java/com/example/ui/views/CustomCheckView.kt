@@ -1,10 +1,12 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.graphics.Color
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -32,11 +34,18 @@ class CustomCheckView : ConstraintLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CustomCheckView)
         val checkViewText = a.getText(R.styleable.CustomCheckView_checkViewText)
         val isCheckable = a.getBoolean(R.styleable.CustomCheckView_isCheckable, false)
-
+        val checkViewColor = a.getColor(R.styleable.CustomCheckView_checkViewTextColor, Color.BLACK)
+        val checkViewTextSize = a.getDimensionPixelSize(R.styleable.CustomCheckView_checkViewTextSize,
+            resources.getDimensionPixelSize(R.dimen.check_view_text_size)
+        )
         isCheckBoxVisible = isCheckable
         a.recycle()
         setText(checkViewText)
 
+        checkView.tvCheck.apply {
+            setTextColor(checkViewColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, checkViewTextSize.toFloat())
+        }
         checkView.scMobilePhone.apply {
             isInvisible = !isCheckBoxVisible
             setOnCheckedChangeListener { buttonView, isChecked ->

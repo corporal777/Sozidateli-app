@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.app.R
-import com.example.data.models.Notification
 import com.example.app.databinding.ItemNotificationSimpleBinding
+import com.example.data.models.Notification
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class SimpleNotificationItem(
@@ -33,7 +33,7 @@ class SimpleNotificationItem(
     override fun bind(
         viewBinding: ItemNotificationSimpleBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -61,5 +61,6 @@ class SimpleNotificationItem(
     override fun getRootView(binding: ItemNotificationSimpleBinding): View = binding.clSimpleNotification
 
     override fun getLayout() = R.layout.item_notification_simple
+    override fun initializeViewBinding(view: View) = ItemNotificationSimpleBinding.bind(view)
 }
 

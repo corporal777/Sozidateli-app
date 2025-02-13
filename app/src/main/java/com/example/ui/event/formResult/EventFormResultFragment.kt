@@ -15,8 +15,7 @@ import com.example.ui.event.formResult.items.EventFormResultPassportItem
 import com.example.ui.event.formResult.items.EventFormResultProfileGroup
 import com.example.ui.event.formResult.items.EventFormResultStringItem
 import com.example.ui.event.formResult.items.EventFormResultTitleItem
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieAdapter
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -38,7 +37,7 @@ class EventFormResultFragment(private val form: UserFormResultModel) : BaseBSFra
 
     private val viewBinding by viewBinding(BottomSheetEventFormResultBinding::bind)
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             update(List(3) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) })
         }
     }

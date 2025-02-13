@@ -1,30 +1,28 @@
 package com.example.ui.userprofile.read.contacts
 
-import com.example.extensions.additionalNumber
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentUserProfileContactsBinding
+import com.example.data.models.UserDetail
+import com.example.extensions.additionalNumber
 import com.example.extensions.parsePhone
+import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileContactsFragment : BaseFragment<FragmentUserProfileContactsBinding>(),
+class UserProfileContactsFragment : BaseVBFragment<FragmentUserProfileContactsBinding>(),
     UserProfileContactsContract.View, ToolbarFragment {
-
-    override fun layout() = R.layout.fragment_user_profile_contacts
 
     @InjectPresenter
     lateinit var presenter: UserProfileContactsPresenter
@@ -78,4 +76,6 @@ class UserProfileContactsFragment : BaseFragment<FragmentUserProfileContactsBind
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun binding() = FragmentUserProfileContactsBinding::class.java
+    override fun layout() = R.layout.fragment_user_profile_contacts
 }

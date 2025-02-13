@@ -2,15 +2,14 @@ package com.example.holders.redesign
 
 import android.view.View
 import com.example.app.R
-import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.ItemEventTimetableBinding
+import com.example.data.models.EventScheduleDay
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.firstLetterToUppercase
 import com.example.extensions.parseAndFormat
-import com.example.extensions.parseToLong
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class EventActivityDateItem(
     val data: EventScheduleDay?,
@@ -34,6 +33,7 @@ class EventActivityDateItem(
     fun getView(): View? = if (this::binding.isInitialized)binding.root else null
 
 
+    override fun initializeViewBinding(view: View) = ItemEventTimetableBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_timetable
 
 }

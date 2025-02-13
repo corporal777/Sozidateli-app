@@ -1,24 +1,27 @@
 package com.example.ui.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
-import com.example.data.models.Notification
 import com.example.app.databinding.FragmentNotificationsListBinding
+import com.example.data.models.Notification
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
-import com.example.ui.notification.items.*
-import com.example.ui.views.LinearLayoutManagerAccurateOffset
+import com.example.ui.notification.items.AcceptNotificationItem
+import com.example.ui.notification.items.NotificationItem
+import com.example.ui.notification.items.NotificationsDateItem
+import com.example.ui.notification.items.NotificationsTagsItem
+import com.example.ui.notification.items.RateNotificationItem
+import com.example.ui.notification.items.SimpleNotificationItem
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
@@ -29,7 +32,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>(),
+class NotificationsListFragment : BaseVBFragment<FragmentNotificationsListBinding>(),
     NotificationsListContract.View {
 
 
@@ -199,6 +202,7 @@ class NotificationsListFragment : BaseFragment<FragmentNotificationsListBinding>
         mLayoutManager.smoothScrollToFirstItem(requireContext(), null, 3)
     }
 
+    override fun binding() = FragmentNotificationsListBinding::class.java
     override fun layout() = R.layout.fragment_notifications_list
 }
 

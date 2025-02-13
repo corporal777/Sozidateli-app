@@ -25,7 +25,6 @@ class CustomPhoneTextInputView : LinearLayout {
         defStyleAttr
     )
 
-    private var titleText: CharSequence = ""
     private var hintText: CharSequence? = ""
     private var iconDrawable: Drawable? = getDrawable(R.drawable.ic_input_error_icon)
     private var inputEnabled: Boolean = true
@@ -35,13 +34,11 @@ class CustomPhoneTextInputView : LinearLayout {
 
     private fun obtainAttributes(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CustomPhoneTextInputView)
-        titleText = a.getText(R.styleable.CustomPhoneTextInputView_phoneTitleText)
         hintText = a.getText(R.styleable.CustomPhoneTextInputView_phoneHintText)
         inputEnabled = a.getBoolean(R.styleable.CustomPhoneTextInputView_phoneInputEnabled, true)
         iconDrawable = a.getDrawable(R.styleable.CustomPhoneTextInputView_phoneTextIcon)
         a.recycle()
 
-        layoutView.tvTitle.text = titleText
         layoutView.etPhoneInput.apply {
             isEnabled = inputEnabled
             if (!hintText.isNullOrEmpty()) setPhoneHint(hintText)
@@ -76,13 +73,8 @@ class CustomPhoneTextInputView : LinearLayout {
         if (isErrorShown == show) return
         isErrorShown = show
         layoutView.apply {
-            btnAction.isEnabled = !show
-            btnAction.isVisible = show
-            if (show) tvTitle.setTextColor(ContextCompat.getColor(context, R.color.title_text_error_red))
-            else {
-                tvTitle.text = titleText
-                tvTitle.setTextColor(ContextCompat.getColor(context, R.color.chat_list_date))
-            }
+            btnError.isEnabled = !show
+            btnError.isVisible = show
         }
     }
 

@@ -12,7 +12,7 @@ import com.example.extensions.updateItems
 import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.gallery.items.GalleryItem
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

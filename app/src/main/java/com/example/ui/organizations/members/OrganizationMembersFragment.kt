@@ -5,22 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.OrganizationMemberModel
 import com.example.app.databinding.LayoutListBinding
+import com.example.data.models.OrganizationMemberModel
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.organizations.detail.items.OrganizationMemberItem
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationMembersFragment : BaseFragment<LayoutListBinding>(),
+class OrganizationMembersFragment : BaseVBFragment<LayoutListBinding>(),
     OrganizationMembersContract.View, ToolbarFragment {
 
     @InjectPresenter
@@ -82,6 +82,7 @@ class OrganizationMembersFragment : BaseFragment<LayoutListBinding>(),
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
+    override fun binding() = LayoutListBinding::class.java
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_members) }
     override fun actionIconContainer(view: ViewGroup) {}

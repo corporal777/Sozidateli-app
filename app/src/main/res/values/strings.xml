@@ -90,12 +90,15 @@
     <string name="auth_register_confirm_phone_timer">Повторный звонок возможен через %s</string>
     <string name="auth_register_confirm_resend">Отправить письмо повторно</string>
     <string name="auth_register_wrong_password_error">Упс… Данные для входа неверные.</string>
-    <string name="auth_input_first_name_hint">Укажите Ваше имя</string>
-    <string name="auth_input_last_name_hint">Укажите Вашу фамилию</string>
-    <string name="auth_input_middle_name_hint">Укажите Ваше отчество</string>
+
+    <string name="auth_input_first_name_hint">Введите Ваше имя</string>
+    <string name="auth_input_last_name_hint">Введите Вашу фамилию</string>
+    <string name="auth_input_middle_name_hint">Введите Ваше отчество</string>
+    <string name="auth_input_phone_hint">Введите номер мобильного телефона</string>
+
     <string name="auth_input_email_hint">Укажите Вашу электронную почту</string>
     <string name="auth_input_email_or_phone_title">Введите телефон или email</string>
-    <string name="auth_input_email_or_phone_hint">Мобильный телефон или e-mail</string>
+
     <string name="auth_input_email_again_hint">Введите e-mail повторно</string>
     <string name="auth_input_password_hint">Пароль</string>
     <string name="auth_input_password_confirm_hint">Повтор пароля</string>
@@ -734,11 +737,8 @@
 
     <string name="user_profile_fio">ФИО</string>
     <string name="user_profile_last_name">Фамилия</string>
-    <string name="user_profile_last_name_hint">Ваша фамилия</string>
     <string name="user_profile_name">Имя</string>
-    <string name="user_profile_name_hint">Ваше имя</string>
     <string name="user_profile_middle_name">Отчество</string>
-    <string name="user_profile_middle_name_hint">Ваше отчество</string>
     <string name="user_profile_status">Статус</string>
     <string name="user_profile_status_hint">Нет статуса</string>
     <string name="user_profile_birthday">Дата рождения</string>

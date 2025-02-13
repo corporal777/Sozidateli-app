@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentChangePhoneBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.initSwitch
 import moxy.presenter.InjectPresenter
@@ -16,7 +16,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePhoneContract.View {
+class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), ChangePhoneContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChangePhonePresenter
@@ -86,4 +86,5 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
 
     override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_change_phone
+    override fun binding() = FragmentChangePhoneBinding::class.java
 }

@@ -6,10 +6,13 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
+import com.example.app.databinding.FragmentMyEventsBinding
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
-import com.example.app.databinding.FragmentMyEventsBinding
-import com.example.extensions.*
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.offsetChangedListener
+import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
 import com.example.ui.event.list.EventListFragment
@@ -18,11 +21,10 @@ import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import com.example.util.SearchInput
 import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
@@ -170,5 +172,6 @@ class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBi
         }
     }
 
+    override fun binding() = FragmentMyEventsBinding::class.java
     override fun layout(): Int = R.layout.fragment_my_events
 }

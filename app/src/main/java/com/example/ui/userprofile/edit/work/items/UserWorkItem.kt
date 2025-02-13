@@ -3,17 +3,23 @@ package com.example.ui.userprofile.edit.work.items
 import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.WorkExperience
 import com.example.app.databinding.ItemProfileDataEditWorkBinding
+import com.example.data.models.WorkExperience
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.initAsMonthYearPicker
 import com.example.extensions.isSameMonth
 import com.example.extensions.parseToDate
-import com.example.util.*
+import com.example.util.DATE_FORMAT_SERVER_TIMESTAMP
+import com.example.util.formatDate
+import com.example.util.formatDateYear
+import com.example.util.initInput
+import com.example.util.initSwitch
+import com.example.util.profileDateFormat
+import com.example.util.validateEndDate
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.initAsMonthYearPicker
-import java.util.*
+import com.xwray.groupie.viewbinding.BindableItem
+import java.util.Date
 
 class UserWorkItem(
     id: Int?,
@@ -219,7 +225,7 @@ class UserWorkItem(
 
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is UserWorkItem) return false
         if (start != other.start) return false
         if (finish != other.finish) return false
@@ -230,5 +236,6 @@ class UserWorkItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditWorkBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_work
 }

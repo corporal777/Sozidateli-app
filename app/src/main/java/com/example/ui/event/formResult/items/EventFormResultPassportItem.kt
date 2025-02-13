@@ -1,10 +1,11 @@
 package com.example.ui.event.formResult.items
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.EventPassport
 import com.example.app.databinding.ItemEventFormResultPassportBinding
+import com.example.data.models.EventPassport
 import com.example.extensions.formatToDefaultDate
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultPassportItem (
     val id: String?,
@@ -23,6 +24,6 @@ class EventFormResultPassportItem (
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultPassportBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_passport
 }

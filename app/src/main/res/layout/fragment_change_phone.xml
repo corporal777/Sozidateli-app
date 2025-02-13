@@ -81,18 +81,29 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPhoneTitle" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitlePhone"
+                    style="@style/Profile.Edit.TextViewTitle"
+                    fontPath="fonts/sf_pro_display_regular.OTF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/profile_phone_mobile"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone" />
+
                 <com.example.ui.views.CustomPhoneTextInputView
                     android:id="@+id/etPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitlePhone"
                     app:phoneHintText="+79123456789"
-                    app:phoneTextIcon="@drawable/ic_confirmed_phone_icon"
-                    app:phoneTitleText="@string/profile_phone_mobile" />
+                    app:phoneTextIcon="@drawable/ic_confirmed_phone_icon" />
 
 
                 <androidx.appcompat.widget.AppCompatCheckBox

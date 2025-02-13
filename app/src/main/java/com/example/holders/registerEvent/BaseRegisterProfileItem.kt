@@ -4,13 +4,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
 import com.example.util.getColor
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
-abstract class BaseRegisterProfileItem<T : ViewDataBinding>(itemId: Long) : BindableItem<T>(itemId) {
+abstract class BaseRegisterProfileItem<T : ViewBinding>(itemId: Long) : BindableItem<T>(itemId) {
 
     var isErrorShown: Boolean = false
 

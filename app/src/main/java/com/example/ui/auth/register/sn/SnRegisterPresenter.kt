@@ -59,7 +59,10 @@ class SnRegisterPresenter
         email = snUser.snUserData?.email
         photo = snUser.snUserData?.photo
         gender = snUser.snUserData?.gender
+    }
 
+    override fun attachView(view: SnRegisterContract.View?) {
+        super.attachView(view)
         viewState.setUserData(
             lastName,
             firstName,

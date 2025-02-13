@@ -4,9 +4,8 @@ import android.widget.TextView
 import androidx.databinding.ViewDataBinding
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
+
 
 abstract class ExpandableTitleItem<T : ViewDataBinding>(
         private val title: String
@@ -23,7 +22,7 @@ abstract class ExpandableTitleItem<T : ViewDataBinding>(
         }
     }
 
-    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>) {
         if (payloads?.isEmpty() == true) super.bind(viewBinding, position, payloads)
         else viewBinding.apply {
             (payloads?.get(0) as? Boolean)?.let {

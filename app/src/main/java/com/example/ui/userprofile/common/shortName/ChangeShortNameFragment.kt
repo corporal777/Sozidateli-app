@@ -5,14 +5,14 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeShortNameBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.CustomSpannableString
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeShortNameFragment : BaseFragment<FragmentChangeShortNameBinding>(),
+class ChangeShortNameFragment : BaseVBFragment<FragmentChangeShortNameBinding>(),
     ChangeShortNameContract.View {
 
     @InjectPresenter
@@ -77,4 +77,5 @@ class ChangeShortNameFragment : BaseFragment<FragmentChangeShortNameBinding>(),
 
     override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_change_short_name
+    override fun binding() = FragmentChangeShortNameBinding::class.java
 }

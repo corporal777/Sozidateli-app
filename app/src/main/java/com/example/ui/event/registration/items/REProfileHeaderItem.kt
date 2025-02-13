@@ -1,8 +1,9 @@
 package com.example.ui.event.registration.items
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventProfileFooterBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class REProfileHeaderItem(
     val itemId : Long,
@@ -23,6 +24,6 @@ class REProfileHeaderItem(
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemRegisterEventProfileFooterBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_register_event_profile_footer
 }

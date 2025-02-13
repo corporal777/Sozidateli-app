@@ -21,7 +21,7 @@
                 app:contentScrim="@color/white"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-                <com.google.android.material.appbar.MaterialToolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -30,20 +30,19 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_label_small"
-                            fontPath="fonts/sf_pro_text_semibold.ttf"
-                            android:layout_width="match_parent"
+                            style="@style/Toolbar.Custom.Text"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:letterSpacing="-0.02"
                             android:text="@string/tab_recommended_title"
-                            android:textColor="@android:color/black"
                             android:textSize="17sp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
 
@@ -52,71 +51,49 @@
                             style="@style/Notification.Tag"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
+                            android:layout_gravity="center"
                             android:layout_marginEnd="10dp"
                             android:background="@drawable/background_tag_checked_new"
                             android:text="@string/auth_label_login"
                             android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.appbar.MaterialToolbar>
+                </androidx.appcompat.widget.Toolbar>
 
-
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/tv_label_large"
+                    fontPath="fonts/sf_pro_display_heavy.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="@null"
-                    android:visibility="visible"
-                    app:layout_collapseMode="parallax">
-
-                    <TextView
-                        android:id="@+id/tv_label_large"
-                        fontPath="fonts/sf_pro_display_heavy.ttf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                        android:layout_marginBottom="10dp"
-                        android:letterSpacing="0.01"
-                        android:text="@string/tab_recommended_title"
-                        android:textColor="@android:color/black"
-                        android:textSize="34sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingPrefix" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                    android:layout_marginBottom="10dp"
+                    android:letterSpacing="0.01"
+                    android:text="@string/tab_recommended_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="34sp"
+                    android:textStyle="bold"
+                    app:layout_collapseMode="parallax" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/et_search"
+                style="@style/Input.Search"
+                fontPath="fonts/sf_pro_text.ttf"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/background_search_field_rounded_normal"
-                android:gravity="center_vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/et_search"
-                    style="@style/Input.Search"
-                    fontPath="fonts/sf_pro_text.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:hint="@string/search_input_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="textFilter"
-                    android:letterSpacing="-0.02"
-                    android:longClickable="false"
-                    android:textSize="17sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TouchTargetSizeCheck"
-                    tools:layout_editor_absoluteX="10dp" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:backgroundTint="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/search_input_hint"
+                android:letterSpacing="-0.02"
+                android:minHeight="40dp"
+                android:textSize="17sp" />
         </com.google.android.material.appbar.AppBarLayout>
 
 

@@ -1,14 +1,15 @@
 package com.example.ui.partner.items
 
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemMainInfoPartnerBinding
 import com.example.extensions.markWon
+import com.example.extensions.removeUrlUnderline
 import com.example.util.setImage
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.removeUrlUnderline
+import com.xwray.groupie.viewbinding.BindableItem
 
 class PartnerMainInfoItem(
     val id: Int?,
@@ -65,7 +66,7 @@ class PartnerMainInfoItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is PartnerMainInfoItem) return false
         if (logo != other.logo) return false
         if (back != other.back) return false
@@ -76,5 +77,6 @@ class PartnerMainInfoItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemMainInfoPartnerBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_main_info_partner
 }

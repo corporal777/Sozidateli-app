@@ -5,19 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentUserProfileBinding
+import com.example.data.models.UserDetail
+import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProfileContract.View,
+class UserProfileFragment : BaseVBFragment<FragmentUserProfileBinding>(), UserProfileContract.View,
     ToolbarFragment {
 
     override fun animationType(): AnimType = AnimType.AXIS
@@ -84,6 +84,7 @@ class UserProfileFragment : BaseFragment<FragmentUserProfileBinding>(), UserProf
         findNavController().navigate(R.id.editInterestsFragment)
     }
 
+    override fun binding() = FragmentUserProfileBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.user_profile_label) }
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}

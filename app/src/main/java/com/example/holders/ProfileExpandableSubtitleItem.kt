@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import android.widget.TextView
 import androidx.core.view.isInvisible
 import com.example.app.R
@@ -19,7 +20,7 @@ class ProfileExpandableSubtitleItem(
     override fun bind(
         viewBinding: ItemProfileExpandableSubtitleBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload as? Int != null) setBadge(viewBinding, payload)
@@ -48,7 +49,7 @@ class ProfileExpandableSubtitleItem(
     override fun getTitleTextView(binding: ItemProfileExpandableSubtitleBinding): TextView = binding.tvTitle
 
     override fun getLayout() = R.layout.item_profile_expandable_subtitle
-
+    override fun initializeViewBinding(view: View) = ItemProfileExpandableSubtitleBinding.bind(view)
     companion object {
         private const val EXPAND_CHANGE_ANIMATION_DURATION = 200
     }

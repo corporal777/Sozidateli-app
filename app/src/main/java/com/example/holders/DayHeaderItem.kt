@@ -1,11 +1,12 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemDayHeaderBinding
 import com.example.extensions.firstLetterToUppercase
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 open class DayHeaderItem(
     val date: Long,
@@ -24,6 +25,6 @@ open class DayHeaderItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemDayHeaderBinding.bind(view)
     override fun getLayout() = R.layout.item_day_header
 }

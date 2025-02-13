@@ -6,20 +6,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentInviteRegisterBinding
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onTextChanged
 import com.example.extensions.showChangeEmailCompleteDialog
 import com.example.ui.auth.login.LoginFragmentArgs
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.util.getNameFilter
 import com.example.util.showCustomTabsBrowser
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onBackPressedCallback
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class InviteRegisterFragment : BaseFragment<FragmentInviteRegisterBinding>(),
+class InviteRegisterFragment : BaseVBFragment<FragmentInviteRegisterBinding>(),
     InviteRegisterContract.View {
 
     @InjectPresenter
@@ -171,4 +171,5 @@ class InviteRegisterFragment : BaseFragment<FragmentInviteRegisterBinding>(),
     }
 
     override fun layout(): Int = R.layout.fragment_invite_register
+    override fun binding() = FragmentInviteRegisterBinding::class.java
 }

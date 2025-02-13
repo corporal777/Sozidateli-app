@@ -99,6 +99,19 @@ fun Section.updateItem(item: Item<*>?){
     else update(listOf(item))
 }
 
+fun Section.replaceItem(item: Item<*>?){
+    if (item == null) update(emptyList())
+    else replaceAll(listOf(item))
+}
+
+fun Section.replaceItems(vararg item: Item<*>?){
+    replaceAll(item.toList())
+}
+
+fun Section.replaceItems(item: Item<*>?, list: List<Group>?){
+    replaceAll(listOfNotNull(item).plus(list ?: emptyList()))
+}
+
 fun Section.updateItems(item: Item<*>?, list: List<Group>?){
     update(listOfNotNull(item).plus(list ?: emptyList()))
 }
@@ -106,6 +119,7 @@ fun Section.updateItems(item: Item<*>?, list: List<Group>?){
 fun Section.updateItems(vararg item: Item<*>?){
     update(item.toList())
 }
+
 
 fun Section.updateGroup(item: Group?){
     if (item != null) update(listOf(item))

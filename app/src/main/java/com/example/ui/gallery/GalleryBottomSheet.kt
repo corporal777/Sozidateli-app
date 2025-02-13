@@ -21,7 +21,7 @@ import com.example.util.getMakeSceneTransition
 import com.example.util.rxtakephoto.CropActivity
 import com.example.util.rxtakephoto.CropCallbackHelper
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

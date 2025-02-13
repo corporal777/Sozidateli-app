@@ -10,14 +10,25 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.*
 import com.example.app.databinding.ItemMaxStateMainInfoBinding
 import com.example.app.databinding.ItemProfileSocialNetworkBinding
-import com.example.extensions.phoneToServer
-import com.example.util.*
-import com.example.util.Utils.validatePhoneBeforeSend
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.ContactInformationModel
+import com.example.data.models.EmailsModel
+import com.example.data.models.FieldDetails
+import com.example.data.models.LinksModel
+import com.example.data.models.ToggleStringModel
+import com.example.data.models.UserDataSite
+import com.example.data.models.UserDataSocialLink
+import com.example.data.models.UserDetail
 import com.example.extensions.onTextChanged
+import com.example.extensions.phoneToServer
+import com.example.util.PHONE_PERSONAL
+import com.example.util.PHONE_WORK
+import com.example.util.Utils
+import com.example.util.Utils.validatePhoneBeforeSend
+import com.example.util.initInput
+import com.example.util.initSwitch
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class MaxStateContactsEditItem(
@@ -333,7 +344,7 @@ class MaxStateContactsEditItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is MaxStateContactsEditItem) return false
         if (mobilePhone != other.mobilePhone) return false
         if (workPhone != other.workPhone) return false
@@ -345,5 +356,6 @@ class MaxStateContactsEditItem(
 
     }
 
+    override fun initializeViewBinding(view: View) = ItemMaxStateMainInfoBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_max_state_main_info
 }

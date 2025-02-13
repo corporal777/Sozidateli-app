@@ -3,8 +3,8 @@ package com.example.holders.registerEvent
 import android.view.View
 import android.widget.TextView
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
 import com.example.app.databinding.ItemRegisterEventSelectorBinding
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.initDropDownView
 
 open class RegisterEventDropdownItem(
@@ -39,4 +39,5 @@ open class RegisterEventDropdownItem(
     override fun getErrorFrameView(binding: ItemRegisterEventSelectorBinding): View = binding.viewInputError
     override fun getTitleView(binding: ItemRegisterEventSelectorBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_selector
+    override fun initializeViewBinding(view: View) = ItemRegisterEventSelectorBinding.bind(view)
 }

@@ -1,13 +1,10 @@
 package com.example.ui.support.items
 
+import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.example.app.R
 import com.example.app.databinding.ItemSupportExpandableQuestionTitleBinding
 import com.example.holders.BindExpandableTitleItem
-import com.example.holders.ExpandableTitleItem
-import com.example.holders.redesign.EventPageItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class SupportQuestionExpandableTitleItem(
     title: String
@@ -28,4 +25,5 @@ class SupportQuestionExpandableTitleItem(
     }
 
     override fun getLayout() = R.layout.item_support_expandable_question_title
+    override fun initializeViewBinding(view: View) = ItemSupportExpandableQuestionTitleBinding.bind(view)
 }

@@ -1,18 +1,19 @@
 package com.example.holders
 
 import android.content.res.ColorStateList
+import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventNew
 import com.example.app.databinding.ItemEventFavoriteBinding
+import com.example.data.models.EventNew
 import com.example.extensions.parseColor
 import com.example.extensions.setOnClickListener
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
+
 
 class EventFavoriteItem(
         val event: EventNew,
@@ -54,7 +55,7 @@ class EventFavoriteItem(
     override fun bind(
         viewBinding: ItemEventFavoriteBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -68,5 +69,6 @@ class EventFavoriteItem(
         else UserSubscribeButton.Action.FAVORITE)
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventFavoriteBinding.bind(view)
     override fun getLayout() = R.layout.item_event_favorite
 }

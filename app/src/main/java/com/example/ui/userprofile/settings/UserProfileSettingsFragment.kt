@@ -9,14 +9,14 @@ import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentUserProfileSettingsBinding
 import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentUserProfileSettingsBinding
 import com.example.extensions.dp
 import com.example.extensions.setArgument
 import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment.Companion.CHANGE_NAME_FRAGMENT_TAG
 import com.example.ui.views.CustomCheckView
@@ -30,7 +30,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBinding>(),
+class UserProfileSettingsFragment : BaseVBFragment<FragmentUserProfileSettingsBinding>(),
     UserProfileSettingsContract.View, ToolbarFragment {
 
     @InjectPresenter
@@ -269,6 +269,7 @@ class UserProfileSettingsFragment : BaseFragment<FragmentUserProfileSettingsBind
     }
 
     override fun animationType(): AnimType = AnimType.AXIS
+    override fun binding() = FragmentUserProfileSettingsBinding::class.java
     override fun layout() = R.layout.fragment_user_profile_settings
     override val title: CharSequence by lazy { getString(R.string.profile_settings) }
     override fun actionIconContainer(view: ViewGroup) {}

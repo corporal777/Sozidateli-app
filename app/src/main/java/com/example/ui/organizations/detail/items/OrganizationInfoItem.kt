@@ -1,11 +1,12 @@
 package com.example.ui.organizations.detail.items
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemOrganizationInfoBinding
-import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.removeUrlUnderline
+import com.xwray.groupie.Item
+import com.xwray.groupie.viewbinding.BindableItem
 
 class OrganizationInfoItem(
     val orgId: Long?,
@@ -50,7 +51,7 @@ class OrganizationInfoItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is OrganizationInfoItem) return false
         if (links != other.links) return false
         if (socialLinks != other.socialLinks) return false
@@ -60,5 +61,6 @@ class OrganizationInfoItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemOrganizationInfoBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_organization_info
 }

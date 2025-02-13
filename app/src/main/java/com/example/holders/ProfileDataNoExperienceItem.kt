@@ -1,9 +1,10 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemProfileDataEditNoWorkBinding
 import com.example.util.initSwitch
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataNoExperienceItem(
     private val noExperience : Boolean,
@@ -32,6 +33,6 @@ class ProfileDataNoExperienceItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditNoWorkBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_profile_data_edit_no_work
 }

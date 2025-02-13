@@ -1,14 +1,9 @@
 package com.example.ui.event.formResult.items
 
-import android.text.method.LinkMovementMethod
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import android.view.View
 import com.example.app.R
-import com.example.data.models.EventPassport
 import com.example.app.databinding.ItemEventFormResultEducationLevelBinding
-import com.example.app.databinding.ItemEventFormResultPassportBinding
-import com.example.extensions.formatToDefaultDate
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultEducationLevelItem (
     val educationLevel: String?,
@@ -26,6 +21,6 @@ class EventFormResultEducationLevelItem (
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultEducationLevelBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_education_level
 }

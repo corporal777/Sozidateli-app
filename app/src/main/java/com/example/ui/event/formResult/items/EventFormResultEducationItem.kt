@@ -1,14 +1,12 @@
 package com.example.ui.event.formResult.items
 
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventFormResultEducationBinding
-import com.example.app.databinding.ItemEventFormResultPassportBinding
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -58,6 +56,6 @@ class EventFormResultEducationItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultEducationBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_education
 }

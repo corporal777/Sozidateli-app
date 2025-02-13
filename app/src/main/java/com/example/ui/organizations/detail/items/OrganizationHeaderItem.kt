@@ -2,16 +2,17 @@ package com.example.ui.organizations.detail.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.OrganizationNew
 import com.example.app.databinding.ItemOrganizationHeaderBinding
+import com.example.data.models.OrganizationNew
+import com.example.extensions.parseColor
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.parseColor
+import com.xwray.groupie.viewbinding.BindableItem
 
 class OrganizationHeaderItem(
     org: OrganizationNew,
@@ -78,12 +79,12 @@ class OrganizationHeaderItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is OrganizationHeaderItem) return false
         if (organization != other.organization) return false
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemOrganizationHeaderBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_organization_header
 }

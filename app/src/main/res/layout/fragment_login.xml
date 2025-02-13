@@ -59,37 +59,65 @@
                     android:text="@string/auth_title_login_fragment"
                     android:textColor="@color/auth_title_text"
                     android:textSize="22sp"
-                    app:layout_constraintBottom_toTopOf="@+id/etLogin"
+                    app:layout_constraintBottom_toTopOf="@+id/tvTitleLogin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivLogo"
                     tools:ignore="MissingPrefix" />
 
-                <com.example.ui.views.CustomTextInputView
-                    android:id="@+id/etLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitleLogin"
+                    style="@style/Profile.Edit.TextViewTitleThin"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginTop="20dp"
-                    app:hintText="@string/auth_input_login"
-                    app:inputType="textEmailAddress"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/login"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle"
-                    app:titleText="@string/login" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle" />
 
-                <com.example.ui.views.CustomTextInputView
-                    android:id="@+id/etPassword"
+                <com.example.ui.views.CustomTextInputLayout
+                    android:id="@+id/til_login"
+                    style="@style/TextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="15dp"
-                    app:hintText="********"
-                    app:inputType="textPassword"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitleLogin">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_login"
+                        style="@style/TextInputEditTextStyle"
+                        android:hint="@string/auth_input_login"
+                        android:inputType="textEmailAddress" />
+                </com.example.ui.views.CustomTextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitlePassword"
+                    style="@style/Profile.Edit.TextViewTitleThin"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/password_confirm_hint"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etLogin"
-                    app:titleText="@string/password_confirm_hint" />
+                    app:layout_constraintTop_toBottomOf="@+id/til_login" />
+
+
+                <com.example.ui.views.CustomTextInputLayout
+                    android:id="@+id/til_password"
+                    style="@style/TextInputLayoutStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="#A57F56"
+                    app:endIconDrawable="@drawable/drawable_password_toggle"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitlePassword">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_password"
+                        style="@style/TextInputEditTextStyle"
+                        android:hint="********"
+                        android:inputType="textPassword" />
+                </com.example.ui.views.CustomTextInputLayout>
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -106,8 +134,10 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etPassword"
+                    app:layout_constraintTop_toBottomOf="@+id/til_password"
                     tools:visibility="visible" />
+
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

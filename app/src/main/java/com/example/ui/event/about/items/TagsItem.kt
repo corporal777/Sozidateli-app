@@ -6,10 +6,10 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.example.app.R
-import com.example.data.models.Tag
 import com.example.app.databinding.ItemEventDetailTagsBlockBinding
+import com.example.data.models.Tag
 import com.example.ui.views.TagChipNew
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class TagsItem (
     private val listTags : List<Tag>,
@@ -88,6 +88,6 @@ class TagsItem (
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventDetailTagsBlockBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_detail_tags_block
 }

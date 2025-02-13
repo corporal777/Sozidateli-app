@@ -1,14 +1,17 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class LinearLayoutManagerAccurateOffset(context: Context) : LinearLayoutManager(context) {
+class LinearLayoutManagerAccurateOffset(val context: Context, val map: MutableMap<Int, Int>) :
+    LinearLayoutManager(context) {
 
-    private val map = mutableMapOf<Int, Int>()
+    //private val map = mutableMapOf<Int, Int>()
 
     override fun onLayoutCompleted(state: RecyclerView.State?) {
+
         super.onLayoutCompleted(state)
         for (i in 0 until childCount) {
             val child = getChildAt(i)

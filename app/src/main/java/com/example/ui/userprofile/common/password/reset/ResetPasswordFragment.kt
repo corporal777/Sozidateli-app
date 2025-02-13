@@ -2,17 +2,15 @@ package com.example.ui.userprofile.common.password.reset
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentResetPasswordBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ResetPasswordFragment() : BaseFragment<FragmentResetPasswordBinding>(),
+class ResetPasswordFragment() : BaseVBFragment<FragmentResetPasswordBinding>(),
     ResetPasswordContract.View {
 
     @InjectPresenter
@@ -55,5 +53,6 @@ class ResetPasswordFragment() : BaseFragment<FragmentResetPasswordBinding>(),
     override fun showCustomLoading() = mBinding.btnReset.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnReset.showProgressLoading(false)
 
+    override fun binding() = FragmentResetPasswordBinding::class.java
     override fun layout(): Int = R.layout.fragment_reset_password
 }

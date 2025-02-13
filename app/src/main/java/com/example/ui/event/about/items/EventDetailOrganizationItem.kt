@@ -1,15 +1,15 @@
 package com.example.ui.event.about.items
 
 import android.graphics.Color
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.OrganizationNew
 import com.example.app.databinding.ItemEventDetailOrganizationBlockBinding
-import com.example.ui.views.UserSubscribeButton
-import com.squareup.picasso.Picasso
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.OrganizationNew
 import com.example.extensions.parseColor
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImagePicasso
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventDetailOrganizationItem(
     private val organization: OrganizationNew?,
@@ -63,7 +63,7 @@ class EventDetailOrganizationItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventDetailOrganizationItem) return false
         if (organizationName != other.organizationName) return false
         if (isFavorite != other.isFavorite) return false
@@ -76,6 +76,7 @@ class EventDetailOrganizationItem(
         return if (isFavorite) UserSubscribeButton.Action.UNFAVORITE else UserSubscribeButton.Action.FAVORITE
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventDetailOrganizationBlockBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_detail_organization_block
 
 }

@@ -1,13 +1,12 @@
 package com.example.holders.redesign
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventSpeakerBinding
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.setImage
-import com.example.util.setImagePicasso
-import com.squareup.picasso.Picasso
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventSpeakerItem(
     private val speakerId: Int?,
@@ -63,7 +62,7 @@ class EventSpeakerItem(
     }
 
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventSpeakerItem) return false
         if (id != other.id) return false
         if (name != other.name) return false
@@ -72,6 +71,6 @@ class EventSpeakerItem(
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventSpeakerBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_speaker
 }

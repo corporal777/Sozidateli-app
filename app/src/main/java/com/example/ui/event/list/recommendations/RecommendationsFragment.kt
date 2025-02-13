@@ -1,17 +1,16 @@
 package com.example.ui.event.list.recommendations
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
-import com.example.data.models.EventNew
 import com.example.app.databinding.FragmentRecommendationsBinding
+import com.example.data.models.EventNew
 import com.example.extensions.dp
 import com.example.extensions.findGroupBy
+import com.example.extensions.offsetChangedListener
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
 import com.example.ui.event.list.EventListFragment
@@ -20,17 +19,17 @@ import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.profile.ProfileFragmentArgs
 import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.offsetChangedListener
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class RecommendationsFragment : EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
+
+class RecommendationsFragment :
+    EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -44,7 +43,8 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
         try {
             val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
             this.onShowSavedEventOrProfile(args.isOpenProfile)
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     private val dataGroup = Section()
@@ -66,8 +66,11 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             etSearch.setOnClickListener { presenter.onSearchClick() }
             btnLogin.setOnClickListener { presenter.onAuthorizationClick() }
-            appBarLayout.offsetChangedListener { appBarLayout, i ->
-                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+            appBarLayout.apply {
+                updateAppBarViews(null)
+                offsetChangedListener { appBarLayout, i ->
+                    updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                }
             }
         }
     }
@@ -77,6 +80,7 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
     }
 
     override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
+        mBinding.swipeToRefresh.isRefreshing = false
         val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
         if (group == null)
             dataGroup.updateGroup(
@@ -88,8 +92,6 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
                 )
             )
         else group.updateItems(events, isNeedUpdateApp)
-
-        mBinding.swipeToRefresh.isRefreshing = false
     }
 
 
@@ -123,36 +125,20 @@ class RecommendationsFragment : EventListFragment<RecommendationsPresenter, Frag
     }
 
 
-    override fun onExpandedState() {
-        mBinding.apply {
-            tvLabelSmall.apply {
-                alpha = 1F
-                animate().setDuration(500).alpha(0.0f)
-                visibility = View.GONE
-            }
-            tvLabelLarge.apply {
-                visibility = View.VISIBLE
-                alpha = 0F
-                animate().setDuration(500).alpha(1.0f)
-            }
+    override fun setAppBarViewsState(state: Int, isRestore: Boolean) {
+        mBinding.tvLabelSmall.apply {
+            if (!isRestore) alpha = if (state == 1) 0F else 1F
+            if (!isRestore) animate().setDuration(500).alpha(if (state == 1) 1.0f else 0.0f)
+            visibility = if (state == 1) View.VISIBLE else View.GONE
+        }
+        mBinding.tvLabelLarge.apply {
+            if (!isRestore) alpha = if (state == 0) 0F else 1F
+            if (!isRestore) animate().setDuration(500).alpha(if (state == 0) 1.0f else 0.0f)
+            visibility = if (state == 0) View.VISIBLE else View.GONE
         }
     }
 
-    override fun onCollapsedState() {
-        mBinding.apply {
-            tvLabelSmall.apply {
-                alpha = 0F
-                animate().setDuration(500).alpha(1.0f)
-                tvLabelSmall.visibility = View.VISIBLE
-            }
-            tvLabelLarge.apply {
-                alpha = 1F
-                animate().setDuration(500).alpha(0.0f)
-                visibility = View.GONE
-            }
-        }
-    }
-
+    override fun binding() = FragmentRecommendationsBinding::class.java
     override fun layout(): Int = R.layout.fragment_recommendations
 
 }

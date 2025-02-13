@@ -8,6 +8,18 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface UserRegistrationContract {
     interface View : BaseContract.View {
+        @OneExecution
+        fun setData(
+            lastName: String?,
+            firstName: String?,
+            middleName: String?,
+            isMiddleNameAbsent : Boolean,
+            phone: String?,
+            birthday: String?,
+            password: String?,
+            isAgree: Boolean
+        )
+
         @Skip
         fun enableRegisterBtn(isEnable: Boolean)
 

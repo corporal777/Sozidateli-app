@@ -1,15 +1,13 @@
 package com.example.holders
 
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.example.app.R
-import com.example.data.models.ChatMessage
 import com.example.app.databinding.ItemChatMessageTextBinding
+import com.example.data.models.ChatMessage
 import com.example.extensions.markWon
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 class ChatMessageTextItem(message: ChatMessage.Personal) : ChatMessageItem<ItemChatMessageTextBinding>(message) {
 
@@ -31,7 +29,7 @@ class ChatMessageTextItem(message: ChatMessage.Personal) : ChatMessageItem<ItemC
     override fun getMessageContainer(binding: ItemChatMessageTextBinding): View = binding.tvChatMessage
     override fun getDateView(binding: ItemChatMessageTextBinding): TextView = binding.tvMessageDate
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is ChatMessageTextItem) return false
         if (message != other.message) return false
         return true
@@ -46,6 +44,8 @@ class ChatMessageTextItem(message: ChatMessage.Personal) : ChatMessageItem<ItemC
 //        }
 //        view.startAnimation(anim)
 //    }
+
+    override fun initializeViewBinding(view: View) = ItemChatMessageTextBinding.bind(view)
 
     override fun getLayout() = R.layout.item_chat_message_text
 }

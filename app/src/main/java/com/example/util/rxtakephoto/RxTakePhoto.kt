@@ -58,9 +58,7 @@ class RxTakePhoto(
     }
 
     fun saveImage(image: Bitmap): Completable {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Completable.fromAction { saveImageToGallery(context, image, "sozidateli_images") }
-        } else {
+        return if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2){
             rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .flatMapCompletable { granted ->
                     if (granted) {
@@ -69,7 +67,7 @@ class RxTakePhoto(
                         }
                     } else Completable.error(PermissionNotGrantedException())
                 }
-        }
+        } else Completable.fromAction { saveImageToGallery(context, image, "sozidateli_images") }
     }
 
     fun crop(

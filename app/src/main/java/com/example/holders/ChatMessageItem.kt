@@ -11,15 +11,14 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.ChatMessage
 import com.example.extensions.defaultTimeFormatter
 import com.example.extensions.dp
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.viewbinding.BindableItem
 
-abstract class ChatMessageItem<T : ViewDataBinding>(
+abstract class ChatMessageItem<T : ViewBinding>(
         val message: ChatMessage.Personal
 ) : BindableItem<T>(message.message._id.hashCode().toLong()) {
 

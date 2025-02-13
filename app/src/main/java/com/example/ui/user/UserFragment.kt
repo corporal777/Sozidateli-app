@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -19,15 +18,31 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.BuildConfig
 import com.example.app.R
+import com.example.app.databinding.FragmentUserBinding
 import com.example.data.models.InterestNew
 import com.example.data.models.OrganizationNew
 import com.example.data.models.ProfileUserData
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentUserBinding
-import com.example.extensions.*
-import com.example.holders.*
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.firstLetterToUppercase
+import com.example.extensions.updateGroup
+import com.example.extensions.updateItem
+import com.example.holders.OnExpandChange
+import com.example.holders.PlaceholderItem
+import com.example.holders.ProfileDataEducationItem
+import com.example.holders.ProfileDataEducationLevelItem
+import com.example.holders.ProfileDataFileItem
+import com.example.holders.ProfileDataInterestItem
+import com.example.holders.ProfileDataNotesItem
+import com.example.holders.ProfileDataPersonalItem
+import com.example.holders.ProfileDataUserItem
+import com.example.holders.ProfileDataWorkExperienceItem
+import com.example.holders.ProfileExpandableSubtitleGroup
+import com.example.holders.ProfileExpandableTitleGroup
+import com.example.holders.ProfileNoWorkExperienceItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.items.ProfileDataDividerItem
 import com.example.ui.user.items.UserProfileActionsItem
@@ -39,15 +54,14 @@ import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.PHONE_PERSONAL
 import com.example.util.PHONE_WORK
 import com.xwray.groupie.Group
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, ToolbarFragment {
+class UserFragment : BaseVBFragment<FragmentUserBinding>(), UserContract.View, ToolbarFragment {
 
     private val shareProfileButton by lazy {
         ToolbarIconView(requireContext(), 32).apply {
@@ -107,7 +121,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
     private val additionalDataSection = Section()
     private val actionsDataSection = Section()
 
-    private val adapter = GroupAdapter<GroupieViewHolder>().apply {
+    private val adapter = GroupieAdapter().apply {
         add(mainDataSection)
         add(personalDataSection)
         add(educationDataSection)
@@ -414,6 +428,7 @@ class UserFragment : BaseFragment<FragmentUserBinding>(), UserContract.View, Too
         private const val HEADER_ITEM_ID = 100L
     }
 
+    override fun binding() = FragmentUserBinding::class.java
     override fun layout() = R.layout.fragment_user
     override val title: CharSequence by lazy { getString(R.string.profile_current_user_label) }
     override fun actionIconContainer(view: ViewGroup) {

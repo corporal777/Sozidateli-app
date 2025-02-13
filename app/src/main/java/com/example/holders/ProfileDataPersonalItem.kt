@@ -1,25 +1,23 @@
 package com.example.holders
 
-import com.example.extensions.additionalNumber
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import androidx.core.text.set
-import androidx.core.text.toSpannable
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.LinksModel
-import com.example.data.models.OrganizationNew
 import com.example.app.databinding.ItemProfileDataPersonalBinding
 import com.example.data.models.EmailsModel
 import com.example.data.models.FieldDetails
+import com.example.data.models.LinksModel
+import com.example.data.models.OrganizationNew
 import com.example.data.models.ToggleStringModel
+import com.example.extensions.additionalNumber
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.parsePhone
-import com.example.util.ClickableSpan
-import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.removeUrlUnderline
 import com.example.extensions.setTextDataOrHide
 import com.example.ui.views.CustomSpannableString
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class ProfileDataPersonalItem(
@@ -120,6 +118,6 @@ class ProfileDataPersonalItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemProfileDataPersonalBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_personal
 }

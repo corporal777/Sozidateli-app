@@ -3,16 +3,16 @@ package com.example.holders.redesign
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
+import android.view.View
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import com.example.app.R
 import com.example.app.databinding.ItemPartnerBinding
 import com.example.extensions.markWon
 import com.example.util.URLSpanNoUnderline
-import com.example.util.setImage
 import com.example.util.setImagePicasso
-import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
+
 
 class EventPartnerItem(
     val context: Context,
@@ -43,7 +43,7 @@ class EventPartnerItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventPartnerItem) return false
         if (id != other.id) return false
         if (name != other.name) return false
@@ -72,5 +72,6 @@ class EventPartnerItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemPartnerBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_partner
 }

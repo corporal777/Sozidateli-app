@@ -6,14 +6,13 @@ import android.view.View
 import com.example.app.R
 import com.example.app.databinding.FragmentWelcomeBinding
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.base.BaseFragment
-import com.example.util.AuthBackground
+import com.example.ui.base.BaseVBFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class WelcomeFragment : BaseFragment<FragmentWelcomeBinding>(), BackgroundImageFragment,
+class WelcomeFragment : BaseVBFragment<FragmentWelcomeBinding>(), BackgroundImageFragment,
     WelcomeContract.View {
 
 
@@ -42,4 +41,5 @@ class WelcomeFragment : BaseFragment<FragmentWelcomeBinding>(), BackgroundImageF
     override val isLightStatus = false
 
     override fun layout() = R.layout.fragment_welcome
+    override fun binding() = FragmentWelcomeBinding::class.java
 }

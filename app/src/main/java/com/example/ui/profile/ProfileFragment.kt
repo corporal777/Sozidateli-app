@@ -23,11 +23,8 @@ import com.example.app.R
 import com.example.app.databinding.FragmentProfileBinding
 import com.example.data.models.UserDetail
 import com.example.extensions.firstLetterToUppercase
-import com.example.extensions.setArgument
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.profile.data.ProfileDataFragment
-import com.example.ui.profile.data.ProfileDataFragment.Companion.PROFILE_DATA_FRAGMENT_TAG
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
@@ -35,7 +32,6 @@ import com.example.ui.views.dialogs.ContactsType
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.getColor
 import com.example.util.setLeftDrawableWithIntrinsicBounds
 import moxy.presenter.InjectPresenter
@@ -44,18 +40,13 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
-    ProfileContract.View {
+class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileContract.View {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
     private lateinit var toolbarContent: ToolbarContent
     private val toolbarIconView by lazy {
-        ToolbarIconView(requireContext()).apply {
-            isEnabled = false
-            setImageAsIcon(R.drawable.ic_profile_link_edit)
-            setOnClickListener { presenter.onShowUserProfileLink() }
-        }
+        createIconView(R.drawable.ic_profile_link, false) { presenter.onShowProfileLink() }
     }
 
     @InjectPresenter
@@ -308,13 +299,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
 
+    override fun binding(): Class<FragmentProfileBinding> = FragmentProfileBinding::class.java
     override fun layout() = R.layout.fragment_profile
-    override val title: CharSequence = ""
-    override fun scrollValue(scroll: Int) {}
-    override fun actionIconContainer(view: ViewGroup) {
-        view.apply { addView(toolbarIconView) }
-    }
-
+    override fun scrollingView(): View = mBinding.profileScrollView
+    override fun actionIconContainer(view: ViewGroup) { view.addView(toolbarIconView) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
         this.toolbarContent.getBackButton().isInvisible = true

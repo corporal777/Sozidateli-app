@@ -1,21 +1,10 @@
 package com.example.ui.userprofile.edit.education
 
-import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
 import com.example.app.R
 import com.example.data.models.UserDetail
-import com.example.app.databinding.FragmentEditEducationFragmentBinding
-import com.example.extensions.findGroupBy
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
 import com.example.ui.userprofile.base.BaseUserProfileEditFragment
 import com.example.ui.userprofile.edit.education.items.UserEducationGroup
 import com.example.ui.userprofile.edit.education.items.UserEducationLevelGroup
-import com.example.ui.views.toolbar.ToolbarContent
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

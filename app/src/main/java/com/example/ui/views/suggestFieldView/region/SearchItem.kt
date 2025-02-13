@@ -1,9 +1,10 @@
 package com.example.ui.views.suggestFieldView.region
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemFormatBinding
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class SearchItem(
     private val itemId: Int?,
@@ -21,11 +22,12 @@ class SearchItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is SearchItem) return false
         if (region != other.region) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemFormatBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_format
 }

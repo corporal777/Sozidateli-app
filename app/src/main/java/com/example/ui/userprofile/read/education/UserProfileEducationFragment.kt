@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentUserProfileInterestsBinding
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationModel
-import com.example.app.databinding.FragmentUserProfileInterestsBinding
+import com.example.extensions.setOnClickListener
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
@@ -15,23 +16,20 @@ import com.example.holders.EmptyItem
 import com.example.holders.ProfileDataEducationItem
 import com.example.holders.ProfileDataEducationLevelItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.setOnClickListener
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserProfileEducationFragment : BaseFragment<FragmentUserProfileInterestsBinding>(),
+class UserProfileEducationFragment : BaseVBFragment<FragmentUserProfileInterestsBinding>(),
     UserProfileEducationContract.View, ToolbarFragment {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
-
-    override fun layout() = R.layout.fragment_user_profile_interests
 
     @InjectPresenter
     lateinit var presenter: UserProfileEducationPresenter
@@ -83,4 +81,6 @@ class UserProfileEducationFragment : BaseFragment<FragmentUserProfileInterestsBi
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun binding() = FragmentUserProfileInterestsBinding::class.java
+    override fun layout() = R.layout.fragment_user_profile_interests
 }

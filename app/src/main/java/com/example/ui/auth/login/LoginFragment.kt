@@ -4,20 +4,24 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.app.databinding.FragmentLoginBinding
+import com.example.extensions.onTextChanged
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.util.changeTitleTextColor
+import com.example.util.getColor
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
+class LoginFragment : BaseVBFragment<FragmentLoginBinding>(), LoginContract.View {
 
     private var isRegister = false
     private var invite: Int? = null
@@ -45,10 +49,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
                 isVisible = !isRegister
                 setOnClickListener { presenter.onClickRecoverPassword() }
             }
-            etLogin.initInput {
+            etLogin.onTextChanged {
                 presenter.onChangeLoginText(it.toString())
             }
-            etPassword.initInput {
+            etPassword.onTextChanged {
                 presenter.onChangePasswordText(it.toString())
             }
             btnLogin.setOnClickListener {
@@ -70,11 +74,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
     }
 
     override fun showLoginError(show: Boolean) {
-        mBinding.etLogin.showError(show)
+        mBinding.tvTitleLogin.changeTitleTextColor(show)
+        mBinding.tilLogin.showCustomError(show)
     }
 
     override fun showPasswordError(show: Boolean) {
-        mBinding.etPassword.showError(show)
+        mBinding.tvTitlePassword.changeTitleTextColor(show)
     }
 
     override fun showRecoveryPassword(email: String) {
@@ -119,9 +124,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), LoginContract.View {
         }
     }
 
-
     override fun showCustomLoading() = mBinding.btnLogin.run { showProgressLoading(true) }
     override fun hideCustomLoading() = mBinding.btnLogin.run { showProgressLoading(false) }
 
+    override fun binding() = FragmentLoginBinding::class.java
     override fun layout() = R.layout.fragment_login
 }

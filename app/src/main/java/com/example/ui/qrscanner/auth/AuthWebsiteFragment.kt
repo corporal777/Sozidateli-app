@@ -6,21 +6,19 @@ import android.view.View
 import androidx.core.view.isInvisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.app.R
-import com.example.data.models.QrAuthResponse
 import com.example.app.databinding.FragmentAuthWebsiteBinding
+import com.example.data.models.QrAuthResponse
 import com.example.extensions.longToTime
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.loading.CustomLoadingButton
-import com.example.util.AuthBackground
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
+class AuthWebsiteFragment : BaseVBFragment<FragmentAuthWebsiteBinding>(), BackgroundImageFragment,
     AuthWebsiteContract.View {
 
     @InjectPresenter
@@ -80,5 +78,6 @@ class AuthWebsiteFragment : BaseFragment<FragmentAuthWebsiteBinding>(), Backgrou
     override fun getFragmentBackgroundDrawable(): Drawable? = null
     override val isLightStatus = false
 
+    override fun binding() = FragmentAuthWebsiteBinding::class.java
     override fun layout() = R.layout.fragment_auth_website
 }

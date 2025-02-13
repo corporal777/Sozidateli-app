@@ -5,14 +5,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.holders.redesign.EventListItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
 
 abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBinding> :
-    BaseFragment<T>(), EventListContract.View {
+    BaseVBFragment<T>(), EventListContract.View {
 
     abstract var presenter: P
 

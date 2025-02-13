@@ -63,7 +63,7 @@
         <TextView
             android:id="@+id/tvEditNotes"
             style="@style/ClickableTextView"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:text="@string/edit_title" />
 
         <androidx.appcompat.widget.AppCompatCheckBox

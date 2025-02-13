@@ -18,16 +18,9 @@ class CustomAppBarLayout : AppBarLayout {
     )
 
     init {
-        if (isVisible) {
-            offsetChangedListener { appBarLayout, offset ->
-                Log.e("OFFSET", offset.toString())
-            }
-        }
-
     }
 
     fun changeAppBarElevation(value: Float) {
-        elevation = if (value <= 10f) value
-        else 10f
+        elevation = if (value <= 10f) value else 10f
     }
 }

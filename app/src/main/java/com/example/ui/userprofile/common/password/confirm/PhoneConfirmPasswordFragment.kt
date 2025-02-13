@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.app.R
 import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
@@ -18,7 +18,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PhoneConfirmPasswordFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>(),
+class PhoneConfirmPasswordFragment : BaseVBFragment<FragmentPhoneCodeConfirmBinding>(),
     PhoneConfirmPasswordContract.View, ToolbarFragment {
 
     @InjectPresenter
@@ -97,6 +97,7 @@ class PhoneConfirmPasswordFragment : BaseFragment<FragmentPhoneCodeConfirmBindin
         )
     }
 
+    override fun binding() = FragmentPhoneCodeConfirmBinding::class.java
     override fun layout(): Int = R.layout.fragment_phone_code_confirm
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}

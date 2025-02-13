@@ -1,18 +1,16 @@
 package com.example.ui.support.newQuestion
 
 import android.content.Context
-import android.net.Uri
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemSupportFileBinding
 import com.example.data.models.SupportFile
 import com.example.data.models.SupportFileType
-import com.example.app.databinding.ItemSupportFileBinding
-import com.example.holders.redesign.EventPageItem
 import com.example.util.FileUtils
-import com.example.util.UriUtils
 import com.example.util.UriUtils.getMimeType
 import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class SupportFileItem(
     val file: SupportFile,
@@ -46,12 +44,12 @@ class SupportFileItem(
         return typeText
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is SupportFileItem) return false
         if (file != other.file) return false
         return true
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemSupportFileBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_support_file
 }

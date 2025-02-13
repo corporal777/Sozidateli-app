@@ -46,7 +46,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideUserEventData(eventRepository: EventRepository, db: Db): UserEventData = UserEventData(eventRepository, db.userEventDao(), db.eventMemberDao())
+    fun provideUserEventData(eventRepository: EventRepository, db: Db): UserEventData = UserEventData(eventRepository, db.userEventDao(), db.eventMemberDao(), db.userQrImageDao())
 
     @Provides
     @Singleton

@@ -80,14 +80,22 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/edit_title" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitlePhone"
+                style="@style/Profile.Edit.TextViewTitle"
+                fontPath="fonts/sf_pro_display_regular.OTF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/profile_phone_mobile" />
+
             <com.example.ui.views.CustomPhoneTextInputView
                 android:id="@+id/tvPhoneMobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 app:phoneInputEnabled="false"
-                app:phoneTextIcon="@drawable/ic_confirmed_phone_icon"
-                app:phoneTitleText="@string/profile_phone_mobile" />
+                app:phoneTextIcon="@drawable/ic_confirmed_phone_icon" />
 
             <TextView
                 android:id="@+id/tvEditPhone"

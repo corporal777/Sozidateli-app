@@ -1,12 +1,13 @@
 package com.example.ui.organizations.detail.items
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemUserBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class OrganizationMemberItem(
     private val user: Int?,
@@ -57,7 +58,7 @@ class OrganizationMemberItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is OrganizationMemberItem) return false
         if (user != other.user) return false
         if (name != other.name) return false
@@ -72,5 +73,6 @@ class OrganizationMemberItem(
         button.setActionNew(isSubscribed)
     }
 
+    override fun initializeViewBinding(view: View) = ItemUserBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_user
 }

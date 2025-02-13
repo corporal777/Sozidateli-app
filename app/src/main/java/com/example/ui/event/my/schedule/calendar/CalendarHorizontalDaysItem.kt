@@ -1,18 +1,14 @@
 package com.example.ui.event.my.schedule.calendar
 
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.view.allViews
 import androidx.core.view.children
 import androidx.core.view.isInvisible
 import com.example.app.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.ItemCalendarHorizontalDaysBinding
-import com.example.holders.redesign.EventActivityItem
+import com.example.data.models.EventScheduleDay
 import com.example.ui.views.CalendarDayView
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class CalendarHorizontalDaysItem(
     id: Int?,
@@ -37,7 +33,7 @@ class CalendarHorizontalDaysItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is CalendarHorizontalDaysItem) return false
         if (listDays != other.listDays) return false
         return true
@@ -71,5 +67,6 @@ class CalendarHorizontalDaysItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemCalendarHorizontalDaysBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_calendar_horizontal_days
 }

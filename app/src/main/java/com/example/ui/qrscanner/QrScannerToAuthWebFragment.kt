@@ -3,10 +3,14 @@ package com.example.ui.qrscanner
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import com.budiyev.android.codescanner.*
+import com.budiyev.android.codescanner.AutoFocusMode
+import com.budiyev.android.codescanner.CodeScanner
+import com.budiyev.android.codescanner.DecodeCallback
+import com.budiyev.android.codescanner.ErrorCallback
+import com.budiyev.android.codescanner.ScanMode
 import com.example.app.R
 import com.example.app.databinding.FragmentAuthWebBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.qrscanner.auth.AuthWebsiteFragmentArgs
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import moxy.presenter.InjectPresenter
@@ -14,7 +18,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class QrScannerToAuthWebFragment : BaseFragment<FragmentAuthWebBinding>(),
+class QrScannerToAuthWebFragment : BaseVBFragment<FragmentAuthWebBinding>(),
     QrScannerToAuthWebContract.View {
 
     private var codeScanner: CodeScanner? = null
@@ -80,5 +84,6 @@ class QrScannerToAuthWebFragment : BaseFragment<FragmentAuthWebBinding>(),
         super.onPause()
     }
 
+    override fun binding() = FragmentAuthWebBinding::class.java
     override fun layout(): Int = R.layout.fragment_auth_web
 }

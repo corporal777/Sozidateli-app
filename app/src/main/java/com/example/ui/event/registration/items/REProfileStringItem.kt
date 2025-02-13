@@ -26,7 +26,7 @@ class REProfileStringItem(
     }
 
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is REProfileStringItem) return false
         if (name != other.name) return false
         if (field != other.field) return false
@@ -37,4 +37,5 @@ class REProfileStringItem(
     override fun getErrorFrameView(binding: ItemRegisterEventProfileMainBinding): View = binding.viewInputError
 
     override fun getLayout(): Int = R.layout.item_register_event_profile_main
+    override fun initializeViewBinding(view: View) = ItemRegisterEventProfileMainBinding.bind(view)
 }

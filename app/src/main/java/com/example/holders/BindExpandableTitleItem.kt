@@ -13,10 +13,7 @@ import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.OnItemLongClickListener
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 abstract class BindExpandableTitleItem<T : ViewDataBinding> (
@@ -35,7 +32,7 @@ abstract class BindExpandableTitleItem<T : ViewDataBinding> (
         }
     }
 
-    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: T, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else viewBinding.apply {
             (payloads[0] as? Boolean)?.let {
