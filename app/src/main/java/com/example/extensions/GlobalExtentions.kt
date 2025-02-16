@@ -31,10 +31,12 @@ import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.Group
 import androidx.core.os.BundleCompat
 import androidx.core.text.getSpans
@@ -157,6 +159,16 @@ fun String.parseAsHtmlWithoutUnderline(): Spannable? {
         }, s.getSpanStart(u), s.getSpanEnd(u), 0)
     }
     return s
+}
+
+fun AppCompatCheckBox.onCheckedChanged(onCheckedChanged: (checked: Boolean) -> Unit): CompoundButton.OnCheckedChangeListener {
+    val listener = object : CompoundButton.OnCheckedChangeListener {
+        override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+            onCheckedChanged(p1)
+        }
+    }
+    setOnCheckedChangeListener(listener)
+    return listener
 }
 
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
@@ -317,11 +329,6 @@ fun TextView.calculateTextLinesCount(text: String): Int {
     return (textWidth / width).roundToInt()
 }
 
-//var TextView.maxLength: Int
-//    get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
-//    set(value) {
-//        filters = arrayOf(InputFilter.LengthFilter(value))
-//    }
 
 fun TextView.setMaxLength(max: Int) {
     filters = arrayOf(InputFilter.LengthFilter(max))

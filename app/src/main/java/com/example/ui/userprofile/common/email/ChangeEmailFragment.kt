@@ -8,8 +8,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeEmailBinding
+import com.example.extensions.onTextChanged
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.util.changeTitleTextColor
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -31,7 +33,7 @@ class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), Change
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etNewEmail.initInput {
+            etNewEmail.onTextChanged {
                 presenter.onChangeEmailText(it.toString())
             }
             btnClose.setOnClickListener {
@@ -47,14 +49,16 @@ class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), Change
 
 
     override fun setCurrentEmail(currentEmail: String?) {
-        mBinding.etCurrentEmail.apply {
+        mBinding.currentEmailTitle.isVisible = !currentEmail.isNullOrEmpty()
+        mBinding.tvCurrentEmail.apply {
             isVisible = !currentEmail.isNullOrEmpty()
             setText(currentEmail)
         }
     }
 
     override fun showEmailError(show: Boolean) {
-        mBinding.etNewEmail.showError(show)
+        mBinding.newEmailTitle.changeTitleTextColor(show)
+        mBinding.tilNewEmail.showCustomError(show)
     }
 
 
@@ -71,7 +75,7 @@ class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), Change
     override fun showEmailConfirm(email: String) {
         findNavController().navigate(
             R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
+            bundleOf("email" to email),
             navOptions { popUpTo(R.id.changeEmailFragment) { inclusive = true } }
         )
     }

@@ -26,7 +26,7 @@
     <dimen name="account_block_dialog_width">270dp</dimen>
 
 
-    <dimen name="user_profile_settings_absent_password_icon_padding">10dp</dimen>
+    <dimen name="password_icon_padding">10dp</dimen>
 
     <dimen name="background_custom_input_view_padding_left">12dp</dimen>
     <dimen name="toolbar_circle_button_padding">8dp</dimen>

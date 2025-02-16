@@ -179,11 +179,11 @@ fun View.getColorStateList(res: Int): ColorStateList? {
     return ContextCompat.getColorStateList(context, res)
 }
 
-fun TextView.setLeftDrawableWithIntrinsicBounds(res: Int) {
+fun TextView.setLeftDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0)
 }
 
-fun TextView.setRightDrawableWithIntrinsicBounds(res: Int) {
+fun TextView.setRightDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
 }
 

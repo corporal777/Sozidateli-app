@@ -1,6 +1,7 @@
 package com.example.ui.auth.confirm.email
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -28,10 +29,9 @@ class ConfirmEmailCodeFragment : BaseToolbarFragment<FragmentEmailCodeConfirmBin
 
     @ProvidePresenter
     fun providePresenter(): ConfirmEmailCodePresenter = presenterProviderFinish.get().apply {
-        navArgs<ConfirmEmailCodeFragmentArgs>().value.also {
-            email = it.email
-            isFromRegistration = it.fromRegister
-        }
+        val args = ConfirmEmailCodeFragmentArgs.fromBundle(requireArguments())
+        email = args.email
+        authResponse = args.auth
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

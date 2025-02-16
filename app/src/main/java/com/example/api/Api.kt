@@ -65,7 +65,7 @@ interface Api {
     fun confirmPhoneCode(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<AuthResponse>
 
     @POST("v1/user/{id}/email/confirm")
-    fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
+    fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Completable
 
     //+
     @GET("v1/user/get-sessions")

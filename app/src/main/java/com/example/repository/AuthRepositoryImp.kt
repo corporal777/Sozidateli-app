@@ -109,34 +109,28 @@ class AuthRepositoryImp
     }
 
     //+
-    override fun registerUser(body: RegisterBody): Completable {
-        return api.registerUser(body).doOnSuccess { appData.saveId(it.id) }.ignoreElement()
+    override fun registerUser(body: RegisterBody): Single<AuthResponse> {
+        return api.registerUser(body)
     }
 
     //+
-    override fun registerSnUser(body: SnRegisterBody): Completable {
-        return api.registerSnUser(body).doOnSuccess { appData.saveId(it.id) }.ignoreElement()
+    override fun registerSnUser(body: SnRegisterBody): Single<AuthResponse> {
+        return api.registerSnUser(body)
     }
 
-    override fun registerEmailResend(email: String): Completable {
-        return api.registerEmailResend(appData.getId(), email)
+    override fun registerEmailResend(id: Int, email: String): Completable {
+        return api.registerEmailResend(id, email)
     }
 
-    override fun registerPhoneResend(type: String, phone: String): Completable {
-        return api.registerPhoneResend(appData.getId(), type, phone)
+    override fun registerPhoneResend(id: Int, phone: String): Completable {
+        return api.registerPhoneResend(id, "personal", phone)
     }
 
-    override fun confirmEmailCode(body: EmailCodeBody): Completable =
-        api.confirmEmailCode(appData.getId(), body).doOnSuccess {
-            appData.login(it.token)
-            appData.saveId(it.id)
-        }.ignoreElement()
+    override fun confirmEmailCode(id: Int, body: EmailCodeBody): Completable =
+        api.confirmEmailCode(id, body)
 
-    override fun confirmPhoneCode(body: ConfirmCodeBody): Completable {
-        return api.confirmPhoneCode(appData.getId(), body).doOnSuccess {
-            if (!it.token.isNullOrEmpty()) appData.login(it.token)
-            if (it.id != null) appData.saveId(it.id)
-        }.ignoreElement()
+    override fun confirmPhoneCode(id: Int, body: ConfirmCodeBody): Completable {
+        return api.confirmPhoneCode(id, body).doOnSuccess {}.ignoreElement()
     }
 
     private fun callAuthCompletable(authRequest: Single<AuthResponse>): Completable {

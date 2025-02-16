@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRegistrationUserBinding
+import com.example.data.models.AuthResponse
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.getClickablePrivacyPolitics
@@ -83,7 +84,16 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
         }
     }
 
-    override fun setData(lastName: String?, firstName: String?, middleName: String?, isMiddleNameAbsent: Boolean, phone: String?, birthday: String?, password: String?, isAgree: Boolean) {
+    override fun setData(
+        lastName: String?,
+        firstName: String?,
+        middleName: String?,
+        isMiddleNameAbsent: Boolean,
+        phone: String?,
+        birthday: String?,
+        password: String?,
+        isAgree: Boolean
+    ) {
         mBinding.apply {
             etLastName.setText(lastName)
             etFirstName.setText(firstName)
@@ -98,6 +108,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
             viewAgreement.setChecked(isAgree)
         }
     }
+
     override fun showLastNameError(show: Boolean, error: String?) {
         mBinding.tilLastName.showCustomError(show)
         mBinding.tvTitleLastName.apply {
@@ -153,10 +164,7 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
     }
 
     override fun showPhoneIsNotUnique(login: String) {
-        val message =
-            if (presenter.getLoginType() == "phone") getString(R.string.confirm_phone_text, login)
-            else getString(R.string.confirm_email_text, login)
-
+        val message = getString(R.string.confirm_phone_text, login)
         DefaultAlertDialog(
             requireContext(),
             null,
@@ -166,18 +174,12 @@ class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBin
         ).setSelectCallback { presenter.registerUser(false) }
     }
 
-    override fun showCodeConfirmation(login: String) {
-        if (presenter.getLoginType() == "phone") {
-            findNavController().navigate(
-                R.id.phoneCodeConfirmFragment,
-                bundleOf("phone" to validatePhoneBeforeSend(login), "fromRegister" to true)
-            )
-        } else {
-            findNavController().navigate(
-                R.id.emailCodeConfirmFragment,
-                bundleOf("email" to login, "fromRegister" to true)
-            )
-        }
+    override fun showPhoneConfirmation(phone: String, auth: AuthResponse) {
+        val userPhone = validatePhoneBeforeSend(phone)
+        findNavController().navigate(
+            R.id.phoneCodeConfirmFragment,
+            bundleOf("phone" to userPhone, "auth" to auth)
+        )
     }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)

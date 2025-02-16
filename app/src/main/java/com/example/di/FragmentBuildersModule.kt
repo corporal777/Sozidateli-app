@@ -92,7 +92,7 @@ import com.example.ui.userprofile.read.maindata.UserProfileMainDataFragment
 import com.example.ui.userprofile.settings.UserProfileSettingsFragment
 import com.example.ui.userprofile.common.email.ChangeEmailFragment
 import com.example.ui.userprofile.common.name.ChangeNameFragment
-import com.example.ui.userprofile.common.password.ChangePasswordFragment
+import com.example.ui.userprofile.common.password.CheckPasswordFragment
 import com.example.ui.userprofile.common.phone.ChangePhoneFragment
 import com.example.ui.userprofile.common.password.reset.ResetPasswordFragment
 import com.example.ui.userprofile.edit.contacts.EditContactsFragment
@@ -297,7 +297,7 @@ abstract class FragmentBuildersModule {
     abstract fun contributeChangeAccountFragment(): ChangeAccountFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeChangePasswordBottomSheetFragment(): ChangePasswordFragment
+    abstract fun contributeCheckPasswordFragment(): CheckPasswordFragment
 
     @ContributesAndroidInjector
     abstract fun contributeResetPasswordFragment(): ResetPasswordFragment

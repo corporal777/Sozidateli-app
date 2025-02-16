@@ -120,7 +120,7 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 disconnectFromSocket()
-                if (token.value == null)
+                if (token.value.isNullOrEmpty())
                     viewState.apply {
                         isAuthRequired = true
                         hideSplashScreen()

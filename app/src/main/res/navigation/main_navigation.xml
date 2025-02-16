@@ -718,23 +718,6 @@
         android:label="UserRegistrationFragment" />
 
     <fragment
-        android:id="@+id/phoneCodeConfirmFragment"
-        android:name="com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragment"
-        android:label="ConfirmPhoneCodeFragment">
-
-        <argument
-            android:name="phone"
-            app:argType="string"
-            app:nullable="false" />
-
-        <argument
-            android:name="fromRegister"
-            app:argType="boolean"
-            android:defaultValue="true"
-            app:nullable="false" />
-    </fragment>
-
-    <fragment
         android:id="@+id/passwordConfirmFragment"
         android:name="com.example.ui.userprofile.common.password.confirm.PhoneConfirmPasswordFragment"
         android:label="PhoneConfirmPasswordFragment">
@@ -752,6 +735,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/phoneCodeConfirmFragment"
+        android:name="com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragment"
+        android:label="ConfirmPhoneCodeFragment">
+
+        <argument
+            android:name="phone"
+            app:argType="string"
+            app:nullable="false" />
+
+        <argument
+            android:name="auth"
+            android:defaultValue="@null"
+            app:argType="com.example.data.models.AuthResponse"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
         android:id="@+id/emailCodeConfirmFragment"
         android:name="com.example.ui.auth.confirm.email.ConfirmEmailCodeFragment"
         android:label="ConfirmEmailCodeFragment">
@@ -762,10 +762,10 @@
             app:nullable="false" />
 
         <argument
-            android:name="fromRegister"
-            app:argType="boolean"
-            android:defaultValue="true"
-            app:nullable="false" />
+            android:name="auth"
+            android:defaultValue="@null"
+            app:argType="com.example.data.models.AuthResponse"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -790,14 +790,9 @@
         android:label="ChangeShortNameFragment" />
 
     <fragment
-        android:id="@+id/changePasswordFragment"
-        android:name="com.example.ui.userprofile.common.password.ChangePasswordFragment"
-        android:label="ChangePasswordFragment">
-
-        <argument
-            android:name="isChange"
-            app:argType="boolean"
-            app:nullable="false" />
+        android:id="@+id/checkPasswordFragment"
+        android:name="com.example.ui.userprofile.common.password.CheckPasswordFragment"
+        android:label="CheckPasswordFragment">
     </fragment>
 
     <fragment
@@ -808,17 +803,20 @@
         <argument
             android:name="loginType"
             app:argType="string"
-            app:nullable="false" />
+            android:defaultValue="@null"
+            app:nullable="true" />
 
         <argument
             android:name="code"
             app:argType="string"
-            app:nullable="false" />
+            android:defaultValue="@null"
+            app:nullable="true" />
 
         <argument
             android:name="userId"
             app:argType="string"
-            app:nullable="false" />
+            android:defaultValue="@null"
+            app:nullable="true" />
     </fragment>
 
     <fragment

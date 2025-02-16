@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRegisterSnBinding
+import com.example.data.models.AuthResponse
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.onTextChanged
 import com.example.ui.base.BaseToolbarFragment
@@ -145,10 +146,10 @@ class SnRegisterFragment : BaseToolbarFragment<FragmentRegisterSnBinding>(), SnR
         ).setSelectCallback { presenter.onClickContinue(false) }
     }
 
-    override fun showEmailConfirmation(email: String) {
+    override fun showEmailConfirmation(email: String?, auth: AuthResponse) {
         findNavController().navigate(
             R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to true)
+            bundleOf("email" to email, "auth" to auth)
         )
     }
 

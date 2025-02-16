@@ -1,6 +1,7 @@
 package com.example.ui.auth.confirm.phone
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -28,10 +29,9 @@ class ConfirmPhoneCodeFragment : BaseToolbarFragment<FragmentPhoneCodeConfirmBin
 
     @ProvidePresenter
     fun providePresenter(): ConfirmPhoneCodePresenter = presenterProviderFinish.get().apply {
-        navArgs<ConfirmPhoneCodeFragmentArgs>().value.also {
-            mobilePhone = it.phone
-            isFromRegistration = it.fromRegister
-        }
+        val args = ConfirmPhoneCodeFragmentArgs.fromBundle(requireArguments())
+        mobilePhone = args.phone
+        authResponse = args.auth
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

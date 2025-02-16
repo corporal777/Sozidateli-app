@@ -219,28 +219,8 @@
         <item name="viewBackground">@color/placeholder</item>
     </style>
 
-    <style name="ProfileInfoField">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:paddingTop">@dimen/profile_full_padding_top</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:paddingEnd">10dp</item>
-    </style>
 
-    <style name="ProfileInfoField.Label">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="fontPath">fonts/Roboto-Light.ttf</item>
-    </style>
 
-    <style name="ProfileInfoField.Text">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:paddingTop">4dp</item>
-    </style>
 
     <style name="ViewDivider">
         <item name="android:background">@drawable/divider</item>
@@ -269,15 +249,9 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="TextTitle">
-        <item name="android:textColor">@color/text_color_default</item>
-        <item name="android:textSize">22sp</item>
-    </style>
 
     <style name="Chat" />
-
     <style name="Chat.Input" />
-
     <style name="Chat.Input.Button">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
@@ -286,17 +260,7 @@
     </style>
 
     <style name="Toolbar" />
-
     <style name="Toolbar.Custom" />
-
-    <style name="Toolbar.Custom.Title">
-        <item name="android:ellipsize">end</item>
-        <item name="android:gravity">center</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textSize">19sp</item>
-        <item name="android:textColor">@color/toolbar_title_text</item>
-    </style>
-
     <style name="Toolbar.Custom.Text">
         <item name="android:gravity">center</item>
         <item name="android:ellipsize">end</item>
@@ -311,9 +275,10 @@
     </style>
 
     <style name="Profile" />
-
     <style name="Profile.Title">
         <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/profile_title_text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:layout_marginTop">20dp</item>
@@ -321,16 +286,11 @@
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 
-    <style name="Profile.User.Title" parent="Profile.Title">
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginTop">0dp</item>
-    </style>
-
-
     <style name="Profile.Data">
-        <item name="android:letterSpacing">-0.02</item>
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">-0.02</item>
         <item name="android:textColor">@color/profile_data_text</item>
         <item name="android:textColorLink">@color/profile_data_text_link</item>
         <item name="android:textColorHint">@color/profile_data_text_hint</item>
@@ -340,12 +300,6 @@
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
     </style>
 
-
-    <style name="Profile.User.Data" parent="Profile.Data">
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginTop">8dp</item>
-    </style>
 
     <style name="Profile.Button">
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
@@ -412,12 +366,35 @@
         <item name="android:layout_marginBottom">6dp</item>
     </style>
 
-    <style name="Profile.Edit.InputFieldNew">
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="fontPath">fonts/sf_pro_text.ttf</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/black</item>
+    <style name="Profile.Edit.TextViewTitle">
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textSize">@dimen/common_edit_text_title_size</item>
+        <item name="android:textColor">@color/chat_list_date</item>
+        <item name="android:layout_marginBottom">9dp</item>
     </style>
+
+    <style name="Profile.Edit.TextViewTitleThin">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
+        <item name="android:textSize">@dimen/common_edit_text_title_size</item>
+        <item name="android:textColor">@color/chat_list_date</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="Profile.Edit.BlockTitle">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_marginBottom">9dp</item>
+    </style>
+
 
     <style name="Profile.Edit.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxBackgroundMode">filled</item>
@@ -780,33 +757,6 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="Profile.Edit.TextViewTitle">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textSize">@dimen/common_edit_text_title_size</item>
-        <item name="android:textColor">@color/chat_list_date</item>
-        <item name="android:layout_marginBottom">9dp</item>
-    </style>
-
-    <style name="Profile.Edit.TextViewTitleThin">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>
-        <item name="android:textSize">@dimen/common_edit_text_title_size</item>
-        <item name="android:textColor">@color/chat_list_date</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-    </style>
-
-    <style name="Profile.Edit.BlockTitle">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:layout_marginBottom">9dp</item>
-    </style>
-
     <style name="DatePickerStyle" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorAccent</item>
@@ -1003,14 +953,16 @@
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">@dimen/common_edit_text_size</item>
         <item name="android:paddingStart">15dp</item>
         <item name="android:paddingEnd">15dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/input_text_color</item>
         <item name="android:background">@drawable/background_input_text_field_new</item>
         <item name="android:textColorHint">@color/input_hint_text_color</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
+
+        <item name="android:freezesText">true</item>
     </style>
 
     <style name="ClickableTextView">

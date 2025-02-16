@@ -89,11 +89,8 @@ class PhoneConfirmPasswordFragment : BaseVBFragment<FragmentPhoneCodeConfirmBind
 
     override fun showResetPasswordFragment(code: String, userId: String) {
         findNavController().navigate(
-            R.id.resetPasswordFragment, bundleOf(
-                "loginType" to "phone",
-                "code" to code,
-                "userId" to userId
-            )
+            R.id.resetPasswordFragment,
+            bundleOf("loginType" to "phone", "code" to code, "userId" to userId)
         )
     }
 

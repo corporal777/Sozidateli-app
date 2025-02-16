@@ -123,10 +123,7 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     override fun showEmailConfirmation(email: String) {
-        findNavController().navigate(
-            R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.emailCodeConfirmFragment, bundleOf("email" to email))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("email")
             if (!emailConfirm.isNullOrEmpty()) presenter.onShowMaxStateDone()

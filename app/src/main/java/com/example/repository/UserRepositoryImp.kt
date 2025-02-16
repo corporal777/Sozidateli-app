@@ -246,12 +246,12 @@ class UserRepositoryImp
 
     override fun logout(id: Int): Completable = api.logout(id)
 
-    override fun changePassword(id: Int, body: PasswordBody): Completable =
-        api.changePassword(id, body)
+    override fun changePassword(body: PasswordBody): Completable =
+        api.changePassword(appData.getId(), body)
 
-    override fun checkPassword(password: String): Completable {
-        return api.checkPassword(appData.getId(), password)
-    }
+    override fun checkPassword(password: String): Completable =
+        api.checkPassword(appData.getId(), password)
+
 
     override fun updateWorkExperience(body: WorkExperienceServerModel): Single<WorkExperienceServerModel> =
         api.updateWorkExperience(appData.getId(), body).doOnSuccess {

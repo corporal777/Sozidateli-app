@@ -11,14 +11,22 @@ import com.example.data.models.UserAddress
 import com.example.data.models.UserDetail
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onTextChanged
+import com.example.extensions.showSearchRegionDialog
+import com.example.extensions.showSearchSettlementDialog
 import com.example.ui.views.dialogs.AboutAdditionalInfoBottomSheet
 import com.example.ui.views.dialogs.AdditionalInfoBottomSheet
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
+import com.example.util.initDropDownAdapter
+import com.example.util.initInput
 import com.example.util.initSwitch
 import com.xwray.groupie.viewbinding.BindableItem
+import java.util.Calendar
 
 class ProfileDataPersonalEditItem(
     id: Long,
@@ -49,44 +57,45 @@ class ProfileDataPersonalEditItem(
     override fun bind(viewBinding: ItemProfileDataEditPersonalBinding, position: Int) {
         viewBinding.apply {
             etBirthday.apply {
-                initAsDateTimePicker(mBirthday) {
-                    mBirthday = it.toString()
+                val maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -16) }.time
+                tilBirthday.initAsDatePicker(null, null, maxDate) { y, m, d ->
+                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, d, m + 1, y)
                 }
-                initSwitch(mShowBirthday) { mShowBirthday = it }
+                initInput(mBirthday) { mBirthday = it.toString() }
             }
+            scNoBirthday.initSwitch(mShowBirthday) { mShowBirthday = it }
 
-            tvGender.apply {
-                initAsDropDown(mGender, listOf(genderMale, genderFemale)){
-                    mGender = it.toString()
-                }
-                initSwitch(mGenderShow) { mGenderShow = it }
+            etGender.apply {
+                initDropDownAdapter(mutableListOf("Мужской", "Женский"))
+                initInput(mGender){ mGender = it.toString() }
             }
+            scNoGender.initSwitch(mGenderShow) { mGenderShow = it }
 
             tvRegion.apply {
-                initAsCustomMode(mAddressRegion) {
-                    SearchRegionBottomSheet(context)
-                        .setRegionSelectedCallback {
-                            mAddressRegion = it?.name
-                            setText(mAddressRegion)
-                            if (mAddressRegion != address.region) {
-                                mAddressCity = null
-                                tvCity.setText(mAddressCity)
-                                tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
-                            }
-                        }.show()
+                text = mAddressRegion
+                setOnClickListener {
+                    showSearchRegionDialog {
+                        mAddressRegion = it?.name
+                        text = mAddressRegion
+                        if (mAddressRegion != address.region) {
+                            mAddressCity = null
+                            tvCity.text = mAddressCity
+                            tvCity.isEnabled = !mAddressRegion.isNullOrEmpty()
+                        }
+                    }
                 }
             }
             tvCity.apply {
                 isEnabled = !mAddressRegion.isNullOrEmpty()
-                initAsCustomMode(mAddressCity) {
-                    SearchSettlementBottomSheet(context, mAddressRegion)
-                        .setSettlementSelectedCallback {
-                            mAddressCity = it?.name
-                            setText(mAddressCity)
-                        }.show()
+                text = mAddressCity
+                setOnClickListener {
+                    showSearchSettlementDialog(mAddressRegion) {
+                        mAddressCity = it?.name
+                        text = mAddressCity
+                    }
                 }
-                initSwitch(mAddressShow) { mAddressShow = it }
             }
+            scNoAddress.initSwitch(mAddressShow) { mAddressShow = it }
 
             tvEditNotes.apply {
                 scNotes.initSwitch(mNotesShow) { mNotesShow = it }
@@ -107,13 +116,11 @@ class ProfileDataPersonalEditItem(
 
     private fun setNotes(viewBinding: ItemProfileDataEditPersonalBinding) {
         viewBinding.scNotes.isVisible = !mNotes.isNullOrEmpty()
-        viewBinding.tvNotes.apply {
-            setIconVisibility(mNotes.isNullOrEmpty())
-            getInputLayout().setEndIconOnClickListener {
-                AboutAdditionalInfoBottomSheet(context).show()
-            }
-            setText(mNotes)
+        viewBinding.tilNotes.apply {
+            isEndIconVisible = mNotes.isNullOrEmpty()
+            setEndIconOnClickListener { AboutAdditionalInfoBottomSheet(context).show() }
         }
+        viewBinding.etNotes.setText(mNotes)
     }
 
     fun checkMaxFieldsValid(): Boolean {

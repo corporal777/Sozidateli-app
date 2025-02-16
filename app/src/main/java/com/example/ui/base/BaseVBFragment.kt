@@ -2,6 +2,7 @@ package com.example.ui.base
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
+import com.google.android.material.transition.ScaleProvider
 import dagger.android.support.AndroidSupportInjection
 import dev.androidbroadcast.vbpd.CreateMethod
 import dev.androidbroadcast.vbpd.viewBinding
@@ -39,15 +41,19 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         if (animationType() == AnimType.AXIS) {
             postponeEnterTransition()
             enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-                duration = (350).toLong()
+                //duration = (350).toLong()
+                duration = (300).toLong()
             }
             returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
-                duration = (450).toLong()
+                //duration = (450).toLong()
+                duration = (400).toLong()
             }
         } else if (animationType() == AnimType.FADE) {
-            enterTransition = MaterialFadeThrough()
-            exitTransition = MaterialFadeThrough()
-        } else return
+            enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                primaryAnimatorProvider.apply { if (this is ScaleProvider) incomingStartScale = 0.9f }
+            }
+            returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        }
     }
 
     override fun onCreateView(

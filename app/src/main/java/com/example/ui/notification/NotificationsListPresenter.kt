@@ -76,7 +76,7 @@ class NotificationsListPresenter
         compositeDisposable += appData.notificationReadSubject
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
-                Log.e("REQUEST INFO NOTE", it.toString())
+
             }
 
         loadNotifications()

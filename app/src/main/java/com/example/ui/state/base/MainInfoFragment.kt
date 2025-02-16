@@ -14,10 +14,17 @@ import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.UserDetail
 import com.example.extensions.findItemByShort
+import com.example.extensions.formatToDefaultDate
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onCheckedChanged
+import com.example.extensions.onTextChanged
+import com.example.extensions.showSearchRegionDialog
+import com.example.extensions.showSearchSettlementDialog
 import com.example.extensions.updateItem
 import com.example.holders.MainInfoEditItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.gallery.GalleryBottomSheet
 import com.example.ui.state.UserState
@@ -25,19 +32,24 @@ import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
 import com.example.ui.views.dialogs.ContactsType
 import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
+import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.Utils.formatMobilePhone
 import com.example.util.Utils.maxStateScreen
+import com.example.util.initDropDownAdapter
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoContract.View,
-    ToolbarFragment {
+class MainInfoFragment : BaseToolbarFragment<FragmentMainInfoBinding>(), MainInfoContract.View {
 
     @InjectPresenter
     lateinit var presenter: MainInfoPresenter
@@ -51,80 +63,97 @@ class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoCont
         screen = MainInfoFragmentArgs.fromBundle(requireArguments()).screen
     }
 
-    private var onSaveClick: (() -> Unit)? = null
+
     private lateinit var dialog: AddPhoneEmailDialog
-
-    private val adapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
-            updateItem(PlaceholderItem(PlaceholderItem.Type.MAIN_INFO_EDIT))
-        }
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@MainInfoFragment.adapter
+        mBinding.apply {
+            etBirthday.apply {
+                val maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -16) }.time
+                tilBirthday.initAsDatePicker(null, null, maxDate) { y, m, d ->
+                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, d, m + 1, y)
+                }
+                onTextChanged { presenter.onChangeBirthday(it.toString()) }
+            }
+            scNoBirthday.onCheckedChanged { presenter.onChangeShowBirthday(it) }
+
+            etGender.apply {
+                initDropDownAdapter(mutableListOf("Мужской", "Женский"))
+                onTextChanged { presenter.onChangeGender(it.toString()) }
+            }
+            scNoGender.onCheckedChanged { presenter.onChangeShowGender(it) }
+
+            tvRegion.onTextChanged { presenter.onChangeRegion(it.toString()) }
+            tvCity.onTextChanged { presenter.onChangeCity(it.toString()) }
+            scNoAddress.onCheckedChanged { presenter.onChangeShowAddress(it) }
+
+            tvEditImage.setOnClickListener { showChangeImage() }
+            tvEditPhone.setOnClickListener { showChangePhone() }
+
+            btnSave.setOnClickListener { presenter.onSaveData() }
         }
-        mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
 
 
     override fun setPersonalData(user: UserDetail) {
-        val item = MainInfoEditItem(
-            user.id.toLong(),
-            user.gender,
-            user.birthday,
-            user.address,
-            user.personalPhone,
-            user.loadUserImage(),
-            user.avatarIsDefault
-        ).apply {
-            onEnableNext = { isEnable -> mBinding.btnSave.isEnabled = isEnable }
-            onEditPhoneClick = { presenter.onShowPhoneEdit() }
-            onImageClick = { presenter.onShowImageEdit() }
-            onSaveClick = { presenter.onSaveData(getDataToSave()) }
+        mBinding.apply {
+            etBirthday.setText(user.birthday?.value?.formatToDefaultDate())
+            scNoBirthday.isChecked = user.birthday?.isVisible ?: false
+
+            etGender.setText(presenter.setGender(user.gender?.value))
+            scNoGender.isChecked = user.gender?.showInProfile ?: false
+
+            tvRegion.apply {
+                text = user.address?.region
+                setOnClickListener {
+                    showSearchRegionDialog {
+                        if (it?.name != tvRegion.text) tvCity.text = null
+                        text = it?.name
+                        tvCity.isEnabled = !tvRegion.text.isNullOrEmpty()
+                    }
+                }
+            }
+            tvCity.apply {
+                isEnabled = !tvRegion.text.isNullOrEmpty()
+                setOnClickListener {
+                    showSearchSettlementDialog(tvRegion.text.toString()) { text = it?.name }
+                }
+            }
+            scNoAddress.isChecked = user.address?.showInProfile ?: false
         }
-        adapter.updateItem(item)
     }
+
+    override fun setUserAvatar(user: UserDetail) {
+        mBinding.apply {
+            ivAvatar.setImage(user.loadUserImage(), user.avatarIsDefault ?: true)
+            tvEditImage.text =
+                if (user.loadUserImage().isNullOrEmpty() || user.avatarIsDefault == true)
+                    getString(R.string.profile_add_photo)
+                else getString(R.string.edit_title)
+            tvMobilePhone.text = formatMobilePhone(user.personalPhone?.value)
+        }
+    }
+
 
     override fun goToNext() {
         when (presenter.type) {
             UserState.MAX -> {
+                val args = bundleOf("screen" to presenter.screen)
                 when (maxStateScreen(presenter.getUserData())) {
                     MaxStateScreenType.BASE ->
-                        findNavController().navigate(
-                            R.id.maxStatusContactsFragment,
-                            bundleOf("screen" to presenter.screen),
-                        )
+                        findNavController().navigate(R.id.maxStatusContactsFragment, args)
 
                     MaxStateScreenType.INTERESTS ->
-                        findNavController().navigate(
-                            R.id.maxStatusInterestsFragment,
-                            bundleOf("screen" to presenter.screen)
-                        )
+                        findNavController().navigate(R.id.maxStatusInterestsFragment, args)
 
                     MaxStateScreenType.EDUCATION ->
-                        findNavController().navigate(
-                            R.id.maxStatusEducationFragment,
-                            bundleOf("screen" to presenter.screen)
-                        )
+                        findNavController().navigate(R.id.maxStatusEducationFragment, args)
 
                     MaxStateScreenType.WORK ->
-                        findNavController().navigate(
-                            R.id.maxStatusWorkFragment,
-                            bundleOf("screen" to presenter.screen)
-                        )
+                        findNavController().navigate(R.id.maxStatusWorkFragment, args)
 
-                    MaxStateScreenType.DONE -> {
-                        DefaultAlertDialog(
-                            requireContext(),
-                            null,
-                            getString(R.string.you_got_max_state),
-                            withCancel = false
-                        ).setSelectCallback { baseActions() }
-                    }
+                    MaxStateScreenType.DONE -> showStateSuccessDialog(R.string.you_got_max_state)
                 }
             }
 
@@ -134,12 +163,7 @@ class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoCont
 
     private fun baseActionsWithSuccess() {
         if (presenter.getEmail()?.value != null && presenter.getEmail()?.isConfirmed != null) {
-            DefaultAlertDialog(
-                requireContext(),
-                null,
-                getString(R.string.you_got_base_state),
-                withCancel = false
-            ).setSelectCallback { baseActions() }
+            showStateSuccessDialog(R.string.you_got_base_state)
         } else {
             dialog = AddPhoneEmailDialog(requireContext(), ContactsType.EMAIL)
                 .setSelectEmailCallback {
@@ -157,6 +181,14 @@ class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoCont
         }
     }
 
+    private fun showStateSuccessDialog(text: Int) {
+        DefaultAlertDialog(
+            requireContext(),
+            null,
+            getString(text),
+            withCancel = false
+        ).setSelectCallback { baseActions() }
+    }
 
     override fun showEmailNotUnique(email: String) {
         DefaultAlertDialog(
@@ -170,10 +202,7 @@ class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoCont
     }
 
     override fun showEmailConfirm(email: String) {
-        findNavController().navigate(
-            R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.emailCodeConfirmFragment, bundleOf("email" to email))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("email")
             if (!emailConfirm.isNullOrEmpty()) baseActions()
@@ -181,39 +210,26 @@ class MainInfoFragment : BaseVBFragment<FragmentMainInfoBinding>(), MainInfoCont
         }
     }
 
-    override fun showPhoneEdit() {
-        findNavController().navigate(R.id.changePhoneFragment)
-    }
+    override fun showChangePhone() = findNavController().navigate(R.id.changePhoneFragment)
 
-    override fun showChangeImage() {
-        GalleryBottomSheet()
-            .setPhotoUpdated { presenter.onUpdateImage(it) }
-            .show(childFragmentManager)
-    }
+    override fun showChangeImage() = GalleryBottomSheet()
+        .setPhotoUpdated { presenter.onUpdateImage() }
+        .show(childFragmentManager)
 
-    override fun updatePhone(phone: FieldDetails?) {
-        adapter.findItemByShort<MainInfoEditItem> { true }?.setPhone(phone)
-    }
-
-    override fun updateImage(photo: ImageModel?, isDefault: Boolean?) {
-        adapter.findItemByShort<MainInfoEditItem> { true }?.setImage(photo, isDefault)
-    }
+    override fun enableBtnSave(isEnable: Boolean) = mBinding.btnSave.let { it.isEnabled = isEnable }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
+
     override fun binding() = FragmentMainInfoBinding::class.java
     override fun layout(): Int = R.layout.fragment_main_info
     override val title: CharSequence by lazy { getString(R.string.user_profile_increase_base_state) }
-    override fun actionIconContainer(view: ViewGroup) {
-        view.apply {
-            addView(ToolbarIconView(context).apply {
-                setImageAsIcon(R.drawable.ic_close_new)
-                setOnClickListener { navigateUp() }
-            })
-        }
+    override fun animationType(): AnimType {
+        return if (isPreviousDestination(R.id.userStateFragment)) AnimType.FADE else AnimType.NONE
     }
-
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun actionIconContainer(view: ViewGroup) {
+        view.addView(createIconView(R.drawable.ic_close_new, true) { navigateUp() })
+    }
+    override fun scrollingView(): View = mBinding.scrollViewMainInfo
 }

@@ -8,6 +8,7 @@ import com.example.app.R
 import com.example.app.databinding.FragmentUserStateBinding
 import com.example.extensions.onPageSelected
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.maxNew.MaxStateScreenType
@@ -22,8 +23,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment : BaseVBFragment<FragmentUserStateBinding>(), UserStateContract.View,
-    ToolbarFragment {
+class UserStateFragment : BaseToolbarFragment<FragmentUserStateBinding>(), UserStateContract.View {
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -119,7 +119,4 @@ class UserStateFragment : BaseVBFragment<FragmentUserStateBinding>(), UserStateC
     override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

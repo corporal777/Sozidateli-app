@@ -88,15 +88,13 @@
             app:inputIconMode="custom"
             app:inputIconDrawable="@drawable/ic_arrow_right_brown" />
 
-        <com.example.ui.views.CustomTextInputView
+        <com.example.ui.views.CustomTextMenuView
             android:id="@+id/etMobilePhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:hintText="@string/profile_phone_mobile"
-            app:inputType="phone"
-            app:inputEnabled="false"
-            app:titleText="@string/profile_phone_mobile" />
+            app:inputHintText="@string/profile_phone_mobile"
+            app:inputTitleText="@string/profile_phone_mobile" />
 
         <TextView
             android:id="@+id/tvEditPhone"

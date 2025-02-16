@@ -33,7 +33,7 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.getColor
-import com.example.util.setLeftDrawableWithIntrinsicBounds
+import com.example.util.setLeftDrawable
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -93,16 +93,16 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
             tvChangeAccount.apply {
                 if (user.getSessionsCount() <= 1) {
                     text = getString(R.string.add_account_label)
-                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit)
+                    setLeftDrawable(R.drawable.ic_profile_add_account_edit)
                 } else {
                     text = getString(R.string.change_account_label)
-                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit)
+                    setLeftDrawable(R.drawable.ic_profile_change_account_edit)
                 }
             }
         }
 
         if (isShowPopup && !::dialog.isInitialized) {
-            val type = if (user.email?.value != null) ContactsType.PHONE else ContactsType.EMAIL
+            val type = if (user.email?.value.isNullOrEmpty()) ContactsType.EMAIL else ContactsType.PHONE
             dialog = AddPhoneEmailDialog(requireContext(), type)
                 .setSelectEmailCallback { presenter.checkEmailIsUnique(true, it) }
                 .setSelectPhoneCallback { presenter.checkPhoneIsUnique(true, it) }
@@ -173,10 +173,7 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
     override fun hideAddPhoneEmailDialog() = dialog.hideDialog()
 
     override fun showPhoneConfirmation(phone: String) {
-        findNavController().navigate(
-            R.id.phoneCodeConfirmFragment,
-            bundleOf("phone" to phone, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.phoneCodeConfirmFragment, bundleOf("phone" to phone))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("phone")
             if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()
@@ -185,10 +182,7 @@ class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileCo
     }
 
     override fun showEmailConfirmation(email: String) {
-        findNavController().navigate(
-            R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.emailCodeConfirmFragment, bundleOf("email" to email))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("email")
             if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()

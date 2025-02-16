@@ -121,8 +121,8 @@ class FinishRegisterPresenter
 
     override fun sendCodeAgain() {
         compositeDisposable += Completable.defer {
-            if (loginType == "email") authRepository.registerEmailResend(login)
-            else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(login))
+            if (loginType == "email") authRepository.registerEmailResend(appData.getId(), login)
+            else authRepository.registerPhoneResend(appData.getId(), validatePhoneBeforeSend(login))
         }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
@@ -238,12 +238,13 @@ class FinishRegisterPresenter
 
     private fun confirmCodeRequest(): Completable {
         return if (loginType == "email") authRepository.confirmEmailCode(
+            appData.getId(),
             EmailCodeBody(
                 code = code,
                 email = login
             )
         )
-        else authRepository.confirmPhoneCode(ConfirmCodeBody(validatePhoneBeforeSend(login), code))
+        else authRepository.confirmPhoneCode(appData.getId(), ConfirmCodeBody(validatePhoneBeforeSend(login), code))
     }
 
     private fun getUpdateRequestBody(): MutableMap<String, Any> {

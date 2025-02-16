@@ -30,7 +30,7 @@ class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), Change
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etPhone.initInput {
+            etPhone.onInputTextChanged {
                 presenter.onChangePhone(it.toString())
             }
             btnConfirm.setOnClickListener {
@@ -49,7 +49,7 @@ class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), Change
 
     override fun setUserPhone(phone: String?, isVisible: Boolean) {
         mBinding.apply {
-            etPhone.setText(phone)
+            etPhone.setPhoneText(phone)
             scPhone.initSwitch(isVisible) {
                 presenter.onChangePhoneVisible(it)
             }
@@ -59,7 +59,7 @@ class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), Change
     override fun enableBtnSave(enabled: Boolean) = mBinding.btnSave.run { isEnabled = enabled }
     override fun enableBtnConfirm(isConfirmed: Boolean, isValid: Boolean) = mBinding.run {
         btnConfirm.isVisible = !isConfirmed && isValid
-        etPhone.showIcon(isConfirmed)
+        tilPhone.isEndIconVisible = isConfirmed
     }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
@@ -78,7 +78,7 @@ class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), Change
     override fun showPhoneConfirmation(phone: String, withAdd: Boolean) {
         findNavController().navigate(
             R.id.phoneCodeConfirmFragment,
-            bundleOf("phone" to phone, "fromRegister" to false),
+            bundleOf("phone" to phone),
             if (!withAdd) navOptions { popUpTo(R.id.changePhoneFragment) { inclusive = true } }
             else null
         )

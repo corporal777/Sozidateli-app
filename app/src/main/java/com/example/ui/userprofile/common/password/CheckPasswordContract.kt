@@ -1,18 +1,11 @@
 package com.example.ui.userprofile.common.password
 
 import com.example.ui.base.BaseContract
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
-interface ChangePasswordContract {
+interface CheckPasswordContract {
     interface View : BaseContract.View {
-
-        @OneExecution
-        fun showEnterCurrentPassword()
-
-        @OneExecution
-        fun showEnterNewPassword()
 
         @Skip
         fun setPasswordIsNotCorrect(attempts: Int)
@@ -20,16 +13,18 @@ interface ChangePasswordContract {
         @Skip
         fun showLoginAgainDialog()
 
-        @Skip
-        fun showPasswordSuccessChanged()
-
         @OneExecution
         fun showRecoveryPassword()
+
+        @OneExecution
+        fun showChangePassword()
+
+        @Skip
+        fun enableBtnChange(enable : Boolean)
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onChangePasswordClick(newPassword: String)
-        fun onCheckPasswordValid(password: String)
+        fun onCheckPasswordValid()
         fun logoutFromAccount()
     }
 }

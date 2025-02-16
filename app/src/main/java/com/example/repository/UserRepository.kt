@@ -23,7 +23,7 @@ interface UserRepository {
     fun notificationsInviteDecline(id: Int): Completable
 
 
-    fun changePassword(id: Int, body: PasswordBody): Completable
+    fun changePassword(body: PasswordBody): Completable
     fun checkPassword(password: String): Completable
 
     fun deleteProfile(id: Int): Completable

@@ -87,9 +87,7 @@ class SnRegisterPresenter
                     if (it is EmailNotUniqueException) viewState.showEmailIsNotUnique(email)
                     else onReceiveError(it)
                 },
-                onComplete = {
-                    viewState.showEmailConfirmation(email!!)
-                }
+                onSuccess = { viewState.showEmailConfirmation(email, it) }
             )
     }
 

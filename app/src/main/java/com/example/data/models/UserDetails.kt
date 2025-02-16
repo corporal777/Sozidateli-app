@@ -152,7 +152,7 @@ data class UserDetail(
         }
     }
 
-    fun getVkontakteBinds(): VKBindsModel? {
+    fun getVkBinds(): VKBindsModel? {
         return socialBinds?.vkontakte
     }
 

@@ -1,5 +1,6 @@
 package com.example.ui.auth.register.sn
 
+import com.example.data.models.AuthResponse
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
@@ -42,7 +43,7 @@ interface SnRegisterContract {
         fun showBirthdayError(show: Boolean)
 
         @OneExecution
-        fun showEmailConfirmation(email: String)
+        fun showEmailConfirmation(email: String?, auth : AuthResponse)
 
         @Skip
         fun showEmailIsNotUnique(email: String?)

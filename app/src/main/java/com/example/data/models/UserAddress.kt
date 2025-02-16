@@ -24,21 +24,6 @@ data class UserAddress(
 ) {
 
     companion object {
-        fun fromUser(user: User): UserAddress = UserAddress(
-            user.user_short_address ?: user.user_address,
-            user.user_address_index,
-            user.user_address_country,
-            user.user_address_federal,
-            user.user_address_region,
-            user.user_address_area,
-            user.user_address_city,
-            user.user_address_district,
-            user.user_address_settlement,
-            user.user_address_street,
-            user.user_address_house,
-            user.user_address_flat
-        )
-
         fun fromDaDataItem(item: NewUserAddress): UserAddress = UserAddress(
             item.shortAddres,
             item.index,
@@ -58,3 +43,12 @@ data class UserAddress(
         )
     }
 }
+
+data class UserAddressBody(
+    val index: String? = null,
+    val region: String? = null,
+    val city: String? = null,
+    val fullValue: String? = null,
+    val shortValue: String? = null,
+    var showInProfile: Boolean? = null
+)

@@ -20,40 +20,52 @@ import javax.inject.Inject
 class ResetPasswordPresenter
 @Inject constructor(
     private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
     private val appData: AppData,
 ) : BasePresenter<ResetPasswordContract.View>(appData), ResetPasswordContract.Presenter {
 
     var recoverCode = ""
     var userId = ""
     var loginType = ""
+
     private var password = ""
     private var passwordIsValid = false
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.enableBtnResetPassword(isPasswordValid())
+
+    override fun attachView(view: ResetPasswordContract.View?) {
+        super.attachView(view)
+        viewState.enableBtnReset(isPasswordValid())
     }
 
     override fun onChangePasswordText(password: String?, isValid: Boolean) {
         this.password = password ?: ""
         this.passwordIsValid = isValid
-        viewState.enableBtnResetPassword(isPasswordValid())
+        viewState.enableBtnReset(isPasswordValid())
     }
 
     override fun onRecoveryPasswordClick() {
-        if (isPasswordValid()) {
-            compositeDisposable += authRepository.recoverPassword(
-                RecoverPasswordBody(loginType, recoverCode, password, userId)
+        if (!isPasswordValid()) return
+        compositeDisposable += authRepository.recoverPassword(RecoverPasswordBody(loginType, recoverCode, password, userId))
+            .performOnBackgroundOutOnMain()
+            .withInfinityCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onComplete = {}
             )
-                .performOnBackgroundOutOnMain()
-                .withInfinityCustomLoading(viewState)
-                .subscribeSimple(
-                    onError = { onReceiveError(it) },
-                    onComplete = {}
-                )
-        }
+    }
+
+    override fun onSavePasswordClick() {
+        if (!isPasswordValid()) return
+        compositeDisposable += userRepository.changePassword(PasswordBody(password))
+            .doOnComplete { appData.getUser().state?.isEmptyPassword = false }
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onComplete = { viewState.showPasswordSuccessChanged() }
+            )
     }
 
     private fun isPasswordValid() = !password.isNullOrBlank() && passwordIsValid
-
+    fun isChangePassword() = recoverCode.isBlank() && userId.isBlank() && loginType.isBlank()
 }

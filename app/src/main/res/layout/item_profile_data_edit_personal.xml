@@ -9,56 +9,100 @@
         android:layout_marginHorizontal="15dp"
         android:orientation="vertical">
 
-        <com.example.ui.views.CustomTextMenuView
-            android:id="@+id/etBirthday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitleThin"
             android:layout_marginTop="10dp"
-            app:inputHasCheckBox="true"
-            app:inputHintText="@string/profile_birthday"
-            app:inputIconDrawable="@drawable/ic_calendar_new"
-            app:inputIconMode="custom"
-            app:inputTitleText="@string/profile_birthday" />
+            android:text="@string/profile_birthday" />
 
-        <com.example.ui.views.CustomTextMenuView
-            android:id="@+id/tvGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:inputHasCheckBox="true"
-            app:inputHintText="@string/profile_gender"
-            app:inputTitleText="@string/profile_gender" />
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilBirthday"
+            style="@style/TextInputLayoutStyle"
+            app:endIconDrawable="@drawable/ic_calendar_new"
+            app:endIconMode="custom"
+            app:endIconTint="#C3996C">
 
-        <com.example.ui.views.CustomTextMenuView
-            android:id="@+id/tvRegion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:inputHintText="@string/search_filter_region"
-            app:inputIconDrawable="@drawable/ic_arrow_right_brown"
-            app:inputIconMode="custom"
-            app:inputTitleText="@string/profile_city" />
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/etBirthday"
+                style="@style/TextInputAutoTextStyle"
+                android:hint="@string/profile_birthday" />
+        </com.example.ui.views.CustomTextInputLayout>
 
-        <com.example.ui.views.CustomTextMenuView
-            android:id="@+id/tvCity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:inputHasCheckBox="true"
-            app:inputHintText="@string/profile_locality"
-            app:inputIconDrawable="@drawable/ic_arrow_right_brown"
-            app:inputIconMode="custom" />
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/sc_no_birthday"
+            style="@style/Profile.Edit.SwitchNew"
+            android:layout_width="wrap_content"
+            android:text="@string/profile_show_in_profile" />
 
-        <com.example.ui.views.CustomTextMenuView
-            android:id="@+id/tvNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitleThin"
             android:layout_marginTop="10dp"
-            app:inputHintText="@string/profile_notes_absent"
-            app:inputIconDrawable="@drawable/ic_about_session"
-            app:inputIconMode="custom"
-            app:inputMenuTextColor="@color/input_hint_text_color"
-            app:inputTitleText="@string/profile_additional_data_and_files" />
+            android:text="@string/profile_gender" />
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilGender"
+            style="@style/TextInputLayoutStyle"
+            app:endIconDrawable="@drawable/drawable_drop_down_switch"
+            app:endIconMode="dropdown_menu"
+            app:endIconTint="#C3996C">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/etGender"
+                style="@style/TextInputAutoTextStyle"
+                android:backgroundTint="#33C3996C"
+                android:hint="@string/profile_gender" />
+        </com.example.ui.views.CustomTextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/sc_no_gender"
+            style="@style/Profile.Edit.SwitchNew"
+            android:layout_width="wrap_content"
+            android:text="@string/profile_show_in_profile" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="10dp"
+            android:text="@string/profile_city" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_region"
+            style="@style/ProfileData.TextView"
+            android:hint="@string/search_filter_region"
+            app:drawableEndCompat="@drawable/ic_arrow_right_brown" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_city"
+            style="@style/ProfileData.TextView"
+            android:layout_marginTop="10dp"
+            android:hint="@string/profile_locality"
+            app:drawableEndCompat="@drawable/ic_arrow_right_brown" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/sc_no_address"
+            style="@style/Profile.Edit.SwitchNew"
+            android:layout_width="wrap_content"
+            android:text="@string/profile_show_in_profile" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="10dp"
+            android:text="@string/profile_additional_data_and_files" />
+
+
+        <com.example.ui.views.CustomTextInputLayout
+            android:id="@+id/tilNotes"
+            style="@style/TextInputLayoutStyle"
+            app:endIconDrawable="@drawable/ic_about_session"
+            app:endIconMode="custom"
+            app:endIconTint="#C3996C">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/etNotes"
+                style="@style/TextInputAutoTextStyle"
+                android:backgroundTint="#33C3996C"
+                android:hint="@string/profile_notes_absent"
+                android:textColor="@color/input_hint_text_color" />
+        </com.example.ui.views.CustomTextInputLayout>
 
         <TextView
             android:id="@+id/tvEditNotes"
@@ -68,7 +112,8 @@
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/scNotes"
-            style="@style/Profile.Edit.Switch"
+            style="@style/Profile.Edit.SwitchNew"
+            android:layout_width="wrap_content"
             android:text="@string/profile_show_in_profile" />
     </LinearLayout>
 </layout>

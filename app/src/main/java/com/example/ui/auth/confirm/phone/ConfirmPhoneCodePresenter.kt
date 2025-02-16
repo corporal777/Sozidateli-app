@@ -3,6 +3,7 @@ package com.example.ui.auth.confirm.phone
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
+import com.example.data.models.AuthResponse
 import com.example.exceptions.CodeInvalidException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -32,9 +33,12 @@ class ConfirmPhoneCodePresenter
     val userRepository: UserRepository
 ) : BasePresenter<ConfirmPhoneCodeContract.View>(appData), ConfirmPhoneCodeContract.Presenter {
 
-    var isFromRegistration = true
     var mobilePhone = ""
+    var authResponse: AuthResponse? = null
+
+    private val userId get() = authResponse?.id ?: appData.getId()
     private var code = ""
+
     private val timerCompositeDisposable = CompositeDisposable().apply {
         compositeDisposable += this
     }
@@ -49,33 +53,21 @@ class ConfirmPhoneCodePresenter
     }
 
     override fun onConfirmMobilePhone() {
-        viewState.apply {
-            if (isFromRegistration) setFinishRegister(true)
-            else setIgnoreTokenListener(true)
-        }
         compositeDisposable += actionConfirmCodeRequest()
             .andThen(actionAfterConfirmRequest())
             .performOnBackgroundOutOnMain()
             .withLoading(1)
             .subscribeSimple(
                 onError = {
-                    viewState.apply {
-                        setFinishRegister(false)
-                        setIgnoreTokenListener(false)
-                        if (it is CodeInvalidException) showCodeError(true)
-                        else onReceiveError(it)
-                    }
+                    if (it is CodeInvalidException) viewState.showCodeError(true)
+                    else onReceiveError(it)
                 },
-                onComplete = {
-                    viewState.apply {
-                        setIgnoreTokenListener(false)
-                        if (!isFromRegistration) navigateUp()
-                    }
-                })
+                onComplete = { if (authResponse == null) viewState.navigateUp() }
+            )
     }
 
     override fun onSendCallAgain() {
-        compositeDisposable += authRepository.registerPhoneResend("personal", mobilePhone)
+        compositeDisposable += authRepository.registerPhoneResend(userId, mobilePhone)
             .performOnBackgroundOutOnMain()
             .withLoading(0)
             .subscribeSimple(
@@ -111,15 +103,22 @@ class ConfirmPhoneCodePresenter
     }
 
     private fun actionConfirmCodeRequest(): Completable {
-        return authRepository.confirmPhoneCode(ConfirmCodeBody(mobilePhone, code))
-            .onErrorResumeNext{ Completable.error(CodeInvalidException()) }
+        return authRepository.confirmPhoneCode(userId, ConfirmCodeBody(mobilePhone, code))
+            .onErrorResumeNext { Completable.error(CodeInvalidException()) }
     }
 
     private fun actionAfterConfirmRequest(): Completable {
-        return if (isFromRegistration) Completable.complete()
-        else userRepository.getUserInternal().doOnSuccess { new ->
-            appData.updateUser { this.phone = new.phone }
-        }.ignoreElement()
+        return if (authResponse == null) {
+            userRepository.getUserInternal()
+                .doOnSuccess { new -> appData.updateUser { this.phone = new.phone } }
+                .ignoreElement()
+        } else {
+            Completable.fromAction {
+                viewState.setFinishRegister(true)
+                appData.saveId(authResponse?.id)
+                appData.login(authResponse?.token!!)
+            }.doOnError { viewState.setFinishRegister(false) }
+        }
     }
 
     private fun Completable.withLoading(type: Int): Completable {
