@@ -1,14 +1,15 @@
 package com.example.ui.event.formResult.items
 
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.FileModel
 import com.example.app.databinding.ItemEventFormResultProfileBinding
+import com.example.data.models.FileModel
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.util.showCustomTabsBrowser
 import com.example.util.showFileBrowser
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class EventFormResultProfileFileItem(
@@ -57,6 +58,6 @@ class EventFormResultProfileFileItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultProfileBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_profile
 }

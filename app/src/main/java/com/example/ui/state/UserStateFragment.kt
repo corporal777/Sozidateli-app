@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentUserStateBinding
+import com.example.extensions.onPageSelected
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.state.base.MainInfoFragmentArgs
 import com.example.ui.state.maxNew.MaxStateScreenType
 import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
@@ -18,12 +20,10 @@ import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.Utils
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onPageSelected
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserStateFragment : BaseFragment<FragmentUserStateBinding>(), UserStateContract.View,
-    ToolbarFragment {
+class UserStateFragment : BaseToolbarFragment<FragmentUserStateBinding>(), UserStateContract.View {
 
     @InjectPresenter
     lateinit var presenter: UserStatePresenter
@@ -115,10 +115,8 @@ class UserStateFragment : BaseFragment<FragmentUserStateBinding>(), UserStateCon
         }
     }
 
+    override fun binding() = FragmentUserStateBinding::class.java
     override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_user_state
     override val title: CharSequence by lazy { getString(R.string.states) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

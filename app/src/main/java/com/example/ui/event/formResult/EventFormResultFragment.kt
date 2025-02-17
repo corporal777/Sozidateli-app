@@ -5,27 +5,24 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
+import com.example.app.databinding.BottomSheetEventFormResultBinding
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.UserFormResultModel
-import com.example.app.databinding.BottomSheetEventFormResultBinding
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.event.formResult.items.EventFormResultFileItem
 import com.example.ui.event.formResult.items.EventFormResultPassportItem
 import com.example.ui.event.formResult.items.EventFormResultProfileGroup
 import com.example.ui.event.formResult.items.EventFormResultStringItem
 import com.example.ui.event.formResult.items.EventFormResultTitleItem
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieAdapter
+import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventFormResultFragment(
-    private val form: UserFormResultModel
-) : BaseBottomSheetFragment<BottomSheetEventFormResultBinding>(), EventFormResultContract.View {
+class EventFormResultFragment(private val form: UserFormResultModel) : BaseBSFragment(), EventFormResultContract.View {
 
     @InjectPresenter(tag = EVENT_FORM_FRAGMENT_TAG)
     lateinit var presenter: EventFormResultPresenter
@@ -38,22 +35,22 @@ class EventFormResultFragment(
         this.formResult = form
     }
 
-
+    private val viewBinding by viewBinding(BottomSheetEventFormResultBinding::bind)
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             update(List(3) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) })
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
+        viewBinding.apply {
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = groupAdapter
             }
             btnClose.setOnClickListener {
-                hideBottomSheetDialog()
+                hideBottomSheetFragment()
             }
         }
     }
@@ -115,7 +112,7 @@ class EventFormResultFragment(
     fun show(fragmentManager: FragmentManager) = show(fragmentManager, EVENT_FORM_FRAGMENT_TAG)
 
     companion object {
-        const val EVENT_FORM_FRAGMENT_TAG = "event_form_tag"
+        const val EVENT_FORM_FRAGMENT_TAG = "event_form_result_dialog"
     }
 
     override fun layout(): Int = R.layout.bottom_sheet_event_form_result

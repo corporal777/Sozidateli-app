@@ -14,7 +14,7 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.example.app.R
 import com.example.app.databinding.FragmentQrScannerBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -22,7 +22,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(), QrScannerContract.View,
+class QrScannerFragment : BaseVBFragment<FragmentQrScannerBinding>(), QrScannerContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -89,6 +89,7 @@ class QrScannerFragment : BaseFragment<FragmentQrScannerBinding>(), QrScannerCon
         startActivity(intent)
     }
 
+    override fun binding() = FragmentQrScannerBinding::class.java
     override fun layout() = R.layout.fragment_qr_scanner
     override val title: CharSequence by lazy { getString(R.string.qr_scan_label) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}

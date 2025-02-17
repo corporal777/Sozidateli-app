@@ -1,17 +1,11 @@
 package com.example.ui.support.sendFile
 
-import android.Manifest
-import android.content.Context
 import android.net.Uri
 import com.example.data.AppData
 import com.example.data.models.SupportFile
 import com.example.data.models.SupportFileType
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.util.ImageUtil
-import com.example.util.rxtakephoto.PermissionNotGrantedException
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import com.example.util.rxtakephoto.RxTakePhoto
-import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
@@ -22,7 +16,7 @@ import javax.inject.Inject
 class SupportFilesPresenter @Inject constructor(
     private val appData: AppData,
     private val rxTakePhoto: RxTakePhoto
-) : BaseBottomSheetPresenter<SupportFilesContract.View>(appData), SupportFilesContract.Presenter {
+) : BaseBSPresenter<SupportFilesContract.View>(appData), SupportFilesContract.Presenter {
 
     private var isFirstLaunch = true
 
@@ -30,8 +24,8 @@ class SupportFilesPresenter @Inject constructor(
         super.onFirstViewAttach()
         compositeDisposable += rxTakePhoto.takeAllGalleryImages()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { viewState.hideBottomSheetDialog() },
+            .subscribeBy(
+                onError = { viewState.hideBottomSheetFragment() },
                 onNext = { viewState.setGalleryImages(it) }
             )
     }

@@ -2,44 +2,43 @@ package com.example.ui.organizations.detail
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.FragmentOrganizationBinding
 import com.example.data.models.EventNew
 import com.example.data.models.OrganizationMemberModel
 import com.example.data.models.OrganizationNew
-import com.example.app.databinding.FragmentOrganizationBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.image.ImageViewActivityArgs
-import com.example.ui.organizations.detail.items.*
+import com.example.ui.organizations.detail.items.EventsTitleItem
+import com.example.ui.organizations.detail.items.OrganizationHeaderItem
+import com.example.ui.organizations.detail.items.OrganizationInfoItem
+import com.example.ui.organizations.detail.items.OrganizationMemberItem
+import com.example.ui.organizations.detail.items.ShowButtonItem
 import com.example.ui.organizations.events.OrganizationEventsFragmentArgs
 import com.example.ui.organizations.members.OrganizationMembersFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
-import com.example.ui.views.toolbar.ToolbarContent
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
-    OrganizationContract.View, ToolbarFragment {
+class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(), OrganizationContract.View {
 
     @InjectPresenter
     lateinit var presenter: OrganizationPresenter
@@ -111,7 +110,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
 
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             add(mainDataSection)
             add(infoDataSection)
             add(eventsDataSection)
@@ -256,9 +255,7 @@ class OrganizationFragment : BaseFragment<FragmentOrganizationBinding>(),
     }
 
     override fun layout(): Int = R.layout.fragment_organization
+    override fun binding() = FragmentOrganizationBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
-
+    override fun scrollingView(): View? = mBinding.rvOrganization
 }

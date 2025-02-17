@@ -4,12 +4,11 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-abstract class FullScreenBottomSheetFragment<T : ViewDataBinding> : BaseBottomSheetFragment<T>(){
+abstract class FullScreenBottomSheetFragment : BaseBSFragment(){
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)

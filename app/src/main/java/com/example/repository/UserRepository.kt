@@ -17,14 +17,13 @@ interface UserRepository {
     fun getUserFullData(): Maybe<UserDetail>
     fun getUserShortData(): Maybe<UserDetail>
     fun getUserById(id: String): Maybe<UserDetail>
-    fun getUserByExternalId(name: String): Maybe<UserDetail>
-    fun getUserByShortName(name: String): Maybe<UserDetail>
+    fun getUserByShortName(name: String, withData : Boolean): Maybe<UserDetail>
 
     fun notificationsInviteAccept(id: Int): Completable
     fun notificationsInviteDecline(id: Int): Completable
 
 
-    fun changePassword(id: Int, body: PasswordBody): Completable
+    fun changePassword(body: PasswordBody): Completable
     fun checkPassword(password: String): Completable
 
     fun deleteProfile(id: Int): Completable

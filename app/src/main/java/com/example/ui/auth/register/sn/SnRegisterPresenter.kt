@@ -53,7 +53,10 @@ class SnRegisterPresenter
         email = snUser.snUserData?.email
         photo = snUser.snUserData?.photo
         gender = snUser.snUserData?.gender
+    }
 
+    override fun attachView(view: SnRegisterContract.View?) {
+        super.attachView(view)
         viewState.setUserData(
             lastName,
             firstName,
@@ -78,9 +81,7 @@ class SnRegisterPresenter
                     if (it is EmailNotUniqueException) viewState.showEmailIsNotUnique(email)
                     else onReceiveError(it)
                 },
-                onComplete = {
-                    viewState.showEmailConfirmation(email!!)
-                }
+                onSuccess = { viewState.showEmailConfirmation(email, it) }
             )
     }
 

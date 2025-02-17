@@ -12,21 +12,23 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import com.example.app.R
-import com.example.data.models.MapInfo
 import com.example.app.databinding.FragmentMapBinding
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.google.android.gms.maps.*
+import com.example.data.models.MapInfo
+import com.example.ui.base.bottomSheet.BaseBSFragment
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MapFragment(
-    private val info: MapInfo
-) : BaseBottomSheetFragment<FragmentMapBinding>(), MapContract.View, OnMapReadyCallback {
+class MapFragment(private val info: MapInfo) : BaseBSFragment(), MapContract.View, OnMapReadyCallback {
 
     @InjectPresenter(tag = MAP_FRAGMENT_TAG)
     lateinit var presenter: MapPresenter
@@ -34,25 +36,26 @@ class MapFragment(
     @Inject
     lateinit var presenterProvider: Provider<MapPresenter>
 
-
     @ProvidePresenter(tag = MAP_FRAGMENT_TAG)
     fun providePresenter(): MapPresenter = presenterProvider.get().apply {
         mapInfo = info
     }
 
-    private lateinit var googleMap: GoogleMap
 
+    private val viewBinding by viewBinding(FragmentMapBinding::bind)
+
+    private lateinit var googleMap: GoogleMap
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.ivBack.setOnClickListener { dismiss() }
-        mBinding.btnShare.setOnClickListener { presenter.onShareClick() }
-        mBinding.btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
+        viewBinding.ivBack.setOnClickListener { dismiss() }
+        viewBinding.btnShare.setOnClickListener { presenter.onShareClick() }
+        viewBinding.btnGoTo.setOnClickListener { presenter.onOpenRouteClick() }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initializeMap() {
-        mBinding.apply {
+        viewBinding.apply {
             flMapContainer.apply {
                 updateLayoutParams {
                     val dh = Resources.getSystem().displayMetrics.heightPixels / 1.8f
@@ -90,7 +93,7 @@ class MapFragment(
     }
 
     override fun showContent() {
-        mBinding.scrollContainer.isVisible = true
+        viewBinding.scrollContainer.isVisible = true
     }
 
     override fun setMarker(lat: Double, lon: Double) {
@@ -100,12 +103,12 @@ class MapFragment(
     }
 
     override fun setDescription(title: String?, description: String?) {
-        mBinding.tvDescriptionTitle.apply {
+        viewBinding.tvDescriptionTitle.apply {
             text = title
             isVisible = !title.isNullOrEmpty()
         }
 
-        mBinding.tvDescription.apply {
+        viewBinding.tvDescription.apply {
             text = description
             isVisible = !description.isNullOrEmpty()
         }
@@ -141,6 +144,6 @@ class MapFragment(
     override fun layout() = R.layout.fragment_map
 
     companion object {
-        const val MAP_FRAGMENT_TAG = "map_fragment_tag"
+        const val MAP_FRAGMENT_TAG = "map_bottom_sheet_dialog"
     }
 }

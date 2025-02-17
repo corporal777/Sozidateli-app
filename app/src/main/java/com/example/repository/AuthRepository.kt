@@ -8,6 +8,8 @@ import io.reactivex.Single
 
 interface AuthRepository {
 
+    fun checkUserAuth(): Completable
+
     fun getFcmToken(): Maybe<String>
     fun sendFcmToken(): Completable
     fun deleteFcmToken(): Completable
@@ -26,16 +28,17 @@ interface AuthRepository {
 
     fun sendQrCode(body: QrBody):Single<QrAuthResponse>
     fun authWebWithQrCode(body: QrBody): Single<AuthResponse>
-    fun registerUser(body: RegisterBody): Completable
-    fun registerSnUser(body: SnRegisterBody): Completable
 
-    fun registerEmailResend(email: String): Completable
-    fun registerPhoneResend(type: String, phone: String): Completable
-    fun confirmPhoneCode(body: ConfirmCodeBody): Completable
-    fun confirmEmailCode(body: EmailCodeBody): Completable
+    fun registerUser(body: RegisterBody): Single<AuthResponse>
+    fun registerSnUser(body: SnRegisterBody): Single<AuthResponse>
+
+    fun registerEmailResend(id : Int, email: String): Completable
+    fun registerPhoneResend(id : Int, phone: String): Completable
+
+    fun confirmPhoneCode(id : Int, body: ConfirmCodeBody): Completable
+    fun confirmEmailCode(id : Int, body: EmailCodeBody): Completable
     fun deleteConfirmEmail(email: String): Completable
 
-    //fun registerSnResend(email: String, token: String): Completable
 
     //fun sendRecoveryEmail(email: String): Completable
     fun sendRecoveryEmail(type: String, email: String): Maybe<RecoverPasswordResponse>

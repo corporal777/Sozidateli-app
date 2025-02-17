@@ -3,6 +3,7 @@ package com.example.ui.state.base
 import com.example.data.models.FieldDetails
 import com.example.data.models.ImageModel
 import com.example.data.models.NewUserAddress
+import com.example.data.models.SearchRegion
 import com.example.data.models.ToggleStringModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
@@ -16,33 +17,40 @@ interface MainInfoContract {
         fun setPersonalData(user: UserDetail)
 
         @Skip
+        fun setUserAvatar(user: UserDetail)
+
+        @Skip
         fun goToNext()
 
         @OneExecution
         fun showEmailConfirm(email: String)
 
+        @OneExecution
+        fun showChangePhone()
+
         @Skip
         fun showChangeImage()
 
-        @OneExecution
-        fun showPhoneEdit()
-
-        @OneExecution
+        @Skip
         fun showEmailNotUnique(email : String)
 
-        @OneExecution
-        fun updateImage(photo: ImageModel?, isDefault : Boolean?)
-
-        @OneExecution
-        fun updatePhone(phone: FieldDetails?)
+        @Skip
+        fun enableBtnSave(isEnable: Boolean)
     }
     interface Presenter : BaseContract.Presenter  {
-        fun onSaveData(data: MutableMap<String, Any?>)
+        fun onSaveData()
 
         fun checkEmailIsUnique(withCheck : Boolean, email: String)
 
-        fun onShowPhoneEdit()
-        fun onShowImageEdit()
-        fun onUpdateImage(photo: ImageModel?)
+        fun onUpdateImage()
+
+        fun onChangeBirthday(birthday : String)
+        fun onChangeGender(gender : String)
+        fun onChangeRegion(region : String)
+        fun onChangeCity(city : String)
+
+        fun onChangeShowBirthday(show : Boolean)
+        fun onChangeShowGender(show : Boolean)
+        fun onChangeShowAddress(show : Boolean)
     }
 }

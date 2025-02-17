@@ -14,78 +14,148 @@
             android:id="@+id/ln_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default">
 
 
-            <com.example.ui.views.CustomTextInputView
-                android:id="@+id/etLastName"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitleLastName"
+                style="@style/Profile.Edit.TextViewTitleThin"
+                android:text="@string/user_profile_last_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_last_name"
+                style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="20dp"
-                app:hintText="Введите Вашу фамилию"
-                app:layout_constraintTop_toTopOf="parent"
-                app:titleText="@string/user_profile_last_name" />
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleLastName">
 
-            <com.example.ui.views.CustomTextInputView
-                android:id="@+id/etFirstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                app:hintText="Введите Ваше имя"
-                app:layout_constraintTop_toBottomOf="@id/etLastName"
-                app:titleText="@string/search_filter_user_name" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_last_name"
+                    style="@style/TextInputEditTextStyle"
+                    android:hint="@string/auth_input_last_name_hint" />
+            </com.example.ui.views.CustomTextInputLayout>
 
-            <com.example.ui.views.CustomTextInputView
-                android:id="@+id/etMiddleName"
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitleFirstName"
+                style="@style/Profile.Edit.TextViewTitleThin"
+                android:text="@string/user_profile_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_last_name" />
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_first_name"
+                style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                app:hintText="Введите Ваше отчество"
-                app:layout_constraintTop_toBottomOf="@id/etFirstName"
-                app:titleText="@string/user_profile_middle_name" />
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleFirstName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_first_name"
+                    style="@style/TextInputEditTextStyle"
+                    android:hint="@string/auth_input_first_name_hint" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitleMiddleName"
+                style="@style/Profile.Edit.TextViewTitleThin"
+                android:text="@string/user_profile_middle_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_first_name" />
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_middle_name"
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleMiddleName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_middle_name"
+                    style="@style/TextInputEditTextStyle"
+                    android:hint="@string/auth_input_middle_name_hint" />
+            </com.example.ui.views.CustomTextInputLayout>
+
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/sc_no_middle_name"
                 style="@style/Profile.Edit.Switch"
-                android:layout_marginHorizontal="15dp"
                 android:text="@string/profile_edit_user_no_middle_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/etMiddleName" />
+                app:layout_constraintTop_toBottomOf="@id/til_middle_name" />
 
-            <com.example.ui.views.CustomPhoneTextInputView
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                app:layout_constraintTop_toBottomOf="@id/sc_no_middle_name"
-                app:phoneHintText="+79123456789"
-                app:phoneTitleText="@string/mobile_phone" />
-
-            <com.example.ui.views.CustomTextMenuView
-                android:id="@+id/etBirthday"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitlePhone"
+                style="@style/Profile.Edit.TextViewTitleThin"
                 android:layout_marginTop="10dp"
-                app:inputHintText="@string/profile_birthday"
-                app:inputIconDrawable="@drawable/ic_calendar_new"
-                app:inputIconMode="custom"
-                app:inputTitleText="@string/profile_birthday"
-                app:layout_constraintTop_toBottomOf="@id/etPhone" />
+                android:text="@string/mobile_phone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sc_no_middle_name" />
 
-            <com.example.ui.views.CustomTextInputView
-                android:id="@+id/etEmail"
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_phone"
+                style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                app:hintText="@string/input_your_email_text"
-                app:inputType="textEmailAddress|textNoSuggestions"
-                app:layout_constraintTop_toBottomOf="@id/etBirthday"
-                app:titleText="@string/email_for_communication_text" />
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitlePhone">
+
+                <com.example.ui.views.phoneText.PhoneFormatEditText
+                    android:id="@+id/etPhone"
+                    style="@style/TextInputEditTextStyle"
+                    android:imeOptions="actionDone"
+                    android:inputType="textNoSuggestions|phone"
+                    app:phoneFormatHint="@string/auth_input_phone_hint" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitleBirthday"
+                style="@style/Profile.Edit.TextViewTitleThin"
+                android:text="@string/profile_birthday"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_phone" />
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilBirthday"
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                app:endIconDrawable="@drawable/ic_calendar_new"
+                app:endIconMode="custom"
+                app:endIconTint="#C3996C"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleBirthday">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/etBirthday"
+                    style="@style/TextInputAutoTextStyle"
+                    android:hint="@string/profile_birthday" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitleEmail"
+                style="@style/Profile.Edit.TextViewTitleThin"
+                android:text="@string/email_for_communication_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tilBirthday" />
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/til_email"
+                style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitleEmail">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_email"
+                    android:inputType="textEmailAddress"
+                    style="@style/TextInputEditTextStyle"
+                    android:hint="@string/input_your_email_text" />
+            </com.example.ui.views.CustomTextInputLayout>
+
 
 
             <com.example.ui.views.loading.CustomLoadingButton
@@ -93,12 +163,11 @@
                 style="@style/BtnLoadingStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 app:buttonText="@string/auth_action_continue"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/etEmail"
+                app:layout_constraintTop_toBottomOf="@id/til_email"
                 app:layout_constraintVertical_bias="1.0"
                 tools:layout_editor_absoluteX="17dp" />
 

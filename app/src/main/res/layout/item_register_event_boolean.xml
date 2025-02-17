@@ -7,7 +7,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />

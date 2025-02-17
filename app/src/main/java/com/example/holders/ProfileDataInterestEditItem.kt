@@ -1,11 +1,12 @@
 package com.example.holders
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.UserInterest
 import com.example.app.databinding.ItemProfileDataEditInterestBinding
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
+import com.example.data.models.UserInterest
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 class ProfileDataInterestEditItem(
     private val userInterest: UserInterest,
@@ -36,5 +37,6 @@ class ProfileDataInterestEditItem(
     }
 
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditInterestBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_interest
 }

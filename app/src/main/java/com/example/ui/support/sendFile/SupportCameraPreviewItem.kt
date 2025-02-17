@@ -1,24 +1,16 @@
 package com.example.ui.support.sendFile
 
 import android.content.Context
-import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.lifecycle.LifecycleOwner
 import com.example.app.R
-import com.example.app.databinding.ItemCameraPreviewBinding
 import com.example.app.databinding.ItemSupportCameraPreviewBinding
-import com.example.util.imageCaptureCallback
-import com.google.common.util.concurrent.ListenableFuture
-import com.xwray.groupie.databinding.BindableItem
-import java.io.File
+import com.xwray.groupie.viewbinding.BindableItem
 
 class SupportCameraPreviewItem (
     val context: Context,
@@ -42,7 +34,7 @@ class SupportCameraPreviewItem (
     override fun bind(
         viewBinding: ItemSupportCameraPreviewBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -75,5 +67,6 @@ class SupportCameraPreviewItem (
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemSupportCameraPreviewBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_support_camera_preview
 }

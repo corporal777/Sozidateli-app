@@ -6,7 +6,7 @@ import com.example.app.R
 import com.example.app.databinding.ItemUserBinding
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class UserItem(
     private val id: Int,
@@ -41,7 +41,7 @@ class UserItem(
     }
 
 
-    override fun bind(viewBinding: ItemUserBinding, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: ItemUserBinding, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else {
             val payload = payloads.firstOrNull() ?: return
@@ -51,7 +51,7 @@ class UserItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemUserBinding.bind(view)
     override fun getLayout() = R.layout.item_user
 
     override fun equals(other: Any?): Boolean {

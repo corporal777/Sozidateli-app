@@ -1,10 +1,11 @@
 package com.example.ui.user.items
 
+import android.view.View
 import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemProfileUserActionsBinding
 import com.example.ui.views.UserSubscribeButton
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class UserProfileActionsItem(
     val title: Any?,
@@ -45,7 +46,7 @@ class UserProfileActionsItem(
     override fun bind(
         viewBinding: ItemProfileUserActionsBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -56,5 +57,6 @@ class UserProfileActionsItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileUserActionsBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_profile_user_actions
 }

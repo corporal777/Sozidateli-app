@@ -1,9 +1,14 @@
 package com.example.holders
 
 import android.content.Context
+import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
+import com.example.app.R
+import com.example.app.databinding.ItemSubeventInfoBinding
+import com.example.data.models.EventActivityModel
+import com.example.data.models.Tags
 import com.example.extensions.calendar
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultDateTimeFormatterNoYear
@@ -17,13 +22,9 @@ import com.example.extensions.isSameMonth
 import com.example.extensions.isSameYear
 import com.example.extensions.markWon
 import com.example.extensions.parseToDate
-import com.example.app.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.Tags
-import com.example.app.databinding.ItemSubeventInfoBinding
 import com.example.ui.views.TagChipNew
 import com.example.util.getDrawable
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class SubEventInfoItem(
@@ -76,7 +77,7 @@ class SubEventInfoItem(
     override fun bind(
         viewBinding: ItemSubeventInfoBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -157,7 +158,7 @@ class SubEventInfoItem(
         return "$date, $time"
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemSubeventInfoBinding.bind(view)
     override fun getLayout() = R.layout.item_subevent_info
 
 }

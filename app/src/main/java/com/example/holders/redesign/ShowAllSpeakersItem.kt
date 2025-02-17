@@ -1,9 +1,9 @@
 package com.example.holders.redesign
 
-import androidx.databinding.Bindable
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemShowSpeakersBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ShowAllSpeakersItem(
     val showAllSpeakers: () -> Unit
@@ -17,5 +17,6 @@ class ShowAllSpeakersItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemShowSpeakersBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_show_speakers
 }

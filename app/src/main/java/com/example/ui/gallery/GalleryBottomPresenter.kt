@@ -1,23 +1,15 @@
 package com.example.ui.gallery
 
-import android.Manifest
-import android.content.Context
 import android.net.Uri
 import com.example.data.AppData
-import com.example.data.models.ImageModel
 import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
-import com.example.util.ImageUtil
-import com.example.util.rxtakephoto.PermissionNotGrantedException
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import com.example.util.rxtakephoto.RxTakePhoto
-import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,7 +18,7 @@ class GalleryBottomPresenter
     private val appData: AppData,
     private val userRepository: UserRepository,
     private val rxTakePhoto: RxTakePhoto
-) : BaseBottomSheetPresenter<GalleryBottomContract.View>(appData), GalleryBottomContract.Presenter {
+) : BaseBSPresenter<GalleryBottomContract.View>(appData), GalleryBottomContract.Presenter {
 
     private var imagesList = listOf<Uri>()
     private var isFirstLaunch = true
@@ -35,8 +27,8 @@ class GalleryBottomPresenter
         super.onFirstViewAttach()
         compositeDisposable += rxTakePhoto.takeAllGalleryImages()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { viewState.hideGalleryFragment() },
+            .subscribeBy(
+                onError = { viewState.hideBottomSheetFragment() },
                 onNext = { viewState.setGalleryImages(it) }
             )
     }
@@ -65,13 +57,12 @@ class GalleryBottomPresenter
                 }
             }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
+            .subscribeBy(
                 onError = { it.printStackTrace() },
                 onSuccess = {
                     viewState.apply {
                         setPhotoUpdated(appData.getUser().image)
-                        hideGalleryFragment()
+                        hideBottomSheetFragment()
                     }
                 }
             )
@@ -80,11 +71,11 @@ class GalleryBottomPresenter
     override fun observeCropFinished(request: Single<Boolean>) {
         compositeDisposable += request
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
+            .subscribeBy {
                 viewState.apply {
                     if (it) {
                         setPhotoUpdated(appData.getUser().image)
-                        hideGalleryFragment()
+                        hideBottomSheetFragment()
                     }
                 }
             }

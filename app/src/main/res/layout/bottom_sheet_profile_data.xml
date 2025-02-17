@@ -61,7 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="5dp"
                         android:background="@drawable/background_corners"
                         android:scaleType="centerCrop"
                         android:visibility="gone" />
@@ -70,13 +70,13 @@
                         android:id="@+id/shimmer_qr_code"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:shimmer_duration="1500">
+                        app:shimmer_duration="3000">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             android:background="@drawable/background_corners"
                             android:scaleType="centerCrop"
                             android:src="@drawable/qr_code_placeholder" />
@@ -161,50 +161,39 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_save" />
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_copy"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_copy"
+                    style="@style/BtnWhiteStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="40dp"
-                    android:background="@drawable/btn_background_white"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:letterSpacing="0"
                     android:minHeight="45dp"
-                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="35dp"
+                    android:textColor="@color/main_brown_color_new"
+                    android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_link_description">
+                    app:layout_constraintTop_toBottomOf="@id/tv_link_description"
+                    tools:text="beta.sozidateli.ru/portal/user/217" />
 
-                    <TextView
-                        android:id="@+id/tv_link"
-                        fontPath="fonts/sf_pro_text_semibold.ttf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="50dp"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:letterSpacing="-0.01"
-                        android:maxLines="1"
-                        android:textColor="@color/main_brown_color_new"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="sozidateli.ru/alina_k" />
-
-                    <ImageView
-                        android:id="@+id/iv_share_link"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/btn_background_toolbar"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_share_white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/main_brown_color_new" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/iv_share_link"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/btn_background_toolbar"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_share_white"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_copy"
+                    app:layout_constraintEnd_toEndOf="@id/btn_copy"
+                    app:layout_constraintTop_toTopOf="@id/btn_copy"
+                    app:tint="@color/main_brown_color_new" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

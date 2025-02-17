@@ -1,10 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemChatListEmptyBinding
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ChatListEmptyItem(
     private val onChatCreateClick: () -> Unit
@@ -15,6 +14,6 @@ class ChatListEmptyItem(
         viewBinding.btnCreateChat.setOnClickListener { onChatCreateClick() }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemChatListEmptyBinding.bind(view)
     override fun getLayout() = R.layout.item_chat_list_empty
 }

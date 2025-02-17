@@ -14,10 +14,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.app.R
 import com.example.extensions.dp
-import com.example.util.getDrawable
-import com.example.util.setRightDrawableWithIntrinsicBounds
-import io.github.inflationx.calligraphy3.CalligraphyUtils
 import com.example.extensions.onFocusChanged
+import com.example.util.getDrawable
+import com.example.util.setRightDrawable
+import io.github.inflationx.calligraphy3.CalligraphyUtils
 
 
 private const val textPaintAlphaAnimDuration = 25L
@@ -112,7 +112,7 @@ class EditView : AppCompatEditText {
 
         val d = getDrawable(R.drawable.ic_input_error_icon)
 
-        setRightDrawableWithIntrinsicBounds(R.drawable.ic_input_error_icon)
+        setRightDrawable(R.drawable.ic_input_error_icon)
     }
 
 

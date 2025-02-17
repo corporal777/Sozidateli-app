@@ -24,8 +24,8 @@ val dateFormatterFullMothNoYear: DateFormat
 val dateFormatterFullMothFullYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_FULL_MONTH_FULL_YEAR, Locale.getDefault())
 
-val dateFormatterShortDayFullMothFullYear: DateFormat
-    get() = SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_FULL_YEAR, Locale.getDefault())
+val dateFormatterFullDayFullMonthNoYear: DateFormat
+    get() = SimpleDateFormat(DATE_FORMAT_FULL_DAY_FULL_MONTH_NO_YEAR, Locale.getDefault())
 
 val dateFormatterShortDayFullMothShortYear: DateFormat
     get() = SimpleDateFormat(DATE_FORMAT_SHORT_DAY_FULL_MONTH_SHORT_YEAR, Locale.getDefault())

@@ -4,22 +4,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.example.app.R
 import com.example.adapters.PagerStateAdapter
+import com.example.app.R
 import com.example.app.databinding.FragmentChatListTabsBinding
-import com.example.ui.base.BaseFragment
+import com.example.extensions.offsetChangedListener
+import com.example.extensions.onPageChanged
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.offsetChangedListener
-import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
-    ChatListTabsContract.View {
+class ChatListTabsFragment : BaseVBFragment<FragmentChatListTabsBinding>(), ChatListTabsContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChatListTabsPresenter
@@ -127,5 +126,6 @@ class ChatListTabsFragment : BaseFragment<FragmentChatListTabsBinding>(),
         }
     }
 
+    override fun binding() = FragmentChatListTabsBinding::class.java
     override fun layout() = R.layout.fragment_chat_list_tabs
 }

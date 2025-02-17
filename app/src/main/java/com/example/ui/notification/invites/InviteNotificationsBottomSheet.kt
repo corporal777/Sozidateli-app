@@ -6,18 +6,22 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
-import com.example.data.models.Notification
 import com.example.app.databinding.BottomSheetInviteNotificationsBinding
+import com.example.data.models.Notification
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.NotificationsSortedData
-import com.example.ui.notification.items.*
+import com.example.ui.notification.items.AcceptNotificationItem
+import com.example.ui.notification.items.NotificationItem
+import com.example.ui.notification.items.NotificationsDateItem
+import com.example.ui.notification.items.RateNotificationItem
+import com.example.ui.notification.items.SimpleNotificationItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.showCustomTabsBrowser
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -35,8 +39,8 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
 
     @ProvidePresenter(tag = INVITES_FRAGMENT_TAG)
     fun providePresenter(): InviteNotificationsPresenter = presenterProvider.get().apply {
-            type = notificationType
-        }
+        type = notificationType
+    }
 
     private val notificationsSection = Section()
     private val groupAdapter by lazy {
@@ -113,11 +117,13 @@ class InviteNotificationsBottomSheet(val notificationType: NotificationType?) :
                             it.data,
                             onNotificationListener
                         )
+
                         Notification.Type.ACCEPTABLE -> AcceptNotificationItem(
                             requireContext(),
                             it.data,
                             onNotificationListener
                         )
+
                         Notification.Type.RATE -> RateNotificationItem(
                             requireContext(),
                             it.data,

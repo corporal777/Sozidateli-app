@@ -128,7 +128,7 @@
                     style="@style/Profile.Edit.Input.SingleLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/auth_input_email_or_phone_hint"
+                    android:hint="@string/auth_input_phone_hint"
                     android:inputType="textEmailAddress" />
 
             </com.example.ui.views.CustomTextInputLayout>
@@ -160,7 +160,7 @@
                     android:background="@null"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
-                    android:theme="@style/CheckBox" />
+                    android:theme="@style/CheckBoxNew" />
 
                 <TextView
                     android:id="@+id/tvAgree"

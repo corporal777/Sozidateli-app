@@ -4,21 +4,37 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import com.bumptech.glide.Glide
-import com.example.data.models.Optional
-import com.example.data.models.asOptional
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.squareup.picasso.Transformation
 import io.reactivex.Maybe
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class ImageUtil {
 
     companion object {
+        fun getDrawableFromUrl(context: Context, url: String?): Drawable? {
+            return try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                connection.connect()
+                val input = connection.inputStream
+                BitmapDrawable(BitmapFactory.decodeStream(input))
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+        }
+
         fun getBitmapFromUrlAsync(context: Context, url: String?): Bitmap? {
+            if (url.isNullOrEmpty()) return null
             return try {
                 Glide.with(context).asBitmap().load(url).submit().get()
             } catch (e : Exception) {

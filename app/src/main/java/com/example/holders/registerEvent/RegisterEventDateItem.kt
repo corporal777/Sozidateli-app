@@ -3,23 +3,23 @@ package com.example.holders.registerEvent
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
+import com.example.app.R
+import com.example.app.databinding.ItemRegisterEventDateBinding
+import com.example.data.models.EventRegisterField
+import com.example.data.models.EventRegisterFieldData
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
-import com.example.app.R
-import com.example.data.models.EventRegisterField
-import com.example.data.models.EventRegisterFieldData
-import com.example.app.databinding.ItemRegisterEventDateBinding
-import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
-import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.initAsDatePicker
 import com.example.extensions.initAsDateTimePicker
 import com.example.extensions.onTextChanged
 import com.example.extensions.parseAndFormat
-import java.util.*
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.xwray.groupie.viewbinding.GroupieViewHolder
+import java.util.Calendar
 
 
 open class RegisterEventDateItem(
@@ -116,4 +116,5 @@ open class RegisterEventDateItem(
     override fun getErrorFrameView(binding: ItemRegisterEventDateBinding): View = binding.viewInputError
     override fun getTitleView(binding: ItemRegisterEventDateBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_date
+    override fun initializeViewBinding(view: View) = ItemRegisterEventDateBinding.bind(view)
 }

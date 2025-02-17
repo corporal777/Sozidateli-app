@@ -10,20 +10,23 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.example.app.R
+import com.example.app.databinding.FragmentMyScheduleEventsBinding
+import com.example.data.models.EventActivityModel
+import com.example.data.models.EventScheduleData
+import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
 import com.example.extensions.dp
 import com.example.extensions.findItem
 import com.example.extensions.findItemByShort
+import com.example.extensions.getLocationOfView
+import com.example.extensions.getMonthName
+import com.example.extensions.onScrolled
 import com.example.extensions.updateItem
-import com.example.app.R
-import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleData
-import com.example.data.models.EventScheduleDay
-import com.example.app.databinding.FragmentMyScheduleEventsBinding
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.event.my.schedule.calendar.CalendarHorizontalDaysItem
@@ -31,20 +34,18 @@ import com.example.ui.event.my.schedule.items.EventScheduleGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.dialogs.CustomProgressDialog
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.SearchInput
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.example.extensions.getLocationOfView
-import com.example.extensions.getMonthName
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onScrolled
-import com.example.ui.views.dialogs.DefaultAlertDialog
 import javax.inject.Inject
 import javax.inject.Provider
 
-class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>(),
+class MyScheduleEventsFragment : BaseVBFragment<FragmentMyScheduleEventsBinding>(),
     MyScheduleEventsContract.View {
 
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
@@ -78,11 +79,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
         Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.SCHEDULE_CALENDAR)) }
     }
 
-    private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
-            add(eventsSection)
-        }
-    }
+    private val groupAdapter by lazy { GroupieAdapter().apply { add(eventsSection) } }
 
     private val calendarAdapter by lazy {
         GroupAdapter<GroupieViewHolder>().apply {
@@ -293,6 +290,7 @@ class MyScheduleEventsFragment : BaseFragment<FragmentMyScheduleEventsBinding>()
         else block.invoke()
     }
 
+    override fun binding() = FragmentMyScheduleEventsBinding::class.java
     override fun layout(): Int = R.layout.fragment_my_schedule_events
 
 }

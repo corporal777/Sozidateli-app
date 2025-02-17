@@ -6,15 +6,11 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentStoriesBinding
 import com.example.interfaces.BackgroundImageFragment
 import com.example.interfaces.DoNotCheckConnectionFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.stories.StoriesProgressView
 import com.example.util.getColor
@@ -25,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.View,
+class StoriesFragment : BaseVBFragment<FragmentStoriesBinding>(), StoriesContract.View,
     DoNotCheckConnectionFragment, BackgroundImageFragment {
 
     @InjectPresenter
@@ -173,6 +169,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding>(), StoriesContract.
         }
     }
 
+    override fun binding() = FragmentStoriesBinding::class.java
     override fun layout() = R.layout.fragment_stories
     override fun getFragmentBackgroundDrawable() =
         mBinding.root.getDrawable(R.drawable.background_auth_very_small)

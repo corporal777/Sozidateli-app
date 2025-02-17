@@ -7,12 +7,14 @@ import androidx.room.RoomDatabase
 import com.example.data.database.converters.EventMemberConverter
 import com.example.data.models.EventMember
 import com.example.data.models.UserEvent
+import com.example.data.models.UserQrImage
 
-@Database(entities = [UserEvent::class, EventMember::class], version = 1, exportSchema = false)
+@Database(entities = [UserEvent::class, EventMember::class, UserQrImage::class], version = 1, exportSchema = false)
 abstract class Db : RoomDatabase() {
 
     abstract fun userEventDao(): UserEventDao
     abstract fun eventMemberDao(): EventMemberDao
+    abstract fun userQrImageDao(): UserQrImageDao
 
     companion object {
         @Volatile

@@ -34,14 +34,15 @@ class AboutEventPresenter
 ) : BasePresenter<AboutEventContract.View>(appData), AboutEventContract.Presenter {
 
     lateinit var eventId: String
-    private var mDy = 0
+    private var scrollOffset = 0
+    private var isFirstLaunch = true
     private lateinit var aboutEventData: AboutEventData
 
-
-    override fun attachView(view: AboutEventContract.View?) {
-        super.attachView(view)
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
         loadData()
     }
+
 
     private fun loadData() {
         compositeDisposable += eventRepository.getEventDetails(eventId)
@@ -72,7 +73,7 @@ class AboutEventPresenter
             }
     }
 
-    override fun onSubscribeEventClick(isSubscribed: Boolean) {
+    override fun onSubscribeEvent(isSubscribed: Boolean) {
         compositeDisposable += Completable.defer {
             if (isSubscribed) eventRepository.deleteEventSubscription(eventId.toInt())
             else eventRepository.createEventSubscription(eventId.toInt())
@@ -218,9 +219,9 @@ class AboutEventPresenter
         viewState.showAuthorization()
     }
 
-    override fun changeAppBarBackgroundColorValue(value: Int) {
-        mDy = value
-        viewState.updateAppBarBackgroundColorValue(mDy)
+    override fun onChangeAppBarBackgroundColor(value: Int) {
+        scrollOffset = value
+        viewState.updateAppBarBackgroundColor(scrollOffset)
     }
 
     private fun catchEventError(t: Throwable) {

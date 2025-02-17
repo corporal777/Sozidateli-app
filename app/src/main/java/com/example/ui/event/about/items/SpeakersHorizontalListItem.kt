@@ -1,18 +1,14 @@
 package com.example.ui.event.about.items
 
-import android.graphics.Color
-import android.util.Log
+import android.view.View
 import com.example.app.R
-import com.example.data.models.MemberModel
 import com.example.app.databinding.ItemSpeakersHorizontalListBinding
-import com.example.holders.HorizontalListItem
-import com.example.holders.redesign.EventActivityItem
+import com.example.data.models.MemberModel
 import com.example.holders.redesign.EventSpeakerItem
 import com.example.holders.redesign.ShowAllSpeakersItem
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.viewbinding.BindableItem
+
 
 class SpeakersHorizontalListItem(
     private val data: List<MemberModel>,
@@ -22,7 +18,7 @@ class SpeakersHorizontalListItem(
 ) : BindableItem<ItemSpeakersHorizontalListBinding>(-1006L) {
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             update(
                 data.map {
                     EventSpeakerItem(
@@ -43,12 +39,13 @@ class SpeakersHorizontalListItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is SpeakersHorizontalListItem) return false
         if (data != other.data) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemSpeakersHorizontalListBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_speakers_horizontal_list
 
 }

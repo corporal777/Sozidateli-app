@@ -8,14 +8,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentChangeEmailBinding
-import com.example.ui.base.BaseFragment
+import com.example.extensions.onTextChanged
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.util.changeTitleTextColor
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEmailContract.View {
+class ChangeEmailFragment : BaseVBFragment<FragmentChangeEmailBinding>(), ChangeEmailContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChangeEmailPresenter
@@ -31,7 +33,7 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etNewEmail.initInput {
+            etNewEmail.onTextChanged {
                 presenter.onChangeEmailText(it.toString())
             }
             btnClose.setOnClickListener {
@@ -47,14 +49,16 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
 
 
     override fun setCurrentEmail(currentEmail: String?) {
-        mBinding.etCurrentEmail.apply {
+        mBinding.currentEmailTitle.isVisible = !currentEmail.isNullOrEmpty()
+        mBinding.tvCurrentEmail.apply {
             isVisible = !currentEmail.isNullOrEmpty()
             setText(currentEmail)
         }
     }
 
     override fun showEmailError(show: Boolean) {
-        mBinding.etNewEmail.showError(show)
+        mBinding.newEmailTitle.changeTitleTextColor(show)
+        mBinding.tilNewEmail.showCustomError(show)
     }
 
 
@@ -71,7 +75,7 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
     override fun showEmailConfirm(email: String) {
         findNavController().navigate(
             R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
+            bundleOf("email" to email),
             navOptions { popUpTo(R.id.changeEmailFragment) { inclusive = true } }
         )
     }
@@ -82,4 +86,5 @@ class ChangeEmailFragment : BaseFragment<FragmentChangeEmailBinding>(), ChangeEm
 
     override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_change_email
+    override fun binding() = FragmentChangeEmailBinding::class.java
 }

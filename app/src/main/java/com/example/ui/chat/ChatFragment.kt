@@ -15,15 +15,25 @@ import androidx.core.view.doOnNextLayout
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.transition.*
+import androidx.transition.ChangeBounds
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.example.app.R
+import com.example.app.databinding.FragmentChatBinding
 import com.example.data.models.ChatMessage
 import com.example.data.models.Message
-import com.example.app.databinding.FragmentChatBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
-import com.example.holders.*
-import com.example.ui.base.BaseFragment
+import com.example.holders.ChatAcceptItem
+import com.example.holders.ChatDateItem
+import com.example.holders.ChatMessageImageItem
+import com.example.holders.ChatMessageTextItem
+import com.example.holders.ChatUnreadLabelItem
+import com.example.holders.PlaceholderItem
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
@@ -32,15 +42,15 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.SimpleTextWatcher
 import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.setCircleAvatar
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import moxy.presenter.ProvidePresenterTag
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
+class ChatFragment : BaseVBFragment<FragmentChatBinding>(), ChatContract.View {
 
     private var animCounter = 0
 
@@ -322,5 +332,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(), ChatContract.View {
         }
     }
 
+    override fun binding() = FragmentChatBinding::class.java
     override fun layout(): Int = R.layout.fragment_chat
 }

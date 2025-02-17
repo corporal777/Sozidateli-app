@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.FragmentUserSessionsBinding
+import com.example.data.models.UserSessionModel
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.userSessions.items.CurrentSessionItem
 import com.example.ui.userSessions.items.OtherSessionItem
 import com.example.ui.userSessions.items.SessionsHeaderItem
@@ -27,8 +28,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
-    UserSessionsContract.View, ToolbarFragment {
+class UserSessionsFragment : BaseToolbarFragment<FragmentUserSessionsBinding>(),
+    UserSessionsContract.View {
 
 
     @InjectPresenter
@@ -105,18 +106,14 @@ class UserSessionsFragment : BaseFragment<FragmentUserSessionsBinding>(),
         DefaultAlertDialog(requireContext(), null, message)
     }
 
+    override fun binding() = FragmentUserSessionsBinding::class.java
     override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_user_sessions
     override val title: CharSequence by lazy { getString(R.string.sessions_label) }
     override fun actionIconContainer(view: ViewGroup) {
-        view.apply {
-            addView(ToolbarIconView(context).apply {
-                setImageAsIcon(R.drawable.ic_about_session)
-                setOnClickListener { showSessionInfoDialog() }
-            })
-        }
+        view.addView(createIconView(R.drawable.ic_about_session, true) {
+            showSessionInfoDialog()
+        })
     }
-
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun scrollingView(): View = mBinding.rvSessions
 }

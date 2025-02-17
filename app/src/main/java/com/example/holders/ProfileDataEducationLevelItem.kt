@@ -1,11 +1,12 @@
 package com.example.holders
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemProfileDataEducationLevelBinding
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
-import com.example.app.databinding.ItemProfileDataEducationLevelBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataEducationLevelItem(
     private val education: String?,
@@ -55,5 +56,6 @@ class ProfileDataEducationLevelItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEducationLevelBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_education_level
 }

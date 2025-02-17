@@ -1,20 +1,15 @@
 package com.example.ui.auth.confirm.phone
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
@@ -23,8 +18,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>(),
-    ConfirmPhoneCodeContract.View, ToolbarFragment {
+class ConfirmPhoneCodeFragment : BaseToolbarFragment<FragmentPhoneCodeConfirmBinding>(),
+    ConfirmPhoneCodeContract.View {
 
     @InjectPresenter
     lateinit var presenter: ConfirmPhoneCodePresenter
@@ -34,10 +29,9 @@ class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>()
 
     @ProvidePresenter
     fun providePresenter(): ConfirmPhoneCodePresenter = presenterProviderFinish.get().apply {
-        navArgs<ConfirmPhoneCodeFragmentArgs>().value.also {
-            mobilePhone = it.phone
-            isFromRegistration = it.fromRegister
-        }
+        val args = ConfirmPhoneCodeFragmentArgs.fromBundle(requireArguments())
+        mobilePhone = args.phone
+        authResponse = args.auth
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,10 +90,8 @@ class ConfirmPhoneCodeFragment : BaseFragment<FragmentPhoneCodeConfirmBinding>()
     }
 
 
+    override fun binding() = FragmentPhoneCodeConfirmBinding::class.java
     override fun layout(): Int = R.layout.fragment_phone_code_confirm
-    override val title: CharSequence = ""
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }

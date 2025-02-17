@@ -7,16 +7,16 @@ import android.view.inputmethod.EditorInfo
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentEnterCodeBinding
+import com.example.extensions.onTextChanged
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EnterCodeFragment : BaseFragment<FragmentEnterCodeBinding>(), EnterCodeContract.View,
+class EnterCodeFragment : BaseVBFragment<FragmentEnterCodeBinding>(), EnterCodeContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -69,6 +69,7 @@ class EnterCodeFragment : BaseFragment<FragmentEnterCodeBinding>(), EnterCodeCon
     override fun showCustomLoading() = mBinding.btnSearch.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSearch.showProgressLoading(false)
 
+    override fun binding() = FragmentEnterCodeBinding::class.java
     override fun layout() = R.layout.fragment_enter_code
     override val title: CharSequence by lazy { getString(R.string.code_input_label) }
     override fun actionIconContainer(view: ViewGroup) {}

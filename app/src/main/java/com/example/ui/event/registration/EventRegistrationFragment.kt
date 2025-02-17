@@ -2,17 +2,16 @@ package com.example.ui.event.registration
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
+import com.example.app.databinding.FragmentRequestBinding
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterFieldData
 import com.example.data.models.EventRegistration
-import com.example.app.databinding.FragmentRequestBinding
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
 import com.example.extensions.onBackPressedCallback
@@ -25,31 +24,29 @@ import com.example.holders.registerEvent.RegisterEventCheckboxItem
 import com.example.holders.registerEvent.RegisterEventDateItem
 import com.example.holders.registerEvent.RegisterEventDropdownItem
 import com.example.holders.registerEvent.RegisterEventFileGroup
+import com.example.holders.registerEvent.RegisterEventHeaderItem
 import com.example.holders.registerEvent.RegisterEventPassportItem
 import com.example.holders.registerEvent.RegisterEventPhoneItem
 import com.example.holders.registerEvent.RegisterEventRadioBoxItem
 import com.example.holders.registerEvent.RegisterEventStringItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
-import com.example.ui.event.registration.items.PrefilledFieldClickType
-import com.example.holders.registerEvent.RegisterEventHeaderItem
-import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.example.holders.registerEvent.RegisterEventTitleItem
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.event.registration.items.PrefilledFieldClickType
+import com.example.ui.event.registration.items.RegisterEventProfileItemsGroup
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
-    EventRegistrationContract.View, ToolbarFragment {
+class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
+    EventRegistrationContract.View {
 
     @InjectPresenter
     lateinit var presenter: EventRegistrationPresenter
@@ -68,7 +65,7 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
             List(2) { PlaceholderItem(PlaceholderItem.Type.REGISTER_FIELD) }
         )
     }
-    private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>().apply { add(fieldsSection) } }
+    private val groupAdapter by lazy { GroupieAdapter().apply { add(fieldsSection) } }
     private val saveButtonItem by lazy { ActionButtonItem(-200L) { presenter.onRegisterClick() } }
 
 
@@ -241,10 +238,10 @@ class EventRegistrationFragment : BaseFragment<FragmentRequestBinding>(),
 
 
     override fun layout() = R.layout.fragment_request
+    override fun binding() = FragmentRequestBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.event_registration_title) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }
+    override fun scrollingView(): View = mBinding.recyclerView
 }

@@ -4,26 +4,26 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
+import com.example.app.databinding.LayoutListBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
-import com.example.app.databinding.LayoutListBinding
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.EventFavoriteItem
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.util.pagination.PaginationListGroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteEventsFragment : BaseFragment<LayoutListBinding>(), FavoriteEventsContract.View {
+class FavoriteEventsFragment : BaseVBFragment<LayoutListBinding>(), FavoriteEventsContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteEventsPresenter
@@ -98,5 +98,6 @@ class FavoriteEventsFragment : BaseFragment<LayoutListBinding>(), FavoriteEvents
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+    override fun binding() = LayoutListBinding::class.java
     override fun layout(): Int = R.layout.layout_list
 }

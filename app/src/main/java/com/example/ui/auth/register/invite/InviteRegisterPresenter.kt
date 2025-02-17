@@ -113,9 +113,9 @@ class InviteRegisterPresenter
 
     private fun register() {
         viewState.setIgnoreTokenListener(true)
-        compositeDisposable += userRepository.changePassword(appData.getId(), getPasswordBody())
+        compositeDisposable += userRepository.changePassword(getPasswordBody())
             .andThen(userRepository.updateProfile(appData.getId(), getUpdateBody()))
-            .flatMapCompletable { authRepository.confirmEmailCode(getConfirmBody()) }
+            .flatMapCompletable { authRepository.confirmEmailCode(appData.getId(), getConfirmBody()) }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
@@ -195,10 +195,6 @@ class InviteRegisterPresenter
     private fun getPasswordBody(): PasswordBody = PasswordBody(password ?: "")
     private fun getConfirmBody(): EmailCodeBody = EmailCodeBody(code = code, email = newEmail ?: "")
 
-    private fun confirmEmailRequest(): Completable {
-        return if (newEmail == oldEmail) Completable.complete()
-        else authRepository.confirmEmailCode(EmailCodeBody(code = code, email = newEmail ?: ""))
-    }
 
     private fun performDataChange() = viewState.enableRegisterBtn(isDataValid())
     override fun onClickUserAgreement() = viewState.showUserAgreement()

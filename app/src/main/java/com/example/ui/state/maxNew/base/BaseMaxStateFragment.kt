@@ -12,11 +12,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentMaxStateInfoBinding
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.state.maxNew.MaxStateScreenType
+import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.education.MaxStatusEducationFragmentArgs
 import com.example.ui.state.maxNew.interests.MaxStatusInterestsFragmentArgs
-import com.example.ui.state.maxNew.contacts.MaxStatusContactsFragmentArgs
 import com.example.ui.state.maxNew.work.MaxStatusWorkFragmentArgs
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
 import com.example.ui.views.dialogs.ContactsType
@@ -24,11 +24,11 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.ui.views.toolbar.ToolbarIconView
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 
 abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
-    BaseFragment<FragmentMaxStateInfoBinding>(),
+    BaseVBFragment<FragmentMaxStateInfoBinding>(),
     BaseMaxStateContract.View, ToolbarFragment {
 
     abstract var presenter: P
@@ -123,10 +123,7 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
     }
 
     override fun showEmailConfirmation(email: String) {
-        findNavController().navigate(
-            R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.emailCodeConfirmFragment, bundleOf("email" to email))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("email")
             if (!emailConfirm.isNullOrEmpty()) presenter.onShowMaxStateDone()
@@ -173,5 +170,6 @@ abstract class BaseMaxStateFragment<P : BaseMaxStateContract.Presenter> :
 
     override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun binding() = FragmentMaxStateInfoBinding::class.java
     override fun layout(): Int = R.layout.fragment_max_state_info
 }

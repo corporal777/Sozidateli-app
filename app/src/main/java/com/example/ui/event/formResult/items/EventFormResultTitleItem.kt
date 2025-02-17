@@ -1,9 +1,10 @@
 package com.example.ui.event.formResult.items
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemEventFormResultStringBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultTitleItem (
     val id: String?,
@@ -18,6 +19,6 @@ class EventFormResultTitleItem (
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultStringBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_string
 }

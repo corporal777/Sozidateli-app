@@ -5,14 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.app.R
 import com.example.app.databinding.FragmentUserEditBinding
+import com.example.extensions.onBackPressedCallback
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import com.example.extensions.onBackPressedCallback
 
-abstract class BaseUserProfileEditFragment : BaseFragment<FragmentUserEditBinding>(), ToolbarFragment {
+abstract class BaseUserProfileEditFragment : BaseToolbarFragment<FragmentUserEditBinding>() {
 
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
@@ -30,23 +31,16 @@ abstract class BaseUserProfileEditFragment : BaseFragment<FragmentUserEditBindin
         }
         mBinding.btnSave.setOnClickListener { onSaveClick?.invoke() }
     }
-    override fun showCustomLoading() {
-        mBinding.apply { btnSave.showProgressLoading(true) }
-    }
 
-    override fun hideCustomLoading() {
-        mBinding.apply { btnSave.showProgressLoading(false) }
-    }
+    override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
+    override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
-    fun buttonSaveEnabled(enable: Boolean){
-        mBinding.btnSave.isEnabled = enable
-    }
+    fun buttonSaveEnabled(enable: Boolean) = mBinding.btnSave.let { it.isEnabled = enable }
 
     override fun animationType(): AnimType {
         return if (isPreviousDestination(R.id.request_fragment)) AnimType.AXIS else AnimType.NONE
     }
+    override fun binding() = FragmentUserEditBinding::class.java
     override fun layout() = R.layout.fragment_user_edit
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun scrollingView(): View? = mBinding.recyclerView
 }

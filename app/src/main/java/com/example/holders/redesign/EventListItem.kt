@@ -10,21 +10,18 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemEventNewBinding
 import com.example.data.models.Event
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegistrationStateModel
-import com.example.app.databinding.ItemEventNewBinding
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultDate
-import com.example.extensions.formatToDefaultDayMonthDate
-import com.example.extensions.formatToDefaultDayMonthYearDate
-import com.example.extensions.formatToDefaultTime
 import com.example.extensions.isSameDay
-import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
+import com.example.util.setImage
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventListItem(
     val eventData: EventNew,
@@ -154,10 +151,10 @@ class EventListItem(
         else clickListener.onShowUpdateState()
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventNewBinding.bind(view)
     override fun getLayout() = R.layout.item_event_new
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventListItem) return false
         if (eventData != other.eventData) return false
         return true
@@ -166,7 +163,7 @@ class EventListItem(
     override fun bind(
         viewBinding: ItemEventNewBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)

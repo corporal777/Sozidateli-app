@@ -46,6 +46,7 @@ class PhoneFormatEditText : TextInputEditText {
 
     init {
         onFocusChanged { hasFocus ->
+            onInputFocusChanged.invoke(hasFocus)
             if (hasFocus) setText(makeMaskedText(formattedText))
             else {
                 if (formattedText.isBlank() || formattedText == mask) text = null

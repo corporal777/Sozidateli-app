@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_background"
+        tools:ignore="MissingPrefix">
+
+        <com.example.ui.views.CustomSwipeRefreshLayout
+            android:id="@+id/swipe_to_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/event_content_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="20dp"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_event_detail_main" />
+
+        </com.example.ui.views.CustomSwipeRefreshLayout>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#00000000"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/layout_toolbar_about_event" />
+        </com.google.android.material.card.MaterialCardView>
+
+<!--                <com.example.ui.views.CustomAppBarLayout-->
+<!--                    android:id="@+id/app_bar"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@null"-->
+<!--                    app:elevation="0dp"-->
+<!--                    app:layout_constraintTop_toTopOf="parent">-->
+
+
+<!--                    <include-->
+<!--                        android:id="@+id/toolbar"-->
+<!--                        layout="@layout/layout_toolbar_about_event" />-->
+<!--                </com.example.ui.views.CustomAppBarLayout>-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

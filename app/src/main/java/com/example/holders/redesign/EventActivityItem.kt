@@ -10,9 +10,9 @@ import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemLectureBinding
 import com.example.data.models.EventActivityModel
 import com.example.data.models.Tag
-import com.example.app.databinding.ItemLectureBinding
 import com.example.extensions.defaultServerDateTimeFormatter
 import com.example.extensions.formatTimeIntervalFromTo
 import com.example.extensions.markWon
@@ -20,7 +20,7 @@ import com.example.ui.views.TagChipNew
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getDrawable
 import com.example.util.weak
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class EventActivityItem(
@@ -96,7 +96,7 @@ class EventActivityItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventActivityItem) return false
         if (subEvent != other.subEvent) return false
         if (subEvent.description != other.subEvent.description) return false
@@ -105,7 +105,7 @@ class EventActivityItem(
         return true
     }
 
-    override fun bind(viewBinding: ItemLectureBinding, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: ItemLectureBinding, position: Int, payloads: MutableList<Any>) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
@@ -140,7 +140,7 @@ class EventActivityItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View)= ItemLectureBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_lecture
 
     interface OnEventActivityClickListener {

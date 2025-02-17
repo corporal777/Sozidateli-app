@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import com.example.app.BuildConfig
 import com.example.app.R
 import com.example.app.databinding.FragmentAboutBinding
+import com.example.extensions.removeUrlUnderline
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AboutFragment : BaseFragment<FragmentAboutBinding>(), AboutContract.View,
+class AboutFragment : BaseVBFragment<FragmentAboutBinding>(), AboutContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -46,6 +46,7 @@ class AboutFragment : BaseFragment<FragmentAboutBinding>(), AboutContract.View,
     override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_about
 
+    override fun binding() = FragmentAboutBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.profile_about_app) }
     override fun actionIconContainer(view: ViewGroup) {}
     override fun scrollValue(scroll: Int) {}

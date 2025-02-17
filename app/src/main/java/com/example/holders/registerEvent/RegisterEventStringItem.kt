@@ -1,6 +1,5 @@
 package com.example.holders.registerEvent
 
-import android.text.InputType
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -11,15 +10,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.app.R
+import com.example.app.databinding.ItemRegisterEventInputBinding
 import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterFieldData
-import com.example.app.databinding.ItemRegisterEventInputBinding
-import com.xwray.groupie.databinding.GroupieViewHolder
 import com.example.extensions.onTextChanged
 import com.example.extensions.setMaxLength
 import com.example.extensions.setMinMaxLines
 import com.example.util.AuthValidateUtil
-import com.example.util.getColorStateList
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 class RegisterEventStringItem(
     private val fieldData: EventRegisterFieldData<String>,
@@ -116,4 +114,5 @@ class RegisterEventStringItem(
     override fun getErrorFrameView(binding: ItemRegisterEventInputBinding): View = binding.viewInputError
     override fun getTitleView(binding: ItemRegisterEventInputBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_input
+    override fun initializeViewBinding(view: View) = ItemRegisterEventInputBinding.bind(view)
 }

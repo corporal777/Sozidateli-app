@@ -22,65 +22,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvEmailTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
                     android:labelFor="@+id/tvEmail"
                     android:text="@string/profile_edit_main_email_hint" />
 
                 <TextView
                     android:id="@+id/tvEmail"
-                    style="@style/Profile.User.Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Data"
+                    android:layout_marginTop="10dp"
                     android:autoLink="email"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="Lyaka.art@gmail.com" />
 
                 <TextView
                     android:id="@+id/tvEmailPublicTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
+                    android:layout_marginTop="10dp"
                     android:labelFor="@+id/tvEmail"
                     android:text="@string/profile_edit_public_email_hint" />
 
                 <TextView
                     android:id="@+id/tvEmailPublic"
-                    style="@style/Profile.User.Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Data"
+                    android:layout_marginTop="10dp"
                     android:autoLink="email"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="Lyaka.art@gmail.com" />
 
                 <TextView
                     android:id="@+id/tvPhoneMobileTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
+                    android:layout_marginTop="10dp"
                     android:labelFor="@+id/tvPhoneMobile"
                     android:text="@string/profile_phone_mobile" />
 
                 <TextView
                     android:id="@+id/tvPhoneMobile"
-                    style="@style/Profile.User.Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Data"
+                    android:layout_marginTop="10dp"
                     android:autoLink="phone"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="+7 (927) 298-16-17" />
 
                 <TextView
                     android:id="@+id/tvPhoneWorkTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
+                    android:layout_marginTop="10dp"
                     android:labelFor="@+id/tvPhoneWork"
                     android:text="@string/profile_phone_work" />
 
@@ -91,9 +82,8 @@
 
                     <TextView
                         android:id="@+id/tvPhoneWork"
-                        style="@style/Profile.User.Data"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/Profile.Data"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="3dp"
                         android:autoLink="phone"
                         android:hint="@string/user_profile_files_hint"
@@ -101,10 +91,9 @@
 
                     <TextView
                         android:id="@+id/tvAdditionalNumber"
-                        style="@style/Profile.User.Data"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/Profile.Data"
                         android:layout_marginStart="3dp"
+                        android:layout_marginTop="10dp"
                         android:textColor="@color/profile_data_text_link"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -114,34 +103,30 @@
 
                 <TextView
                     android:id="@+id/tvSocialNetworksTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
+                    android:layout_marginTop="10dp"
                     android:labelFor="@+id/tvSocialNetworks"
                     android:text="@string/profile_sn" />
 
                 <TextView
                     android:id="@+id/tvSocialNetworks"
-                    style="@style/Profile.User.Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Data"
+                    android:layout_marginTop="10dp"
                     android:autoLink="web"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
 
                 <TextView
                     android:id="@+id/tvSiteTitle"
-                    style="@style/Profile.User.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Title"
+                    android:layout_marginTop="10dp"
                     android:labelFor="@+id/tvSocialNetworks"
                     android:text="@string/profile_site" />
 
                 <TextView
                     android:id="@+id/tvSite"
-                    style="@style/Profile.User.Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/Profile.Data"
+                    android:layout_marginTop="10dp"
                     android:autoLink="web|email"
                     android:hint="@string/user_profile_files_hint"
                     tools:text="https://google.com" />

@@ -38,6 +38,7 @@ class LoginPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setLoginAndPassword(login, password)
+        performDataChange()
     }
 
     override fun onChangeLoginText(value: String) {

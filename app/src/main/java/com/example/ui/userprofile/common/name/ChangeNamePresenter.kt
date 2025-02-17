@@ -8,8 +8,9 @@ import com.example.data.models.UserDetail.Companion.USER_NAME
 import com.example.extensions.removeAllDoubleSpaces
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withCustomLoading
@@ -19,10 +20,8 @@ import javax.inject.Inject
 class ChangeNamePresenter
 @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     private val appData: AppData,
-) : BaseBottomSheetPresenter<ChangeNameContract.View>(appData),
-    ChangeNameContract.Presenter {
+) : BaseBSPresenter<ChangeNameContract.View>(appData), ChangeNameContract.Presenter {
 
     lateinit var userDetail: UserDetail
     private var firstName = ""
@@ -55,9 +54,9 @@ class ChangeNamePresenter
                 .flatMap { userRepository.checkUserProfileSingle() }
                 .performOnBackgroundOutOnMain()
                 .withCustomLoading(viewState)
-                .subscribeSimple(
+                .subscribeBy(
                     onError = { onReceiveError(it) },
-                    onSuccess = { viewState.hideBottomSheetDialog() }
+                    onSuccess = { viewState.hideBottomSheetFragment() }
                 )
         } else showErrors()
 

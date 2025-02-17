@@ -76,10 +76,7 @@ class EditContactsFragment : BaseUserProfileEditFragment(), EditContactsContract
     }
 
     override fun showPhoneConfirmation(phone: String, withUpdate: Boolean) {
-        findNavController().navigate(
-            R.id.phoneCodeConfirmFragment,
-            bundleOf("phone" to phone, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.phoneCodeConfirmFragment, bundleOf("phone" to phone))
         setFragmentResultListener("confirm") { _, _ ->
             presenter.onUpdatePhone()
             if (withUpdate) presenter.onSaveContactsClick(data.getDataToSave())

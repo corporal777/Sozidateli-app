@@ -9,11 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.ImageModel
 import com.example.app.databinding.BottomSheetGalleryBinding
+import com.example.data.models.ImageModel
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItems
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.gallery.items.CameraPreviewItem
 import com.example.ui.gallery.items.GalleryItem
 import com.example.ui.views.dialogs.DefaultAlertDialog
@@ -21,17 +21,14 @@ import com.example.util.getMakeSceneTransition
 import com.example.util.rxtakephoto.CropActivity
 import com.example.util.rxtakephoto.CropCallbackHelper
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
+import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class GalleryBottomSheet() :
-    BaseBottomSheetFragment<BottomSheetGalleryBinding>(lightDim = true, isTransparent = true),
-    GalleryBottomContract.View {
-
-    override fun layout(): Int = R.layout.bottom_sheet_gallery
+class GalleryBottomSheet : BaseBSFragment(true,true), GalleryBottomContract.View {
 
     @InjectPresenter(tag = GALLERY_TAG)
     lateinit var presenter: GalleryBottomPresenter
@@ -42,13 +39,16 @@ class GalleryBottomSheet() :
     @ProvidePresenter(tag = GALLERY_TAG)
     fun providePresenter(): GalleryBottomPresenter = presenterProvider.get()
 
+
+    private val viewBinding by viewBinding(BottomSheetGalleryBinding::bind)
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     private var onPhotoUpdated: (photo: ImageModel?) -> Unit = {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
+        viewBinding.apply {
             galleryList.adapter = groupAdapter
             tvOpenGallery.setOnClickListener { presenter.onGalleryClick() }
             tvRemovePhoto.setOnClickListener { showRemovePhotoWarning() }
@@ -83,8 +83,7 @@ class GalleryBottomSheet() :
         return this
     }
 
-    override fun hideGalleryFragment() = dismiss()
-    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "gallery")
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, GALLERY_TAG)
 
     override fun showCameraActivity(uri: Uri?, imageView: ImageView) {
         presenter.observeCropFinished(CropCallbackHelper.createCropFinishedRequest())
@@ -125,8 +124,10 @@ class GalleryBottomSheet() :
         }
     }
 
+    override fun layout(): Int = R.layout.bottom_sheet_gallery
+
     companion object {
-        private const val GALLERY_TAG = "gallery_bottom_sheet_tag"
+        private const val GALLERY_TAG = "gallery_bottom_sheet_dialog"
     }
 
 

@@ -68,7 +68,7 @@ interface AboutEventContract {
         fun addEventToCalendar(eventData: EventNew?)
 
         @Skip
-        fun updateAppBarBackgroundColorValue(value: Int)
+        fun updateAppBarBackgroundColor(value: Int)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -91,9 +91,9 @@ interface AboutEventContract {
         fun onShowEventActivitiesClick()
         fun onAddOrganizationToFavoriteClick()
         fun onAddEventToFavoriteClick()
-        fun onSubscribeEventClick(isSubscribed: Boolean)
+        fun onSubscribeEvent(isSubscribed: Boolean)
 
-        fun changeAppBarBackgroundColorValue(value: Int)
+        fun onChangeAppBarBackgroundColor(value: Int)
 
         fun onAddEventToCalendarClick()
 

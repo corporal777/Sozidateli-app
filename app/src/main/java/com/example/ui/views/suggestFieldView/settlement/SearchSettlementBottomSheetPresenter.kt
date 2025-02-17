@@ -34,7 +34,6 @@ class SearchSettlementBottomSheetPresenter @Inject constructor(
                 },
                 onSuccess = {
                     viewState.setSettlements(it)
-                    Log.e("SIZE ", it.size.toString())
                 })
     }
 

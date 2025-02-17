@@ -112,10 +112,12 @@ class RegisterEmailPresenter
         viewState.setIgnoreTokenListener(true)
         compositeDisposable += checkPhoneEmailIsUnique(withCheck)
             .andThen(authRepository.registerUser(getRegisterBody()))
-            .andThen(Completable.defer {
-                if (loginType == "email") authRepository.registerEmailResend(email)
-                else authRepository.registerPhoneResend("personal", validatePhoneBeforeSend(email))
-            })
+            .flatMapCompletable {
+                Completable.defer {
+                    if (loginType == "email") authRepository.registerEmailResend(appData.getId(), email)
+                    else authRepository.registerPhoneResend(appData.getId(), validatePhoneBeforeSend(email))
+                }
+            }
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(

@@ -1,14 +1,15 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.WorkExperience
 import com.example.app.databinding.ItemProfileDataWorkExperienceBinding
+import com.example.data.models.WorkExperience
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class ProfileDataWorkExperienceItem(
     private val work: WorkExperience
@@ -37,5 +38,6 @@ class ProfileDataWorkExperienceItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataWorkExperienceBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_work_experience
 }

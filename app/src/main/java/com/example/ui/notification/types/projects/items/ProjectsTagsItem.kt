@@ -1,10 +1,11 @@
 package com.example.ui.notification.types.projects.items
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationsTagsBinding
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProjectsTagsItem(
     val onTypeClick: (type: ProjectsInviteType) -> Unit
@@ -33,7 +34,7 @@ class ProjectsTagsItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is ProjectsTagsItem) return false
         return true
     }
@@ -42,5 +43,6 @@ class ProjectsTagsItem(
         ACTIVE, ARCHIVE
     }
 
+    override fun initializeViewBinding(view: View) = ItemNotificationsTagsBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_notifications_tags
 }

@@ -81,27 +81,41 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPhoneTitle" />
 
-                <com.example.ui.views.CustomPhoneTextInputView
-                    android:id="@+id/etPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitlePhone"
+                    style="@style/Profile.Edit.TextViewTitleThin"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/profile_phone_mobile"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone"
-                    app:phoneHintText="+79123456789"
-                    app:phoneTextIcon="@drawable/ic_confirmed_phone_icon"
-                    app:phoneTitleText="@string/profile_phone_mobile" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvRegisterWithPhone" />
 
+                <com.example.ui.views.CustomTextInputLayout
+                    android:id="@+id/til_phone"
+                    style="@style/TextInputLayoutStyle"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
+                    app:endIconDrawable="@drawable/ic_confirmed_phone_icon"
+                    app:endIconMode="custom"
+                    app:endIconTint="#A0B685"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitlePhone">
+
+                    <com.example.ui.views.phoneText.PhoneFormatEditText
+                        android:id="@+id/etPhone"
+                        style="@style/TextInputEditTextStyle"
+                        android:imeOptions="actionDone"
+                        android:inputType="textNoSuggestions|phone"
+                        app:phoneFormatHint="@string/auth_input_phone_hint" />
+                </com.example.ui.views.CustomTextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/sc_phone"
                     style="@style/Profile.Edit.Switch"
+                    android:layout_width="wrap_content"
                     android:layout_marginHorizontal="15dp"
                     android:text="@string/profile_show_in_profile"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/etPhone"
+                    app:layout_constraintTop_toBottomOf="@id/til_phone"
                     tools:checked="true" />
 
 

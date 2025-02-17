@@ -2,14 +2,13 @@ package com.example.ui.support.search
 
 import android.os.Bundle
 import android.view.View
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.SupportData
 import com.example.app.databinding.FragmentSupportSearchBinding
+import com.example.data.models.SupportData
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.support.items.SupportFooterItem
 import com.example.ui.views.suggestFieldView.region.SearchEmptyItem
@@ -23,7 +22,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SupportSearchFragment : BaseFragment<FragmentSupportSearchBinding>(),
+class SupportSearchFragment : BaseVBFragment<FragmentSupportSearchBinding>(),
     SupportSearchContract.View {
 
     @InjectPresenter
@@ -93,6 +92,7 @@ class SupportSearchFragment : BaseFragment<FragmentSupportSearchBinding>(),
         findNavController().navigate(R.id.supportDetailFragment, args)
     }
 
+    override fun binding() = FragmentSupportSearchBinding::class.java
     override fun layout(): Int = R.layout.fragment_support_search
 
 

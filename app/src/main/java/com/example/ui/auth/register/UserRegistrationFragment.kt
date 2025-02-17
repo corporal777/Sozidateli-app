@@ -2,25 +2,37 @@ package com.example.ui.auth.register
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRegistrationUserBinding
+import com.example.data.models.AuthResponse
+import com.example.extensions.defaultDateFormatter
+import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.getClickablePrivacyPolitics
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.DATE_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.Utils.validatePhoneBeforeSend
+import com.example.util.changeTitleTextColor
+import com.example.util.getColor
+import com.example.util.initInput
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.ui.views.dialogs.DefaultAlertDialog
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>(),
-    UserRegistrationContract.View, ToolbarFragment {
+class UserRegistrationFragment : BaseToolbarFragment<FragmentRegistrationUserBinding>(),
+    UserRegistrationContract.View {
 
     @InjectPresenter
     lateinit var presenter: UserRegistrationPresenter
@@ -35,29 +47,29 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             etLastName.apply {
-                initFocused { hasFocus -> if (!hasFocus) presenter.onCheckLastNameValid() }
-                initInput { presenter.onChangeLastNameText(it.toString()) }
+                onFocusChanged { hasFocus -> if (!hasFocus) presenter.onCheckLastNameValid() }
+                onTextChanged { presenter.onChangeLastNameText(it.toString()) }
             }
             etFirstName.apply {
-                initFocused { hasFocus -> if (!hasFocus) presenter.onCheckFirstNameValid() }
-                initInput { presenter.onChangeFirstNameText(it.toString()) }
+                onFocusChanged { hasFocus -> if (!hasFocus) presenter.onCheckFirstNameValid() }
+                onTextChanged { presenter.onChangeFirstNameText(it.toString()) }
             }
             etMiddleName.apply {
-                initFocused { hasFocus -> if (!hasFocus) presenter.onCheckMiddleNameValid() }
-                initInput { presenter.onChangeMiddleNameText(it.toString()) }
+                onFocusChanged { hasFocus -> if (!hasFocus) presenter.onCheckMiddleNameValid() }
+                onTextChanged { presenter.onChangeMiddleNameText(it.toString()) }
                 scNoMiddleName.setOnCheckedChangeListener { _, isChecked ->
                     presenter.onMiddleNameIsAbsent(isChecked)
                 }
             }
-            etLogin.apply {
-                initInput {
-                    presenter.onChangeLoginText(it.toString())
-                }
+            etPhone.onInputTextChanged {
+                presenter.onChangeLoginText(it.toString())
             }
             etBirthday.apply {
-                initAsDateTimePicker(null) {
-                    presenter.onChangeBirthdayText(it.toString())
+                val maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -16) }.time
+                tilBirthday.initAsDatePicker(null, null, maxDate) { y, m, d ->
+                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, d, m + 1, y)
                 }
+                onTextChanged { presenter.onChangeBirthdayText(it.toString()) }
             }
             passwordView.setPasswordValidCallback {
                 presenter.onChangePasswordText(it.password, it.isValid)
@@ -71,19 +83,54 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
             }
         }
     }
+
+    override fun setData(
+        lastName: String?,
+        firstName: String?,
+        middleName: String?,
+        isMiddleNameAbsent: Boolean,
+        phone: String?,
+        birthday: String?,
+        password: String?,
+        isAgree: Boolean
+    ) {
+        mBinding.apply {
+            etLastName.setText(lastName)
+            etFirstName.setText(firstName)
+            etMiddleName.apply {
+                setText(middleName)
+                isEnabled = !isMiddleNameAbsent
+            }
+            scNoMiddleName.isChecked = isMiddleNameAbsent
+            etPhone.setPhoneText(phone)
+            etBirthday.setText(birthday)
+            passwordView.setPasswords(password)
+            viewAgreement.setChecked(isAgree)
+        }
+    }
+
     override fun showLastNameError(show: Boolean, error: String?) {
-        if (error.isNullOrEmpty()) mBinding.etLastName.showError(show)
-        else mBinding.etLastName.showTextError(error)
+        mBinding.tilLastName.showCustomError(show)
+        mBinding.tvTitleLastName.apply {
+            changeTitleTextColor(show)
+            text = error ?: getString(R.string.user_profile_last_name)
+        }
     }
 
     override fun showFirstNameError(show: Boolean, error: String?) {
-        if (error.isNullOrEmpty()) mBinding.etFirstName.showError(show)
-        else mBinding.etFirstName.showTextError(error)
+        mBinding.tilFirstName.showCustomError(show)
+        mBinding.tvTitleFirstName.apply {
+            changeTitleTextColor(show)
+            text = error ?: getString(R.string.user_profile_name)
+        }
     }
 
     override fun showMiddleNameError(show: Boolean, error: String?) {
-        if (error.isNullOrEmpty()) mBinding.etMiddleName.showError(show)
-        else mBinding.etMiddleName.showTextError(error)
+        mBinding.tilMiddleName.showCustomError(show)
+        mBinding.tvTitleMiddleName.apply {
+            changeTitleTextColor(show)
+            text = error ?: getString(R.string.user_profile_middle_name)
+        }
     }
 
     override fun enableMiddleNameInput(enable: Boolean) {
@@ -95,11 +142,13 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
     }
 
     override fun showLoginError(show: Boolean) {
-        mBinding.etLogin.showError(show)
+        mBinding.tvTitlePhone.changeTitleTextColor(show)
+        mBinding.tilPhone.showCustomError(show)
     }
 
     override fun showBirthdayError(show: Boolean) {
-        mBinding.etBirthday.showError(show)
+        mBinding.tvTitleBirthday.changeTitleTextColor(show)
+        mBinding.tilBirthday.showIconError(show)
     }
 
     override fun showPasswordError(show: Boolean) {
@@ -115,10 +164,7 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
     }
 
     override fun showPhoneIsNotUnique(login: String) {
-        val message =
-            if (presenter.getLoginType() == "phone") getString(R.string.confirm_phone_text, login)
-            else getString(R.string.confirm_email_text, login)
-
+        val message = getString(R.string.confirm_phone_text, login)
         DefaultAlertDialog(
             requireContext(),
             null,
@@ -128,27 +174,22 @@ class UserRegistrationFragment : BaseFragment<FragmentRegistrationUserBinding>()
         ).setSelectCallback { presenter.registerUser(false) }
     }
 
-    override fun showCodeConfirmation(login: String) {
-        if (presenter.getLoginType() == "phone") {
-            findNavController().navigate(
-                R.id.phoneCodeConfirmFragment,
-                bundleOf("phone" to validatePhoneBeforeSend(login), "fromRegister" to true)
-            )
-        } else {
-            findNavController().navigate(
-                R.id.emailCodeConfirmFragment,
-                bundleOf("email" to login, "fromRegister" to true)
-            )
-        }
+    override fun showPhoneConfirmation(phone: String, auth: AuthResponse) {
+        val userPhone = validatePhoneBeforeSend(phone)
+        findNavController().navigate(
+            R.id.phoneCodeConfirmFragment,
+            bundleOf("phone" to userPhone, "auth" to auth)
+        )
     }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSave.showProgressLoading(false)
 
+
+    override fun binding() = FragmentRegistrationUserBinding::class.java
     override fun layout(): Int = R.layout.fragment_registration_user
     override val title: CharSequence by lazy { getString(R.string.auth_register) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
+    override fun scrollingView(): View = mBinding.scrollViewContent
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }

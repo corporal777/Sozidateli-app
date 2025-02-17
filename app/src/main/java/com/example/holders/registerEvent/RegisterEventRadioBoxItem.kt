@@ -56,4 +56,5 @@ open class RegisterEventRadioBoxItem(
 
     override fun getTitleView(binding: ItemRegisterEventRadioBinding): TextView = binding.textView
     override fun getLayout() = R.layout.item_register_event_radio
+    override fun initializeViewBinding(view: View) = ItemRegisterEventRadioBinding.bind(view)
 }

@@ -1,32 +1,55 @@
+@file:Suppress("UNUSED")
+
 package com.generator.qrcodegenerator
 
-
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
+import java.net.URLEncoder
 
 fun interface QrData {
 
     fun encode() : String
 
-    @Serializable
+    
     data class Text(val value : String) : QrData {
         override fun encode(): String = value
     }
 
-    @Serializable
+    
     data class Url(val url : String) : QrData {
         override fun encode(): String = url
     }
 
-    @Serializable
-    data class Email(val email: String) : QrData {
-        override fun encode(): String = "MAILTO: $email"
+    data class Email(
+        val email: String,
+        val copyTo: String? = null,
+        val subject: String? = null,
+        val body: String? = null
+    ) : QrData {
+        override fun encode(): String = buildString {
+            append("mailto:$email")
+
+            if (listOf(copyTo, subject, body).any { it.isNullOrEmpty().not() }) {
+                append("?")
+            }
+            val querries = buildList<String> {
+                if (copyTo.isNullOrEmpty().not()) {
+                    add("cc=$copyTo")
+                }
+                if (subject.isNullOrEmpty().not()) {
+                    add("subject=${escape(subject!!)}")
+                }
+                if (body.isNullOrEmpty().not()) {
+                    add("body=${escape(body!!)}")
+                }
+            }
+            append(querries.joinToString(separator = "&"))
+        }
+
+        private fun escape(text: String) = URLEncoder.encode(text, Charsets.UTF_8.name())
+            .replace("+", " ")
+
     }
 
-    @Serializable
+    
     data class GeoPos(
         val lat : Float,
         val lon : Float
@@ -34,7 +57,7 @@ fun interface QrData {
         override fun encode(): String = "GEO:$lat,$lon"
     }
 
-    @Serializable
+    
     data class Bookmark(
         val url : String,
         val title : String
@@ -47,7 +70,7 @@ fun interface QrData {
         }
     }
 
-    @Serializable
+    
     data class Wifi(
         val authentication: Authentication?=null,
         val ssid: String? = null,
@@ -67,15 +90,15 @@ fun interface QrData {
 
         override fun encode(): String = buildString{
             append("WIFI:")
-            if (ssid!= null) {
+            if (ssid!= null)
                 append("S:${escape(ssid)};")
-            }
-            if (authentication != null) {
+
+            if (authentication != null)
                 append("T:${authentication};")
-            }
-            if (psk != null) {
+
+            if (psk != null)
                 append("P:${escape(psk)};")
-            }
+
             append("H:$hidden;")
         }
         internal companion object {
@@ -90,7 +113,7 @@ fun interface QrData {
         }
     }
 
-    @Serializable
+    
     data class EnterpriseWifi(
         val ssid: String? = null,
         val psk: String? = null,
@@ -101,31 +124,31 @@ fun interface QrData {
     ) : QrData {
         override fun encode(): String = buildString{
             append("WIFI:")
-            if (ssid!= null) {
+            if (ssid!= null)
                 append("S:${Wifi.escape(ssid)};")
-            }
-            if (user != null){
+
+            if (user != null)
                 append("U:${Wifi.escape(user)};")
-            }
-            if (psk != null) {
+
+            if (psk != null)
                 append("P:${Wifi.escape(psk)};")
-            }
-            if (eap != null) {
+
+            if (eap != null)
                 append("E:${Wifi.escape(eap)};")
-            }
-            if (phase != null){
+
+            if (phase != null)
                 append("PH:${Wifi.escape(phase)};")
-            }
+
             append("H:$hidden;")
         }
     }
 
-    @Serializable
+    
     data class Phone(val phoneNumber: String) : QrData {
         override fun encode(): String = "TEL:$phoneNumber"
     }
 
-    @Serializable
+    
     data class SMS(
         val phoneNumber: String,
         val subject : String,
@@ -135,7 +158,7 @@ fun interface QrData {
                 "$phoneNumber${if (subject.isNotEmpty()) ":$subject" else ""}"
     }
 
-    @Serializable
+    
     data class BizCard(
         val firstName : String? = null,
         val secondName : String? = null,
@@ -144,35 +167,35 @@ fun interface QrData {
         val address : String? = null,
         val phone : String? = null,
         val email : String? = null,
-    ) : QrData{
+    ) : QrData {
         override fun encode(): String  = buildString {
             append("BIZCARD:")
-            if (firstName != null) {
+            if (firstName != null)
                 append("N:$firstName;")
-            }
-            if (secondName != null) {
+
+            if (secondName != null)
                 append("X:$secondName;")
-            }
-            if (job != null) {
+
+            if (job != null)
                 append("T:$job;")
-            }
-            if (company != null) {
+
+            if (company != null)
                 append("C:$company;")
-            }
-            if (address != null) {
+
+            if (address != null)
                 append("A:$address;")
-            }
-            if (phone != null) {
+
+            if (phone != null)
                 append("B:$phone;")
-            }
-            if (email != null) {
+
+            if (email != null)
                 append("E:$email;")
-            }
+
             append(";")
         }
     }
 
-    @Serializable
+    
     data class VCard(
         val name: String? = null,
         val company: String? = null,
@@ -184,32 +207,30 @@ fun interface QrData {
         val note: String? = null,
     ) : QrData {
 
-        override fun encode(): String  = buildString{
-            append("BEGIN:VCARD")
-            append("\n")
-            append("VERSION:3.0")
-            append("\n")
-            if (name != null) {
+        override fun encode(): String = buildString {
+            append("BEGIN:VCARD\n")
+            append("VERSION:3.0\n")
+            if (name != null)
                 append("N:$name\n")
-            }
-            if (company != null) {
+
+            if (company != null)
                 append("ORG:$company\n")
-            }
-            if (title != null) {
+
+            if (title != null)
                 append("TITLE$title\n")
-            }
-            if (phoneNumber != null) {
+
+            if (phoneNumber != null)
                 append("TEL:$phoneNumber\n")
-            }
-            if (website != null) {
+
+            if (website != null)
                 append("URL:$website\n")
-            }
-            if (email != null) {
+
+            if (email != null)
                 append("EMAIL:$email\n")
-            }
-            if (address != null) {
+
+            if (address != null)
                 append("ADR:$address\n")
-            }
+
             if (note != null) {
                 append("NOTE:$note\n")
             }
@@ -217,7 +238,7 @@ fun interface QrData {
         }
     }
 
-    @Serializable
+    
     data class MeCard(
         val name: String? = null,
         val address: String? = null,
@@ -226,28 +247,28 @@ fun interface QrData {
     ) : QrData {
         override fun encode(): String = buildString{
             append("MECARD:")
-            if (name != null) {
+            if (name != null)
                 append("N:$name;")
-            }
-            if (address != null) {
+
+            if (address != null)
                 append("ADR:$address;")
-            }
-            if (phoneNumber != null) {
+
+            if (phoneNumber != null)
                 append("TEL:$phoneNumber;")
-            }
-            if (email != null) {
+
+            if (email != null)
                 append("EMAIL:$email;")
-            }
+
             append(";")
         }
     }
 
-    @Serializable
+    
     data class YouTube(val videoId : String) : QrData {
         override fun encode(): String = "YOUTUBE:$videoId"
     }
 
-    @Serializable
+    
     data class Event(
         val uid: String? = null,
         val stamp: String? = null,
@@ -256,51 +277,29 @@ fun interface QrData {
         val end: String? = null,
         val summary: String? = null,
     ) : QrData {
-        override fun encode(): String = buildString{
+        override fun encode(): String = buildString {
             append("BEGIN:VEVENT\n")
-            if (uid != null) {
+            if (uid != null)
                 append("UID:$uid\n")
-            } else if (stamp != null) {
+            if (stamp != null)
                 append("DTSTAMP:$stamp\n")
-            } else if (organizer != null) {
+            if (organizer != null)
                 append("ORGANIZER:$organizer\n")
-            } else if (start != null) {
+
+            if (start != null)
                 append("DTSTART:$start\n")
-            } else if (end != null) {
+
+            if (end != null)
                 append("DTEND:$end\n")
-            } else if (summary != null) {
+            if (summary != null)
                 append("SUMMARY:$summary\n")
-            }
-            append("\nEND:VEVENT")
+
+            append("END:VEVENT")
         }
     }
 
-    @Serializable
+    
     data class GooglePlay(val appPackage : String) : QrData {
         override fun encode(): String = "{{{market://details?id=%$appPackage}}}"
-    }
-
-    companion object : SerializationProvider {
-        override val defaultSerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModule {
-                polymorphic(QrData::class) {
-                    subclass(Text::class)
-                    subclass(Url::class)
-                    subclass(Email::class)
-                    subclass(GeoPos::class)
-                    subclass(Bookmark::class)
-                    subclass(Wifi::class)
-                    subclass(EnterpriseWifi::class)
-                    subclass(Phone::class)
-                    subclass(SMS::class)
-                    subclass(BizCard::class)
-                    subclass(VCard::class)
-                    subclass(MeCard::class)
-                    subclass(YouTube::class)
-                    subclass(Event::class)
-                    subclass(GooglePlay::class)
-                }
-            }
-        }
     }
 }

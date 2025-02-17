@@ -4,23 +4,23 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.OrganizationNew
 import com.example.app.databinding.LayoutListBinding
+import com.example.data.models.OrganizationNew
 import com.example.extensions.findItemBy
 import com.example.extensions.updateItem
 import com.example.holders.OrganizationItem
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteOrganizationsFragment : BaseFragment<LayoutListBinding>(),
+class FavoriteOrganizationsFragment : BaseVBFragment<LayoutListBinding>(),
     FavoriteOrganizationsContract.View {
 
     @InjectPresenter
@@ -87,6 +87,6 @@ class FavoriteOrganizationsFragment : BaseFragment<LayoutListBinding>(),
         )
     }
 
-
+    override fun binding() = LayoutListBinding::class.java
     override fun layout() = R.layout.layout_list
 }

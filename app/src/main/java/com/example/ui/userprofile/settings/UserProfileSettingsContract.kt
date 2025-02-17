@@ -5,25 +5,30 @@ import android.view.ViewGroup
 import com.example.data.models.FieldDetails
 import com.example.data.models.SnAuth
 import com.example.data.models.UserDetail
+import com.example.ui.base.BaseContract
 import com.example.ui.userprofile.base.BaseUserProfileContract
 import com.example.ui.views.CustomCheckView
+import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface UserProfileSettingsContract {
-    interface View : BaseUserProfileContract.View {
+    interface View : BaseContract.View {
 
-        @Skip
-        fun setUserPassword(isAbsent : Boolean)
-
-        @Skip
-        fun setUserSocialBinds(user: UserDetail)
+        @OneExecution
+        fun setUserData(user: UserDetail)
 
         @OneExecution
         fun showChangeEmail(email : String?)
 
         @OneExecution
-        fun showChangePassword(isChange : Boolean)
+        fun showChangePhone()
+
+        @OneExecution
+        fun showChangePassword()
+
+        @OneExecution
+        fun showCreatePassword()
 
         @OneExecution
         fun showChangeName(user : UserDetail)
@@ -34,31 +39,23 @@ interface UserProfileSettingsContract {
         @OneExecution
         fun showDeleteProfile()
 
-        @OneExecution
-        fun showChangePhone()
-
-        @OneExecution
-        fun showEmailConfirmation(email : String)
+        @Skip
+        fun showBlockingLoading(show : Boolean)
 
         @Skip
-        fun showBlockingLoading(show : Boolean, customView : ViewGroup)
-
-        @Skip
-        fun showAccountAlreadyBoundDialog(view: ViewGroup, snAuth: SnAuth?)
+        fun showAccountAlreadyBoundDialog(snAuth: SnAuth?)
     }
 
-    interface Presenter : BaseUserProfileContract.Presenter {
+    interface Presenter : BaseContract.Presenter {
         fun onChangePhoneClick()
         fun onChangePasswordClick()
         fun onChangeEmailClick()
-        fun onDeleteEmail()
-        fun onDeleteConfirmEmail(email: String)
 
-        fun onChangePrivacyConfirm(hidden: Boolean, view : ViewGroup)
+        fun onChangePrivacyConfirm(hidden: Boolean)
 
-        fun onBlockProjectNotificationsClick(hidden: Boolean, view : ViewGroup)
-        fun onBlockOrganizationNotificationsClick(hidden: Boolean, view : ViewGroup)
-        fun onBlockEventNotificationsClick(hidden: Boolean, view : ViewGroup)
+        fun onBlockProjectNotificationsClick(hidden: Boolean)
+        fun onBlockOrganizationNotificationsClick(hidden: Boolean)
+        fun onBlockEventNotificationsClick(hidden: Boolean)
 
         fun onDeleteProfileClick()
         fun onDeleteProfileConfirm()
@@ -67,7 +64,7 @@ interface UserProfileSettingsContract {
         fun showChangeNameClick()
         fun showChangeShortNameClick()
 
-        fun onBindVkAccount(context : Context, view: ViewGroup, snAuth: SnAuth?)
-        fun onUnbindVkAccount(view: ViewGroup)
+        fun onBindVkAccount(context : Context, snAuth: SnAuth?)
+        fun onUnbindVkAccount()
     }
 }

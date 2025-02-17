@@ -2,13 +2,14 @@ package com.example.ui.event.location.buildingScheme
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemBuildingSchemeBinding
+import com.example.extensions.onScrolled
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
-import com.example.extensions.onScrolled
+import com.xwray.groupie.viewbinding.BindableItem
 
 class DestinationSchemeItem(
     val id: String,
@@ -53,7 +54,7 @@ class DestinationSchemeItem(
     }
 
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is DestinationSchemeItem) return false
         if (id != other.id) return false
         if (name != other.name) return false
@@ -62,5 +63,6 @@ class DestinationSchemeItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemBuildingSchemeBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_building_scheme
 }

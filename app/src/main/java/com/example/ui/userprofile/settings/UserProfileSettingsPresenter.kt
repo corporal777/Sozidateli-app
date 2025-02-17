@@ -17,6 +17,7 @@ import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.auth.login.LoginPresenter
 import com.example.ui.auth.snAuth.SnAuthCallbackHelper
+import com.example.ui.base.BasePresenter
 import com.example.ui.userprofile.base.BaseUserProfilePresenter
 import com.example.ui.views.CustomCheckView
 import com.example.util.PHONE_PERSONAL
@@ -45,62 +46,18 @@ class UserProfileSettingsPresenter @Inject constructor(
     private val socket: SocketIOManager,
     private val notificationManager: NotificationManager,
     private val authRepository: AuthRepository
-) : BaseUserProfilePresenter<UserProfileSettingsContract.View>(appData),
-    UserProfileSettingsContract.Presenter {
+) : BasePresenter<UserProfileSettingsContract.View>(appData), UserProfileSettingsContract.Presenter {
 
+    val user get() = appData.getUser()
 
     override fun attachView(view: UserProfileSettingsContract.View?) {
         super.attachView(view)
-        viewState.setUserPassword(user.state?.isEmptyPassword ?: false)
-        viewState.setUserSocialBinds(user)
-    }
-
-    override fun onDeleteConfirmEmail(email: String) {
-        compositeDisposable += authRepository.deleteConfirmEmail(email)
-            .withCheckInternetConnectivity()
+        compositeDisposable += Maybe.just(user)
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                appData.updateUser { this.email?.onConfirmation = null }
+            .subscribeSimple { user ->
+                viewState.setUserData(user)
             }
     }
-
-    override fun onDeleteEmail() {
-        compositeDisposable += authRepository.registerEmailResend("")
-            .withCheckInternetConnectivity()
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                appData.updateUser {
-                    this.email?.value = null
-                    this.email?.isConfirmed = null
-                    this.email?.onConfirmation = null
-                }
-                viewState.showChangeEmail(null)
-            }
-    }
-
-
-    override fun onChangePrivacyConfirm(hidden: Boolean, view: ViewGroup) {
-        val map = mapOf(USER_STATE to UserState(isHidden = hidden.toString()))
-        updateUser(map, view) { it.state?.isHidden = hidden.toString() }
-    }
-
-    override fun onBlockEventNotificationsClick(hidden: Boolean, view: ViewGroup) {
-        val map = mapOf(UserDetail.BLOCK_EVENT to hidden)
-        updateUser(map, view) { it.blockedNotifications?.event = hidden }
-    }
-
-    override fun onBlockOrganizationNotificationsClick(hidden: Boolean, view: ViewGroup) {
-        val map = mapOf(UserDetail.BLOCK_ORG to hidden)
-        updateUser(map, view) { it.blockedNotifications?.organizations = hidden }
-    }
-
-    override fun onBlockProjectNotificationsClick(hidden: Boolean, view: ViewGroup) {
-        val map = mapOf(UserDetail.BLOCK_PROJECT to hidden)
-        updateUser(map, view) { it.blockedNotifications?.projects = hidden }
-    }
-
 
     override fun onDeleteProfileConfirm() {
         compositeDisposable += userRepository.deleteProfile(appData.getId())
@@ -115,23 +72,34 @@ class UserProfileSettingsPresenter @Inject constructor(
             }
     }
 
-    private fun updateUser(
-        data: Map<String, Any?>,
-        view: ViewGroup,
-        onComplete: (UserDetail) -> Unit
-    ) {
+    override fun onChangePrivacyConfirm(hidden: Boolean) {
+        updateUser(mapOf(USER_STATE to UserState(isHidden = hidden.toString())))
+    }
+
+    override fun onBlockEventNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_EVENT to hidden))
+    }
+
+    override fun onBlockOrganizationNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_ORG to hidden))
+    }
+
+    override fun onBlockProjectNotificationsClick(hidden: Boolean) {
+        updateUser(mapOf(UserDetail.BLOCK_PROJECT to hidden))
+    }
+
+    private fun updateUser(data: Map<String, Any?>) {
         compositeDisposable += userRepository.updateUserProfile(appData.getId(), data)
-            .ignoreElement()
             .performOnBackgroundOutOnMain()
-            .withProgressLoading(view)
+            .withProgressBarDialogLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onComplete = { appData.updateUser(onComplete) }
+                onSuccess = { viewState.setUserData(user) }
             )
     }
 
 
-    override fun onBindVkAccount(context: Context, view: ViewGroup, snAuth: SnAuth?) {
+    override fun onBindVkAccount(context: Context, snAuth: SnAuth?) {
         compositeDisposable += Single.defer {
             if (snAuth == null) SnAuthCallbackHelper.start(context, SnType.VK)
             else Single.just(snAuth)
@@ -139,73 +107,72 @@ class UserProfileSettingsPresenter @Inject constructor(
             .performOnBackgroundOutOnMain()
             .subscribeSimple { sn ->
                 userRepository.bindSocialAccount(sn.uuid, sn.snType.code, snAuth != null)
-                    .doOnSuccess { user.socialBinds?.vkontakte = it.data }.ignoreElement()
+                    .doOnSuccess { appData.getUser().socialBinds?.vkontakte = it.data }
                     .performOnBackgroundOutOnMain()
-                    .withProgressLoading(view)
+                    .withProgressLoading()
                     .subscribeSimple(
-                        onError = {
-                            if (snAuthError(it) is VkAccountAlreadyBoundException)
-                                viewState.showAccountAlreadyBoundDialog(view, sn)
-                            else onReceiveError(it)
-                        },
-                        onComplete = {
-                            viewState.setUserSocialBinds(user)
-                        }
+                        onError = { onReceiveSnAuthError(it, sn) },
+                        onSuccess = { viewState.setUserData(user) }
                     )
             }
     }
 
-    override fun onUnbindVkAccount(view: ViewGroup) {
+    override fun onUnbindVkAccount() {
         compositeDisposable += userRepository.unbindSocialAccount(user.getVkUUID(), SnType.VK.code)
-            .doOnComplete { user.socialBinds?.vkontakte = null }
+            .doOnComplete { appData.getUser().socialBinds?.vkontakte = null }
+            .andThen(Maybe.just(true))
             .performOnBackgroundOutOnMain()
-            .withProgressLoading(view)
-            .subscribeSimple {
-                viewState.setUserSocialBinds(user)
-            }
+            .withProgressLoading()
+            .subscribeSimple(
+                onError = { onReceiveError(it) },
+                onSuccess = { viewState.setUserData(user) }
+            )
     }
 
     override fun onDeleteProfileClick() = viewState.showDeleteProfile()
+
     override fun onChangePhoneClick() = viewState.showChangePhone()
 
-    override fun onChangeEmailClick() {
-        val email = user.email?.value ?: user.email?.onConfirmation
-        viewState.showChangeEmail(email)
-    }
+    override fun onChangeEmailClick() = viewState.showChangeEmail(user.email?.value)
 
-    override fun onChangePasswordClick() = viewState.showChangePassword(false)
+    override fun onChangePasswordClick() = viewState.showChangePassword()
+
     override fun showChangeNameClick() = viewState.showChangeName(user)
+
     override fun showChangeShortNameClick() = viewState.showChangeShortName(user)
 
-    private fun Completable.withProgressLoading(view: ViewGroup): Completable {
+    private fun <T> Maybe<T>.withProgressLoading(): Maybe<T> {
         val loadingDisposable = Completable.complete()
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnComplete { viewState.showBlockingLoading(true, view) }
-            .doOnDispose { viewState.showBlockingLoading(false, view) }
+            .doOnComplete { viewState.showBlockingLoading(true) }
+            .doOnDispose { viewState.showBlockingLoading(false) }
             .subscribe()
         val actionHide = Action {
-            if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false, view)
+            if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false)
             else loadingDisposable.dispose()
         }
+
         fun <T> actionConsumer() = Consumer<T> {
-            if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false, view)
+            if (loadingDisposable.isDisposed) viewState.showBlockingLoading(false)
             else loadingDisposable.dispose()
         }
         return this.doFinally(actionHide)
             .doOnDispose(actionHide)
+            .doOnSuccess(actionConsumer())
             .doOnError(actionConsumer())
     }
 
-    private fun snAuthError(it: Throwable): Throwable {
-        if (it !is HttpException) return it
-        try {
-            val error = Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
-            if (error == null) return it
-            else if (error.hasError("Vk profile already connected."))
-                return VkAccountAlreadyBoundException()
-            else return it
-        } catch (e: Exception) {
-            return e
+
+    private fun onReceiveSnAuthError(it: Throwable, sn : SnAuth) {
+        if (it !is HttpException) onReceiveError(it)
+        else {
+            try {
+                val error = Gson().fromJson(it.response()?.errorBody()?.string(), ApiError::class.java)
+                if (error == null) onReceiveError(it)
+                else if (error.hasError("Vk profile already connected."))
+                    viewState.showAccountAlreadyBoundDialog(sn)
+                else onReceiveError(it)
+            } catch (e: Exception) { onReceiveError(e) }
         }
     }
 }

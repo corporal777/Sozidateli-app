@@ -28,24 +28,24 @@ class CustomAppBarLayoutBehavior : AppBarLayout.ScrollingViewBehavior {
         child: View,
         layoutDirection: Int
     ): Boolean {
-        try {
-            if (child is FragmentContainerView) {
-                val navHost = (parent.context as MainActivity).getNavHostFragment()
-                val fr = navHost.childFragmentManager.fragments.firstOrNull()
-                if (fr == null || fr.view == null) return super.onLayoutChild(parent, child, layoutDirection)
-
-                if (fr.view is NestedScrollView || fr.view is RecyclerView) findView(fr.view)
-                else {
-                    val scrollView = fr.view?.allViews?.find { x -> x is RecyclerView || x is NestedScrollView || x is ScrollView }
-                    if (scrollView != null) findView(scrollView)
-                    else onScrollChange.invoke(0)
-                }
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            onScrollChange.invoke(0)
-        }
+//        try {
+//            if (child is FragmentContainerView) {
+//                val navHost = (parent.context as MainActivity).getNavHostFragment()
+//                val fr = navHost.childFragmentManager.fragments.firstOrNull()
+//                if (fr == null || fr.view == null) return super.onLayoutChild(parent, child, layoutDirection)
+//
+//                if (fr.view is NestedScrollView || fr.view is RecyclerView) findView(fr.view)
+//                else {
+//                    val scrollView = fr.view?.allViews?.find { x -> x is RecyclerView || x is NestedScrollView || x is ScrollView }
+//                    if (scrollView != null) findView(scrollView)
+//                    else onScrollChange.invoke(0)
+//                }
+//            }
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            onScrollChange.invoke(0)
+//        }
 
         return super.onLayoutChild(parent, child, layoutDirection)
     }

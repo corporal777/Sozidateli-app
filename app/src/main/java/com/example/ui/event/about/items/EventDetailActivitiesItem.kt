@@ -1,18 +1,12 @@
 package com.example.ui.event.about.items
 
-import com.example.data.UserEventData
 import com.example.data.models.EventActivityModel
-import com.example.data.models.EventScheduleDay
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.findItemBy
+import com.example.holders.EventActivityDayItem
 import com.example.holders.redesign.EventActivityItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
-import java.util.Calendar
-import java.util.Locale
-import java.util.concurrent.ThreadLocalRandom
 
 class EventDetailActivitiesItem(
     val eventId: String,
@@ -23,10 +17,10 @@ class EventDetailActivitiesItem(
 ) : NestedGroup() {
 
     private val mContentItem = Section()
-    //private val mDateItem = EventActivityDateItem(createEventScheduleDay(date))
-    private val mDateItem = Section()
+    private val mDateItem = EventActivityDayItem(date)
 
     init {
+
         add(mDateItem)
         mContentItem.update(subEvents.map { data ->
             EventActivityItem(eventId, data, emptyList(), clickListener, canShow ?: false)
@@ -55,21 +49,6 @@ class EventDetailActivitiesItem(
         mContentItem.findItemBy<EventActivityItem> { it.id == idLong }?.notifyChanged()
     }
 
-    private fun createEventScheduleDay(date: String?): EventScheduleDay? {
-        if (date.isNullOrEmpty()) return null
-
-        val millis = defaultServerDateFormatter.parse(date)?.time ?: 0
-        val cal = millis.calendar()
-        return EventScheduleDay(
-            ThreadLocalRandom.current().nextInt(0, 1000),
-            date,
-            millis,
-            cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
-            cal.get(Calendar.DAY_OF_MONTH),
-            true
-        )
-    }
 
     override fun getGroupCount() = 2
-
 }

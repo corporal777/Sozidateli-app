@@ -1,9 +1,9 @@
 package com.example.holders.redesign
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventPageNewBinding
-import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventPageItem(
     val id : Int,
@@ -21,11 +21,12 @@ class EventPageItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventPageItem) return false
         if (name != other.name) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventPageNewBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_page_new
 }

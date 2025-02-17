@@ -1,34 +1,40 @@
 package com.example.ui.views.loading
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.LayoutLoadingButtonBinding
 import com.example.extensions.dp
+import com.example.extensions.inverseSp
+import com.example.extensions.px
+import com.example.extensions.sp
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.getDrawable
+import io.github.inflationx.calligraphy3.CalligraphyUtils
 
-class CustomLoadingButton : ConstraintLayout {
+class CustomLoadingButton : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         obtainAttributes(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private var isProgressVisible = false
-    private var buttonInitText : CharSequence = ""
+    private var buttonInitText: CharSequence = ""
 
     private val loadingView =
         LayoutLoadingButtonBinding.inflate(LayoutInflater.from(context), this, true)
@@ -47,17 +53,24 @@ class CustomLoadingButton : ConstraintLayout {
             R.styleable.CustomLoadingButton_buttonMinHeight,
             R.dimen.auth_button_min_height
         )
-        val buttonTextColor = a.getColor(R.styleable.CustomLoadingButton_buttonTextColor, Color.WHITE)
-        val buttonTextSize = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonTextSize,
+        val buttonTextColor =
+            a.getColor(R.styleable.CustomLoadingButton_buttonTextColor, Color.WHITE)
+        val buttonTextSize = a.getDimensionPixelSize(
+            R.styleable.CustomLoadingButton_buttonTextSize,
             resources.getDimensionPixelSize(R.dimen.common_button_text_size)
         )
         val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText) ?: ""
         val buttonDrawable = a.getDrawable(R.styleable.CustomLoadingButton_buttonDrawable)
 
-        val buttonPadding = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonPaddingHorizontal, 0.dp)
-
         a.recycle()
-        initActionButton(buttonBack, buttonTextColor, buttonMinHeight, buttonTextSize, buttonText, buttonDrawable, buttonPadding)
+        initActionButton(
+            buttonBack,
+            buttonTextColor,
+            buttonMinHeight,
+            buttonTextSize,
+            buttonText,
+            buttonDrawable
+        )
 
         buttonInitText = buttonText
         loadingView.progressLoad.apply {
@@ -73,8 +86,7 @@ class CustomLoadingButton : ConstraintLayout {
         buttonHeight: Int,
         buttonTextSize: Int,
         buttonText: CharSequence?,
-        buttonDrawable: Drawable?,
-        buttonPaddingHorizontal : Int
+        buttonDrawable: Drawable?
     ) {
         loadingView.ivButton.apply {
             isVisible = buttonDrawable != null
@@ -87,7 +99,6 @@ class CustomLoadingButton : ConstraintLayout {
             text = buttonText
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize.toFloat())
-            setPadding(buttonPaddingHorizontal, 0, buttonPaddingHorizontal,0)
         }
 
     }
@@ -96,7 +107,7 @@ class CustomLoadingButton : ConstraintLayout {
         loadingView.btnLoad.isEnabled = enabled
     }
 
-    override fun setSelected(enabled: Boolean){
+    override fun setSelected(enabled: Boolean) {
         loadingView.btnLoad.isSelected = !enabled
     }
 
@@ -120,7 +131,7 @@ class CustomLoadingButton : ConstraintLayout {
         )
     }
 
-    fun showProgressLoading(show : Boolean) {
+    fun showProgressLoading(show: Boolean) {
         if (isProgressVisible == show) return
         isProgressVisible = show
         loadingView.apply {

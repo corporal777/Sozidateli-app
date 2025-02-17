@@ -1,12 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <padding
-                android:left="@dimen/background_custom_input_view_padding_left"
-                android:right="@dimen/background_input_padding_five" />
-            <solid android:color="#4DC3996C"/>
-            <corners android:radius="10dp" />
-        </shape>
-    </item>
-</layer-list>
+<?xml version="1.0" encoding="utf-8"?><!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <item>-->
+<!--        <shape>-->
+<!--            <padding-->
+<!--                android:left="@dimen/background_custom_input_view_padding_left"-->
+<!--                android:right="@dimen/background_input_padding_five" />-->
+<!--            <solid android:color="#4DC3996C"/>-->
+<!--            <corners android:radius="10dp" />-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--</layer-list>-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <padding
+        android:left="@dimen/background_custom_input_view_padding_left"
+        android:right="@dimen/background_input_padding_five" />
+    <solid android:color="#4DC3996C" />
+    <corners android:radius="10dp" />
+</shape>

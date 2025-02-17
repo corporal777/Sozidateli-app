@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.app.R
 import com.example.app.databinding.BottomSheetProfileDataBinding
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.views.CustomSnackBar
 import com.example.util.copyTextToBuffer
 import com.example.util.setImage
@@ -20,10 +20,12 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
+import dev.androidbroadcast.vbpd.viewBinding
 
 
-class ProfileDataFragment : BaseBottomSheetFragment<BottomSheetProfileDataBinding>(),
-    ProfileDataContract.View {
+class ProfileDataFragment : BaseBSFragment(), ProfileDataContract.View {
+
+    private val viewBinding by viewBinding(BottomSheetProfileDataBinding::bind)
 
 
     @InjectPresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
@@ -35,62 +37,58 @@ class ProfileDataFragment : BaseBottomSheetFragment<BottomSheetProfileDataBindin
     @ProvidePresenter(tag = PROFILE_DATA_FRAGMENT_TAG)
     fun providePresenter(): ProfileDataPresenter = presenterProvider.get()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.apply {
-            btnClose.setOnClickListener {
-                dismiss()
-            }
+        viewBinding.btnClose.setOnClickListener {
+            dismiss()
         }
     }
 
 
     override fun setImage(image: Bitmap) {
-        mBinding.apply {
-            ivQrCode.setImage(image)
+        viewBinding.apply {
+            ivQrCode.setImage(image, 300)
             btnSave.setOnClickListener {
-                presenter.saveImageToGalleryClick(requireContext(), image)
+                presenter.onSaveImageClick(image)
             }
             btnShare.setOnClickListener {
-                presenter.shareImageClick(requireContext(), image)
+                presenter.onShareImageClick(requireContext(), image)
             }
         }
     }
 
     override fun setName(userName: String, userLink: String) {
-        mBinding.apply {
+        viewBinding.apply {
             tvUserName.text = userName
-            tvLink.text = StringBuilder(userLink).substring(8, userLink.length)
-            clCopy.setOnClickListener {
-                copyTextToBuffer(requireContext(), userLink)
-                showSnackBarMessage(
-                    getString(R.string.link_is_copied),
-                    R.drawable.ic_profile_link_edit
-                )
+            btnCopy.apply {
+                text = StringBuilder(userLink).substring(8, userLink.length)
+                setOnClickListener {
+                    copyTextToBuffer(requireContext(), userLink)
+                    showSnackBarMessage(R.string.link_is_copied, R.drawable.ic_profile_link)
+                }
             }
             ivShareLink.setOnClickListener {
-                presenter.shareLinkClick(userLink)
+                presenter.onShareLinkClick(userLink)
             }
         }
     }
 
-    override fun showSnackBarMessage(message: String, icon: Int) {
-        val snack = CustomSnackBar.make(mBinding.bottomSheet, Snackbar.LENGTH_SHORT)
-        snack.setText(message)
+    override fun showSnackBarMessage(message: Int, icon: Int) {
+        val snack = CustomSnackBar.make(viewBinding.bottomSheet, Snackbar.LENGTH_SHORT)
+        snack.setText(getString(message))
         snack.setIcon(icon)
         snack.show()
     }
 
     override fun showCustomLoading() {
-        mBinding.apply {
+        viewBinding.apply {
             ivQrCode.isVisible = false
             shimmerQrCode.isVisible = true
         }
     }
 
     override fun hideCustomLoading() {
-        mBinding.apply {
+        viewBinding.apply {
             ivQrCode.isVisible = true
             shimmerQrCode.isVisible = false
         }
@@ -135,10 +133,10 @@ class ProfileDataFragment : BaseBottomSheetFragment<BottomSheetProfileDataBindin
         }
     }
 
-    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "profile_data_dialog")
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, PROFILE_DATA_FRAGMENT_TAG)
 
     companion object {
-        const val PROFILE_DATA_FRAGMENT_TAG = "profile_data_tag"
+        const val PROFILE_DATA_FRAGMENT_TAG = "profile_data_dialog"
     }
 
 

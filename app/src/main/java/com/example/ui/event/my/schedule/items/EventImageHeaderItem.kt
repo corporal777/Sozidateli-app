@@ -2,11 +2,12 @@ package com.example.ui.event.my.schedule.items
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventImageHeaderBinding
-import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.parseColor
+import com.example.util.setImage
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventImageHeaderItem(
     val id: String?,
@@ -35,7 +36,7 @@ class EventImageHeaderItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventImageHeaderItem) return false
         if (title != other.title) return false
         if (image != other.image) return false
@@ -43,5 +44,6 @@ class EventImageHeaderItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventImageHeaderBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_image_header
 }

@@ -1,9 +1,10 @@
 package com.example.ui.views.suggestFieldView.format
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemFormatBinding
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormatItem(
     private val itemId: Long?,
@@ -25,12 +26,13 @@ class EventFormatItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is EventFormatItem) return false
         if (format != other.format) return false
         if (hasMask != other.hasMask) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemFormatBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_format
 }

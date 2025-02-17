@@ -1,10 +1,11 @@
 package com.example.ui.userSessions.items
 
+import android.view.View
 import android.widget.ImageView
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.ItemOtherSessionBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.UserSessionModel
+import com.xwray.groupie.viewbinding.BindableItem
 
 class OtherSessionItem(
     val session: UserSessionModel?,
@@ -48,11 +49,12 @@ class OtherSessionItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is OtherSessionItem) return false
         if (session != other.session) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemOtherSessionBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_other_session
 }

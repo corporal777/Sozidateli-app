@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentUserProfileMainDataBinding
+import com.example.data.models.UserDetail
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.extensions.setOnClickListener
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.GENDER_FEMALE
 import com.example.util.GENDER_MALE
@@ -24,9 +24,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class UserProfileMainDataFragment : BaseFragment<FragmentUserProfileMainDataBinding>(),
+class UserProfileMainDataFragment : BaseVBFragment<FragmentUserProfileMainDataBinding>(),
     UserProfileMainDataContract.View, ToolbarFragment {
 
+    override fun binding() = FragmentUserProfileMainDataBinding::class.java
     override fun layout() = R.layout.fragment_user_profile_main_data
 
     @InjectPresenter

@@ -6,11 +6,18 @@ import android.graphics.drawable.ColorDrawable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
+import android.util.Log
 import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.view.isVisible
+import com.example.app.R
+import com.example.app.databinding.ItemEventDetailMainBinding
+import com.example.data.models.Event
+import com.example.data.models.EventNew
+import com.example.data.models.EventRegistrationStateModel
 import com.example.extensions.calendar
 import com.example.extensions.daysBetween
 import com.example.extensions.defaultServerDateFormatter
@@ -22,18 +29,13 @@ import com.example.extensions.markWon
 import com.example.extensions.onClickListener
 import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
-import com.example.app.R
-import com.example.data.models.Event
-import com.example.data.models.EventNew
-import com.example.data.models.EventRegistrationStateModel
-import com.example.app.databinding.ItemEventDetailMainBinding
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
 import com.example.util.setImage
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventDetailImageItem(
     event: EventNew,
@@ -170,7 +172,7 @@ class EventDetailImageItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is EventDetailImageItem) return false
         if (eventData != other.eventData) return false
         return true
@@ -179,7 +181,7 @@ class EventDetailImageItem(
     override fun bind(
         viewBinding: ItemEventDetailMainBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -209,8 +211,10 @@ class EventDetailImageItem(
 
             if (startDate.isSameDay(finishDate)) {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г."
-                val secondDate = dateStart.formatToDefaultTime() + " - " + dateEnd.formatToDefaultTime()
-                return "$firstDate, $secondDate"
+                val firstTime = dateStart.formatToDefaultTime()
+                val secondTime = dateEnd.formatToDefaultTime()
+                return if (firstTime.isNullOrEmpty() || secondTime.isNullOrEmpty()) firstDate
+                else "$firstDate, $firstTime - $secondTime"
             } else {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + dateStart.formatToDefaultTime()
                 val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + dateEnd.formatToDefaultTime()
@@ -340,6 +344,6 @@ class EventDetailImageItem(
         fun onShowNeedAuth(eventId: String)
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventDetailMainBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_detail_main
 }

@@ -1,5 +1,6 @@
 package com.example.ui.auth.register
 
+import com.example.data.models.AuthResponse
 import com.example.data.models.SnUser
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.base.BaseContract
@@ -8,6 +9,18 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface UserRegistrationContract {
     interface View : BaseContract.View {
+        @OneExecution
+        fun setData(
+            lastName: String?,
+            firstName: String?,
+            middleName: String?,
+            isMiddleNameAbsent : Boolean,
+            phone: String?,
+            birthday: String?,
+            password: String?,
+            isAgree: Boolean
+        )
+
         @Skip
         fun enableRegisterBtn(isEnable: Boolean)
 
@@ -39,7 +52,7 @@ interface UserRegistrationContract {
         fun showPhoneIsNotUnique(login: String)
 
         @OneExecution
-        fun showCodeConfirmation(login: String)
+        fun showPhoneConfirmation(phone: String, auth: AuthResponse)
     }
 
     interface Presenter : BaseContract.Presenter {

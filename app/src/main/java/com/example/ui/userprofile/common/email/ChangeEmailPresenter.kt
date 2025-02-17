@@ -21,7 +21,6 @@ import javax.inject.Inject
 class ChangeEmailPresenter
 @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
     private val appData: AppData,
 ) : BasePresenter<ChangeEmailContract.View>(appData), ChangeEmailContract.Presenter {
 

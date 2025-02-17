@@ -7,14 +7,14 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:text="@string/user_profile_experience"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workDateTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             app:layout_goneMarginTop="20dp"
             android:text="@string/profile_social_date"
@@ -24,7 +24,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workDateTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -46,7 +46,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workOrgTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             android:text="@string/profile_social_project_name"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workOrgTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -77,7 +77,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workPositionTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             android:text="@string/profile_social_project_role"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/workPositionTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

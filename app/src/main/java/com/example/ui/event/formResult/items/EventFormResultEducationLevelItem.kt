@@ -1,8 +1,9 @@
 package com.example.ui.event.formResult.items
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventFormResultEducationLevelBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultEducationLevelItem (
     val educationLevel: String?,
@@ -20,6 +21,6 @@ class EventFormResultEducationLevelItem (
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultEducationLevelBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_education_level
 }

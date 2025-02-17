@@ -1,10 +1,9 @@
 package com.example.ui.event.formResult.items
 
-import androidx.core.view.isVisible
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventFormResultAcademicDegreeBinding
-import com.example.app.databinding.ItemEventFormResultPassportBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultAcademicDegreeItem(
     val degree: String?,
@@ -29,6 +28,6 @@ class EventFormResultAcademicDegreeItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemEventFormResultAcademicDegreeBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_form_result_academic_degree
 }

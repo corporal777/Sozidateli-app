@@ -12,8 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentFinishRegisterBinding
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.onFocusChanged
+import com.example.extensions.onTextChanged
 import com.example.extensions.removeFirstAndLastSpaces
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.ConfirmPhoneDialog
 import com.example.util.AuthValidateUtil
@@ -23,13 +26,10 @@ import com.example.util.initSwitch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onBackPressedCallback
-import com.example.extensions.onFocusChanged
-import com.example.extensions.onTextChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
+class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
     FinishRegisterContract.View {
 
     private val timerEmailMessage by lazy { getString(R.string.auth_register_confirm_email_timer_two) }
@@ -290,6 +290,7 @@ class FinishRegisterFragment : BaseFragment<FragmentFinishRegisterBinding>(),
         }
     }
 
+    override fun binding() = FragmentFinishRegisterBinding::class.java
     override fun layout() = R.layout.fragment_finish_register
 
 }

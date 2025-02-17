@@ -3,14 +3,14 @@ package com.example.holders
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
-import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.app.R
+import com.example.app.databinding.ItemProfileDataEditAcademicDegreeBinding
 import com.example.data.models.AcademicDegreeModel
 import com.example.data.models.EducationLevel
-import com.example.app.databinding.ItemProfileDataEditAcademicDegreeBinding
 import com.example.util.initSwitch
 import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataAcademicDegreeEditItem(
     id: Int?,
@@ -54,7 +54,7 @@ class ProfileDataAcademicDegreeEditItem(
         }
     }
 
-    override fun bind(viewBinding: ItemProfileDataEditAcademicDegreeBinding, position: Int, payloads: MutableList<Any>?) {
+    override fun bind(viewBinding: ItemProfileDataEditAcademicDegreeBinding, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNullOrEmpty()) super.bind(viewBinding, position, payloads)
         else {
             if (!isDegreeValid()) {
@@ -108,7 +108,7 @@ class ProfileDataAcademicDegreeEditItem(
         )
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is ProfileDataAcademicDegreeEditItem) return false
         if (degreesLevel != other.degreesLevel) return false
         if (sciencesLevel != other.sciencesLevel) return false
@@ -118,5 +118,6 @@ class ProfileDataAcademicDegreeEditItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataEditAcademicDegreeBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_edit_academic_degree
 }

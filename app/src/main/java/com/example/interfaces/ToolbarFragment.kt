@@ -3,15 +3,6 @@ package com.example.interfaces
 import android.view.ViewGroup
 import com.example.ui.views.toolbar.ToolbarContent
 
-//interface ToolbarFragment {
-//    val title: CharSequence?
-//    fun setupToolbarContent(toolbarContentActionBar: ToolbarContentActionBar) {
-//        toolbarContentActionBar.apply {
-//            removeAllLeftViews()
-//            removeAllRightViews()
-//        }
-//    }
-//}
 
 interface ToolbarFragment {
     val title: CharSequence

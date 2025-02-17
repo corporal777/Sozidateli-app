@@ -164,11 +164,11 @@ fun View.getColorStateList(res: Int): ColorStateList? {
     return ContextCompat.getColorStateList(context, res)
 }
 
-fun TextView.setLeftDrawableWithIntrinsicBounds(res: Int) {
+fun TextView.setLeftDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0)
 }
 
-fun TextView.setRightDrawableWithIntrinsicBounds(res: Int) {
+fun TextView.setRightDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0)
 }
 
@@ -447,6 +447,12 @@ fun copyTextToBuffer(context: Context, link: String) {
 }
 
 
+fun Bitmap.toByArray(): ByteArray {
+    val bos = ByteArrayOutputStream()
+    compress(Bitmap.CompressFormat.PNG, 100, bos)
+    return bos.toByteArray()
+}
+
 fun convertBitmapToFile(context: Context, fileName: String, bitmap: Bitmap): File {
     //create a file to write bitmap data
     val file = File(context.cacheDir, fileName)
@@ -526,5 +532,10 @@ fun Fragment.getMakeSceneTransition(view: View): ActivityOptionsCompat {
         requireActivity(),
         Pair(view, view.transitionName)
     )
+}
+
+fun TextView.changeTitleTextColor(show: Boolean){
+    if (show) setTextColor(getColor(R.color.title_text_error_red))
+    else setTextColor(getColor(R.color.chat_list_date))
 }
 

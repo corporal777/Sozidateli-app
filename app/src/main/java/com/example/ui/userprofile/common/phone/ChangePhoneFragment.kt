@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentChangePhoneBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.initSwitch
 import moxy.presenter.InjectPresenter
@@ -16,7 +16,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePhoneContract.View {
+class ChangePhoneFragment : BaseVBFragment<FragmentChangePhoneBinding>(), ChangePhoneContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChangePhonePresenter
@@ -30,7 +30,7 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etPhone.initInput {
+            etPhone.onInputTextChanged {
                 presenter.onChangePhone(it.toString())
             }
             btnConfirm.setOnClickListener {
@@ -49,7 +49,7 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
 
     override fun setUserPhone(phone: String?, isVisible: Boolean) {
         mBinding.apply {
-            etPhone.setText(phone)
+            etPhone.setPhoneText(phone)
             scPhone.initSwitch(isVisible) {
                 presenter.onChangePhoneVisible(it)
             }
@@ -59,7 +59,7 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
     override fun enableBtnSave(enabled: Boolean) = mBinding.btnSave.run { isEnabled = enabled }
     override fun enableBtnConfirm(isConfirmed: Boolean, isValid: Boolean) = mBinding.run {
         btnConfirm.isVisible = !isConfirmed && isValid
-        etPhone.showIcon(isConfirmed)
+        tilPhone.isEndIconVisible = isConfirmed
     }
 
     override fun showCustomLoading() = mBinding.btnSave.showProgressLoading(true)
@@ -78,7 +78,7 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
     override fun showPhoneConfirmation(phone: String, withAdd: Boolean) {
         findNavController().navigate(
             R.id.phoneCodeConfirmFragment,
-            bundleOf("phone" to phone, "fromRegister" to false),
+            bundleOf("phone" to phone),
             if (!withAdd) navOptions { popUpTo(R.id.changePhoneFragment) { inclusive = true } }
             else null
         )
@@ -86,4 +86,5 @@ class ChangePhoneFragment : BaseFragment<FragmentChangePhoneBinding>(), ChangePh
 
     override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_change_phone
+    override fun binding() = FragmentChangePhoneBinding::class.java
 }

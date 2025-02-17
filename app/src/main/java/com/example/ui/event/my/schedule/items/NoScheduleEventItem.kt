@@ -7,7 +7,7 @@ import androidx.core.view.updatePadding
 import com.example.app.R
 import com.example.app.databinding.ItemNoScheduleEventBinding
 import com.example.extensions.dp
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class NoScheduleEventItem(
     val title: String,
@@ -38,5 +38,6 @@ class NoScheduleEventItem(
         view.startAnimation(anim)
     }
 
+    override fun initializeViewBinding(view: View) = ItemNoScheduleEventBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_no_schedule_event
 }

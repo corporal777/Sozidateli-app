@@ -4,8 +4,8 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemProfileButtonEditBinding
-import com.xwray.groupie.databinding.BindableItem
 import com.example.extensions.setOnClickListener
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ButtonAddMore(
     private val text: String,
@@ -38,5 +38,6 @@ class ButtonAddMore(
         notifyChanged()
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileButtonEditBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_button_edit
 }

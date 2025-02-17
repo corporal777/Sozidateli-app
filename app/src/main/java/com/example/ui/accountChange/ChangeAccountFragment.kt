@@ -2,31 +2,30 @@ package com.example.ui.accountChange
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.FragmentChangeAccountBinding
+import com.example.data.models.UserSessionModel
+import com.example.extensions.onBackPressedCallback
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.accountChange.items.*
+import com.example.ui.accountChange.items.AccountItem
+import com.example.ui.accountChange.items.ChangeAccountBottomDialog
+import com.example.ui.accountChange.items.LoginButtonItem
+import com.example.ui.accountChange.items.LogoItem
+import com.example.ui.accountChange.items.UnLoggedAccountsHeader
 import com.example.ui.auth.login.LoginFragmentArgs
-import com.example.ui.base.BaseFragment
-import com.example.ui.views.toolbar.ToolbarContent
+import com.example.ui.base.BaseToolbarFragment
 import com.example.util.showCustomTabsBrowser
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onBackPressedCallback
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
-    ChangeAccountContract.View, ToolbarFragment {
+class ChangeAccountFragment : BaseToolbarFragment<FragmentChangeAccountBinding>(), ChangeAccountContract.View {
 
     @InjectPresenter
     lateinit var presenter: ChangeAccountPresenter
@@ -51,7 +50,7 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
     private val loginButtonSection by lazy { Section() }
 
     private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
+        GroupieAdapter().apply {
             add(logoSection)
             add(accountsSection)
             add(unLoggedAccountsSection)
@@ -121,12 +120,10 @@ class ChangeAccountFragment : BaseFragment<FragmentChangeAccountBinding>(),
 
     override fun showBrowser(url: String) = showCustomTabsBrowser(requireContext(), url)
 
+
+    override fun scrollingView(): View = mBinding.accountsList
     override fun animationType(): AnimType = AnimType.AXIS
     override fun layout(): Int = R.layout.fragment_change_account
-
-    override val title: CharSequence = ""
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun binding() = FragmentChangeAccountBinding::class.java
 
 }

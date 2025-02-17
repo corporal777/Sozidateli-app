@@ -3,6 +3,7 @@ package com.example.ui.state
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -41,7 +42,7 @@ class UserStateAdapter(val onGetStateClick:(type: UserState) -> Unit): ListAdapt
             }
             2 -> {
                 val holderBase = holder as ViewHolder<FragmentBaseStateBinding>
-                holderBase.binding.btnGetState.isVisible = !getItem(position).isDone
+                holderBase.binding.btnGetState.isInvisible = getItem(position).isDone
                 holderBase.binding.tvPercentage.setTypeface(null, Typeface.BOLD)
                 holderBase.binding.btnGetState.setOnClickListener {
                     onGetStateClick(UserState.BASE)

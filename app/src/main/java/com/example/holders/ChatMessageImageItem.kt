@@ -5,8 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.Guideline
 import com.example.app.R
-import com.example.data.models.ChatMessage
 import com.example.app.databinding.ItemChatMessageImageBinding
+import com.example.data.models.ChatMessage
 import com.example.extensions.dp
 import com.example.util.RoundedCornersTransformation
 import com.squareup.picasso.Callback
@@ -54,4 +54,5 @@ class ChatMessageImageItem(
     override fun getMessageContainer(binding: ItemChatMessageImageBinding): View = binding.imageContainer
     override fun getDateView(binding: ItemChatMessageImageBinding): TextView = binding.tvMessageDate
     override fun getLayout() = R.layout.item_chat_message_image
+    override fun initializeViewBinding(view: View) = ItemChatMessageImageBinding.bind(view)
 }

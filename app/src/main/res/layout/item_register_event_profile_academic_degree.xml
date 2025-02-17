@@ -8,7 +8,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/academicDegreeTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:text="@string/profile_degrees_level"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -16,7 +16,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/academicDegreeTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -38,7 +38,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/academicSpecTitleTextView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             android:text="@string/search_filter_specialization"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/academicSpecTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

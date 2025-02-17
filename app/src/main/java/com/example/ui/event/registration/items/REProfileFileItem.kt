@@ -4,8 +4,8 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import com.example.app.R
-import com.example.data.models.FileModel
 import com.example.app.databinding.ItemRegisterEventProfileFileBinding
+import com.example.data.models.FileModel
 import com.example.extensions.parseAsHtmlWithoutUnderline
 import com.example.holders.registerEvent.BaseRegisterProfileItem
 import com.example.util.getColor
@@ -51,7 +51,7 @@ class REProfileFileItem (
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is REProfileFileItem) return false
         if (name != other.name) return false
         if (files != other.files) return false
@@ -61,4 +61,5 @@ class REProfileFileItem (
     override fun getTitleView(binding: ItemRegisterEventProfileFileBinding): TextView? = null
     override fun getErrorFrameView(binding: ItemRegisterEventProfileFileBinding): View? = null
     override fun getLayout(): Int = R.layout.item_register_event_profile_file
+    override fun initializeViewBinding(view: View) = ItemRegisterEventProfileFileBinding.bind(view)
 }

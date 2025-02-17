@@ -1,18 +1,15 @@
 package com.example.holders
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CompoundButton
-import androidx.core.content.ContextCompat
 import com.example.app.R
-import com.example.data.models.Tag
 import com.example.app.databinding.ItemTagsHorizontalListBinding
+import com.example.data.models.Tag
 import com.example.ui.views.TagChipNew
 import com.example.util.getDrawable
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import com.xwray.groupie.kotlinandroidextensions.Item
+import com.xwray.groupie.viewbinding.BindableItem
+
 
 class TagsHorizontalListItem(
     private val tags: List<Tag>,
@@ -69,11 +66,12 @@ class TagsHorizontalListItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is TagsHorizontalListItem) return false
         if (tags != other.tags) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemTagsHorizontalListBinding.bind(view)
     override fun getLayout() = R.layout.item_tags_horizontal_list
 }

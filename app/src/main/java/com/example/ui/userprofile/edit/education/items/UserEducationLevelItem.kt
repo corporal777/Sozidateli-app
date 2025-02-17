@@ -1,17 +1,18 @@
 package com.example.ui.userprofile.edit.education.items
 
+import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.isVisible
-import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
+import com.example.app.R
+import com.example.app.databinding.ItemUserEducationLevelBinding
 import com.example.data.models.EducationLevel
 import com.example.data.models.ToggleIntModel
-import com.example.app.databinding.ItemUserEducationLevelBinding
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.initSwitch
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class UserEducationLevelItem(
     private val educationLevel: Int?,
@@ -126,5 +127,6 @@ class UserEducationLevelItem(
 
     private fun isTrigger(text: String?) = text == "Более одного высшего" || text == "Высшее"
 
+    override fun initializeViewBinding(view: View) = ItemUserEducationLevelBinding.bind(view)
     override fun getLayout() = R.layout.item_user_education_level
 }

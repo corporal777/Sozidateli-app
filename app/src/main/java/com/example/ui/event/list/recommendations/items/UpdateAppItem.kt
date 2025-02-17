@@ -3,10 +3,11 @@ package com.example.ui.event.list.recommendations.items
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemUpdateAppBinding
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class UpdateAppItem(val itemId: Long = 1000L) : BindableItem<ItemUpdateAppBinding>(itemId) {
 
@@ -19,7 +20,7 @@ class UpdateAppItem(val itemId: Long = 1000L) : BindableItem<ItemUpdateAppBindin
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is UpdateAppItem) return false
         if (itemId != other.itemId) return false
         return true
@@ -44,6 +45,6 @@ class UpdateAppItem(val itemId: Long = 1000L) : BindableItem<ItemUpdateAppBindin
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemUpdateAppBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_update_app
 }

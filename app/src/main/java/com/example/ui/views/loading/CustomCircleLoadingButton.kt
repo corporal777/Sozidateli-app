@@ -13,7 +13,7 @@ import com.example.app.databinding.LayoutCircleLoadingButtonBinding
 import com.example.extensions.dp
 import com.example.util.getColor
 import com.example.util.getDrawable
-import com.example.util.setLeftDrawableWithIntrinsicBounds
+import com.example.util.setLeftDrawable
 
 class CustomCircleLoadingButton : ConstraintLayout {
 
@@ -84,7 +84,7 @@ class CustomCircleLoadingButton : ConstraintLayout {
 
     private fun Button.setButtonLeftIcon(icon: Int){
         if (icon != 0) {
-            setLeftDrawableWithIntrinsicBounds(icon)
+            setLeftDrawable(icon)
             compoundDrawablePadding = 5.dp
         }
     }

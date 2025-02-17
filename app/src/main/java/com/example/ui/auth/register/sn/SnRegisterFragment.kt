@@ -2,24 +2,28 @@ package com.example.ui.auth.register.sn
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentRegisterSnBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.confirm.email.ConfirmEmailCodeFragmentArgs
-import com.example.ui.base.BaseFragment
+import com.example.data.models.AuthResponse
+import com.example.extensions.initAsDatePicker
+import com.example.extensions.onTextChanged
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
+import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
+import com.example.util.changeTitleTextColor
+import com.example.util.getColor
 import com.example.util.setTint
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegisterContract.View,
-    ToolbarFragment {
+class SnRegisterFragment : BaseToolbarFragment<FragmentRegisterSnBinding>(), SnRegisterContract.View{
 
     @InjectPresenter
     lateinit var presenter: SnRegisterPresenter
@@ -35,19 +39,23 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            etLastName.initInput { presenter.onChangeLastName(it.toString()) }
-            etFirstName.initInput { presenter.onChangeFirstName(it.toString()) }
+            etLastName.onTextChanged { presenter.onChangeLastName(it.toString()) }
+            etFirstName.onTextChanged { presenter.onChangeFirstName(it.toString()) }
             etMiddleName.apply {
-                initInput { presenter.onChangeMiddleName(it.toString()) }
+                onTextChanged { presenter.onChangeMiddleName(it.toString()) }
                 scNoMiddleName.setOnCheckedChangeListener { _, isChecked ->
                     presenter.onMiddleNameIsAbsent(isChecked)
                 }
             }
-            etPhone.initInput { presenter.onChangeMobilePhone(it.toString()) }
-            etBirthday.initAsDateTimePicker(null) {
-                presenter.onChangeBirthday(it.toString())
+            etPhone.onInputTextChanged { presenter.onChangeMobilePhone(it.toString()) }
+            etBirthday.apply {
+                val maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, -16) }.time
+                tilBirthday.initAsDatePicker(null, null, maxDate) { y, m, d ->
+                    String.format(DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR, d, m + 1, y)
+                }
+                onTextChanged { presenter.onChangeBirthday(it.toString()) }
             }
-            etEmail.initInput { presenter.onChangeEmail(it.toString()) }
+            etEmail.onTextChanged { presenter.onChangeEmail(it.toString()) }
             btnContinue.setOnClickListener {
                 presenter.onClickContinue(true)
             }
@@ -66,9 +74,12 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
         mBinding.apply {
             etLastName.setText(lastName)
             etFirstName.setText(firstName)
-            etMiddleName.setText(middleName)
+            etMiddleName.apply {
+                setText(middleName)
+                isEnabled = !middleNameIsAbsent
+            }
             scNoMiddleName.isChecked = middleNameIsAbsent
-            etPhone.setText(mobilePhone ?: "")
+            etPhone.setPhoneText(mobilePhone)
             etEmail.setText(email)
             etBirthday.setText(birthday)
         }
@@ -82,14 +93,39 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
         }
     }
 
-    override fun showLastNameError(show: Boolean) = mBinding.etLastName.showError(show)
-    override fun showFirstNameError(show: Boolean) = mBinding.etFirstName.showError(show)
-    override fun showMiddleNameError(show: Boolean) = mBinding.etMiddleName.showError(show)
-    override fun showPhoneError(show: Boolean) = mBinding.etPhone.showError(show)
-    override fun showBirthdayError(show: Boolean) = mBinding.etBirthday.showError(show)
+    override fun showLastNameError(show: Boolean) {
+        mBinding.tvTitleLastName.changeTitleTextColor(show)
+        mBinding.tilLastName.showCustomError(show)
+    }
+
+    override fun showFirstNameError(show: Boolean){
+        mBinding.tvTitleFirstName.changeTitleTextColor(show)
+        mBinding.tilFirstName.showCustomError(show)
+    }
+
+    override fun showMiddleNameError(show: Boolean) {
+        mBinding.tvTitleMiddleName.changeTitleTextColor(show)
+        mBinding.tilMiddleName.showCustomError(show)
+    }
+
+    override fun showPhoneError(show: Boolean) {
+        mBinding.tvTitlePhone.changeTitleTextColor(show)
+        mBinding.tilPhone.showCustomError(show)
+    }
+
+    override fun showBirthdayError(show: Boolean) {
+        mBinding.tvTitleBirthday.changeTitleTextColor(show)
+        mBinding.tilBirthday.showIconError(show)
+    }
+
     override fun showEmailError(show: Boolean) {
-        if (show) mBinding.etEmail.showTextError("Введите корректный e-mail")
-        else mBinding.etEmail.showError(false)
+        mBinding.tvTitleEmail.apply {
+            changeTitleTextColor(show)
+            text = if (show && !mBinding.etEmail.getText().isNullOrEmpty()) "Введите корректный e-mail"
+            else getString(R.string.email_for_communication_text)
+        }
+        mBinding.tilEmail.showCustomError(show)
+
     }
 
     override fun enableContinueButton(isEnable: Boolean) =
@@ -110,19 +146,19 @@ class SnRegisterFragment : BaseFragment<FragmentRegisterSnBinding>(), SnRegister
         ).setSelectCallback { presenter.onClickContinue(false) }
     }
 
-    override fun showEmailConfirmation(email: String) {
+    override fun showEmailConfirmation(email: String?, auth: AuthResponse) {
         findNavController().navigate(
             R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to true)
+            bundleOf("email" to email, "auth" to auth)
         )
     }
 
 
     override fun layout() = R.layout.fragment_register_sn
+    override fun binding() = FragmentRegisterSnBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.auth_register_sn) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }
+    override fun scrollingView(): View = mBinding.svContent
 }

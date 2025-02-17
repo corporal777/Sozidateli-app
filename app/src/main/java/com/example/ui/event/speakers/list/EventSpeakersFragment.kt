@@ -4,23 +4,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.MemberModel
 import com.example.app.databinding.FragmentEventSpeakersBinding
+import com.example.data.models.MemberModel
+import com.example.extensions.offsetChangedListener
 import com.example.holders.PlaceholderItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
 import com.example.ui.subevent.items.SubEventSpeakerItem
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.offsetChangedListener
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
+class EventSpeakersFragment : BaseVBFragment<FragmentEventSpeakersBinding>(),
     EventSpeakersContract.View {
 
     @InjectPresenter
@@ -35,9 +34,7 @@ class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
     }
 
     private val speakersSection = Section()
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
-        add(speakersSection)
-    }
+    private val groupAdapter = GroupieAdapter().apply { add(speakersSection) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,5 +98,6 @@ class EventSpeakersFragment : BaseFragment<FragmentEventSpeakersBinding>(),
         }
     }
 
+    override fun binding() = FragmentEventSpeakersBinding::class.java
     override fun layout() = R.layout.fragment_event_speakers
 }

@@ -1,12 +1,13 @@
 package com.example.ui.accountChange.items
 
+import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.UserSessionModel
 import com.example.app.databinding.ItemAccountChangeBinding
+import com.example.data.models.UserSessionModel
 import com.example.util.setCircleAvatar
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class AccountItem(
     var canShow: Boolean,
@@ -45,7 +46,7 @@ class AccountItem(
     override fun bind(
         viewBinding: ItemAccountChangeBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -58,11 +59,12 @@ class AccountItem(
         imageView.isVisible = canShow
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is AccountItem) return false
         if (session != other.session) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemAccountChangeBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_account_change
 }

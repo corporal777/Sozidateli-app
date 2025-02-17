@@ -1,23 +1,15 @@
 package com.example.ui.auth.confirm.email
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResult
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navOptions
 import com.example.app.R
 import com.example.app.databinding.FragmentEmailCodeConfirmBinding
-import com.example.app.databinding.FragmentPhoneCodeConfirmBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeContract
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodeFragmentArgs
-import com.example.ui.auth.confirm.phone.ConfirmPhoneCodePresenter
-import com.example.ui.base.BaseFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.main.MainActivity
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.setTint
@@ -26,8 +18,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>(),
-    ConfirmEmailCodeContract.View, ToolbarFragment {
+class ConfirmEmailCodeFragment : BaseToolbarFragment<FragmentEmailCodeConfirmBinding>(),
+    ConfirmEmailCodeContract.View {
 
     @InjectPresenter
     lateinit var presenter: ConfirmEmailCodePresenter
@@ -37,10 +29,9 @@ class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>()
 
     @ProvidePresenter
     fun providePresenter(): ConfirmEmailCodePresenter = presenterProviderFinish.get().apply {
-        navArgs<ConfirmEmailCodeFragmentArgs>().value.also {
-            email = it.email
-            isFromRegistration = it.fromRegister
-        }
+        val args = ConfirmEmailCodeFragmentArgs.fromBundle(requireArguments())
+        email = args.email
+        authResponse = args.auth
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,10 +92,8 @@ class ConfirmEmailCodeFragment : BaseFragment<FragmentEmailCodeConfirmBinding>()
     }
 
 
+    override fun binding() = FragmentEmailCodeConfirmBinding::class.java
     override fun layout(): Int = R.layout.fragment_email_code_confirm
-    override val title: CharSequence = ""
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }

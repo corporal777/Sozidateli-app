@@ -20,40 +20,33 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.example.app.BuildConfig
 import com.example.app.R
-import com.example.data.models.UserDetail
 import com.example.app.databinding.FragmentProfileBinding
+import com.example.data.models.UserDetail
 import com.example.extensions.firstLetterToUppercase
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.profile.data.ProfileDataFragment
 import com.example.ui.views.dialogs.AddPhoneEmailDialog
-import com.example.ui.views.dialogs.ContactsType
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
+import com.example.ui.views.dialogs.ContactsType
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.ui.views.toolbar.ToolbarIconView
 import com.example.util.getColor
-import com.example.util.setLeftDrawableWithIntrinsicBounds
+import com.example.util.setLeftDrawable
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
-    ProfileContract.View {
+class ProfileFragment : BaseToolbarFragment<FragmentProfileBinding>(), ProfileContract.View {
 
     private var isShowPopup = false
     private lateinit var dialog: AddPhoneEmailDialog
     private lateinit var toolbarContent: ToolbarContent
     private val toolbarIconView by lazy {
-        ToolbarIconView(requireContext()).apply {
-            isEnabled = false
-            setImageAsIcon(R.drawable.ic_profile_link_edit)
-            setOnClickListener { presenter.onShowUserProfileLink() }
-        }
+        createIconView(R.drawable.ic_profile_link, false) { presenter.onShowProfileLink() }
     }
 
     @InjectPresenter
@@ -100,16 +93,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
             tvChangeAccount.apply {
                 if (user.getSessionsCount() <= 1) {
                     text = getString(R.string.add_account_label)
-                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_add_account_edit)
+                    setLeftDrawable(R.drawable.ic_profile_add_account_edit)
                 } else {
                     text = getString(R.string.change_account_label)
-                    setLeftDrawableWithIntrinsicBounds(R.drawable.ic_profile_change_account_edit)
+                    setLeftDrawable(R.drawable.ic_profile_change_account_edit)
                 }
             }
         }
 
         if (isShowPopup && !::dialog.isInitialized) {
-            val type = if (user.email?.value != null) ContactsType.PHONE else ContactsType.EMAIL
+            val type = if (user.email?.value.isNullOrEmpty()) ContactsType.EMAIL else ContactsType.PHONE
             dialog = AddPhoneEmailDialog(requireContext(), type)
                 .setSelectEmailCallback { presenter.checkEmailIsUnique(true, it) }
                 .setSelectPhoneCallback { presenter.checkPhoneIsUnique(true, it) }
@@ -180,10 +173,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     override fun hideAddPhoneEmailDialog() = dialog.hideDialog()
 
     override fun showPhoneConfirmation(phone: String) {
-        findNavController().navigate(
-            R.id.phoneCodeConfirmFragment,
-            bundleOf("phone" to phone, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.phoneCodeConfirmFragment, bundleOf("phone" to phone))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("phone")
             if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()
@@ -192,10 +182,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
     override fun showEmailConfirmation(email: String) {
-        findNavController().navigate(
-            R.id.emailCodeConfirmFragment,
-            bundleOf("email" to email, "fromRegister" to false),
-        )
+        findNavController().navigate(R.id.emailCodeConfirmFragment, bundleOf("email" to email))
         setFragmentResultListener("confirm") { _, bundle ->
             val emailConfirm = bundle.getString("email")
             if (!emailConfirm.isNullOrEmpty()) showUserStateDialog()
@@ -306,13 +293,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(), ToolbarFragment,
     }
 
 
+    override fun binding(): Class<FragmentProfileBinding> = FragmentProfileBinding::class.java
     override fun layout() = R.layout.fragment_profile
-    override val title: CharSequence = ""
-    override fun scrollValue(scroll: Int) {}
-    override fun actionIconContainer(view: ViewGroup) {
-        view.apply { addView(toolbarIconView) }
-    }
-
+    override fun scrollingView(): View = mBinding.profileScrollView
+    override fun actionIconContainer(view: ViewGroup) { view.addView(toolbarIconView) }
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         this.toolbarContent = toolbarContent
         this.toolbarContent.getBackButton().isInvisible = true

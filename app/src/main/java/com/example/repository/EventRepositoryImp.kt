@@ -236,7 +236,7 @@ class EventRepositoryImp
 
 
     override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
-        api.checkUserProfile(appData.getId().toString())
+        api.checkUserProfile(appData.getId())
 
     override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
         return api.getEventFavoritesList(map)

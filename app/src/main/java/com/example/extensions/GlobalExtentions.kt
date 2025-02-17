@@ -11,8 +11,17 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.OpenableColumns
-import android.text.*
+import android.text.Editable
+import android.text.Html
+import android.text.InputFilter
+import android.text.Layout
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
@@ -22,12 +31,14 @@ import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.Group
+import androidx.core.os.BundleCompat
 import androidx.core.text.getSpans
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -41,8 +52,13 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
+import com.example.data.models.asArgument
+import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
-import com.example.util.*
+import com.example.util.ClickableSpan
+import com.example.util.CropCircleTransformation
+import com.example.util.URLSpanNoUnderline
+import com.example.util.showCustomTabsBrowser
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.GsonBuilder
@@ -53,16 +69,70 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Calendar
 import java.util.Calendar.YEAR
+import java.util.Date
 import kotlin.math.roundToInt
+import kotlin.properties.ReadOnlyProperty
 
-fun AppCompatImageButton.setFiltersBackground(isChosen : Boolean){
-    if (isChosen) setImageResource(R.drawable.ic_filters_selected)
-    else setImageResource(R.drawable.ic_filters_new)
+inline fun <reified F : Fragment> Fragment.setArgument(key: String, args: Any): F {
+    return (this as F).apply {
+        arguments = Bundle(1).apply { putParcelable(key, args.asArgument()) }
+    }
+}
+
+internal inline fun <reified T : Parcelable> parcelableArgument(name: String): ReadOnlyProperty<Fragment, T> {
+    return object : ReadOnlyProperty<Fragment, T> {
+        private var value: T? = null
+        override fun getValue(thisRef: Fragment, property: kotlin.reflect.KProperty<*>): T {
+            val data = BundleCompat.getParcelable(thisRef.requireArguments(), name, T::class.java)
+            return value ?: requireNotNull(data) { "Arg $name is missing" }.also { value = it }
+        }
+    }
+}
+
+fun decodeBase64ToJson(data: String?): JSONObject? {
+    if (data.isNullOrEmpty()) return null
+    try {
+        val base = Base64.decode(data, Base64.DEFAULT)
+        return JSONObject(String(base, StandardCharsets.UTF_8))
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return JSONObject().apply {
+            put("email", "null")
+            put("name", "null")
+            put("lastName", "null")
+            put("middleName", "null")
+        }
+    }
+}
+
+
+fun getClickablePrivacyPolitics(context: Context): CharSequence {
+    return SpannableString(context.getString(R.string.auth_user_agreement)).apply {
+        setSpan(
+            ClickableSpan(false) {
+                showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
+            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+}
+
+fun Spanned?.removeUrlUnderline(): Spannable? {
+    if (this.isNullOrEmpty()) return null
+    return toSpannable().apply {
+        val urls = getSpans<URLSpan>()
+        urls.forEach {
+            val start = getSpanStart(it)
+            val end = getSpanEnd(it)
+            removeSpan(it)
+            set(start..end, URLSpanNoUnderline(it.url))
+        }
+    }
 }
 
 fun TextView.removeUrlUnderline(textColor: Int? = null) {
@@ -78,7 +148,28 @@ fun TextView.removeUrlUnderline(textColor: Int? = null) {
     }
 }
 
+fun String.parseAsHtmlWithoutUnderline(): Spannable? {
+    if (this.isNullOrEmpty()) return null
+    val s: Spannable = Html.fromHtml(this) as Spannable
+    for (u in s.getSpans(0, s.length, URLSpan::class.java)) {
+        s.setSpan(object : UnderlineSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.isUnderlineText = false
+            }
+        }, s.getSpanStart(u), s.getSpanEnd(u), 0)
+    }
+    return s
+}
 
+fun AppCompatCheckBox.onCheckedChanged(onCheckedChanged: (checked: Boolean) -> Unit): CompoundButton.OnCheckedChangeListener {
+    val listener = object : CompoundButton.OnCheckedChangeListener {
+        override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+            onCheckedChanged(p1)
+        }
+    }
+    setOnCheckedChangeListener(listener)
+    return listener
+}
 
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
     val watcher = object : TextWatcher {
@@ -113,6 +204,7 @@ fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
             onPageChanged(state)
         }
     }
+    unregisterOnPageChangeCallback(listener)
     registerOnPageChangeCallback(listener)
 }
 
@@ -137,9 +229,8 @@ fun onPageChanged(onPageChanged: (position: Int) -> Unit): ViewPager.SimpleOnPag
 fun AppBarLayout.offsetChangedListener(
     offsetChanged: (appBarLayout: AppBarLayout, offset: Int) -> Unit
 ): AppBarLayout.OnOffsetChangedListener {
-    val listener = object : AppBarLayout.OnOffsetChangedListener {
-        override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) =
-            offsetChanged(appBarLayout, verticalOffset)
+    val listener = AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        offsetChanged(appBarLayout, verticalOffset)
     }
     addOnOffsetChangedListener(listener)
     return listener
@@ -238,17 +329,12 @@ fun TextView.calculateTextLinesCount(text: String): Int {
     return (textWidth / width).roundToInt()
 }
 
-//var TextView.maxLength: Int
-//    get() = filters.filterIsInstance<InputFilter.LengthFilter>().firstOrNull()?.max ?: 0
-//    set(value) {
-//        filters = arrayOf(InputFilter.LengthFilter(value))
-//    }
 
-fun TextView.setMaxLength(max : Int){
+fun TextView.setMaxLength(max: Int) {
     filters = arrayOf(InputFilter.LengthFilter(max))
 }
 
-fun TextView.setMinMaxLines(min : Int, max : Int){
+fun TextView.setMinMaxLines(min: Int, max: Int) {
     minLines = min
     maxLines = max
 }
@@ -267,7 +353,7 @@ fun Context.isConnectedToNetwork(): Boolean {
     return connectivityManager?.activeNetworkInfo?.isConnected ?: false
 }
 
-fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?, isVisible : Boolean?) {
+fun Group.setTextDataOrHide(textField: TextView, dataText: CharSequence?, isVisible: Boolean?) {
     if (dataText.isNullOrBlank() || isVisible == false) {
         visibility = View.GONE
         textField.text = null

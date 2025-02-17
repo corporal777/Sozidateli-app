@@ -1,8 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemChatUnreadLabelBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class ChatUnreadLabelItem(
@@ -18,6 +19,6 @@ class ChatUnreadLabelItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemChatUnreadLabelBinding.bind(view)
     override fun getLayout() = R.layout.item_chat_unread_label
 }

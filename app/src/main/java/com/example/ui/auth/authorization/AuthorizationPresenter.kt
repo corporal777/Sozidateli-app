@@ -35,19 +35,19 @@ class AuthorizationPresenter
         compositeDisposable += this
     }
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    override fun attachView(view: AuthorizationContract.View?) {
+        super.attachView(view)
         compositeDisposable += authRepository.getStories()
             .map { listOf(it.last()) + it + listOf(it.first()) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple {
                 viewState.setStories(it)
                 viewState.setPagerScroll(it.size)
+                startTimerStories()
             }
     }
 
-    override fun attachView(view: AuthorizationContract.View?) {
-        super.attachView(view)
+    private fun startTimerStories(){
         timerCompositeDisposable.clear()
         timerCompositeDisposable += Observable.interval(3, TimeUnit.SECONDS)
             .performOnBackgroundOutOnMain()

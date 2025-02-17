@@ -2,26 +2,21 @@ package com.example.ui.favoritesTab
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import com.example.app.R
 import com.example.adapters.PagerStateAdapter
+import com.example.app.R
 import com.example.app.databinding.FragmentFavoriteBinding
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.extensions.onPageChanged
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
 import com.example.ui.favoritesTab.users.FavoriteUsersFragment
-import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onPageChanged
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(),
-    FavoriteTabsContract.View,
-    ToolbarFragment {
+class FavoriteTabsFragment : BaseToolbarFragment<FragmentFavoriteBinding>(), FavoriteTabsContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteTabsPresenter
@@ -71,10 +66,8 @@ class FavoriteTabsFragment : BaseFragment<FragmentFavoriteBinding>(),
         }
     }
 
-    override fun animationType(): AnimType = AnimType.AXIS
     override fun layout() = R.layout.fragment_favorite
+    override fun animationType(): AnimType = AnimType.AXIS
+    override fun binding() = FragmentFavoriteBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.profile_favorite) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

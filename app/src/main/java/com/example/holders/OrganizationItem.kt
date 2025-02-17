@@ -2,15 +2,16 @@ package com.example.holders
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.OrganizationNew
 import com.example.app.databinding.ItemOrganizationBinding
+import com.example.data.models.OrganizationNew
 import com.example.ui.views.UserSubscribeButton
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class OrganizationItem(
@@ -49,7 +50,7 @@ class OrganizationItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemOrganizationBinding.bind(view)
     override fun getLayout() = R.layout.item_organization
 
     override fun equals(other: Any?): Boolean {

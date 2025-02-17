@@ -1,8 +1,9 @@
 package com.example.ui.event.about.items
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemEventDetailShowActivitiesBlockBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventDetailShowActivitiesItem(
     val showActivitiesClick: () -> Unit
@@ -17,5 +18,6 @@ class EventDetailShowActivitiesItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemEventDetailShowActivitiesBlockBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_event_detail_show_activities_block
 }

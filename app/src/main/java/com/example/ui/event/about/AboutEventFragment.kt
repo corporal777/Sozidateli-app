@@ -2,6 +2,7 @@ package com.example.ui.event.about
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -9,20 +10,27 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.app.BuildConfig
 import com.example.app.R
+import com.example.app.databinding.FragmentAboutEventBinding
 import com.example.data.models.AboutEventData
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventFormModel
 import com.example.data.models.EventNew
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
-import com.example.app.databinding.FragmentAboutEventNewBinding
 import com.example.extensions.findItemBy
+import com.example.extensions.onScrolled
+import com.example.extensions.replaceItem
+import com.example.extensions.replaceItems
+import com.example.extensions.setOnClickListener
+import com.example.extensions.statusBarColorValue
 import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
+import com.example.ui.event.about.items.AboutEventLabelItem
+import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.about.items.EventDetailImageItem
 import com.example.ui.event.about.items.EventDetailOrganizationItem
@@ -38,29 +46,22 @@ import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.views.LinearLayoutManagerAccurateOffset
-import com.example.ui.views.dialogs.StateType
-import com.example.util.openDeviceCalendarApp
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
-import com.example.extensions.onScrolled
-import com.example.extensions.setOnClickListener
-import com.example.extensions.statusBarColorValue
-import com.example.ui.event.about.items.EventDetailActivitiesItem
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
+import com.example.ui.views.dialogs.StateType
+import com.example.util.openDeviceCalendarApp
+import com.example.util.weak
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.Section
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
 
-class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
-    AboutEventContract.View {
-
-    override fun layout() = R.layout.fragment_about_event_new
+class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEventContract.View {
 
     @InjectPresenter
     lateinit var presenter: AboutEventPresenter
@@ -74,36 +75,29 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
     }
 
 
-    private val eventMainSection by lazy {
-        Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN)) }
+    private val eventMainSection = Section().apply {
+        add(PlaceholderItem(PlaceholderItem.Type.EVENT_MAIN))
     }
-    private val eventSpeakersSection by lazy {
-        Section().apply {
-            setHeader(EventDetailBlocksLabelItem(getString(R.string.speakers)))
-            setHideWhenEmpty(true)
-        }
+    private val eventSpeakersSection = Section().apply {
+        setHeader(AboutEventLabelItem(R.string.speakers))
+        setHideWhenEmpty(true)
     }
-    private val eventProgramSection by lazy {
-        Section().apply {
-            setHeader(EventDetailBlocksLabelItem(getString(R.string.event_program)))
-            setFooter(EventDetailShowActivitiesItem { presenter.onShowEventActivitiesClick() })
-            setHideWhenEmpty(true)
-        }
+    private val eventProgramSection = Section().apply {
+        setHeader(AboutEventLabelItem(R.string.event_program))
+        setFooter(EventDetailShowActivitiesItem { presenter.onShowEventActivitiesClick() })
+        setHideWhenEmpty(true)
     }
-    private val eventPartnersSection by lazy {
-        Section().apply {
-            setHeader(EventDetailBlocksLabelItem(getString(R.string.partners_label)))
-            setHideWhenEmpty(true)
-        }
+    private val eventPartnersSection = Section().apply {
+        setHeader(AboutEventLabelItem(R.string.partners_label))
+        setHideWhenEmpty(true)
     }
 
-    private val groupAdapter by lazy {
-        GroupAdapter<GroupieViewHolder>().apply {
-            add(eventMainSection)
-            add(eventSpeakersSection)
-            add(eventProgramSection)
-            add(eventPartnersSection)
-        }
+    private val offsetMap = mutableMapOf<Int, Int>()
+    private val groupAdapter = GroupieAdapter().apply {
+        add(eventMainSection)
+        add(eventSpeakersSection)
+        add(eventProgramSection)
+        add(eventPartnersSection)
     }
 
 
@@ -111,36 +105,24 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
         override fun onActionRegister(url: String?) = presenter.onActionRegister(url)
         override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onSubscribeEvent(subscribe: Boolean) =
-            presenter.onSubscribeEventClick(subscribe)
-
-        override fun onShowNeedAuth(eventId: String) {
-            presenter.onShowAuthorization(eventId)
-        }
+        override fun onSubscribeEvent(subscribe: Boolean) = presenter.onSubscribeEvent(subscribe)
+        override fun onShowNeedAuth(eventId: String) = presenter.onShowAuthorization(eventId)
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            presenter.onSubEventClick(subEvent)
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
     }
-
-    private val customLayoutManager by lazy { LinearLayoutManagerAccurateOffset(requireContext()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             eventContentList.apply {
-                setItemViewCacheSize(50)
+                layoutManager = LinearLayoutManagerAccurateOffset(requireContext(), offsetMap)
                 adapter = groupAdapter
-                layoutManager = customLayoutManager
-                onScrolled { _, _ ->
-                    presenter.changeAppBarBackgroundColorValue(this.computeVerticalScrollOffset())
+                onScrolled { dx, _ ->
+                    presenter.onChangeAppBarBackgroundColor(computeVerticalScrollOffset())
                 }
             }
             toolbar.apply {
@@ -150,7 +132,6 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             }
             swipeToRefreshLayout.setOnRefreshListener { presenter.onRefreshRequest() }
         }
-        setupBlurView()
     }
 
     override fun setEventData(eventData: AboutEventData) {
@@ -172,7 +153,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             )
         )
         if (!eventData.speakers.isNullOrEmpty()) {
-            eventSpeakersSection.updateItem(
+            eventSpeakersSection.updateItems(
                 SpeakersHorizontalListItem(
                     eventData.speakers,
                     eventData.showMoreSpeakers,
@@ -239,7 +220,7 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
             "Отмена",
             "Ок",
             false
-        ).setSelectCallback { presenter.onSubscribeEventClick(isSubscribed ?: false) }
+        ).setSelectCallback { presenter.onSubscribeEvent(isSubscribed ?: false) }
     }
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
@@ -377,30 +358,28 @@ class AboutEventFragment() : BaseFragment<FragmentAboutEventNewBinding>(),
 //            .setBlurRadius(15f)
     }
 
-    override fun updateAppBarBackgroundColorValue(value: Int) {
+    override fun updateAppBarBackgroundColor(value: Int) {
         mBinding.toolbar.apply {
             if (value <= 0) {
                 statusBarColorValue = 0
                 tbBackground.alpha = 0f
+                mBinding.cardViewToolbar.cardElevation = 0f
             } else {
                 tbBackground.apply { alpha = abs(value / (1450).toFloat()) }
-                mBinding.appBar.apply {
+                mBinding.cardViewToolbar.apply {
                     if (value >= 1450) {
                         statusBarColorValue = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                        changeAppBarElevation(abs(value / 100f))
+                        val elevationValue = abs(value / 100f)
+                        cardElevation = if (elevationValue <= 10f) abs(value / 100f) else 10f
                     } else {
                         statusBarColorValue = 0
-                        changeAppBarElevation(0f)
+                        cardElevation = 0f
                     }
                 }
             }
         }
     }
 
-
-    companion object {
-        const val ABOUT_FROM_EVENT = 1
-        const val ABOUT_FROM_OTHER = 2
-    }
-
+    override fun binding() = FragmentAboutEventBinding::class.java
+    override fun layout() = R.layout.fragment_about_event
 }

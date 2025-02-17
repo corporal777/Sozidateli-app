@@ -5,14 +5,14 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.FragmentPageBinding
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.toolbar.ToolbarContentActionBar
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class UserAgreementFragment : BaseFragment<FragmentPageBinding>(), UserAgreementContract.View {
+class UserAgreementFragment : BaseVBFragment<FragmentPageBinding>(), UserAgreementContract.View {
 
 
     @InjectPresenter
@@ -40,5 +40,6 @@ class UserAgreementFragment : BaseFragment<FragmentPageBinding>(), UserAgreement
     }
 
 
+    override fun binding() = FragmentPageBinding::class.java
     override fun layout() = R.layout.fragment_page
 }

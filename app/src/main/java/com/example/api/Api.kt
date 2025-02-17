@@ -14,6 +14,9 @@ import retrofit2.http.*
 @JvmSuppressWildcards
 interface Api {
 
+    @GET("v1/user/login/check")
+    fun getTokenStatus(): Maybe<AuthResponse>
+
     @GET("v1/user/temp/login")
     fun getTemporaryToken(): Single<TempAuthResponse>
 
@@ -65,7 +68,7 @@ interface Api {
     fun confirmPhoneCode(@Path("id") id: Int, @Body body: ConfirmCodeBody): Single<AuthResponse>
 
     @POST("v1/user/{id}/email/confirm")
-    fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Single<ConfirmEmail>
+    fun confirmEmailCode(@Path("id") id: Int, @Body body: EmailCodeBody): Completable
 
     //+
     @GET("v1/user/get-sessions")
@@ -130,12 +133,6 @@ interface Api {
     @DELETE("v1/user-recommendation-file/{id}")
     fun deleteRecommendedFile(@Path("id") fileId: Int): Completable
 
-    @PATCH("v1/user-work-experience/user/{id}")
-    fun updateWorkExperience(
-        @Path("id") id: Int,
-        @Body body: WorkExperienceServerModel
-    ): Single<WorkExperienceServerModel>
-
     @GET("v1/interest")
     fun getInterestsList(
         @Query("limit") limit: Int,
@@ -151,6 +148,10 @@ interface Api {
     @GET("v1/academic-degree")
     fun getAcademicDegrees(): Single<EducationLevelModel>
 
+    //user education
+    @GET("v1/user-education")
+    fun getUserEducations(@Query("user") id: Int): Single<EducationBodyModel>
+
     @PATCH("v1/user-education/user/{id}")
     fun updateUserEducation(
         @Path("id") id: Int,
@@ -162,6 +163,12 @@ interface Api {
         @Path("id") id: Int,
         @Body body: AcademicDegreeBodyModel
     ): Single<AcademicDegreeBodyModel>
+
+    @PATCH("v1/user-work-experience/user/{id}")
+    fun updateWorkExperience(
+        @Path("id") id: Int,
+        @Body body: WorkExperienceServerModel
+    ): Single<WorkExperienceServerModel>
 
     //+
     @GET("v1/event")
@@ -198,12 +205,12 @@ interface Api {
     @GET("v1/event-format/active")
     fun getActiveEventFormatsList(): Maybe<EventFormatsModel>
 
-    //+
+    //profile state
     @GET("v1/user/{id}/profile-state")
-    fun checkUserProfile(@Path("id") organizationId: String): Maybe<UserProfileFieldsModel>
+    fun checkUserProfile(@Path("id") id: Int): Maybe<UserProfileFieldsModel>
 
     @GET("v1/user/{id}/profile-state")
-    fun checkUserProfileSingle(@Path("id") organizationId: String): Single<UserProfileFieldsModel>
+    fun checkUserProfileSingle(@Path("id") id: Int): Single<UserProfileFieldsModel>
 
     //+
     @GET("v1/event/{id}")
@@ -222,14 +229,6 @@ interface Api {
 
     @DELETE("v1/event-subscriptions/{id}")
     fun deleteEventSubscription(@Path("id") eventId: Int): Completable
-
-    //+
-    @FormUrlEncoded
-    @POST("v1/event-mailing")
-    fun mailToEvent(
-        @Field("message") message: String, @Field("event") event: String,
-        @Field("isPush") isPush: Boolean, @Field("isInApp") isInApp: Boolean
-    ): Completable
 
     //+
     @GET("v1/event-page/{id}")

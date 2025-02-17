@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.Notification
 import com.example.app.databinding.ItemNotificationRateBinding
+import com.example.data.models.Notification
 import com.example.ui.views.expandableTextView.CustomExpandableTextView
 
 class RateNotificationItem(
@@ -37,7 +37,7 @@ class RateNotificationItem(
     override fun bind(
         viewBinding: ItemNotificationRateBinding,
         position: Int,
-        payloads: MutableList<Any>?
+        payloads: MutableList<Any>
     ) {
         val payload = payloads?.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
@@ -56,5 +56,6 @@ class RateNotificationItem(
     override fun getRootView(binding: ItemNotificationRateBinding): View = binding.clRateNotification
 
     override fun getLayout() = R.layout.item_notification_rate
+    override fun initializeViewBinding(view: View) = ItemNotificationRateBinding.bind(view)
 }
 

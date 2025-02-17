@@ -5,8 +5,10 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.MenuItem
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
@@ -86,6 +88,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
@@ -104,6 +107,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     private val navBarColorDefault by lazy { getColor(R.color.main_background) }
     private val navBarColorBottomNav by lazy { getColor(R.color.bottom_navigation_view_background_color) }
+
+    private var noInternetDialog: BottomSheetDialog? = null
+    private lateinit var splashScreen: SplashScreen
 
     private val navFragmentsLifecycleCallback = getFragmentLifecycleCallback(
         onFragmentStopped = { },
@@ -124,10 +130,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     f.setupToolbarContent(ToolbarContent(ivBack, toolbarLabel, toolbarContainer))
                     f.actionIconContainer(toolbarContainer)
                 }
-                getBehavior()?.setScrollChangeCallback {
-                    f.scrollValue(it)
-                    presenter.changeScrollingOffset(it)
-                }
             }
         }
     )
@@ -147,21 +149,19 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
-    private var noInternetDialog: BottomSheetDialog? = null
-    private lateinit var splashScreen: SplashScreen
-
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
         super.onCreate(savedInstanceState)
 
-        registerFragmentLifecycleCallback()
         onBackPressedDispatcher.addCallback(this, backClick)
+        registerFragmentLifecycleCallback()
         setupMainNavBar()
         subscribeOnNotificationChanel()
 
         mBinding.toolbar.ivBack.setOnClickListener {
             val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
             if (fragment != null && fragment is BaseFragment<*>) fragment.navigateUp()
+            else if (fragment != null && fragment is BaseVBFragment<*>) fragment.navigateUp()
             else navigateUp()
         }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
@@ -169,11 +169,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     override fun showSplashScreen() {
-        splashScreen = installSplashScreen().apply { setKeepVisibleCondition { true } }
+        splashScreen = installSplashScreen().apply { setKeepOnScreenCondition { true } }
     }
 
     override fun hideSplashScreen() {
-        splashScreen.setKeepVisibleCondition { false }
+        splashScreen.setKeepOnScreenCondition { false }
     }
 
     private fun wasLaunchedFromResents(intent: Intent): Boolean {
@@ -209,9 +209,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                     else presenter.onHandleEvent(lastPath)
                 }
                 //catch path profile settings
-                else if (lastPath == PATH_SETTINGS) presenter.onHandleProfileSettingsLink()
+                else if (lastPath == PATH_SETTINGS) presenter.onHandleProfileSettings()
                 //catch path profile
-                else if (lastPath == PATH_PROFILE) presenter.onHandleProfileLink()
+                else if (lastPath == PATH_PROFILE) presenter.onHandleProfile()
                 //catch path user
                 else if (paths.contains(PATH_USER) && !lastPath.isNullOrBlank()) {
                     presenter.onHandleUser(lastPath)
@@ -219,38 +219,30 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 //catch path support center question
                 else if (lastPath == PATH_SUPPORT_CENTER) {
                     val question = it.getQueryParameter("question")
-                    presenter.onHandleSupportQuestionLink(question)
+                    presenter.onHandleSupportQuestion(question)
                 }
                 //catch path recover password
                 else if (lastPath == PATH_LP) {
-                    if (it.fragment == "recover-password") presenter.onHandleRecoverPasswordLink()
+                    if (it.fragment == "recover-password") presenter.onHandleRecoverPassword()
                 }
                 //catch path password change
                 else if (lastPath == PASSWORD_RECOVERY && authCode != null) {
                     val indexLastPath = paths.indexOf(lastPath)
                     val userId = if (indexLastPath > 0) paths[indexLastPath - 1] else ""
-                    presenter.onHandleChangePasswordLink(userId, authCode)
+                    presenter.onHandleChangePassword(userId, authCode)
                 }
                 //catch path event member
                 else if (lastPath == PATH_EVENT_MEMBER) {
-                    val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL)
-                    val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE)
-                    presenter.onInviteRegister(
-                        memberEmail ?: "",
-                        memberCode ?: "",
-                        "",
-                        "",
-                        "",
-                        -1
-                    )
+                    val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL) ?: ""
+                    val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
+                    presenter.onInviteRegister(memberEmail, memberCode,"","","",-1)
                 }
                 //catch path pgrf, assistant
                 else if (lastPath == PGRF || lastPath == ASSISTANT || lastPath == LINKED_REGISTER) {
                     val json = decodeBase64ToJson(it.getQueryParameter("data")) ?: return
                     val invite = it.getQueryParameter(AUTH_CONFIRM_INVITE_ID)
-
                     presenter.onInviteRegister(
-                        json["email"].toString(),
+                        if (json["email"].toString() != "null") json["email"].toString() else "",
                         authCode ?: "",
                         if (json["name"].toString() != "null") json["name"].toString() else "",
                         if (json["lastName"].toString() != "null") json["lastName"].toString() else "",
@@ -263,14 +255,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
             val extras = intent.extras ?: return
             when {
                 extras.containsKey(FIELD_CHAT) -> {
-                    intent.getBundleExtra(FIELD_CHAT)?.let {
-                        val chatId = it.getString(FIELD_CHAT_ID, null)
-                        val userName = it.getString(FIELD_LABEL, null)
-                        val notificationId = it.getString(FIELD_NOTIFICATION_ID, null)
-                        if (chatId != null && userName != null && notificationId != null) {
-                            presenter.onHandleChat(chatId, userName, notificationId)
-                        }
-                    }
+                    val bundle = intent.getBundleExtra(FIELD_CHAT) ?: return
+                    val chatId = bundle.getString(FIELD_CHAT_ID, null)
+                    val userName = bundle.getString(FIELD_LABEL, null)
+                    val notificationId = bundle.getString(FIELD_NOTIFICATION_ID, null)
+                    if (chatId != null && userName != null && notificationId != null)
+                        presenter.onHandleChat(chatId, userName, notificationId)
                 }
 
                 extras.containsKey(FIELD_EVENT) -> {
@@ -279,7 +269,12 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 }
 
                 extras.containsKey(FIELD_NOTIFICATION) -> {
-                    extras.getParcelable(FIELD_NOTIFICATION, RemoteNotification::class.java)?.let {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        extras.getParcelable(FIELD_NOTIFICATION, RemoteNotification::class.java)
+                            ?.let {
+                                presenter.onHandleNotification(it)
+                            }
+                    else extras.getParcelable<RemoteNotification>(FIELD_NOTIFICATION)?.let {
                         presenter.onHandleNotification(it)
                     }
                 }
@@ -289,10 +284,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
 
     override fun showAccountChangeFragment(url: String) {
-        findNavController().navigate(
-            R.id.change_account_fragment,
-            bundleOf("deepLink" to url),
-        )
+        val args = bundleOf("deepLink" to url)
+        findNavController().navigate(R.id.change_account_fragment, args)
     }
 
     override fun showProfileSettings() {
@@ -322,13 +315,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showChangePassword(userId: String, code: String) {
-        findNavController().navigate(
-            R.id.resetPasswordFragment, bundleOf(
-                "loginType" to "email",
-                "code" to code,
-                "userId" to userId
-            )
-        )
+        val args = bundleOf("loginType" to "email", "code" to code, "userId" to userId)
+        findNavController().navigate(R.id.resetPasswordFragment, args)
     }
 
     override fun showPasswordRecovery() {
@@ -337,12 +325,8 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showChat(chatId: String, userName: String) {
-        findNavController().navigate(
-            R.id.chat_fragment, bundleOf(
-                FIELD_NAME to userName,
-                FIELD_CHAT_ID to chatId
-            )
-        )
+        val args = bundleOf(FIELD_NAME to userName, FIELD_CHAT_ID to chatId)
+        findNavController().navigate(R.id.chat_fragment, args)
     }
 
     private fun subscribeOnNotificationChanel() {
@@ -465,7 +449,10 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     private fun findNavController() = findNavController(R.id.navHostFragment)
 
 
-    override fun navigateUp() { onSupportNavigateUp() }
+    override fun navigateUp() {
+        onSupportNavigateUp()
+    }
+
     override fun onSupportNavigateUp() = findNavController().navigateUp()
 
     override fun onDestroy() {
@@ -503,10 +490,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         ChangeStateBottomDialog(this, type)
             .setClickCallback {
                 when (it) {
-                    ClickType.INFO -> {
-                        findNavController().navigate(R.id.userStateFragment)
-                    }
-
+                    ClickType.INFO -> findNavController().navigate(R.id.userStateFragment)
                     ClickType.BASE -> {
                         findNavController().navigate(
                             R.id.mainInfoFragment,
@@ -570,38 +554,21 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 R.id.chats -> if (fragment is ChatListTabsFragment) fragment.scrollToFirstItem()
             }
         }
+        val doPopBackStack: (Int, Boolean) -> Boolean = { res, main ->
+            if (!findNavController().popBackStack(res, false)) {
+                if (main) findNavController().navigate(res, null,
+                    navOptions { popUpTo(R.id.main_navigation) { inclusive = true } })
+                else findNavController().navigate(res)
+            }
+            true
+        }
         mBinding.mainNavBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.main -> {
-                    if (!findNavController().popBackStack(R.id.recommendations_fragment, false)) {
-                        findNavController().navigate(R.id.recommendations_fragment, null,
-                            navOptions { popUpTo(R.id.main_navigation) { inclusive = true } })
-                    }
-                    true
-                }
-
-                R.id.my_events -> {
-                    if (!findNavController().popBackStack(R.id.my_events_fragment_new, false)) {
-                        findNavController().navigate(R.id.my_events_fragment_new)
-                    }
-                    true
-                }
-
-                R.id.chats -> {
-                    findNavController().navigate(R.id.chat_list_tabs_fragment)
-                    true
-                }
-
-                R.id.notification -> {
-                    findNavController().navigate(R.id.notifications_list_fragment)
-                    true
-                }
-
-                R.id.profile -> {
-                    findNavController().navigate(R.id.profile_fragment)
-                    true
-                }
-
+                R.id.main -> doPopBackStack.invoke(R.id.recommendations_fragment, true)
+                R.id.my_events -> doPopBackStack.invoke(R.id.my_events_fragment_new, false)
+                R.id.chats -> doPopBackStack.invoke(R.id.chat_list_tabs_fragment, false)
+                R.id.notification -> doPopBackStack.invoke(R.id.notifications_list_fragment, false)
+                R.id.profile -> doPopBackStack.invoke(R.id.profile_fragment, false)
                 else -> false
             }
         }
@@ -624,26 +591,13 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     private fun setupNavBarItems(f: Fragment) {
+        val menuItem: (Int) -> MenuItem = { mBinding.mainNavBar.menu.findItem(it) }
         when (f) {
-            is RecommendationsFragment -> {
-                mBinding.mainNavBar.menu.findItem(R.id.main).isChecked = true
-            }
-
-            is ProfileFragment -> {
-                mBinding.mainNavBar.menu.findItem(R.id.profile).isChecked = true
-            }
-
-            is ChatListTabsFragment -> {
-                mBinding.mainNavBar.menu.findItem(R.id.chats).isChecked = true
-            }
-
-            is NotificationsListFragment -> {
-                mBinding.mainNavBar.menu.findItem(R.id.notification).isChecked = true
-            }
-
-            is MyEventsFragment -> {
-                mBinding.mainNavBar.menu.findItem(R.id.my_events).isChecked = true
-            }
+            is RecommendationsFragment -> menuItem.invoke(R.id.main).isChecked = true
+            is ProfileFragment -> menuItem.invoke(R.id.profile).isChecked = true
+            is ChatListTabsFragment -> menuItem.invoke(R.id.chats).isChecked = true
+            is NotificationsListFragment -> menuItem.invoke(R.id.notification).isChecked = true
+            is MyEventsFragment -> menuItem.invoke(R.id.my_events).isChecked = true
         }
     }
 

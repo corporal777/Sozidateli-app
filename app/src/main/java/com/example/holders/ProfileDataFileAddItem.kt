@@ -1,5 +1,6 @@
 package com.example.holders
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -8,7 +9,7 @@ import androidx.core.view.updateLayoutParams
 import com.example.app.R
 import com.example.app.databinding.ItemProfileAttachFileBinding
 import com.example.extensions.dp
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataFileAddItem(
     private val isButtonEditable : Boolean,
@@ -19,7 +20,6 @@ class ProfileDataFileAddItem(
     private var isEditable = isButtonEditable
     private var isLoadingVisible = false
 
-    private lateinit var mBinding : ItemProfileAttachFileBinding
     override fun bind(viewBinding: ItemProfileAttachFileBinding, position: Int) {
         viewBinding.apply {
             progressLoad.apply {
@@ -55,6 +55,6 @@ class ProfileDataFileAddItem(
         isLoadingVisible = false
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemProfileAttachFileBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_attach_file
 }

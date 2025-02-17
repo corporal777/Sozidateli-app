@@ -3,22 +3,18 @@ package com.example.ui.event.list
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.navigation.fragment.findNavController
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.holders.redesign.EventListItem
-import com.example.ui.base.BaseBindingFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
-import kotlin.reflect.KClass
 
 abstract class EventListFragment<P : EventListContract.Presenter, T : ViewDataBinding> :
-    BaseFragment<T>(), EventListContract.View {
+    BaseVBFragment<T>(), EventListContract.View {
 
     abstract var presenter: P
-
 
     protected val onEventClickListener = object : EventListItem.OnEventClickListener {
         override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =

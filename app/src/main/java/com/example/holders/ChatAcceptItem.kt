@@ -1,10 +1,9 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemChatAcceptBinding
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.kotlinandroidextensions.Item
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ChatAcceptItem(private val onBindListener: () -> Unit) : BindableItem<ItemChatAcceptBinding>() {
 
@@ -13,5 +12,6 @@ class ChatAcceptItem(private val onBindListener: () -> Unit) : BindableItem<Item
     }
 
 
+    override fun initializeViewBinding(view: View) = ItemChatAcceptBinding.bind(view)
     override fun getLayout() = R.layout.item_chat_accept
 }

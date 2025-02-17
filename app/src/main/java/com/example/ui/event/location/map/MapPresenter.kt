@@ -2,8 +2,7 @@ package com.example.ui.event.location.map
 
 import com.example.data.AppData
 import com.example.data.models.MapInfo
-import com.example.ui.base.BasePresenter
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
@@ -13,9 +12,8 @@ import javax.inject.Inject
 
 @InjectViewState
 class MapPresenter
-@Inject constructor(
-    appData: AppData
-) : BaseBottomSheetPresenter<MapContract.View>(appData), MapContract.Presenter {
+@Inject constructor(appData: AppData) : BaseBSPresenter<MapContract.View>(appData),
+    MapContract.Presenter {
 
     var mapInfo: MapInfo? = null
 

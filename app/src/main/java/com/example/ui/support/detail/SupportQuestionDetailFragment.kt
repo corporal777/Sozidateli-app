@@ -8,8 +8,10 @@ import androidx.navigation.fragment.navArgs
 import com.example.app.R
 import com.example.app.databinding.FragmentSupportQuestionDetailBinding
 import com.example.extensions.markWon
+import com.example.extensions.removeUrlUnderline
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseToolbarFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.example.ui.views.toolbar.ToolbarContent
 import com.example.util.MarkdownEmphasisPlugin
@@ -17,13 +19,12 @@ import com.example.util.showCustomTabsBrowser
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.removeUrlUnderline
 import javax.inject.Inject
 import javax.inject.Provider
 
 
-class SupportQuestionDetailFragment : BaseFragment<FragmentSupportQuestionDetailBinding>(),
-    ToolbarFragment, SupportQuestionDetailContract.View {
+class SupportQuestionDetailFragment : BaseToolbarFragment<FragmentSupportQuestionDetailBinding>(),
+    SupportQuestionDetailContract.View {
 
     @InjectPresenter
     lateinit var presenter: SupportQuestionDetailPresenter
@@ -80,9 +81,7 @@ class SupportQuestionDetailFragment : BaseFragment<FragmentSupportQuestionDetail
     }
 
 
+    override fun binding() = FragmentSupportQuestionDetailBinding::class.java
     override fun layout(): Int = R.layout.fragment_support_question_detail
-    override val title: CharSequence = ""
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun scrollingView(): View = mBinding.supportQuestionScrollView
 }

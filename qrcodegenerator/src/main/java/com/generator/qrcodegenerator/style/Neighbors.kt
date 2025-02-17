@@ -1,9 +1,5 @@
 package com.generator.qrcodegenerator.style
 
-import kotlinx.serialization.Serializable
-
-
-@Serializable
 data class Neighbors(
     val topLeft : Boolean=false,
     val topRight : Boolean=false,
@@ -18,16 +14,5 @@ data class Neighbors(
     companion object {
         val Empty = Neighbors()
     }
-
-    val hasAny : Boolean
-        get() = topLeft || topRight || left || top ||
-            right || bottomLeft || bottom || bottomRight
-
-    val hasAllNearest
-        get() = top && bottom && left && right
-
-    val hasAll : Boolean
-        get() = topLeft && topRight && left && top &&
-            right && bottomLeft && bottom && bottomRight
 }
 

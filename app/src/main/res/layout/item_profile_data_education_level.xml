@@ -6,7 +6,8 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvEducationLevelTitle"
-            style="@style/Profile.Edit.InputTitle"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"
             android:text="@string/profile_education_level" />
 
@@ -21,7 +22,8 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDegreesTitle"
-            style="@style/Profile.Edit.InputTitle"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"
             android:text="@string/profile_degrees_level" />
 
@@ -37,7 +39,8 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSpecializationTitle"
-            style="@style/Profile.Edit.InputTitle"
+            style="@style/Profile.Edit.TextViewTitleThin"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"
             android:text="@string/search_filter_specialization" />
 

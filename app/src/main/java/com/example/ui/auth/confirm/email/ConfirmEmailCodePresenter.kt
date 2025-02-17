@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.ConfirmCodeBody
 import com.example.data.bodies.EmailCodeBody
+import com.example.data.models.AuthResponse
 import com.example.exceptions.CodeInvalidException
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
@@ -29,9 +30,12 @@ class ConfirmEmailCodePresenter
     val userRepository: UserRepository
 ) : BasePresenter<ConfirmEmailCodeContract.View>(appData), ConfirmEmailCodeContract.Presenter {
 
-    var isFromRegistration = true
     var email = ""
+    var authResponse: AuthResponse? = null
+
+    private val userId get() = authResponse?.id ?: appData.getId()
     private var code = ""
+
     private val timerCompositeDisposable = CompositeDisposable().apply {
         compositeDisposable += this
     }
@@ -43,8 +47,8 @@ class ConfirmEmailCodePresenter
         viewState.apply {
             setConfirmButton(code.length == CODE_SIZE)
             setEmail(email)
+            onSendCodeAgain()
         }
-        onSendCodeAgain()
     }
 
     override fun attachView(view: ConfirmEmailCodeContract.View?) {
@@ -59,33 +63,21 @@ class ConfirmEmailCodePresenter
     }
 
     override fun onConfirmEmail() {
-        viewState.apply {
-            if (isFromRegistration) setFinishRegister(true)
-            else setIgnoreTokenListener(true)
-        }
         compositeDisposable += actionConfirmCodeRequest()
             .andThen(actionAfterConfirmRequest())
             .performOnBackgroundOutOnMain()
             .withLoading(1)
             .subscribeSimple(
                 onError = {
-                    viewState.apply {
-                        setFinishRegister(false)
-                        setIgnoreTokenListener(false)
-                        if (it is CodeInvalidException) showCodeError(true)
-                        else onReceiveError(it)
-                    }
+                    if (it is CodeInvalidException) viewState.showCodeError(true)
+                    else onReceiveError(it)
                 },
-                onComplete = {
-                    viewState.apply {
-                        setIgnoreTokenListener(false)
-                        if (!isFromRegistration) navigateUp()
-                    }
-                })
+                onComplete = { if (authResponse == null) viewState.navigateUp() }
+            )
     }
 
     override fun onSendCodeAgain() {
-        compositeDisposable += authRepository.registerEmailResend(email)
+        compositeDisposable += authRepository.registerEmailResend(userId, email)
             .performOnBackgroundOutOnMain()
             .withLoading(0)
             .subscribeSimple(
@@ -122,15 +114,22 @@ class ConfirmEmailCodePresenter
 
 
     private fun actionConfirmCodeRequest(): Completable {
-        return authRepository.confirmEmailCode(EmailCodeBody(code, email))
+        return authRepository.confirmEmailCode(userId, EmailCodeBody(code, email))
             .onErrorResumeNext { Completable.error(CodeInvalidException()) }
     }
 
     private fun actionAfterConfirmRequest(): Completable {
-        return if (isFromRegistration) Completable.complete()
-        else userRepository.getUserInternal().doOnSuccess { new ->
-            appData.updateUser { this.email = new.email }
-        }.ignoreElement()
+        return if (authResponse == null) {
+            userRepository.getUserInternal()
+                .doOnSuccess { new -> appData.updateUser { this.email = new.email } }
+                .ignoreElement()
+        } else {
+            Completable.fromAction {
+                viewState.setFinishRegister(true)
+                appData.saveId(authResponse?.id)
+                appData.login(authResponse?.token!!)
+            }.doOnError { viewState.setFinishRegister(false) }
+        }
     }
 
     private fun Completable.withLoading(type: Int): Completable {

@@ -1,10 +1,11 @@
 package com.example.ui.notification.items
 
+import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationsTagsBinding
 import com.example.ui.notification.NotificationType
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class NotificationsTagsItem(
     val onTypeClick: (type: NotificationType) -> Unit
@@ -31,10 +32,11 @@ class NotificationsTagsItem(
         }
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is NotificationsTagsItem) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemNotificationsTagsBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_notifications_tags
 }

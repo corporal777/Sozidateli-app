@@ -1,25 +1,24 @@
 package com.example.holders.registerEvent
 
+import android.view.View
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventRegistration
 import com.example.app.databinding.ItemRegisterEventHeaderBinding
+import com.example.data.models.EventRegistration
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.isSameDay
 import com.example.extensions.markWon
 import com.example.extensions.parseToDate
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class RegisterEventHeaderItem(
     id: Long,
     private val event: EventRegistration,
 ) : BindableItem<ItemRegisterEventHeaderBinding>(id) {
 
-
     private val eventStartDate = getEventDate()
-
 
     override fun bind(viewBinding: ItemRegisterEventHeaderBinding, position: Int) {
         viewBinding.apply {
@@ -50,4 +49,5 @@ class RegisterEventHeaderItem(
     }
 
     override fun getLayout(): Int = R.layout.item_register_event_header
+    override fun initializeViewBinding(view: View) = ItemRegisterEventHeaderBinding.bind(view)
 }

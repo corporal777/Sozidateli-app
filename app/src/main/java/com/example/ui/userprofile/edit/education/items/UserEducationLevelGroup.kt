@@ -3,11 +3,14 @@ package com.example.ui.userprofile.edit.education.items
 import android.content.Context
 import android.view.View
 import com.example.app.R
-import com.example.data.models.*
+import com.example.data.models.AcademicDegreeModel
+import com.example.data.models.EducationLevel
+import com.example.data.models.ToggleIntModel
 import com.example.extensions.findItemBy
 import com.example.extensions.forEachGroups
 import com.example.extensions.updateItem
-import com.example.holders.*
+import com.example.holders.ButtonAddMore
+import com.example.holders.ProfileDataAcademicDegreeEditItem
 import com.example.util.DEGREES_MAX_SIZE
 import com.xwray.groupie.Group
 import com.xwray.groupie.NestedGroup

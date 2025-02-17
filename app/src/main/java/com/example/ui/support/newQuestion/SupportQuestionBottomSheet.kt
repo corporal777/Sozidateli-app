@@ -6,8 +6,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.App
 import com.example.app.R
-import com.example.data.models.SupportFile
 import com.example.app.databinding.BottomSheetSupportQuestionBinding
+import com.example.data.models.SupportFile
+import com.example.extensions.onTextChanged
 import com.example.ui.support.sendFile.SupportFilesBottomSheet
 import com.example.util.initDropDownAdapter
 import com.example.util.initInput
@@ -15,7 +16,7 @@ import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import com.xwray.groupie.GroupieViewHolder
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -60,11 +61,11 @@ class SupportQuestionBottomSheet(
                 adapter = groupAdapter
             }
             etQuestionTheme.apply {
-                initAsDropDown(presenter.questionTheme, themes){
-                    presenter.onChangeTheme(it.toString())
-                }
+                initInput(presenter.questionTheme) { presenter.onChangeTheme(it.toString()) }
+                initDropDownAdapter(themes.toMutableList())
             }
             etEmail.apply {
+                tvTitleEmail.isVisible = !isHasConfirmedEmail
                 isVisible = !isHasConfirmedEmail
                 initInput(presenter.questionEmail) {
                     presenter.onChangeEmail(it.toString())
@@ -101,7 +102,8 @@ class SupportQuestionBottomSheet(
     override fun setFiles(files: List<SupportFile>) {
         mBinding.apply {
             filesList.isVisible = !files.isNullOrEmpty()
-            clAddFile.isVisible = files.isNullOrEmpty()
+            tvAddFile.isVisible = files.isNullOrEmpty()
+            tvAddFileDesc.isVisible = files.isNullOrEmpty()
         }
         groupAdapter.update(files.map { SupportFileItem(it) { f -> presenter.onRemoveFile(f) } })
         if (files.size in 1..2) groupAdapter.add(SupportAddFileItem { showAddFile() })

@@ -1,35 +1,35 @@
 package com.example.ui.event.my
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.EventPlaceholderAdapter
-import com.example.extensions.dp
-import com.example.extensions.updateItem
 import com.example.app.R
+import com.example.app.databinding.FragmentMyEventsBinding
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
-import com.example.app.databinding.FragmentMyEventsBinding
+import com.example.extensions.dp
+import com.example.extensions.findItemBy
+import com.example.extensions.offsetChangedListener
+import com.example.extensions.updateItem
+import com.example.holders.PlaceholderItem
+import com.example.holders.redesign.EventListItem
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
-import com.example.ui.views.filters.event.my.MyEventsFiltersBottomSheetDialog
+import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import com.example.util.SearchInput
+import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.smoothScrollToFirstItem
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.offsetChangedListener
-import com.example.extensions.setFiltersBackground
-import com.example.ui.event.list.EventListFragmentNew
-import com.example.ui.views.CustomSpannableString
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEventsBinding>(),
+class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBinding>(),
     MyEventsContract.View {
 
     @InjectPresenter
@@ -41,15 +41,21 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
     @ProvidePresenter
     fun providePresenter(): MyEventsPresenter = presenterProvider.get()
 
+    private val eventsSection = Section()
+    private val groupAdapter = PaginationGroupAdapter<GroupieViewHolder>().apply {
+        add(eventsSection)
+        setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
+            override fun onItemTake(position: Int) {
+                presenter.onItemTake(position)
+            }
+        })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             eventsList.apply {
-                adapter = pagingAdapter.withLoadStateAdapters(
-                    EventPlaceholderAdapter(1),
-                    EventPlaceholderAdapter(1)
-                ) { showEmptyListPlaceholder(it) }
+                adapter = groupAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
             etSearch.apply {
@@ -76,13 +82,13 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
             }
             btnFilter.setOnClickListener { presenter.onShowFiltersClick() }
             btnDeclined.setOnCheckedChangeListener { _, isChecked ->
-                presenter.onEventStateClick(isChecked, MyEventsFilter.DECLINED)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.DECLINED)
             }
             btnApproved.setOnCheckedChangeListener { _, isChecked ->
-                presenter.onEventStateClick(isChecked, MyEventsFilter.APPROVED)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.APPROVED)
             }
             btnPending.setOnCheckedChangeListener { _, isChecked ->
-                presenter.onEventStateClick(isChecked, MyEventsFilter.PENDING)
+                presenter.onEventStateFiltersClick(isChecked, MyEventsFilter.PENDING)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, offset ->
@@ -92,50 +98,49 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
 
     }
 
-    override fun setData(data: PagingData<EventNew>) {
-        pagingAdapter.submitData(lifecycle, data, presenter.isTemporaryUser(), false)
+    override fun setData(data: List<EventNew?>) {
         mBinding.swipeToRefresh.isRefreshing = false
+        eventsSection.update(data.map {
+            if (it == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
+            else EventListItem(it, presenter.isTemporaryUser(), onEventClickListener)
+        })
     }
 
     override fun showFilters() {
-        MyEventsFiltersBottomSheetDialog(requireContext(), presenter.searchFilter)
-            .setFiltersSelected { presenter.onApplyFiltersClick(it) }
+        EventFiltersBottomSheetDialog(requireContext(), presenter.searchFilter)
+            .setFiltersSelected { presenter.onSearchFiltersClick(it) }
             .show()
     }
 
     override fun setFiltersChosen(isChosen: Boolean) {
-        mBinding.btnFilter.setFiltersBackground(isChosen)
+        mBinding.btnFilter.apply {
+            if (isChosen) setImageResource(R.drawable.ic_filters_selected)
+            else setImageResource(R.drawable.ic_filters_new)
+        }
     }
 
-    override fun showEmptyListPlaceholder(show: Boolean) {
-        val title : String
-        val description : String
-        if (presenter.isHasSearchParam()) {
-            title = getString(R.string.no_data_found)
-            description = getString(R.string.no_event_with_params_title)
-        } else {
-            title = getString(R.string.no_event_schedule_you_have)
-            description = getString(R.string.choose_event_and_do_request)
+    override fun showEmptyListPlaceholder(isFirst: Boolean) {
+        var titlePlaceholder = getString(R.string.no_data_found)
+        var textPlaceholder = getString(R.string.no_event_with_params_title)
+
+        if (isFirst) {
+            titlePlaceholder = getString(R.string.no_event_schedule_you_have)
+            textPlaceholder = getString(R.string.choose_event_and_do_request)
         }
-        mBinding.tvEmptyData.apply {
-            isVisible = show
-            text = SpannableStringBuilder().apply {
-                append(CustomSpannableString(title).apply {
-                    setTextSizeSpan(R.dimen.no_data_found_title_text_size, requireContext())
-                    setColorSpan(R.color.black, requireContext())
-                    setFontSpan("fonts/sf_pro_text_bold.ttf", requireContext())
-                })
-                append("\n")
-                append(CustomSpannableString(description).apply {
-                    setTextSizeSpan(R.dimen.no_data_found_desc_text_size, requireContext())
-                    setColorSpan(R.color.no_data_item_description_color, requireContext())
-                    setFontSpan("fonts/sf_pro_text_semibold.ttf", requireContext())
-                })
-            }
-        }
+        eventsSection.updateItem(
+            NoScheduleEventItem(
+                titlePlaceholder,
+                textPlaceholder,
+                60.dp
+            )
+        )
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
+    override fun updateEvent(event: EventNew) {
+        val id = event.id?.toLong()
+        eventsSection.findItemBy<EventListItem> { x -> x.id == id }?.notifyChanged(event)
+    }
 
     override fun setShowScheduleEvents(canShow: Boolean) {
         mBinding.toolbar.apply {
@@ -167,5 +172,6 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
         }
     }
 
+    override fun binding() = FragmentMyEventsBinding::class.java
     override fun layout(): Int = R.layout.fragment_my_events
 }

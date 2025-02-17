@@ -9,7 +9,7 @@ import com.example.ui.views.UserSubscribeButton
 import com.example.util.PHONE_PERSONAL
 import com.example.util.USER_DATA_EMPTY
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserDetail(
@@ -136,7 +136,15 @@ data class UserDetail(
         }
     }
 
-    fun getVkontakteBinds(): VKBindsModel? {
+    fun loadUserNotDefaultImage(): String? {
+        return if (image == null) null
+        else {
+            if (avatarIsDefault == true) null
+            else image?.uri
+        }
+    }
+
+    fun getVkBinds(): VKBindsModel? {
         return socialBinds?.vkontakte
     }
 
@@ -479,7 +487,8 @@ data class ImageModel(
     val size: Long? = null,
     var uri: String? = null,
     val name: String? = null,
-    val id: String? = null
+    val id: String? = null,
+    val fileId : String? = null
 ) : Parcelable {
     fun toFileModel(): FileModel {
         return FileModel(

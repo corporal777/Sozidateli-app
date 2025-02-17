@@ -1,9 +1,10 @@
 package com.example.holders
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.InterestNew
 import com.example.app.databinding.ItemProfileDataInterestBinding
-import com.xwray.groupie.databinding.BindableItem
+import com.example.data.models.InterestNew
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ProfileDataInterestItem(
     private val interest: InterestNew
@@ -16,5 +17,6 @@ class ProfileDataInterestItem(
         }
     }
 
+    override fun initializeViewBinding(view: View) = ItemProfileDataInterestBinding.bind(view)
     override fun getLayout() = R.layout.item_profile_data_interest
 }

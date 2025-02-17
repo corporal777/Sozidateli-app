@@ -4,23 +4,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.EventActivityModel
 import com.example.app.databinding.LayoutListBinding
+import com.example.data.models.EventActivityModel
 import com.example.extensions.updateItem
 import com.example.holders.DayHeaderItem
 import com.example.holders.NoDataItem
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.subevent.SubEventFragmentArgs
 import com.example.ui.subevent.items.SubEventItem
-import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteSubeventFragment : BaseFragment<LayoutListBinding>(), FavoriteSubeventContract.View {
+class FavoriteSubeventFragment : BaseVBFragment<LayoutListBinding>(), FavoriteSubeventContract.View {
 
 
     @InjectPresenter
@@ -37,7 +36,7 @@ class FavoriteSubeventFragment : BaseFragment<LayoutListBinding>(), FavoriteSube
         }
     }
 
-    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private val groupAdapter = GroupieAdapter()
 
     private val onSubEventClickListener = object : SubEventItem.OnSubEventClickListener {
         override fun onSubEventClick(subEvent: EventActivityModel) {
@@ -89,5 +88,6 @@ class FavoriteSubeventFragment : BaseFragment<LayoutListBinding>(), FavoriteSube
         findNavController().navigate(R.id.subEvent_fragment, args)
     }
 
+    override fun binding() = LayoutListBinding::class.java
     override fun layout() = R.layout.layout_list
 }

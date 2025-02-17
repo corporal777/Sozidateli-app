@@ -16,6 +16,15 @@ interface MainContract {
     interface View : BaseContract.View {
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showStories()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun showSplashScreen()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
+        fun hideSplashScreen()
+
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showLogin()
 
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
@@ -57,13 +66,13 @@ interface MainContract {
         @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showPasswordRecovery()
 
-        @Skip
+        @StateStrategyType(OneExecutionByTagStateStrategy::class, tag = "content")
         fun showChangePassword(userId: String, code: String)
 
         @OneExecution
         fun checkIntent()
 
-        @OneExecution
+        @Skip
         fun showInAppNew(listInApp: List<Notification>)
 
         @Skip
@@ -78,20 +87,11 @@ interface MainContract {
         @Skip
         fun showBadgeChat(count : Int)
 
-        @OneExecution
+        @Skip
         fun showBrowser(url : String)
 
-        @OneExecution
+        @Skip
         fun showUpdateApp(isRequired : Boolean)
-
-        @OneExecution
-        fun showStories()
-
-        @OneExecution
-        fun showSplashScreen()
-
-        @OneExecution
-        fun hideSplashScreen()
 
         @Skip
         fun setAppBarElevation(value: Float)
@@ -102,8 +102,8 @@ interface MainContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onOpenCheckConnectionDestination(check: Boolean)
-        fun onHandleChangePasswordLink(userId: String, code: String)
-        fun onHandleRecoverPasswordLink()
+        fun onHandleChangePassword(userId: String, code: String)
+        fun onHandleRecoverPassword()
         fun onHandleChat(chatId: String, userName: String, notificationId: String)
         fun onHandleEventCode(event: String?)
         fun onHandleEvent(event: String?)
@@ -111,9 +111,9 @@ interface MainContract {
         fun onHandleAuthToOtherPlatform(url: String?)
         fun onHandleNotification(notification: RemoteNotification)
 
-        fun onHandleSupportQuestionLink(id : String?)
-        fun onHandleProfileSettingsLink()
-        fun onHandleProfileLink()
+        fun onHandleSupportQuestion(id : String?)
+        fun onHandleProfileSettings()
+        fun onHandleProfile()
 
 
         fun onRetryConnectionClick()

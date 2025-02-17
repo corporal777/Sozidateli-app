@@ -1,14 +1,15 @@
 package com.example.ui.event.registration.items
 
+import android.view.View
 import com.example.app.R
-import com.example.data.models.EducationModel
 import com.example.app.databinding.ItemRegisterEventProfileEducationBinding
+import com.example.data.models.EducationModel
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.parseAndFormatOrDefault
 import com.example.util.DATE_FORMAT_FULL_MONTH_FULL_YEAR_NO_DATE_NUMBERS
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class REProfileEducationItem(
     val itemId : Int?,
@@ -50,11 +51,12 @@ class REProfileEducationItem(
         }
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>?): Boolean {
+    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (other !is REProfileEducationItem) return false
         if (education != other.education) return false
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemRegisterEventProfileEducationBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_register_event_profile_education
 }

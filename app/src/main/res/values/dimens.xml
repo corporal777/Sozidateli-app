@@ -26,7 +26,7 @@
     <dimen name="account_block_dialog_width">270dp</dimen>
 
 
-    <dimen name="user_profile_settings_absent_password_icon_padding">10dp</dimen>
+    <dimen name="password_icon_padding">10dp</dimen>
 
     <dimen name="background_custom_input_view_padding_left">12dp</dimen>
     <dimen name="toolbar_circle_button_padding">8dp</dimen>
@@ -175,7 +175,7 @@
     <dimen name="background_corners_eight">8dp</dimen>
 
 
-    <dimen name="profile_qr_code_image_size">200dp</dimen>
+    <dimen name="profile_qr_code_image_size">220dp</dimen>
 
     <dimen name="update_app_image">250dp</dimen>
 

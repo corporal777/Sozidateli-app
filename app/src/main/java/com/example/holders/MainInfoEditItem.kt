@@ -1,16 +1,25 @@
 package com.example.holders
 
+import android.view.View
+import com.example.app.R
+import com.example.app.databinding.ItemEditMainInfoBinding
+import com.example.data.models.FieldDetails
+import com.example.data.models.ImageModel
+import com.example.data.models.NewUserAddress
+import com.example.data.models.ToggleStringModel
+import com.example.data.models.UserAddress
+import com.example.data.models.UserDetail
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.phoneToServer
-import com.example.app.R
-import com.example.data.models.*
-import com.example.app.databinding.ItemEditMainInfoBinding
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.settlement.SearchSettlementBottomSheet
-import com.example.util.*
+import com.example.util.GENDER_FEMALE
+import com.example.util.GENDER_MALE
+import com.example.util.PHONE_PERSONAL
+import com.example.util.Utils
 import com.xwray.groupie.Item
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 
 class MainInfoEditItem(
@@ -205,7 +214,7 @@ class MainInfoEditItem(
         )
     }
 
-    override fun hasSameContentAs(other: Item<*>?): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is MainInfoEditItem) return false
         if (gender != other.gender) return false
         if (birthday != other.birthday) return false
@@ -215,5 +224,6 @@ class MainInfoEditItem(
         return true
     }
 
+    override fun initializeViewBinding(view: View) = ItemEditMainInfoBinding.bind(view)
     override fun getLayout(): Int = R.layout.item_edit_main_info
 }

@@ -1,75 +1,41 @@
 package com.generator.qrcodegenerator.style
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
-import com.generator.qrcodegenerator.SerializationProvider
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
+interface BitmapScale {
 
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
+    fun scale(drawable: Drawable, width: Int, height: Int): Bitmap
+    fun scale(logo: QrVectorLogo, width: Float, height: Float): Bitmap
 
-fun interface BitmapScale {
-
-    fun scale(drawable: Drawable, width : Int, height : Int) : Bitmap
-
-    @Serializable
-    @SerialName("FitXY")
     object FitXY : BitmapScale {
         override fun scale(drawable: Drawable, width: Int, height: Int): Bitmap {
-            return drawable.toBitmap(width,height,
-                config = Bitmap.Config.ARGB_8888)
+            return drawable.toBitmap(
+                width, height,
+                config = Bitmap.Config.ARGB_8888
+            )
         }
-    }
 
-    @Serializable
-    @SerialName("CenterCrop")
-    object CenterCrop : BitmapScale {
-        override fun scale(drawable: Drawable, width: Int, height: Int): Bitmap {
-            var iWidth = drawable.intrinsicWidth
-            var iHeight = drawable.intrinsicHeight
-
-            if (iWidth == -1 || iHeight == -1 ||
-                width / height.toDouble() == iWidth/iHeight.toDouble())
-                return drawable.toBitmap(width,height,
-                    config = Bitmap.Config.ARGB_8888)
-
-            if (iWidth != width || iHeight != height){
-                val scale = maxOf(
-                    width.toDouble()/iWidth,
-                    height.toDouble()/iHeight
-                )
-
-                iWidth = (iWidth * scale).toInt() + 1
-                iHeight = (iHeight * scale).toInt() + 1
+        override fun scale(logo: QrVectorLogo, width: Float, height: Float): Bitmap {
+            val bitmap = if (logo.bitmap != null){
+                Bitmap.createScaledBitmap(logo.bitmap, width.toInt(), height.toInt(), false)
+            } else {
+                logo.drawable!!.toBitmap(width.toInt(), height.toInt(), Config.ARGB_8888)
             }
-
-            val bitmap = drawable.toBitmap(iWidth, iHeight,
-                config = Bitmap.Config.ARGB_8888)
-            val x = (iWidth - width)/2
-            val y = (iHeight - height)/2
-
-            val newBmp = Bitmap.createBitmap(bitmap, x,y, width, height)
-            if (newBmp !== bitmap)
-                bitmap.recycle()
-
-            return newBmp
+            return bitmap.let { if (it.isMutable) it else it.copy(it.config, true) }
         }
-    }
 
-    companion object : SerializationProvider {
-        override val defaultSerializersModule by lazy(LazyThreadSafetyMode.NONE) {
-            SerializersModule {
-                polymorphic(BitmapScale::class) {
-                    subclass(FitXY::class)
-                    subclass(CenterCrop::class)
-                }
-            }
+        fun toBitmapScale(drawable: Drawable): Bitmap {
+            val bitmap = Bitmap.createBitmap(1054, 1054, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            return bitmap
         }
+
     }
 }
 

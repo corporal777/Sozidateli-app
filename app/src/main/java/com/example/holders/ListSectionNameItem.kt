@@ -1,12 +1,13 @@
 package com.example.holders
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.app.R
 import com.example.app.databinding.ItemListSectionNameBinding
 import com.example.extensions.dp
-import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.viewbinding.BindableItem
 
 class ListSectionNameItem(
     id: Long,
@@ -25,6 +26,6 @@ class ListSectionNameItem(
         }
     }
 
-
+    override fun initializeViewBinding(view: View) = ItemListSectionNameBinding.bind(view)
     override fun getLayout() = R.layout.item_list_section_name
 }

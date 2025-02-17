@@ -1,14 +1,11 @@
 package com.example.ui.auth.register
 
-import com.example.extensions.formatToDefaultServerDate
-import com.example.extensions.getAppVersion
-import com.example.extensions.getAppVersionCode
-import com.example.extensions.getDeviceName
-import com.example.extensions.removeAllDoubleSpaces
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.RegisterBody
 import com.example.data.models.FieldDetails
 import com.example.exceptions.PhoneNotUniqueException
+import com.example.extensions.*
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -21,6 +18,7 @@ import com.example.util.Utils.isPhone
 import com.example.util.Utils.isPhoneNumberValid
 import com.example.util.Utils.validatePhoneBeforeSend
 import io.reactivex.Completable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -35,19 +33,20 @@ class UserRegistrationPresenter
     private val userRepository: UserRepository,
 ) : BasePresenter<UserRegistrationContract.View>(appData), UserRegistrationContract.Presenter {
 
-    private var firstName: String? = ""
-    private var lastName: String? = ""
-    private var middleName: String? = ""
+    var firstName: String? = ""
+    var lastName: String? = ""
+    var middleName: String? = ""
     private var isMiddleNameAbsent = middleName == USER_DATA_EMPTY
     private var login: String? = ""
     private var birthday: String? = ""
     private var password: String? = ""
     private var isPasswordValid: Boolean = false
     private var isAgree: Boolean = false
-    private var loginType: String? = ""
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+
+    override fun attachView(view: UserRegistrationContract.View?) {
+        super.attachView(view)
+        viewState.setData(lastName, firstName, middleName, isMiddleNameAbsent, login, birthday, password, isAgree)
         performDataChange()
     }
 
@@ -62,7 +61,7 @@ class UserRegistrationPresenter
                         if (it is PhoneNotUniqueException) viewState.showPhoneIsNotUnique(login!!)
                         else onReceiveError(it)
                     },
-                    onComplete = { viewState.showCodeConfirmation(login!!) }
+                    onSuccess = { viewState.showPhoneConfirmation(login!!, it) }
                 )
         } else showErrors()
     }
@@ -94,7 +93,6 @@ class UserRegistrationPresenter
 
     override fun onChangeLoginText(login: String) {
         this.login = login
-        loginType = if (isPhone(login) && !isContainLetters(login)) "phone" else "email"
         viewState.showLoginError(false)
         performDataChange()
     }
@@ -144,8 +142,7 @@ class UserRegistrationPresenter
         else !middleName.isNullOrBlank() && !isContainsNumbers(middleName)
 
         val passwordValid = !password.isNullOrBlank() && isPasswordValid
-        val phoneValid =
-            if (loginType == "phone") isPhoneNumberValid(login) else isEmailValid(login)
+        val phoneValid = isPhoneNumberValid(login)
         val birthdayValid = !birthday.isNullOrBlank()
         return firstNameValid && lastNameValid && middleNameValid && phoneValid
                 && birthdayValid && passwordValid && isAgree
@@ -167,11 +164,7 @@ class UserRegistrationPresenter
                 else showMiddleNameError(middleName.isNullOrBlank(), null)
             }
             showPasswordError(!isPasswordValid)
-            showLoginError(
-                if (loginType == "phone") !isPhoneNumberValid(login) else !isEmailValid(
-                    login
-                )
-            )
+            showLoginError(!isPhoneNumberValid(login))
             showBirthdayError(birthday.isNullOrBlank())
             showUserAgreementError(!isAgree)
         }
@@ -179,9 +172,7 @@ class UserRegistrationPresenter
 
     private fun checkPhoneIsUnique(withCheck: Boolean): Completable {
         return if (withCheck) Completable.defer {
-            if (loginType == "phone")
-                userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login!!))
-            else userRepository.checkEmailPhone(login, null)
+            userRepository.checkEmailPhone(null, validatePhoneBeforeSend(login!!))
         }.onErrorResumeNext { Completable.error(PhoneNotUniqueException()) }
         else Completable.complete()
     }
@@ -190,19 +181,12 @@ class UserRegistrationPresenter
         val midName = if (middleName.isNullOrEmpty()) FieldDetails(value = null, absent = true)
         else FieldDetails(value = middleName?.removeAllDoubleSpaces(), absent = false)
 
-        var phoneNumber: ArrayList<FieldDetails>? = null
-        var email: FieldDetails? = null
-        if (loginType == "phone")
-            phoneNumber = FieldDetails(value = validatePhoneBeforeSend(login!!), type = PHONE_PERSONAL).toList()
-        else email = FieldDetails(value = login)
-
         return RegisterBody(
             password = password,
             name = firstName?.removeAllDoubleSpaces(),
             lastName = lastName?.removeAllDoubleSpaces(),
             middleName = midName,
-            email = email,
-            phone = phoneNumber,
+            phone = FieldDetails(validatePhoneBeforeSend(login!!), PHONE_PERSONAL).toList(),
             birthday = FieldDetails(value = birthday?.formatToDefaultServerDate()),
             deviceId = appData.deviceId ?: "",
             deviceModel = getDeviceName(),
@@ -211,6 +195,4 @@ class UserRegistrationPresenter
             tempToken = appData.tempToken ?: ""
         )
     }
-
-    fun getLoginType() = loginType
 }

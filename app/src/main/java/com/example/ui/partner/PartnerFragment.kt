@@ -9,24 +9,24 @@ import androidx.core.util.Pair
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
-import com.example.data.models.PartnerModel
 import com.example.app.databinding.FragmentPartnerBinding
+import com.example.data.models.PartnerModel
 import com.example.extensions.updateItem
 import com.example.holders.PlaceholderItem
 import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.partner.items.PartnerMainInfoItem
 import com.example.ui.views.toolbar.ToolbarContent
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class PartnerFragment : BaseFragment<FragmentPartnerBinding>(), PartnerContract.View,
+class PartnerFragment : BaseVBFragment<FragmentPartnerBinding>(), PartnerContract.View,
     ToolbarFragment {
 
     @InjectPresenter
@@ -100,6 +100,7 @@ class PartnerFragment : BaseFragment<FragmentPartnerBinding>(), PartnerContract.
         )
     }
 
+    override fun binding() = FragmentPartnerBinding::class.java
     override fun layout() = R.layout.fragment_partner
     override val title: CharSequence = ""
     override fun actionIconContainer(view: ViewGroup) {}

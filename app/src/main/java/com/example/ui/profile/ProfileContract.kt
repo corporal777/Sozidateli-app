@@ -86,7 +86,7 @@ interface ProfileContract {
 
         fun onQrScannerToAuthWebClick()
 
-        fun onShowUserProfileLink()
+        fun onShowProfileLink()
         fun onShowChangeUserShortName()
     }
 }
