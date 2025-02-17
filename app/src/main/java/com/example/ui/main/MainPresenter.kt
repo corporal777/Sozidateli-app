@@ -7,9 +7,11 @@ import call
 import com.example.app.BuildConfig
 import com.example.data.AppData
 import com.example.data.models.Notification
+import com.example.data.models.Optional
 import com.example.data.models.RemoteNotification
 import com.example.data.socket.SocketConnectionState
 import com.example.data.socket.SocketIOManager
+import com.example.exceptions.InvalidTokenException
 import com.example.repository.AuthRepository
 import com.example.repository.ChatRepository
 import com.example.repository.CommonRepository
@@ -22,6 +24,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,6 +32,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import retrofit2.HttpException
 import withDelay
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -120,20 +124,20 @@ class MainPresenter
             .performOnBackgroundOutOnMain()
             .subscribeSimple { token ->
                 disconnectFromSocket()
-                if (token.value.isNullOrEmpty())
-                    viewState.apply {
-                        isAuthRequired = true
-                        hideSplashScreen()
-                        showRecommendations()
-                        checkIntent()
-                    }
-                else loadUser()
+                getAdditionalData()
+                if (token.value.isNullOrEmpty()) {
+                    isAuthRequired = true
+                    viewState.hideSplashScreen()
+                    viewState.showRecommendations()
+                    viewState.checkIntent()
+                } else loadUser()
             }
-        getAdditionalData()
     }
 
+
     private fun loadUser() {
-        compositeDisposable += userRepository.getUserShortData()
+        compositeDisposable += checkUserTokenIsValid()
+            .andThen(userRepository.getUserShortData())
             .flatMapSingle { userRepository.checkUserProfileSingle() }
             .flatMapCompletable { authRepository.sendFcmToken() }
             .doOnComplete { connectToSocket() }
@@ -149,10 +153,8 @@ class MainPresenter
                 onComplete = {
                     hideLoadings()
                     getInAppNotifications()
-                    viewState.apply {
-                        showRecommendations()
-                        checkIntent()
-                    }
+                    viewState.showRecommendations()
+                    viewState.checkIntent()
                 }
             )
     }
@@ -188,7 +190,8 @@ class MainPresenter
                 onError = { appData.notificationsCount = 0 },
                 onNext = {
                     Log.e("REQUEST INFO NOTIFICATION", it.toString())
-                    appData.notificationsCount = it }
+                    appData.notificationsCount = it
+                }
             )
         chatCompositeDisposable += socket.subscribeTotalNotificationsTypesCount()
             .performOnBackgroundOutOnMain()
@@ -476,9 +479,16 @@ class MainPresenter
             }
     }
 
+    private fun checkUserTokenIsValid(): Completable {
+        return authRepository.checkUserAuth().onErrorResumeNext {
+            appData.logoutInvalidation()
+            if (it is HttpException && it.code() == 400) Completable.error(InvalidTokenException())
+            else Completable.error(it)
+        }
+    }
+
     private fun getAdditionalData() {
         compositeDisposable += userRepository.getUserProfileAdditionalData()
-            .performOnBackgroundOutOnMain()
             .subscribeSimple {}
     }
 
@@ -506,8 +516,6 @@ class MainPresenter
             hideAllLoadingDialogs()
         }
     }
-
-    fun changeScrollingOffset(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
 
 
     companion object {

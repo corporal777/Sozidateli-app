@@ -18,7 +18,7 @@
 
     <com.example.ui.views.CustomTextInputLayout
         android:id="@+id/tilInput"
-        style="@style/ProfileData.InputLayout"
+        style="@style/TextInputLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -30,7 +30,7 @@
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/etMenuInput"
-            style="@style/ProfileData.EditText"
+            style="@style/TextInputEditTextStyle"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"

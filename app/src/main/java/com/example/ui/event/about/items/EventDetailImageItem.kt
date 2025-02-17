@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -210,8 +211,10 @@ class EventDetailImageItem(
 
             if (startDate.isSameDay(finishDate)) {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г."
-                val secondDate = dateStart.formatToDefaultTime() + " - " + dateEnd.formatToDefaultTime()
-                return "$firstDate, $secondDate"
+                val firstTime = dateStart.formatToDefaultTime()
+                val secondTime = dateEnd.formatToDefaultTime()
+                return if (firstTime.isNullOrEmpty() || secondTime.isNullOrEmpty()) firstDate
+                else "$firstDate, $firstTime - $secondTime"
             } else {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + dateStart.formatToDefaultTime()
                 val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + dateEnd.formatToDefaultTime()

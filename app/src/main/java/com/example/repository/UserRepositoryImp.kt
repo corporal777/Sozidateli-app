@@ -38,7 +38,7 @@ class UserRepositoryImp
             "work-experience",
             "recommendation-file"
         )
-        return api.getUserById(appData.getId(), binds).doOnSuccess { appData.setAllUserInfo(it) }
+        return api.getUserById(appData.getId(), binds).doOnSuccess { appData.setFullUserInfo(it) }
     }
 
 
@@ -52,7 +52,7 @@ class UserRepositoryImp
             "device-sessions-count"
         )
         return Maybe.zip(
-            api.getUserById(appData.getId(), binds).doOnSuccess { appData.setAllUserInfo(it) },
+            api.getUserById(appData.getId(), binds).doOnSuccess { appData.setFullUserInfo(it) },
             api.checkUserProfile(appData.getId()).doOnSuccess { appData.checkUserState(it.fields) },
             BiFunction<UserDetail, UserProfileFieldsModel, UserDetail> { user, _ ->
                 return@BiFunction user
@@ -100,7 +100,7 @@ class UserRepositoryImp
 
     override fun updateUserProfile(id: Int, map: Map<String, Any?>): Single<UserDetail> =
         api.updateProfile(id, map).doOnSuccess {
-            appData.setUserShort(it)
+            appData.setShortUserInfo(it)
         }
 
     override fun updateUserProfileField(map: Map<String, Any?>): Single<UserDetail> {

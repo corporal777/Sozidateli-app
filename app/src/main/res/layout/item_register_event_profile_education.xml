@@ -7,7 +7,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationOrgTitle"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:text="@string/profile_educate_institution"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -15,7 +15,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationOrgTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -37,7 +37,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationSpecTitle"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             android:text="@string/profile_educate_speciality"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationSpecTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -68,7 +68,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationDateTitle"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             android:layout_marginTop="10dp"
             android:text="@string/profile_social_date"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/educationDateTextView"
-            style="@style/Profile.Edit.InputEventRegisterText"
+            style="@style/EventRegistration.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

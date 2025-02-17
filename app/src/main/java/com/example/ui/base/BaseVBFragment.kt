@@ -41,16 +41,14 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         if (animationType() == AnimType.AXIS) {
             postponeEnterTransition()
             enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
-                //duration = (350).toLong()
                 duration = (300).toLong()
             }
             returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
-                //duration = (450).toLong()
                 duration = (400).toLong()
             }
         } else if (animationType() == AnimType.FADE) {
             enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
-                primaryAnimatorProvider.apply { if (this is ScaleProvider) incomingStartScale = 0.9f }
+                primaryAnimatorProvider.apply { if (this is ScaleProvider) incomingStartScale = 0.94f }
             }
             returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         }

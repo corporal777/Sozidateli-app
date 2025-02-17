@@ -21,6 +21,10 @@ class AuthRepositoryImp
     private val api: Api
 ) : ApiRepository(appData), AuthRepository {
 
+    override fun checkUserAuth(): Completable {
+        return api.getTokenStatus().ignoreElement()
+    }
+
     override fun getFcmToken(): Maybe<String> {
         return Maybe.create { emitter ->
             FirebaseMessaging.getInstance().token

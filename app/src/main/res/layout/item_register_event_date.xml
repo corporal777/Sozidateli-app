@@ -7,28 +7,24 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/baseTextInputLayout"
-            style="@style/Profile.Edit.PasswordNew"
+            style="@style/EventRegistration.InputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             app:endIconDrawable="@drawable/ic_calendar_new"
             app:endIconMode="custom"
             app:endIconTint="#C3996C"
             app:layout_constraintTop_toBottomOf="@id/textView">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/textInputEditText"
-                style="@style/Profile.Edit.InputEventRegister"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
+                style="@style/EventRegistration.AutoText" />
         </com.example.ui.views.CustomTextInputLayout>
 
 

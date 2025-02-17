@@ -3,11 +3,10 @@ package com.example.data
 import com.example.app.BuildConfig
 import com.example.data.models.*
 import com.example.data.models.Optional
-import com.example.data.models.user.User
 import com.example.data.prefs.AppPrefs
+import com.example.util.AUTH_TOKEN_INVALID
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AppData(private val appPrefs: AppPrefs) {
@@ -63,6 +62,9 @@ class AppData(private val appPrefs: AppPrefs) {
                     appPrefs.userToken = null
                     if (!isLoggedOut) logout()
                     tokenChangeSubject.onNext(Optional())
+                } else if (value == AUTH_TOKEN_INVALID) {
+                    field = null
+                    appPrefs.userToken = null
                 } else if (!isLoggedOut) {
                     field = value
                     appPrefs.userToken = value
@@ -187,7 +189,6 @@ class AppData(private val appPrefs: AppPrefs) {
         notificationReadSubject.onNext(notification)
     }
 
-
     fun checkUserState(data: List<UserProfileFields>?) {
         val base = data?.filter { it.requiredFor?.contains("basic") == true }
         val max = data?.filter { it.requiredFor?.contains("maximum") == true }
@@ -195,14 +196,17 @@ class AppData(private val appPrefs: AppPrefs) {
         hasMaxState = (max?.filter { it.filled == false }?.size ?: 0) == 0
     }
 
-    fun setAllUserInfo(user: UserDetail) {
+    fun getUser(): UserDetail = newUser
+        ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
+
+    fun setFullUserInfo(user: UserDetail) {
         val changed = this.newUser != user
         this.newUser = user
         appPrefs.userId = user.id
         if (changed) userChangeSubject.onNext(newUser.asOptional())
     }
 
-    fun setUserShort(user: UserDetail) {
+    fun setShortUserInfo(user: UserDetail) {
         val changed = this.newUser != user
         val binds = this.newUser?.binds
         this.newUser = user
@@ -225,9 +229,6 @@ class AppData(private val appPrefs: AppPrefs) {
         this.newUser?.binds?.academicDegree = data
     }
 
-    fun getUser(): UserDetail = newUser
-        ?: throw UninitializedPropertyAccessException("\"User\" was queried before being initialized")
-
     fun updateUser(update: UserDetail.() -> Unit) {
         userChangeSubject.onNext(getUser().apply(update).asOptional())
     }
@@ -241,18 +242,18 @@ class AppData(private val appPrefs: AppPrefs) {
         }
     }
 
+
+    fun saveId(id: Int?) { if (id != null) appPrefs.userId = id }
+
+    fun getId(): Int = appPrefs.userId
+
+    fun getTempId(): Int = appPrefs.temporaryUserId
+
     fun login(token: String) {
         this.attemptsOfChangePassword = 3
         isLoggedOut = false
         this.token = token
     }
-
-    fun saveId(id: Int?) {
-        if (id != null) appPrefs.userId = id
-    }
-
-    fun getId(): Int = appPrefs.userId
-    fun getTempId(): Int = appPrefs.temporaryUserId
 
     fun logout() {
         isLoggedOut = true
@@ -264,13 +265,22 @@ class AppData(private val appPrefs: AppPrefs) {
         token = null
     }
 
+    fun logoutInvalidation(){
+        isLoggedOut = true
+        newUser = null
+        appPrefs.userId = -1
+        notificationsCount = 0
+        chatRequestsCount = 0
+        chatUnreadMessageCount = 0
+        token = AUTH_TOKEN_INVALID
+    }
+
     fun isCurrentUser(id: String): Boolean = newUser?.id.toString() == id
 
     fun isTemporaryUser() = token.isNullOrEmpty()
 
     fun getStateValue(): String {
-        return if (hasMaxState && hasBaseState) "Максимальный"
-        else "Минимальный"
+        return if (hasMaxState && hasBaseState) "Максимальный" else "Минимальный"
     }
 
     fun updateFilesWithAdd(newFile: FileModel): FileModel {
@@ -300,9 +310,6 @@ class AppData(private val appPrefs: AppPrefs) {
         return newFile
     }
 
-    fun getUserFiles(): List<FileModel> {
-        return getUser().binds?.recommendationFile ?: emptyList()
-    }
 
     fun isUserEmailConfirmed() : Boolean {
         val email = getUser().email

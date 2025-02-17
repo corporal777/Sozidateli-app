@@ -7,24 +7,22 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            style="@style/Profile.Edit.InputEventRegisterTitle"
+            style="@style/EventRegistration.Title"
+            android:textColor="@color/profile_data_text_hint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
         <com.example.ui.views.CustomTextInputLayout
             android:id="@+id/phoneTextInputLayout"
-            style="@style/Profile.Edit.PasswordNew"
+            style="@style/EventRegistration.InputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            app:endIconMode="none"
             app:layout_constraintTop_toBottomOf="@id/textView">
 
             <com.example.ui.views.phoneText.PhoneFormatEditText
                 android:id="@+id/phoneInputEditText"
-                style="@style/Profile.Edit.InputEventRegister"
-                android:gravity="top"
+                style="@style/EventRegistration.EditText"
                 android:inputType="phone"
                 app:phoneFormatHint="+7" />
         </com.example.ui.views.CustomTextInputLayout>

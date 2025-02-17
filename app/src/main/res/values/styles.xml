@@ -336,18 +336,6 @@
 
     <style name="Profile.Edit" />
 
-    <style name="Profile.Edit.ActionButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">8dp</item>
-        <item name="android:gravity">center_vertical|start</item>
-        <item name="android:minHeight">32dp</item>
-        <item name="android:minEms">8</item>
-        <item name="android:paddingStart">14dp</item>
-        <item name="android:paddingEnd">14dp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">13sp</item>
-    </style>
 
     <style name="Profile.Edit.InputContainer">
         <item name="android:layout_width">match_parent</item>
@@ -367,6 +355,7 @@
     </style>
 
     <style name="Profile.Edit.TextViewTitle">
+        <item name="android:includeFontPadding">false</item>
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -377,6 +366,7 @@
     </style>
 
     <style name="Profile.Edit.TextViewTitleThin">
+        <item name="android:includeFontPadding">false</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:letterSpacing">-0.01</item>
@@ -385,14 +375,6 @@
         <item name="android:textColor">@color/chat_list_date</item>
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:layout_marginBottom">5dp</item>
-    </style>
-
-    <style name="Profile.Edit.BlockTitle">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:layout_marginBottom">9dp</item>
     </style>
 
 
@@ -445,52 +427,7 @@
         <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
 
-    <style name="Profile.Edit.InputEventRegisterText">
-        <item name="android:paddingTop">11dp</item>
-        <item name="android:paddingBottom">11dp</item>
 
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_text.ttf</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/event_register_input_text_size</item>
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">30dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">@color/input_text_color</item>
-        <item name="android:background">@drawable/background_input_text_field_new</item>
-        <item name="android:textColorHint">@color/input_hint_text_color</item>
-        <item name="android:minHeight">45dp</item>
-    </style>
-
-    <style name="Profile.Edit.InputEventRegister">
-        <item name="android:paddingTop">11dp</item>
-        <item name="android:paddingBottom">11dp</item>
-
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="fontPath">fonts/sf_pro_text.ttf</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/event_register_input_text_size</item>
-        <item name="android:textColor">@color/input_text_color</item>
-        <item name="android:backgroundTint">@color/background_input_event_register_required</item>
-        <item name="android:textColorHint">@color/input_hint_text_color</item>
-        <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
-        <item name="android:minHeight">45dp</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="android:colorControlActivated">@color/colorAccent</item>
-    </style>
-
-    <style name="Profile.Edit.InputEventRegisterTitle">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="fontPath">fonts/sf_pro_text_regular.ttf</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/profile_data_text_hint</item>
-    </style>
 
 
     <style name="Profile.Edit.Input.SingleLine">
@@ -658,7 +595,8 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="CheckBox">
+
+    <style name="CheckBoxNew">
         <item name="android:letterSpacing">-0.01</item>
         <item name="android:textSize">15sp</item>
         <item name="android:paddingStart">12dp</item>
@@ -667,24 +605,9 @@
         <item name="android:theme">@style/SelectorTheme</item>
     </style>
 
-    <style name="CheckBoxNew">
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:paddingStart">12dp</item>
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-        <item name="android:theme">@style/SelectorThemeNew</item>
-    </style>
-
-    <style name="SelectorThemeNew">
+    <style name="SelectorTheme">
         <item name="colorAccent">@color/main_brown_color_new</item>
         <item name="android:colorAccent">@color/main_brown_color_new</item>
-        <item name="android:colorControlNormal">@color/input_border_color</item>
-    </style>
-
-    <style name="SelectorTheme">
-        <item name="colorAccent">@color/badge_attention_low</item>
-        <item name="android:colorAccent">@color/badge_attention_low</item>
         <item name="android:colorControlNormal">@color/input_border_color</item>
     </style>
 
@@ -694,15 +617,6 @@
         <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
         <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
         <item name="android:theme">@style/SelectorTheme</item>
-    </style>
-
-    <style name="EventRegistrationItemContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="CustomTab">
@@ -792,35 +706,6 @@
         <item name="fontFamily">@font/sf_pro_text_medium</item>
     </style>
 
-    <style name="CustomTagsTextAppearance.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">#C3996C</item>
-        <item name="android:itemPadding">0dp</item>
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="fontFamily">@font/sf_pro_text_bold</item>
-    </style>
-
-
-    <style name="EventRegistration" />
-
-
-    <!--    <style name="EventRegistration.Title">-->
-    <!--        <item name="android:letterSpacing">-0.01</item>-->
-    <!--        <item name="fontPath">fonts/sf_pro_display_regular.OTF</item>-->
-    <!--        <item name="android:textColor">@color/profile_data_text_hint</item>-->
-    <!--        <item name="android:textSize">14sp</item>-->
-    <!--        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>-->
-    <!--        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>-->
-    <!--    </style>-->
-
-    <!--    <style name="EventRegistration.Field">-->
-    <!--        <item name="android:letterSpacing">-0.01</item>-->
-    <!--        <item name="fontPath">fonts/sf_pro_display.OTF</item>-->
-    <!--        <item name="android:textColor">@color/profile_edit_button_text_enabled</item>-->
-    <!--        <item name="android:textSize">14sp</item>-->
-    <!--        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>-->
-    <!--        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>-->
-    <!--    </style>-->
 
     <style name="EventDetailInformationTextStyle">
         <item name="android:letterSpacing">-0.01</item>
@@ -920,35 +805,6 @@
 
     <style name="ProfileData" />
 
-    <style name="ProfileData.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxBackgroundMode">filled</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxBackgroundColor">#33C3996C</item>
-        <item name="boxStrokeColor">#33C3996C</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/background_large_corners_radius</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/background_large_corners_radius</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/background_large_corners_radius</item>
-        <item name="boxCornerRadiusTopStart">@dimen/background_large_corners_radius</item>
-        <item name="hintEnabled">false</item>
-        <item name="errorTextColor">@color/attention_action</item>
-
-    </style>
-
-    <style name="ProfileData.EditText">
-        <item name="fontPath">fonts/sf_pro_display.OTF</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/common_edit_text_size</item>
-        <item name="android:textColor">@color/input_text_color</item>
-        <item name="android:backgroundTint">@color/background_input_edit_text</item>
-        <item name="android:textColorHint">@color/input_hint_text_color</item>
-        <item name="android:theme">@style/Profile.Edit.Input.Theme</item>
-        <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="android:colorControlActivated">@color/colorAccent</item>
-    </style>
-
     <style name="ProfileData.TextView">
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:layout_width">match_parent</item>
@@ -963,6 +819,7 @@
         <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
 
         <item name="android:freezesText">true</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="ClickableTextView">
@@ -1050,7 +907,6 @@
         <item name="android:letterSpacing">-0.01</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
-        <item name="android:singleLine">true</item>
         <item name="android:theme">@style/EditTextSelectorTheme</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlActivated">@color/colorAccent</item>
@@ -1085,5 +941,43 @@
         <item name="android:colorControlNormal">@color/input_border_color</item>
     </style>
 
+    <style name="EventRegistration" />
+
+    <style name="EventRegistrationItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginEnd">@dimen/margin_horizontal_default</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="EventRegistration.Title">
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="fontPath">fonts/sf_pro_text_regular.ttf</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/profile_data_text_hint</item>
+    </style>
+
+    <style name="EventRegistration.InputLayout" parent="TextInputLayoutStyle" />
+
+    <style name="EventRegistration.EditText" parent="TextInputEditTextStyle" >
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="android:textSize">@dimen/event_register_input_text_size</item>
+    </style>
+
+    <style name="EventRegistration.AutoText" parent="TextInputAutoTextStyle" >
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="android:textSize">@dimen/event_register_input_text_size</item>
+    </style>
+
+    <style name="EventRegistration.TextView" parent="ProfileData.TextView">
+        <item name="fontPath">fonts/sf_pro_text.ttf</item>
+        <item name="android:textSize">@dimen/event_register_input_text_size</item>
+    </style>
 
 </resources>

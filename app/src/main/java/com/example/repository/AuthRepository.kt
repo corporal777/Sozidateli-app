@@ -8,6 +8,8 @@ import io.reactivex.Single
 
 interface AuthRepository {
 
+    fun checkUserAuth(): Completable
+
     fun getFcmToken(): Maybe<String>
     fun sendFcmToken(): Completable
     fun deleteFcmToken(): Completable
