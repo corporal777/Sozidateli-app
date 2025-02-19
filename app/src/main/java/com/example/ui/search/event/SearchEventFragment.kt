@@ -21,9 +21,9 @@ import com.example.data.models.SearchFilter
 import com.example.app.databinding.LayoutFilterEventSearchBinding
 import com.example.app.databinding.LayoutListEventSearchBinding
 import com.example.app.databinding.LayoutListSearchBinding
+import com.example.extensions.isVisibleAnim
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventListItem
-import com.example.ui.agreement.UserAgreementBottomSheetDialog
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
@@ -41,8 +41,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment :
-    SearchFragment<SearchEventPresenter, SearchFilter.EventNew>(R.layout.layout_list_event_search),
+class SearchEventFragment : SearchFragment<LayoutListEventSearchBinding, SearchEventPresenter>(),
     SearchEventContract.View {
 
     @InjectPresenter
@@ -55,11 +54,10 @@ class SearchEventFragment :
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
 
-    private val viewBinding: LayoutListEventSearchBinding by viewBinding()
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EventPagingAdapter(
-            { presenter.onActionRegister(it, false) },
+            { event, accept -> presenter.onActionRegister(event, accept) },
             { presenter.onActionCancel(it) },
             { presenter.onShowEventClick(it.id.toString()) },
             { presenter.onShowAuthorization(it.id.toString()) },
@@ -68,11 +66,12 @@ class SearchEventFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.apply {
+        mBinding.apply {
             searchEventList.adapter = pagingAdapter.withLoadStateAdapters(
                 EventPlaceholderAdapter(1),
                 EventPlaceholderAdapter(1)
-            ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+            ) { setDataEmpty(it) }
+            setDataEmpty(isEmptyData)
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             clQrScanner.setOnClickListener { presenter.onScanClick() }
@@ -81,7 +80,7 @@ class SearchEventFragment :
 
     override fun setData(data: PagingData<EventNew>, isTemporary: Boolean) {
         pagingAdapter.submitData(lifecycle, data, isTemporary, false)
-        viewBinding.swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun updateEvent(event: EventNew) {
@@ -116,11 +115,11 @@ class SearchEventFragment :
         findNavController().navigate(R.id.qr_scanner_fragment)
     }
 
-    override fun showAgreementRegisterDialog(event: EventNew) {
-        UserAgreementBottomSheetDialog(requireContext(), event)
-            .setAcceptedCallback { isAccept, eventNew ->
-                if (isAccept) presenter.onActionRegister(eventNew, true)
-                else updateEvent(eventNew)
-            }.show()
+    override fun setDataEmpty(show: Boolean) {
+        super.setDataEmpty(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
     }
+
+    override fun binding() = LayoutListEventSearchBinding::class.java
+    override fun layout() = R.layout.layout_list_event_search
 }

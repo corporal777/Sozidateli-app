@@ -158,7 +158,7 @@ class InviteRegisterFragment : BaseVBFragment<FragmentInviteRegisterBinding>(),
     }
 
     override fun openHome() {
-        val args = RecommendationsFragmentArgs.Builder(true).build().toBundle()
+        val args = RecommendationsFragmentArgs.Builder().setIsOpenProfile(true).build().toBundle()
         findNavController().navigate(R.id.recommendations_fragment, args,
             navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
         )

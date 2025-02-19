@@ -41,16 +41,6 @@ fun CharSequence.substringToWholeWord(maxLength: Int = this.length): CharSequenc
     }
 }
 
-fun decodeBase64ToJson(data: String?): JSONObject? {
-    if (data.isNullOrEmpty()) return null
-    try {
-        val base = Base64.decode(data, Base64.DEFAULT)
-        return JSONObject(String(base, StandardCharsets.UTF_8))
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
 
 fun getClickablePrivacyPolitics(context: Context): CharSequence {
     return SpannableString(context.getString(R.string.auth_user_agreement)).apply {

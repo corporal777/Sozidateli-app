@@ -23,7 +23,7 @@ class ChangeNamePresenter
     private val appData: AppData,
 ) : BaseBSPresenter<ChangeNameContract.View>(appData), ChangeNameContract.Presenter {
 
-    lateinit var userDetail: UserDetail
+    var userDetail: UserDetail? = null
     private var firstName = ""
     private var lastName = ""
     private var middleName = ""
@@ -31,10 +31,10 @@ class ChangeNamePresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        firstName = userDetail.name ?: ""
-        lastName = userDetail.lastName ?: ""
-        middleName = userDetail.middleName?.value ?: ""
-        isMiddleNameAbsent = userDetail.middleName?.absent ?: middleName.isNullOrBlank() || middleName == "-"
+        firstName = userDetail?.name ?: ""
+        lastName = userDetail?.lastName ?: ""
+        middleName = userDetail?.middleName?.value ?: ""
+        isMiddleNameAbsent = userDetail?.middleName?.absent ?: middleName.isNullOrBlank() || middleName == "-"
 
         viewState.setUserName(firstName, lastName, middleName, isMiddleNameAbsent)
     }
@@ -43,8 +43,8 @@ class ChangeNamePresenter
         if (isDataValid()) {
             compositeDisposable += userRepository.updateUserProfile(appData.getId(),
                 mutableMapOf<String, Any?>().apply {
-                    if (firstName != userDetail.name) put(USER_NAME, firstName)
-                    if (lastName != userDetail.lastName) put(USER_LAST_NAME, lastName)
+                    if (firstName != userDetail?.name) put(USER_NAME, firstName)
+                    if (lastName != userDetail?.lastName) put(USER_LAST_NAME, lastName)
 
                     val midName = if (middleName.isNullOrBlank()) FieldDetails(value = null, absent = true)
                     else FieldDetails(value = middleName.removeAllDoubleSpaces())

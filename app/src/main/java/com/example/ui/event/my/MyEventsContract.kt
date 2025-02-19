@@ -10,14 +10,11 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface MyEventsContract {
     interface View : EventListContractNew.View {
-        @Skip
-        fun showEmptyListPlaceholder(show : Boolean)
-
         @OneExecution
         fun setData(data: PagingData<EventNew>)
 
-        @OneExecution
-        fun showFilters()
+        @Skip
+        fun showFilters(filter: SearchFilter.EventNew)
 
         @Skip
         fun setFiltersChosen(isChosen : Boolean)

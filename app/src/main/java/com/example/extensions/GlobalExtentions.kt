@@ -37,6 +37,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.constraintlayout.widget.Group
 import androidx.core.os.BundleCompat
 import androidx.core.text.getSpans
@@ -79,7 +81,7 @@ import java.util.Date
 import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty
 
-inline fun <reified F : Fragment> Fragment.setArgument(key: String, args: Any): F {
+inline fun <reified F : Fragment> Fragment.setArgument(key: String, args: Any?): F {
     return (this as F).apply {
         arguments = Bundle(1).apply { putParcelable(key, args.asArgument()) }
     }
@@ -94,6 +96,12 @@ internal inline fun <reified T : Parcelable> parcelableArgument(name: String): R
         }
     }
 }
+
+fun AppCompatImageButton.setFiltersBackground(isChosen : Boolean){
+    if (isChosen) setImageResource(R.drawable.ic_filters_selected)
+    else setImageResource(R.drawable.ic_filters_new)
+}
+
 
 fun decodeBase64ToJson(data: String?): JSONObject? {
     if (data.isNullOrEmpty()) return null
@@ -112,29 +120,6 @@ fun decodeBase64ToJson(data: String?): JSONObject? {
 }
 
 
-fun getClickablePrivacyPolitics(context: Context): CharSequence {
-    return SpannableString(context.getString(R.string.auth_user_agreement)).apply {
-        setSpan(
-            ClickableSpan(false) {
-                showCustomTabsBrowser(context, context.getString(R.string.auth_agree_address))
-            }, 52, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-    }
-}
-
-fun Spanned?.removeUrlUnderline(): Spannable? {
-    if (this.isNullOrEmpty()) return null
-    return toSpannable().apply {
-        val urls = getSpans<URLSpan>()
-        urls.forEach {
-            val start = getSpanStart(it)
-            val end = getSpanEnd(it)
-            removeSpan(it)
-            set(start..end, URLSpanNoUnderline(it.url))
-        }
-    }
-}
-
 fun TextView.removeUrlUnderline(textColor: Int? = null) {
     if (text.isNullOrEmpty()) return
     text.toSpannable().apply {
@@ -148,17 +133,14 @@ fun TextView.removeUrlUnderline(textColor: Int? = null) {
     }
 }
 
-fun String.parseAsHtmlWithoutUnderline(): Spannable? {
-    if (this.isNullOrEmpty()) return null
-    val s: Spannable = Html.fromHtml(this) as Spannable
-    for (u in s.getSpans(0, s.length, URLSpan::class.java)) {
-        s.setSpan(object : UnderlineSpan() {
-            override fun updateDrawState(tp: TextPaint) {
-                tp.isUnderlineText = false
-            }
-        }, s.getSpanStart(u), s.getSpanEnd(u), 0)
+fun AppCompatToggleButton.onCheckedChanged(onCheckedChanged: (checked: Boolean) -> Unit): CompoundButton.OnCheckedChangeListener {
+    val listener = object : CompoundButton.OnCheckedChangeListener {
+        override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+            onCheckedChanged(p1)
+        }
     }
-    return s
+    setOnCheckedChangeListener(listener)
+    return listener
 }
 
 fun AppCompatCheckBox.onCheckedChanged(onCheckedChanged: (checked: Boolean) -> Unit): CompoundButton.OnCheckedChangeListener {
@@ -663,6 +645,16 @@ var Fragment.statusBarColorValue: Int
     set(value) {
         if (requireActivity().window.decorView.systemUiVisibility == value) return
         else requireActivity().window.decorView.systemUiVisibility = value
+    }
+
+var View.isVisibleAnim: Boolean
+    get() = visibility == View.VISIBLE
+    set(value){
+        if (value){
+            alpha = 0F
+            visibility = View.VISIBLE
+            animate().setDuration(500).alpha(1.0f)
+        } else visibility = View.GONE
     }
 
 fun Fragment.onBackPressedCallback(

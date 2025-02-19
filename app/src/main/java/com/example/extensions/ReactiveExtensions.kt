@@ -255,6 +255,9 @@ fun <T> Single<T>.withTimeOut(time: Long): Single<T> {
     return timeout(time, TimeUnit.MILLISECONDS)
 }
 
+fun Completable.withTimeOut(time: Long): Completable {
+    return timeout(time, TimeUnit.MILLISECONDS)
+}
 
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()

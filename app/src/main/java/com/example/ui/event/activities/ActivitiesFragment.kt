@@ -113,7 +113,7 @@ class ActivitiesFragment : BaseVBFragment<FragmentActivitysBinding>(), Activitie
                             else R.drawable.background_search_field_rounded_normal
                         )
                     }
-                    setOnTextChange {
+                    setOnAfterTextChange {
                         btnClear.isVisible = !it.isNullOrEmpty()
                         presenter.onSearchTextChange(it)
                     }

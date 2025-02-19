@@ -1,8 +1,7 @@
-package com.example.util.pagination.flow
+package com.example.util.paginationNew
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.example.exceptions.EmptyDataException
@@ -31,7 +30,6 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
             val limit = if (loadFromStart) {
                 if (lastRequestedKey == 0) params.loadSize else params.loadSize * lastRequestedKey
             } else params.loadSize
-
             val offset = if (loadFromStart) 0 else (params.key ?: 0) * limit
 
             request.invoke(limit, offset).flatMapSingle {
@@ -41,14 +39,16 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
                     val nextKey = if (it.data.isEmpty()) null
                     else if (it.data.size < limit || limit >= (it.totalCount ?: 0)) null
                     else if (it.data.size == it.totalCount) null
+                    //else if (it.data.size == it.totalCount) position
                     else if (loadFromStart) position
                     else position + 1
 
                     loadFromStart = false
-
                     Single.just(toLoadResult(it, prevKey, nextKey))
                 }
-            }.doOnError { executeError(it) }.onErrorReturn { LoadResult.Error(it) }
+            }.doOnError { executeError(it) }
+                //.onErrorReturn { LoadResult.Error(it) }
+                .onErrorResumeNext { Single.just(LoadResult.Error(it)) }
         } catch (e: Exception) {
             executeError(e)
             Single.just(LoadResult.Error(e))

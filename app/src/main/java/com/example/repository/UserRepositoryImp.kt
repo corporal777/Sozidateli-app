@@ -310,11 +310,11 @@ class UserRepositoryImp
     }
 
 
-    override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>> {
+    override fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<NotificationLocal>> {
         return api.getNotifications(map).map {
             NotificationsResponse(
                 it.totalCount,
-                it.data.map { Notification.fromRemoteNotification(it) },
+                it.data.map { NotificationLocal.fromRemoteNotification(it) },
                 it.totalUnreadInvites,
                 it.totalUnread,
                 it.allUnread,
@@ -344,14 +344,9 @@ class UserRepositoryImp
         ).map { it.data }
     }
 
-    override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+    override fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
         return api.getUsers(map)
-            .map {
-                PaginationResponse(
-                    it.totalCount,
-                    it.data ?: arrayListOf()
-                )
-            }
+            .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
     }
 
     override fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>> {
@@ -359,7 +354,7 @@ class UserRepositoryImp
             .map { it.data }
     }
 
-    override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>> {
+    override fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>> {
         return api.getUsersFavoritesList(map)
             .map {
                 it.data.forEach { org ->
@@ -390,25 +385,20 @@ class UserRepositoryImp
 
     override fun markAllNotificationsAsRead(type: NotificationType?): Maybe<UnacceptedInviteNotification> {
         return when (type) {
-            NotificationType.PROJECTS -> {
+            NotificationType.PROJECTS ->
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "pgrf")
-            }
 
-            NotificationType.ORGANIZER -> {
+            NotificationType.ORGANIZER ->
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "org")
-            }
 
-            NotificationType.ESTIMATES -> {
+            NotificationType.ESTIMATES ->
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "evaluate")
-            }
 
-            NotificationType.EVENTS -> {
+            NotificationType.EVENTS ->
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "event")
-            }
 
-            NotificationType.SYSTEM -> {
+            NotificationType.SYSTEM ->
                 api.markAllTypeNotificationsAsRead(appData.getId().toString(), "system")
-            }
 
             else -> api.markAllNotificationsAsRead(appData.getId().toString())
         }
@@ -416,11 +406,11 @@ class UserRepositoryImp
     }
 
 
-    override fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable =
-        api.approveOrgMember(orgMemberId, body)
+    override fun approveOrgMember(orgMemberId: String): Completable =
+        api.approveOrgMember(orgMemberId, ApproveBody(appData.getId()))
 
-    override fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable =
-        api.declineOrgMember(orgMemberId, body)
+    override fun declineOrgMember(orgMemberId: String): Completable =
+        api.declineOrgMember(orgMemberId, DeclineBody(appData.getId()))
 
     override fun approvePgrf(pgrfId: String): Completable =
         api.approvePgrf(pgrfId)
@@ -475,5 +465,29 @@ class UserRepositoryImp
 
     override fun unbindSocialAccount(uuid: String, socialType: String): Completable {
         return api.unBindSocialAccount(mapOf("uuid" to uuid, "socialNetwork" to socialType))
+    }
+
+    override fun addOrRemoveUserFavorite(user: UserDetail): Single<Optional<EventUserFavorite>> {
+        if (user.binds?.userFavorite != null) {
+            val id = user.binds?.userFavorite?.id.toString()
+            return if (appData.isTemporaryUser())
+                api.deleteFromTempFavorite(id).andThen(Single.just(Optional(null)))
+            else api.deleteFromFavorite(id).andThen(Single.just(Optional(null)))
+        } else {
+            return if (appData.isTemporaryUser()) api.addToTempFavorite(
+                AddToFavoriteModel(
+                    appData.getTempId(),
+                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)
+                )
+            ).map { Optional(EventUserFavorite(it.id, it.tempUser)) }
+            else api.addToFavorite(
+                AddToFavoriteModel(
+                    appData.getId(),
+                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)
+                )
+            ).map { Optional(EventUserFavorite(it.id, it.user)) }
+        }
+
+
     }
 }

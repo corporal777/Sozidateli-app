@@ -1,31 +1,28 @@
-package com.example.util.pagination.flow
+package com.example.util.paginationNew.observable
 
-import android.util.Log
-import androidx.paging.PagedList
 import androidx.paging.PagingData
-import androidx.paging.filter
-import androidx.paging.map
-import androidx.paging.rxjava2.mapAsync
-import com.example.util.pagination.PaginationCallback
-import io.reactivex.*
+import com.example.util.paginationNew.PagingDataSourceFactory
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
 import io.reactivex.rxkotlin.subscribeBy
 
-class PagingList<T : Any>(
-    private val pagination: Flowable<PagingData<T>>,
+class PagingListObservable <T : Any>(
+    private val pagination: Observable<PagingData<T>>,
     private val dataSourceFactory: PagingDataSourceFactory<T>
-) : FlowableOnSubscribe<PagingData<T>> {
+) : ObservableOnSubscribe<PagingData<T>> {
 
 
-    private var pagedList: PagingData<T>? = null
-    private lateinit var emitter: FlowableEmitter<PagingData<T>>
+    private lateinit var emitter: ObservableEmitter<PagingData<T>>
 
-    override fun subscribe(emitter: FlowableEmitter<PagingData<T>>) {
+    override fun subscribe(emitter: ObservableEmitter<PagingData<T>>) {
         this.emitter = emitter
         val disposable = pagination.subscribeBy(
             onError = { emitter.onError(it) },
             onNext = { emitter.onNext(it) })
         emitter.setDisposable(disposable)
     }
+
 
     fun invalidate() {
         if (dataSourceFactory.source == null) return
@@ -36,5 +33,9 @@ class PagingList<T : Any>(
     fun invalidateStart(){
         if (dataSourceFactory.source == null) return
         dataSourceFactory.source!!.invalidateFromStart()
+    }
+
+    fun invalidateFrom(list: List<T>){
+        emitter.onNext(PagingData.from(list))
     }
 }

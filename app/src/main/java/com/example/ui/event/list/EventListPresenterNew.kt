@@ -3,18 +3,12 @@ package com.example.ui.event.list
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.PAGE_PLACEHOLDER
-import com.example.util.PAGE_SIZE
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.flow.PagingDataSourceFactory
-import com.example.util.pagination.flow.PagingList
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.PaginationList
-import com.example.util.pagination.observable.applyErrorHandler
+import com.example.util.paginationNew.flow.PagingListFlow
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
 
@@ -24,30 +18,14 @@ abstract class EventListPresenterNew<V : EventListContractNew.View>(
     private val socket: SocketIOManager,
 ) : BasePresenter<V>(appData), EventListContractNew.Presenter {
 
-    private var isFirstAttach = true
-    abstract val pagination: PagingList<*>
+    abstract val pagination: PagingListFlow<*>
 
-    override fun attachView(view: V) {
-        super.attachView(view)
-        if (isFirstAttach) isFirstAttach = false
-        else pagination.invalidateStart()
-    }
-
-
-    override fun onActionRegister(event: EventNew, withRegister: Boolean) {
-        if (withRegister) registerToEvent(event)
-        else if (event.userAgreement?.uri.isNullOrEmpty()) registerToEvent(event)
-        else if (event.state?.isAgreementAccepted() == true) registerToEvent(event)
-        else viewState.showAgreementRegisterDialog(event)
-    }
-
-    private fun registerToEvent(event: EventNew) {
-        compositeDisposable += Maybe.defer {
-            if (event.isFormEnabled()) Maybe.just(event)
-            else eventRepository.registerToEvent(event.id ?: 0)
-                .andThen(socket.connectToUpdates())
-                .andThen(getEventDetailRequest(event))
+    override fun onActionRegister(event: EventNew, withAccept: Boolean) {
+        compositeDisposable += Single.defer {
+            if (withAccept) acceptRegistrationAgreementRequest(event)
+            else Single.just(event)
         }
+            .flatMapMaybe { registerToEventRequest(event) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -65,7 +43,8 @@ abstract class EventListPresenterNew<V : EventListContractNew.View>(
     override fun onActionCancel(event: EventNew) {
         val registrationId = event.binds?.currentUserRegistration?.id ?: 0
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
-            .andThen(getEventDetailRequest(event))
+            .andThen(eventRepository.getEventDetails(event.id.toString()))
+            .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -84,14 +63,24 @@ abstract class EventListPresenterNew<V : EventListContractNew.View>(
 
     override fun onRefreshRequest() = pagination.invalidate()
 
-    private fun getEventDetailRequest(event: EventNew): Maybe<EventNew> {
-        return eventRepository.getEventDetails(event.id.toString())
-            .doOnSuccess {
-                event.binds?.currentUserRegistration = it.binds?.currentUserRegistration
-                event.binds?.currentUserRegistrationState = it.binds?.currentUserRegistrationState
-            }
+
+    private fun acceptRegistrationAgreementRequest(event: EventNew): Single<EventNew> {
+        return eventRepository.acceptRegistrationAgreement(event.id.toString())
+            .doOnSuccess { if (it.isAccepted()) event.state?.agreement?.setAccepted() }
+            .map { event }
     }
 
-    abstract fun getPaginationRequest(limit : Int, offset : Int) : Maybe<PaginationResponse<EventNew>>
+    private fun registerToEventRequest(event: EventNew): Maybe<EventNew> {
+        return Maybe.defer {
+            if (event.isFormEnabled()) Maybe.just(event)
+            else eventRepository.registerToEvent(event.id ?: 0)
+                .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEventDetails(event.id.toString()))
+                .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
+        }
+    }
+
+
+    abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew>>
 
 }

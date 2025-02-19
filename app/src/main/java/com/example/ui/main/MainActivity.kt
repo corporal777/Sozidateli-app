@@ -355,8 +355,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showRecommendations() {
-        val args =
-            RecommendationsFragmentArgs.Builder(presenter.isFinishRegister).build().toBundle()
+        val args = bundleOf("isOpenProfile" to presenter.isFinishRegister)
         findNavController().navigate(
             R.id.recommendations_fragment, args,
             navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
@@ -484,6 +483,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
     }
+
 
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {

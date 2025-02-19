@@ -1,28 +1,21 @@
 package com.example.ui.search.event
 
-import android.content.Context
 import android.util.Log
-import call
 import com.example.data.AppData
 import com.example.data.models.*
 import com.example.data.socket.SocketIOManager
-import com.example.exceptions.EmptyDataException
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.flow.PagingDataSourceFactory
-import com.example.util.pagination.flow.applyErrorHandler
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withDelay
-import withProgressBarDialogLoading
-import withTimeOut
 import javax.inject.Inject
 
 @InjectViewState
@@ -30,16 +23,14 @@ class SearchEventPresenter
 @Inject constructor(
     private val eventRepository: EventRepository,
     private val appData: AppData,
-    private val socket: SocketIOManager,
-    private val context: Context
-) : SearchPresenter<SearchEventContract.View, SearchFilter.EventNew>(appData),
-    SearchEventContract.Presenter {
+    private val socket: SocketIOManager
+) : SearchPresenter<SearchEventContract.View>(appData), SearchEventContract.Presenter {
 
     private var eventFilter = SearchFilter.EventNew()
 
     private val pagination = PagingDataSourceFactory { limit, offset ->
         eventRepository.searchEvents(buildNewFilters(limit, offset))
-    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = SEARCH_PAGE_SIZE, distance = 3)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = 20, distance = 3)
 
 
     override fun onFirstViewAttach() {
@@ -52,24 +43,12 @@ class SearchEventPresenter
     }
 
 
-    override fun onActionRegister(event: EventNew, withRegister: Boolean) {
-        if (withRegister) registerToEvent(event)
-        else if (event.userAgreement?.uri.isNullOrEmpty()) registerToEvent(event)
-        else if (event.state?.isAgreementAccepted() == true) registerToEvent(event)
-        else viewState.showAgreementRegisterDialog(event)
-    }
-
-    private fun registerToEvent(event: EventNew) {
-        compositeDisposable += Maybe.defer {
-            if (event.isFormEnabled()) Maybe.just(event)
-            else eventRepository.registerToEvent(event.id ?: 0)
-                .andThen(socket.connectToUpdates())
-                .andThen(eventRepository.getEventDetails(event.id.toString()))
-                .doOnSuccess {
-                    event.binds?.currentUserRegistration = it.binds?.currentUserRegistration
-                    event.binds?.currentUserRegistrationState = it.binds?.currentUserRegistrationState
-                }
+    override fun onActionRegister(event: EventNew, withAccept: Boolean) {
+        compositeDisposable += Single.defer {
+            if (withAccept) acceptRegistrationAgreementRequest(event)
+            else Single.just(event)
         }
+            .flatMapMaybe { registerToEventRequest(event) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -88,10 +67,7 @@ class SearchEventPresenter
         val registrationId = event.binds?.currentUserRegistration?.id ?: 0
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
             .andThen(eventRepository.getEventDetails(event.id.toString()))
-            .doOnSuccess {
-                event.binds?.currentUserRegistration = it.binds?.currentUserRegistration
-                event.binds?.currentUserRegistrationState = it.binds?.currentUserRegistrationState
-            }
+            .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {
@@ -101,7 +77,6 @@ class SearchEventPresenter
                 onSuccess = { viewState.updateEvent(event) }
             )
     }
-
 
     override fun onShowAuthorization(event: String) {
         appData.savedEventId = event
@@ -125,6 +100,22 @@ class SearchEventPresenter
     override fun isHasFilter(): Boolean = eventFilter.isHasFilter()
 
 
+    private fun acceptRegistrationAgreementRequest(event: EventNew): Single<EventNew> {
+        return eventRepository.acceptRegistrationAgreement(event.id.toString())
+            .doOnSuccess { if (it.isAccepted()) event.state?.agreement?.setAccepted() }
+            .map { event }
+    }
+
+    private fun registerToEventRequest(event: EventNew): Maybe<EventNew> {
+        return Maybe.defer {
+            if (event.isFormEnabled()) Maybe.just(event)
+            else eventRepository.registerToEvent(event.id ?: 0)
+                .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEventDetails(event.id.toString()))
+                .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
+        }
+    }
+
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
         return mutableMapOf<String, Any>().apply {
@@ -135,8 +126,7 @@ class SearchEventPresenter
 
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            val binds =
-                "current-user-registration,current-user-registration-state,eventRegistrationState"
+            val binds = "current-user-registration,current-user-registration-state,eventRegistrationState"
             put(SEARCH_EVENT_BINDS, binds)
 
             val name = eventFilter.name

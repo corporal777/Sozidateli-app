@@ -131,7 +131,6 @@ class AppData(private val appPrefs: AppPrefs) {
 
 
     private var newUser: UserDetail? = null
-    private var newChatMessage: MessageModel? = null
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
@@ -145,7 +144,6 @@ class AppData(private val appPrefs: AppPrefs) {
     val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
     val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
     val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
-    val chatUnreadMessageSubject = BehaviorSubject.createDefault(newChatMessage.asOptional())
     val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
 
     private var eventFormats: List<NewEventFormat>? = null
@@ -163,18 +161,13 @@ class AppData(private val appPrefs: AppPrefs) {
 
     private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
     private var notificationsInvites = NotificationInviteModel(0, 0, 0)
-    private val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
+    val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
     private val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
 
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
     }
     fun getEventFormats() = eventFormats
-
-    fun setNewChatMessage(message: MessageModel?) {
-        this.newChatMessage = message
-        chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
-    }
 
     fun setNotificationsTypes(types: NotificationsTypesModel) {
         this.notificationsTypes = types

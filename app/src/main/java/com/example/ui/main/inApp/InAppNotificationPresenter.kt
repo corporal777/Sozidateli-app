@@ -44,10 +44,7 @@ class InAppNotificationPresenter
                 updateNotification(userRepository.approveAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                updateNotification(
-                    userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
-                    notification.id
-                )
+                updateNotification(userRepository.approveOrgMember(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.approveEventMember(entityId), notification.id)
@@ -66,10 +63,7 @@ class InAppNotificationPresenter
                 updateNotification(userRepository.declineAssistance(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                updateNotification(
-                    userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
-                    notification.id
-                )
+                updateNotification(userRepository.declineOrgMember(entityId), notification.id)
             }
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.declineEventMember(entityId), notification.id)

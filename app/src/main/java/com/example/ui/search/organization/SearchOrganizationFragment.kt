@@ -2,7 +2,7 @@ package com.example.ui.search.organization
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -10,10 +10,10 @@ import com.example.adapters.organization.OrganizationPagingAdapter
 import com.example.adapters.organization.OrganizationPagingAdapter.Companion.withLoadStateAdapters
 import com.example.adapters.organization.OrganizationPlaceholderAdapter
 import com.example.app.R
+import com.example.app.databinding.LayoutListSearchBinding
 import com.example.data.models.OrganizationNew
 import com.example.data.models.SearchFilter
-import com.example.app.databinding.LayoutListSearchBinding
-import com.example.data.models.Organization
+import com.example.extensions.isVisibleAnim
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.search.SearchFragment
 import com.example.ui.views.filters.organization.OrgFiltersBottomSheetDialog
@@ -23,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchOrganizationFragment :
-    SearchFragment<SearchOrganizationPresenter, SearchFilter.Organization>(R.layout.layout_list_search),
+    SearchFragment<LayoutListSearchBinding, SearchOrganizationPresenter>(),
     SearchOrganizationContract.View {
 
     @InjectPresenter
@@ -36,7 +36,6 @@ class SearchOrganizationFragment :
     fun providePresenter(): SearchOrganizationPresenter = presenterProvider.get()
 
 
-    private val viewBinding: LayoutListSearchBinding by viewBinding()
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         OrganizationPagingAdapter(
             { presenter.onOrganizationClick(it) },
@@ -45,12 +44,12 @@ class SearchOrganizationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.apply {
-            searchList.adapter = pagingAdapter
-                .withLoadStateAdapters(
-                    OrganizationPlaceholderAdapter(5),
-                    OrganizationPlaceholderAdapter(1)
-                ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+        mBinding.apply {
+            searchList.adapter = pagingAdapter.withLoadStateAdapters(
+                OrganizationPlaceholderAdapter(5),
+                OrganizationPlaceholderAdapter(1)
+            ) { setDataEmpty(it) }
+            setDataEmpty(isEmptyData)
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
@@ -58,7 +57,7 @@ class SearchOrganizationFragment :
 
     override fun setData(data: PagingData<OrganizationNew>) {
         pagingAdapter.submitData(lifecycle, data)
-        viewBinding.swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
     override fun updateOrganization(organization: OrganizationNew) {
@@ -75,4 +74,12 @@ class SearchOrganizationFragment :
         val args = OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
         findNavController().navigate(R.id.organization_fragment_new, args)
     }
+
+    override fun setDataEmpty(show: Boolean) {
+        super.setDataEmpty(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
+    }
+
+    override fun binding() = LayoutListSearchBinding::class.java
+    override fun layout() = R.layout.layout_list_search
 }

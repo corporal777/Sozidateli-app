@@ -5,20 +5,11 @@ import com.example.data.models.SearchFilter
 import com.example.exceptions.EmptyDataException
 import com.example.ui.base.BasePresenter
 
-abstract class SearchPresenter<V : SearchContract.View<F>, F : SearchFilter>(appData: AppData) :
-    BasePresenter<V>(appData), SearchContract.Presenter<F> {
-
+abstract class SearchPresenter<V : SearchContract.View>(appData: AppData) :
+    BasePresenter<V>(appData), SearchContract.Presenter {
 
     private lateinit var searchInterface: SearchInterface
-    private var isFirstLaunch = true
-
     protected var searchText: String = ""
-
-    override fun attachView(view: V) {
-        super.attachView(view)
-        if (isFirstLaunch) isFirstLaunch = false
-        else {}
-    }
 
     override fun onResume(searchInterface: SearchInterface) {
         this.searchInterface = searchInterface.apply {

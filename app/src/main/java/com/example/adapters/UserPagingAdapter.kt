@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app.databinding.ItemUserBinding
 import com.example.data.models.UserDetail
-import by.kirich1409.viewbindingdelegate.viewBinding
+import dev.androidbroadcast.vbpd.viewBinding
 import com.example.app.R
 import com.example.exceptions.EmptyDataException
 import com.example.extensions.dp
@@ -56,8 +56,8 @@ class UserPagingAdapter(
             with(viewBinding) {
                 tvUserName.text = user.nameLastName
                 tvDescription.apply {
-                    isVisible = false
-                    text = null
+                    isVisible = !user.address?.shortAddres.isNullOrEmpty()
+                    text = user.address?.shortAddres
                 }
                 ivUserAvatar.setCircleAvatar(user.loadUserImage(),300)
 
@@ -102,23 +102,21 @@ class UserPagingAdapter(
 
     companion object {
         fun UserPagingAdapter.withLoadStateAdapters(
-            refresh: CustomLoadStateAdapter<*>,
+            header: CustomLoadStateAdapter<*>,
             footer: CustomLoadStateAdapter<*>,
             onEmpty: (show: Boolean) -> Unit
         ): ConcatAdapter {
             addLoadStateListener { loadState ->
-                refresh.loadState = loadState.refresh
+                //refresh.loadState = loadState.refresh
+                header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
                 footer.loadState = loadState.append
 
-
                 if (loadState.refresh is LoadState.Error)
-                    if ((loadState.refresh as LoadState.Error).error is EmptyDataException)
-                        if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                        else onEmpty.invoke(false)
+                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
                     else onEmpty.invoke(false)
                 else onEmpty.invoke(false)
             }
-            return ConcatAdapter(refresh, this, footer)
+            return ConcatAdapter(header, this, footer)
         }
     }
 }

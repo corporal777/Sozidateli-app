@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.util.Linkify
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -57,7 +58,7 @@ class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onBackPressedCallback(true){
+        onBackPressedCallback(true) {
             presenter.onCloseClick()
         }
 
@@ -211,11 +212,13 @@ class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
                 mBinding.etCode.hint = getString(R.string.auth_error_no_call)
                 mBinding.tvText.text = getString(R.string.call_code_phone_dialog_text)
             }
+
             "email" -> {
                 mBinding.etCode.hint = getString(R.string.auth_error_no_code)
 
                 val supportEmail = getString(R.string.support_email)
-                val message = getString(R.string.code_dialog_text_information).format(supportEmail).toSpannable()
+                val message = getString(R.string.code_dialog_text_information).format(supportEmail)
+                    .toSpannable()
                 Linkify.addLinks(message, Linkify.EMAIL_ADDRESSES)
 
                 val descriptionText = SpannableStringBuilder(
@@ -232,6 +235,7 @@ class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
         }
 
     }
+
     override fun showHideDescriptionText(canShow: Boolean) {
         mBinding.tvText.isVisible = canShow
     }
@@ -263,7 +267,10 @@ class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
     }
 
     override fun openHome() {
-        findNavController().navigate(FinishRegisterFragmentDirections.registerToMail(true))
+        findNavController().navigate(
+            R.id.recommendations_fragment,
+            bundleOf("isOpenProfile" to true)
+        )
     }
 
     override fun logout() {
@@ -284,7 +291,7 @@ class FinishRegisterFragment : BaseVBFragment<FragmentFinishRegisterBinding>(),
         }
     }
 
-    override fun hideCustomLoading(){
+    override fun hideCustomLoading() {
         mBinding.apply {
             ibRegister.showProgressLoading(false)
         }

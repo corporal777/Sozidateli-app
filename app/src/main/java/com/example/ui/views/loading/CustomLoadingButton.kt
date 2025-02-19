@@ -62,6 +62,8 @@ class CustomLoadingButton : FrameLayout {
         val buttonText = a.getText(R.styleable.CustomLoadingButton_buttonText) ?: ""
         val buttonDrawable = a.getDrawable(R.styleable.CustomLoadingButton_buttonDrawable)
 
+        val buttonPadding = a.getDimensionPixelSize(R.styleable.CustomLoadingButton_buttonPaddingHorizontal, 0.dp)
+
         a.recycle()
         initActionButton(
             buttonBack,
@@ -69,7 +71,8 @@ class CustomLoadingButton : FrameLayout {
             buttonMinHeight,
             buttonTextSize,
             buttonText,
-            buttonDrawable
+            buttonDrawable,
+            buttonPadding
         )
 
         buttonInitText = buttonText
@@ -86,7 +89,8 @@ class CustomLoadingButton : FrameLayout {
         buttonHeight: Int,
         buttonTextSize: Int,
         buttonText: CharSequence?,
-        buttonDrawable: Drawable?
+        buttonDrawable: Drawable?,
+        buttonPaddingHorizontal : Int
     ) {
         loadingView.ivButton.apply {
             isVisible = buttonDrawable != null
@@ -99,6 +103,7 @@ class CustomLoadingButton : FrameLayout {
             text = buttonText
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonTextSize.toFloat())
+            setPadding(buttonPaddingHorizontal, 0, buttonPaddingHorizontal,0)
         }
 
     }

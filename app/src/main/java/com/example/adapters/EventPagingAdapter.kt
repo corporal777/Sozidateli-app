@@ -37,13 +37,14 @@ import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
 import com.example.extensions.setOnClickListener
 import com.example.holders.redesign.EventListItem.OnEventClickListener
+import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.setCircleAvatar
 import com.example.util.setImage
 import com.example.util.weak
 
 class EventPagingAdapter(
-    val onRegister: (event: EventNew) -> Unit,
+    val onRegister: (event: EventNew, withAccept : Boolean) -> Unit,
     val onCancel: (event: EventNew) -> Unit,
     val onShowEvent: (event: EventNew) -> Unit,
     val onShowAuth: (event: EventNew) -> Unit,
@@ -53,7 +54,6 @@ class EventPagingAdapter(
     private var isTemporary = false
     private var isAppUpdate = false
     private val appUpdateAdapter = AppUpdateAdapter()
-    private var isRefresh = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -71,8 +71,7 @@ class EventPagingAdapter(
             if (local != null) {
                 local.state?.agreement?.state = event.state?.agreement?.state
                 local.binds?.currentUserRegistration = event.binds?.currentUserRegistration
-                local.binds?.currentUserRegistrationState =
-                    event.binds?.currentUserRegistrationState
+                local.binds?.currentUserRegistrationState = event.binds?.currentUserRegistrationState
 
                 val position = snapshot().items.indexOf(local)
                 notifyItemChanged(position)
@@ -104,12 +103,12 @@ class EventPagingAdapter(
                 ivLogo.apply {
                     if (event.image?.uri.isNullOrEmpty()) {
                         val bgColor = event.backgroundColor?.value.parseColor() ?: Color.DKGRAY
-                        setImage(ColorDrawable(bgColor))
+                        setImage(ColorDrawable(bgColor), 300)
                     } else setImage(event.image?.uri, 300)
 
-                    colorFilter = if (event.status?.value == Event.Status.CANCELED)
-                        ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
-                    else null
+                    colorFilter = if (event.status?.value != Event.Status.CANCELED) null
+                    else ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
+
                     clipToOutline = true
                 }
                 tvEventState.setApproveStatus(event)
@@ -134,8 +133,10 @@ class EventPagingAdapter(
                     buttonText = context.getString(R.string.event_action_participate)
                     clickAction = {
                         registrationState.checkStateLevel {
-                            showProgressLoading(true)
-                            onRegister.invoke(event)
+                            showRegisterAgreement(event){
+                                showProgressLoading(true)
+                                onRegister.invoke(event, it)
+                            }
                         }
                     }
                 } else if (actions.contains("withdraw")) {
@@ -159,6 +160,14 @@ class EventPagingAdapter(
         private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
             if (this?.prohibitions?.profileLevelToLow?.value == false) hasLevel()
             else onShowState.invoke()
+        }
+
+        private fun showRegisterAgreement(event: EventNew, onAccepted: (accept: Boolean) -> Unit) {
+            if (event.userAgreement?.uri.isNullOrEmpty()) onAccepted.invoke(false)
+            else if (event.state?.isAgreementAccepted() == true) onAccepted.invoke(false)
+            else EventAgreementBottomSheet(itemView.context, event.userAgreement?.uri!!)
+                .setSelectCallback { if (it) onAccepted.invoke(true) }
+                .show()
         }
 
         private fun TextView.setApproveStatus(event: EventNew) {
@@ -248,21 +257,16 @@ class EventPagingAdapter(
         ): ConcatAdapter {
             addOnPagesUpdatedListener {}
             addLoadStateListener { loadState ->
-
-                if (itemCount > 0) header.loadState = header.notRefresh
-                else header.loadState = loadState.refresh
-
                 //refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
                 //refresh.loadState = loadState.refresh
+                header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
                 footer.loadState = loadState.append
 
                 appUpdateAdapter.loadState = loadState.refresh
                 appUpdateAdapter.isNeedShowUpdate = isAppUpdate
 
                 if (loadState.refresh is LoadState.Error)
-                    if ((loadState.refresh as LoadState.Error).error is EmptyDataException)
-                        if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                        else onEmpty.invoke(false)
+                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
                     else onEmpty.invoke(false)
                 else onEmpty.invoke(false)
             }

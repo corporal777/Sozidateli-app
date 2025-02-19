@@ -271,7 +271,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">16.5sp</item>
     </style>
 
     <style name="Profile" />
@@ -426,8 +426,6 @@
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlActivated">@color/colorAccent</item>
     </style>
-
-
 
 
     <style name="Profile.Edit.Input.SingleLine">
@@ -897,8 +895,8 @@
     <style name="TextInputEditTextStyle" >
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
         <item name="android:includeFontPadding">false</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/input_text_color</item>
         <item name="android:minHeight">@dimen/common_edit_text_min_height</item>
         <item name="android:textColorHint">@color/input_hint_text_color</item>
@@ -914,6 +912,7 @@
 
     <style name="TextInputAutoTextStyle">
         <item name="fontPath">fonts/sf_pro_display.OTF</item>
+        <item name="android:includeFontPadding">false</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/common_edit_text_size</item>
@@ -978,6 +977,26 @@
     <style name="EventRegistration.TextView" parent="ProfileData.TextView">
         <item name="fontPath">fonts/sf_pro_text.ttf</item>
         <item name="android:textSize">@dimen/event_register_input_text_size</item>
+    </style>
+
+    <style name="EmptyDataTextViewStyle">
+        <item name="fontPath">fonts/sf_pro_display_bold.ttf</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/no_data_item_title_color</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="EmptyDataTextViewSmallStyle">
+        <item name="fontPath">fonts/sf_pro_display_semibold.ttf</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/no_data_item_description_color</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>

@@ -15,9 +15,6 @@ interface NotificationsListContract {
         fun setData(notifications: PagingData<NotificationLocal>)
 
         @Skip
-        fun showUrl(url: String)
-
-        @OneExecution
         fun updateNotification(data : NotificationLocal?, notificationId : Int)
 
         @OneExecution
@@ -27,7 +24,7 @@ interface NotificationsListContract {
         fun showAboutOrganization(id: String?)
 
         @Skip
-        fun setNotReadButtonEnabled(enabled: Boolean)
+        fun setBtnReadAllEnabled(enabled: Boolean)
 
         @Skip
         fun showInvitesBottomSheet()

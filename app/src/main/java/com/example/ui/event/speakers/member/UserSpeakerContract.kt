@@ -4,7 +4,6 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.MemberModel
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
-import com.example.util.pagination.PaginationListGroupAdapter
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 

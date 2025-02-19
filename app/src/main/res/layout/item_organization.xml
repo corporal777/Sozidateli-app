@@ -70,6 +70,17 @@
             app:layout_constraintTop_toBottomOf="@+id/tvOrganizationName"
             app:subscribeAction="unsubscribe" />
 
+        <com.example.ui.views.CustomProgressBar
+            android:id="@+id/btn_progress"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/btnAction"
+            app:layout_constraintStart_toStartOf="@id/btnAction"
+            app:layout_constraintTop_toTopOf="@id/btnAction"
+            tools:visibility="visible" />
+
         <View
             android:id="@+id/divider"
             style="@style/ViewDivider.Horizontal"

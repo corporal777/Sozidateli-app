@@ -100,7 +100,7 @@ class EventRepositoryImp
         api.getSortedEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getOrganizationEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
     }
@@ -238,14 +238,14 @@ class EventRepositoryImp
     override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
         api.checkUserProfile(appData.getId())
 
-    override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getEventFavoritesList(map)
             .map {
                 it.data.forEach { org ->
                     org.entity?.model?.binds?.userFavorite =
                         EventUserFavorite(org.id?.toLong(), org.user)
                 }
-                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                PaginationResponse(it.totalCount, it.data.mapNotNull { org -> org.entity?.model })
             }
     }
 

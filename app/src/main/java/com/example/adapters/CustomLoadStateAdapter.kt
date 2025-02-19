@@ -45,7 +45,7 @@ abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerVi
 
     open fun displayLoadStateAsItem(loadState: LoadState): Boolean {
         return if (loadState is LoadState.Loading) true
-        else if (loadState is LoadState.Error && loadState.error !is EmptyDataException) true
+        //else if (loadState is LoadState.Error && loadState.error !is EmptyDataException) true
         else false
     }
 }

@@ -20,7 +20,7 @@ class SimpleNotificationVH(val itemView: View, val listener: OnNotificationActio
     fun bind(notification: NotificationLocal) {
         super.bindViews(viewBinding, notification)
         viewBinding.btnMarkAsRead.apply {
-            setEnabled(!notification.wasRead)
+            isEnabled = !notification.wasRead
 
             setButtonText(
                 if (notification.wasRead) context.getString(R.string.notifications_was_read)

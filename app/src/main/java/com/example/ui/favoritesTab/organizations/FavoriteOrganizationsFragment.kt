@@ -2,25 +2,25 @@ package com.example.ui.favoritesTab.organizations
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.adapters.organization.OrganizationPagingAdapter
+import com.example.adapters.organization.OrganizationPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.organization.OrganizationPlaceholderAdapter
 import com.example.app.R
-import com.example.app.databinding.LayoutListBinding
+import com.example.app.databinding.LayoutDataListBinding
 import com.example.data.models.OrganizationNew
-import com.example.extensions.findItemBy
-import com.example.extensions.updateItem
-import com.example.holders.OrganizationItem
-import com.example.holders.PlaceholderItem
+import com.example.extensions.isVisibleAnim
 import com.example.ui.base.BaseVBFragment
-import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteOrganizationsFragment : BaseVBFragment<LayoutListBinding>(),
+class FavoriteOrganizationsFragment : BaseVBFragment<LayoutDataListBinding>(),
     FavoriteOrganizationsContract.View {
 
     @InjectPresenter
@@ -32,61 +32,53 @@ class FavoriteOrganizationsFragment : BaseVBFragment<LayoutListBinding>(),
     @ProvidePresenter
     fun providePresenter(): FavoriteOrganizationsPresenter = presenterProvider.get()
 
-    private val adapter by lazy {
-        PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-                override fun onItemTake(position: Int) {
-                    presenter.onItemTake(position)
-                }
-            })
-        }
+
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        OrganizationPagingAdapter(
+            { presenter.onOrganizationClick(it) },
+            { presenter.onRemoveFromFavoriteClick(it) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            recyclerView.apply {
-                adapter = this@FavoriteOrganizationsFragment.adapter
+            dataListView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = pagingAdapter.withLoadStateAdapters(
+                    OrganizationPlaceholderAdapter(5),
+                    OrganizationPlaceholderAdapter(1)
+                ) { setDataEmpty(it) }
+                setDataEmpty(isEmptyData)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
 
-    override fun setOrganizations(organizations: List<OrganizationNew?>) {
-        adapter.update(organizations.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.ORGANIZATION)
-            else OrganizationItem(
-                it,
-                { presenter.onOrganizationClick(it) },
-                { presenter.onRemoveFromFavoriteClick(it) }
-            )
-        })
+    override fun setData(data: PagingData<OrganizationNew>) {
+        pagingAdapter.submitData(lifecycle, data)
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun changeSubscription(organization: OrganizationNew) {
-        val idLong = organization.id?.toLong()
-        adapter.findItemBy { it: OrganizationItem -> it.id == idLong }?.notifyChanged()
-    }
-
-    override fun showFavoritesEmptyListPlaceholder() {
-        adapter.updateItem(
-            NoEventItem(
-                getString(R.string.blank_list_error),
-                getString(R.string.organizations_favorites_empty_list_description)
-            )
-        )
+    override fun setDataEmpty(show: Boolean) {
+        super.setDataEmpty(show)
+        mBinding.tvEmptyDataTitle.apply {
+            isVisibleAnim = show
+            text = getString(R.string.blank_list_error)
+        }
+        mBinding.tvEmptyDataDescription.apply {
+            isVisibleAnim = show
+            text = getString(R.string.organizations_favorites_empty_list_description)
+        }
         mBinding.swipeToRefresh.isRefreshing = false
     }
+
 
     override fun showOrganization(organization: OrganizationNew) {
-        findNavController().navigate(
-            R.id.organization_fragment_new,
-            OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
-        )
+        val args = OrganizationFragmentArgs.Builder(organization.id.toString()).build().toBundle()
+        findNavController().navigate(R.id.organization_fragment_new, args)
     }
 
-    override fun binding() = LayoutListBinding::class.java
-    override fun layout() = R.layout.layout_list
+    override fun binding() = LayoutDataListBinding::class.java
+    override fun layout() = R.layout.layout_data_list
 }

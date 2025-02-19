@@ -150,7 +150,8 @@
         android:name="com.example.ui.event.list.recommendations.RecommendationsFragment">
         <argument
             android:name="isOpenProfile"
-            app:argType="boolean" />
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment

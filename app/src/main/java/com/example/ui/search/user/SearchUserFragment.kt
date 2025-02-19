@@ -3,6 +3,7 @@ package com.example.ui.search.user
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import by.kirich1409.viewbindingdelegate.CreateMethod
@@ -15,14 +16,14 @@ import com.example.ui.search.SearchFragment
 import com.example.adapters.UserPagingAdapter
 import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
 import com.example.adapters.UserPlaceholderAdapter
+import com.example.extensions.isVisibleAnim
 import com.example.ui.views.filters.user.UserFiltersBottomSheetDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchUserFragment :
-    SearchFragment<SearchUserPresenter, SearchFilter.UserNew>(R.layout.layout_list_search),
+class SearchUserFragment : SearchFragment<LayoutListSearchBinding, SearchUserPresenter>(),
     SearchUserContract.View {
 
     @InjectPresenter
@@ -34,7 +35,6 @@ class SearchUserFragment :
     @ProvidePresenter
     fun providePresenter(): SearchUserPresenter = presenterProvider.get()
 
-    private val viewBinding: LayoutListSearchBinding by viewBinding()
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPagingAdapter({ presenter.onUserClick(it) }, { presenter.onUserActionCLick(it) })
@@ -42,19 +42,19 @@ class SearchUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewBinding.apply {
-            searchList.adapter = pagingAdapter
-                .withLoadStateAdapters(
-                    UserPlaceholderAdapter(9),
-                    UserPlaceholderAdapter(1)
-                ) { setDataEmpty(it, getString(R.string.no_data_found)) }
+        mBinding.apply {
+            searchList.adapter = pagingAdapter.withLoadStateAdapters(
+                UserPlaceholderAdapter(9),
+                UserPlaceholderAdapter(1)
+            ) { setDataEmpty(it) }
+            setDataEmpty(isEmptyData)
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
     override fun setData(data: PagingData<UserDetail>) {
         pagingAdapter.submitData(lifecycle, data)
-        viewBinding.swipeToRefresh.isRefreshing = false
+        mBinding.swipeToRefresh.isRefreshing = false
     }
 
 
@@ -75,4 +75,12 @@ class SearchUserFragment :
     override fun showCurrentUser() {
         findNavController().navigate(R.id.user_profile_fragment)
     }
+
+    override fun setDataEmpty(show: Boolean) {
+        super.setDataEmpty(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
+    }
+
+    override fun binding() = LayoutListSearchBinding::class.java
+    override fun layout() = R.layout.layout_list_search
 }

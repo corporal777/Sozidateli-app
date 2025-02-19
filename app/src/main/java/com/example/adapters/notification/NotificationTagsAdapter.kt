@@ -19,38 +19,45 @@ import com.example.app.databinding.ItemNotificationsTagsBinding
 import com.example.app.databinding.ItemUpdateAppBinding
 import com.example.data.models.EventActivityModel
 import com.example.ui.notification.NotificationType
+import com.example.ui.notification.types.projects.items.ProjectsTagsItem.ProjectsInviteType
+import com.example.util.weak
 
-class NotificationTagsAdapter(val onTypeClick: (type: NotificationType) -> Unit) :
-    CustomLoadStateAdapter<NotificationTagsAdapter.NotificationTagsVH>() {
+class NotificationTagsAdapter : CustomLoadStateAdapter<NotificationTagsAdapter.TagsVH> {
+
+    constructor(typeClick: (type: NotificationType) -> Unit) : super(){
+        onTypeClick = typeClick
+    }
+    constructor(type: Int, typeClick: (type: ProjectsInviteType) -> Unit) : super(){
+        onProjectClick = typeClick
+        this.type = type
+    }
 
     var canShowContent = false
+    private var onTypeClick : (type: NotificationType) -> Unit = {}
+    private var onProjectClick : (type: ProjectsInviteType) -> Unit = {}
+    private var type = 0
 
-    override fun getViewHolder(view: ViewGroup): NotificationTagsVH {
+    override fun getViewHolder(view: ViewGroup): TagsVH {
         val layoutInflater: LayoutInflater = LayoutInflater.from(view.context)
-        return NotificationTagsVH(
-            layoutInflater.inflate(
-                R.layout.item_notifications_tags,
-                view,
-                false
-            )
-        )
+        val inflater = layoutInflater.inflate(R.layout.item_notifications_tags, view, false)
+        return if (type == 0) NotesTagsVH(inflater) else ProjectTagsVH(inflater)
     }
 
-    override fun getItemsCount(): Int = 1
-
-    override fun onBindViewHolder(holder: NotificationTagsVH, position: Int) {
-        holder.bind()
-    }
-
+    override fun onBindViewHolder(holder: TagsVH, position: Int) = holder.bind()
 
     override fun displayLoadStateAsItem(loadState: LoadState): Boolean {
         return loadState is LoadState.NotLoading && canShowContent
     }
 
-    inner class NotificationTagsVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val viewBinding by viewBinding(ItemNotificationsTagsBinding::bind)
+    override fun getItemsCount(): Int = 1
 
-        fun bind() {
+    abstract class TagsVH(itemView: View): RecyclerView.ViewHolder(itemView){
+        val viewBinding by viewBinding(ItemNotificationsTagsBinding::bind)
+        abstract fun bind()
+    }
+
+    inner class NotesTagsVH(itemView: View) : TagsVH(itemView) {
+        override fun bind() {
             with(viewBinding) {
                 root.isVisible = canShowContent
 
@@ -61,7 +68,31 @@ class NotificationTagsAdapter(val onTypeClick: (type: NotificationType) -> Unit)
                 btnSystemNotifications.setOnClickListener { onTypeClick.invoke(NotificationType.SYSTEM) }
             }
         }
+    }
 
+    inner class ProjectTagsVH(itemView: View) : TagsVH(itemView) {
+        override fun bind() {
+            viewBinding.apply {
+                root.isVisible = canShowContent
 
+                btnPgrf.isVisible = false
+                btnOrganizer.isVisible = false
+                btnSystemNotifications.isVisible = false
+
+                btnMyProjects.apply {
+                    text = context.getString(R.string.active_invites)
+                    setOnClickListener {
+                        onProjectClick.invoke(ProjectsInviteType.ACTIVE)
+                    }
+                }
+
+                btnEvents.apply {
+                    text = context.getString(R.string.archive_invites)
+                    setOnClickListener {
+                        onProjectClick.invoke(ProjectsInviteType.ARCHIVE)
+                    }
+                }
+            }
+        }
     }
 }

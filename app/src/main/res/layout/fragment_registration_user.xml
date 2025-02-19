@@ -99,7 +99,7 @@
                 app:endIconMode="custom"
                 app:endIconTint="#C3996C">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBirthday"
                     style="@style/TextInputAutoTextStyle"
                     android:hint="@string/profile_birthday" />

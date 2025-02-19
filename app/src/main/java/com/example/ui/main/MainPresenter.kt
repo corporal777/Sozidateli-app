@@ -167,7 +167,6 @@ class MainPresenter
                 onNext = {
                     val connected = it == SocketConnectionState.CONNECTED
                     if (connected && chatCompositeDisposable.size() == 1) {
-                        subscribeChatNewMessage()
                         subscribeToNotifications()
                         subscribeChatUnreadCount()
                         subscribeChatRequestsCount()
@@ -221,17 +220,6 @@ class MainPresenter
             )
     }
 
-    private fun subscribeChatNewMessage() {
-        chatCompositeDisposable += socket.subscribeNewChatMessage()
-            .map { it.data.lastOrNull() }
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple(
-                onError = { it.printStackTrace() },
-                onNext = { message ->
-                    chatHelper.showMessageNotification(message)
-                    appData.setNewChatMessage(message)
-                })
-    }
 
     private fun subscribeChatRequestsCount() {
         chatCompositeDisposable += Flowable.create<Int>({ emitter ->

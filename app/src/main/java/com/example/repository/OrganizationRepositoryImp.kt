@@ -52,7 +52,7 @@ class OrganizationRepositoryImp
         return api.getOrganizationDetails(organizationId, "userFavorite")
     }
 
-    override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+    override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>> {
         return api.getFavoritesList(map)
             .map {
                 it.data.forEach { org ->
@@ -63,7 +63,7 @@ class OrganizationRepositoryImp
                         )
                     )
                 }
-                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                PaginationResponse(it.totalCount, it.data.mapNotNull { org -> org.entity?.model })
             }
     }
 

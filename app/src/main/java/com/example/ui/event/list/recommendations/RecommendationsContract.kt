@@ -2,10 +2,8 @@ package com.example.ui.event.list.recommendations
 
 import androidx.paging.PagingData
 import com.example.data.models.EventNew
-import com.example.ui.event.list.EventListContract
 import com.example.ui.event.list.EventListContractNew
 import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.pagination.PaginationListGroupAdapter
 import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution

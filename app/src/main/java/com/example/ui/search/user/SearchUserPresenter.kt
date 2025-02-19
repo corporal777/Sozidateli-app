@@ -1,23 +1,20 @@
 package com.example.ui.search.user
 
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.SearchFilter
+import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_CITY
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_REGION
 import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.models.UserDetail.Companion.USER_OFFSET
 import com.example.data.models.UserDetail.Companion.USER_SEARCH
-import com.example.exceptions.EmptyDataException
-import com.example.extensions.buildList
-import com.example.repository.EventRepository
+import com.example.extensions.buildFlow
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.flow.PagingDataSourceFactory
-import com.example.util.pagination.flow.applyErrorHandler
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -28,16 +25,16 @@ import javax.inject.Inject
 class SearchUserPresenter
 @Inject constructor(
     val appData: AppData,
-    val userRepository: UserRepository,
-    val eventRepository: EventRepository
-) : SearchPresenter<SearchUserContract.View, SearchFilter.UserNew>(appData),
-    SearchUserContract.Presenter {
+    val userRepository: UserRepository
+) : SearchPresenter<SearchUserContract.View>(appData), SearchUserContract.Presenter {
 
     private var userFilter = SearchFilter.UserNew()
 
     private val pagination = PagingDataSourceFactory { limit, offset ->
         userRepository.searchUsers(buildFilterNew(limit, offset))
-    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = SEARCH_PAGE_SIZE, distance = 5)
+            .doOnSuccess { it.data.forEach { user -> user.setIfCurrentUser(appData.getId()) } }
+    }.applyErrorHandler { onReceivePagingError(it) }
+        .buildFlow(initialSize = SEARCH_PAGE_SIZE, distance = 5)
 
 
     override fun onFirstViewAttach() {
@@ -56,13 +53,7 @@ class SearchUserPresenter
     }
 
     override fun onUserActionCLick(user: UserDetail) {
-        compositeDisposable += Single.defer {
-            if (user.binds?.userFavorite != null)
-                eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
-                    .andThen(Single.just(Optional(null)))
-            else eventRepository.addUserToFavorites(user.id.toString())
-                .map { Optional(EventUserFavorite(it.id, it.user)) }
-        }
+        compositeDisposable += userRepository.addOrRemoveUserFavorite(user)
             .doOnSuccess { user.binds?.userFavorite = it.value }
             .withTimeOut(5000)
             .performOnBackgroundOutOnMain()

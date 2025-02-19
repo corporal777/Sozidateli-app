@@ -1,8 +1,6 @@
 package com.example.ui.search.organization
 
 import com.example.data.AppData
-import com.example.data.bodies.AddToFavoriteEntityModel
-import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventUserFavorite
 import com.example.data.models.Optional
 import com.example.data.models.OrganizationNew
@@ -11,18 +9,14 @@ import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_ADDRESS_RE
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_LIMIT
 import com.example.data.models.OrganizationNew.Companion.ORGANIZATION_OFFSET
 import com.example.data.models.SearchFilter
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.flow.PagingDataSourceFactory
-import com.example.util.pagination.flow.applyErrorHandler
-import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
-import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -36,14 +30,13 @@ class SearchOrganizationPresenter
     private val appData: AppData,
     private val eventRepository: EventRepository,
     private val organizationRepository: OrganizationRepository
-) : SearchPresenter<SearchOrganizationContract.View, SearchFilter.Organization>(appData),
-    SearchOrganizationContract.Presenter {
+) : SearchPresenter<SearchOrganizationContract.View>(appData), SearchOrganizationContract.Presenter {
 
     private var orgFilter = SearchFilter.Organization()
 
     private val pagination = PagingDataSourceFactory { limit, offset ->
         organizationRepository.searchOrganizations(buildFilterNew(limit, offset))
-    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = SEARCH_PAGE_SIZE, distance = 5)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = SEARCH_PAGE_SIZE, distance = 5)
 
 
     override fun onFirstViewAttach() {

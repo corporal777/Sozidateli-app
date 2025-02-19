@@ -13,7 +13,7 @@ fun <T> T?.asOptional() = Optional(this)
 
 @Parcelize
 data class Argument<out T>(
-    val value: @RawValue T
+    val value: @RawValue T? = null
 ) : Parcelable
 
 fun <T> T.asArgument() = Argument(this)

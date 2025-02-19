@@ -32,7 +32,6 @@ class PaginationList<T : Any>(
         }, {
             emitter.onError(it)
         })
-
         emitter.setDisposable(disposable)
     }
 

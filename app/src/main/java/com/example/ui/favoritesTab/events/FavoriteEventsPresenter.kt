@@ -6,14 +6,20 @@ import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.EventFavoriteModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventUserFavorite
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
+import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.pagination.observable.PaginationList
+import com.example.util.pagination.observable.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @InjectViewState
@@ -23,14 +29,16 @@ class FavoriteEventsPresenter
     private val eventRepository: EventRepository,
 ) : BasePresenter<FavoriteEventsContract.View>(appData), FavoriteEventsContract.Presenter {
 
-//    private val pagination: PaginationDataSourceFactory<EventNew?> =
-//        PaginationDataSourceFactory(::getPaginationRequest)
-//    private lateinit var paginationList: PaginationList<EventNew?>
+    private lateinit var paginationList: PaginationList<EventNew>
+
+    private val pagination = PaginationDataSourceFactory { limit, offset ->
+        getPaginationRequest(limit, offset)
+    }
 
     private fun getPaginationRequest(
         limit: Int,
         offset: Int
-    ): Maybe<PaginationResponse<EventNew?>> {
+    ): Maybe<PaginationResponse<EventNew>> {
         return eventRepository.getEventFavoritesList(
             mutableMapOf<String, Any>().apply {
                 put(EventFavoriteModel.EVENT_FAVORITE_LIMIT, limit)
@@ -47,16 +55,16 @@ class FavoriteEventsPresenter
         super.onFirstViewAttach()
         viewState.setData(List(10) { null })
 
-//        paginationList = pagination.applyErrorHandler {
-//            if (it.cause is UnknownHostException) hasNoConnectionError = true
-//        }.buildList(enablePlaceholders = false, initialSize = 30)
-//
-//        compositeDisposable += Observable.create(paginationList)
-//            .performOnBackgroundOutOnMain()
-//            .subscribeSimple {
-//                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
-//                else viewState.setData(it)
-//            }
+        paginationList = pagination.applyErrorHandler {
+            if (it.cause is UnknownHostException) hasNoConnectionError = true
+        }.buildFlow(enablePlaceholders = false, initialSize = 30)
+
+        compositeDisposable += Observable.create(paginationList)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
+                else viewState.setData(it)
+            }
     }
 
     override fun onShowEventClick(event: String?) {
@@ -88,12 +96,8 @@ class FavoriteEventsPresenter
         viewState.showSubEvents(event.id.toString(), event.binds?.activity ?: emptyList())
     }
 
-    override fun onItemTake(position: Int) {
-        //paginationList.onItemTake(position)
-    }
-    override fun onRefreshRequest() {
-        //paginationList.invalidate()
-    }
+    override fun onItemTake(position: Int) = paginationList.onItemTake(position)
+    override fun onRefreshRequest() = paginationList.invalidate()
 
     private fun addToFavoriteBody(id: Int?): AddToFavoriteModel {
         return AddToFavoriteModel(

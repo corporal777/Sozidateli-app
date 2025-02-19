@@ -27,52 +27,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:visibility="gone"
+                    app:contentInsetEnd="0dp"
                     app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin"
                     tools:visibility="visible">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <com.example.ui.views.loading.CustomCircleLoadingButton
+                        android:id="@+id/btnGoToMyTimeTable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="10dp"
+                        app:circleButtonText="@string/my_timetable_title"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <com.example.ui.views.loading.CustomCircleLoadingButton
-                            android:id="@+id/btnGoToMyTimeTable"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="20dp"
-                            app:circleButtonText="@string/my_timetable_title"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.MaterialToolbar>
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/tv_label_large"
+                    fontPath="fonts/sf_pro_display_heavy.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="@null"
-                    android:visibility="visible"
-                    app:layout_collapseMode="parallax">
-
-                    <TextView
-                        android:id="@+id/tv_label_large"
-                        fontPath="fonts/sf_pro_display_heavy.ttf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-                        android:layout_marginBottom="10dp"
-                        android:letterSpacing="0.01"
-                        android:text="@string/my_events_title"
-                        android:textColor="@android:color/black"
-                        android:textSize="34sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingPrefix" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                    android:layout_marginBottom="10dp"
+                    android:letterSpacing="0.01"
+                    android:text="@string/my_events_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="34sp"
+                    android:textStyle="bold"
+                    app:layout_collapseMode="parallax"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -203,6 +192,7 @@
             android:letterSpacing="-0.02"
             android:textColor="@color/no_data_item_description_color"
             android:textSize="17sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Нажмите Добавить в избранное в списке организаций" />
@@ -211,10 +201,8 @@
         <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/eventsList"

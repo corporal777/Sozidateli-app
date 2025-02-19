@@ -9,12 +9,10 @@ import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface SearchEventContract {
-    interface View : SearchContract.View<SearchFilter.EventNew> {
-        @OneExecution
-        fun setData(data: PagingData<EventNew>, isTemporary : Boolean)
+    interface View : SearchContract.View {
 
         @OneExecution
-        fun updateEvent(event: EventNew)
+        fun setData(data: PagingData<EventNew>, isTemporary : Boolean)
 
         @OneExecution
         fun showAboutEvent(event: String)
@@ -29,14 +27,18 @@ interface SearchEventContract {
         fun showQrScanner()
 
         @Skip
-        fun showAgreementRegisterDialog(event: EventNew)
+        fun showFilter(filter: SearchFilter.EventNew)
+
+        @Skip
+        fun updateEvent(event: EventNew)
     }
 
-    interface Presenter : SearchContract.Presenter<SearchFilter.EventNew> {
-        fun onActionRegister(event: EventNew, withRegister : Boolean)
+    interface Presenter : SearchContract.Presenter {
+        fun onActionRegister(event: EventNew, withAccept : Boolean)
         fun onActionCancel(event: EventNew)
         fun onShowEventClick(event: String)
         fun onShowAuthorization(event: String)
         fun onScanClick()
+        fun onFiltersApplyClick(filter: SearchFilter.EventNew)
     }
 }

@@ -1,31 +1,24 @@
 package com.example.ui.event.my
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.EventNew.Companion.EVENT_BINDS
 import com.example.data.models.EventNew.Companion.EVENT_LIMIT
 import com.example.data.models.EventNew.Companion.EVENT_OFFSET
-import com.example.data.models.EventNew.Companion.EVENT_PUBLIC
-import com.example.data.models.EventNew.Companion.EVENT_SORT_FIELD
-import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.models.EventNew.Companion.EVENT_USER_ID
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.SearchFilter
 import com.example.data.socket.SocketIOManager
-import com.example.exceptions.EmptyDataException
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenterNew
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.flow.PagingDataSourceFactory
-import com.example.util.pagination.flow.PagingList
-import com.example.util.pagination.flow.applyErrorHandler
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -42,11 +35,11 @@ class MyEventsPresenter
 
     private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE
     private var searchText = ""
-    var searchFilter = SearchFilter.EventNew()
+    private var searchFilter = SearchFilter.EventNew()
 
     override val pagination = PagingDataSourceFactory { limit, offset ->
         getPaginationRequest(limit, offset)
-    }.applyErrorHandler { onReceivePagingError(it) }.buildList(initialSize = 20, distance = 2)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = 20, distance = 2)
 
 
     override fun onFirstViewAttach() {
@@ -79,7 +72,7 @@ class MyEventsPresenter
         pagination.invalidate()
     }
 
-    override fun onShowFiltersClick() = viewState.showFilters()
+    override fun onShowFiltersClick() = viewState.showFilters(searchFilter)
 
     fun isHasSearchParam(): Boolean {
         return searchText.isNotEmpty() || searchFilter.isHasFilter() || eventStateFilter != MyEventsFilter.NONE

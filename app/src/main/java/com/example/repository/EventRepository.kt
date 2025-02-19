@@ -32,7 +32,7 @@ interface EventRepository {
     fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
 
-    fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
@@ -60,7 +60,7 @@ interface EventRepository {
     fun deleteFromFavorites(id : String): Completable
 
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
-    fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel>>>
     fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>

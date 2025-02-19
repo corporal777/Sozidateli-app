@@ -87,6 +87,11 @@ data class EventNew(
         else return !formResult.result.fields.isNullOrEmpty()
     }
 
+    fun setFieldsForActionButton(new: EventNew){
+        binds?.currentUserRegistration = new.binds?.currentUserRegistration
+        binds?.currentUserRegistrationState = new.binds?.currentUserRegistrationState
+    }
+
     companion object {
         const val EVENT_SORT_FIELD = "sortField"
         const val EVENT_SORT_TYPE = "sortType"

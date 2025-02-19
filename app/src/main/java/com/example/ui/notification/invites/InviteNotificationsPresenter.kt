@@ -1,22 +1,25 @@
 package com.example.ui.notification.invites
 
 import android.app.NotificationManager
+import android.net.Uri
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.data.AppData
-import com.example.data.bodies.ApproveBody
-import com.example.data.bodies.DeclineBody
-import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.data.models.NotificationModel
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import com.example.ui.notification.NotificationType
-import com.example.ui.notification.NotificationsSortedData
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
@@ -29,95 +32,72 @@ class InviteNotificationsPresenter
     private val appData: AppData,
     private val notificationManager: NotificationManager,
     private val socket: SocketIOManager,
-) : BaseBottomSheetPresenter<InviteNotificationsContract.View>(appData),
+) : BaseBSPresenter<InviteNotificationsContract.View>(appData),
     InviteNotificationsContract.Presenter {
 
-    val notificationsList = mutableMapOf<String, MutableList<Notification>>()
-    var type : NotificationType? = null
+    var type: NotificationType? = null
 
     private var unreadInvitesCount = 0
-    private var groupedNotifications = mutableListOf<NotificationsSortedData>()
-    private var titleDatesCount = 0
+    private var notificationTitleDate = ""
 
-    private val pagination = PaginationDataSourceFactory { limit, offset ->
-        userRepository.getUserNotifications(
-            mutableMapOf<String, Any>().apply {
-                put(NotificationModel.NOTIFICATION_LIMIT, limit)
-                put(NotificationModel.NOTIFICATION_OFFSET, offset)
-                put(NotificationModel.NOTIFICATION_USER, appData.getId())
-                put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
-                put(NotificationModel.NOTIFICATION_SORT, "desc")
-
-                put(NotificationModel.NOTIFICATION_IS_INVITE, true)
-                put(NotificationModel.NOTIFICATION_ACKNOWLEDGED, false)
-
-                when(type) {
-                    NotificationType.ORGANIZER -> put(NotificationModel.NOTIFICATION_TYPE, "org")
-                    NotificationType.ESTIMATES -> put(NotificationModel.NOTIFICATION_TYPE, "evaluate")
-                    NotificationType.EVENTS -> put(NotificationModel.NOTIFICATION_TYPE, "event")
-                    NotificationType.SYSTEM -> put(NotificationModel.NOTIFICATION_TYPE, "system")
-                    NotificationType.PROJECTS -> put(NotificationModel.NOTIFICATION_TYPE, "pgrf")
-                    else -> {}
-                }
-            }
-        )
+    private val pagination = PagingDataSourceFactory { limit, offset ->
+        userRepository.getUserNotifications(buildFilters(limit, offset))
             .doOnSuccess { unreadInvitesCount = it.totalCount ?: 0 }
             .map { PaginationResponse(it.totalCount, it.data) }
-    }.buildList(enablePlaceholders = false, initialSize = 30)
+    }.applyErrorHandler { }.buildFlow(initialSize = 30, distance = 5)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setUnreadInvitesLabel(unreadInvitesCount)
-        compositeDisposable += Observable.create(pagination)
-            .map { transformList(it) }
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple(
+            .subscribeBy(
                 onError = { it.printStackTrace() },
                 onNext = {
-                    viewState.apply {
-                        setUnreadInvitesLabel(unreadInvitesCount)
-                        setNotifications(it)
-                    }
-                })
+                    viewState.setNotifications(it)
+                    viewState.setUnreadInvitesLabel(unreadInvitesCount)
+                }
+            )
     }
 
 
-    override fun onNotificationAcceptClick(notification: Notification) {
+    override fun onNotificationAcceptClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
-        when (notification.notificationMainType) {
+        when (notification.entity?.type) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
                 updateNotification(userRepository.approvePgrf(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
                 updateNotification(userRepository.approveAssistance(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                updateNotification(
-                    userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
-                    notification.id
-                )
+                updateNotification(userRepository.approveOrgMember(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.approveEventMember(entityId), notification.id)
             }
         }
     }
 
-    override fun onNotificationCancelClick(notification: Notification) {
+    override fun onNotificationCancelClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
-        when (notification.notificationMainType) {
+        when (notification.entity?.type) {
             NotificationModel.NOTIFICATION_TYPE_INVITE_PGFR -> {
                 updateNotification(userRepository.declinePgrf(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_INVITE_ASSISTANCE -> {
                 updateNotification(userRepository.declineAssistance(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> {
-                updateNotification(
-                    userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
-                    notification.id
-                )
+                updateNotification(userRepository.declineOrgMember(entityId), notification.id)
             }
+
             NotificationModel.NOTIFICATION_TYPE_EVENT_MEMBER -> {
                 updateNotification(userRepository.declineEventMember(entityId), notification.id)
             }
@@ -125,41 +105,60 @@ class InviteNotificationsPresenter
     }
 
     private fun updateNotification(request: Completable, notificationId: Int) {
-        compositeDisposable += request
-            .andThen(socket.connectToUpdates())
+        compositeDisposable += request.andThen(socket.connectToUpdates())
+            .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
+            .map { NotificationLocal.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onComplete = {
-                    pagination.invalidate()
+            .subscribeBy(
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateNotification(null, notificationId)
+                },
+                onSuccess = {
+                    viewState.updateNotification(null, notificationId)
                     notificationManager.cancel(notificationId)
                 }
             )
     }
 
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
-
-    private fun transformList(list : List<Notification>): ArrayList<NotificationsSortedData> {
-        val notificationsList = arrayListOf<NotificationsSortedData>()
-        var titleDate : String? = ""
-        var wasRead = false
-        list.forEach { note ->
-            val noteDate = note.date?.split(" ")?.get(0)
-            if (titleDate == noteDate && wasRead == note.wasRead) titleDate = ""
-            else titleDate = noteDate
-
-            notificationsList.add(NotificationsSortedData(titleDate, note))
-            titleDate = noteDate
-            wasRead = note.wasRead
-        }
-        groupedNotifications = notificationsList
-        titleDatesCount = groupedNotifications.filter { x -> !x.titleDate.isNullOrEmpty() }.size
-        return notificationsList
+    override fun onNotificationUrlClick(url: String) {
+        if (url.contains("/organization/"))
+            viewState.showAboutOrganization(Uri.parse(url).lastPathSegment ?: "")
+        else viewState.showUrl(url)
     }
 
-    fun getTitleDatesCount(): Int = titleDatesCount
-    fun getUnreadInvitesCount() = unreadInvitesCount
-    override fun onNotificationUrlClick(url: String) = viewState.showUrl(url)
 
+    private fun transformData(data: PagingData<NotificationLocal>): PagingData<NotificationLocal> {
+        return data.map {
+            val notificationDate = it.date
+            if (notificationTitleDate == notificationDate) it.titleDate = ""
+            else it.titleDate = notificationDate
+
+            notificationTitleDate = notificationDate
+            it
+        }
+    }
+
+    private fun buildFilters(limit: Int, offset: Int): MutableMap<String, Any> {
+        return mutableMapOf<String, Any>().apply {
+            put(NotificationModel.NOTIFICATION_LIMIT, limit)
+            put(NotificationModel.NOTIFICATION_OFFSET, offset)
+            put(NotificationModel.NOTIFICATION_USER, appData.getId())
+            put(NotificationModel.NOTIFICATION_LOAD_MODEL, true)
+            put(NotificationModel.NOTIFICATION_SORT, "desc")
+
+            put(NotificationModel.NOTIFICATION_IS_INVITE, true)
+            put(NotificationModel.NOTIFICATION_ACKNOWLEDGED, false)
+
+            when (type) {
+                NotificationType.ORGANIZER -> put(NotificationModel.NOTIFICATION_TYPE, "org")
+                NotificationType.ESTIMATES -> put(NotificationModel.NOTIFICATION_TYPE, "evaluate")
+                NotificationType.EVENTS -> put(NotificationModel.NOTIFICATION_TYPE, "event")
+                NotificationType.SYSTEM -> put(NotificationModel.NOTIFICATION_TYPE, "system")
+                NotificationType.PROJECTS -> put(NotificationModel.NOTIFICATION_TYPE, "pgrf")
+                else -> {}
+            }
+        }
+    }
 }

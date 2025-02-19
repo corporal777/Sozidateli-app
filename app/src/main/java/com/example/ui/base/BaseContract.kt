@@ -58,6 +58,9 @@ interface BaseContract {
 
         @StateStrategyType(SkipStrategy::class)
         fun showEventRegistrationSuccessDialog()
+
+        @StateStrategyType(SkipStrategy::class)
+        fun showBrowser(url : String)
     }
 
     interface LoadingView {
@@ -91,10 +94,5 @@ interface BaseContract {
 
     interface Presenter {
 
-    }
-
-    interface OnChangeElevation {
-        @StateStrategyType(OneExecutionStateStrategy::class)
-        fun changeAppBarElevation(value: Int)
     }
 }

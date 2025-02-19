@@ -96,11 +96,19 @@
                 android:textSize="17sp" />
         </com.google.android.material.appbar.AppBarLayout>
 
+        <TextView
+            style="@style/EmptyDataTextViewStyle"
+            android:id="@+id/tvEmptyData"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+            android:text="@string/no_active_events_found_title"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.example.ui.views.CustomSwipeRefreshLayout
             android:id="@+id/swipe_to_refresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -113,20 +121,6 @@
                 tools:listitem="@layout/item_event_new" />
 
         </com.example.ui.views.CustomSwipeRefreshLayout>
-
-        <TextView
-            android:layout_gravity="center"
-            android:id="@+id/tvEmptyData"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:gravity="center_horizontal"
-            android:textColor="@color/no_data_item_title_color"
-            android:textSize="25sp"
-            android:visibility="gone"
-            android:text="@string/no_active_events_found_title"
-            tools:visibility="visible" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

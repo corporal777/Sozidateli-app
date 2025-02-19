@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
@@ -18,7 +21,9 @@ import com.example.app.databinding.ItemOrganizationBinding
 import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
 import com.example.exceptions.EmptyDataException
+import com.example.extensions.dp
 import com.example.ui.views.UserSubscribeButton
+import com.example.util.getColor
 import com.example.util.getColorStateList
 import com.example.util.setImage
 
@@ -61,23 +66,35 @@ class OrganizationPagingAdapter(
                         ColorStateList.valueOf(Color.parseColor(organization.backgroundColor?.value))
                     else getColorStateList(R.color.colorAccent)
                 }
-
+                ivOrganizationImage.apply {
+                    clipToOutline = true
+                    setImage(organization.logo.let { it?.uri }, 300)
+                }
                 btnAction.apply {
                     setAction(
                         if (organization.binds?.userFavorite != null)
                             UserSubscribeButton.Action.UNFAVORITE
                         else UserSubscribeButton.Action.FAVORITE
                     )
-                    setOnClickListener { onSubscribeClick.invoke(organization) }
+                    setOnClickListener {
+                        showProgress(true)
+                        onSubscribeClick.invoke(organization)
+                    }
+                }
+                btnProgress.apply {
+                    isVisible = false
+                    setProgressColor(getColor(R.color.main_brown_color_new))
+                    setSize(23.dp)
+                    setStroke(8f)
                 }
 
-                ivOrganizationImage.apply {
-                    val image = organization.logo.let { it?.uri }
-                    clipToOutline = true
-                    setImage(image, 300)
-                }
                 root.setOnClickListener { onOrganizationClick.invoke(organization) }
             }
+        }
+
+        private fun showProgress(show: Boolean) {
+            viewBinding.btnProgress.isVisible = show
+            viewBinding.btnAction.isInvisible = show
         }
     }
 
@@ -102,18 +119,13 @@ class OrganizationPagingAdapter(
         ): ConcatAdapter {
             addOnPagesUpdatedListener {}
             addLoadStateListener { loadState ->
-
-                if (itemCount > 0) header.loadState = header.notRefresh
-                else header.loadState = loadState.refresh
-
                 //refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
                 //refresh.loadState = loadState.refresh
+                header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
                 footer.loadState = loadState.append
 
                 if (loadState.refresh is LoadState.Error)
-                    if ((loadState.refresh as LoadState.Error).error is EmptyDataException)
-                        if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                        else onEmpty.invoke(false)
+                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
                     else onEmpty.invoke(false)
                 else onEmpty.invoke(false)
             }

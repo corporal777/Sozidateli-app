@@ -1,6 +1,5 @@
 package com.example.ui.event.list.recommendations
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.models.EventNew.Companion.EVENT_BINDS
@@ -11,12 +10,15 @@ import com.example.data.models.EventNew.Companion.EVENT_SORT_FIELD
 import com.example.data.models.EventNew.Companion.EVENT_SORT_TYPE
 import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.socket.SocketIOManager
-import com.example.di.Connectivity
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
-import com.example.ui.event.list.EventListPresenter
+import com.example.ui.event.list.EventListPresenterNew
 import com.example.util.pagination.PaginationResponse
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -28,72 +30,61 @@ class RecommendationsPresenter
     val appData: AppData,
     private val eventRepository: EventRepository,
     private val socket: SocketIOManager
-) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository, socket),
+) : EventListPresenterNew<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 
-    private var isFirstAttach = true
+    var isOpenProfile = false
 
+    override val pagination = PagingDataSourceFactory { limit, offset ->
+        getPaginationRequest(limit, offset)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = 20, distance = 2)
 
-    override fun attachView(view: RecommendationsContract.View?) {
+    override fun attachView(view: RecommendationsContract.View) {
         super.attachView(view)
-        if (isFirstAttach) isFirstAttach = false
-        else pagination.invalidate()
-
         viewState.setAuthorizationButton(isTemporaryUser())
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setData(List(5) { null }, null)
-        compositeDisposable += Observable.create(pagination)
+        showSavedEventOrProfile()
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (it.isEmpty()) viewState.showEmptyListPlaceholder()
-                else viewState.setData(it, appData.isNeedUpdateApp)
-            }
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = { viewState.setData(it, appData.isNeedUpdateApp) }
+            )
     }
 
     override fun onSearchClick() = viewState.showSearch()
-    override fun onAuthorizationClick() {
-        appData.savedEventId = null
-        viewState.showAuthorization()
-    }
-
-    override fun onRefreshRequest() = pagination.invalidate()
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
 
 
-    override fun onShowSavedEventOrProfile(isProfile: Boolean?) {
+    private fun showSavedEventOrProfile() {
         val eventId = appData.savedEventId
         if (!eventId.isNullOrEmpty()) {
             viewState.showAboutEvent(eventId)
             appData.savedEventId = null
-        } else if (isProfile == true) {
+        } else if (isOpenProfile) {
+            isOpenProfile = false
             val email = getUserData().personalEmail
             val phone = getUserData().personalPhone?.value
             if (email.isNullOrEmpty() || phone.isNullOrEmpty()) viewState.showUserProfile()
-        } else return
+        }
     }
 
     override fun getPaginationRequest(
         limit: Int,
         offset: Int
-    ): Maybe<PaginationResponse<EventNew?>> {
-        Log.e("EventsList", "limit: $limit ,offset: $offset")
+    ): Maybe<PaginationResponse<EventNew>> {
         return eventRepository.getEventsListNew(
             mapOf(
                 EVENT_LIMIT to limit,
                 EVENT_OFFSET to offset,
                 EVENT_SORT_TYPE to "desc",
                 EVENT_SORT_FIELD to "id",
-                EVENT_BINDS to getBinds(),
+                EVENT_BINDS to "current-user-registration,current-user-registration-state,eventRegistrationState",
                 EVENT_PUBLIC to "true",
                 EVENT_STATUS to "approved,registration,registrationFinished,running"
             )
         )
-    }
-
-    override fun getBinds(): String {
-        return "current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

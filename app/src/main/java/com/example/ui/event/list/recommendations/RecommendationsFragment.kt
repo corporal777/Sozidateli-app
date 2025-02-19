@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.FragmentRecommendationsBinding
 import com.example.data.models.EventNew
 import com.example.extensions.dp
 import com.example.extensions.findGroupBy
+import com.example.extensions.isVisibleAnim
 import com.example.extensions.offsetChangedListener
 import com.example.extensions.updateGroup
 import com.example.extensions.updateItem
-import com.example.ui.event.list.EventListFragment
+import com.example.ui.event.list.EventListFragmentNew
 import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
 import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.profile.ProfileFragmentArgs
@@ -28,8 +32,7 @@ import javax.inject.Provider
 import kotlin.math.abs
 
 
-class RecommendationsFragment :
-    EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
+class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -40,80 +43,40 @@ class RecommendationsFragment :
 
     @ProvidePresenter
     fun providePresenter(): RecommendationsPresenter = presenterProvider.get().apply {
-        try {
-            val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
-            this.onShowSavedEventOrProfile(args.isOpenProfile)
-        } catch (_: Exception) {
-        }
+        val args = RecommendationsFragmentArgs.fromBundle(requireArguments())
+        isOpenProfile = args.isOpenProfile
     }
 
-    private val dataGroup = Section()
-    private val groupAdapter = PaginationGroupAdapter<GroupieViewHolder>().apply {
-        add(dataGroup)
-        setOnItemTakeCallback(object : PaginationGroupAdapter.OnItemTakeCallback {
-            override fun onItemTake(position: Int) {
-                presenter.onItemTake(position)
-            }
-        })
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             eventsList.apply {
-                adapter = groupAdapter
+                adapter = pagingAdapter.withLoadStateAdapters(
+                    EventPlaceholderAdapter(1),
+                    EventPlaceholderAdapter(1)
+                ) { setDataEmpty(it) }
+                setDataEmpty(isEmptyData)
             }
-            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+
             etSearch.setOnClickListener { presenter.onSearchClick() }
-            btnLogin.setOnClickListener { presenter.onAuthorizationClick() }
-            appBarLayout.apply {
-                updateAppBarViews(null)
-                offsetChangedListener { appBarLayout, i ->
-                    updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
-                }
+            btnLogin.setOnClickListener { presenter.onShowAuthorization(null) }
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            appBarLayout.offsetChangedListener { a, i ->
+                updateAppBarViews(abs(i / a.totalScrollRange).toFloat())
             }
         }
     }
 
+    override fun setData(data: PagingData<EventNew>, isNeedUpdateApp: Boolean) {
+        pagingAdapter.submitData(lifecycle, data, presenter.isTemporaryUser(), isNeedUpdateApp)
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+
     override fun setAuthorizationButton(isTemporary: Boolean) {
         mBinding.btnLogin.isVisible = isTemporary
     }
-
-    override fun setData(events: List<EventNew?>, isNeedUpdateApp: Boolean?) {
-        mBinding.swipeToRefresh.isRefreshing = false
-        val group = dataGroup.findGroupBy<RecommendationItemsGroup> { true }
-        if (group == null)
-            dataGroup.updateGroup(
-                RecommendationItemsGroup(
-                    events,
-                    presenter.isTemporaryUser(),
-                    isNeedUpdateApp,
-                    onEventClickListener
-                )
-            )
-        else group.updateItems(events, isNeedUpdateApp)
-    }
-
-
-    override fun updateEvent(event: EventNew) {
-        dataGroup.findGroupBy<RecommendationItemsGroup> { true }?.updateButtonState(event)
-    }
-
-    override fun showEmptyListPlaceholder() {
-        dataGroup.updateItem(
-            NoScheduleEventItem(
-                getString(R.string.no_active_events_found_title),
-                padding = 70.dp
-            )
-        )
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun scrollToFirstItem() {
-        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
-        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
-    }
-
 
     override fun showSearch() {
         findNavController().navigate(R.id.search_tabs_fragment)
@@ -124,21 +87,46 @@ class RecommendationsFragment :
         findNavController().navigate(R.id.profile_fragment, args)
     }
 
+    override fun scrollToFirstItem() {
+        val mLayoutManager = mBinding.eventsList.layoutManager as LinearLayoutManager
+        mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
+    }
 
-    override fun setAppBarViewsState(state: Int, isRestore: Boolean) {
-        mBinding.tvLabelSmall.apply {
-            if (!isRestore) alpha = if (state == 1) 0F else 1F
-            if (!isRestore) animate().setDuration(500).alpha(if (state == 1) 1.0f else 0.0f)
-            visibility = if (state == 1) View.VISIBLE else View.GONE
+    override fun setDataEmpty(show : Boolean){
+        super.setDataEmpty(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
+    }
+
+    override fun onExpandedState(withAnim: Boolean) {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                if (withAnim) alpha = 1F
+                if (withAnim) animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
+            tvLabelLarge.apply {
+                if (withAnim) alpha = 0F
+                visibility = View.VISIBLE
+                if (withAnim) animate().setDuration(500).alpha(1.0f)
+            }
         }
-        mBinding.tvLabelLarge.apply {
-            if (!isRestore) alpha = if (state == 0) 0F else 1F
-            if (!isRestore) animate().setDuration(500).alpha(if (state == 0) 1.0f else 0.0f)
-            visibility = if (state == 0) View.VISIBLE else View.GONE
+    }
+
+    override fun onCollapsedState(withAnim: Boolean) {
+        mBinding.apply {
+            tvLabelSmall.apply {
+                if (withAnim) alpha = 0F
+                visibility = View.VISIBLE
+                if (withAnim) animate().setDuration(500).alpha(1.0f)
+            }
+            tvLabelLarge.apply {
+                if (withAnim) alpha = 1F
+                if (withAnim) animate().setDuration(500).alpha(0.0f)
+                visibility = View.GONE
+            }
         }
     }
 
     override fun binding() = FragmentRecommendationsBinding::class.java
     override fun layout(): Int = R.layout.fragment_recommendations
-
 }

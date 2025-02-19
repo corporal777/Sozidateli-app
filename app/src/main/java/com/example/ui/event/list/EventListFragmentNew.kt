@@ -17,23 +17,23 @@ import com.example.adapters.EventPagingAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.holders.redesign.EventListItem
-import com.example.ui.agreement.UserAgreementBottomSheetDialog
 import com.example.ui.base.BaseBindingFragment
 import com.example.ui.base.BaseFragment
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
 import kotlin.reflect.KClass
 
-abstract class EventListFragmentNew<P : EventListContractNew.Presenter, T : ViewDataBinding> :
-    BaseFragment<T>(), EventListContractNew.View {
+abstract class EventListFragmentNew<P : EventListContractNew.Presenter, T : ViewBinding> :
+    BaseVBFragment<T>(), EventListContractNew.View {
 
     abstract var presenter: P
 
     protected val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EventPagingAdapter(
-            { presenter.onActionRegister(it, false) },
+            { event, accept -> presenter.onActionRegister(event, accept) },
             { presenter.onActionCancel(it) },
             { presenter.onShowEventClick(it.id.toString()) },
             { presenter.onShowAuthorization(it.id.toString()) },
@@ -44,26 +44,14 @@ abstract class EventListFragmentNew<P : EventListContractNew.Presenter, T : View
         pagingAdapter.updateEventAction(event)
     }
 
-    override fun showAgreementRegisterDialog(event: EventNew) {
-        UserAgreementBottomSheetDialog(requireContext(), event)
-            .setAcceptedCallback { isAccept, eventNew ->
-                if (isAccept) presenter.onActionRegister(eventNew, true)
-                else updateEvent(eventNew)
-            }.show()
-    }
-
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = AboutEventFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.request_fragment, args)
     }
 
     override fun showAuthorization() {

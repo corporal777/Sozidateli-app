@@ -1,8 +1,6 @@
-package com.example.util.pagination.flow
+package com.example.util.paginationNew
 
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 

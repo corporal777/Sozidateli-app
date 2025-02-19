@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.app.R
 import com.example.data.models.UserDetail
+import com.example.ui.base.BaseFragment.Companion
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.StateType
 import com.google.android.material.transition.MaterialFadeThrough
@@ -62,6 +63,10 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         return inflater.inflate(layout(), container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setAppBarViewsState()
+    }
 
     @LayoutRes
     abstract fun layout(): Int
@@ -124,6 +129,10 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         mActivity?.showRemovedFromFavoriteDialog()
     }
 
+    override fun showBrowser(url: String) {
+        mActivity?.showBrowser(url)
+    }
+
     override fun onDetach() {
         mActivity = null
         super.onDetach()
@@ -164,11 +173,15 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
     }
 
 
-    open fun onExpandedState() {}
-    open fun onCollapsedState() {}
+    open fun onExpandedState(withAnim : Boolean) {}
+    open fun onCollapsedState(withAnim : Boolean) {}
     open fun scrollToFirstItem() {}
-
     open fun animationType(): AnimType = AnimType.NONE
+
+    var isEmptyData = false
+    open fun setDataEmpty(show: Boolean){
+        isEmptyData = show
+    }
 
     enum class AnimType {
         FADE, AXIS, NONE
@@ -181,17 +194,28 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         return prevId == id
     }
 
-    open fun setAppBarViewsState(state : Int, isRestore : Boolean){}
-    fun updateAppBarViews(offset: Float?) {
-        if (offset == null) setAppBarViewsState(collapseState?.first ?: 0, true)
-        else when {
+    private fun setAppBarViewsState(){
+        when (collapseState?.first) {
+            TO_EXPANDED -> onExpandedState(false)
+            TO_COLLAPSED -> onCollapsedState(false)
+        }
+    }
+    fun updateAppBarViews(offset: Float) {
+        when {
             offset < SWITCH_BOUND -> Pair(TO_EXPANDED, collapseState?.second ?: WAIT_FOR_SWITCH)
             else -> Pair(TO_COLLAPSED, collapseState?.second ?: WAIT_FOR_SWITCH)
         }.apply {
-            if (collapseState != null && collapseState != this){
-                setAppBarViewsState(first, false)
-                collapseState = Pair(first, SWITCHED)
-            } else collapseState = Pair(first, WAIT_FOR_SWITCH)
+            when {
+                collapseState != null && collapseState != this -> {
+                    when (first) {
+                        TO_EXPANDED -> onExpandedState(true)
+                        TO_COLLAPSED -> onCollapsedState(true)
+                    }
+                    collapseState = Pair(first, SWITCHED)
+                }
+
+                else -> collapseState = Pair(first, WAIT_FOR_SWITCH)
+            }
         }
     }
 

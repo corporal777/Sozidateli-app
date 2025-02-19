@@ -45,7 +45,7 @@ class EventSpeakersFragment : BaseVBFragment<FragmentEventSpeakersBinding>(),
             ivBack.setOnClickListener { findNavController().navigateUp() }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             appBarLayout.offsetChangedListener { appBarLayout, offset ->
-                updateAppBarViews(abs(offset / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(offset / appBarLayout.totalScrollRange).toFloat())
             }
         }
     }
@@ -72,28 +72,28 @@ class EventSpeakersFragment : BaseVBFragment<FragmentEventSpeakersBinding>(),
         findNavController().navigate(R.id.user_speaker_fragment, args)
     }
 
-    override fun onExpandedState() {
+    override fun onExpandedState(withAnim: Boolean) {
         mBinding.tvLabelSmall.apply {
-            alpha = 1F
-            animate().setDuration(500).alpha(0.0f)
+            if (withAnim) alpha = 1F
+            if (withAnim) animate().setDuration(500).alpha(0.0f)
             visibility = View.GONE
         }
         mBinding.tvLabelLarge.apply {
+            if (withAnim) alpha = 0F
             visibility = View.VISIBLE
-            alpha = 0F
-            animate().setDuration(500).alpha(1.0f)
+            if (withAnim) animate().setDuration(500).alpha(1.0f)
         }
     }
 
-    override fun onCollapsedState() {
+    override fun onCollapsedState(withAnim: Boolean) {
         mBinding.tvLabelSmall.apply {
-            alpha = 0F
-            animate().setDuration(500).alpha(1.0f)
+            if (withAnim) alpha = 0F
             visibility = View.VISIBLE
+            if (withAnim) animate().setDuration(500).alpha(1.0f)
         }
         mBinding.tvLabelLarge.apply {
-            alpha = 1F
-            animate().setDuration(500).alpha(0.0f)
+            if (withAnim) alpha = 1F
+            if (withAnim) animate().setDuration(500).alpha(0.0f)
             visibility = View.GONE
         }
     }

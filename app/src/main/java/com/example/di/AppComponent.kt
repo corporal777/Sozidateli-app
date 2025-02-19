@@ -2,11 +2,11 @@ package com.example.di
 
 import android.app.Application
 import com.example.App
-import com.example.ui.agreement.UserAgreementBottomSheetDialog
 import com.example.ui.event.my.schedule.calendar.CalendarBottomSheet
 import com.example.ui.support.newQuestion.SupportQuestionBottomSheet
 import com.example.ui.views.accountView.AccountView
 import com.example.ui.views.chatView.ChatView
+import com.example.ui.views.filters.chat.ChatFiltersBottomSheetDialog
 import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import com.example.ui.views.filters.event.my.MyEventsFiltersBottomSheetDialog
 import com.example.ui.views.filters.organization.OrgFiltersBottomSheetDialog
@@ -72,5 +72,5 @@ interface AppComponent {
 
     fun inject(dialog : UserFiltersBottomSheetDialog)
 
-    fun inject(dialog : UserAgreementBottomSheetDialog)
+    fun inject(dialog : ChatFiltersBottomSheetDialog)
 }

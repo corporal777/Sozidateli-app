@@ -8,13 +8,9 @@ data class ChatModel(
         val id: Int,
         @SerializedName("createdDate")
         val createdDate: String? = null,
-        /*@SerializedName("createdBy")
-        val createdBy: Int? = null,*/
         val type: String? = null,
         @SerializedName("unreadMessagesCount")
         val unreadMessagesCount: Int? = null,
-        /*@SerializedName("invitedUser")
-        val invitedUser: ChatInvitedUserModel? = null,*/
         val users: List<UsersModel>? = null,
         val binds: ChatBinds? = null
 ) {

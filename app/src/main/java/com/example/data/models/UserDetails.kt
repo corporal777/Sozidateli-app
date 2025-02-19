@@ -150,6 +150,10 @@ data class UserDetail(
 
     fun getVkUUID() = socialBinds?.vkontakte?.uuid ?: ""
 
+    fun setIfCurrentUser(userId : Int){
+        if (id == userId) isCurrentUser = true
+    }
+
     companion object {
         const val USER_EMAIL = "email"
         const val USER_NAME = "name"
