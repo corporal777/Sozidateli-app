@@ -2,7 +2,7 @@ package com.example.data.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class EventNewModel(
     val data: List<EventNew?>? = null,
@@ -217,12 +217,15 @@ data class EventBindsModel(
     val destinationScheme: List<DestinationSchemeModel>? = null
 ) : Parcelable {
 
-    fun getParticipationForm(): EventFormModel? {
-        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.formType
+    fun getForm(): EventFormModel? {
+        val formType = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        return formType?.formType
     }
 
-    fun getFormResult(): List<EventFormResultFieldsModel>? {
-        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.result?.fields
+    fun getFormResult(): Collection<EventFormResultFieldsModel>? {
+        val formResult =
+            userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        return formResult?.result?.fields
     }
 }
 

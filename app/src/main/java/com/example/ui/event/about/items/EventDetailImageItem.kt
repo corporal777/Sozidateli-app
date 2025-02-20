@@ -3,6 +3,7 @@ package com.example.ui.event.about.items
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
@@ -29,6 +30,7 @@ import com.example.extensions.markWon
 import com.example.extensions.onClickListener
 import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
+import com.example.extensions.setColorSpan
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
@@ -204,10 +206,8 @@ class EventDetailImageItem(
         val dateEnd = eventData.holdingDate?.to ?: return null
 
         if (eventData.isHasOneActivity()) {
-            val startDate =
-                dateStart.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
-            val finishDate =
-                dateEnd.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+            val startDate = dateStart.calendar(defaultServerDateFormatter) ?: return null
+            val finishDate = dateEnd.calendar(defaultServerDateFormatter) ?: return null
 
             if (startDate.isSameDay(finishDate)) {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г."
@@ -216,8 +216,10 @@ class EventDetailImageItem(
                 return if (firstTime.isNullOrEmpty() || secondTime.isNullOrEmpty()) firstDate
                 else "$firstDate, $firstTime - $secondTime"
             } else {
-                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + dateStart.formatToDefaultTime()
-                val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + dateEnd.formatToDefaultTime()
+                val firstTime = dateStart.formatToDefaultTime() ?: ""
+                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + firstTime
+                val secondTime = dateEnd.formatToDefaultTime() ?: ""
+                val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + secondTime
                 return "$firstDate - $secondDate"
             }
         } else return dateStart.formatToDefaultDayMonthYearDate() + " г." +
@@ -249,9 +251,7 @@ class EventDetailImageItem(
         return when (description) {
             "register", "temporary" -> {
                 SpannableStringBuilder().apply {
-                    append(CustomSpannableString(context.getString(R.string.event_action_participate)).apply {
-                        setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
-                    })
+                    append(CustomSpannableString(context.getString(R.string.event_action_participate)).apply { setTextSizeSpan(R.dimen.sub_event_description_text_size, context) })
                     append("\n")
                     append(CustomSpannableString(requestDate).apply {
                         setTextSizeSpan(R.dimen.event_request_date_text_size, context)
@@ -260,33 +260,21 @@ class EventDetailImageItem(
                 }
             }
 
-            "withdraw" -> {
-                CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
-                    setColorSpan(R.color.black, context)
-                }
-            }
-
             "view" -> context.getString(R.string.event_status_approved)
-
-            "closed" -> {
-                CustomSpannableString(context.getString(R.string.event_action_closed_request)).apply {
-                    setColorSpan(R.color.event_request_closed_text_color, context)
-                }
-            }
-
-            "canceled" -> {
-                CustomSpannableString(context.getString(R.string.event_status_cancelled)).apply {
-                    setColorSpan(R.color.event_request_closed_text_color, context)
-                }
-            }
 
             "subscribe" -> context.getString(R.string.event_action_subscribe_request)
 
-            "unsubscribe" -> {
-                CustomSpannableString(context.getString(R.string.event_action_unsubscribe_request)).apply {
-                    setColorSpan(R.color.black, context)
-                }
-            }
+            "withdraw" ->
+                SpannableString(context.getString(R.string.event_action_cancel_request)).setColorSpan(R.color.black, context)
+
+            "closed" ->
+                SpannableString(context.getString(R.string.event_action_closed_request)).setColorSpan(R.color.request_closed_text_color, context)
+
+            "canceled" ->
+                SpannableString(context.getString(R.string.event_status_cancelled)).setColorSpan(R.color.request_closed_text_color, context)
+
+            "unsubscribe" ->
+                SpannableString(context.getString(R.string.event_action_unsubscribe_request)).setColorSpan(R.color.black, context)
 
             else -> ""
         }

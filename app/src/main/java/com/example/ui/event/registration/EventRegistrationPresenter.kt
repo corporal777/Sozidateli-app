@@ -2,7 +2,6 @@ package com.example.ui.event.registration
 
 import android.content.ContentResolver
 import android.net.Uri
-import android.util.Log
 import com.example.app.R
 import com.example.data.AppData
 import com.example.data.models.*
@@ -408,13 +407,10 @@ class EventRegistrationPresenter
         return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
     }
 
-    private fun getPrefilledFieldsIfNeed(e : EventNew): Maybe<Pair<List<EventRegisterFields>?, ArrayList<EventFormResultFieldsModel>>> {
-        val fields = e.binds?.getParticipationForm()?.fields
-        val results = arrayListOf<EventFormResultFieldsModel>().apply {
-            addAll(e.binds?.getFormResult() ?: emptyList())
-        }
+    private fun getPrefilledFieldsIfNeed(e : EventNew): Maybe<Pair<List<EventRegisterFields>?, List<EventFormResultFieldsModel>>> {
+        val fields = e.binds?.getForm()?.fields
+        val results = e.binds?.getFormResult()?.toMutableList() ?: mutableListOf()
         val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
-
         return if (pref != null)
             return if (results.isEmpty() || results.none { it.id == pref.id }){
                 eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {

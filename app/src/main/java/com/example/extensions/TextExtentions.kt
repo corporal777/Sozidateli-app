@@ -4,9 +4,12 @@ import android.content.Context
 import android.os.Build
 import android.text.InputFilter
 import android.text.Spannable
+import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import com.example.app.BuildConfig
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -185,5 +188,16 @@ class SpecialCharacterInputFilter(pattern: String) : InputFilter {
         } else {
             ""
         }
+    }
+}
+
+fun SpannableString.setColorSpan(color: Int, context: Context): SpannableString {
+    return this.apply {
+        setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(context, color)),
+            0,
+            length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
     }
 }

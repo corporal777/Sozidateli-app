@@ -181,6 +181,8 @@ fun Long.calendar(): Calendar = Calendar.getInstance().apply { timeInMillis = th
 
 fun Date.calendar(): Calendar = Calendar.getInstance().apply { time = this@calendar }
 
+fun String.calendar(formatter: DateFormat): Calendar? = parseToDate(formatter)?.calendar()
+
 fun Calendar.isSameDay(other: Calendar): Boolean {
     return isSameYear(other) && this.get(Calendar.DAY_OF_YEAR) == other.get(Calendar.DAY_OF_YEAR)
 }

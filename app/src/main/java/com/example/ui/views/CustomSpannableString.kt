@@ -1,6 +1,7 @@
 package com.example.ui.views
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -17,6 +18,7 @@ import com.example.app.R
 import com.example.ui.views.expandableTextView.CustomTypefaceSpan
 import com.example.util.ClickableSpan
 import com.example.util.ClickableSpanNew
+import com.google.rpc.context.AttributeContext.Resource
 
 class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
 
@@ -29,6 +31,13 @@ class CustomSpannableString(source: CharSequence?) : SpannableString(source) {
             length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+    }
+
+    fun setSpanColor(color: Int, context: Context): CustomSpannableString {
+        val expandColor = ContextCompat.getColor(context, color)
+        return this.apply {
+            setColorSpan(color, context)
+        }
     }
 
     fun setColorSpanWithLength(color: Int, start: Int, context: Context) {
