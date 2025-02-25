@@ -5,27 +5,21 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.adapters.EventPagingAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemOrganizationBinding
-import com.example.data.models.Organization
 import com.example.data.models.OrganizationNew
-import com.example.exceptions.EmptyDataException
-import com.example.extensions.dp
+import com.example.extensions.executePlaceholderLoadState
 import com.example.ui.views.UserSubscribeButton
-import com.example.util.getColor
 import com.example.util.getColorStateList
 import com.example.util.setImage
+import dev.androidbroadcast.vbpd.viewBinding
 
 class OrganizationPagingAdapter(
     private val onOrganizationClick: (org : OrganizationNew) -> Unit,
@@ -81,12 +75,7 @@ class OrganizationPagingAdapter(
                         onSubscribeClick.invoke(organization)
                     }
                 }
-                btnProgress.apply {
-                    isVisible = false
-                    setProgressColor(getColor(R.color.main_brown_color_new))
-                    setSize(23.dp)
-                    setStroke(8f)
-                }
+                btnProgress.isVisible = false
 
                 root.setOnClickListener { onOrganizationClick.invoke(organization) }
             }
@@ -117,17 +106,10 @@ class OrganizationPagingAdapter(
             footer: CustomLoadStateAdapter<*>,
             onEmpty: (show: Boolean) -> Unit
         ): ConcatAdapter {
-            addOnPagesUpdatedListener {}
             addLoadStateListener { loadState ->
-                //refresh.loadState = if (isRefresh) refresh.notRefresh else loadState.refresh
-                //refresh.loadState = loadState.refresh
                 header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
                 footer.loadState = loadState.append
-
-                if (loadState.refresh is LoadState.Error)
-                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                    else onEmpty.invoke(false)
-                else onEmpty.invoke(false)
+                executePlaceholderLoadState(loadState){ onEmpty.invoke(it) }
             }
             return ConcatAdapter(header, this, footer)
         }

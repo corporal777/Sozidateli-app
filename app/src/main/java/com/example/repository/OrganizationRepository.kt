@@ -20,4 +20,6 @@ interface OrganizationRepository {
     //+
     fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>>
     fun getOrganizationsWithActiveEvents(): Maybe<List<OrganizationNew>>
+
+    fun addOrRemoveOrgFavorite(org : OrganizationNew?): Single<Optional<EventUserFavorite>>
 }

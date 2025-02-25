@@ -35,7 +35,7 @@ import com.example.holders.ChatUnreadLabelItem
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.holders.NoEventItem
 import com.example.ui.image.ImageViewActivityArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.dialogs.DefaultAlertDialog

@@ -7,15 +7,17 @@ import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.ui.search.SearchPresenter
+import com.example.ui.views.dialogs.StateType
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
+import withDelay
+import withEventLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -43,50 +45,61 @@ class SearchEventPresenter
     }
 
 
-    override fun onActionRegister(event: EventNew, withAccept: Boolean) {
-        compositeDisposable += Single.defer {
-            if (withAccept) acceptRegistrationAgreementRequest(event)
-            else Single.just(event)
-        }
+    override fun onActionRegister(event: EventNew, withAccept: Boolean, position: Int) {
+        if (isProfileLevelLow(event)) viewState.showStateErrorMessage(StateType.BASE, false, null)
+        else compositeDisposable += eventRepository.acceptEventAgreement(event, withAccept)
             .flatMapMaybe { registerToEventRequest(event) }
             .performOnBackgroundOutOnMain()
+            .withEventLoading(viewState, position)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
-                    viewState.updateEvent(event)
-                },
+                onError = { onReceiveError(it) },
                 onSuccess = {
-                    viewState.updateEvent(event)
                     if (event.isFormEnabled()) viewState.showEventRequest(event.id.toString())
-                    else viewState.showEventRegistrationSuccessDialog()
+                    else {
+                        viewState.showEventRegistrationSuccessDialog()
+                        viewState.updateEvent(event)
+                        appData.sendUpdateEvent(event)
+                    }
                 }
             )
     }
 
-    override fun onActionCancel(event: EventNew) {
+    override fun onActionCancel(event: EventNew, position: Int) {
         val registrationId = event.binds?.currentUserRegistration?.id ?: 0
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
-            .andThen(eventRepository.getEventDetails(event.id.toString()))
+        if (isProfileLevelLow(event)) viewState.showStateErrorMessage(StateType.BASE, false, null)
+        else compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
+            .andThen(eventRepository.getEvent(event.id.toString()))
             .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
             .performOnBackgroundOutOnMain()
+            .withEventLoading(viewState, position)
             .subscribeSimple(
-                onError = {
-                    onReceiveError(it)
+                onError = { onReceiveError(it) },
+                onSuccess = {
                     viewState.updateEvent(event)
-                },
-                onSuccess = { viewState.updateEvent(event) }
-            )
+                    appData.sendUpdateEvent(event)
+                })
     }
 
-    override fun onShowAuthorization(event: String) {
-        appData.savedEventId = event
-        viewState.showAuthorization()
+    private fun registerToEventRequest(event: EventNew): Maybe<EventNew> {
+        return Maybe.defer {
+            if (event.isFormEnabled()) Maybe.just(event).withDelay(500)
+            else eventRepository.registerToEvent(event.id ?: 0)
+                .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEvent(event.id.toString()))
+                .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
+        }
     }
+
 
     override fun onFiltersApplyClick(filter: SearchFilter.EventNew) {
         eventFilter = filter
         viewState.setHasFilter()
         pagination.invalidate()
+    }
+
+    override fun onShowAuthorization(event: String) {
+        appData.savedEventId = event
+        viewState.showAuthorization()
     }
 
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
@@ -100,22 +113,6 @@ class SearchEventPresenter
     override fun isHasFilter(): Boolean = eventFilter.isHasFilter()
 
 
-    private fun acceptRegistrationAgreementRequest(event: EventNew): Single<EventNew> {
-        return eventRepository.acceptRegistrationAgreement(event.id.toString())
-            .doOnSuccess { if (it.isAccepted()) event.state?.agreement?.setAccepted() }
-            .map { event }
-    }
-
-    private fun registerToEventRequest(event: EventNew): Maybe<EventNew> {
-        return Maybe.defer {
-            if (event.isFormEnabled()) Maybe.just(event)
-            else eventRepository.registerToEvent(event.id ?: 0)
-                .andThen(socket.connectToUpdates())
-                .andThen(eventRepository.getEventDetails(event.id.toString()))
-                .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
-        }
-    }
-
     private fun buildNewFilters(limit: Int, offset: Int): MutableMap<String, Any> {
         Log.e("SearchEventsList", "limit: $limit ,offset: $offset")
         return mutableMapOf<String, Any>().apply {
@@ -126,7 +123,8 @@ class SearchEventPresenter
 
             if (searchText.isNotEmpty()) put(EventNew.EVENT_SEARCH, searchText)
 
-            val binds = "current-user-registration,current-user-registration-state,eventRegistrationState"
+            val binds =
+                "current-user-registration,current-user-registration-state,eventRegistrationState"
             put(SEARCH_EVENT_BINDS, binds)
 
             val name = eventFilter.name

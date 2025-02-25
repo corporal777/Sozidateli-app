@@ -2,10 +2,8 @@ package com.example.ui.search.organization
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.adapters.organization.OrganizationPagingAdapter
 import com.example.adapters.organization.OrganizationPagingAdapter.Companion.withLoadStateAdapters
 import com.example.adapters.organization.OrganizationPlaceholderAdapter
@@ -48,8 +46,8 @@ class SearchOrganizationFragment :
             searchList.adapter = pagingAdapter.withLoadStateAdapters(
                 OrganizationPlaceholderAdapter(5),
                 OrganizationPlaceholderAdapter(1)
-            ) { setDataEmpty(it) }
-            setDataEmpty(isEmptyData)
+            ) { setEmptyDataPlaceholder(it) }
+            setEmptyDataPlaceholder(isEmptyData)
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
@@ -75,8 +73,8 @@ class SearchOrganizationFragment :
         findNavController().navigate(R.id.organization_fragment_new, args)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyData.isVisibleAnim = show
     }
 

@@ -179,7 +179,7 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
     open fun animationType(): AnimType = AnimType.NONE
 
     var isEmptyData = false
-    open fun setDataEmpty(show: Boolean){
+    open fun setEmptyDataPlaceholder(show: Boolean){
         isEmptyData = show
     }
 

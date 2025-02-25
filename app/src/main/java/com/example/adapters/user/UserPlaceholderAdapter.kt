@@ -1,12 +1,13 @@
-package com.example.adapters
+package com.example.adapters.user
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemUserPlaceholderBinding
+import dev.androidbroadcast.vbpd.viewBinding
 
 class UserPlaceholderAdapter(val count : Int) : CustomLoadStateAdapter<UserPlaceholderAdapter.UserPlaceholderViewHolder>() {
 

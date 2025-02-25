@@ -20,13 +20,11 @@ import com.example.extensions.onTextChanged
 import com.example.extensions.updateItem
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.base.BaseVBFragment
-import com.example.ui.event.list.recommendations.items.NoEventItem
 import com.example.ui.search.tabs.SearchTabsFragment
 import com.example.ui.views.suggestFieldView.region.SearchRegionBottomSheet
 import com.example.ui.views.suggestFieldView.town.SearchTownBottomSheet
 import com.example.util.DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR
 import com.example.util.initInput
-import com.example.util.pagination.PaginationGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout

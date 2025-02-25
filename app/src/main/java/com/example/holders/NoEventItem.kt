@@ -1,4 +1,4 @@
-package com.example.ui.event.list.recommendations.items
+package com.example.holders
 
 import android.view.View
 import android.view.animation.AlphaAnimation

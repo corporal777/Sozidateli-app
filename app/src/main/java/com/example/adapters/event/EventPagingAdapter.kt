@@ -1,4 +1,4 @@
-package com.example.adapters
+package com.example.adapters.event
 
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -7,48 +7,37 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemEventNewBinding
-import com.example.app.databinding.ItemUserBinding
 import com.example.data.models.Event
 import com.example.data.models.EventNew
-import com.example.data.models.EventRegistrationStateModel
-import com.example.data.models.UserDetail
-import com.example.exceptions.EmptyDataException
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.dp
+import com.example.extensions.executePlaceholderLoadState
 import com.example.extensions.formatToDefaultDate
 import com.example.extensions.isSameDay
 import com.example.extensions.parseColor
 import com.example.extensions.parseToDate
-import com.example.extensions.setOnClickListener
-import com.example.holders.redesign.EventListItem.OnEventClickListener
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
-import com.example.util.setCircleAvatar
+import com.example.util.getColorStateList
 import com.example.util.setImage
-import com.example.util.weak
+import dev.androidbroadcast.vbpd.viewBinding
 
 class EventPagingAdapter(
-    val onRegister: (event: EventNew, withAccept : Boolean) -> Unit,
-    val onCancel: (event: EventNew) -> Unit,
+    val onRegister: (event: EventNew, withAccept: Boolean, position : Int) -> Unit,
+    val onCancel: (event: EventNew, position : Int) -> Unit,
     val onShowEvent: (event: EventNew) -> Unit,
-    val onShowAuth: (event: EventNew) -> Unit,
-    val onShowState: () -> Unit,
+    val onShowAuth: (event: EventNew) -> Unit
 ) : PagingDataAdapter<EventNew, EventPagingAdapter.EventViewHolder>(AsyncDiffCallback) {
 
     private var isTemporary = false
@@ -62,37 +51,45 @@ class EventPagingAdapter(
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         getItem(position)?.let {
+            holder.pos = position
             holder.bind(it)
         }
     }
+
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+        if (payload == null) super.onBindViewHolder(holder, position, payloads)
+        else if (payload is Boolean) holder.viewBinding.btnEventAction.showProgressLoading(payload)
+    }
+
 
     fun updateEventAction(event: EventNew) {
         snapshot().items.find { x -> x.id == event.id }.let { local ->
             if (local != null) {
                 local.state?.agreement?.state = event.state?.agreement?.state
-                local.binds?.currentUserRegistration = event.binds?.currentUserRegistration
-                local.binds?.currentUserRegistrationState = event.binds?.currentUserRegistrationState
+                local.setFieldsForActionButton(event)
 
-                val position = snapshot().items.indexOf(local)
-                notifyItemChanged(position)
+                val pos = snapshot().items.indexOf(local)
+                if (pos != -1) notifyItemChanged(pos)
             }
         }
     }
 
-    fun submitData(
-        lifecycle: Lifecycle,
-        data: PagingData<EventNew>,
-        isTemp: Boolean,
-        withAppUpdate: Boolean
-    ) {
+    fun executeButtonLoading(show: Boolean, pos: Int){
+        if (pos != -1) notifyItemChanged(pos, show)
+    }
+
+
+    fun submitData(lifecycle: Lifecycle, data: PagingData<EventNew>, isTemp: Boolean, withAppUpdate: Boolean) {
         isTemporary = isTemp
         isAppUpdate = withAppUpdate
         submitData(lifecycle, data)
     }
 
-    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val viewBinding by viewBinding(ItemEventNewBinding::bind)
+    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val viewBinding by viewBinding(ItemEventNewBinding::bind)
+        var pos = -1
 
         fun bind(event: EventNew) {
             with(viewBinding) {
@@ -113,7 +110,6 @@ class EventPagingAdapter(
                 }
                 tvEventState.setApproveStatus(event)
                 btnEventAction.setActionStatus(event, isTemporary)
-
             }
         }
 
@@ -122,44 +118,22 @@ class EventPagingAdapter(
             val registrationClosed = registrationState?.prohibitions?.registrationClosed ?: false
             val actions = registrationState?.availableActions ?: arrayListOf("")
 
-            var clickAction: (() -> Unit)? = null
-            var buttonText = ""
-
             if (isTemporary) {
-                buttonText = context.getString(R.string.event_action_participate)
-                clickAction = { onShowAuth.invoke(event) }
+                setButtonText(context.getString(R.string.event_action_participate))
+                setOnClickListener { onShowAuth.invoke(event) }
             } else if (event.isStatusActionAvailable() && !registrationClosed) {
                 if (actions.contains("register")) {
-                    buttonText = context.getString(R.string.event_action_participate)
-                    clickAction = {
-                        registrationState.checkStateLevel {
-                            showRegisterAgreement(event){
-                                showProgressLoading(true)
-                                onRegister.invoke(event, it)
-                            }
-                        }
-                    }
-                } else if (actions.contains("withdraw")) {
-                    buttonText = context.getString(R.string.event_action_cancel_request)
-                    clickAction = {
-                        registrationState.checkStateLevel {
-                            showProgressLoading(true)
-                            onCancel.invoke(event)
-                        }
-                    }
-                } else clickAction = null
-            } else clickAction = null
+                    setButtonText(context.getString(R.string.event_action_participate))
+                    setOnClickListener { showRegisterAgreement(event) { onRegister.invoke(event, it, pos) } }
 
+                } else if (actions.contains("withdraw")) {
+                    setButtonText(context.getString(R.string.event_cancel_request))
+                    setOnClickListener { onCancel.invoke(event, pos) }
+
+                } else isVisible = false
+            } else isVisible = false
 
             showProgressLoading(false)
-            setButtonText(buttonText)
-            isVisible = clickAction != null
-            setOnClickListener { clickAction?.invoke() }
-        }
-
-        private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
-            if (this?.prohibitions?.profileLevelToLow?.value == false) hasLevel()
-            else onShowState.invoke()
         }
 
         private fun showRegisterAgreement(event: EventNew, onAccepted: (accept: Boolean) -> Unit) {
@@ -170,59 +144,28 @@ class EventPagingAdapter(
                 .show()
         }
 
+
         private fun TextView.setApproveStatus(event: EventNew) {
             val status = event.status?.value
             val userRegistration = event.binds?.currentUserRegistration?.status?.value
-            var statusBackground = R.color.event_status_finished_background
-            var statusText = R.string.event_status_finished
 
-            val statusVisibility: Boolean
-            when (status) {
-                Event.Status.FINISHED -> {
-                    statusVisibility = true
-                    statusBackground = R.color.event_status_finished_background
-                    statusText = R.string.event_status_finished
-                }
+            val data = if (status == Event.Status.FINISHED)
+                Triple(true, R.color.event_status_finished_background, R.string.event_status_finished)
+            else if (status == Event.Status.CANCELED)
+                Triple(true, R.color.event_status_cancelled_background, R.string.event_status_cancelled)
+            else if (userRegistration == Event.Status.APPROVED)
+                Triple(true, R.color.event_status_approved_background, R.string.event_status_approved_new)
+            else if (userRegistration == Event.Status.PENDING)
+                Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_status_wait_confirmation)
+            else if (userRegistration == Event.Status.DECLINED)
+                Triple(true, R.color.event_status_declined_background, R.string.event_status_decline_new)
+            else if (userRegistration == Event.Status.REGISTRATION_FINISHED)
+                Triple(true, R.color.event_status_wait_confirmation_background, R.string.event_closed_request)
+            else Triple(false, R.color.event_status_finished_background, R.string.event_status_finished)
 
-                Event.Status.CANCELED -> {
-                    statusVisibility = true
-                    statusBackground = R.color.event_status_cancelled_background
-                    statusText = R.string.event_status_cancelled
-                }
-
-                else -> {
-                    when (userRegistration) {
-                        Event.Status.APPROVED -> {
-                            statusVisibility = true
-                            statusBackground = R.color.event_status_approved_background
-                            statusText = R.string.event_status_approved_new
-                        }
-
-                        Event.Status.PENDING -> {
-                            statusVisibility = true
-                            statusBackground = R.color.event_status_wait_confirmation_background
-                            statusText = R.string.event_status_wait_confirmation
-                        }
-
-                        Event.Status.DECLINED -> {
-                            statusVisibility = true
-                            statusBackground = R.color.event_status_declined_background
-                            statusText = R.string.event_status_decline_new
-                        }
-
-                        Event.Status.REGISTRATION_FINISHED -> {
-                            statusVisibility = true
-                            statusBackground = R.color.event_status_wait_confirmation_background
-                            statusText = R.string.event_action_closed_request
-                        }
-
-                        else -> statusVisibility = false
-                    }
-                }
-            }
-            text = context.getString(statusText)
-            backgroundTintList = ContextCompat.getColorStateList(context, statusBackground)
-            isVisible = statusVisibility
+            isVisible = data.first
+            text = context.getString(data.third)
+            backgroundTintList = getColorStateList(data.second)
         }
 
         private fun getEventDate(from: String?, to: String?): String? {
@@ -265,10 +208,11 @@ class EventPagingAdapter(
                 appUpdateAdapter.loadState = loadState.refresh
                 appUpdateAdapter.isNeedShowUpdate = isAppUpdate
 
-                if (loadState.refresh is LoadState.Error)
-                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                    else onEmpty.invoke(false)
-                else onEmpty.invoke(false)
+//                if (loadState.refresh is LoadState.Error)
+//                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
+//                    else onEmpty.invoke(false)
+//                else onEmpty.invoke(false)
+                executePlaceholderLoadState(loadState) { onEmpty.invoke(it) }
             }
             return ConcatAdapter(appUpdateAdapter, header, this, footer)
         }

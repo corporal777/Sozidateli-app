@@ -1,12 +1,16 @@
 package com.example.extensions
 
+import androidx.paging.CombinedLoadStates
 import androidx.paging.DataSource
+import androidx.paging.LoadState
 import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingDataAdapter
 import androidx.paging.RxPagedListBuilder
 import androidx.paging.rxjava2.flowable
 import androidx.paging.rxjava2.observable
+import com.example.adapters.event.FavoriteEventPagingAdapter.Companion.withLoadStateAdapters
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.flow.PagingListFlow
 import com.example.util.pagination.observable.PaginationList
@@ -37,7 +41,7 @@ fun <K : Any, V : Any> DataSource.Factory<K, V>.buildFlow(
 fun <K : Any> PagingDataSourceFactory<K>.buildFlow(
     initialSize: Int = 20,
     pageSize: Int = initialSize,
-    distance : Int = 5,
+    distance: Int = 5,
     enablePlaceholders: Boolean = false
 ): PagingListFlow<K> {
     val config = PagingConfig(
@@ -54,7 +58,7 @@ fun <K : Any> PagingDataSourceFactory<K>.buildFlow(
 fun <K : Any> PagingDataSourceFactory<K>.buildObservable(
     initialSize: Int = 20,
     pageSize: Int = initialSize,
-    distance : Int = 5,
+    distance: Int = 5,
     enablePlaceholders: Boolean = false
 ): PagingListObservable<K> {
     val config = PagingConfig(
@@ -66,4 +70,15 @@ fun <K : Any> PagingDataSourceFactory<K>.buildObservable(
     )
     val pager = Pager(config = config, pagingSourceFactory = { this.createDataSource() }).observable
     return PagingListObservable(pager, this)
+}
+
+fun PagingDataAdapter<*, *>.executePlaceholderLoadState(
+    loadState: CombinedLoadStates,
+    onEmpty: (show: Boolean) -> Unit
+) {
+
+    if (loadState.refresh is LoadState.Error || loadState.refresh is LoadState.NotLoading)
+        if (this.snapshot().isEmpty()) onEmpty.invoke(true)
+        else onEmpty.invoke(false)
+    else onEmpty.invoke(false)
 }

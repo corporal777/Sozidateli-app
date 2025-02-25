@@ -87,7 +87,7 @@ data class EventNew(
         else return !formResult.result.fields.isNullOrEmpty()
     }
 
-    fun setFieldsForActionButton(new: EventNew){
+    fun setFieldsForActionButton(new: EventNew) {
         binds?.currentUserRegistration = new.binds?.currentUserRegistration
         binds?.currentUserRegistrationState = new.binds?.currentUserRegistrationState
     }
@@ -223,12 +223,14 @@ data class EventBindsModel(
     val destinationScheme: List<DestinationSchemeModel>? = null
 ) : Parcelable {
 
-    fun getParticipationForm(): EventFormModel? {
-        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.formType
+    fun getForm(): EventFormModel? {
+        val formType = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        return formType?.formType
     }
 
-    fun getFormResult(): List<EventFormResultFieldsModel>? {
-        return userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }?.result?.fields
+    fun getFormResult(): EventFormResultModel? {
+        val formResult = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        return formResult?.result
     }
 }
 
@@ -566,9 +568,9 @@ data class EventStateModel(
     val isHidden: Boolean? = null,
     val rating: EventRatingModel? = null,
     val registration: EventRatingModel? = null,
-    val agreement : EventAgreementState? = null
+    val agreement: EventAgreementState? = null
 ) : Parcelable {
-    fun isAgreementAccepted() : Boolean {
+    fun isAgreementAccepted(): Boolean {
         if (agreement?.state == null) return false
         return agreement.state == "accepted"
     }
@@ -577,10 +579,10 @@ data class EventStateModel(
 
 @Parcelize
 data class EventAgreementState(
-    var state : String?
-): Parcelable {
+    var state: String?
+) : Parcelable {
 
-    fun setAccepted(){
+    fun setAccepted() {
         state = "accepted"
     }
 }

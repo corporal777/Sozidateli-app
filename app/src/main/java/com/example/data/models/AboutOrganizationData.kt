@@ -7,8 +7,9 @@ import com.example.data.models.OrganizationNew
 data class AboutOrganizationData(
     val organization: OrganizationNew,
     val events: List<EventNew>?,
+    val eventsSize : Int?,
     val member: List<OrganizationMemberModel>?,
-    val membersSize: Int? = 0
+    val membersSize: Int?
 )
 
 

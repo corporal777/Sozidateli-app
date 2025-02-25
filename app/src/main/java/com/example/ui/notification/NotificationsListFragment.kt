@@ -23,11 +23,7 @@ import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet
 import com.example.ui.notification.invites.InviteNotificationsBottomSheet.Companion.INVITES_FRAGMENT_TAG
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
-import com.example.ui.userprofile.common.name.ChangeNameFragment
-import com.example.ui.userprofile.common.name.ChangeNameFragment.Companion.CHANGE_NAME_FRAGMENT_TAG
-import com.example.ui.views.loading.CustomCircleLoadingButton
 import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.showCustomTabsBrowser
 import com.example.util.smoothScrollToFirstItem
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -76,8 +72,8 @@ class NotificationsListFragment : BaseToolbarFragment<FragmentNotificationsListB
                     tagsAdapter,
                     NotificationPlaceholderAdapter(true),
                     NotificationPlaceholderAdapter(false)
-                ) { setDataEmpty(it) }
-                setDataEmpty(isEmptyData)
+                ) { setEmptyDataPlaceholder(it) }
+                setEmptyDataPlaceholder(isEmptyData)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -89,8 +85,8 @@ class NotificationsListFragment : BaseToolbarFragment<FragmentNotificationsListB
     }
 
     override fun updateNotification(data: NotificationLocal?, notificationId: Int) {
-        if (data == null) pagingAdapter.updateUserNotificationWithoutChange(notificationId)
-        else pagingAdapter.updateUserNotification(data)
+        if (data == null) pagingAdapter.updateNotificationWithoutChange(notificationId)
+        else pagingAdapter.updateNotification(data)
     }
 
 
@@ -122,8 +118,8 @@ class NotificationsListFragment : BaseToolbarFragment<FragmentNotificationsListB
             .show(requireActivity().supportFragmentManager)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyData.isVisibleAnim = show
     }
 
@@ -141,12 +137,11 @@ class NotificationsListFragment : BaseToolbarFragment<FragmentNotificationsListB
     override fun layout() = R.layout.fragment_notifications_list
     override val title: CharSequence by lazy { getString(R.string.notifications_label) }
     override fun actionIconContainer(view: ViewGroup) { view.addView(btnReadAll, 0) }
+    override fun scrollingView(): View = mBinding.notificationsList
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().isInvisible = true
     }
-    private val btnReadAll by lazy {
-        createButtonView(R.string.read_all, false) { presenter.onReadAllNotificationsClick() }
-    }
+    private val btnReadAll by lazy { createButtonView(R.string.read_all, false) { presenter.onReadAllClick() } }
 }
 
 enum class NotificationType {

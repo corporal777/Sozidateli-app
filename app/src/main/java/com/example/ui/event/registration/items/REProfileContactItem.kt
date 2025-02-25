@@ -28,14 +28,6 @@ class REProfileContactItem (
                     else -> context.getString(R.string.user_profile_no_site)
                 } else field
             }
-
-            //            append(CustomSpannableString(file.name).apply {
-//                setClickSpan(tvFiles){
-//                    if (file.isFilePDF())
-//                        showFileBrowser(context, file.uri.toString())
-//                    else showCustomTabsBrowser(context, file.uri.toString())
-//                }
-//            })
         }
     }
 

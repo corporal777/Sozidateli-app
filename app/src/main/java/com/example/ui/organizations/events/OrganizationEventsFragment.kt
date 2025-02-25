@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import com.example.adapters.EventPagingAdapter
-import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.EventPlaceholderAdapter
+import com.example.adapters.event.EventPagingAdapter
+import com.example.adapters.event.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.event.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.LayoutListBinding
+import com.example.app.databinding.LayoutListSearchBinding
 import com.example.data.models.EventNew
+import com.example.extensions.isVisibleAnim
 import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
@@ -19,7 +21,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationEventsFragment : BaseToolbarFragment<LayoutListBinding>(), OrganizationEventsContract.View {
+class OrganizationEventsFragment : BaseToolbarFragment<LayoutListSearchBinding>(),
+    OrganizationEventsContract.View {
 
     @InjectPresenter
     lateinit var presenter: OrganizationEventsPresenter
@@ -29,27 +32,29 @@ class OrganizationEventsFragment : BaseToolbarFragment<LayoutListBinding>(), Org
 
     @ProvidePresenter
     fun providePresenter(): OrganizationEventsPresenter = presenterProvider.get().apply {
-        organizationId = OrganizationEventsFragmentArgs.fromBundle(requireArguments()).organizationId
+        organizationId =
+            OrganizationEventsFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EventPagingAdapter(
-            { event, accept -> presenter.onActionRegister(event, accept) },
-            { presenter.onActionCancel(it) },
+            { event, accept, pos -> presenter.onActionRegister(event, accept, pos) },
+            { event, pos -> presenter.onActionCancel(event, pos) },
             { presenter.onShowEventClick(it.id.toString()) },
-            { presenter.onShowAuthorization(it.id.toString()) },
-            { showStateErrorMessage(StateType.BASE, false, null) })
+            { presenter.onShowAuthorization(it.id.toString()) })
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            recyclerView.adapter = pagingAdapter.withLoadStateAdapters(
+            searchList.adapter = pagingAdapter.withLoadStateAdapters(
                 EventPlaceholderAdapter(1),
                 EventPlaceholderAdapter(1)
-            ) {  }
+            ) { setEmptyDataPlaceholder(it) }
+
+            setEmptyDataPlaceholder(isEmptyData)
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -82,9 +87,17 @@ class OrganizationEventsFragment : BaseToolbarFragment<LayoutListBinding>(), Org
         findNavController().navigate(R.id.authorization_fragment)
     }
 
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
+    }
 
-    override fun binding() = LayoutListBinding::class.java
-    override fun layout(): Int = R.layout.layout_list
+    override fun showEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(true, pos)
+    override fun hideEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(false, pos)
+
+
+    override fun binding() = LayoutListSearchBinding::class.java
+    override fun layout(): Int = R.layout.layout_list_search
     override val title: CharSequence by lazy { getString(R.string.organization_events) }
-    override fun scrollingView(): View = mBinding.recyclerView
+    override fun scrollingView(): View = mBinding.searchList
 }

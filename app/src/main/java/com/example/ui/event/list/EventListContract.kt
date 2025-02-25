@@ -2,11 +2,10 @@ package com.example.ui.event.list
 
 import com.example.data.models.EventNew
 import com.example.ui.base.BaseContract
-import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
-interface EventListContractNew {
-    interface View : BaseContract.View {
+interface EventListContract {
+    interface View : BaseContract.View, BaseContract.LoadingEventView {
         @Skip
         fun showEventRequest(event: String)
 
@@ -21,8 +20,8 @@ interface EventListContractNew {
     }
 
     interface Presenter : BaseContract.Presenter {
-        fun onActionRegister(event: EventNew, withAccept : Boolean)
-        fun onActionCancel(event: EventNew)
+        fun onActionRegister(event: EventNew, withAccept : Boolean, position : Int)
+        fun onActionCancel(event: EventNew, position : Int)
         fun onShowEventClick(event: String)
         fun onShowAuthorization(event: String?)
         fun onRefreshRequest()

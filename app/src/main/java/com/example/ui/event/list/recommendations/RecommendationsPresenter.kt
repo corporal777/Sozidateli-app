@@ -12,7 +12,7 @@ import com.example.data.models.EventNew.Companion.EVENT_STATUS
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
-import com.example.ui.event.list.EventListPresenterNew
+import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.applyErrorHandler
@@ -30,7 +30,7 @@ class RecommendationsPresenter
     val appData: AppData,
     private val eventRepository: EventRepository,
     private val socket: SocketIOManager
-) : EventListPresenterNew<RecommendationsContract.View>(appData, eventRepository, socket),
+) : EventListPresenter<RecommendationsContract.View>(appData, eventRepository, socket),
     RecommendationsContract.Presenter {
 
     var isOpenProfile = false

@@ -7,7 +7,6 @@ import com.example.app.R
 import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
 import com.example.ui.notification.NotificationType
-import com.example.ui.notification.NotificationsSortedData
 import com.example.ui.notification.items.*
 import com.example.ui.notification.types.base.BaseNotificationTypeFragment
 import com.xwray.groupie.Section

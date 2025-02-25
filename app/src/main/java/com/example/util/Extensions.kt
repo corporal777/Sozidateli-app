@@ -33,6 +33,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
@@ -51,6 +52,7 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.onTextChanged
+import com.example.extensions.parseColor
 import com.google.android.material.appbar.AppBarLayout
 import com.squareup.picasso.Picasso
 import io.reactivex.disposables.CompositeDisposable
@@ -162,6 +164,10 @@ fun View.getColor(res: Int): Int {
 
 fun View.getColorStateList(res: Int): ColorStateList? {
     return ContextCompat.getColorStateList(context, res)
+}
+
+fun View.getColorStateList(res: String): ColorStateList {
+    return ColorStateList.valueOf(res.parseColor() ?: getColor(R.color.colorAccent))
 }
 
 fun TextView.setLeftDrawable(res: Int) {

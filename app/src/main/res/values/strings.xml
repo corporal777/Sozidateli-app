@@ -48,10 +48,10 @@
     <string name="event_action_show_event">Перейти в мероприятие</string>
     <string name="event_action_write_to_organisation">Написать организатору</string>
     <string name="event_action_participate">Участвовать</string>
-    <string name="event_action_cancel_request">Отозвать заявку</string>
-    <string name="event_action_closed_request">Прием заявок закрыт</string>
-    <string name="event_action_subscribe_request">Уведомить о старте приема заявок</string>
-    <string name="event_action_unsubscribe_request">Не уведомлять о старте приема заявок</string>
+    <string name="event_cancel_request">Отозвать заявку</string>
+    <string name="event_closed_request">Прием заявок закрыт</string>
+    <string name="event_subscribe_request">Уведомить о старте приема заявок</string>
+    <string name="event_unsubscribe_request">Не уведомлять о старте приема заявок</string>
     <string name="event_action_was_sent_request">Подана заявка</string>
 
     <string name="auth_title_login">Присоединяйтесь\nк сообществу лидеров\nсоциальных проектов</string>

@@ -10,13 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationAcceptBinding
 import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.util.ClickableSpanNew
+import com.example.util.getDrawable
+import dev.androidbroadcast.vbpd.viewBinding
 
 class AcceptNotificationVH(val itemView: View, val listener: OnNotificationActionListener) :
     NotificationVH<ItemNotificationAcceptBinding>(itemView, listener) {
@@ -37,8 +38,20 @@ class AcceptNotificationVH(val itemView: View, val listener: OnNotificationActio
                 highlightColor = ContextCompat.getColor(context, R.color.profile_id_text)
                 movementMethod = LinkMovementMethod.getInstance()
             }
-            btnAccept.setOnClickListener { listener.onAcceptClick(notification, true) }
-            btnCancel.setOnClickListener { listener.onAcceptClick(notification, false) }
+            btnAccept.apply {
+                showProgressLoading(false)
+                setOnClickListener {
+                    showProgressLoading(true)
+                    listener.onAcceptClick(notification, true)
+                }
+            }
+            btnCancel.apply {
+                showProgressLoading(false)
+                setOnClickListener {
+                    showProgressLoading(true)
+                    listener.onAcceptClick(notification, false)
+                }
+            }
 
             when (notification.acceptState) {
                 Notification.AcceptState.NONE -> {
@@ -46,25 +59,28 @@ class AcceptNotificationVH(val itemView: View, val listener: OnNotificationActio
                     viewActions.background = null
                     tvDecline.isVisible = false
                 }
+
                 Notification.AcceptState.DISABLED -> {
                     groupButtons.isVisible = false
-                    viewActions.background = getDrawable(itemView.context, R.drawable.background_notification_decline_view)
+                    viewActions.background = root.getDrawable(R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = context.getString(R.string.notifications_state_disabled)
                     }
                 }
+
                 Notification.AcceptState.ACCEPTED -> {
                     groupButtons.isVisible = false
-                    viewActions.background = getDrawable(itemView.context, R.drawable.background_notification_decline_view)
+                    viewActions.background = root.getDrawable(R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationAcceptedText(notification)
                     }
                 }
+
                 Notification.AcceptState.CANCELED -> {
                     groupButtons.isVisible = false
-                    viewActions.background = getDrawable(itemView.context, R.drawable.background_notification_decline_view)
+                    viewActions.background = root.getDrawable(R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationDeclinedText(notification)

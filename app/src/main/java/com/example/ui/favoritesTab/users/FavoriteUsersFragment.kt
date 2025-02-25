@@ -3,13 +3,12 @@ package com.example.ui.favoritesTab.users
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.user.UserPagingAdapter
+import com.example.adapters.user.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.LayoutDataListBinding
 import com.example.data.models.UserDetail
@@ -46,8 +45,8 @@ class FavoriteUsersFragment : BaseVBFragment<LayoutDataListBinding>(), FavoriteU
                 adapter = pagingAdapter.withLoadStateAdapters(
                     UserPlaceholderAdapter(9),
                     UserPlaceholderAdapter(1)
-                ) { setDataEmpty(it) }
-                setDataEmpty(isEmptyData)
+                ) { setEmptyDataPlaceholder(it) }
+                setEmptyDataPlaceholder(isEmptyData)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -63,8 +62,8 @@ class FavoriteUsersFragment : BaseVBFragment<LayoutDataListBinding>(), FavoriteU
     }
 
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyDataTitle.apply {
             isVisibleAnim = show
             text = getString(R.string.blank_list_error)

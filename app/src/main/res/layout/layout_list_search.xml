@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/main_background"
     android:layout_height="match_parent">
 
     <TextView
@@ -27,7 +28,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingBottom="10dp"
+            android:paddingBottom="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </com.example.ui.views.CustomSwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

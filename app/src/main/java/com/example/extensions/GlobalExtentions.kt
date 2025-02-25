@@ -56,7 +56,6 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.app.R
 import com.example.data.models.asArgument
 import com.example.ui.base.bottomSheet.BaseBSFragment
-import com.example.ui.base.bottomSheet.BaseBottomSheetFragment
 import com.example.util.ClickableSpan
 import com.example.util.CropCircleTransformation
 import com.example.util.URLSpanNoUnderline
@@ -119,6 +118,9 @@ fun decodeBase64ToJson(data: String?): JSONObject? {
     }
 }
 
+fun TextView.setTextCustomSize(res : Int){
+    setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(res))
+}
 
 fun TextView.removeUrlUnderline(textColor: Int? = null) {
     if (text.isNullOrEmpty()) return
@@ -254,7 +256,7 @@ fun getFragmentLifecycleCallback(
     onFragmentStopped: (f: Fragment) -> Unit?,
     onFragmentDestroyed: (f: Fragment) -> Unit?,
     onFragmentViewCreated: (f: Fragment) -> Unit,
-    onBottomSheetViewCreated: (f: BaseBottomSheetFragment<*>) -> Unit,
+    onBottomSheetViewCreated: (f: BaseBSFragment) -> Unit,
 ): FragmentManager.FragmentLifecycleCallbacks {
     val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
 
@@ -270,7 +272,7 @@ fun getFragmentLifecycleCallback(
             savedInstanceState: Bundle?
         ) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-            if (f is BaseBottomSheetFragment<*>) onBottomSheetViewCreated(f)
+            if (f is BaseBSFragment) onBottomSheetViewCreated(f)
             else onFragmentViewCreated(f)
         }
 

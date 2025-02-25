@@ -1,20 +1,17 @@
 package com.example.adapters.notification
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.adapters.EventPagingAdapter
 import com.example.adapters.notification.NotificationVH.OnNotificationActionListener
 import com.example.app.R
 import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
-import com.example.exceptions.EmptyDataException
+import com.example.extensions.executePlaceholderLoadState
 
 class NotificationPagerAdapter(private val listener: OnNotificationActionListener) :
     PagingDataAdapter<NotificationLocal, NotificationVH<*>>(AsyncDiffCallback) {
@@ -49,12 +46,12 @@ class NotificationPagerAdapter(private val listener: OnNotificationActionListene
         }
     }
 
-    fun updateUserNotificationWithoutChange(id: Int) {
+    fun updateNotificationWithoutChange(id: Int) {
         val position = snapshot().items.indexOfFirst { x -> x.id == id }
         if (position != -1) notifyItemChanged(position)
     }
 
-    fun updateUserNotification(notification: NotificationLocal) {
+    fun updateNotification(notification: NotificationLocal) {
 //        for (i in 0 until snapshot().items.size) {
 //            var needItem = false
 //            snapshot().items[i].let { local ->
@@ -95,17 +92,7 @@ class NotificationPagerAdapter(private val listener: OnNotificationActionListene
                     tagsAdapter.canShowContent = true
                 }
 
-//                if (loadState.refresh is LoadState.Error)
-//                    if ((loadState.refresh as LoadState.Error).error is EmptyDataException)
-//                        if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-//                        else onEmpty.invoke(false)
-//                    else onEmpty.invoke(false)
-//                else onEmpty.invoke(false)
-
-                if (loadState.refresh is LoadState.Error)
-                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                    else onEmpty.invoke(false)
-                else onEmpty.invoke(false)
+                executePlaceholderLoadState(loadState){ onEmpty.invoke(it) }
             }
             return if (tagsAdapter != null) ConcatAdapter(tagsAdapter, header, this, footer)
             else ConcatAdapter(header, this, footer)

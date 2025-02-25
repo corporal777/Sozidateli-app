@@ -4,8 +4,6 @@ import androidx.paging.PagingData
 import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
 import com.example.ui.base.bottomSheet.BaseBSContract
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
-import com.example.ui.notification.NotificationsSortedData
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip

@@ -17,10 +17,7 @@ class REProfileStringItem(
         super.bind(viewBinding, position)
         viewBinding.apply {
             prefilledFieldTitle.text = name
-            prefilledFieldTextView.apply {
-                maxLines = 3
-                setText(field)
-            }
+            prefilledFieldTextView.text = field
             btnAction.setOnClickListener { onClick.invoke() }
         }
     }

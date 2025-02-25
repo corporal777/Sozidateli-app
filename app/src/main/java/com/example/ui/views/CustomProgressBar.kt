@@ -2,34 +2,31 @@ package com.example.ui.views
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.extensions.dp
+import com.example.extensions.showHidePasswordText
+import com.example.util.getColor
 
 class CustomProgressBar : View {
 
 
     constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    )
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs){
+        obtainAttributes(attrs)
+    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
 
     private var lastUpdateTime: Long = 0
@@ -52,6 +49,20 @@ class CustomProgressBar : View {
     private var toCircle = false
     private var toCircleProgress = 0f
     private var noProgress = true
+
+
+    private fun obtainAttributes(attrs: AttributeSet?) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.CustomProgressBar)
+        val progressSize = a.getDimensionPixelSize(R.styleable.CustomProgressBar_progressSize, 35.dp)
+        val progressStroke = a.getInt(R.styleable.CustomProgressBar_progressStroke, 12)
+        val progressColor = a.getColor(R.styleable.CustomProgressBar_progressColor, getColor(R.color.main_brown_color_new))
+
+        a.recycle()
+
+        setProgressColor(progressColor)
+        setSize(progressSize)
+        setStroke(progressStroke.toFloat())
+    }
 
     @Keep
     override fun setAlpha(alpha: Float) {

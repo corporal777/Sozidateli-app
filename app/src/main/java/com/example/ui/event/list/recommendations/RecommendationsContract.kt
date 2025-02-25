@@ -2,15 +2,12 @@ package com.example.ui.event.list.recommendations
 
 import androidx.paging.PagingData
 import com.example.data.models.EventNew
-import com.example.ui.event.list.EventListContractNew
-import com.example.util.AddToEndSingleByTagStateStrategy
-import moxy.viewstate.strategy.StateStrategyType
-import moxy.viewstate.strategy.alias.AddToEndSingle
+import com.example.ui.event.list.EventListContract
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface RecommendationsContract {
-    interface View : EventListContractNew.View{
+    interface View : EventListContract.View{
         @OneExecution
         fun setData(data: PagingData<EventNew>, isNeedUpdateApp : Boolean)
 
@@ -24,7 +21,7 @@ interface RecommendationsContract {
         fun setAuthorizationButton(isTemporary : Boolean)
     }
 
-    interface Presenter : EventListContractNew.Presenter {
+    interface Presenter : EventListContract.Presenter {
         fun onSearchClick()
     }
 }

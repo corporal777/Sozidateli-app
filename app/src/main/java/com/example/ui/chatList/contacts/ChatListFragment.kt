@@ -3,34 +3,19 @@ package com.example.ui.chatList.contacts
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.adapters.chats.UserChatsAdapter
 import com.example.adapters.chats.UserChatsAdapter.Companion.withLoadStateAdapters
 import com.example.app.R
 import com.example.app.databinding.FragmentChatListBinding
-import com.example.data.models.UserChat
 import com.example.data.models.UserChatModel
-import com.example.data.models.UserDetail
-import com.example.extensions.findGroupBy
 import com.example.extensions.isVisibleAnim
-import com.example.extensions.updateItem
-import com.example.holders.ChatListEmptyItem
-import com.example.holders.ListSectionNameItem
-import com.example.holders.PlaceholderItem
-import com.example.holders.UserItem
 import com.example.ui.base.BaseVBFragment
-import com.example.ui.chatList.contacts.items.UserChatGroup
-import com.example.util.pagination.PaginationListGroupAdapter
 import com.example.util.smoothScrollToFirstItem
 import com.google.android.material.appbar.AppBarLayout
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -48,7 +33,6 @@ class ChatListFragment : BaseVBFragment<FragmentChatListBinding>(), ChatListCont
     fun providePresenter(): ChatListPresenter = presenterProvider.get()
 
 
-
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserChatsAdapter { presenter.onChatClick(it) }
     }
@@ -59,9 +43,9 @@ class ChatListFragment : BaseVBFragment<FragmentChatListBinding>(), ChatListCont
             chatList.adapter = pagingAdapter.withLoadStateAdapters(
                 UserPlaceholderAdapter(9),
                 UserPlaceholderAdapter(1)
-            ) { setDataEmpty(it) }
+            ) { setEmptyDataPlaceholder(it) }
 
-            setDataEmpty(isEmptyData)
+            setEmptyDataPlaceholder(isEmptyData)
 
             btnCreateChat.setOnClickListener { presenter.onAddChatClick() }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
@@ -73,24 +57,18 @@ class ChatListFragment : BaseVBFragment<FragmentChatListBinding>(), ChatListCont
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun setChatUnreadMessageCount(chatId: String, count: Int) {
 
-    }
-
-
-    override fun openChat(chatId: Int, userName: String, avatar: String?) {
-        findNavController().navigate(
-            R.id.chat_fragment,
-            bundleOf("name" to userName, "chatId" to chatId.toString(), "userAvatar" to avatar)
-        )
+    override fun openChat(chatId: String, userName: String, avatar: String?) {
+        val bundle = bundleOf("name" to userName, "chatId" to chatId, "userAvatar" to avatar)
+        findNavController().navigate(R.id.chat_fragment, bundle)
     }
 
     override fun openSearch() {
         findNavController().navigate(R.id.chat_search_fragment)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvNoChats.isVisibleAnim = show
         mBinding.btnCreateChat.isVisibleAnim = show
     }

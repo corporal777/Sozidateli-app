@@ -52,7 +52,7 @@ class AcceptNotificationItem(
                 Notification.AcceptState.DISABLED -> {
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = context.getString(R.string.notifications_state_disabled)
@@ -61,7 +61,7 @@ class AcceptNotificationItem(
                 Notification.AcceptState.ACCEPTED -> {
                     btnAccept.isVisible = false
                     btnCancel.isVisible = false
-                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationAcceptedText(tvDecline)
@@ -70,7 +70,7 @@ class AcceptNotificationItem(
                 Notification.AcceptState.CANCELED -> {
                     btnCancel.isVisible = false
                     btnAccept.isVisible = false
-                    viewActions.background = getDrawable(context, R.drawable.background_notification_decline_view)
+                    viewActions.background = getDrawable(context, R.drawable.background_notification_declined)
                     tvDecline.apply {
                         isVisible = true
                         text = getNotificationDeclinedText(tvDecline)

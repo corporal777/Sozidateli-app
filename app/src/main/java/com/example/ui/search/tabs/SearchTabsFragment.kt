@@ -18,7 +18,6 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onPageSelected
 import com.example.extensions.setFiltersBackground
-import com.example.ui.base.BaseBindingFragment
 import com.example.ui.base.BaseVBFragment
 import javax.inject.Inject
 import javax.inject.Provider

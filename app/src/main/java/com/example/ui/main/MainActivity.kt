@@ -87,8 +87,10 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
+import com.example.extensions.setArgument
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseVBFragment
+import com.example.ui.main.inApp.InAppNotificationFragment.Companion.IN_APP_FRAGMENT_TAG
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
@@ -416,8 +418,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showInAppNew(listInApp: List<Notification>) {
-        val inAppNotification = InAppNotificationFragment(listInApp)
-        inAppNotification.show(supportFragmentManager, "inAppDialog")
+        InAppNotificationFragment()
+            .setArgument<InAppNotificationFragment>(IN_APP_FRAGMENT_TAG, listInApp)
+            .show(supportFragmentManager)
     }
 
 

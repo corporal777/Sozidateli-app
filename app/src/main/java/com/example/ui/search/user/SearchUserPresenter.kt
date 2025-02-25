@@ -1,5 +1,6 @@
 package com.example.ui.search.user
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
@@ -55,7 +56,6 @@ class SearchUserPresenter
     override fun onUserActionCLick(user: UserDetail) {
         compositeDisposable += userRepository.addOrRemoveUserFavorite(user)
             .doOnSuccess { user.binds?.userFavorite = it.value }
-            .withTimeOut(5000)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = {

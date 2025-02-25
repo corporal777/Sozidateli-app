@@ -3,27 +3,24 @@ package com.example.ui.favoritesTab.events
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.adapters.event.FavoriteEventPagingAdapter
+import com.example.adapters.event.FavoriteEventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.organization.OrganizationPlaceholderAdapter
 import com.example.app.R
-import com.example.app.databinding.LayoutListBinding
-import com.example.data.models.EventActivityModel
+import com.example.app.databinding.LayoutDataListBinding
 import com.example.data.models.EventNew
-import com.example.extensions.findItemBy
-import com.example.extensions.updateItem
-import com.example.holders.EventFavoriteItem
-import com.example.holders.PlaceholderItem
+import com.example.extensions.isVisibleAnim
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
-import com.example.ui.event.favorite.subevent.FavoriteSubeventFragmentArgs
-import com.example.ui.event.list.recommendations.items.NoEventItem
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class FavoriteEventsFragment : BaseVBFragment<LayoutListBinding>(), FavoriteEventsContract.View {
+class FavoriteEventsFragment : BaseVBFragment<LayoutDataListBinding>(),
+    FavoriteEventsContract.View {
 
     @InjectPresenter
     lateinit var presenter: FavoriteEventsPresenter
@@ -34,70 +31,56 @@ class FavoriteEventsFragment : BaseVBFragment<LayoutListBinding>(), FavoriteEven
     @ProvidePresenter
     fun providePresenter(): FavoriteEventsPresenter = presenterProvider.get()
 
-    private val dataGroup = Section()
-    private val groupAdapter by lazy {
-        PaginationListGroupAdapter<GroupieViewHolder>().apply {
-            add(dataGroup)
-            setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-                override fun onItemTake(position: Int) {
-                    presenter.onItemTake(position)
-                }
-            })
-        }
+
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        FavoriteEventPagingAdapter(
+            { presenter.onShowEventClick(it.id.toString()) },
+            { presenter.onEventActionClick(it) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            recyclerView.apply {
-                adapter = groupAdapter
+            dataListView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = pagingAdapter.withLoadStateAdapters(
+                    OrganizationPlaceholderAdapter(5),
+                    OrganizationPlaceholderAdapter(1)
+                ) { setEmptyDataPlaceholder(it) }
+                setEmptyDataPlaceholder(isEmptyData)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-    override fun setData(events: List<EventNew?>) {
-        dataGroup.update(events.map {
-            if (it == null) PlaceholderItem(PlaceholderItem.Type.SEARCH_EVENT)
-            else EventFavoriteItem(
-                it,
-                { presenter.onShowEventClick(it.id?.toString()) },
-                { presenter.onEventActionClick(it) },
-                { presenter.onEventSubEventsClick(it) }
-            )
-        })
+    override fun setData(events: PagingData<EventNew>) {
+        pagingAdapter.submitData(lifecycle, events)
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun updateEventFavorite(eventId: String, isFavorite: Boolean) {
-        dataGroup.findItemBy<EventFavoriteItem> { it.event.id?.toString() == eventId }?.apply {
-            notifyChanged(isFavorite)
-        }
+    override fun updateEvent(event: EventNew) {
+        pagingAdapter.updateEventAction(event)
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = AboutEventFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
     }
 
-    override fun showSubEvents(event: String, subEvents: List<EventActivityModel>) {
-        val args =
-            FavoriteSubeventFragmentArgs.Builder(event, subEvents.toTypedArray()).build().toBundle()
-        findNavController().navigate(R.id.favorite_subevents_fragment, args)
-    }
 
-    override fun showEmptyListPlaceholder() {
-        dataGroup.updateItem(
-            NoEventItem(
-                getString(R.string.empty_list_placeholder_message),
-                getString(R.string.events_favorites_empty_list_description)
-            )
-        )
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
+        mBinding.tvEmptyDataTitle.apply {
+            isVisibleAnim = show
+            text = getString(R.string.blank_list_error)
+        }
+        mBinding.tvEmptyDataDescription.apply {
+            isVisibleAnim = show
+            text = getString(R.string.events_favorites_empty_list_description)
+        }
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun binding() = LayoutListBinding::class.java
-    override fun layout(): Int = R.layout.layout_list
+    override fun binding() = LayoutDataListBinding::class.java
+    override fun layout(): Int = R.layout.layout_data_list
 }

@@ -12,7 +12,7 @@ import com.example.data.models.SearchFilter
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
-import com.example.ui.event.list.EventListPresenterNew
+import com.example.ui.event.list.EventListPresenter
 import com.example.util.pagination.PaginationResponse
 import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.applyErrorHandler
@@ -30,7 +30,7 @@ class MyEventsPresenter
     private val eventRepository: EventRepository,
     private val socket: SocketIOManager,
     private val appData: AppData
-) : EventListPresenterNew<MyEventsContract.View>(appData, eventRepository, socket),
+) : EventListPresenter<MyEventsContract.View>(appData, eventRepository, socket),
     MyEventsContract.Presenter {
 
     private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE

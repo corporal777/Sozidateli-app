@@ -3,15 +3,11 @@ package com.example.adapters.notification
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.adapters.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationPlaceholderBinding
 import com.example.app.databinding.ItemNotificationsListPlaceholderBinding
-import com.example.app.databinding.ItemUserPlaceholderBinding
+import dev.androidbroadcast.vbpd.viewBinding
 
 class NotificationPlaceholderAdapter(private val isHeader: Boolean) :
     CustomLoadStateAdapter<com.example.adapters.ViewHolder>() {

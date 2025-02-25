@@ -3,7 +3,6 @@ package com.example.adapters
 import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import com.example.exceptions.EmptyDataException
 
 abstract class CustomLoadStateAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 

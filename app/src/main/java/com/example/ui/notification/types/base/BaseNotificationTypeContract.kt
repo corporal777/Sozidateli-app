@@ -5,7 +5,6 @@ import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
 import com.example.ui.base.BaseContract
 import com.example.ui.notification.NotificationType
-import com.example.ui.notification.NotificationsSortedData
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip

@@ -3,11 +3,10 @@ package com.example.ui.event.about.items
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.util.Log
-import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.getSpans
@@ -28,14 +27,17 @@ import com.example.extensions.isSameDay
 import com.example.extensions.markWon
 import com.example.extensions.onClickListener
 import com.example.extensions.parseColor
-import com.example.extensions.parseToDate
+import com.example.extensions.setColorSpan
+import com.example.extensions.setTextCustomSize
+import com.example.extensions.setTextSizeSpan
+import com.example.holders.redesign.CustomBindingItem
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
 import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
 import com.example.util.setImage
-import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.Item
 
 class EventDetailImageItem(
     event: EventNew,
@@ -44,48 +46,37 @@ class EventDetailImageItem(
     private val clickListener: OnActionClickListener,
     private val onMoreClick: () -> Unit,
     private val onShowFormResult: () -> Unit
-) : BindableItem<ItemEventDetailMainBinding>(1000L) {
+) : CustomBindingItem<ItemEventDetailMainBinding>(1000L) {
 
     private var eventData = event
-
-    private val imageColor =
-        ColorDrawable(event.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
-
     private val eventDate = getEventDate()
     private val eventDescription = getMarkdownText(eventData.description?.replace("\n", " "))
     private val requestDate = getEventRequestDate()
+    private val eventImage: Any? = if (!eventData.image?.uri.isNullOrEmpty()) eventData.image?.uri
+    else ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
 
 
-    private lateinit var mBinding: ItemEventDetailMainBinding
     override fun bind(viewBinding: ItemEventDetailMainBinding, position: Int) {
-        mBinding = viewBinding
         viewBinding.apply {
             tvEventLocation.apply {
                 isVisible = !eventData.address?.getShortAddress().isNullOrEmpty()
                 text = eventData.address?.getShortAddress()
             }
             tvEventName.apply {
-                setTextSize(
-                    TypedValue.COMPLEX_UNIT_PX,
-                    if ((eventData.name ?: "").length < 120)
-                        resources.getDimension(R.dimen.event_detail_name_text_size)
-                    else resources.getDimension(R.dimen.event_detail_name_text_size_min)
-                )
+                if ((eventData.name ?: "").length < 120)
+                    setTextCustomSize(R.dimen.event_detail_name_text_size)
+                else setTextCustomSize(R.dimen.event_detail_name_text_size_min)
+
                 text = eventData.name
             }
-
             tvEventDate.apply {
                 isVisible = !eventDate.isNullOrEmpty()
                 text = eventDate
             }
 
-            tvEventDescription.apply {
-                originalText = eventDescription
-            }
+            tvEventDescription.originalText = eventDescription
 
-            ivLogo.setImage(
-                image = eventData.image?.uri ?: imageColor,
-            )
+            ivLogo.setImage(eventImage, 300)
 
             tvShowMore.setOnClickListener {
                 onMoreClick.invoke()
@@ -95,101 +86,88 @@ class EventDetailImageItem(
                 highlightColor = getColor(R.color.event_tabs_text_unchecked)
                 movementMethod = LinkMovementMethod.getInstance()
             }
-            decorActionButton(eventData, btnEventAction, tvCancelRegister)
+            btnEventAction.setActionButton(tvCancelRegister)
         }
     }
 
-    private fun decorActionButton(
-        eventNew: EventNew,
-        btnAction: CustomLoadingButton,
-        tvCancel: TextView
-    ) {
-        var clickAction: (() -> Unit)? = null
-        var btnText: CharSequence = ""
-        var btnBackground = R.drawable.btn_background_green
-        val userAgreement = eventNew.userAgreement?.uri
-        val state = eventNew.binds?.eventRegistrationState
+    private fun CustomLoadingButton.setActionButton(tvCancel: TextView) {
+        val state = eventData.binds?.currentUserRegistrationState
         val actions = state?.availableActions ?: arrayListOf("")
 
+        var clickAction: (() -> Unit)? = null
         var actionText: CharSequence? = null
+        var btnText: CharSequence = ""
+        var btnBackground = R.drawable.btn_background_green
 
         if (isTemporary) {
             btnText = getActionButtonText("temporary")
-            clickAction = { clickListener.onShowNeedAuth(eventData.id.toString()) }
-        } else if (eventNew.isStatusActionAvailable() && state != null) {
-            if (actions.contains("register") && !eventNew.isRegistrationClosed()) {
+            clickAction = { clickListener.onShowNeedAuth() }
+        } else if (eventData.isStatusActionAvailable() && state != null) {
+            if (actions.contains("register") && !eventData.isRegistrationClosed()) {
                 btnText = getActionButtonText("register")
-                clickAction =
-                    { state.checkStateLevel { clickListener.onActionRegister(userAgreement) } }
-            } else if (actions.contains("withdraw") && !eventNew.isRegistrationClosed()) {
+                clickAction = { state.checkStateLevel { clickListener.onActionRegister() } }
+
+            } else if (actions.contains("withdraw") && !eventData.isRegistrationClosed()) {
                 btnBackground = R.drawable.btn_background_white_ghost
                 btnText = getActionButtonText("withdraw")
                 clickAction = { state.checkStateLevel { clickListener.onActionCancel() } }
                 actionText = getTextShowForm(false, tvCancel)
 
-            } else if (actions.contains("view") && !eventNew.isRegistrationClosed()) {
+            } else if (actions.contains("view") && !eventData.isRegistrationClosed()) {
                 btnText = getActionButtonText("view")
                 btnBackground = R.drawable.btn_background_register_approved
                 actionText = getTextShowForm(true, tvCancel)
 
-            } else if (eventNew.isRegistrationClosed()) {
+            } else if (eventData.isRegistrationClosed()) {
                 btnText = getActionButtonText("closed")
                 btnBackground = R.drawable.btn_background_register_closed
 
-            } else btnAction.isVisible = false
-        } else if (eventNew.status?.value == Event.Status.CANCELED) {
+            } else isVisible = false
+        } else if (eventData.status?.value == Event.Status.CANCELED) {
             btnText = getActionButtonText("canceled")
             btnBackground = R.drawable.btn_background_register_closed
             actionText = getTextShowForm(false, tvCancel)
 
         } else {
             if (actions.contains("subscribe")) {
-                if (eventNew.binds?.isUserSubscribed == true) {
+                val isSubscribed = eventData.binds?.isUserSubscribed ?: false
+                if (isSubscribed) {
                     btnText = getActionButtonText("unsubscribe")
                     btnBackground = R.drawable.btn_background_white_ghost
                 } else btnText = getActionButtonText("subscribe")
 
                 clickAction = {
-                    state?.checkStateLevel {
-                        clickListener.onSubscribeEvent(eventNew.binds?.isUserSubscribed ?: false)
-                    }
+                    state?.checkStateLevel { clickListener.onSubscribeEvent(isSubscribed) }
                 }
-            } else btnAction.isVisible = false
+            } else isVisible = false
         }
 
         tvCancel.apply {
             text = actionText
             isVisible = !actionText.isNullOrBlank()
         }
-        btnAction.apply {
-            showProgressLoading(false)
-            setProgressColor(R.color.main_brown_color_new)
 
-            setButtonText(btnText)
-            setButtonBackground(btnBackground)
-            onClickListener(clickAction)
-            isEnabled = clickAction != null
-        }
+        showProgressLoading(false)
+        setProgressColor(R.color.main_brown_color_new)
+
+        setButtonText(btnText)
+        setButtonBackground(btnBackground)
+        onClickListener(clickAction)
+        isEnabled = clickAction != null
     }
 
-    override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
+    override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is EventDetailImageItem) return false
         if (eventData != other.eventData) return false
         return true
     }
 
-    override fun bind(
-        viewBinding: ItemEventDetailMainBinding,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        val payload = payloads?.firstOrNull()
-        if (payload == null) super.bind(viewBinding, position, payloads)
-        else {
-            if (payload is EventNew) {
-                eventData = payload
-                decorActionButton(payload, viewBinding.btnEventAction, viewBinding.tvCancelRegister)
-            }
+
+    override fun bind(binding: ItemEventDetailMainBinding, payload: Any) {
+        if (payload is Boolean) binding.btnEventAction.showProgressLoading(payload)
+        else if (payload is EventNew) {
+            eventData = payload
+            binding.btnEventAction.setActionButton(binding.tvCancelRegister)
         }
     }
 
@@ -199,15 +177,19 @@ class EventDetailImageItem(
         else clickListener.onShowUpdateState()
     }
 
+    private fun showCancelRegisterDialog() {
+        CancelRegisterEventBottomSheet(context)
+            .setCancelRegisterCallback { clickListener.onActionCancel() }
+            .show()
+    }
+
     private fun getEventDate(): String? {
         val dateStart = eventData.holdingDate?.from ?: return null
         val dateEnd = eventData.holdingDate?.to ?: return null
 
         if (eventData.isHasOneActivity()) {
-            val startDate =
-                dateStart.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
-            val finishDate =
-                dateEnd.parseToDate(defaultServerDateFormatter)?.calendar() ?: return null
+            val startDate = dateStart.calendar(defaultServerDateFormatter) ?: return null
+            val finishDate = dateEnd.calendar(defaultServerDateFormatter) ?: return null
 
             if (startDate.isSameDay(finishDate)) {
                 val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г."
@@ -216,8 +198,10 @@ class EventDetailImageItem(
                 return if (firstTime.isNullOrEmpty() || secondTime.isNullOrEmpty()) firstDate
                 else "$firstDate, $firstTime - $secondTime"
             } else {
-                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + dateStart.formatToDefaultTime()
-                val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + dateEnd.formatToDefaultTime()
+                val firstTime = dateStart.formatToDefaultTime() ?: ""
+                val firstDate = dateStart.formatToDefaultDayMonthYearDate() + " г., " + firstTime
+                val secondTime = dateEnd.formatToDefaultTime() ?: ""
+                val secondDate = dateEnd.formatToDefaultDayMonthYearDate() + " г., " + secondTime
                 return "$firstDate - $secondDate"
             }
         } else return dateStart.formatToDefaultDayMonthYearDate() + " г." +
@@ -246,48 +230,40 @@ class EventDetailImageItem(
 
 
     private fun getActionButtonText(description: String?): CharSequence {
+        val string: (Int) -> String = { res -> context.getString(res) }
         return when (description) {
             "register", "temporary" -> {
                 SpannableStringBuilder().apply {
-                    append(CustomSpannableString(context.getString(R.string.event_action_participate)).apply {
-                        setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
-                    })
-                    append("\n")
-                    append(CustomSpannableString(requestDate).apply {
-                        setTextSizeSpan(R.dimen.event_request_date_text_size, context)
-                        setColorSpan(R.color.white_70_alpha_color, context)
-                    })
+                    append(
+                        SpannableString(string(R.string.event_action_participate))
+                            .setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
+                    )
+                    append(
+                        SpannableString("\n" + requestDate)
+                            .setTextSizeSpan(R.dimen.event_request_date_text_size, context)
+                            .setColorSpan(R.color.white_70_alpha_color, context)
+                    )
                 }
             }
 
-            "withdraw" -> {
-                CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
-                    setColorSpan(R.color.black, context)
-                }
-            }
+            "withdraw" ->
+                SpannableString(string(R.string.event_cancel_request))
+                    .setColorSpan(R.color.black, context)
 
-            "view" -> context.getString(R.string.event_status_approved)
+            "closed" ->
+                SpannableString(string(R.string.event_closed_request))
+                    .setColorSpan(R.color.request_closed_text_color, context)
 
-            "closed" -> {
-                CustomSpannableString(context.getString(R.string.event_action_closed_request)).apply {
-                    setColorSpan(R.color.event_request_closed_text_color, context)
-                }
-            }
+            "canceled" ->
+                SpannableString(string(R.string.event_status_cancelled))
+                    .setColorSpan(R.color.request_closed_text_color, context)
 
-            "canceled" -> {
-                CustomSpannableString(context.getString(R.string.event_status_cancelled)).apply {
-                    setColorSpan(R.color.event_request_closed_text_color, context)
-                }
-            }
+            "unsubscribe" ->
+                SpannableString(string(R.string.event_unsubscribe_request))
+                    .setColorSpan(R.color.black, context)
 
-            "subscribe" -> context.getString(R.string.event_action_subscribe_request)
-
-            "unsubscribe" -> {
-                CustomSpannableString(context.getString(R.string.event_action_unsubscribe_request)).apply {
-                    setColorSpan(R.color.black, context)
-                }
-            }
-
+            "view" -> string(R.string.event_status_approved)
+            "subscribe" -> string(R.string.event_subscribe_request)
             else -> ""
         }
     }
@@ -295,7 +271,7 @@ class EventDetailImageItem(
     private fun getTextShowForm(withDelimiter: Boolean, textView: TextView): CharSequence? {
         return SpannableStringBuilder().apply {
             if (withDelimiter) {
-                append(CustomSpannableString(context.getString(R.string.event_action_cancel_request)).apply {
+                append(CustomSpannableString(context.getString(R.string.event_cancel_request)).apply {
                     setClickSpan(textView) { showCancelRegisterDialog() }
                 })
             }
@@ -307,17 +283,6 @@ class EventDetailImageItem(
                 })
             }
         }
-    }
-
-    private fun showCancelRegisterDialog() {
-        CancelRegisterEventBottomSheet(context)
-            .setCancelRegisterCallback { clickListener.onActionCancel() }
-            .show()
-    }
-
-    fun getActionButton(): CustomLoadingButton? {
-        if (this::mBinding.isInitialized) return mBinding.btnEventAction
-        else return null
     }
 
     private fun getMarkdownText(message: String?): CharSequence? {
@@ -337,11 +302,11 @@ class EventDetailImageItem(
     }
 
     interface OnActionClickListener {
-        fun onActionRegister(url: String?)
+        fun onActionRegister()
         fun onActionCancel()
         fun onShowUpdateState()
         fun onSubscribeEvent(subscribe: Boolean)
-        fun onShowNeedAuth(eventId: String)
+        fun onShowNeedAuth()
     }
 
     override fun initializeViewBinding(view: View) = ItemEventDetailMainBinding.bind(view)

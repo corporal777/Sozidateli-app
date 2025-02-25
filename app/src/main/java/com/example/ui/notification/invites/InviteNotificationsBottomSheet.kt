@@ -95,8 +95,8 @@ class InviteNotificationsBottomSheet : BaseBSFragment(), InviteNotificationsCont
     }
 
     override fun updateNotification(data: NotificationLocal?, notificationId: Int) {
-        if (data == null) pagingAdapter.updateUserNotificationWithoutChange(notificationId)
-        else pagingAdapter.updateUserNotification(data)
+        if (data == null) pagingAdapter.updateNotificationWithoutChange(notificationId)
+        else pagingAdapter.updateNotification(data)
     }
 
 

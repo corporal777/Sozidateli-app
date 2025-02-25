@@ -1,41 +1,22 @@
 package com.example.ui.search.event
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.AutoCompleteTextView
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.adapters.EventPagingAdapter
-import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.EventPlaceholderAdapter
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.event.EventPagingAdapter
+import com.example.adapters.event.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.event.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.SearchFilter
-import com.example.app.databinding.LayoutFilterEventSearchBinding
 import com.example.app.databinding.LayoutListEventSearchBinding
-import com.example.app.databinding.LayoutListSearchBinding
 import com.example.extensions.isVisibleAnim
-import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventListItem
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
-import com.example.ui.views.filters.user.UserFiltersBottomSheetDialog
-import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
-import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
-import com.example.util.initInput
-import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.Group
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -57,11 +38,10 @@ class SearchEventFragment : SearchFragment<LayoutListEventSearchBinding, SearchE
 
     private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         EventPagingAdapter(
-            { event, accept -> presenter.onActionRegister(event, accept) },
-            { presenter.onActionCancel(it) },
-            { presenter.onShowEventClick(it.id.toString()) },
-            { presenter.onShowAuthorization(it.id.toString()) },
-            { showStateErrorMessage(StateType.BASE, false, null) })
+            { event, accept, pos -> presenter.onActionRegister(event, accept, pos) },
+            { event, pos -> presenter.onActionCancel(event, pos) },
+            { event -> presenter.onShowEventClick(event.id.toString()) },
+            { event -> presenter.onShowAuthorization(event.id.toString()) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,8 +50,8 @@ class SearchEventFragment : SearchFragment<LayoutListEventSearchBinding, SearchE
             searchEventList.adapter = pagingAdapter.withLoadStateAdapters(
                 EventPlaceholderAdapter(1),
                 EventPlaceholderAdapter(1)
-            ) { setDataEmpty(it) }
-            setDataEmpty(isEmptyData)
+            ) { setEmptyDataPlaceholder(it) }
+            setEmptyDataPlaceholder(isEmptyData)
 
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
             clQrScanner.setOnClickListener { presenter.onScanClick() }
@@ -115,10 +95,14 @@ class SearchEventFragment : SearchFragment<LayoutListEventSearchBinding, SearchE
         findNavController().navigate(R.id.qr_scanner_fragment)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyData.isVisibleAnim = show
     }
+
+    override fun showEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(true, pos)
+    override fun hideEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(false, pos)
+
 
     override fun binding() = LayoutListEventSearchBinding::class.java
     override fun layout() = R.layout.layout_list_event_search

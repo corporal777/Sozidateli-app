@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.user.UserPagingAdapter
+import com.example.adapters.user.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.LayoutListBinding
 import com.example.data.models.UserDetail

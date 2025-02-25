@@ -37,6 +37,6 @@ interface NotificationsListContract {
         fun onNotificationAcceptClick(notification: NotificationLocal)
         fun onNotificationCancelClick(notification: NotificationLocal)
         fun onNotificationRateClick(eventId: String)
-        fun onReadAllNotificationsClick()
+        fun onReadAllClick()
     }
 }

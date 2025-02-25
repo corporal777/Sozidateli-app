@@ -106,14 +106,18 @@ class EventRegistrationPresenter
     override fun onRegisterClick() {
         if (checkDataValid()) {
             compositeDisposable += getRequestBody(0)
-                .flatMap { eventRepository.eventRegisterNew(it) }
+                .flatMap { eventRepository.sendFormToRegister(it) }
                 .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
                 .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEvent(eventId))
                 .performOnBackgroundOutOnMain()
                 .withCustomLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
-                    onComplete = { viewState.showEventRegistrationSuccessDialog() })
+                    onSuccess = {
+                        viewState.showEventRegistrationSuccessDialog()
+                        appData.sendUpdateEvent(it)
+                    })
         } else viewState.showErrors(invalidFieldsData)
     }
 
@@ -291,7 +295,7 @@ class EventRegistrationPresenter
 
                     val availableExtensions = field.field.values ?: emptyList()
                     val contains = availableExtensions.isEmpty() || availableExtensions.find {
-                        val availableExtension = it.toLowerCase(Locale.getDefault())
+                        val availableExtension = it.lowercase(Locale.getDefault())
                         availableExtension == fileExtension || fileExtension == "jpg" && availableExtension == "jpeg"
                     } != null
 
@@ -392,8 +396,7 @@ class EventRegistrationPresenter
                         if (f is EventRegisterFieldData.Prefilled) f.value = prefilled
                         Maybe.just(f.asOptional()).withDelay(400)
                     }
-                }
-                .onErrorResumeNext(Maybe.just(Optional(null)))
+                }.onErrorResumeNext(Maybe.just(Optional(null)))
 
         } else Maybe.just(Optional(null))
     }
@@ -415,23 +418,19 @@ class EventRegistrationPresenter
         return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
     }
 
-    private fun getPrefilledFieldsIfNeed(e: EventNew): Maybe<Pair<List<EventRegisterFields>?, ArrayList<EventFormResultFieldsModel>>> {
-        val fields = e.binds?.getParticipationForm()?.fields
-        val results = arrayListOf<EventFormResultFieldsModel>().apply {
-            addAll(e.binds?.getFormResult() ?: emptyList())
-        }
+    private fun getPrefilledFieldsIfNeed(e: EventNew): Maybe<Pair<List<EventRegisterFields>?, List<EventFormResultFieldsModel>>> {
+        val fields = e.binds?.getForm()?.fields
+        val results = e.binds?.getFormResult()?.fields?.toMutableList() ?: mutableListOf()
         val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
 
         return if (pref == null) Maybe.just(Pair(fields, results))
-        else {
-            if (results.isEmpty() || results.none { it.id == pref.id }) {
-                eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
-                    val jsonData = it.fields.prefilledToJson()
-                    results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
-                    Maybe.just(Pair(fields, results))
-                }
-            } else Maybe.just(Pair(fields, results))
-        }
+        else if (results.none { it.id == pref.id }) {
+            eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
+                val jsonData = it.fields.prefilledToJson()
+                results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
+                Maybe.just(Pair(fields, results))
+            }
+        } else Maybe.just(Pair(fields, results))
     }
 
     companion object {

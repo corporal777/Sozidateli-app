@@ -2,6 +2,7 @@ package com.example.ui.base
 
 import com.example.data.AppData
 import com.example.data.models.ApiError
+import com.example.data.models.EventNew
 import com.example.exceptions.EmptyDataException
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.views.dialogs.StateType
@@ -64,8 +65,15 @@ open class BasePresenter<V : BaseContract.View>
     fun getSpecialities() = appData.specialities
 
     fun getHasBase() = appData.hasBaseState
+    fun getHasMax() = appData.hasMaxState
     fun isStoriesShown() = appData.isStoriesShown
     fun isTemporaryUser() = appData.isTemporaryUser()
+
+    fun isProfileLevelLow(event : EventNew) : Boolean {
+        val state = event.binds?.currentUserRegistrationState ?: return true
+        return if (state.prohibitions?.profileLevelToLow?.requiredLevel == "basic") !getHasBase()
+        else !getHasMax()
+    }
 
     private fun createOnErrorConsumer(
         onError: ((Throwable) -> Unit)?,

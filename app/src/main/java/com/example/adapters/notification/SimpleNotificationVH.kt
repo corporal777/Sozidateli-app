@@ -1,10 +1,10 @@
 package com.example.adapters.notification
 
 import android.view.View
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationSimpleBinding
 import com.example.data.models.NotificationLocal
+import dev.androidbroadcast.vbpd.viewBinding
 
 class SimpleNotificationVH(val itemView: View, val listener: OnNotificationActionListener) :
     NotificationVH<ItemNotificationSimpleBinding>(itemView, listener) {

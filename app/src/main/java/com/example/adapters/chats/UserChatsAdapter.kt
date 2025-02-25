@@ -1,11 +1,9 @@
 package com.example.adapters.chats
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
@@ -13,13 +11,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.UserViewHolder
 import com.example.app.R
 import com.example.app.databinding.ItemChatBinding
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChatModel
-import com.example.data.models.UserDetail
 import com.example.extensions.calendar
 import com.example.extensions.dateFormatterShortMothNoYear
 import com.example.extensions.defaultServerDateTimeFormatter

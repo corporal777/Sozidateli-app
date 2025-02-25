@@ -34,8 +34,4 @@ class PagingListObservable <T : Any>(
         if (dataSourceFactory.source == null) return
         dataSourceFactory.source!!.invalidateFromStart()
     }
-
-    fun invalidateFrom(list: List<T>){
-        emitter.onNext(PagingData.from(list))
-    }
 }

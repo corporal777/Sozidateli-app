@@ -2,15 +2,14 @@ package com.example.ui.main.inApp
 
 import android.app.NotificationManager
 import com.example.data.AppData
-import com.example.data.bodies.ApproveBody
-import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
 import com.example.data.models.NotificationModel
 import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
+import com.example.ui.base.bottomSheet.BaseBSPresenter
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
@@ -23,8 +22,7 @@ class InAppNotificationPresenter
     private val appData: AppData,
     private val notificationManager: NotificationManager,
     private val socket: SocketIOManager,
-) : BaseBottomSheetPresenter<InAppNotificationContract.View>(appData),
-    InAppNotificationContract.Presenter {
+) : BaseBSPresenter<InAppNotificationContract.View>(appData), InAppNotificationContract.Presenter {
 
     val notificationsList = mutableListOf<Notification>()
 
@@ -89,7 +87,7 @@ class InAppNotificationPresenter
             }
             .performOnBackgroundOutOnMain()
             .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
+            .subscribeBy(
                 onError = { onReceiveError(it) },
                 onSuccess = {
                     viewState.setNotifications(notificationsList)

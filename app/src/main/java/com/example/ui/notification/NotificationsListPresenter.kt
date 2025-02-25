@@ -48,9 +48,7 @@ class NotificationsListPresenter
         super.onFirstViewAttach()
         compositeDisposable += appData.notificationsCountSubject
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.setBtnReadAllEnabled(it > 0)
-            }
+            .subscribeSimple { viewState.setBtnReadAllEnabled(it > 0) }
 
         compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .map { transformData(it) }
@@ -118,7 +116,7 @@ class NotificationsListPresenter
             )
     }
 
-    override fun onReadAllNotificationsClick() {
+    override fun onReadAllClick() {
         compositeDisposable += userRepository.markAllNotificationsAsRead(null)
             .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
             .performOnBackgroundOutOnMain()
@@ -164,20 +162,5 @@ class NotificationsListPresenter
             notificationTitleDate = notificationDate
             it
         }
-    }
-}
-
-data class NotificationsSortedData(
-    var titleDate: String?,
-    var data: Notification
-) {
-    override fun hashCode(): Int {
-        return data.id
-    }
-
-    override fun equals(other: Any?): Boolean {
-        other as NotificationsSortedData
-        if (data != other.data) return false
-        return true
     }
 }

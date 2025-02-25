@@ -1,15 +1,13 @@
-package com.example.adapters
+package com.example.adapters.event
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.R
 import com.example.app.databinding.ItemEventNewPlaceholderBinding
-import com.example.app.databinding.ItemEventPlaceholderBinding
-import com.example.app.databinding.ItemUserPlaceholderBinding
+import dev.androidbroadcast.vbpd.viewBinding
 
 class EventPlaceholderAdapter(val count: Int) :
     CustomLoadStateAdapter<EventPlaceholderAdapter.EventPlaceholderViewHolder>() {

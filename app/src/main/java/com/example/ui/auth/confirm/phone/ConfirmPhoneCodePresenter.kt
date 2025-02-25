@@ -10,7 +10,6 @@ import com.example.repository.UserRepository
 import com.example.ui.auth.confirm.email.ConfirmEmailCodeContract
 import com.example.ui.auth.confirm.email.ConfirmEmailCodePresenter
 import com.example.ui.base.BasePresenter
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.Utils.formatMobilePhone
 import io.reactivex.Completable
 import io.reactivex.Observable

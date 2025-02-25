@@ -9,18 +9,19 @@ import com.example.app.R
 import com.example.app.databinding.ItemOrganizationHeaderBinding
 import com.example.data.models.OrganizationNew
 import com.example.extensions.parseColor
+import com.example.holders.redesign.CustomBindingItem
 import com.example.ui.views.UserSubscribeButton
 import com.example.util.setImage
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 
 class OrganizationHeaderItem(
-    org: OrganizationNew,
+    private val organization: OrganizationNew,
     private val imageClick: (url: String, view: ImageView) -> Unit,
     private val actionClickListener: (org : OrganizationNew) -> Unit,
-) : BindableItem<ItemOrganizationHeaderBinding>(org.id ?: 0) {
+) : CustomBindingItem<ItemOrganizationHeaderBinding>(organization.id ?: 0) {
 
-    private var organization = org
+
     private val image = organization.image?.uri
     private val logo = organization.logo?.uri
     private val backgroundColor = organization.backgroundColor?.value
@@ -33,7 +34,7 @@ class OrganizationHeaderItem(
             ivBackground.apply {
                 clipToOutline = true
                 isVisible = !image.isNullOrEmpty()
-                setImage(image)
+                setImage(image, 300)
                 setOnClickListener {
                     imageClick.invoke(image ?: "", ivBackground)
                 }
@@ -41,10 +42,10 @@ class OrganizationHeaderItem(
             ivLogo.apply {
                 clipToOutline = true
                 if (logo.isNullOrEmpty()) {
-                    setImage(imageColor)
+                    setImage(imageColor, 300)
                     tvOrganizationImageName.text = name
                 } else {
-                    setImage(logo)
+                    setImage(logo, 300)
                     setOnClickListener {
                         imageClick.invoke(logo, ivLogo)
                     }
@@ -53,31 +54,22 @@ class OrganizationHeaderItem(
 
             tvName.text = name
             tvDescription.text = description
-            setSubscribed(btnAction)
-        }
-    }
-
-    override fun bind(
-        viewBinding: ItemOrganizationHeaderBinding,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewBinding, position, payloads)
-        else {
-            if (payload is OrganizationNew) {
-                organization = payload
-                setSubscribed(viewBinding.btnAction)
+            btnAction.apply {
+                setActionNew(organization.binds?.userFavorite != null)
+                setOnClickListener { actionClickListener.invoke(organization) }
             }
+
         }
     }
 
-    private fun setSubscribed(button: UserSubscribeButton) {
-        button.setActionNew(organization.binds?.userFavorite != null)
-        button.setOnClickListener {
-            actionClickListener.invoke(organization)
+
+    override fun bind(binding: ItemOrganizationHeaderBinding, payload: Any) {
+        if (payload is OrganizationNew) {
+            organization.binds?.userFavorite = payload.binds?.userFavorite
+            binding.btnAction.setActionNew(organization.binds?.userFavorite != null)
         }
     }
+
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is OrganizationHeaderItem) return false

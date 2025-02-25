@@ -1,26 +1,17 @@
 package com.example.adapters.notification
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.adapters.AppUpdateAdapter.AppUpdateViewHolder
 import com.example.adapters.CustomLoadStateAdapter
-import com.example.adapters.SimpleRecyclerViewAdapter
-import com.example.adapters.ViewHolder
 import com.example.app.R
 import com.example.app.databinding.ItemNotificationsTagsBinding
-import com.example.app.databinding.ItemUpdateAppBinding
-import com.example.data.models.EventActivityModel
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.types.projects.items.ProjectsTagsItem.ProjectsInviteType
-import com.example.util.weak
+import dev.androidbroadcast.vbpd.viewBinding
 
 class NotificationTagsAdapter : CustomLoadStateAdapter<NotificationTagsAdapter.TagsVH> {
 

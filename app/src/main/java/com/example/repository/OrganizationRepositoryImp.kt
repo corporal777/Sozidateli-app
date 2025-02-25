@@ -2,8 +2,11 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -47,7 +50,6 @@ class OrganizationRepositoryImp
             .map { it.data }
 
 
-
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
         return api.getOrganizationDetails(organizationId, "userFavorite")
     }
@@ -80,5 +82,39 @@ class OrganizationRepositoryImp
                 appData.organizationsActiveEvents
             }
         } else Maybe.just(appData.organizationsActiveEvents)
+    }
+
+    override fun addOrRemoveOrgFavorite(org: OrganizationNew?): Single<Optional<EventUserFavorite>> {
+        return if (org?.binds?.userFavorite != null)
+            deleteFromFavorites(org.binds?.userFavorite?.id.toString())
+                .andThen(Single.just(Optional(null)))
+        else addOrgToFavorites(org?.id.toString())
+            .map { Optional(EventUserFavorite(it.id, it.user)) }
+    }
+
+    private fun addOrgToFavorites(orgId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        )
+    }
+
+    private fun deleteFromFavorites(id: String): Completable {
+        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
+        else api.deleteFromFavorite(id)
     }
 }

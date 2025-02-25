@@ -64,32 +64,40 @@ interface BaseContract {
     }
 
     interface LoadingView {
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showLoadingDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideLoadingDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showCustomProgressDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideCustomProgressDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showProgressBarLoadingDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideProgressBarLoadingDialog()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideAllLoadingDialogs()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun showCustomLoading()
 
-        @StateStrategyType(OneExecutionStateStrategy::class)
+        @StateStrategyType(SkipStrategy::class)
         fun hideCustomLoading()
+    }
+
+    interface LoadingEventView {
+        @StateStrategyType(SkipStrategy::class)
+        fun showEventLoading(pos : Int)
+
+        @StateStrategyType(SkipStrategy::class)
+        fun hideEventLoading(pos : Int)
     }
 
     interface Presenter {

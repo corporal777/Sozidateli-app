@@ -6,25 +6,16 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.EventPlaceholderAdapter
+import com.example.adapters.event.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.event.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.FragmentRecommendationsBinding
 import com.example.data.models.EventNew
-import com.example.extensions.dp
-import com.example.extensions.findGroupBy
 import com.example.extensions.isVisibleAnim
 import com.example.extensions.offsetChangedListener
-import com.example.extensions.updateGroup
-import com.example.extensions.updateItem
-import com.example.ui.event.list.EventListFragmentNew
-import com.example.ui.event.list.recommendations.items.RecommendationItemsGroup
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.profile.ProfileFragmentArgs
-import com.example.util.pagination.PaginationGroupAdapter
 import com.example.util.smoothScrollToFirstItem
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -32,7 +23,7 @@ import javax.inject.Provider
 import kotlin.math.abs
 
 
-class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, FragmentRecommendationsBinding>(),
+class RecommendationsFragment : EventListFragment<RecommendationsPresenter, FragmentRecommendationsBinding>(),
     RecommendationsContract.View {
 
     @InjectPresenter
@@ -55,8 +46,9 @@ class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, F
                 adapter = pagingAdapter.withLoadStateAdapters(
                     EventPlaceholderAdapter(1),
                     EventPlaceholderAdapter(1)
-                ) { setDataEmpty(it) }
-                setDataEmpty(isEmptyData)
+                ) { setEmptyDataPlaceholder(it) }
+
+                setEmptyDataPlaceholder(isEmptyData)
             }
 
             etSearch.setOnClickListener { presenter.onSearchClick() }
@@ -92,8 +84,8 @@ class RecommendationsFragment : EventListFragmentNew<RecommendationsPresenter, F
         mLayoutManager.smoothScrollToFirstItem(requireContext(), mBinding.appBarLayout, 1)
     }
 
-    override fun setDataEmpty(show : Boolean){
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show : Boolean){
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyData.isVisibleAnim = show
     }
 

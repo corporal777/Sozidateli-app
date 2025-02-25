@@ -469,8 +469,10 @@ class MainPresenter
 
     private fun checkUserTokenIsValid(): Completable {
         return authRepository.checkUserAuth().onErrorResumeNext {
-            appData.logoutInvalidation()
-            if (it is HttpException && it.code() == 400) Completable.error(InvalidTokenException())
+            if (it is HttpException && it.code() == 400) {
+                appData.logoutInvalidation()
+                Completable.error(InvalidTokenException())
+            }
             else Completable.error(it)
         }
     }

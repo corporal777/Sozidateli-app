@@ -529,3 +529,25 @@ fun Completable.withCustomLoading(baseView: BaseContract.LoadingView): Completab
         .doOnDispose(actionHide)
         .doOnError(actionConsumer())
 }
+
+fun <T> Maybe<T>.withEventLoading(baseView: BaseContract.LoadingEventView,position: Int): Maybe<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { baseView.showEventLoading(position) }
+        .doOnDispose { baseView.hideEventLoading(position) }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideEventLoading(position)
+        else loadingDisposable.dispose()
+    }
+
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideEventLoading(position)
+        else loadingDisposable.dispose()
+    }
+
+    return doOnDispose(actionHide)
+        .doOnSuccess(actionConsumer())
+        .doOnError(actionConsumer())
+
+}

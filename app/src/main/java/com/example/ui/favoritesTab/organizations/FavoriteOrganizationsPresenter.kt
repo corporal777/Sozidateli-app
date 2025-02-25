@@ -4,6 +4,7 @@ import com.example.data.AppData
 import com.example.data.models.FavoriteModel
 import com.example.data.models.OrganizationNew
 import com.example.extensions.buildFlow
+import com.example.extensions.buildObservable
 import com.example.repository.EventRepository
 import com.example.repository.OrganizationRepository
 import com.example.ui.base.BasePresenter
@@ -11,6 +12,7 @@ import com.example.util.paginationNew.PagingDataSourceFactory
 import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
@@ -51,12 +53,17 @@ class FavoriteOrganizationsPresenter
 
     override fun onRemoveFromFavoriteClick(organization: OrganizationNew) {
         compositeDisposable += eventRepository.deleteFromFavorites(organization.binds?.userFavorite?.id.toString())
-            .doOnComplete { organization.binds?.userFavorite = null }
             .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                viewState.showRemovedFromFavoriteDialog()
-                pagination.invalidateStart()
-            }
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateOrganization(organization)
+                },
+                onComplete = {
+                    viewState.showRemovedFromFavoriteDialog()
+                    pagination.invalidateStart()
+                }
+            )
     }
 
     override fun onOrganizationClick(organization: OrganizationNew) {

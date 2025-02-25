@@ -10,7 +10,6 @@ import com.example.data.models.Notification
 import com.example.data.models.NotificationLocal
 import com.example.extensions.updateItem
 import com.example.ui.notification.NotificationType
-import com.example.ui.notification.NotificationsSortedData
 import com.example.ui.notification.items.*
 import com.example.ui.notification.types.base.BaseNotificationTypeFragment
 import com.example.ui.notification.types.projects.items.ProjectsTagsItem

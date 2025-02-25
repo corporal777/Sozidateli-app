@@ -1,4 +1,4 @@
-package com.example.adapters
+package com.example.adapters.user
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +11,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.adapters.CustomLoadStateAdapter
 import com.example.app.databinding.ItemUserBinding
 import com.example.data.models.UserDetail
 import dev.androidbroadcast.vbpd.viewBinding
 import com.example.app.R
-import com.example.exceptions.EmptyDataException
 import com.example.extensions.dp
+import com.example.extensions.executePlaceholderLoadState
+import com.example.ui.views.UserSubscribeButton
 import com.example.util.setCircleAvatar
 
 class UserPagingAdapter(
@@ -62,23 +64,22 @@ class UserPagingAdapter(
                 ivUserAvatar.setCircleAvatar(user.loadUserImage(),300)
 
                 btnAction.apply {
-                    val action = user.getUserSubscribeAction()
-                    visibility = if (action != null) {
-                        setAction(action)
+                    val action = user.getUserFavoriteState()
+                    if (action == null) isInvisible = true
+                    else {
+                        isInvisible = false
+                        if (action == UserSubscribeButton.Action.UNFAVORITE){
+                            setActionFavorite()
+                        } else setActionUnfavorite()
+
                         setOnClickListener {
                             showProgress(true)
                             onActionClick.invoke(user)
                         }
-                        View.VISIBLE
-                    } else View.INVISIBLE
+                    }
                 }
 
-                btnProgress.apply {
-                    isVisible = false
-                    setProgressColor(ContextCompat.getColor(context, R.color.main_brown_color_new))
-                    setSize(19.dp)
-                    setStroke(8f)
-                }
+                btnProgress.isVisible = false
 
                 root.setOnClickListener { onUserClick.invoke(user) }
             }
@@ -107,14 +108,9 @@ class UserPagingAdapter(
             onEmpty: (show: Boolean) -> Unit
         ): ConcatAdapter {
             addLoadStateListener { loadState ->
-                //refresh.loadState = loadState.refresh
                 header.loadState = if (itemCount > 0) header.notRefresh else loadState.refresh
                 footer.loadState = loadState.append
-
-                if (loadState.refresh is LoadState.Error)
-                    if (this.snapshot().isEmpty()) onEmpty.invoke(true)
-                    else onEmpty.invoke(false)
-                else onEmpty.invoke(false)
+                executePlaceholderLoadState(loadState){ onEmpty.invoke(it) }
             }
             return ConcatAdapter(header, this, footer)
         }

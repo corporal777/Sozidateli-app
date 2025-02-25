@@ -3,19 +3,16 @@ package com.example.ui.search.user
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import by.kirich1409.viewbindingdelegate.CreateMethod
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.app.R
 import com.example.app.databinding.LayoutListSearchBinding
 import com.example.data.models.SearchFilter
 import com.example.data.models.UserDetail
 import com.example.ui.search.SearchFragment
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.user.UserPagingAdapter
+import com.example.adapters.user.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.extensions.isVisibleAnim
 import com.example.ui.views.filters.user.UserFiltersBottomSheetDialog
 import moxy.presenter.InjectPresenter
@@ -46,8 +43,8 @@ class SearchUserFragment : SearchFragment<LayoutListSearchBinding, SearchUserPre
             searchList.adapter = pagingAdapter.withLoadStateAdapters(
                 UserPlaceholderAdapter(9),
                 UserPlaceholderAdapter(1)
-            ) { setDataEmpty(it) }
-            setDataEmpty(isEmptyData)
+            ) { setEmptyDataPlaceholder(it) }
+            setEmptyDataPlaceholder(isEmptyData)
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
@@ -76,8 +73,8 @@ class SearchUserFragment : SearchFragment<LayoutListSearchBinding, SearchUserPre
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyData.isVisibleAnim = show
     }
 

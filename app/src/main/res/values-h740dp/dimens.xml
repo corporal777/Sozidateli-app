@@ -4,7 +4,7 @@
     <!--  new auth views margins  -->
     <dimen name="auth_logo_text_height">70dp</dimen>
 
-    <dimen name="auth_buttons_min_height">44dp</dimen>
+    <dimen name="auth_buttons_min_height">45dp</dimen>
     <dimen name="auth_buttons_text_size">15.5sp</dimen>
 
     <dimen name="auth_buttons_title_text_size">15sp</dimen>
@@ -46,8 +46,9 @@
     <dimen name="event_added_to_favorite_dialog_size">220dp</dimen>
     <dimen name="event_added_to_favorite_dialog_icon_size">75dp</dimen>
 
-    <dimen name="sub_event_description_text_size">13sp</dimen>
+    <dimen name="sub_event_description_text_size">14sp</dimen>
     <dimen name="sub_event_description_show_more_text_size">15sp</dimen>
+    <dimen name="event_request_date_text_size">10.5sp</dimen>
 
     <dimen name="swipe_distance_start_margin">0dp</dimen>
     <dimen name="swipe_distance_end_margin">70dp</dimen>

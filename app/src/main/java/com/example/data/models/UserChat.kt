@@ -1,7 +1,6 @@
 package com.example.data.models
 
 import com.example.data.models.user.User
-import com.example.ui.notification.NotificationsSortedData
 import com.google.gson.annotations.SerializedName
 
 data class UserChat(
@@ -51,13 +50,24 @@ data class UserChatModel(
 ) {
     companion object {
         fun createFromChatModel(chatModel: ChatModel, id: Int): UserChatModel {
-            val sender =
-                if (!chatModel.binds?.lastMessage?.acknowledge.isNullOrEmpty())
-                    chatModel.binds?.lastMessage?.acknowledge?.get(0)?.user
-                else 0
+            val sender = chatModel.binds?.lastMessage?.acknowledge?.find { x -> x.user != id }?.user ?: 0
+            val user = if (chatModel.isEventChat()) {
+                UserChatSender(
+                   chatModel.binds?.event?.id ?: 0,
+                    chatModel.binds?.event?.name ?: "",
+                    chatModel.binds?.event?.image?.uri ?: "",
+                )
+            } else {
+                UserChatSender(
+                    chatModel.binds?.users?.firstOrNull { it.id != id }?.id ?: 0,
+                    chatModel.binds?.users?.firstOrNull { it.id != id }?.nameLastName ?: "",
+                    chatModel.binds?.users?.firstOrNull { it.id != id }?.loadUserImage() ?: "",
+                )
+
+            }
             return UserChatModel(
                 id = chatModel.id,
-                user = createUser(chatModel, id),
+                user = user,
                 eventId = chatModel.binds?.event?.id.toString(),
                 lastMessageId = chatModel.binds?.lastMessage?.id.toString(),
                 lastMessage = chatModel.binds?.lastMessage?.message,
@@ -66,23 +76,6 @@ data class UserChatModel(
                 lastMessageSender = sender,
                 unreadMessageCount = chatModel.unreadMessagesCount ?: 0
             )
-        }
-
-        private fun createUser(it: ChatModel, id: Int): UserChatSender {
-            return if (it.isEventChat()) {
-                UserChatSender(
-                    id = it.binds?.event?.id ?: 0,
-                    name = it.binds?.event?.name ?: "",
-                    image = it.binds?.event?.image?.uri ?: "",
-                )
-            } else {
-                UserChatSender(
-                    id = it.binds?.users?.firstOrNull { us -> us.id != id }?.id ?: 0,
-                    name = it.binds?.users?.firstOrNull { us -> us.id != id }?.nameLastName ?: "",
-                    image = it.binds?.users?.firstOrNull { us -> us.id != id }?.loadUserImage() ?: "",
-                )
-
-            }
         }
     }
 }

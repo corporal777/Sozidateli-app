@@ -6,9 +6,9 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import com.example.adapters.UserPagingAdapter
-import com.example.adapters.UserPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.UserPlaceholderAdapter
+import com.example.adapters.user.UserPagingAdapter
+import com.example.adapters.user.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.FragmentChatSearchBinding
 import com.example.data.models.SearchFilter
@@ -48,9 +48,9 @@ class SearchChatFragment : BaseVBFragment<FragmentChatSearchBinding>(), SearchCh
                 adapter = pagingAdapter.withLoadStateAdapters(
                     UserPlaceholderAdapter(9),
                     UserPlaceholderAdapter(1)
-                ) { setDataEmpty(it) }
+                ) { setEmptyDataPlaceholder(it) }
 
-                setDataEmpty(isEmptyData)
+                setEmptyDataPlaceholder(isEmptyData)
                 onScrolled { _, _ -> presenter.onChangeOffset(computeVerticalScrollOffset()) }
             }
 
@@ -103,8 +103,8 @@ class SearchChatFragment : BaseVBFragment<FragmentChatSearchBinding>(), SearchCh
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyDataTitle.isVisibleAnim = show
         mBinding.tvEmptyDataDescription.isVisibleAnim = show
     }

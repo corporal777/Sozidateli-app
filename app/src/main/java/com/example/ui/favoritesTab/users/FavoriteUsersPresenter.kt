@@ -51,11 +51,13 @@ class FavoriteUsersPresenter
 
     override fun onUserRemoveFavoritesClick(user: UserDetail) {
         compositeDisposable += eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
-            .doOnComplete { user.binds?.userFavorite = null }
             .withTimeOut(5000)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = { onReceiveError(it) },
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateUser(user)
+                },
                 onComplete = {
                     viewState.showRemovedFromFavoriteDialog()
                     pagination.invalidateStart()

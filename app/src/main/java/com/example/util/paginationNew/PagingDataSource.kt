@@ -33,7 +33,10 @@ open class PagingDataSource<I : Any> : RxPagingSource<Int, I>() {
             val offset = if (loadFromStart) 0 else (params.key ?: 0) * limit
 
             request.invoke(limit, offset).flatMapSingle {
-                if (it.isEmptyData()) Single.error(EmptyDataException())
+                if (it.isEmptyData()) {
+                    Single.just(toLoadResult(it, null, null))
+                    //Single.error(EmptyDataException())
+                }
                 else {
                     val prevKey = null
                     val nextKey = if (it.data.isEmpty()) null

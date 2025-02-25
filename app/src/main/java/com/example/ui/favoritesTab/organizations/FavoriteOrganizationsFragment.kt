@@ -2,7 +2,6 @@ package com.example.ui.favoritesTab.organizations
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,8 +46,8 @@ class FavoriteOrganizationsFragment : BaseVBFragment<LayoutDataListBinding>(),
                 adapter = pagingAdapter.withLoadStateAdapters(
                     OrganizationPlaceholderAdapter(5),
                     OrganizationPlaceholderAdapter(1)
-                ) { setDataEmpty(it) }
-                setDataEmpty(isEmptyData)
+                ) { setEmptyDataPlaceholder(it) }
+                setEmptyDataPlaceholder(isEmptyData)
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
@@ -60,8 +59,12 @@ class FavoriteOrganizationsFragment : BaseVBFragment<LayoutDataListBinding>(),
         mBinding.swipeToRefresh.isRefreshing = false
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun updateOrganization(organization: OrganizationNew) {
+        pagingAdapter.updateOrganization(organization)
+    }
+
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         mBinding.tvEmptyDataTitle.apply {
             isVisibleAnim = show
             text = getString(R.string.blank_list_error)

@@ -126,6 +126,15 @@ data class UserDetail(
         }
     }
 
+    fun getUserFavoriteState() : UserSubscribeButton.Action? {
+        return if (isCurrentUser) null
+        else {
+            if (binds == null) UserSubscribeButton.Action.UNFAVORITE
+            else if (binds!!.userFavorite == null) UserSubscribeButton.Action.UNFAVORITE
+            else UserSubscribeButton.Action.FAVORITE
+        }
+    }
+
     fun getSessionsCount(): Int = binds?.deviceSessionsCount ?: 0
 
     fun loadUserImage(): String? {
@@ -153,6 +162,7 @@ data class UserDetail(
     fun setIfCurrentUser(userId : Int){
         if (id == userId) isCurrentUser = true
     }
+
 
     companion object {
         const val USER_EMAIL = "email"

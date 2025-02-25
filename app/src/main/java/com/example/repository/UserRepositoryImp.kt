@@ -468,26 +468,38 @@ class UserRepositoryImp
     }
 
     override fun addOrRemoveUserFavorite(user: UserDetail): Single<Optional<EventUserFavorite>> {
-        if (user.binds?.userFavorite != null) {
-            val id = user.binds?.userFavorite?.id.toString()
-            return if (appData.isTemporaryUser())
-                api.deleteFromTempFavorite(id).andThen(Single.just(Optional(null)))
-            else api.deleteFromFavorite(id).andThen(Single.just(Optional(null)))
-        } else {
-            return if (appData.isTemporaryUser()) api.addToTempFavorite(
-                AddToFavoriteModel(
-                    appData.getTempId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)
-                )
-            ).map { Optional(EventUserFavorite(it.id, it.tempUser)) }
-            else api.addToFavorite(
-                AddToFavoriteModel(
-                    appData.getId(),
-                    AddToFavoriteEntityModel(AddToFavoriteEntityModel.FAVORITE_SPEAKER, user.id)
-                )
-            ).map { Optional(EventUserFavorite(it.id, it.user)) }
+        return Single.defer {
+            if (user.binds == null || user.binds?.userFavorite == null){
+                addUserToFavorites(user.id.toString())
+                    .map { Optional(EventUserFavorite(it.id, it.user)) }
+            } else deleteFromFavorites(user.binds?.userFavorite?.id.toString())
+                .andThen(Single.just(Optional(null)))
         }
+    }
 
+    private fun addUserToFavorites(speakerId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+                    speakerId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_SPEAKER,
+                    speakerId.toInt()
+                )
+            )
+        )
+    }
 
+    private fun deleteFromFavorites(id: String): Completable {
+        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
+        else api.deleteFromFavorite(id)
     }
 }

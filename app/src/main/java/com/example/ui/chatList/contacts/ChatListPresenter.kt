@@ -1,10 +1,8 @@
 package com.example.ui.chatList.contacts
 
-import android.widget.LinearLayout.generateViewId
-import androidx.paging.map
+import androidx.paging.PagingData
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
-import com.example.data.models.*
 import com.example.data.models.ChatModel.Companion.CHAT_BINDS
 import com.example.data.models.ChatModel.Companion.CHAT_LIMIT
 import com.example.data.models.ChatModel.Companion.CHAT_OFFSET
@@ -12,9 +10,15 @@ import com.example.data.models.ChatModel.Companion.CHAT_SHOW_EVENTS
 import com.example.data.models.ChatModel.Companion.CHAT_SORT
 import com.example.data.models.ChatModel.Companion.CHAT_USER
 import com.example.data.models.ChatModel.Companion.CHAT_USER_STATUS
+import com.example.data.models.ChatRoomWithMeModel
+import com.example.data.models.Message
+import com.example.data.models.MessageModel
+import com.example.data.models.Optional
+import com.example.data.models.UserChatModel
+import com.example.data.models.UserDetail
+import com.example.data.models.asOptional
 import com.example.data.socket.SocketIOManager
 import com.example.extensions.buildFlow
-import com.example.extensions.buildObservable
 import com.example.repository.ChatRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
@@ -24,13 +28,11 @@ import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
 import withProgressBarDialogLoading
 import javax.inject.Inject
-import kotlin.random.Random
 
 @InjectViewState
 class ChatListPresenter
@@ -52,14 +54,14 @@ class ChatListPresenter
         super.onFirstViewAttach()
         compositeDisposable += socket.subscribeToMessagesCount()
             .performOnBackgroundOutOnMain()
-            .subscribeSimple { viewState.setChatUnreadMessageCount(it.room, it.count) }
+            .subscribeSimple {  }
 
         compositeDisposable += socket.subscribeNewChatMessage()
             .performOnBackgroundOutOnMain()
             .subscribeSimple { prepareNewMessage(it.data.first()) }
 
         compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
-            .map { pagingData -> pagingData.map { data -> data } }
+            //.map { pagingData -> pagingData.map { data -> data } }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
@@ -69,19 +71,19 @@ class ChatListPresenter
 
 
     override fun onChatClick(chat: UserChatModel) {
-        viewState.openChat(chat.id, chat.user.name, chat.user.image)
+        viewState.openChat(chat.id.toString(), chat.user.name, chat.user.image)
     }
 
 
-    override fun onUserClick(user: UserDetail, chatRoomWithMe: ChatRoomWithMeModel?) {
-        if (chatRoomWithMe == null) {
+    override fun onUserClick(user: UserDetail, chatRoom: ChatRoomWithMeModel?) {
+        if (chatRoom == null) {
             compositeDisposable += chatRepository.createChat(CreateChatBody(user.id))
                 .performOnBackgroundOutOnMain()
                 .withProgressBarDialogLoading(viewState)
                 .subscribeSimple {
-                    viewState.openChat(it.id, user.nameLastName, user.loadUserImage())
+                    viewState.openChat(it.id.toString(), user.nameLastName, user.loadUserImage())
                 }
-        } else viewState.openChat(chatRoomWithMe.id, user.nameLastName, user.loadUserImage())
+        } else viewState.openChat(chatRoom.id.toString(), user.nameLastName, user.loadUserImage())
     }
 
 
@@ -94,19 +96,25 @@ class ChatListPresenter
 
 
     private fun prepareNewMessage(message: MessageModel) {
-        val data = chatsList.find { x -> x.id == message.chat }
-        if (data != null) {
-            val newData = data.copy(
-                lastMessageId = message.id.toString(),
-                lastMessage = message.message,
-                lastMessageDate = message.createdDate,
-                lastMessageType = if (message.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
-                unreadMessageCount = data.unreadMessageCount + 1
-            )
-
-            chatsList.set(chatsList.indexOf(data), newData)
-            pagination.invalidateFrom(chatsList)
+        compositeDisposable += Maybe.fromAction<Optional<PagingData<UserChatModel>>> {
+            val data = chatsList.find { x -> x.id == message.chat }
+            if (data != null) {
+                val newData = data.copy(
+                    lastMessageId = message.id.toString(),
+                    lastMessage = message.message,
+                    lastMessageDate = message.createdDate,
+                    lastMessageType = if (message.file == null) Message.MessageType.TEXT else Message.MessageType.IMAGE,
+                    unreadMessageCount = data.unreadMessageCount + 1
+                )
+                chatsList.set(chatsList.indexOf(data), newData)
+                PagingData.from(chatsList).asOptional()
+            } else Optional(null)
         }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val data = it.value
+                if (data != null) viewState.setData(data)
+            }
     }
 
     private fun getPaginationRequest(

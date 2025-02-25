@@ -89,7 +89,7 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
 
     override fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterFieldData<*>>) {
         fieldsSection.apply {
-            setHeader(RegisterEventHeaderItem(event.id.toLong(), event))
+            setHeader(RegisterEventHeaderItem(event.id.toLong(), requireContext(), event))
             setFooter(saveButtonItem)
 
             update(fieldsData.map {
@@ -237,6 +237,7 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
     override fun navigateUpClick() = super.navigateUp()
 
 
+    override fun animationType(): AnimType = AnimType.FADE
     override fun layout() = R.layout.fragment_request
     override fun binding() = FragmentRequestBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.event_registration_title) }

@@ -7,17 +7,14 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.adapters.EventPagingAdapter.Companion.withLoadStateAdapters
-import com.example.adapters.EventPlaceholderAdapter
-import com.example.extensions.dp
-import com.example.extensions.updateItem
+import com.example.adapters.event.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.event.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.MyEventsFilter
 import com.example.app.databinding.FragmentMyEventsBinding
 import com.example.data.models.SearchFilter
 import com.example.extensions.isVisibleAnim
-import com.example.ui.event.my.schedule.items.NoScheduleEventItem
 import com.example.ui.views.filters.event.my.MyEventsFiltersBottomSheetDialog
 import com.example.util.SearchInput
 import com.example.util.smoothScrollToFirstItem
@@ -26,13 +23,13 @@ import moxy.presenter.ProvidePresenter
 import com.example.extensions.offsetChangedListener
 import com.example.extensions.onCheckedChanged
 import com.example.extensions.setFiltersBackground
-import com.example.ui.event.list.EventListFragmentNew
+import com.example.ui.event.list.EventListFragment
 import com.example.ui.views.CustomSpannableString
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.abs
 
-class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEventsBinding>(),
+class MyEventsFragment : EventListFragment<MyEventsPresenter, FragmentMyEventsBinding>(),
     MyEventsContract.View {
 
     @InjectPresenter
@@ -53,8 +50,8 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
                 adapter = pagingAdapter.withLoadStateAdapters(
                     EventPlaceholderAdapter(1),
                     EventPlaceholderAdapter(1)
-                ) { setDataEmpty(it) }
-                setDataEmpty(isEmptyData)
+                ) { setEmptyDataPlaceholder(it) }
+                setEmptyDataPlaceholder(isEmptyData)
             }
             etSearch.apply {
                 SearchInput(this).apply {
@@ -113,8 +110,8 @@ class MyEventsFragment : EventListFragmentNew<MyEventsPresenter, FragmentMyEvent
         mBinding.btnFilter.setFiltersBackground(isChosen)
     }
 
-    override fun setDataEmpty(show: Boolean) {
-        super.setDataEmpty(show)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
         val title: String
         val description: String
         if (presenter.isHasSearchParam()) {

@@ -29,7 +29,7 @@ data class EventRegistration(
                 name = event.name ?: "",
                 description = event.description ?: "",
                 image = event.image?.uri ?: event.binds?.organization?.image?.uri,
-                backgroundColor = when (event.binds?.getParticipationForm()?.background) {
+                backgroundColor = when (event.binds?.getForm()?.background) {
                     EventFormModel.BackgroundType.EVENT -> event.backgroundColor?.value
                     else -> event.binds?.organization?.backgroundColor?.value
                 },
@@ -37,11 +37,11 @@ data class EventRegistration(
                 conferenceFinish = event.holdingDate?.to,
                 userAgreement = event.userAgreement?.uri,
                 userRegistration = event.status?.value ?: Event.Status.FINISHED,
-                registrationHeadline = event.binds?.getParticipationForm()?.title,
-                registrationSubtitle = event.binds?.getParticipationForm()?.subtitle,
+                registrationHeadline = event.binds?.getForm()?.title,
+                registrationSubtitle = event.binds?.getForm()?.subtitle,
                 state = event.state,
-                formId = event.binds?.getParticipationForm()?.id ?: 0,
-                form = event.binds?.getParticipationForm()
+                formId = event.binds?.getForm()?.id ?: 0,
+                form = event.binds?.getForm()
             )
         }
     }
