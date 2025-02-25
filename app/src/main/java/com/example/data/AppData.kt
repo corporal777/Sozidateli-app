@@ -131,7 +131,6 @@ class AppData(private val appPrefs: AppPrefs) {
 
 
     private var newUser: UserDetail? = null
-    private var newChatMessage: MessageModel? = null
 
     var isLoggedOut = token.isNullOrEmpty()
         private set
@@ -142,38 +141,42 @@ class AppData(private val appPrefs: AppPrefs) {
     var isNeedShowWelcome = false
     var isNeedUpdateApp = false
 
-    val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
-    val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
-    val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
-    val chatUnreadMessageSubject = BehaviorSubject.createDefault(newChatMessage.asOptional())
-    val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
-
     private var eventFormats: List<NewEventFormat>? = null
     var interests: List<InterestNew>? = null
     var supportQuestions: List<SupportData> = emptyList()
     val filterRegionsList = arrayListOf<SearchRegion>()
+    val organizationsActiveEvents = arrayListOf<OrganizationNew>()
     val educationLevels = arrayListOf<EducationLevel>()
     val academicDegrees = arrayListOf<EducationLevel>()
     val specialities = arrayListOf<EducationLevel>()
 
+    private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
+    private var notificationsInvites = NotificationInviteModel(0, 0, 0)
+
+
+    //token subject
+    val userChangeSubject = BehaviorSubject.createDefault(newUser.asOptional())
+    val tokenChangeSubject = BehaviorSubject.createDefault(token.asOptional())
+
+    //chat subject
+    val chatMessageCountSubject = BehaviorSubject.createDefault(chatUnreadMessageCount)
+    val chatRequestsCountSubject = BehaviorSubject.createDefault(chatRequestsCount)
+
+    //event update subject
+    val eventChangeSubject = PublishSubject.create<EventNew>()
+
     //new notifications subjects
     val notificationReadSubject = PublishSubject.create<Notification>()
     val notificationsCountSubject = BehaviorSubject.createDefault(notificationsCount)
+    val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
+    val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
 
-    private var notificationsTypes = NotificationsTypesModel(0, 0, 0, 0, 0)
-    private var notificationsInvites = NotificationInviteModel(0, 0, 0)
-    private val notificationsTypesSubject = BehaviorSubject.createDefault(notificationsTypes.asOptional())
-    private val notificationsInvitesSubject = BehaviorSubject.createDefault(notificationsInvites.asOptional())
+
 
     fun setEventFormats(formats: List<NewEventFormat>?) {
         eventFormats = formats
     }
     fun getEventFormats() = eventFormats
-
-    fun setNewChatMessage(message: MessageModel?) {
-        this.newChatMessage = message
-        chatUnreadMessageSubject.onNext(newChatMessage.asOptional())
-    }
 
     fun setNotificationsTypes(types: NotificationsTypesModel) {
         this.notificationsTypes = types
@@ -187,6 +190,10 @@ class AppData(private val appPrefs: AppPrefs) {
 
     fun setNotificationRead(notification: Notification) {
         notificationReadSubject.onNext(notification)
+    }
+
+    fun sendUpdateEvent(eventNew: EventNew){
+        eventChangeSubject.onNext(eventNew)
     }
 
     fun checkUserState(data: List<UserProfileFields>?) {

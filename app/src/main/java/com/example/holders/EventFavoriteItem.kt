@@ -38,11 +38,11 @@ class EventFavoriteItem(
                         ?: ResourcesCompat.getColor(resources, R.color.colorAccent, null)))
             }
 
-            btnSubevents.apply {
-                isVisible = !event.binds?.userFavoriteActivities.isNullOrEmpty()
-                //isVisible = event.activities?.any { it.isInFavorites } ?: false
-                setOnClickListener(onEventSubeventsClick)
-            }
+//            btnSubevents.apply {
+//                isVisible = !event.binds?.userFavoriteActivities.isNullOrEmpty()
+//                isVisible = event.activities?.any { it.isInFavorites } ?: false
+//                setOnClickListener(onEventSubeventsClick)
+//            }
             userSubscribeButton.apply {
                 setAction(this, event.binds?.userFavorite != null)
                 setOnClickListener(onEventActionClick)

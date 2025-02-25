@@ -1,26 +1,26 @@
 package com.example.ui.favoritesTab.users
 
+import androidx.paging.PagingData
 import com.example.data.models.UserDetail
 import com.example.ui.base.BaseContract
-import com.example.util.pagination.PaginationListGroupAdapter
-import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface FavoriteUsersContract {
     interface View : BaseContract.View {
-        @AddToEndSingle
-        fun setData(data: List<UserDetail?>)
+        @OneExecution
+        fun setData(data: PagingData<UserDetail>)
 
-        @Skip
-        fun setUsersFavoriteEmptyPlaceholder()
-
-        @Skip
+        @OneExecution
         fun showUser(user: UserDetail)
+
+        @Skip
+        fun updateUser(user: UserDetail)
     }
 
-    interface Presenter : BaseContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
+    interface Presenter : BaseContract.Presenter {
         fun onUserClick(user: UserDetail)
-        fun onUserRemoveFromFavoritesClick(user: UserDetail)
+        fun onUserRemoveFavoritesClick(user: UserDetail)
         fun onRefreshRequest()
     }
 }

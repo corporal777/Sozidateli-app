@@ -15,7 +15,7 @@
         android:id="@+id/shimmer_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:shimmer_duration="1500">
+        app:shimmer_duration="4000">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -7,6 +7,8 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.types.base.BaseNotificationTypePresenter
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -29,26 +31,25 @@ class ArchiveInvitesPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Observable.create(pagination)
-            .map { transformList(it) }
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onNext = {
-                    viewState.apply {
-                        setReadAllButton(false)
+                onNext = { viewState.setNotifications(it) }
+            )
 
-                        if (it.isNullOrEmpty()) showEmptyListPlaceholder()
-                        else setNotifications(it)
-                    }
-                })
+        compositeDisposable += appData.notificationsTypesSubject
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val count = it.value?.pgrf ?: 0
+                viewState.setReadAllButton(count > 0)
+            }
     }
 
 
-    override fun onReadAllClick() {
-        if (totalUnreadInvites > 0){
-            viewState.showInvitesBottomSheet(NotificationType.PROJECTS)
-        }
+    override fun onReadAllNotifications(type: NotificationType) {
+        if (totalUnreadInvites > 0) viewState.showInvitesBottomSheet(type)
     }
 
 

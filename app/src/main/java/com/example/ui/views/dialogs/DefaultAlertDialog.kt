@@ -6,12 +6,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import com.example.app.R
 import com.example.app.databinding.DialogAlertDefaultBinding
-import com.example.app.databinding.DialogMessageWithGrayButtonBinding
 import com.example.extensions.removeUrlUnderline
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 

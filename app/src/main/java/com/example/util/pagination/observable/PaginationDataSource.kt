@@ -8,7 +8,7 @@ import com.example.util.pagination.PaginationResponse
 import io.reactivex.Maybe
 import kotlin.math.min
 
-open class PaginationDataSource<I> : PositionalDataSource<I>() {
+open class PaginationDataSource<I : Any> : PositionalDataSource<I>() {
 
     lateinit var request: (limit: Int, offset: Int) -> Maybe<PaginationResponse<I>>
 
@@ -83,11 +83,8 @@ open class PaginationDataSource<I> : PositionalDataSource<I>() {
         return result?.data ?: emptyList()
     }
 
-    fun <R> map(converter: (item: I) -> R): ConvertedPaginationDataSource<I, R> {
-        return ConvertedPaginationDataSource(this) { item, _, _ -> converter.invoke(item) }
-    }
 
-    fun <R> mapIndexed(converter: (item: I, index: Int, total: Int?) -> R): ConvertedPaginationDataSource<I, R> {
+    fun <R : Any> mapIndexed(converter: (item: I, index: Int, total: Int?) -> R): ConvertedPaginationDataSource<I, R> {
         return ConvertedPaginationDataSource(this, converter)
     }
 }

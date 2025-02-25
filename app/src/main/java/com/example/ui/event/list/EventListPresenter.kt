@@ -4,18 +4,16 @@ import call
 import com.example.data.AppData
 import com.example.data.models.EventNew
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.buildList
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.PAGE_PLACEHOLDER
-import com.example.util.PAGE_SIZE
+import com.example.ui.views.dialogs.StateType
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.applyErrorHandler
+import com.example.util.paginationNew.flow.PagingListFlow
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
+import withDelay
+import withEventLoading
 
 abstract class EventListPresenter<V : EventListContract.View>(
     private val appData: AppData,
@@ -23,78 +21,66 @@ abstract class EventListPresenter<V : EventListContract.View>(
     private val socket: SocketIOManager,
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
-    protected val pagination = PaginationDataSourceFactory(::getPaginationRequest)
-        .applyErrorHandler {
-            it.printStackTrace()
-            viewState.showRequestErrorMessage()
-        }
-        .buildList(enablePlaceholders = PAGE_PLACEHOLDER, initialSize = PAGE_SIZE)
+    abstract val pagination: PagingListFlow<*>
 
-    override fun onActionRegister(event: String, url: String?, formEnabled: Boolean) {
-        if (url.isNullOrEmpty()) registerToEvent(event, formEnabled)
-        else eventRepository.checkRegistrationAgreement(event)
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        compositeDisposable += appData.eventChangeSubject
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple { viewState.updateEvent(it) }
+    }
+
+    override fun onActionRegister(event: EventNew, withAccept: Boolean, position: Int) {
+        if (isProfileLevelLow(event)) viewState.showStateErrorMessage(StateType.BASE, false, null)
+        else eventRepository.acceptEventAgreement(event, withAccept)
+            .flatMapMaybe { registerToEventRequest(event) }
+            .performOnBackgroundOutOnMain()
+            .withEventLoading(viewState, position)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    if (it.isAccepted()) registerToEvent(event, formEnabled)
-                    else viewState.showAgreementRegisterDialog(event, url, formEnabled)
-                }
-            ).call(compositeDisposable)
-    }
-
-    override fun onAcceptRegistrationAgreement(event: String, formEnabled: Boolean) {
-        compositeDisposable += eventRepository.acceptRegistrationAgreement(event)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = { if (it.isAccepted()) registerToEvent(event, formEnabled) }
-            )
-    }
-
-    private fun registerToEvent(event: String, formEnabled: Boolean) {
-        if (formEnabled) viewState.showEventRequest(event)
-        else eventRepository.registerToEvent(event.toInt())
-            .andThen(socket.connectToUpdates())
-            .andThen(eventRepository.getEvent(event, getBinds()))
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = {
-                    viewState.apply {
-                        updateEvent(it)
-                        showEventRegistrationSuccessDialog()
+                    if (event.isFormEnabled()) viewState.showEventRequest(event.id.toString())
+                    else {
+                        viewState.updateEvent(event)
+                        viewState.showEventRegistrationSuccessDialog()
                     }
                 }
             ).call(compositeDisposable)
     }
 
-    override fun onActionCancel(event: String, registrationId: String?) {
-        compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId?.toInt() ?: 0)
-            .andThen(eventRepository.getEvent(event, getBinds()))
+    override fun onActionCancel(event: EventNew, position: Int) {
+        val registrationId = event.binds?.currentUserRegistration?.id ?: 0
+        if (isProfileLevelLow(event)) viewState.showStateErrorMessage(StateType.BASE, false, null)
+        else eventRepository.cancelRegisterToEvent(registrationId)
+            .andThen(eventRepository.getEvent(event.id.toString()))
+            .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .withEventLoading(viewState, position)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
-                onSuccess = { viewState.updateEvent(it) }
-            )
+                onSuccess = { viewState.updateEvent(event) }
+            ).call(compositeDisposable)
     }
 
 
+    private fun registerToEventRequest(event: EventNew): Maybe<EventNew> {
+        return Maybe.defer {
+            if (event.isFormEnabled()) Maybe.just(event).withDelay(500)
+            else eventRepository.registerToEvent(event.id ?: 0)
+                .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEvent(event.id.toString()))
+                .doOnSuccess { event.setFieldsForActionButton(it) }.map { event }
+        }
+    }
+
     override fun onShowEventClick(event: String) = viewState.showAboutEvent(event)
-    override fun onShowAuthorization(event: String) {
+    override fun onShowAuthorization(event: String?) {
         appData.savedEventId = event
         viewState.showAuthorization()
     }
 
+    override fun onRefreshRequest() = pagination.invalidate()
 
-    protected abstract fun getPaginationRequest(
-        limit: Int,
-        offset: Int
-    ): Maybe<PaginationResponse<EventNew?>>
 
-    protected abstract fun getBinds(): String
+    abstract fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew>>
 }

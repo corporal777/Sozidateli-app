@@ -1,94 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shimmer_view_container"
+    android:id="@+id/shimmer_container_one"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:shimmer_duration="4000">
 
-    <LinearLayout
-        android:id="@+id/itemContainer"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <View
+            android:id="@+id/view1"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="@dimen/margin_fifteen"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="250dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view1" />
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/margin_fifteen"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view3"
+            app:layout_constraintTop_toBottomOf="@id/view1" />
+
+        <View
+            android:id="@+id/view5"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view3" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/margin_fifteen"
+            android:background="@drawable/placeholder_circle_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view5"
+            app:layout_constraintTop_toBottomOf="@id/view3" />
+
+
+        <View
+            android:id="@+id/view7"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view6" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/view8"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="250dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="20dp"
+            android:elevation="0dp"
+            app:cardBackgroundColor="#26747480"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:layout_constraintTop_toBottomOf="@id/view7" />
 
-            <View
-                android:id="@+id/tvDate"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="20dp"
-                android:background="@color/placeholder"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineDate"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <View
+            android:id="@+id/view9"
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="@dimen/event_item_organization_name_margin_top"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toTopOf="@id/view8" />
 
-            <View
-                android:id="@+id/tvTitle"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="6dp"
-                android:background="@color/placeholder"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
-            <View
-                android:id="@+id/tvMessage1"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/event_item_event_name_text_size"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="@dimen/margin_horizontal_default"
-                android:background="@color/placeholder"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        <View
+            android:id="@+id/view10"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="@dimen/margin_twenty"
+            android:layout_marginEnd="@dimen/margin_forty"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view9" />
 
-            <View
-                android:id="@+id/tvMessage2"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/event_item_event_name_text_size"
-                android:layout_marginStart="@dimen/margin_horizontal_default"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/placeholder"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineOrganizationLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMessage1" />
+        <View
+            android:id="@+id/view11"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="@dimen/margin_seventy"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view10" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineOrganizationLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
+        <View
+            android:id="@+id/view12"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="90dp"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view11" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
+        <View
+            android:id="@+id/view13"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="@dimen/margin_seventy"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view12" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.6" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+        <View
+            android:id="@+id/view14"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="@dimen/margin_seventy"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view8"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view13" />
+
+        <View
+            android:id="@+id/view15"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="@dimen/margin_twenty"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="@id/view14"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view14" />
+
+        <View
+            android:layout_width="250dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="@dimen/margin_fifteen"
+            android:layout_marginTop="@dimen/margin_twenty"
+            android:background="@drawable/placeholder_background"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/view8"
+            app:layout_constraintTop_toBottomOf="@id/view15" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </com.facebook.shimmer.ShimmerFrameLayout>
+

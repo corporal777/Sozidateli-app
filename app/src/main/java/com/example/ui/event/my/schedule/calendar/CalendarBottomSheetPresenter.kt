@@ -1,6 +1,5 @@
 package com.example.ui.event.my.schedule.calendar
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventScheduleDay
 import com.example.extensions.calendar
@@ -13,7 +12,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import performOnBackgroundOutOnMain
-import java.util.*
 import javax.inject.Inject
 
 @InjectViewState

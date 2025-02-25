@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/clQrScanner"
+        fontPath="fonts/sf_pro_text_semibold.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/white"
+        android:elevation="4dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:minHeight="35dp"
+        android:stateListAnimator="@null"
+        android:text="@string/scan_qr_code_title"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:cornerRadius="10dp"
+        app:icon="@drawable/ic_scan_qr_search"
+        app:iconGravity="textStart"
+        app:iconTint="@color/black" />
+
+    <TextView
+        android:id="@+id/tvEmptyData"
+        style="@style/EmptyDataTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+        android:text="@string/no_data_found"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.example.ui.views.CustomSwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/clQrScanner"
+        android:layout_marginTop="10dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchEventList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_account_change" />
+    </com.example.ui.views.CustomSwipeRefreshLayout>
+
+
+</RelativeLayout>
+
+

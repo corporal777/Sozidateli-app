@@ -20,9 +20,11 @@ class OrganizationInfoItem(
 
     override fun bind(viewBinding: ItemOrganizationInfoBinding, position: Int) {
         viewBinding.apply {
-            tvLinksTitle.isVisible = !links.isNullOrEmpty()
-            tvLinks.isVisible = !links.isNullOrEmpty()
-            tvLinks.text = links
+            tvLinks.apply {
+                tvLinksTitle.isVisible = !links.isNullOrEmpty()
+                isVisible = !links.isNullOrEmpty()
+                tvLinks.text = links
+            }
 
             tvSnLinksTitle.isVisible = !socialLinks.isNullOrEmpty()
             tvSnLinks.apply {

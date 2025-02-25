@@ -6,7 +6,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.extensions.dp
 
 class CustomProgressView : LinearLayout {
 

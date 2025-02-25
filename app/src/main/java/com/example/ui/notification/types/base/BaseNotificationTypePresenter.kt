@@ -2,23 +2,23 @@ package com.example.ui.notification.types.base
 
 import android.app.NotificationManager
 import android.net.Uri
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.data.AppData
-import com.example.data.models.Notification
-import com.example.data.models.UnacceptedInviteNotification
+import com.example.data.models.NotificationLocal
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.notification.NotificationType
-import com.example.ui.notification.NotificationsSortedData
 import com.example.util.pagination.PaginationResponse
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import com.example.util.pagination.observable.applyErrorHandler
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.plusAssign
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
+import withCustomLoading
 import kotlin.math.abs
 
 abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.View>(
@@ -28,105 +28,79 @@ abstract class BaseNotificationTypePresenter<V : BaseNotificationTypeContract.Vi
     private val socket: SocketIOManager,
 ) : BasePresenter<V>(appData), BaseNotificationTypeContract.Presenter {
 
-    private var firstLaunch = true
     var totalUnread = 0
     var totalUnreadInvites = 0
     var isHasUnreadNotifications = false
-    var blockInvalidation = false
 
-    private var groupedNotifications = mutableListOf<NotificationsSortedData>()
-    private var titleDatesCount = 0
 
-    protected val pagination = PaginationDataSourceFactory { limit, offset ->
+    private var notificationTitleDate = ""
+
+    protected val pagination = PagingDataSourceFactory { limit, offset ->
         userRepository.getUserNotifications(buildParams(limit, offset))
             .doOnSuccess {
                 totalUnread = it.totalUnread ?: 0
                 totalUnreadInvites = it.totalUnreadInvites ?: 0
                 isHasUnreadNotifications = totalUnread > 0
-            }
-            .map { PaginationResponse(it.totalCount, it.data) }
-    }
-        .applyErrorHandler { viewState.showRequestErrorMessage() }
-        .buildList(enablePlaceholders = false, initialSize = 30)
+            }.map { PaginationResponse(it.totalCount, it.data) }
+
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = 30, distance = 5)
 
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.setPlaceholder(List(20) { null })
-        compositeDisposable += appData.notificationsCountSubject
-            .performOnBackgroundOutOnMain()
-            .subscribeSimple {
-                if (blockInvalidation) blockInvalidation = false
-                else pagination.invalidate()
-            }
-    }
-
-
-    override fun attachView(view: V) {
-        super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
-    }
-
-    fun updateNotification(request: Completable, notificationId: Int) {
-        compositeDisposable += Completable.fromAction { blockInvalidation = true }
-            .andThen(request)
-            .andThen(socket.connectToUpdates())
+    protected fun updateNotification(request: Completable, notificationId: Int) {
+        compositeDisposable += request.andThen(socket.connectToUpdates())
             .andThen(userRepository.getNotificationDetail(notificationId.toString(), true))
-            .map { Notification.fromRemoteNotification(it) }
+            .map { NotificationLocal.fromRemoteNotification(it) }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
+            .subscribeSimple(
+                onError = {
+                    onReceiveError(it)
+                    viewState.updateNotification(notificationId)
+                },
+                onSuccess = { viewState.updateNotification(it) }
+            )
+    }
+
+
+    override fun onReadAllNotifications(type: NotificationType) {
+        compositeDisposable += userRepository.markAllNotificationsAsRead(type)
+            .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
+            .performOnBackgroundOutOnMain()
+            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = { onReceiveError(it) },
                 onSuccess = {
-                    notificationManager.cancel(notificationId)
-                    viewState.onNotificationNeedUpdate(it)
-                })
-    }
-
-
-    fun readAllNotificationsRequest(notificationsType: NotificationType): Maybe<UnacceptedInviteNotification> {
-        return Completable.fromAction { blockInvalidation = true }
-            .andThen(userRepository.markAllNotificationsAsRead(notificationsType))
-            .flatMap { socket.connectToUpdates().andThen(Maybe.just(it)) }
+                    pagination.invalidateStart()
+                    if (type != NotificationType.SYSTEM && it.unAcceptedInvites > 0)
+                        viewState.showInvitesBottomSheet(type)
+                }
+            )
     }
 
 
     override fun onNotificationUrlClick(url: String) {
         if (url.contains("/organization/")) {
             viewState.showAboutOrganization(Uri.parse(url).lastPathSegment)
-        } else viewState.showUrl(url)
+        } else viewState.showBrowser(url)
     }
 
-    override fun onRefreshRequest() = pagination.invalidate()
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+
+    override fun onRefreshRequest() {
+        notificationTitleDate = ""
+        pagination.invalidate()
+    }
+
+    override fun changeScrollingElevation(value: Int) = viewState.setAppBarElevation(abs(value / 10f))
 
     abstract fun buildParams(limit: Int, offset: Int): Map<String, Any>
 
-    fun transformList(list: List<Notification>): ArrayList<NotificationsSortedData> {
-        val notificationsList = arrayListOf<NotificationsSortedData>()
-        var titleDate : String? = ""
-        var wasRead = false
-        list.forEach { note ->
-            val noteDate = note.date.split(" ").firstOrNull()
-            if (titleDate == noteDate && wasRead == note.wasRead) titleDate = ""
-            else titleDate = noteDate
+    fun transformData(data: PagingData<NotificationLocal>): PagingData<NotificationLocal> {
+        return data.map {
+            val notificationDate = it.date
+            if (notificationTitleDate == notificationDate) it.titleDate = ""
+            else it.titleDate = notificationDate
 
-            notificationsList.add(NotificationsSortedData(titleDate, note))
-            titleDate = noteDate
-            wasRead = note.wasRead
+            notificationTitleDate = notificationDate
+            it
         }
-        groupedNotifications = notificationsList
-        titleDatesCount = groupedNotifications.filter { x -> !x.titleDate.isNullOrEmpty() }.size
-        return notificationsList
     }
-
-    override fun getTitleDatesCount(): Int {
-        return titleDatesCount
-    }
-
-    override fun changeScrollingElevation(value: Int) {
-        viewState.setAppBarElevation(abs(value / 10f))
-    }
-
 }

@@ -5,7 +5,7 @@ import com.example.data.models.ChatListDataItem
 import com.example.data.models.ChatModel
 import com.example.data.models.Message.MessageType
 import com.example.data.models.UserChat
-import com.example.extensions.buildList
+import com.example.extensions.buildFlow
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.util.pagination.PaginationResponse
@@ -59,7 +59,7 @@ class InviteListPresenter
             }
             PaginationResponse(response.totalCount, items)
         }
-    }.buildList(enablePlaceholders = false, initialSize = 30)
+    }.buildFlow(enablePlaceholders = false, initialSize = 30)
 
     private var firstLaunch = true
 

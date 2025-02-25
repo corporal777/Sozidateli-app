@@ -7,7 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
 
-class PaginationList<T>(
+class PaginationList<T : Any>(
         private val pagination: Observable<PagedList<T>>
 ) : ObservableOnSubscribe<List<T>> {
 
@@ -32,7 +32,6 @@ class PaginationList<T>(
         }, {
             emitter.onError(it)
         })
-
         emitter.setDisposable(disposable)
     }
 

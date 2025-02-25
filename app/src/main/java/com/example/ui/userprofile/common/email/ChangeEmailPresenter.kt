@@ -6,7 +6,6 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.ui.base.bottomSheet.BaseBottomSheetPresenter
 import com.example.util.AuthValidateUtil
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign

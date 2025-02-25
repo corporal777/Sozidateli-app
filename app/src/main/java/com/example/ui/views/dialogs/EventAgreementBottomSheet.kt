@@ -1,6 +1,7 @@
 package com.example.ui.views.dialogs
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.example.util.ClickableSpanNew
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import io.reactivex.subjects.SingleSubject
 
 class EventAgreementBottomSheet (
     context: Context,
@@ -19,7 +21,7 @@ class EventAgreementBottomSheet (
 ) : BottomSheetDialog(context) {
 
     private val mBinding = BottomSheetDialogEventAgreementBinding.inflate(LayoutInflater.from(context))
-    private var onSelect: () -> Unit = {}
+    private var onSelect: (isAccept : Boolean) -> Unit = {}
 
     init {
         setContentView(mBinding.root)
@@ -29,12 +31,13 @@ class EventAgreementBottomSheet (
 
         mBinding.apply {
             btnClose.setOnClickListener {
+                onSelect.invoke(false)
                 dismiss()
             }
             btnApply.apply {
                 isEnabled = false
                 setOnClickListener {
-                    onSelect.invoke()
+                    onSelect.invoke(true)
                     dismiss()
                 }
             }
@@ -54,9 +57,10 @@ class EventAgreementBottomSheet (
         }
     }
 
-    fun setSelectCallback(block: () -> Unit): EventAgreementBottomSheet {
+    fun setSelectCallback(block: (isAccept : Boolean) -> Unit): EventAgreementBottomSheet {
         onSelect = block
         return this
     }
+
 
 }

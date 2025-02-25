@@ -2,7 +2,6 @@ package com.example.ui.auth.confirm.phone
 
 import com.example.ui.auth.base.BaseAuthContract
 import com.example.ui.base.BaseContract
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
 import com.example.util.OneExecutionByTagStateStrategy
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType

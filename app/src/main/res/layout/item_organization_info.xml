@@ -1,163 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    tools:ignore="MissingPrefix"
+    android:layout_marginBottom="20dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/tvMainData"
+        fontPath="fonts/sf_pro_display_bold.ttf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+        android:letterSpacing="-0.01"
+        android:text="@string/organization_main_data"
+        android:textColor="@color/profile_name_text"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLinksTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/event_contacts_site"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMainData" />
+
+    <TextView
+        android:id="@+id/tvLinks"
+        style="@style/Profile.Data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="7dp"
+        android:autoLink="web"
+        android:textColorHighlight="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLinksTitle"
+        tools:text="http://google.com" />
+
+    <TextView
+        android:id="@+id/tvSnLinksTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/organization_sn_links"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLinks" />
+
+    <TextView
+        android:id="@+id/tvSnLinks"
+        style="@style/Profile.Data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="7dp"
+        android:autoLink="web"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSnLinksTitle"
+        tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
+
+    <TextView
+        android:id="@+id/tvEmailTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/organization_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSnLinks" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        style="@style/Profile.Data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="7dp"
+        android:autoLink="email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailTitle"
+        tools:text="example1@gmail.com\nexample1@gmai2.com" />
+
+    <TextView
+        android:id="@+id/tvPhoneTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEmail" />
+
+    <TextView
+        android:id="@+id/tvPhone"
+        style="@style/Profile.Data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="7dp"
+        android:autoLink="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPhoneTitle"
+        tools:text="+7 999 111 11 11\n+7 999 111 11 12" />
+
+    <TextView
+        android:id="@+id/tvAddressTitle"
+        style="@style/Profile.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:text="@string/organization_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPhone" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        style="@style/Profile.Data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp">
+        android:layout_marginStart="@dimen/margin_horizontal_default"
+        android:layout_marginEnd="@dimen/margin_horizontal_default"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAddressTitle"
+        tools:text="420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14" />
 
-        <TextView
-            android:id="@+id/tvMainData"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal_default"
-            android:letterSpacing="-0.01"
-            android:text="@string/organization_main_data"
-            android:textColor="@color/profile_name_text"
-            android:textSize="17sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingPrefix" />
-
-        <TextView
-            android:id="@+id/tvLinksTitle"
-            style="@style/Profile.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/event_contacts_site"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvMainData" />
-
-        <TextView
-            android:id="@+id/tvLinks"
-            style="@style/Profile.Data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="7dp"
-            android:autoLink="web"
-            android:textColorHighlight="@android:color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLinksTitle"
-            tools:text="http://google.com" />
-
-        <TextView
-            android:id="@+id/tvSnLinksTitle"
-            style="@style/Profile.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/organization_sn_links"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLinks" />
-
-        <TextView
-            android:id="@+id/tvSnLinks"
-            style="@style/Profile.Data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="7dp"
-            android:autoLink="web"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSnLinksTitle"
-            tools:text="https://vk.com/sashagrey\nhttps://vk.com/durov" />
-
-        <TextView
-            android:id="@+id/tvEmailTitle"
-            style="@style/Profile.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/organization_email"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSnLinks" />
-
-        <TextView
-            android:id="@+id/tvEmail"
-            style="@style/Profile.Data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="7dp"
-            android:autoLink="email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEmailTitle"
-            tools:text="example1@gmail.com\nexample1@gmai2.com" />
-
-        <TextView
-            android:id="@+id/tvPhoneTitle"
-            style="@style/Profile.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/phone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEmail" />
-
-        <TextView
-            android:id="@+id/tvPhone"
-            style="@style/Profile.Data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="7dp"
-            android:autoLink="phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPhoneTitle"
-            tools:text="+7 999 111 11 11\n+7 999 111 11 12" />
-
-        <TextView
-            android:id="@+id/tvAddressTitle"
-            style="@style/Profile.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:text="@string/organization_address"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPhone" />
-
-        <TextView
-            android:id="@+id/tvAddress"
-            style="@style/Profile.Data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_horizontal_default"
-            android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:layout_marginBottom="7dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAddressTitle"
-            tools:ignore="MissingPrefix"
-            tools:text="420025, респ.Татарстан, г.Казань, ул.Новый Татарстан, дом.14" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

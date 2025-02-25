@@ -13,8 +13,10 @@ import com.example.data.models.EventFormResultModel
 import com.example.data.models.EventNew
 import com.example.data.models.EventRegisterProfilePrefilledData
 import com.example.data.models.EventTagModel
+import com.example.data.models.EventUserFavorite
 import com.example.data.models.MemberModel
 import com.example.data.models.NewEventFormat
+import com.example.data.models.Optional
 import com.example.data.models.PageModel
 import com.example.data.models.PartnerModel
 import com.example.data.models.RegistrationAgreementStatus
@@ -28,17 +30,17 @@ import okhttp3.RequestBody
 interface EventRepository {
 
     fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
-    fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
+    fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
     fun getUserCalendarEvents(): Maybe<List<EventNew>?>
 
-    fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     fun getEventFormatsList(map: Map<String, Any>): Maybe<List<NewEventFormat>>
     fun getActiveEventFormatsList(): Maybe<List<NewEventFormat>>
 
     fun getEventByCode(code: String): Single<EventNew>
-    fun getEvent(eventId: String, binds : String?): Maybe<EventNew>
+    fun getEvent(eventId: String): Maybe<EventNew>
     fun getEventDetails(eventId: String): Maybe<EventNew>
     fun getEventDetailForRegister(eventId: String): Maybe<EventNew>
 
@@ -60,7 +62,7 @@ interface EventRepository {
     fun deleteFromFavorites(id : String): Completable
 
     fun checkUserProfile(): Maybe<UserProfileFieldsModel>
-    fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     fun getEventForm(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormModel>>>
     fun getEventFormResult(map: Map<String, Any>): Single<ApiNewResponse<List<EventFormResultModel>>>
@@ -69,7 +71,7 @@ interface EventRepository {
     fun getPrefilledEventFormResult(id : String): Single<EventRegisterProfilePrefilledData>
     fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel>
 
-    fun eventRegisterNew(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>>
+    fun sendFormToRegister(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>>
     fun registerToEvent(eventId : Int): Completable
     fun cancelRegisterToEvent(eventId : Int): Completable
     fun addEventToCalendarWithResult(body: EventCalendarBody): Single<EventCalendarModel>
@@ -82,9 +84,13 @@ interface EventRepository {
     fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>>
 
     //+
-    fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>>
+    fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>>
 
     //+
     fun checkRegistrationAgreement(eventId : String) : Single<RegistrationAgreementStatus>
     fun acceptRegistrationAgreement(eventId : String) : Single<RegistrationAgreementStatus>
+    fun acceptEventAgreement(event : EventNew, withAccept : Boolean) : Single<EventNew>
+
+    fun addOrRemoveEventFavorite(event : EventNew) : Single<Optional<EventUserFavorite>>
+    fun addOrRemoveSubEventCalendar(subEvent: EventActivityModel) : Single<Optional<EventCalendarModel>>
 }

@@ -1,37 +1,32 @@
 package com.example.ui.search.event
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.AutoCompleteTextView
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import com.example.adapters.event.EventPagingAdapter
+import com.example.adapters.event.EventPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.event.EventPlaceholderAdapter
 import com.example.app.R
 import com.example.data.models.EventNew
 import com.example.data.models.SearchFilter
-import com.example.app.databinding.LayoutFilterEventSearchBinding
-import com.example.holders.PlaceholderItem
-import com.example.holders.redesign.EventListItem
+import com.example.app.databinding.LayoutListEventSearchBinding
+import com.example.extensions.isVisibleAnim
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.search.SearchFragment
-import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.StateType
-import com.example.ui.views.suggestFieldView.format.EventFormatBottomSheet
-import com.example.ui.views.suggestFieldView.organization.EventOrgBottomSheet
-import com.example.util.initInput
-import com.google.android.material.textfield.TextInputLayout
-import com.xwray.groupie.Group
+import com.example.ui.views.filters.event.EventFiltersBottomSheetDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, SearchFilter.EventNew>(),
+class SearchEventFragment : SearchFragment<LayoutListEventSearchBinding, SearchEventPresenter>(),
     SearchEventContract.View {
 
     @InjectPresenter
-    override lateinit var searchPresenter: SearchEventPresenter
+    override lateinit var presenter: SearchEventPresenter
 
     @Inject
     lateinit var presenterProvider: Provider<SearchEventPresenter>
@@ -40,19 +35,42 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
     fun providePresenter(): SearchEventPresenter = presenterProvider.get()
 
 
-    private val onEventClickListener = object : EventListItem.OnEventClickListener {
-        override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
-            searchPresenter.onActionRegister(event, agreementUrl, formEnabled)
-        override fun onActionCancel(event: String, registrationId: String?) =
-            searchPresenter.onActionCancel(event, registrationId)
-        override fun onShowEventClick(view: View, event: String) =
-            searchPresenter.onShowEventClick(event)
-        override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onShowNeedAuth(eventId: String) { searchPresenter.onShowAuthorization(eventId) }
+
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        EventPagingAdapter(
+            { event, accept, pos -> presenter.onActionRegister(event, accept, pos) },
+            { event, pos -> presenter.onActionCancel(event, pos) },
+            { event -> presenter.onShowEventClick(event.id.toString()) },
+            { event -> presenter.onShowAuthorization(event.id.toString()) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.apply {
+            searchEventList.adapter = pagingAdapter.withLoadStateAdapters(
+                EventPlaceholderAdapter(1),
+                EventPlaceholderAdapter(1)
+            ) { setEmptyDataPlaceholder(it) }
+            setEmptyDataPlaceholder(isEmptyData)
+
+            swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
+            clQrScanner.setOnClickListener { presenter.onScanClick() }
+        }
+    }
+
+    override fun setData(data: PagingData<EventNew>, isTemporary: Boolean) {
+        pagingAdapter.submitData(lifecycle, data, isTemporary, false)
+        mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun updateEvent(event: EventNew) {
+        pagingAdapter.updateEventAction(event)
+    }
+
+    override fun showFilter(filter: SearchFilter.EventNew) {
+        EventFiltersBottomSheetDialog(requireContext(), filter)
+            .setFiltersSelected { presenter.onFiltersApplyClick(it) }
+            .show()
     }
 
     override fun showAboutEvent(event: String) {
@@ -73,152 +91,19 @@ class SearchEventFragment : SearchFragment<SearchEventPresenter, EventNew, Searc
         findNavController().navigate(R.id.authorization_fragment)
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
-        EventAgreementBottomSheet(requireContext(), url)
-            .setSelectCallback { searchPresenter.onAcceptRegistrationAgreement(event, formEnabled) }
-            .show()
+    override fun showQrScanner() {
+        findNavController().navigate(R.id.qr_scanner_fragment)
     }
 
-    override fun createItem(itemData: EventNew?): Group {
-        return if (itemData == null) PlaceholderItem(PlaceholderItem.Type.EVENT)
-        else EventListItem(itemData, searchPresenter.isTemporaryUser(), onEventClickListener,)
+    override fun setEmptyDataPlaceholder(show: Boolean) {
+        super.setEmptyDataPlaceholder(show)
+        mBinding.tvEmptyData.isVisibleAnim = show
     }
 
-
-    override fun createFilterView(filter: SearchFilter.EventNew): View {
-        return LayoutFilterEventSearchBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            null,
-            false
-        )
-            .apply {
-//                etAddress.apply {
-//                    setTextWithoutSearch(filter.address)
-//                    com.example.extensions.onTextChanged {
-//                        filter.address = it.toString()
-//                        filter.fullAddress = null
-//                    }
-//                    onDataSelectedListener = {
-//                        filter.fullAddress = it
-//                    }
-//                }
-                initTextFilter(etName, filter.name) { filter.name = it }
-
-                initRegions(filter, tvRegion, tilRegion, tilTown)
-                initTowns(filter, tvTown, tilTown)
-
-                initFormats(filter, tilFormat, tvFormat)
-                initOrganizations(filter, tilOrganization, tvOrganization)
-                initEventInterests(filter, this)
+    override fun showEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(true, pos)
+    override fun hideEventLoading(pos: Int) = pagingAdapter.executeButtonLoading(false, pos)
 
 
-                initDateFilter(etStart, tilStart, filter.dateStart) { filter.dateStart = it }
-                initDateFilter(etFinish, tilFinish, filter.dateFinish) { filter.dateFinish = it }
-            }.root
-    }
-
-
-    private fun initFormats(
-        filter: SearchFilter.EventNew,
-        inputLayout: TextInputLayout,
-        textView: AutoCompleteTextView,
-    ) {
-        textView.apply {
-            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
-            isCursorVisible = false
-            isFocusable = false
-            isFocusableInTouchMode = false
-
-            setOnClickListener {
-                EventFormatBottomSheet(requireContext(), filter.formats)
-                    .setFormatSelectedCallback {
-                        filter.format = it?.id
-                        filter.customFormat = it?.name
-                        this.setText(filter.getFormatName())
-                    }
-                    .show()
-            }
-            initInput(filter.getFormatName()) {
-                if (it.isNullOrBlank()) {
-                    filter.format = null
-                    filter.customFormat = null
-                }
-            }
-        }
-    }
-
-    private fun initOrganizations(
-        filter: SearchFilter.EventNew,
-        inputLayout: TextInputLayout,
-        textView: AutoCompleteTextView,
-    ) {
-        textView.apply {
-            inputLayout.endIconMode = TextInputLayout.END_ICON_NONE
-            isCursorVisible = false
-            isFocusable = false
-            isFocusableInTouchMode = false
-
-            setOnClickListener {
-                EventOrgBottomSheet(requireContext(), filter.organizations)
-                    .setOrganizationSelectedCallback {
-                        filter.organizationId = it?.id
-                        filter.organizationName = it?.legalInformation?.name?.short
-                        this.setText(filter.getOrgName())
-                    }
-                    .show()
-            }
-            initInput(filter.getOrgName()) {
-                if (it.isNullOrBlank()) {
-                    filter.organizationId = null
-                    filter.organizationName = null
-                }
-            }
-        }
-    }
-
-    private fun initEventInterests(
-        filter: SearchFilter.EventNew,
-        binding: LayoutFilterEventSearchBinding
-    ) {
-        binding.apply {
-            val interests = filter.interests
-            if (interests.isNullOrEmpty()) {
-                tilTheme.isVisible = false
-                tilSpec.isVisible = false
-            } else {
-                initInterests(
-                    interests,
-                    tvTheme,
-                    tilSpec,
-                    tvSpec,
-                    filter.theme,
-                    filter.spec
-                ) { theme, spec ->
-                    filter.theme = theme
-                    filter.spec = spec
-                }
-                tilTheme.isVisible = true
-                tilSpec.isVisible = true
-            }
-        }
-    }
-
-
-    override fun clearFilterView(filterView: View) {
-        LayoutFilterEventSearchBinding.bind(filterView).apply {
-            etName.text = null
-
-            tvRegion.text = null
-            tvTown.text = null
-
-            tvFormat.text = null
-            tvOrganization.text = null
-            tvTheme.text = null
-            tvSpec.text = null
-            etStart.text = null
-            etFinish.text = null
-        }
-    }
-
-
+    override fun binding() = LayoutListEventSearchBinding::class.java
+    override fun layout() = R.layout.layout_list_event_search
 }

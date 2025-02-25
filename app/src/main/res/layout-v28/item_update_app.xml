@@ -14,7 +14,7 @@
             android:id="@+id/cl_content"
             android:translationZ="10dp"
             android:outlineAmbientShadowColor="#00486A7A"
-            android:outlineSpotShadowColor="#E6324853"
+            android:outlineSpotShadowColor="#E623363D"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"

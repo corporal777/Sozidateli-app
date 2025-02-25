@@ -7,14 +7,6 @@ data class EventCalendarBody(
     companion object {
         const val CALENDAR_EVENT = "event"
         const val CALENDAR_EVENT_ACTIVITY = "eventActivity"
-
-        fun toCalendarBody(userId : Int, subEventId : Int?): EventCalendarBody {
-            return EventCalendarBody(
-                userId, EventCalendarBodyEntity(
-                    EventCalendarBody.CALENDAR_EVENT_ACTIVITY, subEventId ?: 0
-                )
-            )
-        }
     }
 }
 

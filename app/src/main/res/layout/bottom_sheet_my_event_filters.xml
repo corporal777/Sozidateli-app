@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnClear"
+        fontPath="fonts/sf_pro_display_medium.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/clear"
+        android:textAllCaps="false"
+        android:textColor="@color/profile_data_disabled"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvTitle"
+        app:layout_constraintEnd_toStartOf="@+id/tvTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTitle"
+        fontPath="fonts/sf_pro_display_bold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="24dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/search_filters"
+        android:textColor="@color/text_color_profile_data"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClear">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="15dp"
+            android:orientation="vertical">
+
+            <com.example.ui.views.CustomTextInputLayout
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etName"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/search_filter_event_name"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                style="@style/Profile.Edit.InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:endIconMode="none">
+
+                <com.example.ui.views.suggestFieldView.address.DaDataAutoCompleteTextView
+                    android:id="@+id/etAddress"
+                    style="@style/Profile.Edit.Input.SingleLine"
+                    android:hint="@string/search_filter_address_new"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
+                    android:paddingStart="@dimen/background_input_padding"
+                    android:paddingEnd="@dimen/background_input_padding" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Profile.Edit.InputTitle"
+                    android:text="@string/search_filter_event_dates" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <com.example.ui.views.CustomTextInputLayout
+                        android:id="@+id/tilStart"
+                        style="@style/Profile.Edit.InputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        app:endIconMode="custom">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etStart"
+                            style="@style/Profile.Edit.Input.SingleLine"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@string/search_filter_start" />
+                    </com.example.ui.views.CustomTextInputLayout>
+
+                    <com.example.ui.views.CustomTextInputLayout
+                        android:id="@+id/tilFinish"
+                        style="@style/Profile.Edit.InputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        app:endIconMode="custom">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etFinish"
+                            style="@style/Profile.Edit.Input.SingleLine"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@string/search_filter_finish" />
+                    </com.example.ui.views.CustomTextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilFormat"
+                style="@style/Profile.Edit.InputLayout.DropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/tvFormat"
+                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                    android:hint="@string/search_filter_format"
+                    android:paddingStart="@dimen/background_input_padding"
+                    android:paddingEnd="@dimen/background_input_padding" />
+
+            </com.example.ui.views.CustomTextInputLayout>
+
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilTheme"
+                style="@style/Profile.Edit.InputLayout.DropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/tvTheme"
+                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                    android:hint="@string/search_filter_theme"
+                    android:paddingStart="@dimen/background_input_padding"
+                    android:paddingEnd="@dimen/background_input_padding" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <com.example.ui.views.CustomTextInputLayout
+                android:id="@+id/tilSpec"
+                style="@style/Profile.Edit.InputLayout.DropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/tvSpec"
+                    style="@style/Profile.Edit.Input.SingleLine.DropDown"
+                    android:hint="@string/search_filter_specialization"
+                    android:paddingStart="@dimen/background_input_padding"
+                    android:paddingEnd="@dimen/background_input_padding" />
+            </com.example.ui.views.CustomTextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnApply"
+                style="@style/BtnBrownStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_button_height"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/search_filters_find"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

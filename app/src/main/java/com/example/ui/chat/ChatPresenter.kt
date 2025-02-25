@@ -3,6 +3,11 @@ package com.example.ui.chat
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import com.example.extensions.buildFlow
+import com.example.extensions.calendar
+import com.example.extensions.defaultServerDateTimeFormatter
+import com.example.extensions.isSameDay
+import com.example.extensions.parseToLong
 import com.example.data.AppData
 import com.example.data.bodies.CreateChatBody
 import com.example.data.models.ChatMessage
@@ -10,7 +15,6 @@ import com.example.data.models.ChatModel.Companion.CHAT_BINDS
 import com.example.data.models.Message
 import com.example.data.models.MessageModel
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.*
 import com.example.repository.ChatRepository
 import com.example.ui.base.BasePresenter
 import com.example.ui.views.crop.cropHelper.CropImageView
@@ -92,7 +96,7 @@ class ChatPresenter
     private fun getChatMessages() {
         paginationList = pagination.applyErrorHandler {
             if (it.cause is UnknownHostException) hasNoConnectionError = true
-        }.buildList(enablePlaceholders = false, initialSize = 40)
+        }.buildFlow(enablePlaceholders = false, initialSize = 40)
 
         compositeDisposable += Observable.create(paginationList)
             .flatMapMaybe { prepareListOfMessages(it) }

@@ -1,6 +1,8 @@
 package com.example.ui.notification
 
+import androidx.paging.PagingData
 import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.ui.base.BaseContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
@@ -9,20 +11,11 @@ import moxy.viewstate.strategy.alias.Skip
 interface NotificationsListContract {
     interface View : BaseContract.View {
 
-        @AddToEndSingle
-        fun setNotificationsPlaceholder()
-
-        @AddToEndSingle
-        fun setData(notifications: List<NotificationsSortedData>)
-
-        @AddToEndSingle
-        fun showEmptyListPlaceholder()
-
         @OneExecution
-        fun showUrl(url: String)
+        fun setData(notifications: PagingData<NotificationLocal>)
 
-        @OneExecution
-        fun onNotificationNeedUpdate(data : Notification)
+        @Skip
+        fun updateNotification(data : NotificationLocal?, notificationId : Int)
 
         @OneExecution
         fun showAboutEvent(eventId: String)
@@ -30,8 +23,8 @@ interface NotificationsListContract {
         @OneExecution
         fun showAboutOrganization(id: String?)
 
-        @OneExecution
-        fun setNotReadButtonEnabled(enabled: Boolean)
+        @Skip
+        fun setBtnReadAllEnabled(enabled: Boolean)
 
         @Skip
         fun showInvitesBottomSheet()
@@ -39,12 +32,11 @@ interface NotificationsListContract {
 
     interface Presenter : BaseContract.Presenter {
         fun onNotificationUrlClick(url: String)
-        fun onItemTake(position: Int)
         fun onRefreshRequest()
         fun onNotificationReadClick(id: Int)
-        fun onNotificationAcceptClick(notification: Notification)
-        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationAcceptClick(notification: NotificationLocal)
+        fun onNotificationCancelClick(notification: NotificationLocal)
         fun onNotificationRateClick(eventId: String)
-        fun onReadAllNotificationsClick()
+        fun onReadAllClick()
     }
 }

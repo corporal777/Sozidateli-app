@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class SimpleRecyclerViewAdapter<T>(var items: List<T>) : RecyclerView.Adapter<ViewHolder>() {
+abstract class SimpleRecyclerViewAdapter() : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -13,14 +13,14 @@ abstract class SimpleRecyclerViewAdapter<T>(var items: List<T>) : RecyclerView.A
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = 1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        onBindItem(holder, items[position], position)
+        onBindItem(holder, position)
     }
 
     @LayoutRes
     abstract fun getItemLayout(itemView: Int): Int
 
-    abstract fun onBindItem(holder: ViewHolder, item: T?, position: Int)
+    abstract fun onBindItem(holder: ViewHolder, position: Int)
 }

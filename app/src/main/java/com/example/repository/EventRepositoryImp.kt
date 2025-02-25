@@ -1,11 +1,11 @@
 package com.example.repository
 
-import android.util.Log
 import com.example.api.Api
 import com.example.data.AppData
 import com.example.data.bodies.AddToFavoriteEntityModel
 import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.bodies.EventCalendarBody
+import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.bodies.MessageToEventBody
 import com.example.data.bodies.RegisterToEventBody
 import com.example.data.models.AddFavoriteModel
@@ -14,16 +14,15 @@ import com.example.data.models.EventActivityModel
 import com.example.data.models.EventCalendarModel
 import com.example.data.models.EventFormModel
 import com.example.data.models.EventFormResultDraftModel
-import com.example.data.models.EventFormResultFieldsModel
 import com.example.data.models.EventFormResultModel
 import com.example.data.models.EventNew
-import com.example.data.models.EventRegisterField
 import com.example.data.models.EventRegisterProfilePrefilledData
 import com.example.data.models.EventSubscriptionRequest
 import com.example.data.models.EventTagModel
 import com.example.data.models.EventUserFavorite
 import com.example.data.models.MemberModel
 import com.example.data.models.NewEventFormat
+import com.example.data.models.Optional
 import com.example.data.models.PageModel
 import com.example.data.models.PartnerModel
 import com.example.data.models.RegistrationAgreementStatus
@@ -56,8 +55,8 @@ class EventRepositoryImp
         }
     }
 
-    override fun getEvent(eventId: String, binds: String?): Maybe<EventNew> {
-        return api.getEventDetails(eventId, binds ?: "")
+    override fun getEvent(eventId: String): Maybe<EventNew> {
+        return api.getEventDetails(eventId, getCurrentRegistrationBinds())
     }
 
     override fun getEventDetails(eventId: String): Maybe<EventNew> =
@@ -65,13 +64,10 @@ class EventRepositoryImp
             .flatMap {
                 api.getEventDetails(
                     eventId,
-                    "organization,organization.userFavorite," +
-                            "tag,page,format,activity,activity.userCalendar,activity.auditorium," +
-                            "partner,member,member.user,userFavorite,destination-scheme," +
-                            "user-registration,eventRegistrationState,current-user-registration," +
-                            "current-user-registration-state," +
-                            "is-user-subscribed,event-subscribe," +
-                            "user-form-result"
+                    "organization,organization.userFavorite,tag,page,format,activity," +
+                            "activity.userCalendar,activity.auditorium,partner,member,member.user," +
+                            "userFavorite,destination-scheme,is-user-subscribed,event-subscribe," +
+                            "user-form-result," + getCurrentRegistrationBinds()
                 ).map {
                     val formats = appData.getEventFormats()
                     if (!formats.isNullOrEmpty()) {
@@ -91,16 +87,16 @@ class EventRepositoryImp
         api.getEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getEventsListNew(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getEventsListNew(map)
-            .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
+            .map { PaginationResponse(it.totalCount, it.data ?: emptyList()) }
     }
 
-    override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =
+    override fun getSortedEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> =
         api.getSortedEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
 
-    override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getOrganizationEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getOrganizationEventsList(map)
             .map { PaginationResponse(it.totalCount, it.data ?: arrayListOf()) }
     }
@@ -191,7 +187,6 @@ class EventRepositoryImp
     }
 
 
-
     override fun addOrgToFavorites(orgId: String): Single<AddFavoriteModel> {
         return if (appData.isTemporaryUser()) api.addToTempFavorite(
             AddToFavoriteModel(
@@ -238,14 +233,14 @@ class EventRepositoryImp
     override fun checkUserProfile(): Maybe<UserProfileFieldsModel> =
         api.checkUserProfile(appData.getId())
 
-    override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun getEventFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.getEventFavoritesList(map)
             .map {
                 it.data.forEach { org ->
                     org.entity?.model?.binds?.userFavorite =
                         EventUserFavorite(org.id?.toLong(), org.user)
                 }
-                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                PaginationResponse(it.totalCount, it.data.mapNotNull { org -> org.entity?.model })
             }
     }
 
@@ -274,7 +269,7 @@ class EventRepositoryImp
     override fun saveEventFormResultDraft(body: RequestBody): Single<EventFormResultModel> =
         api.sendEventFormResultForRegister(body)
 
-    override fun eventRegisterNew(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>> =
+    override fun sendFormToRegister(body: RequestBody): Single<ApiNewResponse<List<EventFormResultModel>>> =
         api.eventRegister(body)
 
     //+
@@ -321,7 +316,7 @@ class EventRepositoryImp
     override fun getTags(map: Map<String, Any>): Maybe<List<EventTagModel>> =
         api.getTags(map).map { it.data }
 
-    override fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> {
+    override fun searchEvents(map: Map<String, Any>): Maybe<PaginationResponse<EventNew>> {
         return api.searchGlobal(map)
             .map { PaginationResponse(it.events.count, it.events.data) }
     }
@@ -334,4 +329,41 @@ class EventRepositoryImp
     override fun acceptRegistrationAgreement(eventId: String): Single<RegistrationAgreementStatus> {
         return api.acceptRegistrationAgreement(eventId.toInt())
     }
+
+    override fun acceptEventAgreement(event: EventNew, withAccept: Boolean): Single<EventNew> {
+        return if (withAccept) acceptRegistrationAgreement(event.id.toString())
+            .doOnSuccess { if (it.isAccepted()) event.state?.agreement?.setAccepted() }
+            .map { event }
+        else Single.just(event)
+    }
+
+
+    private fun getCurrentRegistrationBinds(): String {
+        return "current-user-registration," + "current-user-registration-state"
+    }
+
+    override fun addOrRemoveEventFavorite(event: EventNew): Single<Optional<EventUserFavorite>> {
+        return if (event.binds?.userFavorite != null)
+            deleteFromFavorites(event.binds?.userFavorite?.id.toString())
+                .andThen(Single.just(Optional(null)))
+        else addEventToFavorites(event.id.toString())
+            .map { Optional(EventUserFavorite(it.id, it.user)) }
+    }
+
+    override fun addOrRemoveSubEventCalendar(subEvent: EventActivityModel): Single<Optional<EventCalendarModel>> {
+        val userCalendar = subEvent.binds?.userCalendar
+        return if (userCalendar == null)
+            addEventToCalendarWithResult(
+                EventCalendarBody(
+                    appData.getId(),
+                    EventCalendarBodyEntity(
+                        EventCalendarBody.CALENDAR_EVENT_ACTIVITY,
+                        subEvent.id ?: 0
+                    )
+                )
+            ).map { Optional(it) }
+        else deleteCalendarEvent(userCalendar.id.toString())
+            .andThen(Single.just(Optional(null)))
+    }
+
 }

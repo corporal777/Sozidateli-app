@@ -1,23 +1,17 @@
 package com.example.ui.organizations.events
 
+import androidx.paging.PagingData
 import com.example.data.models.EventNew
 import com.example.ui.event.list.EventListContract
-import com.example.util.AddToEndSingleByTagStateStrategy
-import com.example.util.pagination.PaginationListGroupAdapter
-import moxy.viewstate.strategy.StateStrategyType
 import moxy.viewstate.strategy.alias.OneExecution
-import moxy.viewstate.strategy.alias.Skip
 
 interface OrganizationEventsContract {
     interface View : EventListContract.View {
         @OneExecution
-        fun setData(events: List<EventNew?>)
-
-        @OneExecution
-        fun showEmptyListPlaceholder()
+        fun setData(data: PagingData<EventNew>, isTemporary : Boolean)
     }
 
-    interface Presenter : EventListContract.Presenter, PaginationListGroupAdapter.OnItemTakeCallback {
-        fun onRefreshRequest()
+    interface Presenter : EventListContract.Presenter {
+
     }
 }

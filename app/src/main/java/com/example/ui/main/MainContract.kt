@@ -88,9 +88,6 @@ interface MainContract {
         fun showBadgeChat(count : Int)
 
         @Skip
-        fun showBrowser(url : String)
-
-        @Skip
         fun showUpdateApp(isRequired : Boolean)
 
         @Skip

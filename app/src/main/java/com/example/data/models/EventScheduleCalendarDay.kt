@@ -1,6 +1,5 @@
 package com.example.data.models
 
-import com.example.ui.notification.NotificationsSortedData
 
 data class EventScheduleCalendarDay(
         val millis: Long,

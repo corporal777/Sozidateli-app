@@ -1,6 +1,11 @@
 package com.example.holders.registerEvent
 
+import android.content.Context
+import android.text.SpannableStringBuilder
+import android.text.style.URLSpan
 import android.view.View
+import androidx.core.text.getSpans
+import androidx.core.text.set
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventHeaderBinding
@@ -11,14 +16,17 @@ import com.example.extensions.formatToDefaultDate
 import com.example.extensions.isSameDay
 import com.example.extensions.markWon
 import com.example.extensions.parseToDate
+import com.example.util.URLSpanNoUnderline
 import com.xwray.groupie.viewbinding.BindableItem
 
 class RegisterEventHeaderItem(
     id: Long,
+    context: Context,
     private val event: EventRegistration,
 ) : BindableItem<ItemRegisterEventHeaderBinding>(id) {
 
     private val eventStartDate = getEventDate()
+    private val eventDescription = getEventDescription(context)
 
     override fun bind(viewBinding: ItemRegisterEventHeaderBinding, position: Int) {
         viewBinding.apply {
@@ -28,8 +36,8 @@ class RegisterEventHeaderItem(
             }
             tvEventDate.text = eventStartDate
             tvFormDescription.apply {
-                isVisible = !event.registrationSubtitle.isNullOrBlank()
-                markWon(context).setMarkdown(this, event.registrationSubtitle ?: "")
+                isVisible = !eventDescription.isNullOrBlank()
+                text = eventDescription
             }
         }
     }
@@ -46,6 +54,22 @@ class RegisterEventHeaderItem(
         return "Дата проведения " +
                 if (startDate.isSameDay(finishDate)) dateStart.formatToDefaultDate()
                 else dateStart.formatToDefaultDate() + " - " + dateEnd.formatToDefaultDate()
+    }
+
+    private fun getEventDescription(context : Context) : CharSequence? {
+        if (event.registrationSubtitle.isNullOrBlank()) return null
+        else {
+            val spanned = markWon(context).toMarkdown(event.registrationSubtitle!!)
+            return SpannableStringBuilder(spanned).apply {
+                val urls = getSpans<URLSpan>()
+                urls.forEach {
+                    val start = getSpanStart(it)
+                    val end = getSpanEnd(it)
+                    removeSpan(it)
+                    set(start..end, URLSpanNoUnderline(it.url))
+                }
+            }
+        }
     }
 
     override fun getLayout(): Int = R.layout.item_register_event_header

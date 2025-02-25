@@ -150,7 +150,8 @@
         android:name="com.example.ui.event.list.recommendations.RecommendationsFragment">
         <argument
             android:name="isOpenProfile"
-            app:argType="boolean" />
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment
@@ -840,4 +841,19 @@
             app:argType="com.example.data.models.SnUser"
             app:nullable="false" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchUserFragment"
+        android:name="com.example.ui.search.user.SearchUserFragment"
+        android:label="search_user_fragment"/>
+
+    <fragment
+        android:id="@+id/searchEventFragment"
+        android:name="com.example.ui.search.event.SearchEventFragment"
+        android:label="search_event_fragment"/>
+
+    <fragment
+        android:id="@+id/searchOrgFragment"
+        android:name="com.example.ui.search.organization.SearchOrganizationFragment"
+        android:label="search_org_fragment"/>
 </navigation>

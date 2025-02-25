@@ -25,9 +25,6 @@ interface ChangeAccountContract {
 
         @OneExecution
         fun showLoginFragment(login : String)
-
-        @OneExecution
-        fun showBrowser(url : String)
     }
 
     interface Presenter : BaseContract.Presenter {

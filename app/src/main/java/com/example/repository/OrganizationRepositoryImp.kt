@@ -2,8 +2,11 @@ package com.example.repository
 
 import com.example.api.Api
 import com.example.data.AppData
+import com.example.data.bodies.AddToFavoriteEntityModel
+import com.example.data.bodies.AddToFavoriteModel
 import com.example.data.models.*
 import com.example.util.pagination.PaginationResponse
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -11,7 +14,7 @@ import javax.inject.Inject
 class OrganizationRepositoryImp
 @Inject constructor(
     private val api: Api,
-    appData: AppData
+    private val appData: AppData
 ) : ApiRepository(appData), OrganizationRepository {
 
 
@@ -47,12 +50,11 @@ class OrganizationRepositoryImp
             .map { it.data }
 
 
-
     override fun getOrganizationDetails(organizationId: String): Single<OrganizationNew> {
         return api.getOrganizationDetails(organizationId, "userFavorite")
     }
 
-    override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+    override fun getFavoriteOrganization(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>> {
         return api.getFavoritesList(map)
             .map {
                 it.data.forEach { org ->
@@ -63,18 +65,56 @@ class OrganizationRepositoryImp
                         )
                     )
                 }
-                PaginationResponse(it.totalCount, it.data.map { org -> org.entity?.model })
+                PaginationResponse(it.totalCount, it.data.mapNotNull { org -> org.entity?.model })
             }
     }
 
     //+
-    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew?>> {
+    override fun searchOrganizations(map: Map<String, Any>): Maybe<PaginationResponse<OrganizationNew>> {
         return api.searchGlobal(map)
             .map { PaginationResponse(it.organizations.count, it.organizations.data) }
     }
 
     override fun getOrganizationsWithActiveEvents(): Maybe<List<OrganizationNew>> {
-        return api.getOrganizationsWithActiveEvents()
-            .map { it.data }
+        return if (appData.organizationsActiveEvents.isNullOrEmpty()) {
+            api.getOrganizationsWithActiveEvents().map {
+                it.data.forEach { s -> appData.organizationsActiveEvents.add(s) }
+                appData.organizationsActiveEvents
+            }
+        } else Maybe.just(appData.organizationsActiveEvents)
+    }
+
+    override fun addOrRemoveOrgFavorite(org: OrganizationNew?): Single<Optional<EventUserFavorite>> {
+        return if (org?.binds?.userFavorite != null)
+            deleteFromFavorites(org.binds?.userFavorite?.id.toString())
+                .andThen(Single.just(Optional(null)))
+        else addOrgToFavorites(org?.id.toString())
+            .map { Optional(EventUserFavorite(it.id, it.user)) }
+    }
+
+    private fun addOrgToFavorites(orgId: String): Single<AddFavoriteModel> {
+        return if (appData.isTemporaryUser()) api.addToTempFavorite(
+            AddToFavoriteModel(
+                appData.getTempId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        ).map { AddFavoriteModel(it.id, it.tempUser) }
+        else api.addToFavorite(
+            AddToFavoriteModel(
+                appData.getId(),
+                AddToFavoriteEntityModel(
+                    AddToFavoriteEntityModel.FAVORITE_ORGANIZATION,
+                    orgId.toInt()
+                )
+            )
+        )
+    }
+
+    private fun deleteFromFavorites(id: String): Completable {
+        return if (appData.isTemporaryUser()) api.deleteFromTempFavorite(id)
+        else api.deleteFromFavorite(id)
     }
 }

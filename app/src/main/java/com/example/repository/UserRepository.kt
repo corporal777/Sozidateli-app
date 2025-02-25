@@ -58,19 +58,20 @@ interface UserRepository {
 
     fun updateUserEducation(educationLevel: ToggleIntModel?, educationsList: List<EducationModel>?, degree: List<AcademicDegreeModel>?): Single<String>
     fun searchAddress(query: String?): Single<SearchAddressModel>
-    fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<Notification>>
+    fun getUserNotifications(map: Map<String, Any>): Maybe<NotificationsResponse<NotificationLocal>>
+    fun getNotificationsList(map: Map<String, Any>): Maybe<PaginationResponse<NotificationLocal>>
     fun getInAppList(): Maybe<List<NotificationModel>>
-    fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun getUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
     fun getUsersWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail>>
-    fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun getUsersFavoritesList(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
     fun getUsersFavoritesWithoutPagination(map: Map<String, Any>): Maybe<List<UserDetail?>>
 
     fun checkUserProfileSingle(): Single<UserProfileFieldsModel>
     fun getNotificationDetail(notificationId: String, loadModel: Boolean): Single<NotificationModel>
     fun markAsRead(notificationId: String): Completable
     fun markAllNotificationsAsRead(type : NotificationType?): Maybe<UnacceptedInviteNotification>
-    fun approveOrgMember(orgMemberId: String, body: ApproveBody): Completable
-    fun declineOrgMember(orgMemberId: String, body: DeclineBody): Completable
+    fun approveOrgMember(orgMemberId: String): Completable
+    fun declineOrgMember(orgMemberId: String): Completable
     fun approvePgrf(pgrfId: String): Completable
     fun declinePgrf(pgrfId: String): Completable
     fun approveAssistance(assistanceId: String): Completable
@@ -84,9 +85,12 @@ interface UserRepository {
 
     fun checkEmailPhone(email: String?, phone: String?): Completable
 
-    fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail?>>
+    fun searchUsers(map: Map<String, Any>): Maybe<PaginationResponse<UserDetail>>
 
     //+
     fun bindSocialAccount(uuid : String, socialType : String, isRebind : Boolean): Maybe<SnBindDataModel>
     fun unbindSocialAccount(uuid : String, socialType : String): Completable
+
+    //+
+    fun addOrRemoveUserFavorite(user: UserDetail) : Single<Optional<EventUserFavorite>>
 }

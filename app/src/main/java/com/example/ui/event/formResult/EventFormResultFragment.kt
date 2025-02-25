@@ -6,8 +6,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
 import com.example.app.databinding.BottomSheetEventFormResultBinding
+import com.example.data.models.Argument
 import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.UserDetail
 import com.example.data.models.UserFormResultModel
+import com.example.extensions.parcelableArgument
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.ui.event.formResult.items.EventFormResultFileItem
@@ -15,6 +18,7 @@ import com.example.ui.event.formResult.items.EventFormResultPassportItem
 import com.example.ui.event.formResult.items.EventFormResultProfileGroup
 import com.example.ui.event.formResult.items.EventFormResultStringItem
 import com.example.ui.event.formResult.items.EventFormResultTitleItem
+import com.example.ui.userprofile.common.name.ChangeNameFragment.Companion.CHANGE_NAME_FRAGMENT_TAG
 import com.xwray.groupie.GroupieAdapter
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
@@ -22,7 +26,7 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EventFormResultFragment(private val form: UserFormResultModel) : BaseBSFragment(), EventFormResultContract.View {
+class EventFormResultFragment : BaseBSFragment(), EventFormResultContract.View {
 
     @InjectPresenter(tag = EVENT_FORM_FRAGMENT_TAG)
     lateinit var presenter: EventFormResultPresenter
@@ -32,9 +36,10 @@ class EventFormResultFragment(private val form: UserFormResultModel) : BaseBSFra
 
     @ProvidePresenter(tag = EVENT_FORM_FRAGMENT_TAG)
     fun providePresenter(): EventFormResultPresenter = presenterProviderEmail.get().apply {
-        this.formResult = form
+        if (args.value != null) this.formResult = args.value!!
     }
 
+    private val args by parcelableArgument<Argument<UserFormResultModel>>(EVENT_FORM_FRAGMENT_TAG)
     private val viewBinding by viewBinding(BottomSheetEventFormResultBinding::bind)
     private val groupAdapter by lazy {
         GroupieAdapter().apply {

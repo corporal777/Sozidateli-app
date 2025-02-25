@@ -21,6 +21,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEditText"
+                android:gravity="top|start"
                 style="@style/EventRegistration.EditText"
                 tools:hint="@string/profile_phone_hint" />
         </com.example.ui.views.CustomTextInputLayout>

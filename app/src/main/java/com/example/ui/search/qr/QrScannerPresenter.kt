@@ -43,15 +43,7 @@ class QrScannerPresenter
             val codee = Uri.parse(code).getQueryParameter("code")
             codee ?: Uri.parse(code).lastPathSegment ?: ""
         }
-            .flatMap { parsedCode ->
-                eventRepository.getEventsList(
-                    mapOf(
-                        EventNew.EVENT_LIMIT to 1, EventNew.EVENT_OFFSET to 0,
-                        EventNew.EVENT_BINDS to "rights,organization,tag,page,activity,user-registration,user-form-result,current-user-registration,destination-scheme,eventRegistrationState",
-                        EventNew.EVENT_CODE to parsedCode
-                    )
-                )
-            }
+            .flatMapSingle { eventRepository.getEventByCode(it) }
             .performOnBackgroundOutOnMain()
             .withProgressBarLoading(viewState)
             .subscribeSimple(
@@ -59,13 +51,7 @@ class QrScannerPresenter
                     it.printStackTrace()
                     viewState.showEventNotFoundError()
                 },
-                onSuccess = {
-                    if (it.data.isNotEmpty()) {
-                        viewState.showEvent(it.data[0]?.id.toString())
-                    } else {
-                        viewState.showEventNotFoundError()
-                    }
-                })
+                onSuccess = { viewState.showEvent(it.id.toString()) })
     }
 
     override fun onEnterCodeClick() {

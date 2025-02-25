@@ -60,23 +60,19 @@
             app:layout_constraintStart_toEndOf="@+id/ivLogo"
             app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSubevents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/background_corners_large"
-            android:backgroundTint="@color/favorites_events_subevents_background"
-            android:minHeight="36dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/favorites_events_subevents"
-            android:textAllCaps="false"
-            android:textColor="@color/favorites_events_subevents_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvEventName"
-            app:layout_constraintTop_toBottomOf="@+id/userSubscribeButton" />
+        <com.example.ui.views.CustomProgressBar
+            android:id="@+id/btn_progress"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="6dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/userSubscribeButton"
+            app:layout_constraintStart_toStartOf="@id/userSubscribeButton"
+            app:layout_constraintTop_toTopOf="@id/userSubscribeButton"
+            app:progressColor="@color/main_brown_color_new"
+            app:progressSize="23dp"
+            app:progressStroke="8"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/divider"

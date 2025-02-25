@@ -55,6 +55,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:showText="false"
             app:subscribeAction="favorite" />
+
+        <com.example.ui.views.CustomProgressBar
+            android:id="@+id/btn_progress"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:progressColor="@color/main_brown_color_new"
+            app:progressSize="23dp"
+            app:progressStroke="8"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/btnAction"
+            app:layout_constraintEnd_toEndOf="@id/btnAction"
+            app:layout_constraintStart_toStartOf="@id/btnAction"
+            app:layout_constraintTop_toTopOf="@id/btnAction"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

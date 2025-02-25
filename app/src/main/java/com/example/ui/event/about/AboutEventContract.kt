@@ -77,18 +77,18 @@ interface AboutEventContract {
 
         fun onOrganizationClick(orgId: String)
 
-        fun onActionRegister( url: String?)
+        fun onActionRegister(withAccept : Boolean)
         fun onActionCancel()
-        fun onAcceptRegistrationAgreement(event: String)
+
         fun onShareClick()
         fun onAddToScheduleClick(subEvent: EventActivityModel)
-        fun onSubEventClick(subEvent: EventActivityModel)
+        fun onSubEventClick(subEvent: Int)
         fun onSpeakerClick(memberId: Int)
         fun onShowAllSpeakersClick()
 
         fun onTagSelected()
 
-        fun onShowEventActivitiesClick()
+        fun onShowSubEventsClick()
         fun onAddOrganizationToFavoriteClick()
         fun onAddEventToFavoriteClick()
         fun onSubscribeEvent(isSubscribed: Boolean)
@@ -98,6 +98,6 @@ interface AboutEventContract {
         fun onAddEventToCalendarClick()
 
 
-        fun onShowAuthorization(id : String)
+        fun onShowAuthorization()
     }
 }

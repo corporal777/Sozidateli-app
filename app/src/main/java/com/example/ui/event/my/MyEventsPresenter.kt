@@ -1,23 +1,27 @@
 package com.example.ui.event.my
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.EventNew
+import com.example.data.models.EventNew.Companion.EVENT_BINDS
+import com.example.data.models.EventNew.Companion.EVENT_LIMIT
+import com.example.data.models.EventNew.Companion.EVENT_OFFSET
+import com.example.data.models.EventNew.Companion.EVENT_STATUS
+import com.example.data.models.EventNew.Companion.EVENT_USER_ID
 import com.example.data.models.MyEventsFilter
 import com.example.data.models.SearchFilter
 import com.example.data.socket.SocketIOManager
-import com.example.extensions.groupByNotNull
-import com.example.repository.CommonRepository
+import com.example.extensions.buildFlow
 import com.example.repository.EventRepository
 import com.example.ui.event.list.EventListPresenter
-import com.example.ui.search.event.SearchEventPresenter
 import com.example.util.pagination.PaginationResponse
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -31,73 +35,60 @@ class MyEventsPresenter
 
     private var eventStateFilter: MyEventsFilter = MyEventsFilter.NONE
     private var searchText = ""
-    private var firstLaunch = true
-    var searchFilter = SearchFilter.EventNew()
+    private var searchFilter = SearchFilter.EventNew()
+
+    override val pagination = PagingDataSourceFactory { limit, offset ->
+        getPaginationRequest(limit, offset)
+    }.applyErrorHandler { onReceivePagingError(it) }.buildFlow(initialSize = 20, distance = 2)
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getEventsData(true)
-    }
+        compositeDisposable += getPaginationRequest(1, 0)
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple { viewState.setShowScheduleEvents(!it.isEmptyData()) }
 
-    override fun attachView(view: MyEventsContract.View?) {
-        super.attachView(view)
-        if (firstLaunch) firstLaunch = false
-        else pagination.invalidate()
-    }
-
-    private fun getEventsData(isFirst: Boolean) {
-        viewState.setData(List(5) { null })
-        compositeDisposable += Observable.create(pagination)
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
-                onError = {
-                    it.printStackTrace()
-                    viewState.showEmptyListPlaceholder(isFirst)
-                },
-                onNext = { eventList ->
-                    if (eventList.isEmpty()) viewState.showEmptyListPlaceholder(isFirst)
-                    else viewState.setData(eventList)
-                    viewState.setShowScheduleEvents(!eventList.isNullOrEmpty())
-                })
+                onError = { it.printStackTrace() },
+                onNext = { viewState.setData(it) })
     }
-
 
     override fun onSearchTextChange(text: String) {
         if (searchText == text) return
         searchText = text
-        getEventsData(false)
+        pagination.invalidate()
     }
 
-    override fun onSearchFiltersClick(filter: SearchFilter.EventNew) {
+    override fun onApplyFiltersClick(filter: SearchFilter.EventNew) {
         searchFilter = filter
-        getEventsData(false)
         viewState.setFiltersChosen(searchFilter.isHasFilter())
+        pagination.invalidate()
     }
 
-    override fun onEventStateFiltersClick(isChecked: Boolean, filter: MyEventsFilter) {
+    override fun onEventStateClick(isChecked: Boolean, filter: MyEventsFilter) {
         eventStateFilter = if (isChecked) filter else MyEventsFilter.NONE
-        getEventsData(false)
+        pagination.invalidate()
     }
 
-    override fun onShowFiltersClick() = viewState.showFilters()
-    override fun onRefreshRequest() = pagination.invalidate()
-    override fun onItemTake(position: Int) = pagination.onItemTake(position)
+    override fun onShowFiltersClick() = viewState.showFilters(searchFilter)
 
-    override fun getPaginationRequest(
-        limit: Int,
-        offset: Int
-    ): Maybe<PaginationResponse<EventNew?>> {
+    fun isHasSearchParam(): Boolean {
+        return searchText.isNotEmpty() || searchFilter.isHasFilter() || eventStateFilter != MyEventsFilter.NONE
+    }
+
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew>> {
         return eventRepository.getSortedEventsList(
             mutableMapOf<String, Any>().apply {
-                put(EventNew.EVENT_LIMIT, limit)
-                put(EventNew.EVENT_OFFSET, offset)
-                put(EventNew.EVENT_BINDS, getBinds())
-                put(EventNew.EVENT_USER_ID, appData.getId())
+                put(EVENT_LIMIT, limit)
+                put(EVENT_OFFSET, offset)
                 put(
-                    EventNew.EVENT_STATUS,
-                    "cancelled,registration,registrationFinished,running,finished"
+                    EVENT_BINDS,
+                    "activity,current-user-registration,current-user-registration-state,eventRegistrationState"
                 )
+                put(EVENT_USER_ID, appData.getId())
+                put(EVENT_STATUS, EventNew.EVENT_STATUS_ALL)
 
                 put(
                     EventNew.EVENT_USER_STATUS, when (eventStateFilter) {
@@ -143,9 +134,5 @@ class MyEventsPresenter
                 if (category != null) put(EventNew.EVENT_CATEGORY, category)
             }
         )
-    }
-
-    override fun getBinds(): String {
-        return "activity,current-user-registration,current-user-registration-state,eventRegistrationState"
     }
 }

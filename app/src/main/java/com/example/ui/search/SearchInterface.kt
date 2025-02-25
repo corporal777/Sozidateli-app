@@ -8,6 +8,4 @@ class SearchInterface {
 
     var searchTextCallback: (() -> Unit)? = null
     var showFilterCallback: (() -> Unit)? = null
-
-    var initWithFilter: SearchFilter? = null
 }

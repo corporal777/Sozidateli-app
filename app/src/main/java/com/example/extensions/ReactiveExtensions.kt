@@ -1,3 +1,4 @@
+import android.util.Log
 import com.example.exceptions.NoInternetConnectionException
 import com.example.ui.base.BaseContract
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
@@ -250,6 +251,13 @@ fun Completable.withDelay(time: Long): Completable {
     return delay(time, TimeUnit.MILLISECONDS)
 }
 
+fun <T> Single<T>.withTimeOut(time: Long): Single<T> {
+    return timeout(time, TimeUnit.MILLISECONDS)
+}
+
+fun Completable.withTimeOut(time: Long): Completable {
+    return timeout(time, TimeUnit.MILLISECONDS)
+}
 
 private fun getLoadingDisposable(baseView: BaseContract.LoadingView): Disposable {
     return Completable.complete()
@@ -458,6 +466,50 @@ fun <T> Single<T>.withCustomLoading(baseView: BaseContract.LoadingView): Single<
         .doOnError(actionConsumer())
 }
 
+fun <T> Observable<T>.withCustomLoading(baseView: BaseContract.LoadingView): Observable<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { baseView.showCustomLoading() }
+        .doOnDispose { baseView.hideCustomLoading() }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideCustomLoading()
+        else loadingDisposable.dispose()
+    }
+    var isFirstHidden = false
+    return doOnSubscribe {
+        baseView.showCustomLoading()
+    }
+        .doOnError {
+            baseView.hideCustomLoading()
+        }
+        .doOnComplete {
+            baseView.hideCustomLoading()
+        }
+//    this
+//        .doFinally(actionHide)
+//        .doOnDispose(actionHide)
+//        .doOnNext{
+//            baseView.hideCustomLoading()
+//        }
+////        .doOnEach {
+////            baseView.showCustomLoading()
+////        }
+//
+//        .doOnComplete {
+//            baseView.hideCustomLoading()
+//        }
+//        .doOnError(actionConsumer())
+
+
+
+}
+
 fun Completable.withCustomLoading(baseView: BaseContract.LoadingView): Completable {
     val loadingDisposable = Completable.complete()
         .observeOn(AndroidSchedulers.mainThread())
@@ -476,4 +528,26 @@ fun Completable.withCustomLoading(baseView: BaseContract.LoadingView): Completab
     return this.doFinally(actionHide)
         .doOnDispose(actionHide)
         .doOnError(actionConsumer())
+}
+
+fun <T> Maybe<T>.withEventLoading(baseView: BaseContract.LoadingEventView,position: Int): Maybe<T> {
+    val loadingDisposable = Completable.complete()
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnComplete { baseView.showEventLoading(position) }
+        .doOnDispose { baseView.hideEventLoading(position) }
+        .subscribe()
+    val actionHide = Action {
+        if (loadingDisposable.isDisposed) baseView.hideEventLoading(position)
+        else loadingDisposable.dispose()
+    }
+
+    fun <T> actionConsumer() = Consumer<T> {
+        if (loadingDisposable.isDisposed) baseView.hideEventLoading(position)
+        else loadingDisposable.dispose()
+    }
+
+    return doOnDispose(actionHide)
+        .doOnSuccess(actionConsumer())
+        .doOnError(actionConsumer())
+
 }

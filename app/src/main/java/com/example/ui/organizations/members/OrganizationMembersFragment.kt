@@ -2,26 +2,22 @@ package com.example.ui.organizations.members
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import com.example.adapters.user.UserPagingAdapter
+import com.example.adapters.user.UserPagingAdapter.Companion.withLoadStateAdapters
+import com.example.adapters.user.UserPlaceholderAdapter
 import com.example.app.R
 import com.example.app.databinding.LayoutListBinding
-import com.example.data.models.OrganizationMemberModel
-import com.example.holders.PlaceholderItem
-import com.example.interfaces.ToolbarFragment
-import com.example.ui.base.BaseVBFragment
-import com.example.ui.organizations.detail.items.OrganizationMemberItem
+import com.example.data.models.UserDetail
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.user.UserFragmentArgs
-import com.example.ui.views.toolbar.ToolbarContent
-import com.example.util.pagination.PaginationListGroupAdapter
-import com.xwray.groupie.GroupieViewHolder
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationMembersFragment : BaseVBFragment<LayoutListBinding>(),
-    OrganizationMembersContract.View, ToolbarFragment {
+class OrganizationMembersFragment : BaseToolbarFragment<LayoutListBinding>(), OrganizationMembersContract.View {
 
     @InjectPresenter
     lateinit var presenter: OrganizationMembersPresenter
@@ -34,43 +30,31 @@ class OrganizationMembersFragment : BaseVBFragment<LayoutListBinding>(),
         organizationId = OrganizationMembersFragmentArgs.fromBundle(requireArguments()).organizationId
     }
 
-    private val adapter = PaginationListGroupAdapter<GroupieViewHolder>().apply {
-        setOnItemTakeCallback(object : PaginationListGroupAdapter.OnItemTakeCallback {
-            override fun onItemTake(position: Int) {
-                presenter.onItemTake(position)
-            }
-        })
+
+
+    private val pagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        UserPagingAdapter({ presenter.onMemberClick(it) }, { presenter.onAddUserFavoriteCLick(it) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            recyclerView.apply {
-                adapter = this@OrganizationMembersFragment.adapter
-            }
+            recyclerView.adapter = pagingAdapter
+                .withLoadStateAdapters(
+                    UserPlaceholderAdapter(9),
+                    UserPlaceholderAdapter(1)
+                ) {  }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-    override fun setData(members: List<OrganizationMemberModel?>) {
-        adapter.update(
-            members.map { member ->
-                if (member == null) PlaceholderItem(PlaceholderItem.Type.USER)
-                else {
-                    OrganizationMemberItem(
-                        member.user,
-                        member.binds?.user?.nameLastName,
-                        member.binds?.user?.address?.shortAddres,
-                        member.binds?.user?.loadUserImage(),
-                        member.binds?.userFavorite != null,
-                        presenter.isCurrentUser(member.binds?.user?.id.toString()),
-                        { user -> presenter.onMemberClick(user) },
-                        { user -> presenter.onAddUserFavoriteCLick(member) }
-                    )
-                }
-            }
-        )
+    override fun setData(data: PagingData<UserDetail>) {
+        pagingAdapter.submitData(lifecycle, data)
         mBinding.swipeToRefresh.isRefreshing = false
+    }
+
+    override fun updateUser(user: UserDetail) {
+        pagingAdapter.updateUserFavorite(user)
     }
 
     override fun showUser(userId: String) {
@@ -82,10 +66,9 @@ class OrganizationMembersFragment : BaseVBFragment<LayoutListBinding>(),
         findNavController().navigate(R.id.user_profile_fragment)
     }
 
+
     override fun binding() = LayoutListBinding::class.java
     override fun layout() = R.layout.layout_list
     override val title: CharSequence by lazy { getString(R.string.organization_members) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {}
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
+    override fun scrollingView(): View = mBinding.recyclerView
 }

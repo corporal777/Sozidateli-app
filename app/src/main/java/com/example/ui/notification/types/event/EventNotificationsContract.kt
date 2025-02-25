@@ -1,6 +1,7 @@
 package com.example.ui.notification.types.event
 
 import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.ui.notification.types.base.BaseNotificationTypeContract
 
 interface EventNotificationsContract {
@@ -10,8 +11,8 @@ interface EventNotificationsContract {
 
     interface Presenter : BaseNotificationTypeContract.Presenter {
         fun onNotificationReadClick(id: Int)
-        fun onNotificationAcceptClick(notification: Notification)
-        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationAcceptClick(notification: NotificationLocal)
+        fun onNotificationCancelClick(notification: NotificationLocal)
     }
 
 }

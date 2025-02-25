@@ -12,6 +12,8 @@ import com.example.extensions.onPageChanged
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.chatList.contacts.ChatListFragment
 import com.example.ui.chatList.invites.InviteListFragment
+import com.example.util.setLeftDrawable
+import com.example.util.setRightDrawable
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -51,7 +53,7 @@ class ChatListTabsFragment : BaseVBFragment<FragmentChatListTabsBinding>(), Chat
             btnTabRequests.setOnClickListener { viewPager.currentItem = 1 }
             fabNewChat.setOnClickListener { presenter.onFabAddChatClick() }
             appBarLayout.offsetChangedListener { appBarLayout, i ->
-                updateAppBarViews(abs(i / appBarLayout.totalScrollRange.toFloat()))
+                updateAppBarViews(abs(i / appBarLayout.totalScrollRange).toFloat())
 
             }
         }
@@ -77,11 +79,11 @@ class ChatListTabsFragment : BaseVBFragment<FragmentChatListTabsBinding>(), Chat
     }
 
     override fun setInvitesCount(count: Int) {
-        mBinding.tvInvitesBadge.isVisible = count > 0
+        mBinding.btnTabRequests.setRightDrawable(if (count > 0) R.drawable.ic_new_chat_badge else 0)
     }
 
     override fun setChatsCount(count: Int) {
-        mBinding.tvChatsBadge.isVisible = count > 0
+        mBinding.btnTabChats.setLeftDrawable(if (count > 0) R.drawable.ic_new_chat_badge else 0)
     }
 
     override fun scrollToFirstItem() {
@@ -96,31 +98,31 @@ class ChatListTabsFragment : BaseVBFragment<FragmentChatListTabsBinding>(), Chat
         findNavController().navigate(R.id.chat_search_fragment)
     }
 
-    override fun onExpandedState() {
+    override fun onExpandedState(withAnim: Boolean) {
         mBinding.apply {
             tvLabelSmall.apply {
-                alpha = 1F
-                animate().setDuration(500).alpha(0.0f)
+                if (withAnim) alpha = 1F
+                if (withAnim) animate().setDuration(500).alpha(0.0f)
                 visibility = View.GONE
             }
             tvLabelLarge.apply {
+                if (withAnim) alpha = 0F
                 visibility = View.VISIBLE
-                alpha = 0F
-                animate().setDuration(500).alpha(1.0f)
+                if (withAnim) animate().setDuration(500).alpha(1.0f)
             }
         }
     }
 
-    override fun onCollapsedState() {
+    override fun onCollapsedState(withAnim: Boolean) {
         mBinding.apply {
             tvLabelSmall.apply {
-                alpha = 0F
-                animate().setDuration(500).alpha(1.0f)
-                tvLabelSmall.visibility = View.VISIBLE
+                if (withAnim) alpha = 0F
+                visibility = View.VISIBLE
+                if (withAnim) animate().setDuration(500).alpha(1.0f)
             }
             tvLabelLarge.apply {
-                alpha = 1F
-                animate().setDuration(500).alpha(0.0f)
+                if (withAnim) alpha = 1F
+                if (withAnim) animate().setDuration(500).alpha(0.0f)
                 visibility = View.GONE
             }
         }

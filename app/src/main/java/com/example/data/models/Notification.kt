@@ -1,6 +1,8 @@
 package com.example.data.models
 
 import android.os.Parcelable
+import com.example.data.models.Notification.AcceptState
+import com.example.data.models.Notification.Type
 import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT
 import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_ACTIVITY
 import com.example.data.models.NotificationModel.Companion.NOTIFICATION_TYPE_EVENT_MEMBER
@@ -46,9 +48,9 @@ data class Notification(
     companion object {
         fun fromRemoteNotification(remoteNotification: NotificationModel): Notification {
             val notificationMainType =
-                 if (!remoteNotification.entity?.type.isNullOrEmpty()) remoteNotification.entity?.type
-                 else if (!remoteNotification.notificationType.isNullOrEmpty()) remoteNotification.notificationType
-                 else NOTIFICATION_TYPE_EVENT
+                if (!remoteNotification.entity?.type.isNullOrEmpty()) remoteNotification.entity?.type
+                else if (!remoteNotification.notificationType.isNullOrEmpty()) remoteNotification.notificationType
+                else NOTIFICATION_TYPE_EVENT
 
             val state = when (remoteNotification.entity?.type) {
                 NOTIFICATION_TYPE_EVENT_MEMBER -> {
@@ -56,6 +58,7 @@ data class Notification(
                         remoteNotification.entity.model.status as String
                     } else null
                 }
+
                 NOTIFICATION_TYPE_INVITE_PGFR -> remoteNotification.entity.state
                 NOTIFICATION_TYPE_INVITE_ASSISTANCE -> remoteNotification.entity.state
                 NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> remoteNotification.entity.state
@@ -66,6 +69,7 @@ data class Notification(
                 NOTIFICATION_TYPE_INVITE_ASSISTANCE,
                 NOTIFICATION_TYPE_ORGANIZATION_MEMBER,
                 NOTIFICATION_TYPE_EVENT_MEMBER -> Type.ACCEPTABLE
+
                 else -> Type.SIMPLE
             }
             val rateId = remoteNotification.entity?.id.toString()
@@ -172,4 +176,95 @@ data class UnacceptedInviteNotification(
     @SerializedName("unacceptedInvitations")
     val unAcceptedInvites: Int
 ) : Parcelable
+
+
+@Parcelize
+data class NotificationLocal(
+    val id: Int,
+    val message: String?,
+    val date: String,
+    var titleDate: String? = null,
+    val notificationType: String,
+    val type: Type,
+    val partitionType: String,
+    var wasRead: Boolean,
+    var acceptState: AcceptState = AcceptState.NONE,
+    val rateId: String? = null,
+    val eventId: Int?,
+    val eventInfo: String?,
+    val entity: NotificationEntity?
+) : Parcelable {
+
+    companion object {
+        fun fromRemoteNotification(remoteNotification: NotificationModel): NotificationLocal {
+            val notificationType = remoteNotification.notificationType ?: "Уведомление"
+
+            val state = when (remoteNotification.entity?.type) {
+                NOTIFICATION_TYPE_EVENT_MEMBER -> (remoteNotification.entity.model?.status
+                    ?: "") as String
+
+                NOTIFICATION_TYPE_INVITE_PGFR -> remoteNotification.entity.state
+                NOTIFICATION_TYPE_INVITE_ASSISTANCE -> remoteNotification.entity.state
+                NOTIFICATION_TYPE_ORGANIZATION_MEMBER -> remoteNotification.entity.state
+                else -> null
+            }
+            val type = when (remoteNotification.entity?.type) {
+                NOTIFICATION_TYPE_INVITE_PGFR,
+                NOTIFICATION_TYPE_INVITE_ASSISTANCE,
+                NOTIFICATION_TYPE_ORGANIZATION_MEMBER,
+                NOTIFICATION_TYPE_EVENT_MEMBER -> Type.ACCEPTABLE
+                else -> Type.SIMPLE
+            }
+
+
+            val eventId = when (remoteNotification.entity?.type) {
+                NOTIFICATION_TYPE_EVENT -> remoteNotification.entity.model?.id
+                else -> 0
+            }
+
+            val eventInfo =
+                if (remoteNotification.entity?.type == NOTIFICATION_TYPE_EVENT)
+                    remoteNotification.entity.model?.name
+                else null
+
+            val entityModel = NotificationEntityLocalModel(
+                remoteNotification.entity?.model?.id,
+                remoteNotification.entity?.model?.createdDate,
+                remoteNotification.entity?.model?.name,
+                remoteNotification.entity?.model?.createdBy,
+                remoteNotification.entity?.model?.event,
+                remoteNotification.entity?.model?.title,
+                remoteNotification.entity?.model?.description,
+                remoteNotification.entity?.model?.holdingDate,
+                if (remoteNotification.entity?.type == "organizationMember") remoteNotification.entity.model?.status as String
+                else null,
+                state
+            )
+
+            return NotificationLocal(
+                id = remoteNotification.id ?: 0,
+                message = remoteNotification.message,
+                date = remoteNotification.createdDate?.split(" ")?.get(0) ?: "",
+                titleDate = null,
+                notificationType = notificationType,
+                type = type,
+                partitionType = remoteNotification.partitionType ?: "",
+                wasRead = remoteNotification.acknowledged,
+                acceptState = when (state) {
+                    "confirmed", "approved", "accepted" -> AcceptState.ACCEPTED
+                    "declined" -> AcceptState.CANCELED
+                    "canceled", "cancelled" -> AcceptState.DISABLED
+                    else -> AcceptState.NONE
+                },
+                rateId = remoteNotification.entity?.id.toString(),
+                eventId = eventId,
+                eventInfo = eventInfo,
+                entity = NotificationEntity(
+                    remoteNotification.entity?.type,
+                    remoteNotification.entity?.id
+                )
+            )
+        }
+    }
+}
 

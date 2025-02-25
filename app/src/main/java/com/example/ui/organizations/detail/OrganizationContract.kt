@@ -4,30 +4,23 @@ import com.example.data.models.EventNew
 import com.example.data.models.OrganizationMemberModel
 import com.example.data.models.OrganizationNew
 import com.example.ui.base.BaseContract
-import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import moxy.viewstate.strategy.alias.Skip
 
 interface OrganizationContract {
     interface View : BaseContract.View {
 
-        @AddToEndSingle
-        fun setMainData(organization: OrganizationNew)
+        @OneExecution
+        fun setOrganizationsData(organization: OrganizationNew)
 
-        @AddToEndSingle
-        fun setInformationData(organization: OrganizationNew)
+        @OneExecution
+        fun setEventsData(events: List<EventNew>, totalSize: Int)
 
-        @AddToEndSingle
-        fun setEventsData(events: List<EventNew>)
-
-        @AddToEndSingle
-        fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int?)
+        @OneExecution
+        fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int)
 
         @OneExecution
         fun showAllEvents(organizationId: String)
-
-        @OneExecution
-        fun updateOrganizationSubscription(organization: OrganizationNew)
 
         @OneExecution
         fun showAllUsers(organizationId: String)
@@ -38,23 +31,26 @@ interface OrganizationContract {
         @OneExecution
         fun showCurrentUser()
 
-        @Skip
-        fun updateUserSubscription(userId: Int, isSubscribed: Boolean)
-
-        @Skip
-        fun updateEvent(event: EventNew)
-
         @OneExecution
         fun showAboutEvent(event: String)
 
         @OneExecution
         fun showEventRequest(event: String)
 
-        @Skip
+        @OneExecution
         fun showAuthorization()
 
         @Skip
-        fun showAgreementRegisterDialog(event: String, url: String, formEnabled : Boolean)
+        fun updateOrganization(organization: OrganizationNew)
+
+        @Skip
+        fun updateUser(member: OrganizationMemberModel)
+
+        @Skip
+        fun updateEvent(event: EventNew)
+
+        @Skip
+        fun showAgreementRegisterDialog(event: EventNew)
     }
 
     interface Presenter : BaseContract.Presenter {
@@ -67,10 +63,9 @@ interface OrganizationContract {
         fun onAddOrganizationFavoriteClick(organization: OrganizationNew)
         fun onRefreshRequest()
 
-        fun onActionRegister(event: String, url: String?, formEnabled : Boolean)
-        fun onActionCancel(event: String, registrationId: String?)
+        fun onActionRegister(event: EventNew, withAccept : Boolean)
+        fun onActionCancel(event: EventNew)
         fun onShowEventClick(event: String)
         fun onShowAuthorization(event: String)
-        fun onAcceptRegistrationAgreement(event: String, formEnabled : Boolean)
     }
 }

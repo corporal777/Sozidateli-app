@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 data class EventNewModel(
-    val data: List<EventNew?>? = null,
+    val data: List<EventNew>? = null,
     @SerializedName("totalCount")
     val totalCount: Int? = null
 )
@@ -72,7 +72,7 @@ data class EventNew(
     }
 
     fun isRegistrationClosed(): Boolean {
-        return binds?.eventRegistrationState?.prohibitions?.registrationClosed ?: false
+        return binds?.currentUserRegistrationState?.prohibitions?.registrationClosed ?: false
     }
 
     fun isFormEnabled(): Boolean {
@@ -85,6 +85,11 @@ data class EventNew(
         if (formResult == null) return false
         else if (formResult.result == null) return false
         else return !formResult.result.fields.isNullOrEmpty()
+    }
+
+    fun setFieldsForActionButton(new: EventNew) {
+        binds?.currentUserRegistration = new.binds?.currentUserRegistration
+        binds?.currentUserRegistrationState = new.binds?.currentUserRegistrationState
     }
 
     companion object {
@@ -102,6 +107,7 @@ data class EventNew(
         const val EVENT_FORMAT = "format"
         const val EVENT_CATEGORY = "topicCategory"
         const val EVENT_STATUS = "status"
+        const val EVENT_STATUS_ALL = "cancelled,registration,registrationFinished,running,finished"
         const val EVENT_HIDDEN = "stateIsHidden"
         const val EVENT_PUBLIC = "isPublic"
         const val EVENT_CODE = "code"
@@ -222,10 +228,9 @@ data class EventBindsModel(
         return formType?.formType
     }
 
-    fun getFormResult(): Collection<EventFormResultFieldsModel>? {
-        val formResult =
-            userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
-        return formResult?.result?.fields
+    fun getFormResult(): EventFormResultModel? {
+        val formResult = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        return formResult?.result
     }
 }
 
@@ -562,8 +567,26 @@ data class EventStateModel(
     @SerializedName("isHidden")
     val isHidden: Boolean? = null,
     val rating: EventRatingModel? = null,
-    val registration: EventRatingModel? = null
-) : Parcelable
+    val registration: EventRatingModel? = null,
+    val agreement: EventAgreementState? = null
+) : Parcelable {
+    fun isAgreementAccepted(): Boolean {
+        if (agreement?.state == null) return false
+        return agreement.state == "accepted"
+    }
+}
+
+
+@Parcelize
+data class EventAgreementState(
+    var state: String?
+) : Parcelable {
+
+    fun setAccepted() {
+        state = "accepted"
+    }
+}
+
 
 @Parcelize
 data class EventRatingModel(

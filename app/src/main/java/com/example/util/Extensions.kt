@@ -1,7 +1,5 @@
 package com.example.util
 
-import android.animation.Animator
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,20 +9,16 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.os.ParcelFileDescriptor
 import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupWindow
@@ -39,13 +33,13 @@ import androidx.camera.core.ImageCaptureException
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -58,25 +52,18 @@ import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.onTextChanged
+import com.example.extensions.parseColor
 import com.google.android.material.appbar.AppBarLayout
 import com.squareup.picasso.Picasso
-import io.reactivex.Maybe
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.io.OutputStream
 
 
@@ -179,6 +166,10 @@ fun View.getColorStateList(res: Int): ColorStateList? {
     return ContextCompat.getColorStateList(context, res)
 }
 
+fun View.getColorStateList(res: String): ColorStateList {
+    return ColorStateList.valueOf(res.parseColor() ?: getColor(R.color.colorAccent))
+}
+
 fun TextView.setLeftDrawable(res: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0)
 }
@@ -208,7 +199,7 @@ fun ImageView.setImagePicasso(url: String?, placeholder: Any? = null, error: Any
 }
 
 fun ImageView.setImage(
-    image: Any?, crossfad: Int? = 500,
+    image: Any?, crossfade: Int? = 500,
     placeholder: Int? = R.drawable.background_image_placeholder,
     error: Int? = null,
     transformations: List<Transformation>? = null
@@ -216,30 +207,30 @@ fun ImageView.setImage(
     val resImage: Any = image ?: ""
     when (resImage) {
         is Int -> load(resImage) {
-            setParams(crossfad, placeholder, error, transformations)
+            setParams(crossfade, placeholder, error, transformations)
         }
 
         is Uri -> load(resImage) {
-            setParams(crossfad, placeholder, error, transformations)
+            setParams(crossfade, placeholder, error, transformations)
         }
 
         is String ->
             if (Patterns.WEB_URL.matcher(resImage).matches())
                 load(resImage) {
-                    setParams(crossfad, placeholder, error, transformations)
+                    setParams(crossfade, placeholder, error, transformations)
                 }
             else
                 load(File(resImage)) {
-                    setParams(crossfad, placeholder, error, transformations)
+                    setParams(crossfade, placeholder, error, transformations)
                 }
 
         is Drawable ->
             load(resImage) {
-                setParams(crossfad, placeholder, error, transformations)
+                setParams(crossfade, placeholder, error, transformations)
             }
 
         is Bitmap -> load(resImage) {
-            setParams(crossfad, placeholder, error, transformations)
+            setParams(crossfade, placeholder, error, transformations)
         }
     }
 }

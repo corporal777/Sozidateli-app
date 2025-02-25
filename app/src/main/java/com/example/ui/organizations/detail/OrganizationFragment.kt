@@ -7,6 +7,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
 import com.example.app.databinding.FragmentOrganizationBinding
 import com.example.data.models.EventNew
@@ -38,7 +39,8 @@ import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(), OrganizationContract.View {
+class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
+    OrganizationContract.View {
 
     @InjectPresenter
     lateinit var presenter: OrganizationPresenter
@@ -66,53 +68,24 @@ class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
         )
     }
 
-    private val onEventClickListener = object : EventListItem.OnEventClickListener {
-        override fun onActionRegister(event: String, agreementUrl: String?, formEnabled: Boolean) =
-            presenter.onActionRegister(event, agreementUrl, formEnabled)
-
-        override fun onActionCancel(event: String, registrationId: String?) =
-            presenter.onActionCancel(event, registrationId)
-
-        override fun onShowEventClick(view: View, event: String) = presenter.onShowEventClick(event)
+    private val onEventListener = object : EventListItem.OnEventClickListener {
+        override fun onActionRegister(event: EventNew) = presenter.onActionRegister(event, false)
+        override fun onActionCancel(event: EventNew) = presenter.onActionCancel(event)
+        override fun onShowEventClick(eventId: String) = presenter.onShowEventClick(eventId)
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
-        override fun onShowNeedAuth(eventId: String) { presenter.onShowAuthorization(eventId) }
+        override fun onShowNeedAuth(eventId: String) = presenter.onShowAuthorization(eventId)
     }
 
     private val mainDataSection by lazy {
-        Section().apply {
-            setPlaceholder(PlaceholderItem(PlaceholderItem.Type.ORGANIZATION_MAIN))
-        }
+        Section().apply { updateItem(PlaceholderItem(PlaceholderItem.Type.ORGANIZATION_MAIN)) }
     }
-    private val infoDataSection = Section()
-    private val eventsDataSection by lazy {
-        Section().apply {
-            setHeader(
-                EventsTitleItem(
-                    getString(R.string.organization_events),
-                    pTop = 20,
-                    pBottom = 10
-                )
-            )
-            setFooter(ShowButtonItem(getString(R.string.organization_events_watch)) {
-                presenter.onShowMoreEventsClick()
-            })
-            setHideWhenEmpty(true)
-        }
-    }
-    private val membersDataSection by lazy {
-        Section().apply {
-            setFooter(ShowButtonItem(getString(R.string.organization_peoples_watch)) {
-                presenter.onShowMoreUsersClick()
-            })
-            setHideWhenEmpty(true)
-        }
-    }
+    private val eventsDataSection by lazy { Section().apply { setHideWhenEmpty(true) } }
+    private val membersDataSection by lazy { Section().apply { setHideWhenEmpty(true) } }
 
 
     private val groupAdapter by lazy {
         GroupieAdapter().apply {
             add(mainDataSection)
-            add(infoDataSection)
             add(eventsDataSection)
             add(membersDataSection)
         }
@@ -122,25 +95,20 @@ class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             rvOrganization.apply {
+                layoutManager = LinearLayoutManager(requireContext())
                 adapter = groupAdapter
             }
             swipeToRefresh.setOnRefreshListener { presenter.onRefreshRequest() }
         }
     }
 
-
-    override fun setMainData(organization: OrganizationNew) {
-        mainDataSection.updateItem(
+    override fun setOrganizationsData(organization: OrganizationNew) {
+        mBinding.swipeToRefresh.isRefreshing = false
+        mainDataSection.updateItems(
             OrganizationHeaderItem(
                 organization,
                 imageClickListener
-            ) { presenter.onAddOrganizationFavoriteClick(it) }
-        )
-        mBinding.swipeToRefresh.isRefreshing = false
-    }
-
-    override fun setInformationData(organization: OrganizationNew) {
-        infoDataSection.updateItem(
+            ) { presenter.onAddOrganizationFavoriteClick(it) },
             OrganizationInfoItem(
                 organization.id,
                 organization.site?.joinToString(separator = "\n") { it.getAffiliationString() },
@@ -152,50 +120,47 @@ class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
         )
     }
 
-    override fun setEventsData(events: List<EventNew>) {
-        eventsDataSection.update(events.map {
-            EventListItem(
-                it,
-                presenter.isTemporaryUser(),
-                onEventClickListener
-            )
-        })
-    }
 
-
-    override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int?) {
-        membersDataSection.apply {
-            updateItems(
-                EventsTitleItem(
-                    getString(R.string.organization_peoples).format(totalSize ?: 0),
-                    pBottom = 10
-                ),
-                members.map { member ->
-                    OrganizationMemberItem(
-                        member.user,
-                        member.binds?.user?.nameLastName,
-                        member.binds?.user?.address?.shortAddres,
-                        member.binds?.user?.loadUserImage(),
-                        member.binds?.userFavorite != null,
-                        presenter.isCurrentUser(member.binds?.user?.id.toString()),
-                        { user -> presenter.onUserClick(user.toString()) },
-                        { id -> presenter.onAddUserFavoriteCLick(member) }
-                    )
-                }
-            )
+    override fun setEventsData(events: List<EventNew>, totalSize: Int) {
+        eventsDataSection.apply {
+            setHeader(EventsTitleItem(getString(R.string.organization_events)))
+            if (totalSize > 3)
+                setFooter(ShowButtonItem(getString(R.string.organization_events_watch)) { presenter.onShowMoreEventsClick() })
+            update(events.map { EventListItem(it, presenter.isTemporaryUser(), onEventListener) })
         }
     }
 
 
-    override fun updateOrganizationSubscription(organization: OrganizationNew) {
+    override fun setMembersData(members: List<OrganizationMemberModel>, totalSize: Int) {
+        membersDataSection.apply {
+            setHeader(EventsTitleItem(getString(R.string.organization_peoples).format(totalSize)))
+            if (totalSize > 3)
+                setFooter(ShowButtonItem(getString(R.string.organization_peoples_watch)) { presenter.onShowMoreUsersClick() })
+            update(members.map { member ->
+                OrganizationMemberItem(
+                    member.user,
+                    member.binds?.user?.nameLastName,
+                    member.binds?.user?.address?.shortAddres,
+                    member.binds?.user?.loadUserImage(),
+                    member.binds?.userFavorite != null,
+                    presenter.isCurrentUser(member.binds?.user?.id.toString()),
+                    { user -> presenter.onUserClick(user.toString()) },
+                    { id -> presenter.onAddUserFavoriteCLick(member) }
+                )
+            })
+        }
+    }
+
+
+    override fun updateOrganization(organization: OrganizationNew) {
         val item = mainDataSection.findItemBy<OrganizationHeaderItem> { true }
         item?.notifyChanged(organization)
     }
 
-    override fun updateUserSubscription(userId: Int, isSubscribed: Boolean) {
-        val idLong = userId.toLong()
+    override fun updateUser(member: OrganizationMemberModel) {
+        val idLong = member.id?.toLong()
         val item = membersDataSection.findItemBy<OrganizationMemberItem> { it.id == idLong }
-        item?.notifyChanged(isSubscribed)
+        item?.notifyChanged(member.binds?.userFavorite != null)
     }
 
     override fun updateEvent(event: EventNew) {
@@ -206,24 +171,18 @@ class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
 
 
     override fun showAllUsers(organizationId: String) {
-        findNavController().navigate(
-            R.id.organization_members_fragment,
-            OrganizationMembersFragmentArgs.Builder(organizationId).build().toBundle()
-        )
+        val args = OrganizationMembersFragmentArgs.Builder(organizationId).build().toBundle()
+        findNavController().navigate(R.id.organization_members_fragment, args)
     }
 
     override fun showAllEvents(organizationId: String) {
-        findNavController().navigate(
-            R.id.organization_events_fragment,
-            OrganizationEventsFragmentArgs.Builder(organizationId).build().toBundle()
-        )
+        val args = OrganizationEventsFragmentArgs.Builder(organizationId).build().toBundle()
+        findNavController().navigate(R.id.organization_events_fragment, args)
     }
 
     override fun showUser(id: String) {
-        findNavController().navigate(
-            R.id.user_fragment,
-            UserFragmentArgs.Builder(id).build().toBundle()
-        )
+        val args = UserFragmentArgs.Builder(id).build().toBundle()
+        findNavController().navigate(R.id.user_fragment, args)
     }
 
     override fun showCurrentUser() {
@@ -231,31 +190,28 @@ class OrganizationFragment : BaseToolbarFragment<FragmentOrganizationBinding>(),
     }
 
     override fun showAboutEvent(event: String) {
-        findNavController().navigate(
-            R.id.about_event_fragment,
-            AboutEventFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = AboutEventFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
     }
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.request_fragment, args)
     }
 
     override fun showAuthorization() {
         findNavController().navigate(R.id.authorization_fragment)
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String, formEnabled: Boolean) {
-        EventAgreementBottomSheet(requireContext(), url)
-            .setSelectCallback { presenter.onAcceptRegistrationAgreement(event, formEnabled) }
+    override fun showAgreementRegisterDialog(event: EventNew) {
+        EventAgreementBottomSheet(requireContext(), event.userAgreement?.uri ?: "")
+            .setSelectCallback { if (it) presenter.onActionRegister(event, true) }
             .show()
     }
 
+    override fun animationType(): AnimType = AnimType.FADE
     override fun layout(): Int = R.layout.fragment_organization
     override fun binding() = FragmentOrganizationBinding::class.java
     override val title: CharSequence by lazy { getString(R.string.profile_work_organization) }
-    override fun scrollingView(): View? = mBinding.rvOrganization
+    override fun scrollingView(): View = mBinding.rvOrganization
 }

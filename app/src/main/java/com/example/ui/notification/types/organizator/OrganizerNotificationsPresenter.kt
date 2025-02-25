@@ -5,11 +5,14 @@ import com.example.data.AppData
 import com.example.data.bodies.ApproveBody
 import com.example.data.bodies.DeclineBody
 import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.data.models.NotificationModel
 import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.types.base.BaseNotificationTypePresenter
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -24,63 +27,41 @@ class OrganizerNotificationsPresenter
     private val userRepository: UserRepository,
     private val notificationManager: NotificationManager,
     private val socket: SocketIOManager,
-) : BaseNotificationTypePresenter<OrganizerNotificationsContract.View>(
-    appData,
-    userRepository,
-    notificationManager,
-    socket
-), OrganizerNotificationsContract.Presenter {
+) : BaseNotificationTypePresenter<OrganizerNotificationsContract.View>(appData, userRepository, notificationManager, socket), OrganizerNotificationsContract.Presenter {
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Observable.create(pagination)
-            .map { transformList(it) }
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onNext = {
-                    viewState.apply {
-                        setReadAllButton(isHasUnreadNotifications)
+                onNext = { viewState.setNotifications(it) }
+            )
 
-                        if (it.isNullOrEmpty()) showEmptyListPlaceholder()
-                        else setNotifications(it)
-                    }
-                })
+        compositeDisposable += appData.notificationsTypesSubject
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val count = it.value?.org ?: 0
+                viewState.setReadAllButton(count > 0)
+            }
     }
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
     }
 
-    override fun onNotificationAcceptClick(notification: Notification) {
+    override fun onNotificationAcceptClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
-        updateNotification(
-            userRepository.approveOrgMember(entityId, ApproveBody(appData.getId())),
-            notification.id
-        )
+        updateNotification(userRepository.approveOrgMember(entityId), notification.id)
     }
 
-    override fun onNotificationCancelClick(notification: Notification) {
+    override fun onNotificationCancelClick(notification: NotificationLocal) {
         val entityId = notification.entity?.id.toString()
-        updateNotification(
-            userRepository.declineOrgMember(entityId, DeclineBody(appData.getId())),
-            notification.id
-        )
+        updateNotification(userRepository.declineOrgMember(entityId), notification.id)
     }
 
-    override fun onReadAllClick() {
-        compositeDisposable += readAllNotificationsRequest(NotificationType.ORGANIZER)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = {
-                    pagination.invalidate()
-                    if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet(NotificationType.ORGANIZER)
-                }
-            )
-    }
 
 
     override fun buildParams(limit: Int, offset: Int): Map<String, Any> {

@@ -106,14 +106,18 @@ class EventRegistrationPresenter
     override fun onRegisterClick() {
         if (checkDataValid()) {
             compositeDisposable += getRequestBody(0)
-                .flatMap { eventRepository.eventRegisterNew(it) }
+                .flatMap { eventRepository.sendFormToRegister(it) }
                 .flatMapCompletable { eventRepository.registerToEvent(eventId.toInt()) }
                 .andThen(socket.connectToUpdates())
+                .andThen(eventRepository.getEvent(eventId))
                 .performOnBackgroundOutOnMain()
                 .withCustomLoading(viewState)
                 .subscribeSimple(
                     onError = { onReceiveError(it) },
-                    onComplete = { viewState.showEventRegistrationSuccessDialog() })
+                    onSuccess = {
+                        viewState.showEventRegistrationSuccessDialog()
+                        appData.sendUpdateEvent(it)
+                    })
         } else viewState.showErrors(invalidFieldsData)
     }
 
@@ -291,7 +295,7 @@ class EventRegistrationPresenter
 
                     val availableExtensions = field.field.values ?: emptyList()
                     val contains = availableExtensions.isEmpty() || availableExtensions.find {
-                        val availableExtension = it.toLowerCase(Locale.getDefault())
+                        val availableExtension = it.lowercase(Locale.getDefault())
                         availableExtension == fileExtension || fileExtension == "jpg" && availableExtension == "jpeg"
                     } != null
 
@@ -334,7 +338,6 @@ class EventRegistrationPresenter
                         val value = fieldData.value ?: return@forEachIndexed
 
                         if (fieldData is EventRegisterFieldData.Prefilled) return@forEachIndexed
-
                         else if (fieldData is EventRegisterFieldData.File) {
                             val path = (value as EventFile).path
                             addFormDataPart("fields[$index][id]", key)
@@ -351,9 +354,18 @@ class EventRegistrationPresenter
                             addFormDataPart("fields[$index][id]", key)
                             addFormDataPart("fields[$index][value][series]", passport.series ?: "")
                             addFormDataPart("fields[$index][value][number]", passport.number ?: "")
-                            addFormDataPart("fields[$index][value][issuedBy]", passport.issuedBy ?: "")
-                            addFormDataPart("fields[$index][value][issuedDepartment]", passport.issuedDepartment ?: "")
-                            addFormDataPart("fields[$index][value][issuedDate]", passport.issuedDate ?: "")
+                            addFormDataPart(
+                                "fields[$index][value][issuedBy]",
+                                passport.issuedBy ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDepartment]",
+                                passport.issuedDepartment ?: ""
+                            )
+                            addFormDataPart(
+                                "fields[$index][value][issuedDate]",
+                                passport.issuedDate ?: ""
+                            )
                         } else if (value is Iterable<*>) {
                             if (value.count() > 0) addFormDataPart("fields[$index][id]", key)
                             value.filterNotNull().forEachIndexed { i, a ->
@@ -384,8 +396,7 @@ class EventRegistrationPresenter
                         if (f is EventRegisterFieldData.Prefilled) f.value = prefilled
                         Maybe.just(f.asOptional()).withDelay(400)
                     }
-                }
-                .onErrorResumeNext(Maybe.just(Optional(null)))
+                }.onErrorResumeNext(Maybe.just(Optional(null)))
 
         } else Maybe.just(Optional(null))
     }
@@ -407,19 +418,19 @@ class EventRegistrationPresenter
         return path.scheme?.startsWith("https") != true && path.scheme?.contains("https") != true
     }
 
-    private fun getPrefilledFieldsIfNeed(e : EventNew): Maybe<Pair<List<EventRegisterFields>?, List<EventFormResultFieldsModel>>> {
+    private fun getPrefilledFieldsIfNeed(e: EventNew): Maybe<Pair<List<EventRegisterFields>?, List<EventFormResultFieldsModel>>> {
         val fields = e.binds?.getForm()?.fields
-        val results = e.binds?.getFormResult()?.toMutableList() ?: mutableListOf()
+        val results = e.binds?.getFormResult()?.fields?.toMutableList() ?: mutableListOf()
         val pref = fields?.find { x -> x.type == EventRegisterField.Type.PREFILLED }
-        return if (pref != null)
-            return if (results.isEmpty() || results.none { it.id == pref.id }){
-                eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
-                    val jsonData = it.fields.prefilledToJson()
-                    results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
-                    Maybe.just(Pair(fields, results))
-                }
-            } else Maybe.just(Pair(fields, results))
-        else Maybe.just(Pair(fields, results))
+
+        return if (pref == null) Maybe.just(Pair(fields, results))
+        else if (results.none { it.id == pref.id }) {
+            eventRepository.getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe {
+                val jsonData = it.fields.prefilledToJson()
+                results.add(EventFormResultFieldsModel(pref.id, null, jsonData))
+                Maybe.just(Pair(fields, results))
+            }
+        } else Maybe.just(Pair(fields, results))
     }
 
     companion object {

@@ -20,11 +20,10 @@
         <attr name="inputHasCheckBox" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="CustomPhoneTextInputView">
-        <attr name="phoneTitleText" format="string" />
-        <attr name="phoneHintText" format="string" />
-        <attr name="phoneTextIcon" format="reference" />
-        <attr name="phoneInputEnabled" format="boolean" />
+    <declare-styleable name="CustomProgressBar">
+        <attr name="progressSize" format="dimension" />
+        <attr name="progressStroke" format="integer" />
+        <attr name="progressColor" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="PhoneFormatEditText">
@@ -91,6 +90,7 @@
         <attr name="buttonBackground" format="reference" />
         <attr name="buttonTextColor" format="reference" />
         <attr name="buttonMinHeight" format="dimension"/>
+        <attr name="buttonPaddingHorizontal" format="dimension"/>
         <attr name="buttonTextSize" format="dimension" />
         <attr name="buttonText" format="string" />
         <attr name="buttonDrawable" format="reference" />

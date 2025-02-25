@@ -7,6 +7,8 @@ import com.example.data.socket.SocketIOManager
 import com.example.repository.UserRepository
 import com.example.ui.notification.NotificationType
 import com.example.ui.notification.types.base.BaseNotificationTypePresenter
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
@@ -21,47 +23,30 @@ class SystemNotificationsPresenter
     private val userRepository: UserRepository,
     private val notificationManager: NotificationManager,
     private val socket: SocketIOManager,
-) : BaseNotificationTypePresenter<SystemNotificationsContract.View>(
-    appData,
-    userRepository,
-    notificationManager,
-    socket
-), SystemNotificationsContract.Presenter {
+) : BaseNotificationTypePresenter<SystemNotificationsContract.View>(appData, userRepository, notificationManager, socket), SystemNotificationsContract.Presenter {
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += Observable.create(pagination)
-            .map { transformList(it) }
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
+            .map { transformData(it) }
             .performOnBackgroundOutOnMain()
             .subscribeSimple(
                 onError = { it.printStackTrace() },
-                onNext = {
-                    viewState.apply {
-                        setReadAllButton(isHasUnreadNotifications)
+                onNext = { viewState.setNotifications(it) }
+            )
 
-                        if (it.isNullOrEmpty()) showEmptyListPlaceholder()
-                        else setNotifications(it)
-                    }
-                })
+        compositeDisposable += appData.notificationsTypesSubject
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple {
+                val count = it.value?.system ?: 0
+                viewState.setReadAllButton(count > 0)
+            }
     }
 
 
     override fun onNotificationReadClick(id: Int) {
         updateNotification(userRepository.markAsRead(id.toString()), id)
-    }
-
-    override fun onReadAllClick() {
-        compositeDisposable += readAllNotificationsRequest(NotificationType.SYSTEM)
-            .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple(
-                onError = { onReceiveError(it) },
-                onSuccess = {
-                    pagination.invalidate()
-                    //if (it.unAcceptedInvites > 0) viewState.showInvitesBottomSheet(NotificationType.SYSTEM)
-                }
-            )
     }
 
 
@@ -76,5 +61,4 @@ class SystemNotificationsPresenter
             put(NotificationModel.NOTIFICATION_TYPE, "system")
         }
     }
-
 }

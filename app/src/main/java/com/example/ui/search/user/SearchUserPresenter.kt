@@ -1,65 +1,52 @@
 package com.example.ui.search.user
 
+import android.util.Log
 import com.example.data.AppData
-import com.example.data.models.*
+import com.example.data.models.SearchFilter
+import com.example.data.models.UserDetail
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_CITY
 import com.example.data.models.UserDetail.Companion.USER_ADDRESS_REGION
 import com.example.data.models.UserDetail.Companion.USER_LIMIT
 import com.example.data.models.UserDetail.Companion.USER_OFFSET
 import com.example.data.models.UserDetail.Companion.USER_SEARCH
-import com.example.extensions.groupByNotNull
-import com.example.repository.CommonRepository
-import com.example.repository.EventRepository
+import com.example.extensions.buildFlow
 import com.example.repository.UserRepository
 import com.example.ui.search.SearchPresenter
-import com.example.util.pagination.observable.PaginationDataSourceFactory
-import io.reactivex.Completable
+import com.example.util.paginationNew.PagingDataSourceFactory
+import com.example.util.paginationNew.applyErrorHandler
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain
-import withProgressBarDialogLoading
-import java.util.concurrent.TimeUnit
+import withTimeOut
 import javax.inject.Inject
 
 @InjectViewState
 class SearchUserPresenter
 @Inject constructor(
     val appData: AppData,
-    val userRepository: UserRepository,
-    private val commonRepository: CommonRepository,
-    val eventRepository: EventRepository
-) : SearchPresenter<SearchUserContract.View, UserDetail, SearchFilter.UserNew>(appData),
-    SearchUserContract.Presenter {
+    val userRepository: UserRepository
+) : SearchPresenter<SearchUserContract.View>(appData), SearchUserContract.Presenter {
 
+    private var userFilter = SearchFilter.UserNew()
 
-    private var isInterestsLoaded = false
-    private var interests: Map<InterestNew, List<InterestNew>>? = null
-
-
-    override val pagination = PaginationDataSourceFactory { limit, offset ->
-        userRepository.searchUsers(buildFilterNew(limit, offset)).doOnSuccess {
-            val uid = appData.getId()
-            it.data.forEach { user -> user?.isCurrentUser = user?.id == uid }
-        }
-    }
+    private val pagination = PagingDataSourceFactory { limit, offset ->
+        userRepository.searchUsers(buildFilterNew(limit, offset))
+            .doOnSuccess { it.data.forEach { user -> user.setIfCurrentUser(appData.getId()) } }
+    }.applyErrorHandler { onReceivePagingError(it) }
+        .buildFlow(initialSize = SEARCH_PAGE_SIZE, distance = 5)
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        compositeDisposable += commonRepository.getInterests()
-            .map { interests ->
-                interests.groupByNotNull { child -> interests.firstOrNull { it.id == child.parent } }
-            }
+        compositeDisposable += Flowable.create(pagination, BackpressureStrategy.LATEST)
             .performOnBackgroundOutOnMain()
-            .subscribe({
-                isInterestsLoaded = true
-                this.interests = it
-            }, {
-                it.printStackTrace()
-                isInterestsLoaded = true
-            })
+            .subscribeSimple(
+                onError = { it.printStackTrace() },
+                onNext = { viewState.setData(it) }
+            )
     }
-
 
     override fun onUserClick(user: UserDetail) {
         if (appData.isCurrentUser(user.id.toString())) viewState.showCurrentUser()
@@ -67,48 +54,33 @@ class SearchUserPresenter
     }
 
     override fun onUserActionCLick(user: UserDetail) {
-        val isSubscribed = user.binds?.userFavorite != null
-        compositeDisposable += Completable.defer {
-            if (isSubscribed)
-                eventRepository.deleteFromFavorites(user.binds?.userFavorite?.id.toString())
-                    .doOnComplete { user.binds?.userFavorite = null }
-            else eventRepository.addUserToFavorites(user.id.toString())
-                .doOnSuccess { user.binds?.userFavorite = EventUserFavorite(it.id, it.user) }
-                .ignoreElement()
-        }
+        compositeDisposable += userRepository.addOrRemoveUserFavorite(user)
+            .doOnSuccess { user.binds?.userFavorite = it.value }
             .performOnBackgroundOutOnMain()
-            .withProgressBarDialogLoading(viewState)
-            .subscribeSimple {
-                viewState.updateUser(user)
-                if (user.binds?.userFavorite == null) viewState.showRemovedFromFavoriteDialog()
-                else viewState.showAddedToFavoriteDialog()
-            }
-    }
-
-    override fun onShowFilterRequest() {
-        val showFilter = {
-            tmpFilter.interests = this.interests
-            super.onShowFilterRequest()
-        }
-        if (isInterestsLoaded) showFilter()
-        else {
-            compositeDisposable += Completable.complete()
-                .timeout(3, TimeUnit.SECONDS)
-                .performOnBackgroundOutOnMain()
-                .withProgressBarDialogLoading(viewState)
-                .subscribe({
-                    showFilter()
-                }, {
-                    showFilter()
+            .subscribeSimple(
+                onError = {
+                    viewState.updateUser(user)
+                    onReceiveError(it)
+                },
+                onSuccess = {
+                    viewState.updateUser(user)
+                    if (it.value == null) viewState.showRemovedFromFavoriteDialog()
+                    else viewState.showAddedToFavoriteDialog()
                 })
-        }
     }
 
-    override fun createFilter() = SearchFilter.UserNew()
-    override fun copyFilter(filter: SearchFilter.UserNew) = filter.copy()
-    override fun isHasFilter(): Boolean = filter.isHasFilter()
-    override fun getSearchType(): String = SEARCH_USER_TYPE
 
+    override fun onFiltersApplyClick(filter: SearchFilter.UserNew) {
+        userFilter = filter
+        viewState.setHasFilter()
+        pagination.invalidate()
+    }
+
+    override fun onRefreshRequest() = pagination.invalidate()
+
+    override fun onShowFilterRequest() = viewState.showFilter(userFilter)
+
+    override fun isHasFilter(): Boolean = userFilter.isHasFilter()
 
     private fun buildFilterNew(limit: Int, offset: Int): MutableMap<String, Any> {
         return mutableMapOf<String, Any>().apply {
@@ -122,38 +94,26 @@ class SearchUserPresenter
             if (searchText.isNotEmpty()) put(USER_SEARCH, searchText.trim())
 
             //new interests filter
-            if (filter.theme != null) put(SEARCH_THEME, filter.theme!!)
-            if (filter.spec != null) put(SEARCH_SPEC, filter.spec!!)
+            if (userFilter.theme != null) put(SEARCH_THEME, userFilter.theme!!)
+            if (userFilter.spec != null) put(SEARCH_SPEC, userFilter.spec!!)
 
             //new age filter
-            if (filter.ageFrom != null) put(SEARCH_AGE_FROM, filter.ageFrom!!)
-            if (filter.ageTo != null) put(SEARCH_AGE_TO, filter.ageTo!!)
+            if (userFilter.ageFrom != null) put(SEARCH_AGE_FROM, userFilter.ageFrom!!)
+            if (userFilter.ageTo != null) put(SEARCH_AGE_TO, userFilter.ageTo!!)
 
             //new address filters
-            if (!filter.addressRegion.isNullOrEmpty()) put(USER_ADDRESS_REGION, filter.addressRegion!!)
-            if (!filter.addressTown.isNullOrEmpty()) put(USER_ADDRESS_CITY, filter.addressTown!!)
-            if (!filter.addressTownType.isNullOrEmpty()) put("type", filter.addressTownType!!)
+            if (!userFilter.addressRegion.isNullOrEmpty())
+                put(USER_ADDRESS_REGION, userFilter.addressRegion!!)
+            if (!userFilter.addressTown.isNullOrEmpty())
+                put(USER_ADDRESS_CITY, userFilter.addressTown!!)
+            if (!userFilter.addressTownType.isNullOrEmpty())
+                put("type", userFilter.addressTownType!!)
         }
     }
 
-    fun getAgesList(ageFrom: Int?): List<String> {
-        return arrayListOf<String>().apply {
-            if (ageFrom == null) {
-                for (i in 14 until 81) add(i.toString())
-            } else {
-                for (i in ageFrom until 81) add(i.toString())
-            }
-        }
-    }
 
     companion object {
-        private const val FILTER_NAME = "user_fio"
-        private const val FILTER_ADDRESS = "user_address"
-        private const val FILTER_EMAIL = "user_email"
-        private const val FILTER_PHONE = "user_phone"
-        private const val FILTER_FAVORITES = "is_in_favorite"
-        private const val FILTER_INTEREST = "interests"
-        private const val FILTER_AGE = "user_age"
+        private const val SEARCH_PAGE_SIZE = 30
 
         private const val SEARCH_AGE_FROM = "ageFrom"
         private const val SEARCH_AGE_TO = "ageTo"

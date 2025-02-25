@@ -1,19 +1,23 @@
 package com.example.ui.notification.invites
 
+import androidx.paging.PagingData
 import com.example.data.models.Notification
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
-import com.example.ui.notification.NotificationsSortedData
+import com.example.data.models.NotificationLocal
+import com.example.ui.base.bottomSheet.BaseBSContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
+import moxy.viewstate.strategy.alias.Skip
 
 interface InviteNotificationsContract {
-    interface View : BaseBottomSheetContract.View{
-
-        @AddToEndSingle
+    interface View : BaseBSContract.View{
+        @Skip
         fun setUnreadInvitesLabel(invites : Int)
 
-        @AddToEndSingle
-        fun setNotifications(notifications: List<NotificationsSortedData>)
+        @OneExecution
+        fun setNotifications(notifications: PagingData<NotificationLocal>)
+
+        @Skip
+        fun updateNotification(data : NotificationLocal?, notificationId : Int)
 
         @OneExecution
         fun showAboutEvent(eventId : String)
@@ -25,11 +29,10 @@ interface InviteNotificationsContract {
         fun showUrl(url: String)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
+    interface Presenter : BaseBSContract.Presenter {
         fun onNotificationUrlClick(url: String)
-        fun onNotificationAcceptClick(notification: Notification)
-        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationAcceptClick(notification: NotificationLocal)
+        fun onNotificationCancelClick(notification: NotificationLocal)
 
-        fun onItemTake(position: Int)
     }
 }

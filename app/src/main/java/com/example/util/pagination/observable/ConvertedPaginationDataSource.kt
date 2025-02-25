@@ -3,7 +3,7 @@ package com.example.util.pagination.observable
 import android.util.Log
 import androidx.paging.DataSource
 
-class ConvertedPaginationDataSource<I, R>(
+class ConvertedPaginationDataSource<I : Any, R : Any>(
     private val source: PaginationDataSource<I>,
     private val converter: (item: I, index: Int, total: Int?) -> R
 ) : PaginationDataSource<R>() {
@@ -19,8 +19,6 @@ class ConvertedPaginationDataSource<I, R>(
     }
 
     override fun invalidate() = source.invalidate()
-
-    override fun isInvalid() = source.isInvalid
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<R>) {
         source.loadInitial(params, object : LoadInitialCallback<I>() {

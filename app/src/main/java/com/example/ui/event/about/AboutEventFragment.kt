@@ -2,7 +2,6 @@ package com.example.ui.event.about
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -19,11 +18,9 @@ import com.example.data.models.NewTags
 import com.example.data.models.Tag
 import com.example.extensions.findItemBy
 import com.example.extensions.onScrolled
-import com.example.extensions.replaceItem
-import com.example.extensions.replaceItems
+import com.example.extensions.setArgument
 import com.example.extensions.setOnClickListener
 import com.example.extensions.statusBarColorValue
-import com.example.extensions.updateItem
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
@@ -31,7 +28,6 @@ import com.example.holders.redesign.EventPartnerItem
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.items.AboutEventLabelItem
 import com.example.ui.event.about.items.EventDetailActivitiesItem
-import com.example.ui.event.about.items.EventDetailBlocksLabelItem
 import com.example.ui.event.about.items.EventDetailImageItem
 import com.example.ui.event.about.items.EventDetailOrganizationItem
 import com.example.ui.event.about.items.EventDetailShowActivitiesItem
@@ -39,6 +35,7 @@ import com.example.ui.event.about.items.SpeakersHorizontalListItem
 import com.example.ui.event.about.items.TagsItem
 import com.example.ui.event.activities.ActivitiesFragmentArgs
 import com.example.ui.event.formResult.EventFormResultFragment
+import com.example.ui.event.formResult.EventFormResultFragment.Companion.EVENT_FORM_FRAGMENT_TAG
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
@@ -51,7 +48,6 @@ import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.util.openDeviceCalendarApp
-import com.example.util.weak
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import moxy.presenter.InjectPresenter
@@ -84,7 +80,7 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     }
     private val eventProgramSection = Section().apply {
         setHeader(AboutEventLabelItem(R.string.event_program))
-        setFooter(EventDetailShowActivitiesItem { presenter.onShowEventActivitiesClick() })
+        setFooter(EventDetailShowActivitiesItem { presenter.onShowSubEventsClick() })
         setHideWhenEmpty(true)
     }
     private val eventPartnersSection = Section().apply {
@@ -102,17 +98,22 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
 
 
     private val onActionClickListener = object : EventDetailImageItem.OnActionClickListener {
-        override fun onActionRegister(url: String?) = presenter.onActionRegister(url)
+        override fun onActionRegister() = presenter.onActionRegister(false)
         override fun onActionCancel() = presenter.onActionCancel()
         override fun onShowUpdateState() = showStateErrorMessage(StateType.BASE, false, null)
         override fun onSubscribeEvent(subscribe: Boolean) = presenter.onSubscribeEvent(subscribe)
-        override fun onShowNeedAuth(eventId: String) = presenter.onShowAuthorization(eventId)
+        override fun onShowNeedAuth() = presenter.onShowAuthorization()
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent)
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
+            presenter.onSubEventClick(subEvent.id ?: 0)
+
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddToScheduleClick(subEvent)
+
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
+            presenter.onAddToScheduleClick(subEvent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,7 +165,8 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
 
         if (!eventData.event.isHasOneActivity()) {
             eventProgramSection.updateItems(
-                if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() } else null,
+                if (eventData.tags.isNotEmpty()) TagsItem(eventData.tags) { presenter.onTagSelected() }
+                else null,
                 eventData.subEvents.map {
                     EventDetailActivitiesItem(
                         eventData.event.id.toString(),
@@ -225,15 +227,16 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
 
     override fun showAgreementRegisterDialog(event: String, url: String) {
         EventAgreementBottomSheet(requireContext(), url)
-            .setSelectCallback { presenter.onAcceptRegistrationAgreement(event) }
+            .setSelectCallback { if (it) presenter.onActionRegister(true) }
             .show()
     }
 
 
     private fun showEventFormResult(event: EventNew) {
-        val formResult = event.binds?.userFormResult
-            ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION } ?: return
-        EventFormResultFragment(formResult).show(requireActivity().supportFragmentManager)
+        val formResult = event.binds?.userFormResult?.firstOrNull() ?: return
+        EventFormResultFragment()
+            .setArgument<EventFormResultFragment>(EVENT_FORM_FRAGMENT_TAG, formResult)
+            .show(requireActivity().supportFragmentManager)
     }
 
     private fun showEventInformationDialog(event: EventNew) {
@@ -260,32 +263,24 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
 
 
     override fun showPartner(eventId: String, partnerId: String) {
-        findNavController().navigate(
-            R.id.partner_fragment,
-            PartnerFragmentArgs.Builder(eventId, partnerId).build().toBundle()
-        )
+        val args = PartnerFragmentArgs.Builder(eventId, partnerId).build().toBundle()
+        findNavController().navigate(R.id.partner_fragment, args)
     }
 
     override fun showSpeakers(eventId: String) {
-        findNavController().navigate(
-            R.id.speakers_list_fragment,
-            EventSpeakersFragmentArgs.Builder(eventId).build().toBundle()
-        )
+        val args = EventSpeakersFragmentArgs.Builder(eventId).build().toBundle()
+        findNavController().navigate(R.id.speakers_list_fragment, args)
     }
 
 
     override fun showEventRequest(event: String) {
-        findNavController().navigate(
-            R.id.request_fragment,
-            EventRegistrationFragmentArgs.Builder(event).build().toBundle()
-        )
+        val args = EventRegistrationFragmentArgs.Builder(event).build().toBundle()
+        findNavController().navigate(R.id.request_fragment, args)
     }
 
     override fun showOrganization(organization: String) {
-        findNavController().navigate(
-            R.id.organization_fragment_new,
-            OrganizationFragmentArgs.Builder(organization).build().toBundle()
-        )
+        val args = OrganizationFragmentArgs.Builder(organization).build().toBundle()
+        findNavController().navigate(R.id.organization_fragment_new, args)
     }
 
     override fun showAuthorization() {
@@ -302,9 +297,7 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     override fun setEventFavoriteButton(isSubscribed: Boolean) {
         mBinding.toolbar.ivAddToFavorite.apply {
             setImageResource(if (!isSubscribed) R.drawable.ic_star else R.drawable.ic_star_filled)
-            setOnClickListener {
-                presenter.onAddEventToFavoriteClick()
-            }
+            setOnClickListener { presenter.onAddEventToFavoriteClick() }
         }
     }
 
@@ -336,15 +329,11 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     }
 
     override fun showCustomLoading() {
-        val button = eventMainSection.findItemBy<EventDetailImageItem> { true }?.getActionButton()
-        if (button != null) button.showProgressLoading(true)
-        else showCustomProgressDialog()
+        eventMainSection.findItemBy<EventDetailImageItem> { true }?.notifyChanged(true)
     }
 
     override fun hideCustomLoading() {
-        val button = eventMainSection.findItemBy<EventDetailImageItem> { true }?.getActionButton()
-        if (button != null) button.showProgressLoading(false)
-        else hideCustomProgressDialog()
+        eventMainSection.findItemBy<EventDetailImageItem> { true }?.notifyChanged(false)
     }
 
     private fun setupBlurView() {

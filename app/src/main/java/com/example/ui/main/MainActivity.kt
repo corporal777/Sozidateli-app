@@ -87,8 +87,10 @@ import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onBackPressedCallback
+import com.example.extensions.setArgument
 import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseVBFragment
+import com.example.ui.main.inApp.InAppNotificationFragment.Companion.IN_APP_FRAGMENT_TAG
 import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
@@ -355,8 +357,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showRecommendations() {
-        val args =
-            RecommendationsFragmentArgs.Builder(presenter.isFinishRegister).build().toBundle()
+        val args = bundleOf("isOpenProfile" to presenter.isFinishRegister)
         findNavController().navigate(
             R.id.recommendations_fragment, args,
             navOptions { popUpTo(R.id.main_navigation) { inclusive = true } }
@@ -417,8 +418,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
     override fun showInAppNew(listInApp: List<Notification>) {
-        val inAppNotification = InAppNotificationFragment(listInApp)
-        inAppNotification.show(supportFragmentManager, "inAppDialog")
+        InAppNotificationFragment()
+            .setArgument<InAppNotificationFragment>(IN_APP_FRAGMENT_TAG, listInApp)
+            .show(supportFragmentManager)
     }
 
 
@@ -484,6 +486,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
 
     override fun showErrorMessage(canGoBack: Boolean, message: String) {
     }
+
 
 
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {

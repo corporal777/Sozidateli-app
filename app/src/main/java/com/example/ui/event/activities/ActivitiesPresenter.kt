@@ -5,8 +5,6 @@ import com.example.data.UserEventData
 import com.example.data.bodies.EventCalendarBody
 import com.example.data.bodies.EventCalendarBodyEntity
 import com.example.data.models.*
-import com.example.extensions.defaultServerDateFormatter
-import com.example.extensions.isSameDay
 import com.example.repository.EventRepository
 import com.example.ui.base.BasePresenter
 import io.reactivex.Completable

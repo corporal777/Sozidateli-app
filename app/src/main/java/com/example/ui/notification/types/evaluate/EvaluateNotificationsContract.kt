@@ -1,6 +1,7 @@
 package com.example.ui.notification.types.evaluate
 
 import com.example.data.models.Notification
+import com.example.data.models.NotificationLocal
 import com.example.ui.notification.types.base.BaseNotificationTypeContract
 
 interface EvaluateNotificationsContract {
@@ -10,7 +11,7 @@ interface EvaluateNotificationsContract {
 
     interface Presenter : BaseNotificationTypeContract.Presenter {
         fun onNotificationReadClick(id: Int)
-        fun onNotificationAcceptClick(notification: Notification)
-        fun onNotificationCancelClick(notification: Notification)
+        fun onNotificationAcceptClick(notification: NotificationLocal)
+        fun onNotificationCancelClick(notification: NotificationLocal)
     }
 }

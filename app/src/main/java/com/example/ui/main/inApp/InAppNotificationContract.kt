@@ -1,12 +1,12 @@
 package com.example.ui.main.inApp
 
 import com.example.data.models.Notification
-import com.example.ui.base.bottomSheet.BaseBottomSheetContract
+import com.example.ui.base.bottomSheet.BaseBSContract
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 
 interface InAppNotificationContract {
-    interface View : BaseBottomSheetContract.View{
+    interface View : BaseBSContract.View{
 
         @AddToEndSingle
         fun setNotifications(notifications: List<Notification>)
@@ -24,7 +24,7 @@ interface InAppNotificationContract {
         fun onNotificationNeedUpdate(notification: Notification)
     }
 
-    interface Presenter : BaseBottomSheetContract.Presenter {
+    interface Presenter : BaseBSContract.Presenter {
         fun onNotificationUrlClick(url: String)
         fun onNotificationReadClick(id: Int)
         fun onNotificationAcceptClick(notification: Notification)

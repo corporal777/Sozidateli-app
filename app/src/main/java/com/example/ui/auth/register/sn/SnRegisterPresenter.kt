@@ -1,15 +1,11 @@
 package com.example.ui.auth.register.sn
 
-import android.util.Log
 import com.example.data.AppData
 import com.example.data.bodies.MiddleNameBody
-import com.example.data.bodies.RegisterBody
 import com.example.data.bodies.SnRegisterBody
-import com.example.data.models.FieldDetails
 import com.example.data.models.SnUser
 import com.example.data.models.ToggleStringModel
 import com.example.exceptions.EmailNotUniqueException
-import com.example.exceptions.PhoneNotUniqueException
 import com.example.extensions.formatFromVkToDefaultDate
 import com.example.extensions.formatToDefaultServerDate
 import com.example.extensions.getAppVersion
@@ -19,10 +15,8 @@ import com.example.extensions.removeAllDoubleSpaces
 import com.example.repository.AuthRepository
 import com.example.repository.UserRepository
 import com.example.ui.base.BasePresenter
-import com.example.util.PHONE_PERSONAL
 import com.example.util.Utils
 import io.reactivex.Completable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
 import performOnBackgroundOutOnMain

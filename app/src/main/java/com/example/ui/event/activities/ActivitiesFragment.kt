@@ -21,7 +21,7 @@ import com.example.holders.TagsHorizontalListItem
 import com.example.holders.redesign.EventActivityDateItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.ui.base.BaseVBFragment
-import com.example.ui.event.list.recommendations.items.NoEventItem
+import com.example.holders.NoEventItem
 import com.example.ui.event.location.buildingScheme.DestinationSchemeFragmentArgs
 import com.example.ui.event.my.schedule.calendar.CalendarHorizontalDaysItem
 import com.example.ui.subevent.SubEventFragmentArgs
@@ -113,7 +113,7 @@ class ActivitiesFragment : BaseVBFragment<FragmentActivitysBinding>(), Activitie
                             else R.drawable.background_search_field_rounded_normal
                         )
                     }
-                    setOnTextChange {
+                    setOnAfterTextChange {
                         btnClear.isVisible = !it.isNullOrEmpty()
                         presenter.onSearchTextChange(it)
                     }

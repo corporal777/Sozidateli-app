@@ -46,10 +46,6 @@ class SearchInput(
         this.onAfterTextChange = onAfterTextChange
     }
 
-    fun setOnTextChange(onTextChange: OnTextChange) {
-        this.onTextChange = onTextChange
-    }
-
     fun setOnTextChangeDone(onTextChangeDone: OnTextChangeDone) {
         this.onTextChangeSearch = onTextChangeDone
     }

@@ -4,6 +4,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 import android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 import android.text.TextWatcher
 import android.view.View
@@ -36,23 +37,23 @@ class RegisterEventStringItem(
                     EventRegisterField.Type.STRING, EventRegisterField.Type.GROUP -> {
                         maxSymbolsLength = 200
                         setMinMaxLines(1, 1)
-                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES
+                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
                     EventRegisterField.Type.TEXT_AREA -> {
                         maxSymbolsLength = 500
                         setMinMaxLines(2, 8)
-                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_MULTI_LINE
+                        inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_MULTI_LINE or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
                     EventRegisterField.Type.NUMBER -> {
                         maxSymbolsLength = 100
                         setMinMaxLines(1, 1)
-                        inputType = TYPE_CLASS_NUMBER
+                        inputType = TYPE_CLASS_NUMBER or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
 
                     EventRegisterField.Type.EMAIL, EventRegisterField.Type.SITE -> {
                         maxSymbolsLength = 100
                         setMinMaxLines(1, 1)
-                        inputType = TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                        inputType = TYPE_TEXT_VARIATION_EMAIL_ADDRESS or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
                     else -> throw IllegalArgumentException("Wrong field type ${field.type} for RegisterEventStringItem")
                 }

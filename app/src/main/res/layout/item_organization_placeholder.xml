@@ -26,7 +26,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="@dimen/margin_horizontal_default"
             android:layout_marginEnd="@dimen/margin_horizontal_default"
-            android:background="@color/placeholder"
+            android:background="@drawable/placeholder_background"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             app:layout_constraintBottom_toTopOf="@+id/btnAction"
@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_marginTop="16dp"
-            android:background="@color/placeholder"
+            android:background="@drawable/placeholder_background"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,12 +55,5 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.6" />
-
-        <View
-            android:id="@+id/divider"
-            style="@style/ViewDivider.Horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

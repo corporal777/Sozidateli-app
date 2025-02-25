@@ -1,33 +1,12 @@
 package com.example.ui.views.expandableTextView
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.content.Context
-import android.os.Build
 import android.text.*
-import android.text.Layout.Alignment.ALIGN_NORMAL
-import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils.TruncateAt.END
-import android.text.method.LinkMovementMethod
-import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View.MeasureSpec.EXACTLY
-import android.view.View.MeasureSpec.UNSPECIFIED
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.ViewTreeObserver
-import androidx.annotation.ColorInt
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.app.R
-import com.example.data.models.NewUserAddress
-import com.example.extensions.checkIsEllipsized
 import com.example.ui.views.CustomSpannableString
-import me.saket.bettermovementmethod.BetterLinkMovementMethod
-import kotlin.math.abs
 
 class CustomExpandableTextView : CustomTextViewWithUrls {
 

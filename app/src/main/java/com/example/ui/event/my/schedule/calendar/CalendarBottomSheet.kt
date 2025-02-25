@@ -2,7 +2,6 @@ package com.example.ui.event.my.schedule.calendar
 
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isInvisible
@@ -10,19 +9,13 @@ import com.example.App
 import com.example.app.R
 import com.example.data.models.EventScheduleDay
 import com.example.app.databinding.BottomSheetCalendarBinding
-import com.example.extensions.calendar
-import com.example.extensions.defaultServerDateFormatter
 import com.pagercalendar.calendar.CalendarDay
-import com.pagercalendar.calendar.DayViewDecorator
-import com.pagercalendar.calendar.DayViewFacade
-import com.pagercalendar.calendar.spans.DotSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.pagercalendar.calendar.decorators.EventDecorator
 import com.pagercalendar.calendar.decorators.SelectedDayDecorator
 import moxy.MvpDelegate
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 

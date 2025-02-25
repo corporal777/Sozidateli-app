@@ -89,7 +89,7 @@ class SubEventPresenter @Inject constructor(
 
     private fun loadData(): Single<AboutSubEventData> {
         return Single.zip(eventRepository.getEventActivityDetail(subEventId),
-            eventRepository.getEvent(eventId, "current-user-registration").toSingle()
+            eventRepository.getEvent(eventId).toSingle()
         ) { subEvent, event ->
             val speakersList = arrayListOf<MemberModel>()
             speakersList.addAll(subEvent.binds?.member?.filter { x -> x.isLead == true }
