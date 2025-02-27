@@ -10,7 +10,7 @@ import com.example.app.R
 import com.example.app.databinding.FragmentRequestBinding
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.data.models.EventRegistration
 import com.example.extensions.findGroupBy
 import com.example.extensions.findItemBy
@@ -68,9 +68,7 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
     private val groupAdapter by lazy { GroupieAdapter().apply { add(fieldsSection) } }
     private val saveButtonItem by lazy { ActionButtonItem(-200L) { presenter.onRegisterClick() } }
 
-
-    private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit =
-        { presenter.onDataChange(it) }
+    private val onDataChange: (field: EventRegisterField<*>) -> Unit = { presenter.onDataChange(it) }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,76 +85,67 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
     }
 
 
-    override fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterFieldData<*>>) {
+    override fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterField<*>>) {
         fieldsSection.apply {
             setHeader(RegisterEventHeaderItem(event.id.toLong(), requireContext(), event))
             setFooter(saveButtonItem)
 
             update(fieldsData.map {
                 when (it) {
-                    is EventRegisterFieldData.Prefilled ->
+                    is EventRegisterField.Prefilled ->
                         RegisterEventProfileItemsGroup(it) { showEditProfile(it) }
 
-                    is EventRegisterFieldData.Title -> RegisterEventTitleItem(it.field.name)
-
-                    is EventRegisterFieldData.String -> RegisterEventStringItem(it, onDataChange)
-
-                    is EventRegisterFieldData.Phone -> RegisterEventPhoneItem(it, onDataChange)
-
-                    is EventRegisterFieldData.Date -> RegisterEventDateItem(it, onDataChange)
-
-                    is EventRegisterFieldData.SelectBox ->
-                        RegisterEventDropdownItem(it, onDataChange)
-
-                    is EventRegisterFieldData.RadioBox ->
-                        RegisterEventRadioBoxItem(it, onDataChange)
-
-                    is EventRegisterFieldData.Checkbox ->
-                        RegisterEventCheckboxItem(it, onDataChange)
-
-                    is EventRegisterFieldData.Boolean -> RegisterEventBooleanItem(it, onDataChange)
-
-                    is EventRegisterFieldData.Passport ->
-                        RegisterEventPassportItem(it, onDataChange)
-
-                    is EventRegisterFieldData.File ->
+                    is EventRegisterField.File ->
                         RegisterEventFileGroup(it, onDataChange) { presenter.onAddFileClick(it) }
+
+                    is EventRegisterField.Title -> RegisterEventTitleItem(it.field.name)
+
+                    is EventRegisterField.Text -> RegisterEventStringItem(it, onDataChange)
+
+                    is EventRegisterField.Phone -> RegisterEventPhoneItem(it, onDataChange)
+
+                    is EventRegisterField.Date -> RegisterEventDateItem(it, onDataChange)
+
+                    is EventRegisterField.SelectBox -> RegisterEventDropdownItem(it, onDataChange)
+
+                    is EventRegisterField.RadioBox -> RegisterEventRadioBoxItem(it, onDataChange)
+
+                    is EventRegisterField.Checkbox -> RegisterEventCheckboxItem(it, onDataChange)
+
+                    is EventRegisterField.Choice -> RegisterEventBooleanItem(it, onDataChange)
+
+                    is EventRegisterField.Passport -> RegisterEventPassportItem(it, onDataChange)
                 }
             })
         }
     }
 
-    override fun showErrors(invalidFields: MutableSet<EventRegisterFieldData<*>>) {
-        invalidFields.filter { x -> x.field.required }.forEach {
-            if (it is EventRegisterFieldData.Prefilled) {
+    override fun showErrors(invalidFields: MutableSet<EventRegisterField<*>>) {
+        invalidFields.filter { x -> x.field.isRequired }.forEach {
+            if (it is EventRegisterField.Prefilled) {
                 val item = fieldsSection.findGroupBy<RegisterEventProfileItemsGroup> { true }
                 item?.showError()
-            } else if (it is EventRegisterFieldData.File) {
-                val item = fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId() == it.field.id }
+            } else if (it is EventRegisterField.File) {
+                val item =
+                    fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId() == it.field.id }
                 item?.showError(true)
             } else {
-                val item = fieldsSection.findItemBy<BaseRegisterItem<*>> { x -> x.id == it.field.id.toLong() }
+                val item =
+                    fieldsSection.findItemBy<BaseRegisterItem<*>> { x -> x.id == it.field.id.toLong() }
                 item?.showError(true)
             }
         }
     }
 
-    override fun updateProfileFields(profileForm: EventRegisterFieldData.Prefilled) {
+    override fun updateProfileFields(profileForm: EventRegisterField.Prefilled) {
         fieldsSection.findGroupBy<RegisterEventProfileItemsGroup> { true }?.updateData()
     }
 
     override fun updateFileField(fieldId: String) {
-        fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId() == fieldId }?.checkFile()
+        fieldsSection.findGroupBy<RegisterEventFileGroup> { x -> x.getId().toString() == fieldId }
+            ?.checkFile()
     }
 
-
-    override fun enableActionButton(enable: Boolean) {
-        saveButtonItem.apply {
-            if (isEnabled == enable) return
-            isEnabled = enable
-            notifyChanged()
-        }
-    }
 
     override fun showSaveFormResultDraftDialog() {
         DefaultAlertDialog(
@@ -175,7 +164,8 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
             "Анкета",
             "У вас есть черновик анкеты. Хотите продолжить заполнение?",
             positiveText = "Продолжить",
-            negativeText = "Начать заново"
+            negativeText = "Начать заново",
+            withCancel = false
         )
             .setSelectCallback { presenter.initFormResultData(res.event, res.getDraftFields()) }
             .setCancelCallback { presenter.initFormResultData(res.event, res.getSortedFields()) }
@@ -187,21 +177,15 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
             .show()
     }
 
-    override fun openFileSelector(field: EventRegisterFieldData<EventFile?>) {
-        DefaultAlertDialog(
-            requireContext(),
-            null,
-            "Открыть файлы или галерею?",
-            getString(R.string.file_alert_gallery),
-            getString(R.string.photo_alert_gallery)
-        )
-            .setSelectCallback { presenter.onTakeFile(field) }
-            .setCancelCallback { presenter.onTakeImage(field) }
+    override fun openFileSelector(field: EventRegisterField<EventFile?>) {
+        DefaultAlertDialog(requireContext(), null, "Открыть файлы или галерею?", getString(R.string.file_alert_gallery), getString(R.string.photo_alert_gallery))
+        .setSelectCallback { presenter.onTakeFile(field) }
+        .setCancelCallback { presenter.onTakeImage(field) }
     }
 
     override fun showWrongFileExtensions(availableExtensions: List<String>) {
         val message = getString(R.string.event_register_file_extension_wrong)
-            .format(availableExtensions.joinToString { it.toLowerCase(Locale.getDefault()) })
+            .format(availableExtensions.joinToString { it.lowercase(Locale.getDefault()) })
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
@@ -215,21 +199,16 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
 
     override fun showEditProfile(type: PrefilledFieldClickType) {
         when (type) {
-            PrefilledFieldClickType.PROFILE ->
-                findNavController().navigate(R.id.user_profile_fragment)
-            PrefilledFieldClickType.NAME ->
-                findNavController().navigate(R.id.user_profile_settings_fragment)
-            PrefilledFieldClickType.MAIN ->
-                findNavController().navigate(R.id.user_edit_fragment)
-            PrefilledFieldClickType.CONTACTS ->
-                findNavController().navigate(R.id.editContactsFragment)
-            PrefilledFieldClickType.EDUCATION ->
-                findNavController().navigate(R.id.editEducationFragment)
-            PrefilledFieldClickType.WORK ->
-                findNavController().navigate(R.id.editWorksFragment)
+            PrefilledFieldClickType.PROFILE -> findNavController().navigate(R.id.user_profile_fragment)
+            PrefilledFieldClickType.NAME -> findNavController().navigate(R.id.user_profile_settings_fragment)
+            PrefilledFieldClickType.MAIN -> findNavController().navigate(R.id.user_edit_fragment)
+            PrefilledFieldClickType.CONTACTS -> findNavController().navigate(R.id.editContactsFragment)
+            PrefilledFieldClickType.EDUCATION -> findNavController().navigate(R.id.editEducationFragment)
+            PrefilledFieldClickType.WORK -> findNavController().navigate(R.id.editWorksFragment)
         }
     }
 
+    override fun enableActionButton(enable: Boolean) = saveButtonItem.notifyEnabled(enable)
     override fun showCustomLoading() = saveButtonItem.run { notifyChanged(1) }
     override fun hideCustomLoading() = saveButtonItem.run { notifyChanged(0) }
 
@@ -244,5 +223,6 @@ class EventRegistrationFragment : BaseToolbarFragment<FragmentRequestBinding>(),
     override fun setupToolbarContent(toolbarContent: ToolbarContent) {
         toolbarContent.getBackButton().setTint(R.color.main_brown_color_new)
     }
+
     override fun scrollingView(): View = mBinding.recyclerView
 }

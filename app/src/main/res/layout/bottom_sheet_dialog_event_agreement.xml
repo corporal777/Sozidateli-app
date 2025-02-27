@@ -42,6 +42,7 @@
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="@string/event_register_agreement_open_error"
             android:textColor="@color/black"
             android:textSize="18sp"

@@ -7,6 +7,7 @@ import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import com.example.app.R
 import com.example.app.databinding.DialogCustomProgressBinding
 import com.example.extensions.dp
@@ -31,16 +32,12 @@ class CustomProgressDialog(val context: Context) {
     }
 
     fun showDialog() {
-        mBinding.progressViewContainer.removeAllViews()
-        val progressBar = CustomProgressBar(context)
-        progressBar.setSize(35.dp)
-        progressBar.setProgressColor(
-            ContextCompat.getColor(
-                context,
-                R.color.main_brown_color_new
-            )
-        )
+        val progressBar = CustomProgressBar(context).apply {
+            setSize(35.dp)
+            setProgressColor(getColor(context, R.color.main_brown_color_new))
+        }
         mBinding.progressViewContainer.apply {
+            removeAllViews()
             addView(progressBar, 0)
         }
         mAlertDialog.show()

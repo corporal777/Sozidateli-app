@@ -7,16 +7,16 @@ import android.widget.CheckBox
 import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventCheckboxBinding
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 
 open class RegisterEventCheckboxItem(
-    private val fieldData: EventRegisterFieldData<Set<String>>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<Set<String>>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventCheckboxBinding>(fieldData, onDataChange) {
 
     override fun bind(viewBinding: ItemRegisterEventCheckboxBinding, position: Int) {
         super.bind(viewBinding, position)
-        val values = field.values ?: emptyList()
+        val values = field.parameters?.options ?: emptyList()
         viewBinding.checkGroup.apply {
             removeAllViews()
             values.forEachIndexed { index, value ->

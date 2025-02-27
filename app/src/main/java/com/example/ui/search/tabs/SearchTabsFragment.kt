@@ -3,11 +3,13 @@ package com.example.ui.search.tabs
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.app.R
 import com.example.app.databinding.FragmentSearchTabsBinding
+import com.example.extensions.onFocusChanged
 import com.example.interfaces.SearchInterfaceProvider
 import com.example.ui.search.SearchInterface
 import com.example.ui.search.event.SearchEventFragment

@@ -5,12 +5,12 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventBooleanBinding
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.extensions.setRequired
 
 open class RegisterEventBooleanItem(
-    private val fieldData: EventRegisterFieldData<Boolean>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<Boolean>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventBooleanBinding>(fieldData, onDataChange) {
 
     override fun bind(viewBinding: ItemRegisterEventBooleanBinding, position: Int) {
@@ -29,7 +29,7 @@ open class RegisterEventBooleanItem(
             tvDescription.apply {
                 val description = field.description
                 isVisible = !description.isNullOrEmpty()
-                text = description?.setRequired(field.required)
+                text = description?.setRequired(field.isRequired)
             }
         }
     }

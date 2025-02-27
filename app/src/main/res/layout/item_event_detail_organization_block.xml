@@ -1,89 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/organization_cl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:foreground="@drawable/btn_background_text"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    tools:ignore="MissingPrefix">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/organization_cl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvImage"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
-        android:foreground="@drawable/btn_background_text"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:elevation="0dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/event_item_action_border"
+        app:strokeWidth="0.5dp">
 
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvImage"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:elevation="0dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/event_item_action_border"
-            app:strokeWidth="0.5dp">
-
-            <ImageView
-                android:id="@+id/ivOrganizationLogo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/tvOrganizationNameNoImage"
-                fontPath="fonts/sf_pro_display_semibold.ttf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:letterSpacing="-0.02"
-                android:maxLines="3"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cvImage"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="ООО Сбербанк" />
-
-        </com.google.android.material.card.MaterialCardView>
-
+        <ImageView
+            android:id="@+id/ivOrganizationLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tvOrganizationLabel"
+            android:id="@+id/tvOrganizationNameNoImage"
             fontPath="fonts/sf_pro_display_semibold.ttf"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginHorizontal="5dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:ellipsize="end"
-            android:letterSpacing="-0.01"
-            android:maxLines="2"
-            android:textSize="17sp"
+            android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
+            android:maxLines="3"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cvImage"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="ООО Сбербанк" />
 
+    </com.google.android.material.card.MaterialCardView>
 
-        <com.example.ui.views.UserSubscribeButton
-            android:id="@+id/btnActionFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:layout_marginBottom="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cvImage"
-            app:subscribeAction="favorite" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tvOrganizationLabel"
+        fontPath="fonts/sf_pro_display_semibold.ttf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.01"
+        android:maxLines="2"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cvImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ООО Сбербанк" />
 
-</layout>
+
+    <com.example.ui.views.UserSubscribeButton
+        android:id="@+id/btnActionFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cvImage"
+        app:subscribeAction="favorite" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

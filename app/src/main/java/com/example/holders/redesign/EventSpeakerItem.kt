@@ -23,7 +23,8 @@ class EventSpeakerItem(
                 setImage(
                     image = image,
                     error = R.drawable.empty_speaker_avatar,
-                    placeholder = R.drawable.background_image_placeholder
+                    placeholder = R.drawable.background_image_placeholder,
+                    crossfade = 300
                 )
             }
             tvSpeakersName.text = name

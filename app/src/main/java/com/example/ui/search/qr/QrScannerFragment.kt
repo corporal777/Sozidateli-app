@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -14,7 +15,11 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.example.app.R
 import com.example.app.databinding.FragmentQrScannerBinding
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.base.BaseVBFragment
+import com.example.ui.event.about.AboutEventFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
+import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -22,8 +27,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class QrScannerFragment : BaseVBFragment<FragmentQrScannerBinding>(), QrScannerContract.View,
-    ToolbarFragment {
+class QrScannerFragment : BaseToolbarFragment<FragmentQrScannerBinding>(), QrScannerContract.View {
 
     @InjectPresenter
     lateinit var presenter: QrScannerPresenter
@@ -34,11 +38,12 @@ class QrScannerFragment : BaseVBFragment<FragmentQrScannerBinding>(), QrScannerC
     @ProvidePresenter
     fun providePresenter(): QrScannerPresenter = presenterProvider.get()
 
+
     private var codeScanner: CodeScanner? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (codeScanner == null){
+        if (codeScanner == null) {
             codeScanner = CodeScanner(requireActivity(), mBinding.scannerView).apply {
                 decodeCallback = DecodeCallback { presenter.onDecodeQrCode(it.text) }
             }
@@ -55,30 +60,42 @@ class QrScannerFragment : BaseVBFragment<FragmentQrScannerBinding>(), QrScannerC
         codeScanner?.apply { if (!isPreviewActive) startPreview() }
     }
 
-    override fun showNoPermission() {
-        mBinding.clScanner.isVisible = false
-        mBinding.clPermissionRequest.isVisible = true
-    }
-
     override fun onPause() {
         codeScanner?.releaseResources()
         super.onPause()
     }
 
-    override fun showEvent(eventId: String) {
-        findNavController().navigate(QrScannerFragmentDirections.qrScannerToAboutEventFragmentNew(eventId))
+    override fun onDestroyView() {
+        super.onDestroyView()
+        codeScanner = null
+    }
+
+    override fun showNoPermission() {
+        mBinding.clScanner.isVisible = false
+        mBinding.clPermissionRequest.isVisible = true
     }
 
     override fun showEventNotFoundError() {
-        AlertDialog.Builder(requireContext())
-                .setMessage(R.string.qr_scan_not_found_event)
-                .setPositiveButton(R.string.ok) { _, _ -> codeScanner?.startPreview() }
-                .setOnCancelListener { codeScanner?.startPreview() }
-                .show()
+        DefaultAlertDialog(
+            requireContext(),
+            title = null,
+            message = getString(R.string.qr_scan_not_found_event),
+            positiveText = getString(R.string.ok),
+            negativeText = getString(R.string.cancel),
+            withCancel = false
+        )
+            .setSelectCallback { codeScanner?.startPreview() }
+            .setCancelCallback { codeScanner?.startPreview() }
+    }
+
+    override fun showEvent(eventId: String) {
+        val args = AboutEventFragmentArgs.Builder(eventId).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
     }
 
     override fun showEnterCode() {
-        findNavController().navigate(QrScannerFragmentDirections.qrScannerToEnterCode())
+        codeScanner?.stopPreview()
+        findNavController().navigate(R.id.enter_event_code_fragment)
     }
 
     override fun showAppSettings() {
@@ -92,7 +109,4 @@ class QrScannerFragment : BaseVBFragment<FragmentQrScannerBinding>(), QrScannerC
     override fun binding() = FragmentQrScannerBinding::class.java
     override fun layout() = R.layout.fragment_qr_scanner
     override val title: CharSequence by lazy { getString(R.string.qr_scan_label) }
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {  }
 }

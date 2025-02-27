@@ -9,12 +9,12 @@ import com.example.app.databinding.ItemNotificationPlaceholderBinding
 import com.example.app.databinding.ItemNotificationsListPlaceholderBinding
 import dev.androidbroadcast.vbpd.viewBinding
 
-class NotificationPlaceholderAdapter(private val isHeader: Boolean) :
+class NotificationPlaceholderAdapter(private val isHeader: Boolean, val count: Int = 1) :
     CustomLoadStateAdapter<com.example.adapters.ViewHolder>() {
 
 
     override fun getViewHolder(view: ViewGroup): com.example.adapters.ViewHolder {
-        val inflater : (Int) -> View = {
+        val inflater: (Int) -> View = {
             LayoutInflater.from(view.context).inflate(it, view, false)
         }
         return if (isHeader)
@@ -23,7 +23,7 @@ class NotificationPlaceholderAdapter(private val isHeader: Boolean) :
 
     }
 
-    override fun getItemsCount(): Int = 1
+    override fun getItemsCount(): Int = count
 
 
     override fun onBindViewHolder(holder: com.example.adapters.ViewHolder, position: Int) {}

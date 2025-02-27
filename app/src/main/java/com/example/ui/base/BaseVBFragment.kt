@@ -74,14 +74,12 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) { mActivity?.showToast(message) }
 
-    override fun showLoadingDialog() { mActivity?.showLoadingDialog() }
-    override fun hideLoadingDialog() { mActivity?.hideLoadingDialog() }
 
-    override fun showProgressBarLoadingDialog() { mActivity?.showProgressBarLoadingDialog() }
-    override fun hideProgressBarLoadingDialog() { mActivity?.hideProgressBarLoadingDialog() }
+    override fun showProgressBarLoading() { mActivity?.showProgressBarLoading() }
+    override fun hideProgressBarLoading() { mActivity?.hideProgressBarLoading() }
 
-    override fun showCustomProgressDialog() { mActivity?.showCustomProgressDialog() }
-    override fun hideCustomProgressDialog() { mActivity?.hideCustomProgressDialog() }
+    override fun showProgressBarDialogLoading() { mActivity?.showProgressBarDialogLoading() }
+    override fun hideProgressBarDialogLoading() { mActivity?.hideProgressBarDialogLoading() }
 
     override fun hideAllLoadingDialogs() { mActivity?.hideAllLoadingDialogs() }
 
@@ -142,7 +140,6 @@ abstract class BaseVBFragment<VB : ViewBinding> : MvpAppCompatFragment(), BaseCo
         super.onDestroyView()
         hideKeyboard()
         hideAllLoadingDialogs()
-        hideCustomProgressDialog()
     }
 
     fun checkIfFragmentAttached(operation: Context.() -> Unit) {

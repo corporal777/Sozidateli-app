@@ -42,9 +42,10 @@ abstract class BaseNotificationTypeFragment<P : BaseNotificationTypeContract.Pre
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = pagingAdapter.withLoadStateAdapters(
                     tagsAdapter,
-                    NotificationPlaceholderAdapter(true),
+                    NotificationPlaceholderAdapter(false, 3),
                     NotificationPlaceholderAdapter(false)
                 ) { setEmptyDataPlaceholder(it) }
+
                 setEmptyDataPlaceholder(isEmptyData)
                 onScrolled { _, _ ->
                     presenter.changeScrollingElevation(this.computeVerticalScrollOffset())

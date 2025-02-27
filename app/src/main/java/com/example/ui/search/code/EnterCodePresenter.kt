@@ -24,13 +24,8 @@ class EnterCodePresenter
             .performOnBackgroundOutOnMain()
             .withCustomLoading(viewState)
             .subscribeSimple(
-                onError = {
-                    viewState.showEventNotFoundError()
-                    it.printStackTrace()
-                }, onSuccess = {
-                    viewState.showEvent(it.id.toString())
-                }
+                onError = { viewState.showEventNotFoundError() },
+                onSuccess = { viewState.showEvent(it.id.toString()) }
             )
-
     }
 }

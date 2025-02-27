@@ -12,11 +12,15 @@ import com.example.data.models.AddFavoriteModel
 import com.example.data.models.ApiNewResponse
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventCalendarModel
+import com.example.data.models.EventFormFieldModel
 import com.example.data.models.EventFormModel
 import com.example.data.models.EventFormResultDraftModel
+import com.example.data.models.EventFormResultFieldModel
 import com.example.data.models.EventFormResultModel
 import com.example.data.models.EventNew
+import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterProfilePrefilledData
+import com.example.data.models.EventRegistration
 import com.example.data.models.EventSubscriptionRequest
 import com.example.data.models.EventTagModel
 import com.example.data.models.EventUserFavorite
@@ -27,6 +31,7 @@ import com.example.data.models.PageModel
 import com.example.data.models.PartnerModel
 import com.example.data.models.RegistrationAgreementStatus
 import com.example.data.models.UserProfileFieldsModel
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.util.pagination.PaginationResponse
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -79,8 +84,25 @@ class EventRepositoryImp
             }
 
 
-    override fun getEventDetailForRegister(eventId: String): Maybe<EventNew> =
+    override fun getEventDetailForRegister(eventId: String): Maybe<EventRegisterData> =
         api.getEventDetails(eventId, "user-form-result")
+            .flatMap { e ->
+                val fields = e.binds?.getForm()?.fields ?: emptyList()
+                val results = e.binds?.getFormResult()?.fields?.toMutableList() ?: mutableListOf()
+                val pref = fields.find { x -> x.type == EventFormFieldModel.Type.PREFILLED }
+
+                if (pref == null) Maybe.just(EventRegistration.createData(e, fields, results))
+                else if (results.none { it.id == pref.id }) {
+                    getPrefilledEventFormResult(pref.id.toString()).flatMapMaybe { r ->
+                        results.add(EventFormResultFieldModel(r.form, null, r.fields.prefilledToJson()))
+                        Maybe.just(EventRegistration.createData(e, fields, results))
+                    }
+                }
+                else Maybe.just(EventRegistration.createData(e, fields, results))
+            }.map {
+                val data = EventRegisterField.createFieldsData(it.formFields, it.formResult)
+                EventRegisterData(it).addFields(data)
+            }
 
 
     override fun getEventsList(map: Map<String, Any>): Maybe<PaginationResponse<EventNew?>> =

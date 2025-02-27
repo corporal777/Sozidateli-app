@@ -1,75 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/btn_background_text"
+    android:paddingHorizontal="15dp"
+    tools:ignore="MissingPrefix">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvImage"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="5dp"
+        android:elevation="0dp"
+        android:gravity="center"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/event_item_action_border"
+        app:strokeWidth="0.5dp">
+
+        <ImageView
+            android:id="@+id/ivPartnerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_test" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <TextView
+        android:id="@+id/tvPartnerName"
+        fontPath="fonts/sf_pro_text.ttf"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:foreground="@drawable/btn_background_text"
-        android:paddingHorizontal="15dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="10dp"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/tvPartnerTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cvImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Тинькофф" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvImage"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:layout_margin="5dp"
-            android:elevation="0dp"
-            android:gravity="center"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/event_item_action_border"
-            app:strokeWidth="0.5dp">
+    <TextView
+        android:id="@+id/tvPartnerTitle"
+        fontPath="fonts/sf_pro_text.ttf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="25dp"
+        android:ellipsize="end"
+        android:importantForAccessibility="no"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.02"
+        android:maxLines="4"
+        android:textColor="@color/input_text_color_disabled_new"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cvImage"
+        app:layout_constraintTop_toBottomOf="@id/tvPartnerName"
+        tools:text="@string/lorem_ipsum_dolor" />
 
-            <ImageView
-                android:id="@+id/ivPartnerImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_test" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <TextView
-            android:id="@+id/tvPartnerName"
-            fontPath="fonts/sf_pro_text.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="10dp"
-            android:letterSpacing="-0.03"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@id/tvPartnerTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cvImage"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Тинькофф" />
-
-        <TextView
-            android:id="@+id/tvPartnerTitle"
-            fontPath="fonts/sf_pro_text.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="25dp"
-            android:ellipsize="end"
-            android:letterSpacing="-0.02"
-            android:maxLines="4"
-            android:textColor="@color/input_text_color_disabled_new"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cvImage"
-            app:layout_constraintTop_toBottomOf="@id/tvPartnerName"
-            tools:text="@string/lorem_ipsum_dolor" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>

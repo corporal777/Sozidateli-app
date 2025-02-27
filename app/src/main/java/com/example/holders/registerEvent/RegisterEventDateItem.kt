@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventDateBinding
-import com.example.data.models.EventRegisterField
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventFormFieldModel
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.extensions.defaultDateTimeFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.defaultServerDateTimeFormatter
@@ -23,12 +23,12 @@ import java.util.Calendar
 
 
 open class RegisterEventDateItem(
-    private val fieldData: EventRegisterFieldData<String>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<String>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterInputItem<ItemRegisterEventDateBinding>(fieldData, onDataChange) {
 
     private val textChangeListener: (CharSequence?) -> Unit = {
-        fieldData.value = if (field.type == EventRegisterField.Type.DATE) it?.toString()
+        fieldData.value = if (field.type == EventFormFieldModel.Type.DATE) it?.toString()
             ?.formatToDefaultServerDate()
         else it?.toString()
             ?.parseAndFormat(defaultDateTimeFormatter, defaultServerDateTimeFormatter)
@@ -46,7 +46,7 @@ open class RegisterEventDateItem(
                 val date = valueString?.let { defaultServerDateFormatter.parse(it) }
                 val value: String?
                 when (field.type) {
-                    EventRegisterField.Type.DATE -> {
+                    EventFormFieldModel.Type.DATE -> {
                         value = valueString?.formatToDefaultDate()
                         baseTextInputLayout.initAsDatePicker(date) { year, month, day ->
                             String.format(
@@ -57,7 +57,7 @@ open class RegisterEventDateItem(
                             )
                         }
                     }
-                    EventRegisterField.Type.DATETIME -> {
+                    EventFormFieldModel.Type.DATETIME -> {
                         value = valueString?.parseAndFormat(
                             defaultServerDateTimeFormatter,
                             defaultDateTimeFormatter
@@ -73,7 +73,7 @@ open class RegisterEventDateItem(
                             )
                         }
                     }
-                    EventRegisterField.Type.DATETIMEPLANED -> {
+                    EventFormFieldModel.Type.DATETIMEPLANED -> {
                         value = valueString?.parseAndFormat(
                             defaultServerDateTimeFormatter,
                             defaultDateTimeFormatter

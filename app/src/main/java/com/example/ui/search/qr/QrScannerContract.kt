@@ -8,22 +8,22 @@ import moxy.viewstate.strategy.alias.Skip
 
 interface QrScannerContract {
     interface View : BaseContract.View {
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "preview")
+        @OneExecution
         fun startPreview()
 
-        @StateStrategyType(AddToEndSingleByTagStateStrategy::class, tag = "preview")
+        @OneExecution
         fun showNoPermission()
 
         @Skip
         fun showAppSettings()
 
         @Skip
-        fun showEvent(eventId: /*Event*/String)
+        fun showEvent(eventId: String)
 
         @Skip
         fun showEnterCode()
 
-        @OneExecution
+        @Skip
         fun showEventNotFoundError()
     }
 

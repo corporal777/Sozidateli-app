@@ -2,7 +2,12 @@ package com.example.ui.about
 
 import com.example.data.AppData
 import com.example.ui.base.BasePresenter
+import io.reactivex.Completable
+import io.reactivex.rxkotlin.plusAssign
 import moxy.InjectViewState
+import withDelay
+import withProgressBarDialogLoading
+import withProgressBarLoading
 import javax.inject.Inject
 
 @InjectViewState
@@ -14,10 +19,5 @@ class AboutPresenter
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
-    }
-
-    override fun attachView(view: AboutContract.View?) {
-        super.attachView(view)
     }
 }

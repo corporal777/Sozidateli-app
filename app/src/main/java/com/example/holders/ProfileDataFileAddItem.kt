@@ -14,7 +14,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 class ProfileDataFileAddItem(
     private val isButtonEditable : Boolean,
     private val onClickListener: () -> Unit,
-    private val isShort : Boolean = false
 ) : BindableItem<ItemProfileAttachFileBinding>(-1001L) {
 
     private var isEditable = isButtonEditable
@@ -34,11 +33,10 @@ class ProfileDataFileAddItem(
                     onClickListener.invoke()
                 }
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    this.topMargin = if (isShort) 10.dp else 15.dp
+                    this.topMargin =  15.dp
                 }
             }
-            tvHelp.text = if (!isShort) root.context.getString(R.string.user_profile_upload_photo_help)
-            else root.context.getString(R.string.user_profile_upload_photo_help_short)
+            tvHelp.text = root.context.getString(R.string.user_profile_upload_photo_help)
         }
     }
 

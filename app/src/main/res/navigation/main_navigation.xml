@@ -354,28 +354,12 @@
     <fragment
         android:id="@+id/qr_scanner_fragment"
         android:name="com.example.ui.search.qr.QrScannerFragment"
-        tools:layout="@layout/fragment_qr_scanner">
-
-        <action
-            android:id="@+id/qr_scanner_to_enter_code"
-            app:destination="@id/enter_event_code_fragment" />
-
-
-        <action
-            android:id="@+id/qr_scanner_to_about_event_fragment_new"
-            app:destination="@id/about_event_fragment" />
-
-    </fragment>
+        tools:layout="@layout/fragment_qr_scanner" />
 
     <fragment
         android:id="@+id/enter_event_code_fragment"
         android:name="com.example.ui.search.code.EnterCodeFragment"
-        tools:layout="@layout/fragment_enter_code">
-
-        <action
-            android:id="@+id/enter_event_code_fragment_to_about_event_fragment"
-            app:destination="@id/about_event_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_enter_code" />
 
     <fragment
         android:id="@+id/stories_fragment"

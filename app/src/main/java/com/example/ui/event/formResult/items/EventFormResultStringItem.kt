@@ -6,7 +6,7 @@ import com.example.app.databinding.ItemEventFormResultStringBinding
 import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultStringItem(
-    val id: String?,
+    val id: Int?,
     val title: String?,
     val value: CharSequence?,
 ) : BindableItem<ItemEventFormResultStringBinding>(id?.toLong() ?: 0) {

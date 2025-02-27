@@ -1,10 +1,18 @@
 package com.example.ui.event.about
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.app.BuildConfig
@@ -16,15 +24,19 @@ import com.example.data.models.EventFormModel
 import com.example.data.models.EventNew
 import com.example.data.models.NewTags
 import com.example.data.models.Tag
+import com.example.extensions.dp
 import com.example.extensions.findItemBy
 import com.example.extensions.onScrolled
+import com.example.extensions.px
 import com.example.extensions.setArgument
 import com.example.extensions.setOnClickListener
 import com.example.extensions.statusBarColorValue
+import com.example.extensions.topMargin
 import com.example.extensions.updateItems
 import com.example.holders.PlaceholderItem
 import com.example.holders.redesign.EventActivityItem
 import com.example.holders.redesign.EventPartnerItem
+import com.example.ui.base.BaseActivity
 import com.example.ui.base.BaseVBFragment
 import com.example.ui.event.about.items.AboutEventLabelItem
 import com.example.ui.event.about.items.EventDetailActivitiesItem
@@ -39,6 +51,7 @@ import com.example.ui.event.formResult.EventFormResultFragment.Companion.EVENT_F
 import com.example.ui.event.registration.EventRegistrationFragmentArgs
 import com.example.ui.event.speakers.list.EventSpeakersFragmentArgs
 import com.example.ui.event.speakers.member.UserSpeakerFragmentArgs
+import com.example.ui.main.MainActivity
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.partner.PartnerFragmentArgs
 import com.example.ui.subevent.SubEventFragmentArgs
@@ -47,6 +60,7 @@ import com.example.ui.views.dialogs.DefaultAlertDialog
 import com.example.ui.views.dialogs.EventAgreementBottomSheet
 import com.example.ui.views.dialogs.EventDetailInformationBottomSheetDialog
 import com.example.ui.views.dialogs.StateType
+import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.example.util.openDeviceCalendarApp
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
@@ -88,6 +102,7 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
         setHideWhenEmpty(true)
     }
 
+
     private val offsetMap = mutableMapOf<Int, Int>()
     private val groupAdapter = GroupieAdapter().apply {
         add(eventMainSection)
@@ -106,15 +121,11 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     }
 
     private val onSubEventClickListener = object : EventActivityItem.OnEventActivityClickListener {
-        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) =
-            presenter.onSubEventClick(subEvent.id ?: 0)
-
-        override fun onAddToScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
-
-        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) =
-            presenter.onAddToScheduleClick(subEvent)
+        override fun onSubEventClick(eventId: String, subEvent: EventActivityModel) = presenter.onSubEventClick(subEvent.id ?: 0)
+        override fun onAddToScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
+        override fun onRemoveFromScheduleClick(subEvent: EventActivityModel) = presenter.onAddToScheduleClick(subEvent)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -207,7 +218,7 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
         item?.notifyChanged(isSubscribed)
     }
 
-    override fun setActionButton(event: EventNew?) {
+    override fun setActionButton(event: EventNew) {
         val item = eventMainSection.findItemBy<EventDetailImageItem> { true }
         item?.notifyChanged(event)
     }
@@ -225,23 +236,22 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
         ).setSelectCallback { presenter.onSubscribeEvent(isSubscribed ?: false) }
     }
 
-    override fun showAgreementRegisterDialog(event: String, url: String) {
-        EventAgreementBottomSheet(requireContext(), url)
+    override fun showAgreementDialog(event: String, url: String?) {
+        EventAgreementBottomSheet(requireContext(), url?:"")
             .setSelectCallback { if (it) presenter.onActionRegister(true) }
             .show()
     }
 
 
     private fun showEventFormResult(event: EventNew) {
-        val formResult = event.binds?.userFormResult?.firstOrNull() ?: return
+        if (event.binds?.userFormResult.isNullOrEmpty()) return
         EventFormResultFragment()
-            .setArgument<EventFormResultFragment>(EVENT_FORM_FRAGMENT_TAG, formResult)
+            .setArgument<EventFormResultFragment>(EVENT_FORM_FRAGMENT_TAG, event)
             .show(requireActivity().supportFragmentManager)
     }
 
     private fun showEventInformationDialog(event: EventNew) {
-        EventDetailInformationBottomSheetDialog(requireActivity(), event)
-            .show()
+        EventDetailInformationBottomSheetDialog(requireActivity(), event).show()
     }
 
     override fun showSubEvent(eventId: String, subEventId: Int?) {
@@ -302,14 +312,12 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
     }
 
     override fun showShare(eventId: String) {
-        val mLink = BuildConfig.SHARE_URL + "portal/event/"
-        val mShareLink = StringBuilder(mLink).append(eventId).toString()
-
         try {
+            val link = BuildConfig.SHARE_URL + "portal/event/$eventId"
             val shareApp = Intent(Intent.ACTION_SEND)
             shareApp.type = "text/plain"
 
-            shareApp.putExtra(Intent.EXTRA_TEXT, mShareLink)
+            shareApp.putExtra(Intent.EXTRA_TEXT, link)
             startActivity(Intent.createChooser(shareApp, "Choose one of the:"))
         } catch (e: Exception) {
             showRequestErrorMessage()
@@ -328,40 +336,35 @@ class AboutEventFragment : BaseVBFragment<FragmentAboutEventBinding>(), AboutEve
         )
     }
 
-    override fun showCustomLoading() {
-        eventMainSection.findItemBy<EventDetailImageItem> { true }?.notifyChanged(true)
-    }
-
-    override fun hideCustomLoading() {
-        eventMainSection.findItemBy<EventDetailImageItem> { true }?.notifyChanged(false)
-    }
-
-    private fun setupBlurView() {
-//        val algorithm: BlurAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            RenderEffectBlur()
-//        } else RenderScriptBlur(requireContext())
-//
-//        val windowBackground = requireActivity().window.decorView.background
-//        mBinding.toolbar.tbBackground.setupWith(mBinding.eventContentList, algorithm)
-//            .setFrameClearDrawable(windowBackground)
-//            .setBlurRadius(15f)
+    fun setupToolbarTopMargin(margin : Int){
+        try {
+            mBinding.toolbar.viewSize.topMargin =
+                if (margin.px in 20..30) 26.dp
+                else if (margin.px in 30..40) 35.dp
+                else if (margin.px in 40 .. 50) 45.dp
+                else if (margin.px in 50..70) 50.dp
+                else 55.dp
+        } catch (e : Exception){
+            e.printStackTrace()
+            mBinding.toolbar.viewSize.topMargin = 26.dp
+        }
     }
 
     override fun updateAppBarBackgroundColor(value: Int) {
         mBinding.toolbar.apply {
             if (value <= 0) {
-                statusBarColorValue = 0
+                requireActivity().statusBarColorValue = 0
                 tbBackground.alpha = 0f
                 mBinding.cardViewToolbar.cardElevation = 0f
             } else {
                 tbBackground.apply { alpha = abs(value / (1450).toFloat()) }
                 mBinding.cardViewToolbar.apply {
                     if (value >= 1450) {
-                        statusBarColorValue = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        requireActivity().statusBarColorValue = SYSTEM_UI_LIGHT_STATUS_BAR
                         val elevationValue = abs(value / 100f)
                         cardElevation = if (elevationValue <= 10f) abs(value / 100f) else 10f
                     } else {
-                        statusBarColorValue = 0
+                        requireActivity().statusBarColorValue = 0
                         cardElevation = 0f
                     }
                 }

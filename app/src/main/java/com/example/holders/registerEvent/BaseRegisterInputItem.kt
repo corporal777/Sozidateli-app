@@ -1,16 +1,15 @@
 package com.example.holders.registerEvent
 
 import android.view.View
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.util.getColorStateList
 
 abstract class BaseRegisterInputItem<T : ViewDataBinding>(
-    fieldData: EventRegisterFieldData<String>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    fieldData: EventRegisterField<String>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterItem<T>(fieldData, onDataChange){
 
 
@@ -20,7 +19,7 @@ abstract class BaseRegisterInputItem<T : ViewDataBinding>(
     override fun bind(viewBinding: T, position: Int) {
         super.bind(viewBinding, position)
         getInputView(viewBinding).apply {
-            backgroundTintList = if (field.required)
+            backgroundTintList = if (field.isRequired)
                 getColorStateList(R.color.background_input_event_register_required)
             else getColorStateList(R.color.background_input_event_register)
         }

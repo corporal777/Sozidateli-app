@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventInputBinding
-import com.example.data.models.EventRegisterField
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.EventFormFieldModel
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.extensions.onTextChanged
 import com.example.extensions.setMaxLength
 import com.example.extensions.setMinMaxLines
@@ -21,12 +21,11 @@ import com.example.util.AuthValidateUtil
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 class RegisterEventStringItem(
-    private val fieldData: EventRegisterFieldData<String>,
-     onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<String>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterInputItem<ItemRegisterEventInputBinding>(fieldData, onDataChange) {
 
     private var textWatcher: TextWatcher? = null
-
     private var maxSymbolsLength = 100
 
     override fun bind(viewBinding: ItemRegisterEventInputBinding, position: Int) {
@@ -34,23 +33,23 @@ class RegisterEventStringItem(
         viewBinding.apply {
             textInputEditText.apply {
                 when (field.type) {
-                    EventRegisterField.Type.STRING, EventRegisterField.Type.GROUP -> {
+                    EventFormFieldModel.Type.STRING, EventFormFieldModel.Type.GROUP -> {
                         maxSymbolsLength = 200
                         setMinMaxLines(1, 1)
                         inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_CAP_SENTENCES or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
-                    EventRegisterField.Type.TEXT_AREA -> {
+                    EventFormFieldModel.Type.TEXT_AREA -> {
                         maxSymbolsLength = 500
                         setMinMaxLines(2, 8)
                         inputType = TYPE_CLASS_TEXT or TYPE_TEXT_FLAG_MULTI_LINE or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
-                    EventRegisterField.Type.NUMBER -> {
+                    EventFormFieldModel.Type.NUMBER -> {
                         maxSymbolsLength = 100
                         setMinMaxLines(1, 1)
                         inputType = TYPE_CLASS_NUMBER or TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     }
 
-                    EventRegisterField.Type.EMAIL, EventRegisterField.Type.SITE -> {
+                    EventFormFieldModel.Type.EMAIL, EventFormFieldModel.Type.SITE -> {
                         maxSymbolsLength = 100
                         setMinMaxLines(1, 1)
                         inputType = TYPE_TEXT_VARIATION_EMAIL_ADDRESS or TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -86,10 +85,10 @@ class RegisterEventStringItem(
         if (value.isNullOrEmpty()) showError(false)
         else {
             when (field.type) {
-                EventRegisterField.Type.EMAIL -> {
+                EventFormFieldModel.Type.EMAIL -> {
                     showErrorText(!AuthValidateUtil.isValidEmail(value), "Неверный формат e-mail")
                 }
-                EventRegisterField.Type.SITE -> showError(!AuthValidateUtil.isValidSite(value))
+                EventFormFieldModel.Type.SITE -> showError(!AuthValidateUtil.isValidSite(value))
                 else -> showError(false)
             }
         }
@@ -98,11 +97,11 @@ class RegisterEventStringItem(
     private fun setSymbolsLeftVisible(text : CharSequence?, textView: TextView) {
         textView.apply {
             isVisible = when (field.type) {
-                EventRegisterField.Type.STRING ->
+                EventFormFieldModel.Type.STRING ->
                     !text.isNullOrEmpty() && text.length > 149 && text.length < maxSymbolsLength
-                EventRegisterField.Type.TEXT_AREA ->
+                EventFormFieldModel.Type.TEXT_AREA ->
                     !text.isNullOrEmpty() && text.length > 374 && text.length < maxSymbolsLength
-                EventRegisterField.Type.NUMBER ->
+                EventFormFieldModel.Type.NUMBER ->
                     !text.isNullOrEmpty() && text.length > 74 && text.length < maxSymbolsLength
                 else -> false
             }

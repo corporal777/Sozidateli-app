@@ -9,7 +9,7 @@ import com.example.util.getColorStateList
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 
-open class EventRegistrationFileItem(
+open class RegisterEventFileItem(
     id: Long,
     private val filename: String,
     private val required : Boolean,
@@ -52,7 +52,7 @@ open class EventRegistrationFileItem(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
-        if (other !is EventRegistrationFileItem) return false
+        if (other !is RegisterEventFileItem) return false
         if (filename != other.filename) return false
         return true
     }

@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventPhoneBinding
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.util.AuthValidateUtil
 
 class RegisterEventPhoneItem(
-    private val fieldData: EventRegisterFieldData<String>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<String>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterInputItem<ItemRegisterEventPhoneBinding>(fieldData, onDataChange) {
 
 

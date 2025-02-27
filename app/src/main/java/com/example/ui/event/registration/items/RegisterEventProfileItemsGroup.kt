@@ -1,6 +1,6 @@
 package com.example.ui.event.registration.items
 
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.data.models.PrefilledFieldContacts
 import com.example.data.models.PrefilledFieldEducation
 import com.example.data.models.PrefilledFieldFiles
@@ -13,7 +13,7 @@ import com.xwray.groupie.NestedGroup
 import com.xwray.groupie.Section
 
 class RegisterEventProfileItemsGroup(
-    private val profileForm: EventRegisterFieldData.Prefilled,
+    private val profileForm: EventRegisterField.Prefilled,
     private val onShowProfileClick: (type: PrefilledFieldClickType) -> Unit,
 ) : NestedGroup() {
 

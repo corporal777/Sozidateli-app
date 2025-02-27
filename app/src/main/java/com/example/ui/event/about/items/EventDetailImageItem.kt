@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.getSpans
@@ -27,10 +28,14 @@ import com.example.extensions.isSameDay
 import com.example.extensions.markWon
 import com.example.extensions.onClickListener
 import com.example.extensions.parseColor
+import com.example.extensions.setArgument
 import com.example.extensions.setColorSpan
 import com.example.extensions.setTextCustomSize
 import com.example.extensions.setTextSizeSpan
 import com.example.holders.redesign.CustomBindingItem
+import com.example.ui.event.formResult.EventFormResultFragment
+import com.example.ui.event.formResult.EventFormResultFragment.Companion.EVENT_FORM_FRAGMENT_TAG
+import com.example.ui.main.MainActivity
 import com.example.ui.views.CustomSpannableString
 import com.example.ui.views.dialogs.CancelRegisterEventBottomSheet
 import com.example.ui.views.loading.CustomLoadingButton
@@ -38,6 +43,7 @@ import com.example.util.URLSpanNoUnderline
 import com.example.util.getColor
 import com.example.util.setImage
 import com.xwray.groupie.Item
+import com.xwray.groupie.viewbinding.BindableItem
 
 class EventDetailImageItem(
     event: EventNew,
@@ -50,7 +56,7 @@ class EventDetailImageItem(
 
     private var eventData = event
     private val eventDate = getEventDate()
-    private val eventDescription = getMarkdownText(eventData.description?.replace("\n", " "))
+    private val eventDescription = getMarkdownText(eventData.description, context, true)
     private val requestDate = getEventRequestDate()
     private val eventImage: Any? = if (!eventData.image?.uri.isNullOrEmpty()) eventData.image?.uri
     else ColorDrawable(eventData.backgroundColor?.value.parseColor() ?: Color.DKGRAY)
@@ -66,22 +72,15 @@ class EventDetailImageItem(
                 if ((eventData.name ?: "").length < 120)
                     setTextCustomSize(R.dimen.event_detail_name_text_size)
                 else setTextCustomSize(R.dimen.event_detail_name_text_size_min)
-
                 text = eventData.name
             }
             tvEventDate.apply {
                 isVisible = !eventDate.isNullOrEmpty()
                 text = eventDate
             }
-
             tvEventDescription.originalText = eventDescription
-
             ivLogo.setImage(eventImage, 300)
-
-            tvShowMore.setOnClickListener {
-                onMoreClick.invoke()
-            }
-
+            tvShowMore.setOnClickListener { onMoreClick.invoke() }
             tvCancelRegister.apply {
                 highlightColor = getColor(R.color.event_tabs_text_unchecked)
                 movementMethod = LinkMovementMethod.getInstance()
@@ -105,12 +104,12 @@ class EventDetailImageItem(
         } else if (eventData.isStatusActionAvailable() && state != null) {
             if (actions.contains("register") && !eventData.isRegistrationClosed()) {
                 btnText = getActionButtonText("register")
-                clickAction = { state.checkStateLevel { clickListener.onActionRegister() } }
+                clickAction = { checkStateLevel { clickListener.onActionRegister() } }
 
             } else if (actions.contains("withdraw") && !eventData.isRegistrationClosed()) {
                 btnBackground = R.drawable.btn_background_white_ghost
                 btnText = getActionButtonText("withdraw")
-                clickAction = { state.checkStateLevel { clickListener.onActionCancel() } }
+                clickAction = { checkStateLevel { clickListener.onActionCancel() } }
                 actionText = getTextShowForm(false, tvCancel)
 
             } else if (actions.contains("view") && !eventData.isRegistrationClosed()) {
@@ -130,15 +129,13 @@ class EventDetailImageItem(
 
         } else {
             if (actions.contains("subscribe")) {
-                val isSubscribed = eventData.binds?.isUserSubscribed ?: false
-                if (isSubscribed) {
+                val subscribed = eventData.binds?.isUserSubscribed ?: false
+                if (subscribed) {
                     btnText = getActionButtonText("unsubscribe")
                     btnBackground = R.drawable.btn_background_white_ghost
                 } else btnText = getActionButtonText("subscribe")
 
-                clickAction = {
-                    state?.checkStateLevel { clickListener.onSubscribeEvent(isSubscribed) }
-                }
+                clickAction = { checkStateLevel { clickListener.onSubscribeEvent(subscribed) } }
             } else isVisible = false
         }
 
@@ -149,12 +146,21 @@ class EventDetailImageItem(
 
         showProgressLoading(false)
         setProgressColor(R.color.main_brown_color_new)
-
         setButtonText(btnText)
         setButtonBackground(btnBackground)
         onClickListener(clickAction)
         isEnabled = clickAction != null
     }
+
+    private fun CustomLoadingButton.checkStateLevel(hasLevel: () -> Unit) {
+        val state = eventData.binds?.currentUserRegistrationState
+        if (state?.prohibitions?.profileLevelToLow?.value == false) {
+            showProgressLoading(true)
+            hasLevel()
+        }
+        else clickListener.onShowUpdateState()
+    }
+
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
         if (other !is EventDetailImageItem) return false
@@ -162,19 +168,11 @@ class EventDetailImageItem(
         return true
     }
 
-
     override fun bind(binding: ItemEventDetailMainBinding, payload: Any) {
-        if (payload is Boolean) binding.btnEventAction.showProgressLoading(payload)
-        else if (payload is EventNew) {
+        if (payload is EventNew) {
             eventData = payload
             binding.btnEventAction.setActionButton(binding.tvCancelRegister)
         }
-    }
-
-
-    private fun EventRegistrationStateModel?.checkStateLevel(hasLevel: () -> Unit) {
-        if (this?.prohibitions?.profileLevelToLow?.value == false) hasLevel()
-        else clickListener.onShowUpdateState()
     }
 
     private fun showCancelRegisterDialog() {
@@ -182,6 +180,7 @@ class EventDetailImageItem(
             .setCancelRegisterCallback { clickListener.onActionCancel() }
             .show()
     }
+
 
     private fun getEventDate(): String? {
         val dateStart = eventData.holdingDate?.from ?: return null
@@ -234,33 +233,22 @@ class EventDetailImageItem(
         return when (description) {
             "register", "temporary" -> {
                 SpannableStringBuilder().apply {
-                    append(
-                        SpannableString(string(R.string.event_action_participate))
-                            .setTextSizeSpan(R.dimen.sub_event_description_text_size, context)
-                    )
-                    append(
-                        SpannableString("\n" + requestDate)
-                            .setTextSizeSpan(R.dimen.event_request_date_text_size, context)
-                            .setColorSpan(R.color.white_70_alpha_color, context)
-                    )
+                    append(SpannableString(string(R.string.event_action_participate)).setTextSizeSpan(R.dimen.sub_event_description_text_size, context))
+                    append(SpannableString("\n" + requestDate).setTextSizeSpan(R.dimen.event_request_date_text_size, context).setColorSpan(R.color.white_70_alpha_color, context))
                 }
             }
 
             "withdraw" ->
-                SpannableString(string(R.string.event_cancel_request))
-                    .setColorSpan(R.color.black, context)
+                SpannableString(string(R.string.event_cancel_request)).setColorSpan(R.color.black, context)
 
             "closed" ->
-                SpannableString(string(R.string.event_closed_request))
-                    .setColorSpan(R.color.request_closed_text_color, context)
+                SpannableString(string(R.string.event_closed_request)).setColorSpan(R.color.request_closed_text_color, context)
 
             "canceled" ->
-                SpannableString(string(R.string.event_status_cancelled))
-                    .setColorSpan(R.color.request_closed_text_color, context)
+                SpannableString(string(R.string.event_status_cancelled)).setColorSpan(R.color.request_closed_text_color, context)
 
             "unsubscribe" ->
-                SpannableString(string(R.string.event_unsubscribe_request))
-                    .setColorSpan(R.color.black, context)
+                SpannableString(string(R.string.event_unsubscribe_request)).setColorSpan(R.color.black, context)
 
             "view" -> string(R.string.event_status_approved)
             "subscribe" -> string(R.string.event_subscribe_request)
@@ -281,22 +269,6 @@ class EventDetailImageItem(
                 append(CustomSpannableString(context.getString(R.string.my_event_form)).apply {
                     setClickSpan(textView) { onShowFormResult.invoke() }
                 })
-            }
-        }
-    }
-
-    private fun getMarkdownText(message: String?): CharSequence? {
-        if (message.isNullOrBlank()) return null
-        else {
-            val spanned = markWon(context).toMarkdown(message)
-            return SpannableStringBuilder(spanned).apply {
-                val urls = getSpans<URLSpan>()
-                urls.forEach {
-                    val start = getSpanStart(it)
-                    val end = getSpanEnd(it)
-                    removeSpan(it)
-                    set(start..end, URLSpanNoUnderline(it.url))
-                }
             }
         }
     }

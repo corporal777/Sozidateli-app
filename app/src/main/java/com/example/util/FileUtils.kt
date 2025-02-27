@@ -47,8 +47,8 @@ object FileUtils {
      */
     var sComparator =
         Comparator { f1: File, f2: File ->
-            f1.name.toLowerCase().compareTo(
-                f2.name.toLowerCase()
+            f1.name.lowercase().compareTo(
+                f2.name.lowercase()
             )
         }
 

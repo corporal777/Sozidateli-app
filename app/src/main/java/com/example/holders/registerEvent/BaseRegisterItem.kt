@@ -5,13 +5,13 @@ import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.databinding.ViewDataBinding
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.util.getColor
 import com.xwray.groupie.viewbinding.BindableItem
 
 abstract class BaseRegisterItem<T : ViewDataBinding>(
-    private val fieldData: EventRegisterFieldData<*>,
-    private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<*>,
+    private val onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BindableItem<T>(fieldData.field.id.toLong()) {
 
     protected val field = fieldData.field

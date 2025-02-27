@@ -40,7 +40,7 @@ class SupportFileItem(
         val filePath = FileUtils.getPath(context, file.uri)
         val mimeType = FileUtils.getMimeType(context, file.uri)
         var typeText = if (filePath.isEmpty()) getMimeType(context, file.uri) else mimeType
-        if (!typeText.isNullOrEmpty()) typeText = "." + typeText.toUpperCase()
+        if (!typeText.isNullOrEmpty()) typeText = "." + typeText.uppercase()
         return typeText
     }
 

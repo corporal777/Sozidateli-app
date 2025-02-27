@@ -31,28 +31,11 @@
         app:navGraph="@navigation/main_navigation" />
 
 
-    <FrameLayout
-        android:id="@+id/fl_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
-
-
-        <View
-            android:id="@+id/progress_white_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.5"
-            android:background="@android:color/white" />
-
-        <com.example.ui.views.CustomProgressView
-            android:id="@+id/progress_view"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center" />
-    </FrameLayout>
+    <com.example.ui.views.CustomProgressView
+        android:id="@+id/progress_view"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/error_container"
