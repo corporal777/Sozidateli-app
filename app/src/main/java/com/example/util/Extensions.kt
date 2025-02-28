@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -16,6 +17,7 @@ import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.text.InputFilter
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.view.WindowManager
@@ -36,6 +38,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,8 +54,10 @@ import com.example.app.R
 import com.example.adapters.NoFilterArrayAdapter
 import com.example.extensions.calendar
 import com.example.extensions.defaultServerDateFormatter
+import com.example.extensions.dp
 import com.example.extensions.onTextChanged
 import com.example.extensions.parseColor
+import com.example.extensions.px
 import com.google.android.material.appbar.AppBarLayout
 import com.squareup.picasso.Picasso
 import io.reactivex.disposables.CompositeDisposable
@@ -95,7 +100,7 @@ fun PopupWindow.settings() {
     inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
 }
 
-fun Activity.setWindowTransparency(listener: OnSystemInsetsChangedListener = { _, _ -> }) {
+fun Activity.setWindowTransparency(listener: (Int) -> Unit) {
     InsetUtil.removeSystemInsets(window.decorView, listener)
 //    window.navigationBarColor = Color.TRANSPARENT
 //    window.statusBarColor = Color.TRANSPARENT
@@ -122,8 +127,9 @@ object InsetUtil {
         }
     }
 
-    fun removeSystemInsets(view: View, listener: OnSystemInsetsChangedListener) {
+    fun removeSystemInsets(view: View, listener: (Int) -> Unit) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            listener.invoke(insets.systemWindowInsetTop)
             ViewCompat.onApplyWindowInsets(
                 view,
                 insets.replaceSystemWindowInsets(0, 0, 0, insets.systemWindowInsetBottom)

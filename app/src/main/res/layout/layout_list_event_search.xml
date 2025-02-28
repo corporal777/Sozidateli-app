@@ -26,6 +26,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="13sp"
+        android:letterSpacing="-0.01"
         app:cornerRadius="10dp"
         app:icon="@drawable/ic_scan_qr_search"
         app:iconGravity="textStart"

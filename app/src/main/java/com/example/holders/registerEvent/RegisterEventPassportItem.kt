@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.example.app.R
 import com.example.app.databinding.ItemRegisterEventPassportBinding
 import com.example.data.models.EventPassport
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.extensions.defaultDateFormatter
 import com.example.extensions.defaultServerDateFormatter
 import com.example.extensions.formatToDefaultServerDate
@@ -18,8 +18,8 @@ import com.xwray.groupie.viewbinding.GroupieViewHolder
 import java.util.Date
 
 class RegisterEventPassportItem(
-    private val fieldData: EventRegisterFieldData<EventPassport>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<EventPassport>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventPassportBinding>(fieldData, onDataChange) {
 
     private var serialTextWatcher: TextWatcher? = null
@@ -90,7 +90,7 @@ class RegisterEventPassportItem(
 
     private fun setViewBackground(view : View){
         view.apply {
-            backgroundTintList = if (field.required)
+            backgroundTintList = if (field.isRequired)
                 getColorStateList(R.color.background_input_event_register_required)
             else getColorStateList(R.color.background_input_event_register)
         }

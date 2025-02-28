@@ -1,6 +1,7 @@
 package com.example.ui.views.dialogs
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_SENDTO
 import android.content.Intent.EXTRA_EMAIL
@@ -30,7 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class EventDetailInformationBottomSheetDialog(
-    private val activity : Activity,
+    private val activity : Context,
     private val event: EventNew
 ) : BottomSheetDialog(activity) {
 
@@ -43,9 +44,7 @@ class EventDetailInformationBottomSheetDialog(
         setCancelable(true)
 
         mBinding.apply {
-            btnClose.setOnClickListener {
-                dismiss()
-            }
+            btnClose.setOnClickListener { dismiss() }
             setData()
         }
     }

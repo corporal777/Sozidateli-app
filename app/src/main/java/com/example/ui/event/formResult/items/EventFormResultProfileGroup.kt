@@ -1,7 +1,7 @@
 package com.example.ui.event.formResult.items
 
 import android.content.Context
-import com.example.data.models.EventRegisterField
+import com.example.data.models.EventFormFieldModel
 import com.example.data.models.EventRegisterPrefilledFields
 import com.example.data.models.FileModel
 import com.example.data.models.PrefilledFieldContacts
@@ -15,7 +15,7 @@ import com.xwray.groupie.Section
 
 class EventFormResultProfileGroup(
     val context: Context,
-    val field: EventRegisterField,
+    val field: EventFormFieldModel,
     val value: EventRegisterPrefilledFields?,
 ) : NestedGroup() {
 

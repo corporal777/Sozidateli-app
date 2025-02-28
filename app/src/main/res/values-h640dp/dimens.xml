@@ -3,13 +3,14 @@
     <!--  new auth views margins  -->
     <dimen name="auth_logo_text_height">60dp</dimen>
 
-    <dimen name="auth_buttons_min_height">42dp</dimen>
+    <dimen name="auth_buttons_min_height">43dp</dimen>
     <dimen name="auth_buttons_text_size">15sp</dimen>
 
     <dimen name="auth_buttons_title_text_size">14sp</dimen>
     <dimen name="auth_pager_title_text_size">25sp</dimen>
     <dimen name="auth_pager_story_text_size">14sp</dimen>
 
+    <dimen name="event_detail_action_button_min_height">44dp</dimen>
     <dimen name="common_button_min_height">46dp</dimen>
     <dimen name="common_button_text_size">15sp</dimen>
 
@@ -67,9 +68,8 @@
     <dimen name="in_app_notification_fragment_margin_top">50dp</dimen>
 
     <dimen name="update_app_image">250dp</dimen>
-    <dimen name="toolbar_icons_size">25dp</dimen>
-
-    <dimen name="toolbar_circle_button_height">25dp</dimen>
+    <dimen name="toolbar_icons_size">30dp</dimen>
+    <dimen name="toolbar_circle_button_height">30dp</dimen>
     <dimen name="toolbar_circle_button_width">140dp</dimen>
     <!--  new margins  -->
 

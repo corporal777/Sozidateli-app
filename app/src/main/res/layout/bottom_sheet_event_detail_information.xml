@@ -1,234 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix">
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="30dp"
+        android:layout_height="4dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bottom_sheet_top" />
 
-    <RelativeLayout
-        android:id="@+id/bottomSheet"
+    <TextView
+        android:id="@+id/tv_bottom_sheet_label"
+        fontPath="fonts/sf_pro_text_semibold.ttf"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="MissingPrefix">
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/view"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:letterSpacing="-0.02"
+        android:text="@string/more_details"
+        android:textSize="17sp" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="30dp"
-            android:layout_height="4dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/bottom_sheet_top" />
 
-        <TextView
-            android:id="@+id/tv_bottom_sheet_label"
-            fontPath="fonts/sf_pro_text_semibold.ttf"
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:minWidth="30dp"
+        android:minHeight="30dp"
+        android:src="@drawable/ic_close" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_bottom_sheet_label"
+        android:layout_alignParentBottom="true"
+        android:clipToPadding="false"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/view"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:letterSpacing="-0.02"
-            android:text="@string/more_details"
-            android:textSize="17sp" />
+            android:layout_marginHorizontal="15dp"
+            android:orientation="vertical">
 
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
-            android:src="@drawable/ic_close" />
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_bottom_sheet_label"
-            android:layout_alignParentBottom="true"
-            android:clipToPadding="false"
-            android:paddingTop="10dp"
-            android:paddingBottom="20dp">
 
             <LinearLayout
+                android:id="@+id/ln_event_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_name" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_name_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
 
 
-                <LinearLayout
-                    android:id="@+id/ln_event_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_name" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_name_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_format"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_format" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_format_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_description" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_description_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_location" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_location_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_phone" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_phone_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_email" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_email_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_links"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_link" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_links_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ln_event_pages"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginTop="2dp"
-                        android:src="@drawable/ic_event_detail_page" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_event_pages_text"
-                        style="@style/EventDetailInformationTextStyle"
-                        android:layout_marginStart="10dp"
-                        tools:text="@string/code_email_dialog_text" />
-                </LinearLayout>
             </LinearLayout>
 
-        </androidx.core.widget.NestedScrollView>
+            <LinearLayout
+                android:id="@+id/ln_event_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
 
-        <!--        <androidx.recyclerview.widget.RecyclerView-->
-        <!--            android:id="@+id/list_event_information"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_below="@+id/tv_bottom_sheet_label"-->
-        <!--            android:layout_alignParentBottom="true"-->
-        <!--            android:clipToPadding="false"-->
-        <!--            android:paddingTop="10dp"-->
-        <!--            android:paddingBottom="20dp"-->
-        <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_format" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_format_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
 
-    </RelativeLayout>
-</layout>
+            <LinearLayout
+                android:id="@+id/ln_event_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_description" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_description_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_event_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_location" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_location_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_event_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_phone" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_phone_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_event_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_email" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_email_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_event_links"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_link" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_links_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ln_event_pages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_event_detail_page" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_event_pages_text"
+                    style="@style/EventDetailInformationTextStyle"
+                    android:layout_marginStart="10dp"
+                    tools:text="@string/code_email_dialog_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

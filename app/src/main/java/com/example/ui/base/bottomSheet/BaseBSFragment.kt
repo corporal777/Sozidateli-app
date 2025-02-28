@@ -66,39 +66,17 @@ abstract class BaseBSFragment : MvpAppCompatBottomSheetFragment, BaseBSContract.
         else R.style.TransparentBottomSheetDialogTheme
     }
 
-    override fun showLoadingDialog() {
-        mActivity?.showLoadingDialog()
-    }
+    override fun showProgressBarLoading() { mActivity?.showProgressBarLoading() }
+    override fun hideProgressBarLoading() { mActivity?.hideProgressBarLoading() }
 
-    override fun hideLoadingDialog() {
-        mActivity?.hideLoadingDialog()
-    }
+    override fun showProgressBarDialogLoading() { mActivity?.showProgressBarDialogLoading() }
+    override fun hideProgressBarDialogLoading() { mActivity?.hideProgressBarDialogLoading() }
 
-    override fun showProgressBarLoadingDialog() {
-        mActivity?.showProgressBarLoadingDialog()
-    }
+    override fun hideAllLoadingDialogs() { mActivity?.hideAllLoadingDialogs() }
 
-    override fun hideProgressBarLoadingDialog() {
-        mActivity?.hideProgressBarLoadingDialog()
-    }
+    override fun showCustomLoading() {}
+    override fun hideCustomLoading() {}
 
-    override fun hideAllLoadingDialogs() {
-        mActivity?.hideAllLoadingDialogs()
-    }
-
-    override fun showCustomProgressDialog() {
-        mActivity?.showCustomProgressDialog()
-    }
-
-    override fun hideCustomProgressDialog() {
-        mActivity?.hideCustomProgressDialog()
-    }
-
-    override fun showCustomLoading() {
-    }
-
-    override fun hideCustomLoading() {
-    }
 
     override fun hideBottomSheetFragment() = dismiss()
 

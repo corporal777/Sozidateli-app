@@ -3,13 +3,20 @@ package com.example.ui.base
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -17,15 +24,15 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.app.R
 import com.example.app.databinding.ActivityMainBinding
 import com.example.app.databinding.LayoutBottomNavBadgeBinding
+import com.example.extensions.statusBarColorValue
 import com.example.interfaces.BackgroundImageFragment
-import com.example.ui.auth.authorization.AuthorizationFragment
 import com.example.ui.event.about.AboutEventFragment
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
-import com.example.ui.event.registration.EventRegistrationFragment
 import com.example.ui.stories.StoriesFragment
 import com.example.ui.views.dialogs.CustomProgressDialog
 import com.example.ui.views.dialogs.EventAddedToFavoriteDialog
+import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.example.util.cancelWindowTransparency
 import com.example.util.doEdgeWindow
 import com.example.util.setWindowTransparency
@@ -34,6 +41,7 @@ import dagger.android.AndroidInjection
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
+import java.net.UnknownHostException
 
 abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
@@ -48,11 +56,11 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        getLoadingView().setOnTouchListener { _, _ -> return@setOnTouchListener true }
         mProgressDialog = CustomProgressDialog(this)
 
         RxJavaPlugins.setErrorHandler { e ->
             if (e is UndeliverableException) e.printStackTrace()
+            else if (e is UnknownHostException) e.printStackTrace()
             else {
                 Thread.currentThread().also { thread ->
                     thread.uncaughtExceptionHandler?.uncaughtException(thread, e)
@@ -95,6 +103,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
         return false
     }
 
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent)
@@ -102,66 +111,43 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
 
     abstract fun handleIntent(intent: Intent)
 
-    override fun showAddedToFavoriteDialog() {
-        EventAddedToFavoriteDialog(0, this)
-    }
-    override fun showRemovedFromFavoriteDialog() {
-        EventAddedToFavoriteDialog(1, this)
-    }
+    override fun showAddedToFavoriteDialog() = EventAddedToFavoriteDialog(0, this).show()
+    override fun showRemovedFromFavoriteDialog() = EventAddedToFavoriteDialog(1, this).show()
 
-    override fun showLoadingDialog() {
+
+    override fun showProgressBarLoading() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading++
             showProgressView()
-            getLoadingView().visibility = View.VISIBLE
         }
     }
 
-    override fun showProgressBarLoadingDialog() {
-        if (!isFinishing) runOnUiThread {
-            countVisibleLoading++
-            showProgressView()
-            getProgressBarLoadingView().visibility = View.VISIBLE
-        }
-    }
-
-    override fun hideProgressBarLoadingDialog() {
+    override fun hideProgressBarLoading() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading--
             if (countVisibleLoading <= 0) {
                 countVisibleLoading = 0
-                getProgressBarLoadingView().visibility = View.GONE
                 hideProgressView()
             }
-
         }
     }
 
-    override fun hideLoadingDialog() {
-        if (!isFinishing) runOnUiThread {
-            countVisibleLoading--
-            if (countVisibleLoading <= 0) {
-                countVisibleLoading = 0
-                getLoadingView().visibility = View.GONE
-                hideProgressView()
-            }
+    override fun showProgressBarDialogLoading() = mProgressDialog.showDialog()
+    override fun hideProgressBarDialogLoading() = mProgressDialog.hideDialog()
 
-        }
-    }
+    override fun showCustomLoading() {}
+    override fun hideCustomLoading() {}
 
     override fun hideAllLoadingDialogs() {
         if (!isFinishing) runOnUiThread {
             countVisibleLoading = 0
-            getLoadingView().visibility = View.GONE
-            hideProgressView()
+            hideProgressBarLoading()
+            hideProgressBarDialogLoading()
             hideCustomLoading()
         }
     }
 
-    override fun showCustomProgressDialog() = mProgressDialog.showDialog()
-    override fun hideCustomProgressDialog() = mProgressDialog.hideDialog()
-    override fun showCustomLoading() {}
-    override fun hideCustomLoading() {}
+
 
     override fun hideKeyboard() = hideKeyboard(currentFocus)
 
@@ -209,30 +195,23 @@ abstract class BaseActivity : MvpAppCompatActivity(), BaseContract.View {
             bg = null
             isLightStatus = true
         }
-        window.decorView.systemUiVisibility = if (isLightStatus) View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR else 0
+        statusBarColorValue = if (isLightStatus) SYSTEM_UI_LIGHT_STATUS_BAR else 0
         mBinding.root.background = bg
     }
 
+
     fun setupBackgroundTransparency(f : Fragment){
-        if (f is AboutEventFragment) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-            setWindowTransparency()
-        }
-        else if (f is StoriesFragment) doEdgeWindow()
-        else if (f is MyEventsFragment || f is MyScheduleEventsFragment) {
-            cancelWindowTransparency()
+        if (f is MyEventsFragment || f is MyScheduleEventsFragment)
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        } else {
-            cancelWindowTransparency()
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }
+        else window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        if (f is AboutEventFragment) setWindowTransparency { f.setupToolbarTopMargin(it) }
+        else if (f is StoriesFragment) doEdgeWindow()
+        else cancelWindowTransparency()
     }
 
     abstract fun showProgressView()
     abstract fun hideProgressView()
-
-    abstract fun getLoadingView(): View
-    abstract fun getProgressBarLoadingView(): View
 
     override fun showToast(@StringRes message: Int) = showToast(getString(message))
     override fun showToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EventRegisterProfilePrefilledData(
@@ -53,7 +53,8 @@ data class EventRegisterProfilePrefilledFields(
 
     companion object {
 
-        fun JsonElement?.prefilledFromJson(options: List<String>?): EventRegisterPrefilledFields? {
+        fun JsonElement?.prefFromJson(params: EventFormFieldModel?): EventRegisterPrefilledFields? {
+            val options = params?.parameters?.options
             if (this == null || options.isNullOrEmpty()) return null
 
             val data = Gson().fromJson(this, EventRegisterProfilePrefilledFields::class.java)

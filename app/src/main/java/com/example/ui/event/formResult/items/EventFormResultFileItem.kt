@@ -13,7 +13,7 @@ import com.example.util.showFileBrowser
 import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultFileItem (
-    val id: String?,
+    val id: Int?,
     val title: String?,
     val value: EventFile?,
 ) : BindableItem<ItemEventFormResultStringBinding>(id?.toLong() ?: 0) {

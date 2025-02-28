@@ -67,7 +67,7 @@ class InviteNotificationsBottomSheet : BaseBSFragment(), InviteNotificationsCont
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = pagingAdapter.withLoadStateAdapters(
                     null,
-                    NotificationPlaceholderAdapter(true),
+                    NotificationPlaceholderAdapter(false, 3),
                     NotificationPlaceholderAdapter(false)
                 ) {  }
             }

@@ -71,10 +71,7 @@ class RecommendationsPresenter
         }
     }
 
-    override fun getPaginationRequest(
-        limit: Int,
-        offset: Int
-    ): Maybe<PaginationResponse<EventNew>> {
+    override fun getPaginationRequest(limit: Int, offset: Int): Maybe<PaginationResponse<EventNew>> {
         return eventRepository.getEventsListNew(
             mapOf(
                 EVENT_LIMIT to limit,

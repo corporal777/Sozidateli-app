@@ -166,7 +166,13 @@ open class BasePresenter<V : BaseContract.View>
         }
     }
 
-    data class NewErrors(val errors: List<NewError>)
+    data class NewErrors(val errors: List<NewError>) {
+        companion object {
+            fun fromJson(t : HttpException): NewErrors? {
+                return Gson().fromJson(t.response()?.errorBody()?.string(), NewErrors::class.java)
+            }
+        }
+    }
     data class NewError(
         val code: String? = null,
         val type: String? = null,

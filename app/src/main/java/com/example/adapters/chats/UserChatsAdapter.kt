@@ -83,8 +83,8 @@ class UserChatsAdapter(val onUserClick: (user: UserChatModel) -> Unit) :
         }
 
         private fun formatMessageDate(context: Context, date: String?): String {
-            val messageDate = defaultServerDateTimeFormatter.parse(date)
-                ?: return context.getString(R.string.today)
+            if (date.isNullOrEmpty()) return context.getString(R.string.today)
+            val messageDate = defaultServerDateTimeFormatter.parse(date) ?: return context.getString(R.string.today)
             val messageCalendar = messageDate.time.calendar()
             val now = Calendar.getInstance()
 

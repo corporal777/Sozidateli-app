@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
+        android:includeFontPadding="false"
         android:letterSpacing="-0.01"
         android:textColor="@color/black"
         android:textSize="17sp"
@@ -25,13 +26,15 @@
 
 
     <TextView
-        android:breakStrategy="simple"
         android:id="@+id/tvMessage"
         fontPath="fonts/sf_pro_text.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
+        android:breakStrategy="simple"
+        android:importantForAccessibility="no"
+        android:includeFontPadding="false"
         android:letterSpacing="-0.01"
         android:textColor="@color/black"
         android:textSize="16sp"

@@ -52,7 +52,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix"
         tools:text="Нажмите Добавить в избранное в списке организаций"
         tools:visibility="visible" />
 

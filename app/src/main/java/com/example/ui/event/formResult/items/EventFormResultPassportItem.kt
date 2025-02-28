@@ -8,7 +8,7 @@ import com.example.extensions.formatToDefaultDate
 import com.xwray.groupie.viewbinding.BindableItem
 
 class EventFormResultPassportItem (
-    val id: String?,
+    val id: Int?,
     val title: String?,
     val passport: EventPassport?,
 ) : BindableItem<ItemEventFormResultPassportBinding>(id?.toLong() ?: 0) {

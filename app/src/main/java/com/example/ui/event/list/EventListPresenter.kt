@@ -1,5 +1,6 @@
 package com.example.ui.event.list
 
+import android.util.Log
 import call
 import com.example.data.AppData
 import com.example.data.models.EventNew
@@ -22,12 +23,22 @@ abstract class EventListPresenter<V : EventListContract.View>(
 ) : BasePresenter<V>(appData), EventListContract.Presenter {
 
     abstract val pagination: PagingListFlow<*>
+    private var sentEvent : EventNew? = null
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         compositeDisposable += appData.eventChangeSubject
             .performOnBackgroundOutOnMain()
-            .subscribeSimple { viewState.updateEvent(it) }
+            .subscribeSimple { sentEvent = it }
+    }
+
+    override fun attachView(view: V) {
+        super.attachView(view)
+        if (sentEvent != null){
+            viewState.updateEvent(sentEvent!!)
+            sentEvent = null
+        }
     }
 
     override fun onActionRegister(event: EventNew, withAccept: Boolean, position: Int) {

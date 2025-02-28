@@ -7,7 +7,7 @@ import com.example.app.databinding.ItemEventRegistrationFieldDescriptionBinding
 import com.example.util.getColor
 import com.xwray.groupie.viewbinding.BindableItem
 
-class EventRegistrationDescriptionItem(
+class RegisterEventFileDescItem(
     val title: String?,
     val description: String?
 ) : BindableItem<ItemEventRegistrationFieldDescriptionBinding>(
@@ -33,7 +33,7 @@ class EventRegistrationDescriptionItem(
 
     override fun hasSameContentAs(other: com.xwray.groupie.Item<*>): Boolean {
         if (this === other) return true
-        if (other !is EventRegistrationDescriptionItem) return false
+        if (other !is RegisterEventFileDescItem) return false
         if (title != other.title) return false
         if (description != other.description) return false
         if (isErrorShown != other.isErrorShown) return false

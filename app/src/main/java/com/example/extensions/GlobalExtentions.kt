@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.OpenableColumns
@@ -26,16 +27,23 @@ import android.text.method.PasswordTransformationMethod
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import android.util.Base64
+import android.util.Log
 import android.util.SparseArray
 import android.util.TypedValue
 import android.view.KeyEvent.ACTION_UP
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsetsController
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatToggleButton
@@ -46,6 +54,8 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -58,6 +68,7 @@ import com.example.data.models.asArgument
 import com.example.ui.base.bottomSheet.BaseBSFragment
 import com.example.util.ClickableSpan
 import com.example.util.CropCircleTransformation
+import com.example.util.SYSTEM_UI_LIGHT_STATUS_BAR
 import com.example.util.URLSpanNoUnderline
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.appbar.AppBarLayout
@@ -96,7 +107,7 @@ internal inline fun <reified T : Parcelable> parcelableArgument(name: String): R
     }
 }
 
-fun AppCompatImageButton.setFiltersBackground(isChosen : Boolean){
+fun AppCompatImageButton.setFiltersBackground(isChosen: Boolean) {
     if (isChosen) setImageResource(R.drawable.ic_filters_selected)
     else setImageResource(R.drawable.ic_filters_new)
 }
@@ -118,7 +129,7 @@ fun decodeBase64ToJson(data: String?): JSONObject? {
     }
 }
 
-fun TextView.setTextCustomSize(res : Int){
+fun TextView.setTextCustomSize(res: Int) {
     setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(res))
 }
 
@@ -155,6 +166,18 @@ fun AppCompatCheckBox.onCheckedChanged(onCheckedChanged: (checked: Boolean) -> U
     return listener
 }
 
+fun TextView.onKeyDoneClick(onKeyClick: () -> Unit){
+    setOnKeyListener { _, keyCode, _ ->
+        when (keyCode) {
+            EditorInfo.IME_ACTION_DONE -> {
+                onKeyClick.invoke()
+                true
+            }
+            else -> false
+        }
+    }
+}
+
 fun TextView.onTextChanged(onTextChanged: (text: CharSequence?) -> Unit): TextWatcher {
     val watcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
@@ -188,7 +211,6 @@ fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
             onPageChanged(state)
         }
     }
-    unregisterOnPageChangeCallback(listener)
     registerOnPageChangeCallback(listener)
 }
 
@@ -376,23 +398,6 @@ fun Bitmap.toBodyPart(
     }
 }
 
-fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null): Boolean {
-    val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
-    return isValidPhoneNumber(phoneNumberUtil, defaultRegion)
-}
-
-fun String?.isValidPhoneNumber(
-    phoneNumberUtil: PhoneNumberUtil,
-    defaultRegion: String? = null
-): Boolean {
-    if (this.isNullOrEmpty()) return false
-    val parsedPhone = try {
-        phoneNumberUtil.parse(this, defaultRegion)
-    } catch (e: Throwable) {
-        return false
-    }
-    return phoneNumberUtil.isValidNumber(parsedPhone)
-}
 
 fun TextInputLayout.initAsMonthYearPicker(
     startDate: Date?,
@@ -642,17 +647,40 @@ fun String?.parseColor(): Int? {
     }
 }
 
-var Fragment.statusBarColorValue: Int
+var View.topMargin : Int
+    get() = marginTop
+    set(value) {
+        updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            if (topMargin == value || marginTop == value) return
+            this.topMargin = value
+        }
+    }
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun Activity.setSystemBarsAppearance(start: Int, end: Int) {
+    window.insetsController?.setSystemBarsAppearance(start, end)
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun Activity.setSystemBarsAppearance(start: Int) {
+    window.insetsController?.setSystemBarsAppearance(start, start)
+}
+
+var Activity.statusBarColorValue: Int
     get() = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     set(value) {
-        if (requireActivity().window.decorView.systemUiVisibility == value) return
-        else requireActivity().window.decorView.systemUiVisibility = value
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            setSystemBarsAppearance(value, APPEARANCE_LIGHT_STATUS_BARS)
+        } else {
+            if (window.decorView.systemUiVisibility == value) return
+            else window.decorView.systemUiVisibility = value
+        }
     }
 
 var View.isVisibleAnim: Boolean
     get() = visibility == View.VISIBLE
-    set(value){
-        if (value){
+    set(value) {
+        if (value) {
             alpha = 0F
             visibility = View.VISIBLE
             animate().setDuration(500).alpha(1.0f)
@@ -690,6 +718,10 @@ fun View?.getLocationOfView(): Pair<Int, Int> {
     val x = location[0]
     val y = location[1]
     return Pair(x, y)
+}
+
+fun ViewGroup.setChildSelected(position : Int){
+    for (p in 0 until childCount) getChildAt(p).isSelected = p == position
 }
 
 

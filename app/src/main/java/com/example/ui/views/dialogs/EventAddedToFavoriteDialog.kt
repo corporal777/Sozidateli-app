@@ -34,11 +34,13 @@ class EventAddedToFavoriteDialog(
         val back = ColorDrawable(Color.TRANSPARENT)
         val inset = InsetDrawable(back, 0)
         mAlertDialog.window?.setBackgroundDrawable(inset)
-        mAlertDialog.show()
+
 
 
         Handler().postDelayed(Runnable {
             mAlertDialog.dismiss()
         }, 2000)
     }
+
+    fun show() = mAlertDialog.show()
 }

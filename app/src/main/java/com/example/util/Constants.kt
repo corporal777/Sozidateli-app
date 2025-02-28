@@ -1,6 +1,11 @@
 package com.example.util
 
 import android.Manifest
+import android.os.Build
+import android.view.View
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import androidx.annotation.RequiresApi
 
 const val DATE_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%02d.%02d.%d"
 const val DATE_TIME_STRING_FORMAT_SHORT_MONTH_FULL_YEAR = "%02d.%02d.%d %02d:%02d"
@@ -119,3 +124,10 @@ const val PHONE_WORK = "work"
 
 const val PAGE_SIZE = 30
 const val PAGE_PLACEHOLDER = false
+
+val SYSTEM_UI_LIGHT_STATUS_BAR =
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) APPEARANCE_LIGHT_STATUS_BARS
+        else View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+@RequiresApi(Build.VERSION_CODES.R)
+const val SYSTEM_UI_LIGHT_NAV_BAR = APPEARANCE_LIGHT_NAVIGATION_BARS

@@ -110,7 +110,7 @@ class ChangeAccountPresenter
         if (!redirectLink.isNullOrEmpty()) observeDeeplink(session)
         else if (isCurrentUser(session.binds.user.id.toString())) return
         else viewState.apply {
-            showCustomProgressDialog()
+            showProgressBarDialogLoading()
             setIgnoreTokenListener(false)
             appData.isNeedShowWelcome = true
             appData.saveId(session.userId)

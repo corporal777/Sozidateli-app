@@ -1,7 +1,9 @@
 package com.example.ui.event.about
 
+import android.util.Log
 import com.example.data.AppData
 import com.example.data.models.AboutEventData
+import com.example.data.models.ApiError
 import com.example.data.models.EventActivityModel
 import com.example.data.models.EventNew
 import com.example.data.socket.SocketIOManager
@@ -65,22 +67,6 @@ class AboutEventPresenter
             }
     }
 
-    override fun onSubscribeEvent(isSubscribed: Boolean) {
-        compositeDisposable += Completable.defer {
-            if (isSubscribed) eventRepository.deleteEventSubscription(eventId.toInt())
-            else eventRepository.createEventSubscription(eventId.toInt())
-        }
-            .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { eventData.event = it }
-            .performOnBackgroundOutOnMain()
-            .withCustomLoading(viewState)
-            .subscribeSimple {
-                viewState.setActionButton(it)
-                viewState.showEventSubscribedDialog(it.binds?.isUserSubscribed)
-            }
-
-    }
-
     override fun onAddEventToFavoriteClick() {
         compositeDisposable += eventRepository.addOrRemoveEventFavorite(eventData.event)
             .doOnSuccess { eventData.event.binds?.userFavorite = it.value }
@@ -124,6 +110,22 @@ class AboutEventPresenter
             )
     }
 
+    override fun onSubscribeEvent(isSubscribed: Boolean) {
+        compositeDisposable += Completable.defer {
+            if (isSubscribed) eventRepository.deleteEventSubscription(eventId.toInt())
+            else eventRepository.createEventSubscription(eventId.toInt())
+        }
+            .andThen(eventRepository.getEventDetails(eventId))
+            .doOnSuccess { eventData.event = it }
+            .performOnBackgroundOutOnMain()
+            .subscribeSimple(
+                onError = { onReceiveActionError(it) },
+                onSuccess = {
+                    viewState.setActionButton(it)
+                    viewState.showEventSubscribedDialog(it.binds?.isUserSubscribed)
+                }
+            )
+    }
 
     override fun onActionRegister(withAccept: Boolean) {
         val url = eventData.event.userAgreement?.uri
@@ -139,17 +141,16 @@ class AboutEventPresenter
         }
             .andThen(registerToEvent())
             .performOnBackgroundOutOnMain()
-            .withCustomLoading(viewState)
             .subscribeSimple(
                 onError = {
-                    if (it !is EventAgreementException) onReceiveError(it)
-                    else viewState.showAgreementRegisterDialog(eventId, url ?: "")
+                    if (it is EventAgreementException) viewState.showAgreementDialog(eventId, url)
+                    else onReceiveActionError(it)
                 },
                 onSuccess = {
-                    if (it.isFormEnabled()) viewState.showEventRequest(eventId)
-                    else viewState.apply {
+                    viewState.apply {
                         setActionButton(it)
-                        showEventRegistrationSuccessDialog()
+                        if (it.isFormEnabled()) viewState.showEventRequest(eventId)
+                        else showEventRegistrationSuccessDialog()
                     }
                 }
             )
@@ -160,18 +161,23 @@ class AboutEventPresenter
         else eventRepository.registerToEvent(eventId.toInt())
             .andThen(socket.connectToUpdates())
             .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { eventData.event = it }
+            .doOnSuccess {
+                eventData.event = it
+                appData.sendUpdateEvent(it)
+            }
     }
 
     override fun onActionCancel() {
         val registrationId = eventData.event.binds?.currentUserRegistration?.id ?: 0
         compositeDisposable += eventRepository.cancelRegisterToEvent(registrationId)
             .andThen(eventRepository.getEventDetails(eventId))
-            .doOnSuccess { eventData.event = it }
+            .doOnSuccess {
+                eventData.event = it
+                appData.sendUpdateEvent(it)
+            }
             .performOnBackgroundOutOnMain()
-            .withCustomLoading(viewState)
             .subscribeSimple(
-                onError = { onReceiveError(it) },
+                onError = { onReceiveActionError(it) },
                 onSuccess = { viewState.setActionButton(it) }
             )
     }
@@ -201,44 +207,35 @@ class AboutEventPresenter
 
     override fun onRefreshRequest() = onRequest.invoke()
 
+    private fun onReceiveActionError(it : Throwable){
+        viewState.setActionButton(eventData.event)
+        onReceiveError(it)
+    }
+
     private fun catchEventError(t: Throwable) {
-        if (t is HttpException) {
-            when (t.code()) {
-                403 -> {
-                    try {
-                        val error = Gson().fromJson(
-                            t.response()?.errorBody()?.string(), NewErrors::class.java
-                        )
-                        when (error.errors[0].message) {
-                            "you have no access for such operation" -> {
-                                val message =
-                                    "В данный момент страница мероприятия доступна только владельцу или администратору"
-                                viewState.showErrorMessageWithResult(false, "", message)
-                            }
+        if (t is HttpException && t.code() == 403){
+            try {
+                val error = NewErrors.fromJson(t)
+                val errorMessage = error?.errors?.get(0)?.message ?: ""
 
-                            "The event has been banned" -> {
-                                val eventName = error.errors[0].additionalData?.name
-                                val eventId = error.errors[0].additionalData?.id.toString()
-                                val message = "Мероприятие «$eventName» заблокировано."
-                                viewState.showErrorMessageWithResult(true, eventId, message)
-                            }
-
-                            "The event has been cancelled" -> {
-                                val eventName = error.errors[0].additionalData?.name
-                                val eventId = error.errors[0].additionalData?.id.toString()
-                                val message =
-                                    "Мероприятие «$eventName» было отменено организатором."
-                                viewState.showErrorMessageWithResult(true, eventId, message)
-                            }
-
-                            else -> onReceiveError(t)
-                        }
-                    } catch (e: Exception) {
-                    }
+                if (errorMessage == "you have no access for such operation"){
+                    val message = "В данный момент страница мероприятия доступна только владельцу или администратору"
+                    viewState.showErrorMessageWithResult(false, "", message)
                 }
-
-                else -> onReceiveError(t)
-            }
+                else if (errorMessage == "The event has been banned"){
+                    val eventName = error?.errors?.get(0)?.additionalData?.name
+                    val eventId = error?.errors?.get(0)?.additionalData?.id.toString()
+                    val message = "Мероприятие «$eventName» заблокировано."
+                    viewState.showErrorMessageWithResult(true, eventId, message)
+                }
+                else if (errorMessage == "The event has been cancelled"){
+                    val eventName = error?.errors?.get(0)?.additionalData?.name
+                    val eventId = error?.errors?.get(0)?.additionalData?.id.toString()
+                    val message = "Мероприятие «$eventName» было отменено организатором."
+                    viewState.showErrorMessageWithResult(true, eventId, message)
+                }
+                else onReceiveError(t)
+            } catch (e: Exception) { onReceiveError(t) }
         } else onReceiveError(t)
     }
 

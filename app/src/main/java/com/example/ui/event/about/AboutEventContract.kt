@@ -36,9 +36,8 @@ interface AboutEventContract {
         @OneExecution
         fun showAuthorization()
 
-
         @Skip
-        fun setActionButton(event: EventNew?)
+        fun setActionButton(event: EventNew)
 
         @Skip
         fun setEventFavoriteButton(isSubscribed: Boolean)
@@ -59,7 +58,7 @@ interface AboutEventContract {
         fun showErrorMessageWithResult(with: Boolean, eventId: String, message: String)
 
         @Skip
-        fun showAgreementRegisterDialog(event: String, url: String)
+        fun showAgreementDialog(event: String, url: String?)
 
         @Skip
         fun showEventSubscribedDialog(isSubscribed: Boolean?)

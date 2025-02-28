@@ -106,7 +106,7 @@ class EventActivityItem(
     }
 
     override fun bind(viewBinding: ItemLectureBinding, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads?.firstOrNull()
+        val payload = payloads.firstOrNull()
         if (payload == null) super.bind(viewBinding, position, payloads)
         else {
             if (payload is EventActivityModel) {

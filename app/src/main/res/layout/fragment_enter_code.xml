@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/profile_padding_start"
+    android:background="@color/main_background"
+    android:paddingEnd="@dimen/profile_padding_start"
+    tools:ignore="MissingPrefix">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.example.ui.views.CustomTextInputLayout
+        android:id="@+id/tilCode"
+        style="@style/Profile.Edit.PasswordNew"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="@dimen/profile_padding_start"
-        android:paddingEnd="@dimen/profile_padding_start">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.ui.views.CustomTextInputLayout
-            android:id="@+id/tilCode"
-            style="@style/Profile.Edit.PasswordNew"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCode"
+            style="@style/Profile.Edit.Input.SingleLine"
+            android:hint="@string/code_input_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:textSize="17sp" />
+    </com.example.ui.views.CustomTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCode"
-                style="@style/Profile.Edit.Input.SingleLine"
-                android:hint="@string/code_input_hint"
-                android:imeOptions="actionDone"
-                android:inputType="textNoSuggestions|textVisiblePassword"
-                android:textSize="17sp" />
-        </com.example.ui.views.CustomTextInputLayout>
+    <TextView
+        android:id="@+id/tvNoCode"
+        fontPath="fonts/sf_pro_display.OTF"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:letterSpacing="-0.01"
+        android:text="@string/code_input_no_code"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilCode" />
 
-        <TextView
-            android:id="@+id/tvNoCode"
-            fontPath="fonts/sf_pro_display.OTF"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:letterSpacing="-0.01"
-            android:text="@string/code_input_no_code"
-            android:textSize="19sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilCode" />
-
-        <com.example.ui.views.loading.CustomLoadingButton
-            style="@style/BtnLoadingStyle"
-            android:id="@+id/btnSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            app:buttonText="@string/search_label"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <com.example.ui.views.loading.CustomLoadingButton
+        android:id="@+id/btnSearch"
+        style="@style/BtnLoadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:buttonText="@string/search_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

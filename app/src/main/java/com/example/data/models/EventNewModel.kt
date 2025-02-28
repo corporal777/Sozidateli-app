@@ -81,7 +81,7 @@ data class EventNew(
 
     fun isHasFormResult(): Boolean {
         val formResult = binds?.userFormResult
-            ?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+            ?.firstOrNull { e -> e.form?.type == EventFormModel.Type.PARTICIPATION }
         if (formResult == null) return false
         else if (formResult.result == null) return false
         else return !formResult.result.fields.isNullOrEmpty()
@@ -224,12 +224,12 @@ data class EventBindsModel(
 ) : Parcelable {
 
     fun getForm(): EventFormModel? {
-        val formType = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
-        return formType?.formType
+        val formType = userFormResult?.firstOrNull { e -> e.form?.type == EventFormModel.Type.PARTICIPATION }
+        return formType?.form
     }
 
     fun getFormResult(): EventFormResultModel? {
-        val formResult = userFormResult?.firstOrNull { e -> e.formType?.type == EventFormModel.Type.PARTICIPATION }
+        val formResult = userFormResult?.firstOrNull { e -> e.form?.type == EventFormModel.Type.PARTICIPATION }
         return formResult?.result
     }
 }
@@ -268,46 +268,15 @@ data class CurrentUserRegistrationModel(
     val wasPresent: String? = null
 ) : Parcelable
 
+
 @Parcelize
 data class UserFormResultModel(
     @SerializedName("formType")
-    val formType: EventFormModel? = null,
+    val form: EventFormModel? = null,
     val result: EventFormResultModel? = null
 ) : Parcelable
 
-@Parcelize
-data class EventFormModel(
-    val id: Int? = null,
-    val event: Int? = null,
-    val title: String? = null,
-    val subtitle: String? = null,
-    val draft: EventFormDraftModel? = null,
-    val type: Type? = null,
-    val background: BackgroundType,
-    val files: List<FileModel>? = null,
-    val fields: List<EventRegisterFields>? = null
-) : Parcelable {
-    enum class Type {
-        @SerializedName("participation")
-        PARTICIPATION,
 
-        @SerializedName("rating")
-        RATING
-    }
-
-    enum class BackgroundType {
-        @SerializedName("event")
-        EVENT,
-
-        @SerializedName("organization")
-        ORGANIZATION
-    }
-
-    companion object {
-        const val FORM_EVENT_ID = "event"
-        const val FORM_TYPE = "type"
-    }
-}
 
 @Parcelize
 data class EventFormDraftModel(
@@ -315,36 +284,9 @@ data class EventFormDraftModel(
     val parent: String? = null
 ) : Parcelable
 
-@Parcelize
-data class EventRegisterFields(
-    val id: Int? = null,
-    val name: String? = null,
-    val description: String? = null,
-    val isRequired: Boolean,
-    val sort: Int? = null,
-    val type: EventRegisterField.Type? = null,
-    val parameters: FieldsParameters? = null
-) : Parcelable {
 
-    fun createData(): EventRegisterField {
-        return EventRegisterField(
-            id.toString(),
-            name,
-            sort ?: 0,
-            type ?: EventRegisterField.Type.PREFILLED,
-            isRequired,
-            description,
-            parameters?.options
-        )
-    }
-}
 
-@Parcelize
-data class FieldsParameters(
-    @SerializedName("allowedExtensions")
-    val allowedExtensions: List<String>? = null,
-    val options: List<String>? = null
-) : Parcelable
+
 
 @Parcelize
 data class EventTagModel(

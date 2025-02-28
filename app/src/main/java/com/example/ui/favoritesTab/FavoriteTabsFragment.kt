@@ -3,10 +3,12 @@ package com.example.ui.favoritesTab
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
-import com.example.adapters.PagerStateAdapter
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.app.R
 import com.example.app.databinding.FragmentFavoriteBinding
-import com.example.extensions.onPageChanged
+import com.example.extensions.onPageSelected
+import com.example.extensions.setChildSelected
 import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.favoritesTab.events.FavoriteEventsFragment
 import com.example.ui.favoritesTab.organizations.FavoriteOrganizationsFragment
@@ -27,10 +29,7 @@ class FavoriteTabsFragment : BaseToolbarFragment<FragmentFavoriteBinding>(), Fav
     @ProvidePresenter
     fun providePresenter(): FavoriteTabsPresenter = presenterProvider.get()
 
-    private val pageChangeListener = onPageChanged { position ->
-        selectTab(position)
-    }
-
+    private val pageChangeListener = onPageSelected { position -> selectTab(position) }
     private val fragments by lazy {
         listOf(
             FavoriteEventsFragment(),
@@ -43,13 +42,13 @@ class FavoriteTabsFragment : BaseToolbarFragment<FragmentFavoriteBinding>(), Fav
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             viewPager.run {
-                adapter = object : PagerStateAdapter(childFragmentManager){
-                    override fun getItem(position: Int) = fragments[position]
-                    override fun getCount() = fragments.size
-                }
-                addOnPageChangeListener(pageChangeListener)
-                selectTab(currentItem)
                 doOnPreDraw { startPostponedEnterTransition() }
+                registerOnPageChangeCallback(pageChangeListener)
+                adapter = object : FragmentStateAdapter(this@FavoriteTabsFragment) {
+                    override fun getItemCount(): Int = fragments.size
+                    override fun createFragment(position: Int): Fragment = fragments[position]
+                }
+                selectTab(currentItem)
             }
             btnTabEvents.setOnClickListener { viewPager.currentItem = 0 }
             btnTabOrganizations.setOnClickListener { viewPager.currentItem = 1 }
@@ -58,13 +57,7 @@ class FavoriteTabsFragment : BaseToolbarFragment<FragmentFavoriteBinding>(), Fav
 
     }
 
-    private fun selectTab(position: Int) {
-        mBinding.clTabs.apply {
-            for (p in 0 until childCount) {
-                getChildAt(p).isSelected = p == position
-            }
-        }
-    }
+    private fun selectTab(position: Int) = mBinding.clTabs.setChildSelected(position)
 
     override fun layout() = R.layout.fragment_favorite
     override fun animationType(): AnimType = AnimType.AXIS

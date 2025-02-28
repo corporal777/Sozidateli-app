@@ -39,7 +39,7 @@ object AuthValidateUtil {
 
     fun isValidEmail(email: CharSequence) = EMAIL_PATTERN.matcher(email).matches()
 
-    fun isValidPhone(phone: String) = Utils.isPhoneNumberValid(phone)
+    fun isValidPhone(phone: String?) = Utils.isPhoneNumberValid(phone)
 
     fun isValidSite(site: String?) = WEB_SITE_PATTERN.matcher(site ?: "").matches()
 }

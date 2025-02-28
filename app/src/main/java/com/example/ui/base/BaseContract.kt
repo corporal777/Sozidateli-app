@@ -65,22 +65,16 @@ interface BaseContract {
 
     interface LoadingView {
         @StateStrategyType(SkipStrategy::class)
-        fun showLoadingDialog()
+        fun showProgressBarLoading()
 
         @StateStrategyType(SkipStrategy::class)
-        fun hideLoadingDialog()
+        fun hideProgressBarLoading()
 
         @StateStrategyType(SkipStrategy::class)
-        fun showCustomProgressDialog()
+        fun showProgressBarDialogLoading()
 
         @StateStrategyType(SkipStrategy::class)
-        fun hideCustomProgressDialog()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun showProgressBarLoadingDialog()
-
-        @StateStrategyType(SkipStrategy::class)
-        fun hideProgressBarLoadingDialog()
+        fun hideProgressBarDialogLoading()
 
         @StateStrategyType(SkipStrategy::class)
         fun hideAllLoadingDialogs()

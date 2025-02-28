@@ -6,19 +6,18 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-import androidx.core.view.isVisible
 import com.example.app.R
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.app.databinding.ItemRegisterEventRadioBinding
 
 open class RegisterEventRadioBoxItem(
-    private val fieldData: EventRegisterFieldData<String>,
-    onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit
+    private val fieldData: EventRegisterField<String>,
+    onDataChange: (fieldData: EventRegisterField<*>) -> Unit
 ) : BaseRegisterItem<ItemRegisterEventRadioBinding>(fieldData, onDataChange) {
 
     override fun bind(viewBinding: ItemRegisterEventRadioBinding, position: Int) {
         super.bind(viewBinding, position)
-        val values = field.values ?: emptyList()
+        val values = field.parameters?.options ?: emptyList()
         viewBinding.apply {
             radioGroup.apply {
                 removeAllViews()

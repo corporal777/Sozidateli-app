@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -14,6 +15,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
@@ -23,23 +27,31 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.example.app.R
+import com.example.app.databinding.LayoutNoInternetBinding
 import com.example.data.models.Notification
 import com.example.data.models.RemoteNotification
 import com.example.data.models.SupportData
 import com.example.data.models.UserDetail
-import com.example.app.databinding.LayoutNoInternetBinding
 import com.example.extensions.decodeBase64ToJson
+import com.example.extensions.dp
+import com.example.extensions.getFragmentLifecycleCallback
+import com.example.extensions.onBackPressedCallback
+import com.example.extensions.px
+import com.example.extensions.setArgument
+import com.example.extensions.setSystemBarsAppearance
 import com.example.interfaces.DoNotCheckConnectionFragment
 import com.example.interfaces.ToolbarFragment
 import com.example.ui.auth.recoveryPassword.RecoveryPasswordFragmentArgs
+import com.example.ui.base.BaseFragment
 import com.example.ui.base.BaseFragmentActivity
+import com.example.ui.base.BaseVBFragment
 import com.example.ui.chatList.ChatListTabsFragment
 import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.event.list.recommendations.RecommendationsFragment
-import com.example.ui.event.list.recommendations.RecommendationsFragmentArgs
 import com.example.ui.event.my.MyEventsFragment
 import com.example.ui.event.my.schedule.MyScheduleEventsFragment
 import com.example.ui.main.inApp.InAppNotificationFragment
+import com.example.ui.main.inApp.InAppNotificationFragment.Companion.IN_APP_FRAGMENT_TAG
 import com.example.ui.notification.NotificationsListFragment
 import com.example.ui.organizations.detail.OrganizationFragmentArgs
 import com.example.ui.profile.ProfileFragment
@@ -50,6 +62,8 @@ import com.example.ui.support.detail.SupportQuestionDetailFragmentArgs
 import com.example.ui.user.UserFragmentArgs
 import com.example.ui.views.dialogs.ChangeStateBottomDialog
 import com.example.ui.views.dialogs.ClickType
+import com.example.ui.views.dialogs.DefaultAlertDialog
+import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import com.example.ui.views.dialogs.StateType
 import com.example.ui.views.dialogs.UpdateAppBottomSheet
 import com.example.ui.views.toolbar.CustomAppBarLayoutBehavior
@@ -80,21 +94,15 @@ import com.example.util.PATH_SUPPORT_CENTER
 import com.example.util.PATH_SWITCH_ACCOUNT
 import com.example.util.PATH_USER
 import com.example.util.PGRF
+import com.example.util.SYSTEM_UI_LIGHT_NAV_BAR
 import com.example.util.Utils
 import com.example.util.showCustomTabsBrowser
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.example.extensions.getFragmentLifecycleCallback
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.example.extensions.onBackPressedCallback
-import com.example.extensions.setArgument
-import com.example.ui.base.BaseFragment
-import com.example.ui.base.BaseVBFragment
-import com.example.ui.main.inApp.InAppNotificationFragment.Companion.IN_APP_FRAGMENT_TAG
-import com.example.ui.views.dialogs.DefaultAlertDialog
-import com.example.ui.views.dialogs.EventRegistrationSuccessBottomDialog
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class MainActivity : BaseFragmentActivity(), MainContract.View {
 
@@ -151,6 +159,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         showSplashScreen()
         super.onCreate(savedInstanceState)
@@ -168,6 +179,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
         mBinding.ibErrorClose.setOnClickListener { presenter.onRequestHideErrorMessage() }
     }
+
 
 
     override fun showSplashScreen() {
@@ -237,7 +249,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
                 else if (lastPath == PATH_EVENT_MEMBER) {
                     val memberEmail = it.getQueryParameter(AUTH_CONFIRM_EMAIL) ?: ""
                     val memberCode = it.getQueryParameter(AUTH_CONFIRM_EMAIL_CODE) ?: ""
-                    presenter.onInviteRegister(memberEmail, memberCode,"","","",-1)
+                    presenter.onInviteRegister(memberEmail, memberCode, "", "", "", -1)
                 }
                 //catch path pgrf, assistant
                 else if (lastPath == PGRF || lastPath == ASSISTANT || lastPath == LINKED_REGISTER) {
@@ -488,53 +500,30 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     }
 
 
-
     override fun showStateErrorMessage(type: StateType, hasBase: Boolean, user: UserDetail?) {
+        val navigate: (Int) -> Unit = { res ->
+            findNavController().navigate(res, bundleOf("screen" to 1))
+        }
         ChangeStateBottomDialog(this, type)
             .setClickCallback {
                 when (it) {
                     ClickType.INFO -> findNavController().navigate(R.id.userStateFragment)
                     ClickType.BASE -> {
-                        findNavController().navigate(
-                            R.id.mainInfoFragment,
-                            bundleOf("type" to UserState.BASE, "screen" to 3)
-                        )
+                        val args = bundleOf("type" to UserState.BASE, "screen" to 3)
+                        findNavController().navigate(R.id.mainInfoFragment, args)
                     }
 
                     ClickType.MAX -> {
-                        if (presenter.getHasBase()) {
-                            when (Utils.maxStateScreen(presenter.getUserData())) {
-                                MaxStateScreenType.BASE ->
-                                    findNavController().navigate(
-                                        R.id.maxStatusContactsFragment,
-                                        bundleOf("screen" to 1)
-                                    )
-
-                                MaxStateScreenType.INTERESTS ->
-                                    findNavController().navigate(
-                                        R.id.maxStatusInterestsFragment,
-                                        bundleOf("screen" to 1)
-                                    )
-
-                                MaxStateScreenType.EDUCATION ->
-                                    findNavController().navigate(
-                                        R.id.maxStatusEducationFragment,
-                                        bundleOf("screen" to 1)
-                                    )
-
-                                MaxStateScreenType.WORK ->
-                                    findNavController().navigate(
-                                        R.id.maxStatusWorkFragment,
-                                        bundleOf("screen" to 1)
-                                    )
-
-                                else -> {}
-                            }
-                        } else {
-                            findNavController().navigate(
-                                R.id.mainInfoFragment,
-                                bundleOf("type" to UserState.MAX, "screen" to 1)
-                            )
+                        if (presenter.getHasBase()) when (Utils.maxStateScreen(presenter.getUserData())) {
+                            MaxStateScreenType.BASE -> navigate(R.id.maxStatusContactsFragment)
+                            MaxStateScreenType.INTERESTS -> navigate(R.id.maxStatusInterestsFragment)
+                            MaxStateScreenType.EDUCATION -> navigate(R.id.maxStatusEducationFragment)
+                            MaxStateScreenType.WORK -> navigate(R.id.maxStatusWorkFragment)
+                            else -> {}
+                        }
+                        else {
+                            val args = bundleOf("type" to UserState.MAX, "screen" to 1)
+                            findNavController().navigate(R.id.mainInfoFragment, args)
                         }
                     }
                 }
@@ -547,6 +536,9 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
     fun connectToSocket() = presenter.connectToSocket()
 
     private fun setupMainNavBar() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)
+            setSystemBarsAppearance(SYSTEM_UI_LIGHT_NAV_BAR)
+
         mBinding.mainNavBar.setupWithNavController(getNavHostFragment().navController)
         mBinding.mainNavBar.setOnItemReselectedListener { item ->
             val fragment = getNavHostFragment().childFragmentManager.fragments.firstOrNull()
@@ -604,6 +596,7 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         }
     }
 
+
     override fun showRequestErrorMessage() {
         DefaultAlertDialog(this, null, getString(R.string.request_server_error))
     }
@@ -619,17 +612,11 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.errorContainer.isVisible = false
     }
 
-    override fun setAppBarElevation(value: Float) {
-        mBinding.appBar.changeAppBarElevation(value)
-    }
-
-    override fun showBadgeNotification(count: Int) {
+    override fun setAppBarElevation(value: Float) = mBinding.appBar.changeAppBarElevation(value)
+    override fun showBadgeNotification(count: Int) =
         mBinding.mainNavBar.setBadge(R.id.notification, count)
-    }
 
-    override fun showBadgeChat(count: Int) {
-        mBinding.mainNavBar.setBadge(R.id.chats, count)
-    }
+    override fun showBadgeChat(count: Int) = mBinding.mainNavBar.setBadge(R.id.chats, count)
 
     private fun showNavBar() {
         window.navigationBarColor = navBarColorBottomNav
@@ -641,15 +628,6 @@ class MainActivity : BaseFragmentActivity(), MainContract.View {
         mBinding.navBarContainer.visibility = View.GONE
     }
 
-    override fun getLoadingView(): View {
-        mBinding.progressWhiteBackground.isVisible = true
-        return mBinding.flLoading
-    }
-
-    override fun getProgressBarLoadingView(): View {
-        mBinding.progressWhiteBackground.isVisible = false
-        return mBinding.flLoading
-    }
 
     override fun showProgressView() = mBinding.progressView.showProgressBar()
     override fun hideProgressView() = mBinding.progressView.hideProgressBar()

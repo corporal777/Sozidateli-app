@@ -11,7 +11,9 @@ import com.example.data.models.EventFormModel
 import com.example.data.models.EventFormResultDraftModel
 import com.example.data.models.EventFormResultModel
 import com.example.data.models.EventNew
+import com.example.data.models.EventRegisterData
 import com.example.data.models.EventRegisterProfilePrefilledData
+import com.example.data.models.EventRegistration
 import com.example.data.models.EventTagModel
 import com.example.data.models.EventUserFavorite
 import com.example.data.models.MemberModel
@@ -42,7 +44,7 @@ interface EventRepository {
     fun getEventByCode(code: String): Single<EventNew>
     fun getEvent(eventId: String): Maybe<EventNew>
     fun getEventDetails(eventId: String): Maybe<EventNew>
-    fun getEventDetailForRegister(eventId: String): Maybe<EventNew>
+    fun getEventDetailForRegister(eventId: String): Maybe<EventRegisterData>
 
     fun getEventMember(memberId : String) : Maybe<MemberModel>
     fun createEventSubscription(eventId: Int) : Completable

@@ -83,7 +83,7 @@
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="20dp"
         app:buttonBackground="@drawable/btn_background_green"
-        app:buttonMinHeight="@dimen/auth_buttons_min_height"
+        app:buttonMinHeight="@dimen/event_detail_action_button_min_height"
         app:buttonText="@string/go_to_event"
         app:buttonTextColor="@color/white"
         app:buttonTextSize="@dimen/auth_buttons_text_size"

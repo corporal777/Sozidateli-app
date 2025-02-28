@@ -1,15 +1,15 @@
 package com.example.ui.event.formResult
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app.R
 import com.example.app.databinding.BottomSheetEventFormResultBinding
 import com.example.data.models.Argument
-import com.example.data.models.EventRegisterFieldData
-import com.example.data.models.UserDetail
-import com.example.data.models.UserFormResultModel
+import com.example.data.models.EventNew
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.extensions.parcelableArgument
 import com.example.holders.PlaceholderItem
 import com.example.ui.base.bottomSheet.BaseBSFragment
@@ -18,7 +18,6 @@ import com.example.ui.event.formResult.items.EventFormResultPassportItem
 import com.example.ui.event.formResult.items.EventFormResultProfileGroup
 import com.example.ui.event.formResult.items.EventFormResultStringItem
 import com.example.ui.event.formResult.items.EventFormResultTitleItem
-import com.example.ui.userprofile.common.name.ChangeNameFragment.Companion.CHANGE_NAME_FRAGMENT_TAG
 import com.xwray.groupie.GroupieAdapter
 import dev.androidbroadcast.vbpd.viewBinding
 import moxy.presenter.InjectPresenter
@@ -36,10 +35,10 @@ class EventFormResultFragment : BaseBSFragment(), EventFormResultContract.View {
 
     @ProvidePresenter(tag = EVENT_FORM_FRAGMENT_TAG)
     fun providePresenter(): EventFormResultPresenter = presenterProviderEmail.get().apply {
-        if (args.value != null) this.formResult = args.value!!
+        if (args.value != null) event = args.value!!
     }
 
-    private val args by parcelableArgument<Argument<UserFormResultModel>>(EVENT_FORM_FRAGMENT_TAG)
+    private val args by parcelableArgument<Argument<EventNew>>(EVENT_FORM_FRAGMENT_TAG)
     private val viewBinding by viewBinding(BottomSheetEventFormResultBinding::bind)
     private val groupAdapter by lazy {
         GroupieAdapter().apply {
@@ -60,42 +59,37 @@ class EventFormResultFragment : BaseBSFragment(), EventFormResultContract.View {
         }
     }
 
-    override fun setFormResult(fieldsData: List<EventRegisterFieldData<*>>?) {
+    override fun setFormResult(fieldsData: List<EventRegisterField<*>>?) {
         if (fieldsData.isNullOrEmpty()) return
         groupAdapter.update(fieldsData.map {
             if (it.value == null) EventFormResultStringItem(it.field.id, it.field.name, null)
             else
                 when (it) {
-                    is EventRegisterFieldData.Prefilled ->
+                    is EventRegisterField.Prefilled ->
                         EventFormResultProfileGroup(requireContext(), it.field, it.value)
 
-                    is EventRegisterFieldData.Title ->
+                    is EventRegisterField.Title ->
                         EventFormResultTitleItem(it.field.id, it.field.name)
 
-                    is EventRegisterFieldData.String ->
+                    is EventRegisterField.Text ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.Phone ->
+                    is EventRegisterField.Phone ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.File ->
+                    is EventRegisterField.File ->
                         EventFormResultFileItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.Passport ->
+                    is EventRegisterField.Passport ->
                         EventFormResultPassportItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.SelectBox ->
+                    is EventRegisterField.SelectBox ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.RadioBox ->
+                    is EventRegisterField.RadioBox ->
                         EventFormResultStringItem(it.field.id, it.field.name, it.value)
 
-                    is EventRegisterFieldData.Checkbox ->
-                        EventFormResultStringItem(
-                            it.field.id,
-                            it.field.name,
-                            getCheckBoxValue(it.value)
-                        )
+                    is EventRegisterField.Checkbox -> EventFormResultStringItem(it.field.id, it.field.name, getCheckBoxValue(it.value))
 
                     else -> return
                 }

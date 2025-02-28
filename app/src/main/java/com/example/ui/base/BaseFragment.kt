@@ -86,37 +86,18 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
     override fun showToast(message: String) =
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-    override fun showLoadingDialog() {
-        mActivity?.showLoadingDialog()
-    }
+    override fun showProgressBarLoading() { mActivity?.showProgressBarLoading() }
+    override fun hideProgressBarLoading() { mActivity?.hideProgressBarLoading() }
 
-    override fun hideLoadingDialog() {
-        mActivity?.hideLoadingDialog()
-    }
+    override fun showProgressBarDialogLoading() { mActivity?.showProgressBarDialogLoading() }
+    override fun hideProgressBarDialogLoading() { mActivity?.hideProgressBarDialogLoading() }
 
-    override fun showProgressBarLoadingDialog() {
-        mActivity?.showProgressBarLoadingDialog()
-    }
-
-    override fun hideProgressBarLoadingDialog() {
-        mActivity?.hideProgressBarLoadingDialog()
-    }
-
-    override fun showCustomProgressDialog() {
-        mActivity?.showCustomProgressDialog()
-    }
-
-    override fun hideCustomProgressDialog() {
-        mActivity?.hideCustomProgressDialog()
-    }
-
-    override fun hideAllLoadingDialogs() {
-        mActivity?.hideAllLoadingDialogs()
-    }
+    override fun hideAllLoadingDialogs() { mActivity?.hideAllLoadingDialogs() }
 
     override fun showCustomLoading() {}
-
     override fun hideCustomLoading() {}
+
+
 
     override fun hideKeyboard() {
         mActivity?.hideKeyboard()
@@ -235,7 +216,6 @@ abstract class BaseFragment<binding : ViewDataBinding> : MvpAppCompatFragment(),
         super.onDestroyView()
         hideKeyboard()
         hideAllLoadingDialogs()
-        hideCustomProgressDialog()
         mBinding.unbind()
     }
 

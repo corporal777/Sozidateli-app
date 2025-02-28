@@ -1,63 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemContainer"
+    android:layout_width="140dp"
+    android:layout_height="180dp"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginVertical="10dp"
+    android:background="@drawable/background_corners_large"
+    android:clipToOutline="true"
+    android:elevation="4dp"
+    android:foreground="@drawable/btn_background_text">
+
+    <ImageView
+        android:id="@+id/ivSpeakerImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/img_test" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/speaker_footer_gradient"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSpeakersName"
+        fontPath="fonts/sf_pro_display_bold.ttf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.02"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingPrefix"
+        tools:text="Екатерина Кисеева" />
+
+    <ImageView
+        android:id="@+id/iv_speaker_status"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/btn_speaker_status_circle"
+        android:foreground="@drawable/btn_background_toolbar"
+        android:padding="6dp"
+        android:src="@drawable/ic_speaker_status_pending"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/itemContainer"
-        android:layout_width="140dp"
-        android:layout_height="180dp"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="10dp"
-        android:background="@drawable/background_corners_large"
-        android:elevation="4dp"
-        android:clipToOutline="true"
-        android:foreground="@drawable/btn_background_text">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/ivSpeakerImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/img_test" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@drawable/speaker_footer_gradient"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <TextView
-            android:id="@+id/tvSpeakersName"
-            fontPath="fonts/sf_pro_display_bold.ttf"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="10dp"
-            android:letterSpacing="0.02"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Екатерина Кисеева" />
-
-        <ImageView
-            android:id="@+id/iv_speaker_status"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="top|right"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/btn_speaker_status_circle"
-            android:foreground="@drawable/btn_background_toolbar"
-            android:padding="6dp"
-            android:src="@drawable/ic_speaker_status_pending"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>

@@ -100,7 +100,7 @@ fun String.setUnderlineSpan(start: Int = 0, finish: Int = length): Spannable {
 fun String.getFileNameAndExtension(): Pair<String, String> {
     val extDotIndex = lastIndexOf(".")
     val name = if (extDotIndex == -1) this else substring(0, extDotIndex)
-    val extension = substring(extDotIndex + 1, length).toLowerCase(Locale.getDefault())
+    val extension = substring(extDotIndex + 1, length).lowercase(Locale.getDefault())
     return name to extension
 }
 
@@ -192,7 +192,7 @@ fun String?.phoneToServer() = this?.replace("-", "")?.replace(" ", "")
 
 fun String.firstLetterToUppercase(): String {
     return if (this.isNotBlank())
-        this.substring(0, 1).toUpperCase() + this.substring(1).toLowerCase()
+        this.substring(0, 1).uppercase() + this.substring(1).lowercase()
     else this
 }
 

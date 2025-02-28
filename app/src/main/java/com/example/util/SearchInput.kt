@@ -7,11 +7,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 
-class SearchInput(
-        val view: EditText
-) {
+class SearchInput(val view: EditText) {
 
-    private var onTextChange: OnTextChange? = null
     private var onAfterTextChange: OnAfterTextChange? = null
     private var onFocusChange: OnFocusChange? = null
     private var onTextChangeSearch: OnTextChangeDone? = null
@@ -23,9 +20,7 @@ class SearchInput(
                     onAfterTextChange?.invoke(s.toString())
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    onTextChange?.invoke(s.toString())
-                }
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             })
             onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                 onFocusChange?.invoke(hasFocus)

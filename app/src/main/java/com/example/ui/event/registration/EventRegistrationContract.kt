@@ -2,7 +2,7 @@ package com.example.ui.event.registration
 
 import com.example.data.models.EventFile
 import com.example.data.models.EventRegisterData
-import com.example.data.models.EventRegisterFieldData
+import com.example.data.models.eventRegister.EventRegisterField
 import com.example.data.models.EventRegistration
 import com.example.ui.base.BaseContract
 import com.example.ui.event.registration.items.PrefilledFieldClickType
@@ -14,10 +14,13 @@ interface EventRegistrationContract {
     interface View : BaseContract.View {
 
         @OneExecution
-        fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterFieldData<*>>)
+        fun setFormFields(event: EventRegistration, fieldsData: List<EventRegisterField<*>>)
 
-        @OneExecution
-        fun updateProfileFields(profileForm : EventRegisterFieldData.Prefilled)
+        @Skip
+        fun updateProfileFields(profileForm : EventRegisterField.Prefilled)
+
+        @Skip
+        fun updateFileField(fieldId: String)
 
         @Skip
         fun showSaveFormResultDraftDialog()
@@ -25,16 +28,10 @@ interface EventRegistrationContract {
         @Skip
         fun showSavedFormResultDraftDialog(res : EventRegisterData)
 
-        @AddToEndSingle
-        fun enableActionButton(enable: Boolean)
+        @Skip
+        fun openFileSelector(field: EventRegisterField<EventFile?>)
 
         @Skip
-        fun openFileSelector(field: EventRegisterFieldData<EventFile?>)
-
-        @OneExecution
-        fun updateFileField(fieldId: String)
-
-        @OneExecution
         fun showWrongFileExtensions(availableExtensions: List<String>)
 
         @OneExecution
@@ -46,24 +43,27 @@ interface EventRegistrationContract {
         @OneExecution
         fun navigateUpClick()
 
-        @OneExecution
-        fun showErrors(invalidFields : MutableSet<EventRegisterFieldData<*>>)
+        @Skip
+        fun enableActionButton(enable: Boolean)
+
+        @Skip
+        fun showErrors(invalidFields : MutableSet<EventRegisterField<*>>)
     }
 
     interface Presenter : BaseContract.Presenter {
 
-        fun onAddFileClick(field: EventRegisterFieldData<EventFile?>)
-        fun onTakeFile(field: EventRegisterFieldData<EventFile?>)
-        fun onTakeImage(field: EventRegisterFieldData<EventFile?>)
+        fun onAddFileClick(field: EventRegisterField<EventFile?>)
+        fun onTakeFile(field: EventRegisterField<EventFile?>)
+        fun onTakeImage(field: EventRegisterField<EventFile?>)
 
         fun onRegisterClick()
-        fun onDataChange(field: EventRegisterFieldData<*>)
+        fun onDataChange(field: EventRegisterField<*>)
 
         fun onSuccessCancel()
         fun onSuccessGoToList()
         fun onNavigateUpClick()
 
         fun saveEventFormResultDraft()
-        fun initFormResultData(event : EventRegistration, result : List<EventRegisterFieldData<*>>)
+        fun initFormResultData(event : EventRegistration, result : List<EventRegisterField<*>>)
     }
 }

@@ -1,40 +1,25 @@
 package com.example.holders.registerEvent
 
 import android.net.Uri
-import android.util.Log
 import com.example.data.models.EventFile
-import com.example.data.models.EventRegisterFieldData
-import com.example.holders.ProfileDataFileAddItem
+import com.example.data.models.eventRegister.EventRegisterField
 import com.xwray.groupie.Group
-import com.xwray.groupie.Item
 import com.xwray.groupie.NestedGroup
 
 class RegisterEventFileGroup(
-    val fieldData: EventRegisterFieldData<EventFile?>,
-    private val onDataChange: (fieldData: EventRegisterFieldData<*>) -> Unit,
+    val fieldData: EventRegisterField<EventFile?>,
+    private val onDataChange: (fieldData: EventRegisterField<*>) -> Unit,
     onAddClick: () -> Unit
 ) : NestedGroup() {
 
-    private var fileItem: EventRegistrationFileItem? = null
-    private val fileAddItem = ProfileDataFileAddItem(true, onAddClick, true)
-
-    private val descriptions: MutableList<EventRegistrationDescriptionItem> = mutableListOf()
+    private var fileItem: RegisterEventFileItem? = null
+    private val fileAddItem =
+        RegisterEventFileAddItem(onAddClick, fieldData.field.parameters?.extensions?.joinToString())
+    private val descriptions =
+        mutableListOf(RegisterEventFileDescItem(fieldData.field.name, fieldData.field.description))
 
     init {
         checkFile()
-
-        descriptions.add(EventRegistrationDescriptionItem(fieldData.field.name, null))
-        if (fieldData.field.description != null) {
-            descriptions.add(EventRegistrationDescriptionItem(null, fieldData.field.description))
-        }
-
-        if (!fieldData.field.values.isNullOrEmpty()) {
-            val availableExtensions = EventRegistrationDescriptionItem(
-                null,
-                "Допустимые форматы: " + fieldData.field.values.joinToString()
-            )
-            descriptions.add(availableExtensions)
-        }
     }
 
     fun checkFile() {
@@ -81,11 +66,11 @@ class RegisterEventFileGroup(
         return descriptions.size + 1
     }
 
-    private fun createFileItem(fileName: String, path: Uri): EventRegistrationFileItem {
-        return EventRegistrationFileItem(
+    private fun createFileItem(fileName: String, path: Uri): RegisterEventFileItem {
+        return RegisterEventFileItem(
             FILE_ITEM_ID,
             fileName,
-            fieldData.field.required,
+            fieldData.field.isRequired,
             path.scheme?.startsWith("http") != true,
             {
                 fieldData.value = null

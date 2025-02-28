@@ -3,13 +3,14 @@ package com.example.holders
 import android.view.View
 import com.example.app.R
 import com.example.app.databinding.ItemActionButtonBinding
+import com.example.holders.redesign.CustomBindingItem
 import com.xwray.groupie.viewbinding.BindableItem
 
 
 class ActionButtonItem(
     id: Long,
     private val addClickListener: () -> Unit
-) : BindableItem<ItemActionButtonBinding>(id) {
+) : CustomBindingItem<ItemActionButtonBinding>(id) {
 
     var isEnabled = true
 
@@ -20,14 +21,10 @@ class ActionButtonItem(
         }
     }
 
-    override fun bind(viewBinding: ItemActionButtonBinding, position: Int, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-        if (payload == null) super.bind(viewBinding, position, payloads)
-        else {
-            if (payload is Int) {
-                if (payload == 1) viewBinding.btnAction.showProgressLoading(true)
-                else viewBinding.btnAction.showProgressLoading(false)
-            }
+    override fun bind(binding: ItemActionButtonBinding, payload: Any) {
+        if (payload is Int) {
+            if (payload == 1) binding.btnAction.showProgressLoading(true)
+            else binding.btnAction.showProgressLoading(false)
         }
     }
 
@@ -36,6 +33,12 @@ class ActionButtonItem(
         if (other !is ActionButtonItem) return false
         if (isEnabled != other.isEnabled) return false
         return true
+    }
+
+    fun notifyEnabled(enable : Boolean){
+        if (isEnabled == enable) return
+        isEnabled = enable
+        notifyChanged()
     }
 
     override fun initializeViewBinding(view: View) = ItemActionButtonBinding.bind(view)

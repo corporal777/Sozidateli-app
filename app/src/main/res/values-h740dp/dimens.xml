@@ -11,6 +11,7 @@
     <dimen name="auth_pager_title_text_size">28sp</dimen>
     <dimen name="auth_pager_story_text_size">16sp</dimen>
 
+    <dimen name="event_detail_action_button_min_height">46dp</dimen>
     <dimen name="common_button_min_height">50dp</dimen>
     <dimen name="common_button_text_size">16sp</dimen>
 
@@ -68,10 +69,10 @@
 
     <dimen name="update_app_image">300dp</dimen>
 
-    <dimen name="toolbar_icons_size">30dp</dimen>
+    <dimen name="toolbar_icons_size">31dp</dimen>
 
-    <dimen name="toolbar_circle_button_height">30dp</dimen>
-    <dimen name="toolbar_circle_button_width">145dp</dimen>
+    <dimen name="toolbar_circle_button_height">31dp</dimen>
+    <dimen name="toolbar_circle_button_width">146dp</dimen>
     <!--  new margins  -->
 
     <!--  code view margins  -->

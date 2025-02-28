@@ -7,17 +7,19 @@ import android.view.inputmethod.EditorInfo
 import androidx.navigation.fragment.findNavController
 import com.example.app.R
 import com.example.app.databinding.FragmentEnterCodeBinding
+import com.example.extensions.onKeyDoneClick
 import com.example.extensions.onTextChanged
 import com.example.interfaces.ToolbarFragment
+import com.example.ui.base.BaseToolbarFragment
 import com.example.ui.base.BaseVBFragment
+import com.example.ui.event.about.AboutEventFragmentArgs
 import com.example.ui.views.toolbar.ToolbarContent
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class EnterCodeFragment : BaseVBFragment<FragmentEnterCodeBinding>(), EnterCodeContract.View,
-    ToolbarFragment {
+class EnterCodeFragment : BaseToolbarFragment<FragmentEnterCodeBinding>(), EnterCodeContract.View {
 
     @InjectPresenter
     lateinit var presenter: EnterCodePresenter
@@ -28,24 +30,14 @@ class EnterCodeFragment : BaseVBFragment<FragmentEnterCodeBinding>(), EnterCodeC
     @ProvidePresenter
     fun providePresenter(): EnterCodePresenter = presenterProvider.get()
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
             etCode.apply {
-                setOnKeyListener { _, keyCode, _ ->
-                    when (keyCode) {
-                        EditorInfo.IME_ACTION_DONE -> {
-                            presenter.onSearchClick(etCode.text.toString())
-                            true
-                        }
-                        else -> false
-                    }
-                }
-                requestFocus()
-
-                onTextChanged {
-                    btnSearch.isEnabled = !it.isNullOrEmpty()
-                }
+                onKeyDoneClick { presenter.onSearchClick(etCode.text.toString()) }
+                onTextChanged { btnSearch.isEnabled = !it.isNullOrEmpty() }
             }
             btnSearch.apply {
                 isEnabled = !etCode.text.isNullOrEmpty()
@@ -55,24 +47,17 @@ class EnterCodeFragment : BaseVBFragment<FragmentEnterCodeBinding>(), EnterCodeC
     }
 
     override fun showEvent(eventId: String) {
-        findNavController().navigate(
-            EnterCodeFragmentDirections.enterEventCodeFragmentToAboutEventFragment(
-                eventId
-            )
-        )
+        val args = AboutEventFragmentArgs.Builder(eventId).build().toBundle()
+        findNavController().navigate(R.id.about_event_fragment, args)
     }
 
-    override fun showEventNotFoundError() {
-        showToast(R.string.qr_scan_not_found_event)
-    }
+    override fun showEventNotFoundError() = showToast(R.string.qr_scan_not_found_event)
 
     override fun showCustomLoading() = mBinding.btnSearch.showProgressLoading(true)
     override fun hideCustomLoading() = mBinding.btnSearch.showProgressLoading(false)
 
+    override fun animationType(): AnimType = AnimType.FADE
     override fun binding() = FragmentEnterCodeBinding::class.java
     override fun layout() = R.layout.fragment_enter_code
     override val title: CharSequence by lazy { getString(R.string.code_input_label) }
-    override fun actionIconContainer(view: ViewGroup) {}
-    override fun scrollValue(scroll: Int) {  }
-    override fun setupToolbarContent(toolbarContent: ToolbarContent) {}
 }

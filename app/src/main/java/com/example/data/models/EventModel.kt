@@ -2,51 +2,51 @@ package com.example.data.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
-data class EventsListModel (
-        val data: List<EventModel>? = null,
-        @SerializedName("totalCount")
-        val totalCount: Int? = null
+data class EventsListModel(
+    val data: List<EventModel>? = null,
+    @SerializedName("totalCount")
+    val totalCount: Int? = null
 )
 
-data class EventModel (
-        val id: Int,
-       val name: String? = null,
-        val code: String? = null,
-        @SerializedName("createdDate")
-        val createdDate: String? = null,
-        @SerializedName("createdBy")
-        val createdBy: Int? = null,
-       val description: String? = null,
-       @SerializedName("holdingDate")
-       val holdingDate: HoldingDateModel? = null,
-       @SerializedName("requestsApply")
-       val requestsApply: RequestsApplyModel? = null,
-       val organization: Int? = null,
-       val format: FormatModel? = null,
-       val regularity: EventRegularity? = null,
-       @SerializedName("targetedAudience")
-       val targetedAudience: List<Int>? = null,
-       val topic: TopicModel? = null,
-       val phone: List<FieldDetails>? = null,
-       val email: List<FieldDetails>? = null,
-       val site: List<FieldDetails>? = null,
-       @SerializedName("socialLink")
-       val socialLink: List<FieldDetails>? = null,
-       val address: NewUserAddress? = null,
-       @SerializedName("backgroundColor")
-       val backgroundColor: ColorModel? = null,
-       val state: EventState? = null
+data class EventModel(
+    val id: Int,
+    val name: String? = null,
+    val code: String? = null,
+    @SerializedName("createdDate")
+    val createdDate: String? = null,
+    @SerializedName("createdBy")
+    val createdBy: Int? = null,
+    val description: String? = null,
+    @SerializedName("holdingDate")
+    val holdingDate: HoldingDateModel? = null,
+    @SerializedName("requestsApply")
+    val requestsApply: RequestsApplyModel? = null,
+    val organization: Int? = null,
+    val format: FormatModel? = null,
+    val regularity: EventRegularity? = null,
+    @SerializedName("targetedAudience")
+    val targetedAudience: List<Int>? = null,
+    val topic: TopicModel? = null,
+    val phone: List<FieldDetails>? = null,
+    val email: List<FieldDetails>? = null,
+    val site: List<FieldDetails>? = null,
+    @SerializedName("socialLink")
+    val socialLink: List<FieldDetails>? = null,
+    val address: NewUserAddress? = null,
+    @SerializedName("backgroundColor")
+    val backgroundColor: ColorModel? = null,
+    val state: EventState? = null
 )
 
 @Parcelize
 data class EventRegularity(
-        val value: Int? = null,
-        val custom: String? = null
-): Parcelable
+    val value: Int? = null,
+    val custom: String? = null
+) : Parcelable
 
-data class EventState (
+data class EventState(
     val registration: EventStateRegistration? = null,
     val rating: EventStateRating? = null,
     @SerializedName("isPublic")
@@ -55,44 +55,44 @@ data class EventState (
     val isHidden: Int? = null
 )
 
-data class EventStateRegistration (
-        @SerializedName("isAvailable")
-        val isAvailable: Boolean? = null,
-        @SerializedName("formEnabled")
-        val formEnabled: Boolean? = null,
-        @SerializedName("approvingMode")
-        val approvingMode: String? = null
+data class EventStateRegistration(
+    @SerializedName("isAvailable")
+    val isAvailable: Boolean? = null,
+    @SerializedName("formEnabled")
+    val formEnabled: Boolean? = null,
+    @SerializedName("approvingMode")
+    val approvingMode: String? = null
 )
 
-data class EventStateRating (
-        @SerializedName("formEnabled")
-        val formEnabled: Boolean? = null,
-        @SerializedName("askDelay")
-        val askDelay: Int? = null
+data class EventStateRating(
+    @SerializedName("formEnabled")
+    val formEnabled: Boolean? = null,
+    @SerializedName("askDelay")
+    val askDelay: Int? = null
 )
 
-data class ColorModel (
+data class ColorModel(
     val value: String? = null,
     @SerializedName("isEnabled")
     val isEnabled: Boolean? = false
 )
 
-data class HoldingDateModel (
+data class HoldingDateModel(
     val from: String? = null,
     val to: String? = null
 )
 
-data class RequestsApplyModel (
+data class RequestsApplyModel(
     @SerializedName("dateLimit")
     val dateLimit: String? = null
 )
 
-data class FormatModel (
+data class FormatModel(
     val custom: String? = null
 )
 
 @Parcelize
-data class TopicModel (
-        val category: Int? = null,
-        val subcategories: List<Int>? = null
-): Parcelable
+data class TopicModel(
+    val category: Int? = null,
+    val subcategories: List<Int>? = null
+) : Parcelable
