@@ -211,7 +211,6 @@ fun ViewPager2.onPageStateChanged(onPageChanged: (state: Int) -> Unit) {
             onPageChanged(state)
         }
     }
-    unregisterOnPageChangeCallback(listener)
     registerOnPageChangeCallback(listener)
 }
 
@@ -399,23 +398,6 @@ fun Bitmap.toBodyPart(
     }
 }
 
-fun String?.isValidPhoneNumber(context: Context, defaultRegion: String? = null): Boolean {
-    val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
-    return isValidPhoneNumber(phoneNumberUtil, defaultRegion)
-}
-
-fun String?.isValidPhoneNumber(
-    phoneNumberUtil: PhoneNumberUtil,
-    defaultRegion: String? = null
-): Boolean {
-    if (this.isNullOrEmpty()) return false
-    val parsedPhone = try {
-        phoneNumberUtil.parse(this, defaultRegion)
-    } catch (e: Throwable) {
-        return false
-    }
-    return phoneNumberUtil.isValidNumber(parsedPhone)
-}
 
 fun TextInputLayout.initAsMonthYearPicker(
     startDate: Date?,
@@ -736,6 +718,10 @@ fun View?.getLocationOfView(): Pair<Int, Int> {
     val x = location[0]
     val y = location[1]
     return Pair(x, y)
+}
+
+fun ViewGroup.setChildSelected(position : Int){
+    for (p in 0 until childCount) getChildAt(p).isSelected = p == position
 }
 
 

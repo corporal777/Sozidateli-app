@@ -19,6 +19,7 @@ import com.example.util.SearchInput
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.example.extensions.onPageSelected
+import com.example.extensions.setChildSelected
 import com.example.extensions.setFiltersBackground
 import com.example.ui.base.BaseVBFragment
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class SearchTabsFragment : BaseVBFragment<FragmentSearchTabsBinding>(), SearchTa
     }
 
     private val searchInterface = SearchInterface()
-
+    private val pageChangeListener = onPageSelected { position -> selectTab(position) }
     private val fragments by lazy {
         listOf(
             SearchEventFragment(),
@@ -48,8 +49,6 @@ class SearchTabsFragment : BaseVBFragment<FragmentSearchTabsBinding>(), SearchTa
             SearchUserFragment()
         )
     }
-    private val pageChangeListener = onPageSelected { position -> selectTab(position) }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,12 +95,7 @@ class SearchTabsFragment : BaseVBFragment<FragmentSearchTabsBinding>(), SearchTa
     }
 
     fun setFiltersChosen(isHas: Boolean) = mBinding.btnFilter.setFiltersBackground(isHas)
-
-    private fun selectTab(position: Int) {
-        mBinding.clTabs.run {
-            for (p in 0 until childCount) getChildAt(p).isSelected = p == position
-        }
-    }
+    private fun selectTab(position: Int) = mBinding.clTabs.setChildSelected(position)
 
     override fun provideSearchInterface(): SearchInterface = searchInterface
 
